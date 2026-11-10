@@ -165,10 +165,10 @@
   "ratio": "3:4"
  },
  {
-  "source": "recu/moment-4.webp",
+  "source": "recu/parents-enfant-jpeg.png",
   "nom": "recevoir-baptemes",
   "role": "galerie",
-  "alt": "Tables dressées en blanc et verdure sur la terrasse",
+  "alt": "Des parents et leur bébé en plein air",
   "ratio": "3:4"
  },
  {
@@ -211,7 +211,7 @@
   "nom": "infos-ouverture",
   "role": "ouverture",
   "alt": "L'enseigne des Jardins de l'Hacienda à l'entrée, sous le ciel de Moineville",
-  "mobile": "9:16"
+  "mobile": false
  },
  {
   "source": "recu/logo-sombre.png",

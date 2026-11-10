@@ -1342,76 +1342,75 @@
   },
   "recevoir-baptemes": {
     "nom": "recevoir-baptemes",
-    "source": "recu/moment-4.webp",
+    "source": "recu/parents-enfant-jpeg.png",
     "role": "galerie",
-    "alt": "Tables dressées en blanc et verdure sur la terrasse",
+    "alt": "Des parents et leur bébé en plein air",
     "grok": false,
     "mention": null,
-    "empreinte": "57ecf8dc7082e834",
+    "empreinte": "b37fd9661313a857",
     "ratio": "3:4",
     "largeurs": [
       480,
-      640,
-      960
+      640
     ],
     "mobile": null,
-    "cadrage": "50% 48%",
+    "cadrage": "50% 35%",
     "sujet": {
-      "x": 9.5,
-      "y": 32.4,
-      "l": 82.4,
-      "h": 30.9
+      "x": 8.9,
+      "y": 0,
+      "l": 82.8,
+      "h": 90.4
     },
     "zones_calmes": [
       {
+        "cote": "haut",
+        "score": 0.35,
+        "ton": "clair"
+      },
+      {
         "cote": "gauche",
-        "score": 0.34,
-        "ton": "moyen"
+        "score": 0.27,
+        "ton": "clair"
       },
       {
         "cote": "bas",
-        "score": 0.28,
-        "ton": "moyen"
-      },
-      {
-        "cote": "haut",
-        "score": 0.25,
+        "score": 0.08,
         "ton": "moyen"
       },
       {
         "cote": "droite",
-        "score": 0.19,
+        "score": 0.06,
         "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
-      "left": 410,
+      "left": 167,
       "top": 0,
-      "width": 640,
-      "height": 853,
+      "width": 540,
+      "height": 720,
       "source": [
-        1280,
-        853
+        840,
+        720
       ]
     },
-    "faible": false,
-    "raisons_faible": [],
+    "faible": true,
+    "raisons_faible": [
+      "largeurs retirées (source trop petite) : 960",
+      "840 px de large"
+    ],
     "avertissements": [
-      "agrandie 1,5 fois (source de 640 px après recadrage)",
-      "recadrage fort (50 % de l'image gardée) sur une image qui contient du texte (marque) : texte coupé probable, choisir un autre rôle ou une autre image"
+      "agrandie 1,19 fois (source de 540 px après recadrage)"
     ],
     "fichiers": [
       "recevoir-baptemes-480.webp",
-      "recevoir-baptemes-640.webp",
-      "recevoir-baptemes-960.webp"
+      "recevoir-baptemes-640.webp"
     ],
     "poids": {
-      "recevoir-baptemes-480.webp": 38548,
-      "recevoir-baptemes-640.webp": 56644,
-      "recevoir-baptemes-960.webp": 82580
+      "recevoir-baptemes-480.webp": 44466,
+      "recevoir-baptemes-640.webp": 62802
     },
-    "media": "c.media({ nom: 'recevoir-baptemes', alt: \"Tables dressées en blanc et verdure sur la terrasse\", cadrage: '50% 48%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+    "media": "c.media({ nom: 'recevoir-baptemes', alt: \"Des parents et leur bébé en plein air\", cadrage: '50% 35%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
   },
   "recevoir-anniversaires": {
     "nom": "recevoir-anniversaires",
@@ -1776,21 +1775,14 @@
     "alt": "L'enseigne des Jardins de l'Hacienda à l'entrée, sous le ciel de Moineville",
     "grok": false,
     "mention": null,
-    "empreinte": "4672fc15e81e57b9",
+    "empreinte": "360d0469ecdf09bb",
     "ratio": "16:9",
     "largeurs": [
       640,
       1280,
       1920
     ],
-    "mobile": {
-      "ratio": "9:16",
-      "largeurs": [
-        640,
-        1080
-      ],
-      "cadrage": "50% 61%"
-    },
+    "mobile": null,
     "cadrage": "47% 54%",
     "sujet": {
       "x": 26.5,
@@ -1837,18 +1829,14 @@
     "fichiers": [
       "infos-ouverture-640.webp",
       "infos-ouverture-1280.webp",
-      "infos-ouverture-1920.webp",
-      "infos-ouverture-mobile-640.webp",
-      "infos-ouverture-mobile-1080.webp"
+      "infos-ouverture-1920.webp"
     ],
     "poids": {
       "infos-ouverture-640.webp": 22690,
       "infos-ouverture-1280.webp": 72328,
-      "infos-ouverture-1920.webp": 138706,
-      "infos-ouverture-mobile-640.webp": 30664,
-      "infos-ouverture-mobile-1080.webp": 57474
+      "infos-ouverture-1920.webp": 138706
     },
-    "media": "c.media({ nom: 'infos-ouverture', alt: \"L'enseigne des Jardins de l'Hacienda à l'entrée, sous le ciel de Moineville\", cadrage: '47% 54%', cadrageMobile: '50% 61%', sizes: '100vw', priorite: true })"
+    "media": "c.media({ nom: 'infos-ouverture', alt: \"L'enseigne des Jardins de l'Hacienda à l'entrée, sous le ciel de Moineville\", cadrage: '47% 54%', sizes: '100vw', priorite: true })"
   },
   "logo": {
     "nom": "logo",

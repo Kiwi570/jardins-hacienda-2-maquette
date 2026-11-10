@@ -166,6 +166,45 @@
       ],
       "grilleDispenses": {},
       "notes": "Demande : ajuster d'abord des effets (points restants du regard neuf). Plan de salle : le libellé « Prise ce soir » n'avait pas changé en v1 (le module remplace le texte de salle.json) ; réglé par textes.prise (M18)."
+    },
+    {
+      "version": 3,
+      "skill": "v10.8.2",
+      "perimetre": [
+        "accueil",
+        "reserver",
+        "infos-pratiques",
+        "la-carte",
+        "offrir"
+      ],
+      "etapes": [
+        {
+          "etape": "sections claires, carrousel, corrections du regard neuf",
+          "budget": 40,
+          "debut": "2026-11-10T15:50:00+01:00",
+          "fin": "2026-11-10T15:58:00+01:00"
+        },
+        {
+          "etape": "audit ciblé et livraison",
+          "budget": 15,
+          "debut": "2026-11-10T15:58:00+01:00",
+          "fin": "2026-11-10T16:13:00+01:00"
+        }
+      ],
+      "attentes": [],
+      "allersRetours": 0,
+      "audit": {
+        "niveau": "standard (toutes les pages)",
+        "echecsPremierPassage": 20,
+        "relances": 3,
+        "corrections": [
+          "formulaire clair de Réserver : section pleine largeur au lieu d'un fond peint hors colonne (fil recouvrant, contraste mesuré sur le fond sombre, débordement horizontal)",
+          "« Votre réservation » du récapitulatif foncé (4,22:1 → plus de 4,5:1)"
+        ]
+      },
+      "effetsRetires": [],
+      "grilleDispenses": {},
+      "notes": "Demande : sections claires pour casser le sombre, carrousel « Recevoir » (animation, cartes trop petites), analyse des améliorations."
     }
   ]
 }

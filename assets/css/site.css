@@ -394,6 +394,7 @@ h1, h2 { line-height: 1.25; }
 .fetes-accueil__fond, .sylvestre__fond, .ouv-offrir__fond, .ouv-resa__fond { z-index: 0 !important; }
 .fetes-accueil__contenu, .sylvestre .ame__grille, .sylvestre__actions { position: relative; z-index: 3; }
 /* Carrousel 3D : cartes de profil ou de dos masquées (elles ne sont déjà ni cliquables ni atteignables au clavier). */
+/* v3 : seules les cartes au-delà de 75° sont masquées (option face: 75) : la carte de face et ses deux voisines restent visibles. */
 .c3d.est-actif .c3d__carte:not(.est-de-face) { visibility: hidden; }
 /* Plan de salle : tables en bois sombre, numéros crème lisibles. */
 .pds { --pds-table: #4a3626; --pds-chaise: #b8925a; }
@@ -505,3 +506,38 @@ html:not(.js) .ouv-accueil { min-height: 0; }
   .pds__action { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 14px; padding: 8px 12px; }
   .pds__item { scroll-margin-top: calc(var(--entete-h) + 96px); }
 }
+
+/* ---------- v3 : sections claires (casser le sombre) ---------- */
+.plateau.clair { background: radial-gradient(70% 60% at 75% 50%, #fbf4e7, var(--nappe) 75%); }
+.plateau.clair .plateau__rubrique { border-color: var(--ligne); }
+.plateau.clair .plateau__rubrique.est-devant { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, var(--nappe)); }
+.plateau.clair .plateau__fourchette, .venir.clair .venir__carte { color: #7a5523; }
+.plateau.clair .plateau__vege { color: #3f6b1f; }
+.recevoir.clair { background: linear-gradient(180deg, var(--nappe), #efe2ca); }
+.venir.clair { background: var(--nappe); }
+.venir.clair .venir__ville circle { fill: #7a5523; }
+.venir.clair .venir__ville text, .venir.clair .venir__ici text { fill: var(--encre); }
+.ecrire.clair { background: var(--nappe); }
+.ecrire.clair .ecrire__form input, .ecrire.clair .ecrire__form select, .ecrire.clair .ecrire__form textarea { background: #fffaf1; color: var(--encre); border-color: color-mix(in srgb, var(--encre) 28%, var(--nappe)); }
+/* Le formulaire de réservation est une colonne (socle-cadre) : la nappe déborde jusqu'aux bords de l'écran. */
+/* v3 : la section prend toute la largeur (nappe d'un bord à l'autre), la grille garde la colonne du site. */
+.resa.clair { background: var(--nappe); }
+.resa.clair .resa__recap-sur { color: #8a3612; }
+.resa.clair .resa__recap-corps.est-envoye .resa__recap-sur { color: #7a5523; }
+.resa.clair .resa__recap-corps.est-envoye { border-color: #7a5523; }
+
+/* ---------- v3 : carrousel « Recevoir aux Jardins » ---------- */
+.recevoir .c3d__scene { --c3d-l: clamp(230px, 27vw, 380px); }
+.c3d.est-actif .c3d__carte { opacity: calc(1 - var(--c3d-d, 0) * 2); }
+.c3d.est-actif .c3d__nom, .c3d.est-actif .c3d__ligne { opacity: clamp(0, calc(1 - var(--c3d-d, 0) * 4), 1); transition: opacity .25s; }
+
+/* ---------- v3 : corrections du regard neuf ---------- */
+/* Titres plein écran : les mots qui s'écartent restent dans l'écran. */
+.cheminee__titre { font-size: clamp(1.8rem, min(4.2vw, 8vh), 4.2rem); }
+.plein-carte__titre { font-size: clamp(1.7rem, min(3.9vw, 7.5vh), 3.8rem); }
+/* Plan de salle : le bouton en attente reste lisible (il avait l'air cassé). */
+.pds__reserver[aria-disabled="true"] { opacity: 1; background: transparent; color: var(--nappe); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--nappe) 45%, transparent); }
+/* Mention « Illustration générée » plus discrète (gardée). */
+.mention-ia { opacity: .72; }
+/* Pied de page : le sommaire sur deux colonnes sur téléphone. */
+@media (max-width: 760px) { .pied nav ul { columns: 2; column-gap: 24px; } .pied nav li { break-inside: avoid; } }

@@ -55,7 +55,7 @@ export default (c) => {
   </div>
 </section>
 
-<section class="plateau" id="plateau" data-fil="droite" data-grille="manipuler">
+<section class="plateau clair" id="plateau" data-fil="droite" data-grille="manipuler">
   <div class="conteneur plateau__grille">
     <div class="plateau__texte">
       <p class="surtitre">${c.t('accueil.plateau.surtitre')}</p>
@@ -143,7 +143,7 @@ export default (c) => {
   </div>
 </section>
 
-<section class="c3d recevoir" id="recevoir" data-module="carrousel-3d" data-fil="droite" aria-labelledby="c3d-titre">
+<section class="c3d recevoir clair" id="recevoir" data-module="carrousel-3d" data-fil="droite" aria-labelledby="c3d-titre">
   <div class="c3d__tete socle-cadre">
     <p class="socle-surtitre">${c.t('accueil.recevoir.surtitre')}</p>
     <h2 class="c3d__titre" id="c3d-titre" data-anime="lignes">${c.t('accueil.recevoir.titre')}</h2>
@@ -174,7 +174,7 @@ export default (c) => {
   </div>
 </section>
 
-<section class="venir" id="venir" data-fil="droite" aria-labelledby="venir-titre">
+<section class="venir clair" id="venir" data-fil="droite" aria-labelledby="venir-titre">
   <div class="conteneur venir__grille">
     <div>
       <p class="surtitre">${c.t('accueil.venir.surtitre')}</p>

@@ -14,7 +14,7 @@ export default (c) => html`
     <h1 data-anime="lettres">${c.t('offrir.titre')}</h1>
     <p class="masque-ecran-tres-bas" data-anime>${c.t('offrir.texte')}</p>
     <div class="ouv-offrir__carte" data-iris-centre aria-hidden="true" data-fx="vitesse" data-fx-force="5" data-visuel>
-      <img src="/assets/images/logo-clair.png" alt="" width="44" height="44"><span class="ouv-offrir__type">${c.t('accueil.offrir.carte')}</span><span class="ouv-offrir__montant">25 → 200 €</span>
+      <img src="/assets/images/logo-clair.png" alt="" width="44" height="44"><span class="ouv-offrir__type">${c.t('accueil.offrir.carte')}</span><span class="ouv-offrir__montant">50 €</span>
     </div>
     <p class="ouv-offrir__actions"><a class="bouton" href="#composer" data-action-principale data-sans-transition>${c.t('offrir.action')}</a> <span class="ouv-offrir__info" data-info-cle data-prix>${c.t('offrir.info')}</span></p>
   </div>

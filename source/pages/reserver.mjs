@@ -96,10 +96,10 @@ export default (c) => {
   </div>
 </section>
 
-<section class="resa socle-cadre" id="formulaire" data-module="reservation-de-table" data-fil="gauche" data-grille="retour" aria-labelledby="resa-titre">
+<section class="resa clair" id="formulaire" data-module="reservation-de-table" data-fil="gauche" data-grille="retour" aria-labelledby="resa-titre">
   <script type="application/json" data-reservation>${brut(reglages)}</script>
   <noscript><style>.resa__jours{display:none}.resa__creneaux{min-height:0}.resa__compteur button{display:none}</style></noscript>
-  <div class="resa__grille">
+  <div class="resa__grille socle-cadre">
     <form class="resa__form" data-resa-form action="#" novalidate aria-labelledby="resa-titre">
       <header class="resa__tete">
         ${c.media({ nom: 'cheminee', alt: c.s('reserver.bandeauAlt'), cadrage: '38% 50%', classe: 'resa__bandeau', sizes: '(max-width: 760px) 100vw, 55vw', attrs: 'data-fx="parallaxe" data-fx-force="8"' })}

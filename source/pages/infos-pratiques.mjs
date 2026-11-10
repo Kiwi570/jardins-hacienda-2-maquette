@@ -57,7 +57,7 @@ export default (c) => {
   </div>
 </section>
 
-<section class="ecrire" id="ecrire" data-fil="droite" aria-labelledby="ecrire-titre">
+<section class="ecrire clair" id="ecrire" data-fil="droite" aria-labelledby="ecrire-titre">
   <div class="conteneur ecrire__grille">
     ${c.media({ nom: 'recevoir-mariages', alt: c.s('infos.ecrireAlt'), classe: 'ecrire__photo', sizes: '(max-width: 760px) 100vw, 40vw', attrs: 'data-anime="rideau"' })}
     <form class="ecrire__form" data-formulaire action="#ecrire" novalidate>
