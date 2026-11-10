@@ -4,7 +4,7 @@ import { html } from '../../outils/gabarit.mjs';
 export const page = { cle: '404', fichier: '404', langues: ['fr'], partage: false };
 
 export default (c) => html`
-<section class="introuvable conteneur" id="debut">
+<section class="introuvable conteneur" data-lueur id="debut">
   <div class="introuvable__texte">
     <h1 data-anime="lettres">${c.t('introuvable.titre')}</h1>
     <p data-anime>${c.t('introuvable.texte')}</p>

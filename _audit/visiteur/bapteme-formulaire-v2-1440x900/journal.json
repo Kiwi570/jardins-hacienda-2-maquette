@@ -1,0 +1,110 @@
+{
+ "mission": "bapteme-formulaire-v2",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.3,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 6307,
+   "titres": [
+    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Passer à l’été",
+    "Réserver",
+    "Hiver",
+    "Été",
+    "Réserver au coin du feu",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Les fêtes",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 6.3,
+   "adresse": "/les-fetes",
+   "y": 0,
+   "hauteurPage": 4445,
+   "titres": [
+    "h1 Les fêtes à table"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Passer à l’été",
+    "Réserver",
+    "Réserver la soirée",
+    "Réserver le déjeuner de Noël",
+    "Baptême, anniversaire, mariage : demander une réception"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer demander une réception",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 9.2,
+   "adresse": "/infos-pratiques?sujet=reception#ecrire",
+   "y": 3192,
+   "hauteurPage": 4849,
+   "titres": [
+    "h2 Une demande"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-2.png"
+  }
+ ]
+}

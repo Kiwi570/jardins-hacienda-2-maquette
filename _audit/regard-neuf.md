@@ -1,127 +1,239 @@
-# Regard neuf : maquette des Jardins de l'Hacienda (10 novembre 2026)
+# Regard neuf : maquette v4 des Jardins de l'Hacienda (10 novembre 2026)
 
-Avis d'un directeur artistique, uniquement d'après les captures. Le code source n'a pas été lu.
+Avis d'un directeur artistique qui n'a pas vu la construction, uniquement d'après les films, les captures et l'usage du site servi sur http://localhost:4321. Le code source n'a pas été lu (seules la largeur de page et la position de quelques éléments ont été mesurées dans le navigateur pour expliquer un défaut sur téléphone).
 
-**Date des captures.** Le dossier `_audit/rapport/captures/` a été vidé pendant le relevage (relance de l'audit). J'ai donc fait mes propres captures, toutes hors du navigateur de l'audit, dans `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard/` :
+Matériel regardé :
+- les films `_audit/apercu/accueil-ordinateur.mp4` et `accueil-telephone.mp4` (planches d'images extraites) et `_audit/apercu/planche.jpg` ;
+- mes captures de l'accueil en hiver et en été, ordinateur 1440 × 900 et téléphone 390 × 844 (émulation mobile réelle), en défilant à la molette, avec des positions resserrées dans « La table se dresse » ; les ouvertures et signatures des cinq pages intérieures (hiver et été, ordinateur et téléphone) ; le parcours de réservation complet, le plan de salle, la carte cadeau, le cadran des horaires, le lien « Réserver la soirée » des fêtes ;
+- le relevé `_audit/releve.md` (comparé au texte affiché des pages) ;
+- les planches du palmarès (ouverture, carte, offre, appel, outil interactif) ;
+- les accueils de Lo Componaïro, QD2A et agence ae ;
+- la v3 du même client, servie en local sur le port 4330 depuis `/home/claude/jardins-hacienda-2-maquette`.
 
-- `caps/` et `films/` (ouvertures et transitions) : prises entre 14 h 20 et 14 h 33, **donc avant 14 h 35**.
-- `action/` (réserver et offrir filmés) : vers 14 h 30, donc avant 14 h 35 aussi.
-- `caps2/` (ordinateur, toutes les pages) : prises entre 14 h 37 et 14 h 40, **après les corrections**. Je m'en suis servi pour vérifier les points de l'accueil, de La carte et de Réserver.
-
-Je me suis aussi appuyé sur les captures du test « vrai visiteur » (`_audit/visiteur/`) et sur la planche `_audit/apercu/planche.jpg`. Les noms de capture cités ci-dessous renvoient à ces dossiers, avec la largeur 1366 ou 390.
-
----
-
-## Les cinq questions
-
-**1. Qu'est-ce que le visiteur peut toucher ?**
-- Accueil : le plateau tournant « Faites tourner le plateau ». On l'attrape et on le lance, et il garde son élan (indiqué par l'étiquette « Attrapez le plateau et lancez-le »). On peut aussi passer la main sur le plat du premier écran (vapeur), et faire tourner le carrousel 3D « Recevoir aux Jardins » avec ses flèches.
-- La carte : des onglets collants (entrées, plats, à partager, desserts), les filtres « Végétarien » et « À partager », et une recherche par ingrédient.
-- Les fêtes : on touche un plat et le verre prend la forme et la couleur du vin de l'accord.
-- Réserver : le plan de salle en 3D. On choisit une table, ce qui filtre par espace et par nombre de couverts (« Trop petite pour 4 »), puis on choisit le jour, le service et l'heure. Les jours et heures pleins sont barrés.
-- Offrir : on choisit le montant et le nombre de cartes, et on écrit un mot. La carte dorée se compose en direct.
-- Infos pratiques : un cadran 24 h « Ouvert maintenant ? ». Il se lit, mais ne se manipule pas.
-
-La matière à toucher est riche et elle vient vraiment du métier. Le point faible est sa finition, pas l'idée.
-
-**2. Qu'est-ce qui relie les pages entre elles ?**
-- **Intro.** Sur chaque page chargée directement : la cloche dorée, puis « Les Jardins de l'Hacienda » pendant environ 1,3 s. La cloche va ensuite vers l'objet de la page et s'ouvre en cercle : la carte de placement sur Réserver, l'arche photo sur Les fêtes, le crème de La carte, le numéro de téléphone sur Infos pratiques.
-- **Voile entre deux pages.** Une forme de cloche sombre, avec la petite cloche et le nom de la page (« La carte », « Les fêtes »), puis une ouverture ronde. La transition reprend bien le motif.
-- **Fil conducteur.** Une ficelle couleur braise court sur le bord gauche puis le bord droit, avec un point-repère et des pointillés pour la suite. Elle est présente sur toutes les pages.
-
-Le lien entre les pages est réel et cohérent. Seul défaut : l'intro complète de 2,3 à 2,6 s revient sur chaque page intérieure chargée directement (voir A2).
-
-**3. Que se passe-t-il quand il fait l'action principale ?**
-- **Offrir** (`action/offrir-clic-1366.png`) : la carte glisse dans une enveloppe, le rabat se ferme, un cachet de cire « JH » se pose, puis « Pour Léa » s'écrit à la main. C'est un vrai retour physique, au niveau du palmarès.
-- **Réserver** (`action/reserver-confirmer-1366.png`, `visiteur/reserver-1440x900/etape-23.png`) : l'encadré récapitulatif change seulement de texte en moins de 200 ms. Il affiche « Demande enregistrée — À samedi 14 novembre, 20 h », avec un liseré vert. Aucun objet ne bouge : pas de carte de placement qui se pose, pas de table qui s'allume sur le plan. Sur téléphone, la confirmation reste hors de l'écran : après le clic, le visiteur voit le pied de page (`visiteur/reserver-390x844/etape-25.png`). **C'est trop sage pour l'action n° 1 du site.**
-
-**4. Qu'est-ce qui est spectaculaire au premier défilement de l'accueil ? Chaque page intérieure a-t-elle une famille d'effets moderne ?**
-- **Accueil.** Il réunit au moins quatre familles :
-  - typographie géante qui défile (bandeau « Rouget · Os à moelle · Suprême », en plein et en contour) ;
-  - réaction au pointeur (vapeur, « Passez la main sur le plat ») ;
-  - image qui s'ouvre en plein écran (« Au creux de la cheminée ») ;
-  - carrousel 3D (Recevoir) ;
-  - braises en particules.
-  Le compte est bon. En revanche, le premier écran reste un « hero » classique : photo, titre moyen et deux boutons.
-- **Pages intérieures :**
-  - Réserver : 3D (plan incliné). Oui.
-  - Infos pratiques : typographie géante qui défile (bandeau des villes) et numéro géant. Oui.
-  - Offrir : carte qui bouge et reflet métallique. Oui, mais discret.
-  - Les fêtes : le verre qui change (c'est une mécanique du métier) et un fond de braises floues. C'est limite : aucune famille de la liste ne s'y voit nettement.
-  - **La carte : aucune famille moderne ne se voit sur les captures.** L'ardoise à la craie et les onglets ne comptent pas.
-
-**5. Chaque page a-t-elle sa signature après l'ouverture ?**
-Oui, globalement, et c'est la vraie qualité de la maquette :
-- accueil : le plateau et le dressage ;
-- La carte : l'ardoise ;
-- Les fêtes : le verre de l'accord et le décompte ;
-- Réserver : le plan de salle ;
-- Offrir : la carte et l'enveloppe ;
-- Infos pratiques : le cadran et le numéro géant.
-
-Les ouvertures sont variées : crème et titre italique, bordeaux avec arche, fumée avec carte de placement, fumée centrée, crème avec numéro géant.
-
-Il y a quand même des répétitions :
-- **les titres** de l'accueil sont repris tels quels en tête des pages (« Les fêtes à table », « Offrir une table ») ;
-- **la même photo de la salle** (cheminée, ours en peluche, sapin) revient au moins quatre fois ;
-- **la même intro** joue avant chaque page.
+Toutes les captures citées sont dans `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/` (chemins complets ci-dessous ; les fichiers `m-*.jpg` sont des planches de plusieurs captures, les `z-*.jpg` des agrandissements).
 
 ---
 
-## Points relevés
+## 1. Réponses aux cinq questions
 
-Gravité : **À corriger avant livraison**, **À améliorer**, **Mineur**.
+### Qu'est-ce que le visiteur peut toucher ?
 
-### À corriger avant livraison
+- **Accueil** : le cadran « Hiver / Été » (on fait glisser la braise vers le soleil, ou on touche les pastilles), et le petit bouton flamme/soleil de l'en-tête qui fait la même chose ; le statut « Fermé · ouvre demain à 12 h » (lien vers les horaires) ; le plateau du chef, qu'on attrape et qu'on lance (il tourne avec de l'inertie et met en avant la rubrique qui passe devant) ; le curseur « Combien serez-vous ? » et ses pastilles 2 / 12 / 40 / 120 (la table dessinée s'allonge, la mosaïque de photos change) ; les boutons des fêtes, de la carte cadeau et de l'itinéraire.
+- **La carte** : l'ardoise écrite à la main et le bouton « Un plat végétarien ? » ; des onglets collants par rubrique ; deux filtres (Végétarien, À partager) et un champ de recherche par ingrédient.
+- **Les fêtes** : les plats de la Saint-Sylvestre (toucher un plat change la forme et la couleur du verre et affiche l'accord : Champagne, blanc de blancs, Chablis premier cru, Pomerol ou Côte-Rôtie, Jurançon moelleux, vérifiés un par un) ; les cloches du menu de Noël, qui se soulèvent au défilement.
+- **Réserver** : jours (fermés barrés), service, heures (complètes barrées), couverts + / –, salle ou terrasse (barrée hors saison), demandes particulières, coordonnées, récapitulatif collant avec des liens « Modifier » ; le plan de salle en perspective, ses filtres (coin du feu, baies vitrées, grande table, terrasse) et ses tables à choisir, avec « Réserver cette table » qui renvoie au formulaire avec « En salle · table 2 ».
+- **Offrir** : montant, nombre de cartes, « Pour », « De la part de » et un petit mot, qui s'écrivent en direct sur la carte dorée ; « Offrir cette carte » glisse la carte dans une enveloppe.
+- **Infos pratiques** : un cadran 24 h dont on fait glisser l'aiguille, des pastilles de jour et un curseur d'heure qui répondent « Vendredi à 20 h : ouvert » ; le gros numéro de téléphone ; un formulaire de demande.
 
-| # | Page / format | Capture | Constat | Correction proposée |
-|---|---|---|---|---|
-| A1 | Réserver / 1366 et 390 | `caps2/reserver-1366-03`, `caps2/reserver-1366-04` (après 14 h 35), `caps/reserver-390-02`, `caps/reserver-390-03` | Le panneau collant « Choisissez une table libre… / Réserver cette table » **recouvre la liste des tables**. Les tables 8, 9 et 10 sont masquées sur ordinateur, les tables 2 et 3 sur téléphone. Le défaut est toujours là après 14 h 35. | Mettre le panneau au-dessus de la liste, sans le rendre collant par-dessus. Ou le coller en bas de l'écran, avec une marge en bas de la liste égale à sa hauteur. Sur téléphone, en faire une barre fine au-dessus de la barre « Appeler / Réserver ». |
-| A2 | Réserver / tous formats | `action/reserver-confirmer-1366`, `visiteur/reserver-390x844/etape-25` | **Pas de retour physique** à la confirmation : seul le texte change. Sur téléphone, la confirmation reste hors de l'écran. | Faire défiler jusqu'à la confirmation. Animer un objet du métier : la carte de placement « Réservé — Claire Martin, samedi 20 h » se pose sur la table 2 du plan, ou la table choisie s'allume en braise. Durée 0,8 à 1,2 s. |
-| A3 | Accueil / 1366 et 390 | `caps2/accueil-1366-09`, `caps/accueil-1366-10`, `caps/accueil-390-07`, `caps/accueil-390-08` | « **Au creux de la cheminée** » : « cheminée » est **coupé au bord droit**. « Au creux » est illisible, en blanc fin sur les chaises et les verres (on lit « Au c eux »). Sur téléphone, le titre déborde de l'image qui s'ouvre et se perd. | Garder le titre entier dans l'écran, avec une marge de 6 vw. Ajouter un voile sombre en dégradé sous le texte, ou passer le titre en Bodoni plus gras avec une ombre douce. Sur téléphone, mettre le titre sur deux lignes au-dessus de l'image, et non à cheval sur son bord. |
-| A4 | Accueil / tous formats | `caps/accueil-1366-05` à `-08` (planche `planche-accueil-a.png`), `caps/accueil-390-05` | La scène épinglée « Le chef dresse le suprême de pintade » est la meilleure idée métier du site, mais elle est **dessinée comme une icône naïve**. Le suprême ressemble à un churros côtelé, la sauce à une virgule orange, les girolles à des fleurs. L'écart avec les photos du site est flagrant. | Remplacer le dessin par des photos détourées superposées : crème de carotte tirée à la cuillère, suprême doré, girolles, sauce. Ou garder du dessin, mais en trait gravé couleur laiton, dans l'esprit de l'ardoise. |
-| A5 | Réserver / 1366 et 390 | `visiteur/reserver-1440x900/etape-23`, `visiteur/reserver-390x844/etape-27` | La référence « **R-** / 1114-3902 » est coupée en fin de ligne. Le libellé « Demande enregistrée » est en **vert**, une couleur absente de la direction (fumée, crème, braise, laiton). | Empêcher la coupure de la référence (`nowrap`). Passer le libellé en laiton ou en braise. |
-| A6 | Réserver / tous formats | `caps/reserver-1366-02`, `caps/reserver-1366-06` | **Le nombre de couverts se règle deux fois**, une fois dans « Plan de la salle » et une fois dans « Combien de personnes ? ». | N'en garder qu'un : celui du plan, repris en lecture seule dans le formulaire avec un lien « Modifier ». |
-| A7 | La carte / 1366 | `caps/la-carte-1366-*` (planches `planche-carte-a.png` et `planche-carte-b.png`) | **Aucune famille d'effets moderne visible** sur La carte, alors que la grille en exige au moins une par page intérieure. | Faire s'ouvrir la photo du bandeau en plein écran au défilement (le plat en grand, puis il se range). Ou faire bouger les noms de plats selon la vitesse de défilement dans les onglets collants. |
-| A8 | La carte, Les fêtes / tous formats | `caps/la-carte-1366-05`, `caps/les-fetes-390-03` | **Informations absentes du relevé**, à confirmer ou à retirer : « Planches pour 4, supplément 10 € par personne, pour deux : 25 € » ; « Menu enfant jusqu'à 10 ans : un plat et un dessert » ; « Bouchée gourmande » et « Velours… Éclats de… » dans la Saint-Sylvestre ; « Nancy » sur la carte d'accès. | Si ces détails ne viennent pas du site actuel, les retirer ou les marquer « à confirmer ». |
+Il y a beaucoup à toucher, et c'est le point fort de la maquette. Mais presque tout existait déjà dans la v3 (voir § 2).
 
-### À améliorer
+### Qu'est-ce qui relie les pages entre elles ?
 
-| # | Page / format | Capture | Constat | Correction proposée |
-|---|---|---|---|---|
-| B1 | Toutes les pages intérieures / tous formats | `films/ouverture-*-1366.png` | L'intro complète (cloche et nom du restaurant, 2,3 à 2,6 s avant le contenu) **rejoue à chaque page** chargée directement. Sur la quatrième page, c'est une attente, plus une surprise. | Garder l'intro longue pour l'accueil. Sur une page intérieure chargée directement, ne montrer que la cloche et le nom de la page pendant 0,8 s, comme le voile de transition. |
-| B2 | Accueil / 1366 | `caps2/accueil-1366-01`, `apercu/planche.jpg` | Le premier écran est **en dessous des ouvertures du palmarès**. Le titre est moyen (environ 60 px), on voit une photo, deux boutons et la consigne « Passez la main sur le plat ». | Faire un titre géant qui occupe la moitié de l'écran, avec le plat qui fume à travers les lettres. Ou faire de la cloche de l'intro le cadre du plat, qu'elle découvre en se levant. |
-| B3 | Toutes les pages | accueil `-10` ; fêtes `-01` et `-04` ; réserver `-05` ; visiteur | La **même photo de la salle** (cheminée, ours, sapin) sert sur l'accueil, l'arche des fêtes, le menu de Noël et Réserver. Sur La carte, la photo du dessert en verre revient deux fois. | Varier les images : terrasse et piscine pour Réserver, gros plan d'un plat de fête pour Noël. Une photo ne doit servir qu'une fois par page. |
-| B4 | Réserver / 1366 et 390 | `caps/reserver-1366-01`, `caps/reserver-390-01` | La carte de placement de l'en-tête répète le titre (« Votre table » deux fois dans le même écran). | Écrire sur la carte « Réservé · au coin du feu » ou « Table 2 · 4 couverts ». |
-| B5 | Réserver / 1366 | `caps/reserver-1366-02` | Le bouton « Réserver cette table » désactivé (texte brun sur brun) est presque invisible. Il a l'air cassé plutôt qu'en attente. | Garder un contour crème à 40 %, et ajouter la mention « Choisissez d'abord une table ». |
-| B6 | Réserver / 390 | `caps/reserver-390-02` | Sur téléphone, le plan est trop petit : les numéros de table font environ 6 px et sont impossibles à viser. | Agrandir le plan à toute la largeur sur un tap, avec un zoom à deux doigts. Ou mettre la liste en premier et le plan en vignette. |
-| B7 | Réserver / 1366 | `action/reserver-verifier-1366` | Si l'heure n'est pas choisie, « Vérifier ma réservation » n'affiche **aucun message visible** près du bouton. | Faire défiler jusqu'au champ manquant, le cercler en braise et afficher « Choisissez une heure ». |
-| B8 | La carte / 1366 et 390 | `caps/la-carte-1366-02`, `caps/la-carte-390-02` | L'ardoise reste presque vide (« De saison à… » écrit petit) sur un grand panneau vert, et sur téléphone elle occupe un écran entier. | Écrire les quatre plats de saison à la craie, en grand, au fil du défilement. Sur téléphone, réduire sa hauteur de moitié. |
-| B9 | La carte / 1366 | `caps/la-carte-1366-04`, `-05`, `-07` | Sous les onglets collants, les noms de plats, les prix et les étiquettes passent à moitié et se coupent. | Donner aux onglets un fond crème plein, une ombre légère, et une marge de défilement égale à leur hauteur. |
-| B10 | La carte / 1366 | `caps/la-carte-1366-09`, `-10` | La fin de page « Une table vous attend » est plate : un vide, une photo répétée, deux boutons. Elle est en dessous du palmarès « appel ». | Faire un appel plein écran : photo de la salle au soir, « Une table vous attend ce vendredi » avec le prochain service ouvert, et les boutons Réserver et Appeler. |
-| B11 | Les fêtes / 1366 et 390 | `caps/les-fetes-1366-06`, `caps/les-fetes-390-06` | Les soirées passées sont **barrées**, ce qui se lit comme « annulé ». | Les mettre en gris avec la mention « A eu lieu », sans barrer. |
-| B12 | Les fêtes / 1366 | `caps/les-fetes-1366-04`, `-05` | Le menu de Noël est une liste sage à côté d'une photo de salle. C'est l'offre la plus chère du mois, elle mérite mieux. | Révéler les plats un par un, cloche par cloche, et utiliser une vraie photo de plat de fête. |
-| B13 | Accueil / 1366 et 390 | `caps/accueil-1366-14`, `caps/accueil-390-11` | Carrousel « Recevoir » : les légendes en perspective sont illisibles (« Mariages » sur la carte de gauche), le carrousel est petit dans un grand vide, et la photo des « Baptêmes » montre une tablée de mariage. | Agrandir le carrousel à 80 % de la largeur. Ne garder la légende que sur la carte de face. Mettre une photo juste par type d'événement. |
-| B14 | Offrir / 1366 et 390 | `caps/offrir-1366-02`, `caps/offrir-390-02` | Sur la carte dorée, la mention « Carte cadeau » est quasi invisible (clair sur or). | Passer le texte en brun foncé ou le graver en relief. |
-| B15 | Offrir / 1366 | `caps/offrir-1366-01` | L'en-tête dit « 25 → 200 € » sur la carte **et** « De 25 à 200 € » à côté du bouton. La photo de fond est si sombre qu'elle ne sert à rien. | Ne garder qu'une des deux mentions. Éclaircir la photo du paquet ou la retirer. |
-| B16 | Offrir / 1366 | `action/offrir-fin-1366` | Après l'enveloppe, aucune phrase de confirmation n'est visible dans l'écran, et le formulaire reste modifiable comme si rien ne s'était passé. | Ajouter sous l'enveloppe : « Carte prête — à remettre à Léa », avec un bouton « Offrir une autre carte ». |
-| B17 | Infos pratiques / 390 | `caps/infos-pratiques-390-01` | La photo de l'enseigne est recadrée en « ardins de l'hac ». | Recadrer pour le téléphone sur le monogramme et le mot entier, ou passer l'image en format plus haut. |
-| B18 | Accueil et pages intérieures | `caps2/accueil-1366-01`, `caps/les-fetes-1366-01`, `caps/offrir-1366-01` | Les titres de section de l'accueil sont repris tels quels en titre de page (« Les fêtes à table », « Offrir une table »). | Garder la section de l'accueil comme accroche, et donner à chaque page son propre titre, par exemple « Noël et la Saint-Sylvestre au coin du feu ». |
+- **La saison** devait être le fil : le choix est gardé d'une page à l'autre. En pratique, dans les pages intérieures, seuls la couleur des boutons (orange devient jaune, ou bleu canard) et l'icône de l'en-tête changent. Les textes, les photos et les fonds restent ceux de l'hiver (capture `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-ouv-e-ord.jpg`).
+- **La métaphore de la table et de la cloche**, qui est le vrai fil : la cloche dorée du chargement, le plateau, la nappe, le carton « Votre table », le plan de salle, « Offrir une table », les cloches de Noël, le carton « Réservé » à la confirmation. C'est juste, mais sous-exploité : la cloche de la confirmation passe sous l'en-tête, celles de Noël sont des pictogrammes plats.
+- **La transition entre pages** : une assiette ronde qui s'ouvre sur la photo de la page suivante (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-transitions.jpg`). C'est réussi.
+- **Les invariants** : l'en-tête, le statut « Fermé · ouvre demain à 12 h », la barre « Appeler / Réserver » sur téléphone, le pied de page, et les liens des fêtes qui transmettent la date au formulaire (`?date=2026-12-31&service=soir`). Ce dernier lien est cassé pour la Saint-Sylvestre (point 1 de la liste).
 
-### Mineur
+### Que se passe-t-il quand il fait l'action principale (réserver) ?
 
-| # | Page / format | Capture | Constat | Correction proposée |
-|---|---|---|---|---|
-| C1 | Accueil / 1366 et 390 | `caps2/accueil-1366-03`, `caps/accueil-390-03` | L'étiquette inclinée « Attrapez le plateau et lancez-le » mord sur le bas du plateau et est coupée par le bord de l'écran. | La remonter sous le titre, ou à droite du plateau, sans chevauchement. |
-| C2 | Accueil / 390 | `caps/accueil-390-04` | La signature « Régis Cla… » est coupée tant que l'écriture n'est pas finie. | Lancer l'écriture plus tôt, ou afficher le nom entier en mode calme. |
-| C3 | Réserver / 1366 | `caps/reserver-1366-06` | Grand vide entre la ligne des heures et « 3 créneaux disponibles ». | Resserrer à 16 px. |
-| C4 | Les fêtes / 1366 | `caps/les-fetes-1366-07` | Le pied de page, identique sur six pages, est très long sur téléphone (`caps/accueil-390-14`, `caps/accueil-390-15`). | Mettre le sommaire sur deux colonnes sur téléphone. |
-| C5 | Tous | – | « Illustration générée » apparaît sur les en-têtes de Réserver, Offrir, Les fêtes et la page 404. C'est honnête, mais l'étiquette est visible sur presque chaque premier écran. | Garder la mention, mais en plus petit et plus discret (opacité 60 %). |
+1. Le bouton « Réserver au coin du feu » de l'accueil mène en haut de /reserver : on voit un en-tête « Votre table » avec un carton qui s'écrit à la main. Il faut encore toucher « Choisir le jour » pour arriver au formulaire (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-resa1.jpg`).
+2. Le formulaire est sérieux. Les jours fermés sont barrés (mardi 10, lundi 16), le soir est fermé le mercredi, les heures complètes sont barrées et le nombre de créneaux libres s'affiche. Le récapitulatif collant se remplit au fil de la saisie, et un oubli est signalé (« Choisissez une heure d'arrivée. »).
+3. « Vérifier ma réservation » transforme le récapitulatif en « Tout est juste ? — Vendredi 13 novembre, 19 h » avec « Confirmer la réservation » (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-resa2.jpg`).
+4. Après confirmation, un petit carton « Réservé — vendredi 13 novembre · 19 h — 2 couverts » tombe de biais au-dessus du récapitulatif. Une cloche claire passe derrière, en partie cachée par l'en-tête. Le panneau devient « Demande enregistrée », avec la référence R-1113-…, et le formulaire se grise (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-rafale.jpg`).
+5. Par le plan, on touche une table : une bulle s'affiche (« Table 2, 4 places, au coin du feu, la plus proche du feu »), puis « Réserver cette table » remonte au formulaire avec la table notée (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-plan.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-plan2.jpg`).
 
-### Ce qui est au niveau ou au-dessus du palmarès
+Verdict : la mécanique est solide, mais le moment final est petit (un carton de 190 px dans un coin) et dit deux choses contraires (« Réservé » puis « Demande enregistrée »). Surtout, **la Saint-Sylvestre ne se réserve pas** et, en été, « Réserver en terrasse » mène à une page « au coin du feu » où la terrasse est barrée.
 
-- **Offrir** (composition de la carte puis enveloppe et cachet) : au niveau des sections « calculateur » et « tarifs » du palmarès.
-- **Réserver** (plan de salle en 3D filtrable, créneaux pleins barrés, récapitulatif collant) : au-dessus de « outil interactif », une fois A1, A2 et A6 corrigés.
-- **Les fêtes** (le verre qui prend la forme et la couleur du vin) : une mécanique propre au métier, rare.
-- **Infos pratiques** (cadran 24 h « Ouvert maintenant ? » et numéro géant) : au niveau de la section « contact ».
-- La cloche comme motif d'intro et de transition : cohérente du début à la fin.
+### Qu'est-ce qui est spectaculaire au premier défilement de l'accueil ?
+
+Il y a au moins cinq familles d'effets modernes :
+1. **Ouverture mise en scène** : une cloche dorée et le nom sur fond fumée, puis la cloche se lève sur le héros (film, 0 à 3 s). Dans les pages intérieures, une assiette ronde s'ouvre en guise de transition.
+2. **Objet physique qu'on manipule** : le plateau tournant qu'on lance, avec inertie et vapeur sur les assiettes (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-plateau.jpg`).
+3. **Scène épinglée pilotée par le défilement** : « La table se dresse ». Les assiettes se posent sur la nappe, une liste de quatre étapes s'allume, puis l'assiette principale se déforme et s'agrandit jusqu'à remplir la carte « Entrez dans la carte de la semaine ».
+4. **Particules et compteurs** : des braises montent dans la section des fêtes, et les comptes à rebours défilent (« Dans 45 jours », « Dans 51 jours »).
+5. **Changement de thème en direct** : le cadran Hiver / Été change la photo, les titres, les boutons et la couleur d'accent ; la table de réception s'allonge selon le nombre d'invités.
+
+Mais **le premier écran est immobile** une fois la cloche levée : seul le petit cadran attend une action. L'effet le plus ambitieux, la table qui se dresse, est le plus raté (nappe vide, assiette octogonale, étapes désynchronisées). Le changement de saison est un fondu d'environ 300 ms, sans moment (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-bascule.jpg`).
+
+### Chaque page a-t-elle sa signature après l'ouverture ?
+
+| Page | Signature après l'ouverture | Verdict |
+|---|---|---|
+| Accueil | plateau à lancer, table qui se dresse, table de réception qui s'allonge | oui, mais la table qui se dresse est ratée |
+| La carte | ardoise écrite à la craie, filtres et recherche | oui, identique à la v3 |
+| Les fêtes | verre qui prend la forme du vin de l'accord, cloches de Noël | oui, identique à la v3 pour le verre ; cloches maladroites |
+| Réserver | carton « Votre table », plan de salle 3D, carton « Réservé » | oui ; plan peu lisible, confirmation modeste |
+| Offrir | carte dorée qui se compose en direct, enveloppe | oui, mais ouverture presque noire et enveloppe invisible |
+| Infos pratiques | numéro géant, cadran « Ouvert maintenant ? » | oui, mais la mise en page du cadran est cassée (régression par rapport à la v3) |
+
+Chaque page a une signature, mais toutes viennent de la v3 (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-v3-signatures.jpg`). La v4 n'ajoute que le cadran des saisons et le curseur des invités.
+
+---
+
+## 2. En une ligne
+
+- **L'accueil ressemble-t-il aux trois dernières maquettes ?** Oui. On y retrouve le même plan de héros (petites capitales « métier · lieu », grand titre à empattements avec une ligne en italique, deux boutons, une ligne d'état précédée d'un point) et le même gadget accompagné d'une consigne manuscrite. « Faites glisser : braise ou soleil » répond au « Faites glisser le soleil » d'agence ae, « Attrapez le plateau et lancez-le » au « Attrapez le tapuscrit » de QD2A, et le plateau à quatre quarts à la roue à quatre clés de Lo Componaïro. La barre « Appeler / Réserver » est la même (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-biblio-p.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-biblio-m.jpg`).
+- **Et à la v3 ?** Oui, à quatre cinquièmes. Même photo de héros, même plateau, même scène épinglée en quatre étapes, mêmes cartes de fêtes, même carte cadeau, même carte de géographie, même pied de page ; ouvertures et signatures intérieures identiques. La v4 ajoute le cadran et les invités, et perd le grand « Au creux de la cheminée », seule photo de la salle et du feu sur l'accueil (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-v3-a.jpg` face à `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-h-ord-a.jpg`).
+- **Le premier écran donne-t-il faim ?** En hiver, à moitié : la belle assiette de légumes est repoussée en bas à droite, sous le titre fantôme et le cadran, et c'est une garniture plus qu'un plat généreux. En été, non : une piscine, un pylône électrique et pas une assiette.
+
+---
+
+## 3. Ce qu'un client exigeant relèverait (du plus grave au moins grave)
+
+### 1. La Saint-Sylvestre ne peut pas être réservée en ligne
+- **Constat** : « Réserver la soirée » (fêtes et accueil) mène à /reserver?date=2026-12-31&service=soir. Le formulaire affiche « Jeudi 31 décembre », mais le service passe à « Midi » et « Soir » est barré, « fermé », puisque le jeudi n'est ouvert qu'à midi dans les horaires de la semaine. Le soir le plus cher de l'année (120 € / 170 €) est inaccessible, et rien ne propose le menu ni l'accord mets et vins. On arrive en plus en haut de page et non sur le formulaire.
+- **Capture** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/lien-fetes-service.jpg` (et `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/lien-fetes-form.jpg`)
+- **Correction** : déclarer les dates d'exception (31 décembre soir ouvert, 25 décembre midi en menu unique) au-dessus des horaires de la semaine. Quand on vient d'un lien de fête, ouvrir directement le formulaire et afficher un bandeau « Saint-Sylvestre · menu à 120 € » avec un choix « avec l'accord mets et vins (170 €) », l'acompte éventuel et les heures d'arrivée de la soirée. Faire de même pour Noël (menu à 79 €).
+
+### 2. Sur téléphone, l'accueil est plus large que l'écran : le menu disparaît
+- **Constat** : sur un vrai téléphone (émulation mobile), la page d'accueil mesure 500 px de large au lieu de 390. Les assiettes de « La table se dresse », qui attendent hors du cadre à droite, et le plateau débordent. Conséquences : le bouton « Menu » de l'en-tête est hors de l'écran (x = 415 à 484 px), le bouton flamme est coupé et « Réserver » est tronqué dans la barre du bas pendant les premiers écrans. La v3 et les autres pages n'ont pas ce défaut. Les films de l'audit ne le montrent pas, parce qu'ils n'émulent pas un téléphone.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/acc-h-tel-arrivee.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/z-tel-barres.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-pin-h-tel.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-tel-v3-v4.jpg`
+- **Correction** : découper le débordement au niveau de chaque section (plateau, nappe) et pas seulement du corps de page. Faire partir les assiettes du bord de la nappe plutôt que de l'extérieur de l'écran. Ajouter à l'audit une vérification en émulation mobile : largeur intérieure de 390 px à chaque position de défilement.
+
+### 3. « La table se dresse », l'effet phare, est raté
+- **Constat** :
+  - en entrant dans la section, la nappe reste un carré crème vide pendant deux à trois secondes de défilement (film, de 28 à 33 s) : on croit à une image qui n'a pas chargé ;
+  - les étapes ne suivent pas l'image : « 02 Les produits de saison » s'allume quand il n'y a que les couverts, « 04 » s'allume pendant que les assiettes volent encore, 01 et 03 ne tombent jamais au bon moment ;
+  - à mi-course, l'assiette principale devient un octogone à pans coupés posé sur le couteau, une photo prise de biais au milieu d'assiettes vues d'en haut ;
+  - la photo finale, agrandie, est molle et jaunie ;
+  - en été, l'assiette se transforme en photo de nuit de la paillote violette, toujours en octogone ;
+  - l'épinglage dure près de deux écrans pour quatre étapes.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-film-nappe.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-h-ord-b.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/z-table.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/acc-e-tel-03-y2164.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-e-ord-a.jpg`
+- **Correction** :
+  - ne jamais montrer la nappe nue : elle arrive déjà dressée (couverts, verres) ;
+  - lier chaque étape à un seul changement visible : 01 couverts, 02 trois coupelles de produits, 03 l'assiette, 04 l'ardoise des suggestions ;
+  - remplacer la découpe en polygone par un cercle qui devient un rectangle arrondi, ou par un fondu ;
+  - n'utiliser que des photos d'assiettes vues d'en haut et bien détourées, et une photo en haute définition pour l'agrandissement ;
+  - en été, garder un plat d'été et non le bâtiment ;
+  - ramener l'épinglage à un écran environ.
+
+### 4. L'été est un costume : la promesse « au bord de la piscine » s'arrête à l'accueil
+- **Constat** : en mode Été, seuls le héros, la section « Les journées au bord de l'eau » et la couleur des boutons changent. L'en-tête et le bas de l'accueil restent fumée et braise. La carte, les fêtes, Offrir et les Infos sont identiques à l'hiver. Pire : « Réserver en terrasse » ouvre une page « Votre table — au coin du feu » sur une photo de cheminée, où « En terrasse » est barré (« de juin à septembre »), puisqu'on est en novembre.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-ete-resa.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-ouv-e-ord.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-e-ord-b.jpg`
+- **Correction** : hors saison, remplacer le bouton par « La terrasse rouvre en juin » avec une date et un « Réserver en salle » secondaire. Donner une vraie version d'été à Réserver (carton « Votre table — en terrasse », photo de la pergola), à Offrir et à l'ouverture de la carte (plats d'été). Sinon, limiter le cadran à l'accueil et le dire clairement (« Aperçu de l'été »).
+
+### 5. La v4 est une v3 retouchée, et ressemble à la bibliothèque
+- **Constat** : même photo de héros (l'assiette de légumes devant la cheminée), même plateau au mot près, même scène épinglée à quatre étapes (le suprême de pintade dessiné est devenu des photos sur nappe), mêmes cartes de fêtes, carte cadeau, carte de géographie et pied de page. Les ouvertures de La carte, des Fêtes et de Réserver sont identiques, ainsi que l'ardoise, le verre et le cadran. Le plan du héros et le gadget à consigne manuscrite sont ceux de Lo Componaïro, QD2A et agence ae. La v4 a perdu le grand panneau « Au creux de la cheminée » (la salle, les fourrures, le feu), seule image du lieu en hiver.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-v3-a.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-v3-b.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-v3-ouv.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-v3-signatures.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-biblio-p.jpg`
+- **Correction** :
+  - faire du cadran l'idée du héros plein écran, et non un gadget de coin : par exemple, la moitié feu et la moitié piscine se partagent l'écran, et la frontière suit le doigt ;
+  - changer de photo de héros (la salle et le feu, ou une assiette tenue par le chef) ;
+  - remettre un grand panneau « Au creux de la cheminée » ;
+  - renouveler au moins deux ouvertures intérieures, Offrir et La carte.
+
+### 6. Premier écran : hiérarchie, lisibilité et cadrage
+- **Constat** :
+  - la ligne de la saison inactive est un fantôme gris en italique illisible : « l'été » se fond dans le reflet du verre d'eau en hiver, et « l'hiver » se perd dans les palmes en été ;
+  - le plat est relégué sous le cadran ;
+  - l'arc du cadran ne correspond pas aux pastilles : il finit au-dessus de « Faites glisser » et non au-dessus de « Été » ;
+  - le cadran est petit pour être l'idée du site ;
+  - le héros d'été montre un pylône électrique et des fils juste derrière le titre ;
+  - en été, le premier écran ne montre aucune nourriture.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/acc-h-ord-arrivee.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/acc-e-ord-arrivee.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/z-poteau.jpg`
+- **Correction** :
+  - ligne inactive en contour ou en plus petit, mais lisible (contraste d'au moins 4,5 : 1), ou bien la retirer et laisser le cadran dire l'autre saison ;
+  - recadrer ou retoucher la photo de piscine (retirer pylône et fils) ;
+  - aligner les extrémités de l'arc sur les deux pastilles et doubler la taille du cadran ;
+  - en été, ajouter dans le héros une assiette ou un cocktail au premier plan.
+
+### 7. Infos pratiques : la mise en page des horaires est cassée
+- **Constat** : le cadran 24 h et ses commandes occupent un écran seuls. Le surtitre « HORAIRES » est orphelin sous le cadran, le titre « Ouvert maintenant ? » arrive après le widget qu'il annonce, et le tableau des horaires n'occupe que la moitié gauche, avec 800 px vides à droite. La v3 avait le cadran à gauche et le titre et le tableau à droite. L'anneau du cadran ne dessine pas les plages d'ouverture, même pour le vendredi. L'horloge affiche 17:16 et le texte « 17 h 15 ».
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/infos-pratiques-h-ord-01-y800.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/infos-pratiques-h-ord-02-y1600.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/v3-infos-pratiques-y800.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-offrir-action.jpg` (en bas à droite)
+- **Correction** : rétablir la grille sur deux colonnes de la v3 (cadran à gauche ; surtitre, titre et tableau à droite). Peindre en braise les plages d'ouverture sur l'anneau (12 h à 14 h 30, 19 h à minuit). Arrondir l'heure affichée comme le texte.
+
+### 8. La réservation n'a pas son moment, et le parcours fait un détour
+- **Constat** :
+  - le bouton du héros mène en haut de /reserver et non au formulaire : un clic de plus ;
+  - à la confirmation, le carton « Réservé » est petit et placé dans un coin ;
+  - la cloche passe sous l'en-tête et ne se voit qu'à moitié ;
+  - « Réservé » contredit « Demande enregistrée » juste en dessous ;
+  - rien ne rappelle le carton « Votre table » de l'ouverture ni le plan choisi.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-rafale.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/z-confirm.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-resa1.jpg`
+- **Correction** : faire pointer les boutons « Réserver » directement sur le formulaire. À la confirmation, ramener au centre le carton de l'ouverture, avec le nom écrit à la main (« Claire Martin · vendredi 13 nov., 19 h · 2 couverts ») ; il se pose à la table choisie sur le plan ou sur la nappe, et la cloche se lève au milieu du panneau, pas sous l'en-tête. Écrire « Demande envoyée : le restaurant vous rappelle pour confirmer » et supprimer « Réservé ».
+
+### 9. Téléphone : héros muet, plan illisible, listes longues
+- **Constat** :
+  - sur téléphone, le héros de l'accueil n'a ni surtitre ni phrase : on ne lit nulle part « restaurant », « chef Régis Clauss » ou « Moineville » sur le premier écran ;
+  - la barre « Appeler / Réserver » n'apparaît qu'après défilement (la v3 avait les deux) ;
+  - sur Réserver, la liste des 12 tables précède un plan réduit à une vignette (« Agrandir le plan ») ;
+  - sur Les fêtes, les cloches couvrent le titre « Le menu de Noël » (voir point 12).
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-tel-v3-v4.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-tel-fetes-resa.jpg`
+- **Correction** : garder sous le titre une ligne « Restaurant du chef Régis Clauss · Moineville », montrer la barre dès l'arrivée, mettre le plan à pleine largeur avant la liste et replier la liste dans une feuille (« Voir les 12 tables »).
+
+### 10. Le casting photo trahit le lieu
+- **Constat** :
+  - « 12 invités » affiche en grand la cabane des **douches** de la piscine, panneau « DOUCHES » en vue ;
+  - la carte « Les pool parties » montre une torche en flammes ;
+  - la vignette « Menu de Noël » est une image générée presque noire, sans rien de lisible ;
+  - la Saint-Sylvestre est illustrée par un cocktail flanqué d'une truffe ;
+  - « Nos entrées » (La carte) est recadré sur un moulin à poivre flou ;
+  - la même salle aux fourrures et serviettes bleues revient sur Réserver (bandeau), à la fin de La carte (« Une table vous attend ») et au menu de Noël ;
+  - la même table de réception à la rose revient sur l'accueil et sur Infos (« Une demande ») ;
+  - la piscine et la paillote reviennent trois fois en été ;
+  - en hiver, pour 40 invités, le site propose « La terrasse et les jardins », photos d'été à l'appui.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/z-douches.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-recevoir.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-e-ord-b.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-h-ord-c.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/z-carte-entrees.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-carte-b.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-fetes.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-reserver.jpg`
+- **Correction** :
+  - pour 12 invités, la grande table de la salle ou la pergola dressée ;
+  - pour les pool parties, la piscine animée de jour ;
+  - pour Noël, le sapin, l'ours et le feu (la photo en arche des Fêtes), à la place de l'image noire ;
+  - pour la Saint-Sylvestre, une flûte de Champagne et une assiette de fête, sans truffe posée à côté d'un cocktail ;
+  - recadrer « Nos entrées » sur l'assiette ;
+  - une seule apparition par photo de salle sur tout le site ;
+  - pour les réceptions, rendre les espaces proposés dépendants de la saison (hiver : salle et cheminée ; 120 : privatisation).
+
+### 11. Écarts avec le relevé
+- **Constat** (texte affiché face à `_audit/releve.md`) :
+  - À partager : « Supplément de 10 € par personne en plus. Pour deux : 25 €. » Le relevé ne connaît que « pour 4 : 45 € ».
+  - Saint-Sylvestre : « Éclats de truffe noire » (sous le velours de foie gras), « Crémeux de yuzu et meringue délicatement brûlée » (sablé breton), « Filet de bœuf d'exception », « délicatement poché ». Ces ajouts ne figurent pas au relevé. Les prix (120 / 170 €), le DJ Laurent Geymet et les cinq accords sont justes.
+  - Le Grand Buffet : « Dimanches 16, 23 et 30 août 2026 », quand le relevé dit « dimanches d'août » (les 2 et 9 ont disparu).
+  - Infos : le bandeau défilant ajoute « Nancy », alors que le relevé et le reste du site disent « entre Metz, Thionville et le Luxembourg ».
+  - Journées festives : « déjeuner jusqu'à 14 h 30, puis piscine… service boissons et snacking », « vestiaires et douches », « tenue correcte exigée ; l'établissement se réserve le droit d'admission ». Ces détails sont absents du relevé.
+  - Les journées festives tombent le mardi, alors que le restaurant est indiqué fermé le mardi : le site ne l'explique pas.
+  - Végétarien : le relevé précise qu'aucun plat n'est marqué sur le site. La carte l'assume (« d'après leur composition »), mais le plateau de l'accueil affiche les pastilles sans cette réserve.
+  - Descriptions des planches (Libanaise, Charcuterie « italiennes », La Mer) : absentes du relevé, à sourcer.
+  - Sont conformes : téléphone, adresse, horaires et leur date de relevé, menu de Noël et prix, carte cadeau (25 à 200 €, 6 mois, pas d'échange en espèces), acompte « par couvert », entrées 9 à 21 €, plats 21 à 26 €, menu enfant 16 €, desserts 9 à 11 €.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-carte-a.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-fetes.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-offrir-infos.jpg`
+- **Correction** : retirer chaque ajout non sourcé ou le marquer « à confirmer », écrire « dimanches d'août », supprimer « Nancy », et ajouter sous les journées festives « horaires d'été : le restaurant ouvre aussi le mardi ».
+
+### 12. Les cloches de Noël cachent le menu
+- **Constat** : des cloches plates, façon pictogramme, descendent sur le menu de Noël et recouvrent le titre (« Le menu de N[cloche]ël ») et les premiers plats pendant le défilement, surtout sur téléphone. Elles n'ont ni le modelé ni l'éclat de la cloche dorée du chargement.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/fetes-tel-02-y1800.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-noel.jpg`
+- **Correction** : petites cloches dans la marge, à gauche de chaque plat, qui se lèvent sans jamais passer sur le texte ni sur le titre, dessinées comme la cloche dorée de l'ouverture.
+
+### 13. Offrir : ouverture éteinte, dénouement invisible
+- **Constat** : l'ouverture est un écran presque noir (photo de paquet cadeau à peine visible, carte sombre sur fond sombre). Après « Offrir cette carte », la carte glisse dans une enveloppe brune sur fond brun, qu'on ne voit presque pas, et aucune confirmation n'apparaît à l'écran. « De la part de Paul » est presque invisible sur la carte dorée, et « 75 caractères au plus » est en fait un compteur.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/cap/offrir-h-ord-arrivee.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-offrir-action.jpg`
+- **Correction** : ouvrir sur la carte dorée en grand, éclairée, sur la nappe crème. Une enveloppe en papier crème avec un cachet de cire braise, et à côté « Carte de 100 € pour Claire — à retirer au restaurant (simulation) ». Foncer la signature, et écrire « 75 caractères restants ».
+
+### 14. Le texte parle des effets plutôt que de la cuisine
+- **Constat** :
+  - « avec deux vrais plats et leurs prix », « Des assiettes du chef, photographiées au restaurant, se posent une à une sur la nappe », « faites glisser, la table s'agrandit et l'espace qui convient s'affiche » : le site décrit ses gadgets ;
+  - la même section dit « photographiées au restaurant » et porte une mention « Illustration générée » ;
+  - « (nouvel onglet) » est imprimé en clair dans les liens (Itinéraire, Facebook, Instagram) ;
+  - « Mentions légales : à compléter » est visible en pied de page ;
+  - le champ de recherche coupe « girolles, Saint-… ».
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-h-ord-a.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-h-ord-d.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/z-carte-entrees.jpg`
+- **Correction** : des phrases de cuisinier (« Cette semaine, Régis cuisine la pintade aux girolles et le risotto de Saint-Jacques au riz noir »), et une seule consigne d'usage, en Caveat, près de l'objet. Mettre « nouvel onglet » dans une icône avec un texte réservé aux lecteurs d'écran. Remplir les mentions, ou les sortir de la maquette.
+
+### 15. Détails typographiques qui coûtent cher
+- **Constat** :
+  - la pastille « végétarien » du plateau (Nos plats, ordinateur) est écrasée en ovale et chevauche « Dhal aux trois lentilles » ;
+  - le 4 du Bodoni, à fins déliés, se lit « 15 » dans « Dans 45 jours » et « 10 » dans « 40 invités » de loin ;
+  - le € en Bodoni se lit « C » sur la carte cadeau (« 50 C ») ;
+  - les comptes à rebours partent de zéro : on lit « Dans 0 jours » pendant l'animation (capture téléphone).
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/z-badge.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/z-chiffres-fetes.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/z-euro.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-h-tel-b.jpg` (« Dans 0 jours », en bas de la première vignette)
+- **Correction** : pastille sur une ligne, qui ne s'étire pas, placée sous le nom du plat ; chiffres et € en Figtree (chiffres tabulaires), ou Bodoni plus gras pour les chiffres ; pas d'animation de comptage sur un compte à rebours (afficher directement 45 et 51).
+
+### 16. Longueurs et vides
+- **Constat** : environ 250 px de noir vide entre le plateau et « La table se dresse », puis encore entre la table et les fêtes. Un trou de 70 px entre les heures et « 3 créneaux disponibles ». Les quatre cartes des « journées au bord de l'eau » ont une seule description : trois cartes à moitié vides. En bas d'accueil, la carte cadeau statique et le petit schéma « À Moineville » finissent mollement.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-h-ord-a.jpg` (en bas à droite), `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-e-ord-b.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-acc-h-ord-d.jpg`
+- **Correction** : resserrer les transitions sombres à 96 px au plus, donner une ligne utile à chaque carte d'été (horaires, prix d'entrée s'il est connu), et finir sur une vraie carte de trajets (temps de route vers Metz, Thionville et Luxembourg, à faire vérifier), au niveau des cartes du palmarès (calques, tracés), ou sur le panneau « Au creux de la cheminée ».
+
+### 17. Plan de salle peu lisible
+- **Constat** : « Choisir ma table » fait arriver sur un plan coupé par le bas de l'écran. Le plan est incliné, sombre, avec des numéros minuscules, et la colonne des 12 tables double l'information.
+- **Captures** : `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-plan.jpg`, `/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-plan2.jpg`
+- **Correction** : caler l'arrivée pour que le plan soit entier, réduire l'inclinaison, numéros deux fois plus grands, tables libres éclairées (braise) et indisponibles éteintes. La liste devient un menu replié.
+
+### 18. Le changement de saison manque de théâtre
+- **Constat** : le basculement est un fondu de 300 ms. Les textes et les boutons changent avant la photo (`/tmp/claude-0/-home-claude/c5628601-c2c4-57dc-9fbf-4bfd0d291763/scratchpad/regard4/m-bascule.jpg`), et l'en-tête reste brun fumée en été.
+- **Correction** : une transition propre à la marque. La braise du cadran devient soleil, une vague claire balaie l'écran depuis le cadran, les braises de l'écran se changent en reflets d'eau en environ 900 ms, et l'en-tête prend le bleu nuit d'été.

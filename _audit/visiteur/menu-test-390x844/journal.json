@@ -1,0 +1,92 @@
+{
+ "mission": "menu-test",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.9,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 7452,
+   "titres": [
+    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Passer à l’été",
+    "Menu",
+    "Hiver",
+    "Été",
+    "Réserver au coin du feu",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "menu",
+   "resultat": "bouton Menu hors de portée (en-tête caché ou bouton masqué)",
+   "gestes": 1,
+   "secondes": 8.6,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 7452,
+   "titres": [
+    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Passer à l’été",
+    "Menu",
+    "Hiver",
+    "Été",
+    "Réserver au coin du feu",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-1.png"
+  }
+ ]
+}

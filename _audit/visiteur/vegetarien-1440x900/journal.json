@@ -9,12 +9,12 @@
    "geste": "arrivée",
    "resultat": "ok",
    "gestes": 0,
-   "secondes": 3.3,
+   "secondes": 3.2,
    "adresse": "/",
    "y": 0,
-   "hauteurPage": 11894,
+   "hauteurPage": 6288,
    "titres": [
-    "h1 Les Jardins de l'Hacienda"
+    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
    ],
    "actions": [
     "Les Jardins de l'Hacienda",
@@ -22,9 +22,13 @@
     "Les fêtes",
     "Offrir",
     "Infos pratiques",
+    "Passer à l’été",
     "Réserver",
-    "Réserver une table",
-    "Voir la carte"
+    "Hiver",
+    "Été",
+    "Réserver au coin du feu",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h"
    ],
    "prixVus": [],
    "telephonesVus": [],
@@ -46,27 +50,26 @@
   },
   {
    "k": 1,
-   "geste": "attendre 3500",
+   "geste": "defiler",
    "resultat": "ok",
-   "gestes": 0,
-   "secondes": 7,
+   "gestes": 1,
+   "secondes": 4.1,
    "adresse": "/",
-   "y": 0,
-   "hauteurPage": 11894,
+   "y": 765,
+   "hauteurPage": 6288,
    "titres": [
-    "h1 Les Jardins de l'Hacienda"
+    "h2 Lancez le plateau du chef"
    ],
    "actions": [
-    "Les Jardins de l'Hacienda",
-    "La carte",
-    "Les fêtes",
-    "Offrir",
-    "Infos pratiques",
-    "Réserver",
-    "Réserver une table",
-    "Voir la carte"
+    "Réserver au coin du feu",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h"
    ],
-   "prixVus": [],
+   "prixVus": [
+    "21 €",
+    "26 €",
+    "24 €"
+   ],
    "telephonesVus": [],
    "prixDansLaPage": [
     "21 €",
@@ -81,200 +84,8 @@
    "telephones": [
     "06 18 21 28 10"
    ],
-   "menuOuvert": false
-  },
-  {
-   "k": 2,
-   "geste": "cliquer Voir la carte",
-   "resultat": "ok",
-   "gestes": 1,
-   "secondes": 9.8,
-   "adresse": "/la-carte",
-   "y": 0,
-   "hauteurPage": 6871,
-   "titres": [
-    "h1 La carte"
-   ],
-   "actions": [
-    "Les Jardins de l'Hacienda",
-    "La carte",
-    "Les fêtes",
-    "Offrir",
-    "Infos pratiques",
-    "Réserver",
-    "Réserver une table"
-   ],
-   "prixVus": [
-    "26 €",
-    "16 €"
-   ],
-   "telephonesVus": [],
-   "prixDansLaPage": [
-    "26 €",
-    "16 €",
-    "21 €",
-    "24 €",
-    "9 €",
-    "10 €",
-    "18 €",
-    "14 €"
-   ],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
-   "menuOuvert": false
-  },
-  {
-   "k": 3,
-   "geste": "defiler",
-   "resultat": "ok",
-   "gestes": 2,
-   "secondes": 10.5,
-   "adresse": "/la-carte",
-   "y": 761,
-   "hauteurPage": 6871,
-   "titres": [
-    "h2 Les produits de saison"
-   ],
-   "actions": [
-    "Un plat végétarien ?"
-   ],
-   "prixVus": [
-    "21 €",
-    "24 €",
-    "9 €",
-    "10 €"
-   ],
-   "telephonesVus": [],
-   "prixDansLaPage": [
-    "26 €",
-    "16 €",
-    "21 €",
-    "24 €",
-    "9 €",
-    "10 €",
-    "18 €",
-    "14 €"
-   ],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
-   "menuOuvert": false
-  },
-  {
-   "k": 4,
-   "geste": "cliquer Un plat végétarien",
-   "resultat": "ok",
-   "gestes": 3,
-   "secondes": 12.8,
-   "adresse": "/la-carte#toute-la-carte",
-   "y": 1702,
-   "hauteurPage": 5434,
-   "titres": [
-    "h2 Toute la carte",
-    "h3 Nos plats"
-   ],
-   "actions": [
-    "Nos plats 1",
-    "À partager 1",
-    "Végétarien",
-    "À partager"
-   ],
-   "prixVus": [
-    "21 €"
-   ],
-   "telephonesVus": [],
-   "prixDansLaPage": [
-    "26 €",
-    "16 €",
-    "21 €",
-    "24 €",
-    "9 €",
-    "10 €",
-    "25 €",
-    "12 €"
-   ],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
-   "menuOuvert": false
-  },
-  {
-   "k": 5,
-   "geste": "attendre 1500",
-   "resultat": "ok",
-   "gestes": 3,
-   "secondes": 14.4,
-   "adresse": "/la-carte#toute-la-carte",
-   "y": 1702,
-   "hauteurPage": 5434,
-   "titres": [
-    "h2 Toute la carte",
-    "h3 Nos plats"
-   ],
-   "actions": [
-    "Nos plats 1",
-    "À partager 1",
-    "Végétarien",
-    "À partager"
-   ],
-   "prixVus": [
-    "21 €"
-   ],
-   "telephonesVus": [],
-   "prixDansLaPage": [
-    "26 €",
-    "16 €",
-    "21 €",
-    "24 €",
-    "9 €",
-    "10 €",
-    "25 €",
-    "12 €"
-   ],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
-   "menuOuvert": false
-  },
-  {
-   "k": 6,
-   "geste": "capture",
-   "resultat": "ok",
-   "gestes": 3,
-   "secondes": 14.5,
-   "adresse": "/la-carte#toute-la-carte",
-   "y": 1702,
-   "hauteurPage": 5434,
-   "titres": [
-    "h2 Toute la carte",
-    "h3 Nos plats"
-   ],
-   "actions": [
-    "Nos plats 1",
-    "À partager 1",
-    "Végétarien",
-    "À partager"
-   ],
-   "prixVus": [
-    "21 €"
-   ],
-   "telephonesVus": [],
-   "prixDansLaPage": [
-    "26 €",
-    "16 €",
-    "21 €",
-    "24 €",
-    "9 €",
-    "10 €",
-    "25 €",
-    "12 €"
-   ],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
    "menuOuvert": false,
-   "capture": "etape-6.png"
+   "capture": "etape-1.png"
   }
  ]
 }

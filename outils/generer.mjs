@@ -18,7 +18,7 @@ const erreurs = [];
    .vercelignore empêche de mettre en ligne l'audit, les sources, les outils et les données :
    recréé s'il manque, complété s'il lui manque une ligne. (Le dossier assets/partage/ est créé
    par outils/images-partage.mjs : son .gitkeep n'est pas nécessaire.) */
-const IGNORES = ['_audit', '_biblio', '_partage', 'assemblages', 'source', 'outils', 'donnees', 'recu', 'README.md', 'CHANGELOG.md', '*.zip'];
+const IGNORES = ['_audit', '_suivi', '_biblio', '_partage', 'assemblages', 'source', 'outils', 'donnees', 'recu', 'plan-images.json', 'grok-consignes.json', 'README.md', 'CHANGELOG.md', '*.zip'];
 {
   const f = join(racine, '.vercelignore');
   const norm = (l) => l.trim().replace(/^\//, '').replace(/\/$/, '');

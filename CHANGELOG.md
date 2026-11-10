@@ -2,6 +2,61 @@
 
 Chaque version ajoute sa partie en tête de ce fichier, construite en comparant l'archive précédente et la nouvelle, jamais de mémoire.
 
+## v4 — « Deux saisons, une maison », de A à Z
+
+Comparaison de l'archive v3 (commit 832fc7a) et de la v4, fichier par fichier : aucun fichier retiré ; 47 fichiers d'images ajoutés, toutes tailles comprises (l'été : terrasse, piscine, bar, pool party ; trois assiettes vues de dessus ; les tables de 2 à 120 ; la Saint-Sylvestre ; deux illustrations générées, nappe de lin et eau de la piscine), une photo changée (`table-deux` : une table de la salle au lieu de la cheminée de Noël), les autres images refaites par le pipeline de la skill v10.9 ; sources modifiées : les 7 pages (`source/pages/`), le gabarit commun, `critique.js`, `site.css`, `site.js`, `fr.json`, `carte.json`, `accords.json`, `site.json`, `plan-images.json`, pages régénérées ; outils de génération et d'audit repris de la skill v10.9. Les copies des modules et l'adaptateur du socle n'ont pas changé (seul le numéro `?v=4` de leurs imports).
+
+**Une nouvelle structure : deux saisons, une maison**
+- Le slogan du lieu devient le moteur du site : un cadran braise et soleil, à faire glisser (ou les boutons « Hiver » et « Été »), et un petit bouton flamme ou soleil dans l'en-tête de chaque page. Toute la maison bascule : lumière, couleurs, photos, accroche, rendez-vous mis en avant, bouton « Réserver au coin du feu » ou « Réserver en terrasse ».
+- Par défaut la saison réelle (novembre : l'hiver) ; le choix du visiteur est gardé dans son navigateur. Sans JavaScript et en mode calme : la saison du jour, complète.
+- Entre les pages, la lueur de la saison au bord des sections (braise l'hiver, reflet d'eau l'été) remplace la ficelle.
+
+**Accueil : de 10 sections (11 000 px) à 6 sections (7 écrans en 1440 × 900)**
+- Ouverture : un titre sur la moitié de l'écran, « Au coin du feu l'hiver, au bord de la piscine l'été » ; le plat fumant devant la cheminée, ou la piscine aux palmiers avec des reflets sur l'eau ; statut « ouvert maintenant » et prochain service sous les boutons. Sur téléphone : titre en haut, plat au milieu, cadran et boutons en bas.
+- La carte de la semaine : le plateau du chef à lancer, gardé, avec les rubriques en deux colonnes ; la vapeur du centre du plateau est retirée (une seule vapeur, celle du plat de l'ouverture, pour la fluidité).
+- La table se dresse : le dressage dessiné de la v3 est remplacé par trois vraies assiettes du restaurant, vues de dessus, qui se posent une à une sur une nappe de lin (illustration générée) ; la scène finit en plongée dans l'assiette aux cèpes (l'été : dans la piscine illuminée) et s'ouvre sur « Entrez dans la carte de la semaine ».
+- Les rendez-vous de la saison : Noël et Saint-Sylvestre avec leurs comptes à rebours et les braises ; l'été, sur l'eau de la piscine (illustration générée), journées festives (juin à septembre, mardi à jeudi, 12 h à 19 h), piscine (dimanche dès 14 h 30), bar (dès 15 h 30 les journées festives, avec droit d'entrée), pool parties.
+- Recevoir : « Combien serez-vous ? » remplace le carrousel 3D ; la table s'allonge de 2 à 120 couverts, la grille de photos se recompose, l'espace qui convient s'affiche, et « Demander pour une réception » préremplit la demande des infos pratiques.
+- Offrir et venir sur un seul écran : la carte cadeau dorée en aperçu, l'adresse et la carte d'accès (sans temps de trajet).
+- Retirés : bandeau de mots géants, ficelle, carrousel 3D, cheminée en plein écran.
+- Photos : la salle décorée pour Noël n'apparaît plus qu'une fois sur l'accueil, sur la carte du menu de Noël ; l'été a sa moitié du site (terrasse, piscine, palmiers, bar, pool parties).
+
+**La carte**
+- L'ardoise s'écrit trois fois plus vite ; le bâton de craie se range à la fin.
+- Les plats se réorganisent sous les yeux quand on filtre (végétarien, à partager).
+- Fin de page : « Une table vous attend », le prochain service et le bouton de réservation.
+- Allergènes : « Informations sur les allergènes disponibles sur demande ».
+
+**Les fêtes**
+- Le menu de Noël se révèle plat par plat, chacun sous sa cloche.
+- Saint-Sylvestre : « Amuse-bouche » (et non « Bouchée gourmande »), verre des accords gardé.
+- Plus aucun « à compléter » : horaires de la soirée et acompte « donnés à la réservation ».
+- En tête de page, « Baptême, anniversaire, mariage : demander une réception » mène à la demande des infos pratiques.
+- Le Grand Buffet : « Les dimanches d'août 2026 », comme au relevé.
+
+**Réserver**
+- Le jour, le service, l'heure et les couverts d'abord ; « Choisir ma table » ensuite, facultatif.
+- Les couverts se règlent une seule fois (le plan lit ceux du formulaire) ; tables indisponibles : « Indisponible (simulation) ».
+- À l'envoi, une carte de placement « Réservé · samedi 14 novembre · 20 h · 4 couverts · table 2 » passe sous la cloche, qui se relève ; sur le plan, l'étiquette posée sur la table devient le même carton.
+- Sur téléphone, la liste des tables d'abord, puis le plan agrandissable.
+- « Réserver la soirée » de la Saint-Sylvestre arrive sur le jeudi 31 décembre au soir, ouvert (il tombait sur un service fermé, celui des jeudis ordinaires).
+- L'été, la page le dit : « en terrasse, l'été », la terrasse et la piscine de juin à septembre, la salle le reste de l'année.
+
+**Offrir**
+- Sous l'enveloppe : « Carte prête, à remettre à … », puis « Offrir une autre carte » ; remise : « Pour la recevoir, appelez-nous au 06 18 21 28 10. »
+
+**Infos pratiques**
+- Le cadran des horaires se manipule : on choisit un jour, on fait glisser l'aiguille, « Samedi à 20 h : ouvert » ; le centre du cadran montre le moment choisi.
+- Stationnement et fermetures exceptionnelles retirés (aucune information vraie) ; la demande de réception arrive préremplie depuis l'accueil (sujet, nombre d'invités), avec deux champs de plus : date souhaitée, nombre d'invités.
+- Bandeau des villes : Metz, Thionville, Luxembourg (Nancy retirée, absente du site actuel).
+
+**Partout**
+- Aucun « à compléter » hors du pied de page (voir la fiche du README : faits retirés ou dits autrement).
+- Les comptes à rebours affichent directement le nombre de jours.
+- La carte cadeau dorée partout (accueil et Offrir), « Carte cadeau » lisible.
+- Petits téléphones : nom de la maison sur deux lignes dans l'en-tête, le bouton Menu toujours dans l'écran.
+- Audit complet de la version finale (7 pages, 13 tailles, tous les modes) : 0 échec, 10 points à regarder ; fluidité de l'accueil sous le seuil (7 % d'images lentes sur ordinateur ralenti 4 fois, 0 % au doigt). Test « vrai visiteur » : les 7 missions dans le barème, sur téléphone et sur ordinateur.
+
 ## v3 — sections claires, carrousel, finitions
 
 Comparaison de l'archive v2 et de la v3, fichier par fichier : 12 fichiers source modifiés (`site.css`, `site.js`, quatre pages, `fr.json`, `site.json`, `images.json`, `plan-images.json`, deux images de baptême refaites), pages régénérées ; 3 images retirées (`recevoir-baptemes-960.webp`, la nouvelle photo est plus petite ; `infos-ouverture-mobile-640.webp` et `-1080.webp`, l'enseigne n'est plus recadrée pour le téléphone).

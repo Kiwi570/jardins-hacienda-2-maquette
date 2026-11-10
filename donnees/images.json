@@ -6,7 +6,7 @@
     "alt": "Coin de table dressée le soir : nappe crème, serviette sombre, verre et bougie",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "63d13e38bf287028",
+    "empreinte": "96ed9d5835abad28",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -87,7 +87,7 @@
     "alt": "Enveloppe en papier kraft nouée de ficelle, cire rouge et cachet en laiton",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "59477299a7a0e3ac",
+    "empreinte": "b44d4caae11029c7",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -168,7 +168,7 @@
     "alt": "Braises rougeoyantes et cendres au fond d'un foyer",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "9e52b6f31fe1ef29",
+    "empreinte": "fa9f1d28cc2c060c",
     "ratio": "3:2",
     "largeurs": [
       640,
@@ -240,7 +240,7 @@
     "alt": "Lumière dorée de bougies dans la pénombre",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "c02c52258b8e8ae8",
+    "empreinte": "bc0a380bc57dfe34",
     "ratio": "3:2",
     "largeurs": [
       640,
@@ -314,7 +314,7 @@
     "alt": "Planche de service vide, serviette pliée et cloche couchée",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "5bd7a8d0efe7c2e7",
+    "empreinte": "b87d7a9a325ecd97",
     "ratio": "16:9",
     "largeurs": [
       800,
@@ -385,7 +385,7 @@
     "alt": "Assiette de légumes de saison dressée sur une table en bois, devant la cheminée allumée",
     "grok": false,
     "mention": null,
-    "empreinte": "aae077d3ecde5b96",
+    "empreinte": "02460c4af79979b8",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -400,39 +400,39 @@
       ],
       "cadrage": "50% 70%"
     },
-    "cadrage": "51% 64%",
+    "cadrage": "51% 68%",
     "sujet": {
-      "x": 16.3,
-      "y": 50.1,
-      "l": 68.6,
-      "h": 43.4
+      "x": 3.1,
+      "y": 0,
+      "l": 87.5,
+      "h": 93.7
     },
     "zones_calmes": [
       {
         "cote": "haut",
-        "score": 0.51,
+        "score": 0.32,
         "ton": "sombre"
       },
       {
         "cote": "droite",
-        "score": 0.21,
-        "ton": "sombre"
-      },
-      {
-        "cote": "gauche",
-        "score": 0.19,
+        "score": 0.08,
         "ton": "sombre"
       },
       {
         "cote": "bas",
-        "score": 0.07,
+        "score": 0.05,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.01,
         "ton": "sombre"
       }
     ],
     "zone_texte": "gauche",
     "recadrage": {
       "left": 0,
-      "top": 162,
+      "top": 126,
       "width": 1358,
       "height": 764,
       "source": [
@@ -453,13 +453,13 @@
       "ouverture-plat-mobile-1080.webp"
     ],
     "poids": {
-      "ouverture-plat-640.webp": 34056,
-      "ouverture-plat-1280.webp": 78912,
-      "ouverture-plat-1920.webp": 123308,
+      "ouverture-plat-640.webp": 34098,
+      "ouverture-plat-1280.webp": 77694,
+      "ouverture-plat-1920.webp": 122970,
       "ouverture-plat-mobile-640.webp": 45792,
       "ouverture-plat-mobile-1080.webp": 81184
     },
-    "media": "c.media({ nom: 'ouverture-plat', alt: \"Assiette de légumes de saison dressée sur une table en bois, devant la cheminée allumée\", cadrage: '51% 64%', cadrageMobile: '50% 70%', sizes: '100vw', priorite: true })"
+    "media": "c.media({ nom: 'ouverture-plat', alt: \"Assiette de légumes de saison dressée sur une table en bois, devant la cheminée allumée\", cadrage: '51% 68%', cadrageMobile: '50% 70%', sizes: '100vw', priorite: true })"
   },
   "cheminee": {
     "nom": "cheminee",
@@ -468,7 +468,7 @@
     "alt": "La salle du restaurant décorée pour Noël, la cheminée, le sapin et les tables dressées",
     "grok": false,
     "mention": null,
-    "empreinte": "e069261bddc49b7e",
+    "empreinte": "5779814b29bfe1c3",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -481,41 +481,41 @@
         640,
         1080
       ],
-      "cadrage": "50% 31%"
+      "cadrage": "50% 44%"
     },
-    "cadrage": "50% 37%",
+    "cadrage": "50% 50%",
     "sujet": {
-      "x": 20.6,
-      "y": 15.7,
-      "l": 55.9,
-      "h": 40.1
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
     },
     "zones_calmes": [
       {
-        "cote": "bas",
-        "score": 0.26,
+        "cote": "gauche",
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "droite",
-        "score": 0.2,
-        "ton": "moyen"
-      },
-      {
-        "cote": "gauche",
-        "score": 0.19,
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "haut",
-        "score": 0.14,
+        "score": 0,
         "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
       "left": 0,
-      "top": 0,
+      "top": 24,
       "width": 2000,
       "height": 1125,
       "source": [
@@ -534,13 +534,13 @@
       "cheminee-mobile-1080.webp"
     ],
     "poids": {
-      "cheminee-640.webp": 44078,
-      "cheminee-1280.webp": 129084,
-      "cheminee-1920.webp": 218808,
+      "cheminee-640.webp": 44238,
+      "cheminee-1280.webp": 130360,
+      "cheminee-1920.webp": 219090,
       "cheminee-mobile-640.webp": 76282,
       "cheminee-mobile-1080.webp": 135532
     },
-    "media": "c.media({ nom: 'cheminee', alt: \"La salle du restaurant décorée pour Noël, la cheminée, le sapin et les tables dressées\", cadrage: '50% 37%', cadrageMobile: '50% 31%', sizes: '100vw', priorite: true })"
+    "media": "c.media({ nom: 'cheminee', alt: \"La salle du restaurant décorée pour Noël, la cheminée, le sapin et les tables dressées\", cadrageMobile: '50% 44%', sizes: '100vw', priorite: true })"
   },
   "fetes-ouverture": {
     "nom": "fetes-ouverture",
@@ -549,7 +549,7 @@
     "alt": "La cheminée de la salle, son sapin décoré et une table dressée",
     "grok": false,
     "mention": null,
-    "empreinte": "363f501fe01314c1",
+    "empreinte": "d8ba710f04704f59",
     "ratio": "3:4",
     "largeurs": [
       640,
@@ -562,41 +562,41 @@
         640,
         1080
       ],
-      "cadrage": "53% 39%"
+      "cadrage": "53% 42%"
     },
-    "cadrage": "53% 39%",
+    "cadrage": "53% 50%",
     "sujet": {
-      "x": 38.2,
-      "y": 21.5,
-      "l": 28.4,
-      "h": 41.1
+      "x": 0,
+      "y": 0,
+      "l": 95.5,
+      "h": 100
     },
     "zones_calmes": [
       {
         "cote": "bas",
-        "score": 0.48,
+        "score": 0.14,
         "ton": "sombre"
       },
       {
         "cote": "gauche",
-        "score": 0.3,
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "droite",
-        "score": 0.24,
+        "score": 0,
         "ton": "sombre"
       },
       {
         "cote": "haut",
-        "score": 0.22,
+        "score": 0,
         "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
       "left": 0,
-      "top": 0,
+      "top": 51,
       "width": 1334,
       "height": 1779,
       "source": [
@@ -617,13 +617,13 @@
       "fetes-ouverture-mobile-1080.webp"
     ],
     "poids": {
-      "fetes-ouverture-640.webp": 84544,
-      "fetes-ouverture-1280.webp": 229816,
-      "fetes-ouverture-1920.webp": 287058,
-      "fetes-ouverture-mobile-640.webp": 84544,
-      "fetes-ouverture-mobile-1080.webp": 186758
+      "fetes-ouverture-640.webp": 84230,
+      "fetes-ouverture-1280.webp": 226902,
+      "fetes-ouverture-1920.webp": 285444,
+      "fetes-ouverture-mobile-640.webp": 80142,
+      "fetes-ouverture-mobile-1080.webp": 176044
     },
-    "media": "c.media({ nom: 'fetes-ouverture', alt: \"La cheminée de la salle, son sapin décoré et une table dressée\", cadrage: '53% 39%', cadrageMobile: '53% 39%', sizes: '100vw', priorite: true })"
+    "media": "c.media({ nom: 'fetes-ouverture', alt: \"La cheminée de la salle, son sapin décoré et une table dressée\", cadrage: '53% 50%', cadrageMobile: '53% 42%', sizes: '100vw', priorite: true })"
   },
   "carte-ouverture": {
     "nom": "carte-ouverture",
@@ -632,7 +632,7 @@
     "alt": "Tartelette aux fruits vue de dessus, rondelles de citron et coulis, sur une table en bois",
     "grok": false,
     "mention": null,
-    "empreinte": "7be01905c79d3623",
+    "empreinte": "ee30f65f8f178ae8",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -649,29 +649,29 @@
     },
     "cadrage": "54% 50%",
     "sujet": {
-      "x": 0,
-      "y": 0,
-      "l": 94.3,
-      "h": 100
+      "x": 6.3,
+      "y": 2,
+      "l": 93.7,
+      "h": 98
     },
     "zones_calmes": [
       {
         "cote": "gauche",
-        "score": 0.21,
+        "score": 0.24,
         "ton": "moyen"
       },
       {
         "cote": "bas",
-        "score": 0.18,
-        "ton": "moyen"
-      },
-      {
-        "cote": "droite",
-        "score": 0.04,
+        "score": 0.12,
         "ton": "moyen"
       },
       {
         "cote": "haut",
+        "score": 0.01,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
         "score": 0,
         "ton": "moyen"
       }
@@ -713,7 +713,7 @@
     "alt": "Foie gras et sa briochette, verre de vin blanc",
     "grok": false,
     "mention": null,
-    "empreinte": "21ee31da3c5c8e2d",
+    "empreinte": "6570bf1d32a897e7",
     "ratio": "4:5",
     "largeurs": [
       480,
@@ -721,39 +721,39 @@
       784
     ],
     "mobile": null,
-    "cadrage": "42% 57%",
+    "cadrage": "47% 50%",
     "sujet": {
-      "x": 2.7,
-      "y": 18.6,
-      "l": 67.8,
-      "h": 76.6
+      "x": 0,
+      "y": 0,
+      "l": 95.5,
+      "h": 100
     },
     "zones_calmes": [
       {
         "cote": "haut",
-        "score": 0.51,
+        "score": 0.2,
         "ton": "sombre"
       },
       {
         "cote": "droite",
-        "score": 0.29,
+        "score": 0.06,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0.06,
         "ton": "moyen"
       },
       {
         "cote": "gauche",
-        "score": 0.13,
+        "score": 0.02,
         "ton": "sombre"
-      },
-      {
-        "cote": "bas",
-        "score": 0.09,
-        "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
       "left": 0,
-      "top": 332,
+      "top": 126,
       "width": 1334,
       "height": 1668,
       "source": [
@@ -770,11 +770,11 @@
       "carte-entrees-784.webp"
     ],
     "poids": {
-      "carte-entrees-480.webp": 21446,
-      "carte-entrees-640.webp": 30360,
-      "carte-entrees-784.webp": 38436
+      "carte-entrees-480.webp": 20450,
+      "carte-entrees-640.webp": 28698,
+      "carte-entrees-784.webp": 36724
     },
-    "media": "c.media({ nom: 'carte-entrees', alt: \"Foie gras et sa briochette, verre de vin blanc\", cadrage: '42% 57%', sizes: '(max-width: 760px) 100vw, 33vw', ratio: '4 / 5' })"
+    "media": "c.media({ nom: 'carte-entrees', alt: \"Foie gras et sa briochette, verre de vin blanc\", cadrage: '47% 50%', sizes: '(max-width: 760px) 100vw, 33vw', ratio: '4 / 5' })"
   },
   "carte-plats": {
     "nom": "carte-plats",
@@ -783,7 +783,7 @@
     "alt": "Volaille rôtie, pommes de terre grenaille et pousses fraîches",
     "grok": false,
     "mention": null,
-    "empreinte": "83c9d741b50c95c1",
+    "empreinte": "4915186d43c114e0",
     "ratio": "4:5",
     "largeurs": [
       480,
@@ -791,39 +791,39 @@
       784
     ],
     "mobile": null,
-    "cadrage": "50% 50%",
+    "cadrage": "47% 50%",
     "sujet": {
-      "x": 5,
-      "y": 16.3,
-      "l": 91.3,
-      "h": 75.2
+      "x": 0,
+      "y": 0,
+      "l": 95.5,
+      "h": 100
     },
     "zones_calmes": [
       {
         "cote": "bas",
-        "score": 0.17,
+        "score": 0.06,
         "ton": "clair"
       },
       {
-        "cote": "haut",
-        "score": 0.16,
+        "cote": "gauche",
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "droite",
-        "score": 0.05,
+        "score": 0,
         "ton": "moyen"
       },
       {
-        "cote": "gauche",
-        "score": 0.04,
+        "cote": "haut",
+        "score": 0,
         "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
       "left": 0,
-      "top": 246,
+      "top": 206,
       "width": 1334,
       "height": 1668,
       "source": [
@@ -840,11 +840,11 @@
       "carte-plats-784.webp"
     ],
     "poids": {
-      "carte-plats-480.webp": 52792,
-      "carte-plats-640.webp": 80380,
-      "carte-plats-784.webp": 105368
+      "carte-plats-480.webp": 53106,
+      "carte-plats-640.webp": 81666,
+      "carte-plats-784.webp": 107054
     },
-    "media": "c.media({ nom: 'carte-plats', alt: \"Volaille rôtie, pommes de terre grenaille et pousses fraîches\", sizes: '(max-width: 760px) 100vw, 33vw', ratio: '4 / 5' })"
+    "media": "c.media({ nom: 'carte-plats', alt: \"Volaille rôtie, pommes de terre grenaille et pousses fraîches\", cadrage: '47% 50%', sizes: '(max-width: 760px) 100vw, 33vw', ratio: '4 / 5' })"
   },
   "carte-partager": {
     "nom": "carte-partager",
@@ -853,7 +853,7 @@
     "alt": "Assiette de houmous, pain grillé et salade, vue de dessus",
     "grok": false,
     "mention": null,
-    "empreinte": "e7bdee441be8a885",
+    "empreinte": "e19743f7038d0ae0",
     "ratio": "4:5",
     "largeurs": [
       480,
@@ -861,32 +861,32 @@
       784
     ],
     "mobile": null,
-    "cadrage": "53% 51%",
+    "cadrage": "38% 41%",
     "sujet": {
       "x": 0,
-      "y": 0.4,
-      "l": 96.9,
-      "h": 90.6
+      "y": 3.1,
+      "l": 100,
+      "h": 78.1
     },
     "zones_calmes": [
       {
-        "cote": "droite",
-        "score": 0.47,
+        "cote": "bas",
+        "score": 0.44,
         "ton": "clair"
       },
       {
-        "cote": "bas",
-        "score": 0.39,
+        "cote": "droite",
+        "score": 0.38,
         "ton": "clair"
       },
       {
         "cote": "haut",
-        "score": 0.21,
+        "score": 0.18,
         "ton": "clair"
       },
       {
         "cote": "gauche",
-        "score": 0.04,
+        "score": 0.08,
         "ton": "clair"
       }
     ],
@@ -914,7 +914,7 @@
       "carte-partager-640.webp": 47664,
       "carte-partager-784.webp": 65836
     },
-    "media": "c.media({ nom: 'carte-partager', alt: \"Assiette de houmous, pain grillé et salade, vue de dessus\", cadrage: '53% 51%', sizes: '(max-width: 760px) 100vw, 33vw', ratio: '4 / 5' })"
+    "media": "c.media({ nom: 'carte-partager', alt: \"Assiette de houmous, pain grillé et salade, vue de dessus\", cadrage: '38% 41%', sizes: '(max-width: 760px) 100vw, 33vw', ratio: '4 / 5' })"
   },
   "carte-desserts": {
     "nom": "carte-desserts",
@@ -923,7 +923,7 @@
     "alt": "Dessert en coupe sur une table en bois, devant le feu",
     "grok": false,
     "mention": null,
-    "empreinte": "e7a6f434e89c1e24",
+    "empreinte": "10f6fe2762497398",
     "ratio": "4:5",
     "largeurs": [
       480,
@@ -931,39 +931,39 @@
       784
     ],
     "mobile": null,
-    "cadrage": "56% 50%",
+    "cadrage": "49% 41%",
     "sujet": {
-      "x": 34.7,
-      "y": 19.9,
-      "l": 45.1,
-      "h": 80
+      "x": 0,
+      "y": 0,
+      "l": 95.5,
+      "h": 100
     },
     "zones_calmes": [
       {
-        "cote": "gauche",
-        "score": 0.4,
+        "cote": "bas",
+        "score": 0.11,
         "ton": "moyen"
       },
       {
-        "cote": "bas",
-        "score": 0.32,
+        "cote": "gauche",
+        "score": 0.08,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "haut",
-        "score": 0.18,
+        "score": 0,
         "ton": "sombre"
-      },
-      {
-        "cote": "droite",
-        "score": 0.13,
-        "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
       "left": 0,
-      "top": 146,
+      "top": 0,
       "width": 1334,
       "height": 1668,
       "source": [
@@ -980,11 +980,11 @@
       "carte-desserts-784.webp"
     ],
     "poids": {
-      "carte-desserts-480.webp": 35654,
-      "carte-desserts-640.webp": 52342,
-      "carte-desserts-784.webp": 69748
+      "carte-desserts-480.webp": 32506,
+      "carte-desserts-640.webp": 47160,
+      "carte-desserts-784.webp": 63110
     },
-    "media": "c.media({ nom: 'carte-desserts', alt: \"Dessert en coupe sur une table en bois, devant le feu\", cadrage: '56% 50%', sizes: '(max-width: 760px) 100vw, 33vw', ratio: '4 / 5' })"
+    "media": "c.media({ nom: 'carte-desserts', alt: \"Dessert en coupe sur une table en bois, devant le feu\", cadrage: '49% 41%', sizes: '(max-width: 760px) 100vw, 33vw', ratio: '4 / 5' })"
   },
   "plateau-entree": {
     "nom": "plateau-entree",
@@ -993,7 +993,7 @@
     "alt": "Salade de saison vue de dessus",
     "grok": false,
     "mention": null,
-    "empreinte": "39400b08691003c2",
+    "empreinte": "1c3d7aa86ec0f491",
     "ratio": "1:1",
     "largeurs": [
       480,
@@ -1001,39 +1001,39 @@
       800
     ],
     "mobile": null,
-    "cadrage": "48% 50%",
+    "cadrage": "51% 50%",
     "sujet": {
-      "x": 14.7,
-      "y": 22,
-      "l": 63.2,
-      "h": 60.8
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
     },
     "zones_calmes": [
       {
-        "cote": "bas",
-        "score": 0.16,
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "haut",
-        "score": 0.14,
+        "score": 0,
         "ton": "sombre"
       },
       {
-        "cote": "droite",
-        "score": 0.13,
-        "ton": "moyen"
-      },
-      {
-        "cote": "gauche",
-        "score": 0.1,
+        "cote": "bas",
+        "score": 0,
         "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
       "left": 0,
-      "top": 170,
+      "top": 250,
       "width": 1500,
       "height": 1500,
       "source": [
@@ -1050,11 +1050,11 @@
       "plateau-entree-800.webp"
     ],
     "poids": {
-      "plateau-entree-480.webp": 50966,
-      "plateau-entree-640.webp": 75888,
-      "plateau-entree-800.webp": 101692
+      "plateau-entree-480.webp": 53232,
+      "plateau-entree-640.webp": 80094,
+      "plateau-entree-800.webp": 108908
     },
-    "media": "c.media({ nom: 'plateau-entree', alt: \"Salade de saison vue de dessus\", cadrage: '48% 50%', sizes: '(max-width: 760px) 50vw, 25vw', ratio: '1 / 1' })"
+    "media": "c.media({ nom: 'plateau-entree', alt: \"Salade de saison vue de dessus\", cadrage: '51% 50%', sizes: '(max-width: 760px) 50vw, 25vw', ratio: '1 / 1' })"
   },
   "plateau-plat": {
     "nom": "plateau-plat",
@@ -1063,7 +1063,7 @@
     "alt": "Pièce de viande tranchée et sa garniture, vue de dessus",
     "grok": false,
     "mention": null,
-    "empreinte": "aac4cf42a60254e7",
+    "empreinte": "23e3f42a77cb7ff8",
     "ratio": "1:1",
     "largeurs": [
       480,
@@ -1071,12 +1071,12 @@
       800
     ],
     "mobile": null,
-    "cadrage": "50% 46%",
+    "cadrage": "50% 54%",
     "sujet": {
       "x": 0,
-      "y": 6.7,
+      "y": 0,
       "l": 100,
-      "h": 93.3
+      "h": 95.5
     },
     "zones_calmes": [
       {
@@ -1102,7 +1102,7 @@
     ],
     "zone_texte": null,
     "recadrage": {
-      "left": 332,
+      "left": 314,
       "top": 0,
       "width": 1184,
       "height": 1184,
@@ -1120,11 +1120,11 @@
       "plateau-plat-800.webp"
     ],
     "poids": {
-      "plateau-plat-480.webp": 52072,
-      "plateau-plat-640.webp": 83956,
-      "plateau-plat-800.webp": 120126
+      "plateau-plat-480.webp": 52246,
+      "plateau-plat-640.webp": 82692,
+      "plateau-plat-800.webp": 119456
     },
-    "media": "c.media({ nom: 'plateau-plat', alt: \"Pièce de viande tranchée et sa garniture, vue de dessus\", cadrage: '50% 46%', sizes: '(max-width: 760px) 50vw, 25vw', ratio: '1 / 1' })"
+    "media": "c.media({ nom: 'plateau-plat', alt: \"Pièce de viande tranchée et sa garniture, vue de dessus\", cadrage: '50% 54%', sizes: '(max-width: 760px) 50vw, 25vw', ratio: '1 / 1' })"
   },
   "plateau-partager": {
     "nom": "plateau-partager",
@@ -1133,7 +1133,7 @@
     "alt": "Houmous et pain grillé, vue de dessus",
     "grok": false,
     "mention": null,
-    "empreinte": "601633b2a696d173",
+    "empreinte": "ed4bbe64a6bbdf2c",
     "ratio": "1:1",
     "largeurs": [
       480,
@@ -1141,32 +1141,32 @@
       800
     ],
     "mobile": null,
-    "cadrage": "42% 51%",
+    "cadrage": "30% 41%",
     "sujet": {
       "x": 0,
-      "y": 0.4,
-      "l": 77.5,
-      "h": 90.6
+      "y": 3.1,
+      "l": 93.8,
+      "h": 78.1
     },
     "zones_calmes": [
       {
-        "cote": "droite",
-        "score": 0.47,
+        "cote": "bas",
+        "score": 0.44,
         "ton": "clair"
       },
       {
-        "cote": "bas",
-        "score": 0.39,
+        "cote": "droite",
+        "score": 0.38,
         "ton": "clair"
       },
       {
         "cote": "haut",
-        "score": 0.21,
+        "score": 0.18,
         "ton": "clair"
       },
       {
         "cote": "gauche",
-        "score": 0.04,
+        "score": 0.08,
         "ton": "clair"
       }
     ],
@@ -1194,7 +1194,7 @@
       "plateau-partager-640.webp": 41382,
       "plateau-partager-800.webp": 58198
     },
-    "media": "c.media({ nom: 'plateau-partager', alt: \"Houmous et pain grillé, vue de dessus\", cadrage: '42% 51%', sizes: '(max-width: 760px) 50vw, 25vw', ratio: '1 / 1' })"
+    "media": "c.media({ nom: 'plateau-partager', alt: \"Houmous et pain grillé, vue de dessus\", cadrage: '30% 41%', sizes: '(max-width: 760px) 50vw, 25vw', ratio: '1 / 1' })"
   },
   "plateau-dessert": {
     "nom": "plateau-dessert",
@@ -1203,7 +1203,7 @@
     "alt": "Dessert au chocolat et framboises, vu de dessus",
     "grok": false,
     "mention": null,
-    "empreinte": "84037a80387a2e77",
+    "empreinte": "d75b9ef9613fa7c0",
     "ratio": "1:1",
     "largeurs": [
       480,
@@ -1211,33 +1211,33 @@
       800
     ],
     "mobile": null,
-    "cadrage": "43% 45%",
+    "cadrage": "51% 48%",
     "sujet": {
-      "x": 11.1,
-      "y": 14.5,
-      "l": 62.5,
-      "h": 82.8
+      "x": 3.1,
+      "y": 0,
+      "l": 96.9,
+      "h": 96.9
     },
     "zones_calmes": [
       {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
         "cote": "droite",
-        "score": 0.12,
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "haut",
-        "score": 0.1,
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "bas",
-        "score": 0.05,
+        "score": 0,
         "ton": "sombre"
-      },
-      {
-        "cote": "gauche",
-        "score": 0.01,
-        "ton": "moyen"
       }
     ],
     "zone_texte": null,
@@ -1266,7 +1266,7 @@
       "plateau-dessert-640.webp": 82960,
       "plateau-dessert-800.webp": 112758
     },
-    "media": "c.media({ nom: 'plateau-dessert', alt: \"Dessert au chocolat et framboises, vu de dessus\", cadrage: '43% 45%', sizes: '(max-width: 760px) 50vw, 25vw', ratio: '1 / 1' })"
+    "media": "c.media({ nom: 'plateau-dessert', alt: \"Dessert au chocolat et framboises, vu de dessus\", cadrage: '51% 48%', sizes: '(max-width: 760px) 50vw, 25vw', ratio: '1 / 1' })"
   },
   "recevoir-mariages": {
     "nom": "recevoir-mariages",
@@ -1275,45 +1275,45 @@
     "alt": "Longue table de mariage fleurie sous la pergola",
     "grok": false,
     "mention": null,
-    "empreinte": "f813589e0e24615e",
+    "empreinte": "dfd016ca192efbbe",
     "ratio": "3:4",
     "largeurs": [
       480,
       640
     ],
     "mobile": null,
-    "cadrage": "50% 45%",
+    "cadrage": "50% 35%",
     "sujet": {
-      "x": 30.2,
-      "y": 32.4,
-      "l": 41.2,
-      "h": 25
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 96.4
     },
     "zones_calmes": [
       {
         "cote": "bas",
-        "score": 0.37,
-        "ton": "moyen"
-      },
-      {
-        "cote": "droite",
-        "score": 0.24,
+        "score": 0.06,
         "ton": "moyen"
       },
       {
         "cote": "gauche",
-        "score": 0.22,
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "haut",
-        "score": 0.21,
+        "score": 0,
         "ton": "sombre"
       }
     ],
     "zone_texte": null,
     "recadrage": {
-      "left": 145,
+      "left": 99,
       "top": 0,
       "width": 497,
       "height": 662,
@@ -1335,10 +1335,10 @@
       "recevoir-mariages-640.webp"
     ],
     "poids": {
-      "recevoir-mariages-480.webp": 52534,
-      "recevoir-mariages-640.webp": 69944
+      "recevoir-mariages-480.webp": 53746,
+      "recevoir-mariages-640.webp": 70344
     },
-    "media": "c.media({ nom: 'recevoir-mariages', alt: \"Longue table de mariage fleurie sous la pergola\", cadrage: '50% 45%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+    "media": "c.media({ nom: 'recevoir-mariages', alt: \"Longue table de mariage fleurie sous la pergola\", cadrage: '50% 35%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
   },
   "recevoir-baptemes": {
     "nom": "recevoir-baptemes",
@@ -1347,45 +1347,45 @@
     "alt": "Des parents et leur bébé en plein air",
     "grok": false,
     "mention": null,
-    "empreinte": "b37fd9661313a857",
+    "empreinte": "e7d21c632dada7b6",
     "ratio": "3:4",
     "largeurs": [
       480,
       640
     ],
     "mobile": null,
-    "cadrage": "50% 35%",
+    "cadrage": "50% 45%",
     "sujet": {
-      "x": 8.9,
+      "x": 0,
       "y": 0,
-      "l": 82.8,
-      "h": 90.4
+      "l": 100,
+      "h": 96.4
     },
     "zones_calmes": [
       {
         "cote": "haut",
-        "score": 0.35,
+        "score": 0.19,
         "ton": "clair"
       },
       {
         "cote": "gauche",
-        "score": 0.27,
+        "score": 0.05,
         "ton": "clair"
       },
       {
-        "cote": "bas",
-        "score": 0.08,
+        "cote": "droite",
+        "score": 0,
         "ton": "moyen"
       },
       {
-        "cote": "droite",
-        "score": 0.06,
+        "cote": "bas",
+        "score": 0,
         "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
-      "left": 167,
+      "left": 150,
       "top": 0,
       "width": 540,
       "height": 720,
@@ -1407,10 +1407,10 @@
       "recevoir-baptemes-640.webp"
     ],
     "poids": {
-      "recevoir-baptemes-480.webp": 44466,
-      "recevoir-baptemes-640.webp": 62802
+      "recevoir-baptemes-480.webp": 44442,
+      "recevoir-baptemes-640.webp": 63124
     },
-    "media": "c.media({ nom: 'recevoir-baptemes', alt: \"Des parents et leur bébé en plein air\", cadrage: '50% 35%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+    "media": "c.media({ nom: 'recevoir-baptemes', alt: \"Des parents et leur bébé en plein air\", cadrage: '50% 45%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
   },
   "recevoir-anniversaires": {
     "nom": "recevoir-anniversaires",
@@ -1419,7 +1419,7 @@
     "alt": "Verres et bouquet de roses rouges sur une table de fête",
     "grok": false,
     "mention": null,
-    "empreinte": "c0ae5204a1a85d9e",
+    "empreinte": "b5e52d19072b9b99",
     "ratio": "3:4",
     "largeurs": [
       480,
@@ -1427,38 +1427,38 @@
       960
     ],
     "mobile": null,
-    "cadrage": "50% 56%",
+    "cadrage": "50% 57%",
     "sujet": {
-      "x": 7.9,
-      "y": 34.5,
-      "l": 92.1,
-      "h": 65.5
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 95.5
     },
     "zones_calmes": [
       {
-        "cote": "haut",
-        "score": 0.25,
-        "ton": "sombre"
-      },
-      {
         "cote": "gauche",
-        "score": 0.23,
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "droite",
-        "score": 0.05,
+        "score": 0,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
         "ton": "sombre"
       },
       {
         "cote": "bas",
-        "score": 0.03,
+        "score": 0,
         "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
-      "left": 801,
+      "left": 461,
       "top": 0,
       "width": 998,
       "height": 1331,
@@ -1476,11 +1476,11 @@
       "recevoir-anniversaires-960.webp"
     ],
     "poids": {
-      "recevoir-anniversaires-480.webp": 31016,
-      "recevoir-anniversaires-640.webp": 44698,
-      "recevoir-anniversaires-960.webp": 73600
+      "recevoir-anniversaires-480.webp": 34584,
+      "recevoir-anniversaires-640.webp": 48776,
+      "recevoir-anniversaires-960.webp": 81732
     },
-    "media": "c.media({ nom: 'recevoir-anniversaires', alt: \"Verres et bouquet de roses rouges sur une table de fête\", cadrage: '50% 56%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+    "media": "c.media({ nom: 'recevoir-anniversaires', alt: \"Verres et bouquet de roses rouges sur une table de fête\", cadrage: '50% 57%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
   },
   "recevoir-depart": {
     "nom": "recevoir-depart",
@@ -1489,7 +1489,7 @@
     "alt": "Invités au cocktail dans le jardin, sous les palmiers",
     "grok": false,
     "mention": null,
-    "empreinte": "33f3b207fc2a3f5d",
+    "empreinte": "92957072c092f5de",
     "ratio": "3:4",
     "largeurs": [
       480,
@@ -1497,38 +1497,38 @@
       960
     ],
     "mobile": null,
-    "cadrage": "50% 51%",
+    "cadrage": "50% 47%",
     "sujet": {
       "x": 0,
-      "y": 30,
+      "y": 0,
       "l": 100,
-      "h": 70
+      "h": 95.5
     },
     "zones_calmes": [
       {
-        "cote": "haut",
-        "score": 0.18,
-        "ton": "moyen"
-      },
-      {
         "cote": "gauche",
-        "score": 0.17,
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "droite",
-        "score": 0.04,
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "bas",
-        "score": 0.03,
+        "score": 0,
         "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
-      "left": 720,
+      "left": 380,
       "top": 0,
       "width": 1001,
       "height": 1334,
@@ -1539,20 +1539,18 @@
     },
     "faible": false,
     "raisons_faible": [],
-    "avertissements": [
-      "recadrage fort (50 % de l'image gardée) sur une image qui contient du texte (marque) : texte coupé probable, choisir un autre rôle ou une autre image"
-    ],
+    "avertissements": [],
     "fichiers": [
       "recevoir-depart-480.webp",
       "recevoir-depart-640.webp",
       "recevoir-depart-960.webp"
     ],
     "poids": {
-      "recevoir-depart-480.webp": 74286,
-      "recevoir-depart-640.webp": 117778,
-      "recevoir-depart-960.webp": 210120
+      "recevoir-depart-480.webp": 72788,
+      "recevoir-depart-640.webp": 112350,
+      "recevoir-depart-960.webp": 194140
     },
-    "media": "c.media({ nom: 'recevoir-depart', alt: \"Invités au cocktail dans le jardin, sous les palmiers\", cadrage: '50% 51%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+    "media": "c.media({ nom: 'recevoir-depart', alt: \"Invités au cocktail dans le jardin, sous les palmiers\", cadrage: '50% 47%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
   },
   "recevoir-terrasse": {
     "nom": "recevoir-terrasse",
@@ -1561,7 +1559,7 @@
     "alt": "La terrasse et la piscine sous les palmiers",
     "grok": false,
     "mention": null,
-    "empreinte": "9d2a40d2ce14fa45",
+    "empreinte": "4ac6d674496d42f4",
     "ratio": "3:4",
     "largeurs": [
       480,
@@ -1569,102 +1567,32 @@
       960
     ],
     "mobile": null,
-    "cadrage": "50% 62%",
+    "cadrage": "50% 52%",
     "sujet": {
       "x": 0,
-      "y": 48.5,
+      "y": 4.5,
       "l": 100,
-      "h": 26.5
+      "h": 90.9
     },
     "zones_calmes": [
       {
         "cote": "haut",
-        "score": 0.84,
+        "score": 0.53,
         "ton": "clair"
       },
       {
         "cote": "gauche",
-        "score": 0.22,
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "droite",
-        "score": 0.16,
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "bas",
-        "score": 0.15,
-        "ton": "moyen"
-      }
-    ],
-    "zone_texte": null,
-    "recadrage": {
-      "left": 561,
-      "top": 0,
-      "width": 998,
-      "height": 1331,
-      "source": [
-        2000,
-        1331
-      ]
-    },
-    "faible": false,
-    "raisons_faible": [],
-    "avertissements": [],
-    "fichiers": [
-      "recevoir-terrasse-480.webp",
-      "recevoir-terrasse-640.webp",
-      "recevoir-terrasse-960.webp"
-    ],
-    "poids": {
-      "recevoir-terrasse-480.webp": 59368,
-      "recevoir-terrasse-640.webp": 100696,
-      "recevoir-terrasse-960.webp": 204824
-    },
-    "media": "c.media({ nom: 'recevoir-terrasse', alt: \"La terrasse et la piscine sous les palmiers\", cadrage: '50% 62%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
-  },
-  "recevoir-piscine": {
-    "nom": "recevoir-piscine",
-    "source": "recu/terrasse-7.jpg",
-    "role": "galerie",
-    "alt": "La piscine bordée de transats et de paillotes",
-    "grok": false,
-    "mention": null,
-    "empreinte": "bbdc3a6f9daebf1b",
-    "ratio": "3:4",
-    "largeurs": [
-      480,
-      640,
-      960
-    ],
-    "mobile": null,
-    "cadrage": "50% 82%",
-    "sujet": {
-      "x": 0,
-      "y": 75.8,
-      "l": 100,
-      "h": 24.2
-    },
-    "zones_calmes": [
-      {
-        "cote": "haut",
-        "score": 0.85,
-        "ton": "clair"
-      },
-      {
-        "cote": "droite",
-        "score": 0.19,
-        "ton": "moyen"
-      },
-      {
-        "cote": "gauche",
-        "score": 0.17,
-        "ton": "moyen"
-      },
-      {
-        "cote": "bas",
-        "score": 0.07,
+        "score": 0,
         "ton": "moyen"
       }
     ],
@@ -1683,16 +1611,86 @@
     "raisons_faible": [],
     "avertissements": [],
     "fichiers": [
+      "recevoir-terrasse-480.webp",
+      "recevoir-terrasse-640.webp",
+      "recevoir-terrasse-960.webp"
+    ],
+    "poids": {
+      "recevoir-terrasse-480.webp": 57188,
+      "recevoir-terrasse-640.webp": 96180,
+      "recevoir-terrasse-960.webp": 191934
+    },
+    "media": "c.media({ nom: 'recevoir-terrasse', alt: \"La terrasse et la piscine sous les palmiers\", cadrage: '50% 52%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+  },
+  "recevoir-piscine": {
+    "nom": "recevoir-piscine",
+    "source": "recu/terrasse-7.jpg",
+    "role": "galerie",
+    "alt": "La piscine bordée de transats et de paillotes",
+    "grok": false,
+    "mention": null,
+    "empreinte": "a8a2b7a0b217f026",
+    "ratio": "3:4",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "50% 57%",
+    "sujet": {
+      "x": 0,
+      "y": 22.7,
+      "l": 100,
+      "h": 72.7
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.73,
+        "ton": "clair"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 581,
+      "top": 0,
+      "width": 998,
+      "height": 1331,
+      "source": [
+        2000,
+        1331
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
       "recevoir-piscine-480.webp",
       "recevoir-piscine-640.webp",
       "recevoir-piscine-960.webp"
     ],
     "poids": {
-      "recevoir-piscine-480.webp": 57274,
-      "recevoir-piscine-640.webp": 95616,
-      "recevoir-piscine-960.webp": 186132
+      "recevoir-piscine-480.webp": 53478,
+      "recevoir-piscine-640.webp": 90434,
+      "recevoir-piscine-960.webp": 175570
     },
-    "media": "c.media({ nom: 'recevoir-piscine', alt: \"La piscine bordée de transats et de paillotes\", cadrage: '50% 82%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+    "media": "c.media({ nom: 'recevoir-piscine', alt: \"La piscine bordée de transats et de paillotes\", cadrage: '50% 57%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
   },
   "offrir-soiree": {
     "nom": "offrir-soiree",
@@ -1701,7 +1699,7 @@
     "alt": "Dîner aux chandelles, le vin servi à table",
     "grok": false,
     "mention": null,
-    "empreinte": "fac4dddcc93cf024",
+    "empreinte": "50af45f8f03c1c3f",
     "ratio": "3:2",
     "largeurs": [
       640,
@@ -1709,38 +1707,38 @@
       1920
     ],
     "mobile": null,
-    "cadrage": "50% 42%",
+    "cadrage": "50% 72%",
     "sujet": {
-      "x": 21,
-      "y": 33.9,
-      "l": 26.9,
-      "h": 40.1
+      "x": 12.6,
+      "y": 22.2,
+      "l": 59.6,
+      "h": 66.7
     },
     "zones_calmes": [
       {
         "cote": "haut",
-        "score": 0.91,
+        "score": 0.85,
         "ton": "sombre"
       },
       {
         "cote": "droite",
-        "score": 0.83,
+        "score": 0.8,
         "ton": "sombre"
       },
       {
         "cote": "gauche",
-        "score": 0.71,
+        "score": 0.62,
         "ton": "sombre"
       },
       {
         "cote": "bas",
-        "score": 0.49,
+        "score": 0.39,
         "ton": "sombre"
       }
     ],
     "zone_texte": null,
     "recadrage": {
-      "left": 161,
+      "left": 101,
       "top": 0,
       "width": 1679,
       "height": 1119,
@@ -1762,11 +1760,11 @@
       "offrir-soiree-1920.webp"
     ],
     "poids": {
-      "offrir-soiree-640.webp": 13170,
-      "offrir-soiree-1280.webp": 31092,
-      "offrir-soiree-1920.webp": 50154
+      "offrir-soiree-640.webp": 13416,
+      "offrir-soiree-1280.webp": 31824,
+      "offrir-soiree-1920.webp": 51146
     },
-    "media": "c.media({ nom: 'offrir-soiree', alt: \"Dîner aux chandelles, le vin servi à table\", cadrage: '50% 42%', sizes: '100vw' })"
+    "media": "c.media({ nom: 'offrir-soiree', alt: \"Dîner aux chandelles, le vin servi à table\", cadrage: '50% 72%', sizes: '100vw' })"
   },
   "infos-ouverture": {
     "nom": "infos-ouverture",
@@ -1775,7 +1773,7 @@
     "alt": "L'enseigne des Jardins de l'Hacienda à l'entrée, sous le ciel de Moineville",
     "grok": false,
     "mention": null,
-    "empreinte": "360d0469ecdf09bb",
+    "empreinte": "a8cee2f7826cf201",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -1783,12 +1781,12 @@
       1920
     ],
     "mobile": null,
-    "cadrage": "47% 54%",
+    "cadrage": "50% 70%",
     "sujet": {
-      "x": 26.5,
-      "y": 38.9,
-      "l": 39.7,
-      "h": 27.9
+      "x": 0,
+      "y": 29.9,
+      "l": 100,
+      "h": 64.6
     },
     "zones_calmes": [
       {
@@ -1798,17 +1796,17 @@
       },
       {
         "cote": "droite",
-        "score": 0.35,
+        "score": 0.17,
         "ton": "clair"
       },
       {
         "cote": "gauche",
-        "score": 0.32,
+        "score": 0.15,
         "ton": "clair"
       },
       {
         "cote": "bas",
-        "score": 0.17,
+        "score": 0,
         "ton": "moyen"
       }
     ],
@@ -1836,7 +1834,7 @@
       "infos-ouverture-1280.webp": 72328,
       "infos-ouverture-1920.webp": 138706
     },
-    "media": "c.media({ nom: 'infos-ouverture', alt: \"L'enseigne des Jardins de l'Hacienda à l'entrée, sous le ciel de Moineville\", cadrage: '47% 54%', sizes: '100vw', priorite: true })"
+    "media": "c.media({ nom: 'infos-ouverture', alt: \"L'enseigne des Jardins de l'Hacienda à l'entrée, sous le ciel de Moineville\", cadrage: '50% 70%', sizes: '100vw', priorite: true })"
   },
   "logo": {
     "nom": "logo",
@@ -1845,7 +1843,7 @@
     "alt": "Les Jardins de l'Hacienda",
     "grok": false,
     "mention": null,
-    "empreinte": "2504a3909086d2ce",
+    "empreinte": "5ae8b00e61899ea7",
     "ratio": null,
     "largeurs": [
       240,
@@ -1877,7 +1875,7 @@
     "alt": "La salle du restaurant, ses tables rondes et ses fauteuils clairs",
     "grok": false,
     "mention": null,
-    "empreinte": "4b460011f8f870a3",
+    "empreinte": "49640988eef0851a",
     "ratio": "3:4",
     "largeurs": [
       480,
@@ -1885,38 +1883,38 @@
       960
     ],
     "mobile": null,
-    "cadrage": "48% 35%",
+    "cadrage": "50% 43%",
     "sujet": {
-      "x": 3.1,
-      "y": 22.1,
-      "l": 96.9,
-      "h": 26.5
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 95.5
     },
     "zones_calmes": [
       {
         "cote": "bas",
-        "score": 0.35,
-        "ton": "moyen"
-      },
-      {
-        "cote": "droite",
-        "score": 0.2,
+        "score": 0.05,
         "ton": "moyen"
       },
       {
         "cote": "gauche",
-        "score": 0.17,
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
         "ton": "moyen"
       },
       {
         "cote": "haut",
-        "score": 0.14,
+        "score": 0,
         "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
-      "left": 381,
+      "left": 460,
       "top": 0,
       "width": 1001,
       "height": 1334,
@@ -1934,11 +1932,11 @@
       "recevoir-salle-960.webp"
     ],
     "poids": {
-      "recevoir-salle-480.webp": 39928,
-      "recevoir-salle-640.webp": 60252,
-      "recevoir-salle-960.webp": 101990
+      "recevoir-salle-480.webp": 40062,
+      "recevoir-salle-640.webp": 61386,
+      "recevoir-salle-960.webp": 104822
     },
-    "media": "c.media({ nom: 'recevoir-salle', alt: \"La salle du restaurant, ses tables rondes et ses fauteuils clairs\", cadrage: '48% 35%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+    "media": "c.media({ nom: 'recevoir-salle', alt: \"La salle du restaurant, ses tables rondes et ses fauteuils clairs\", cadrage: '50% 43%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
   },
   "recevoir-cheminee": {
     "nom": "recevoir-cheminee",
@@ -1947,7 +1945,7 @@
     "alt": "La cheminée décorée pour Noël et des fauteuils couverts de peaux",
     "grok": false,
     "mention": null,
-    "empreinte": "291c0381a8eb5261",
+    "empreinte": "ca433b9e54d35ab1",
     "ratio": "3:4",
     "largeurs": [
       480,
@@ -1955,39 +1953,39 @@
       960
     ],
     "mobile": null,
-    "cadrage": "51% 37%",
+    "cadrage": "50% 50%",
     "sujet": {
-      "x": 3.1,
-      "y": 3.4,
-      "l": 84.3,
-      "h": 96.6
+      "x": 0,
+      "y": 0,
+      "l": 95.5,
+      "h": 100
     },
     "zones_calmes": [
       {
         "cote": "bas",
-        "score": 0.17,
+        "score": 0.05,
         "ton": "moyen"
-      },
-      {
-        "cote": "droite",
-        "score": 0.03,
-        "ton": "moyen"
-      },
-      {
-        "cote": "haut",
-        "score": 0.01,
-        "ton": "sombre"
       },
       {
         "cote": "gauche",
         "score": 0,
         "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "sombre"
       }
     ],
     "zone_texte": null,
     "recadrage": {
       "left": 0,
-      "top": 23,
+      "top": 91,
       "width": 1334,
       "height": 1779,
       "source": [
@@ -2004,11 +2002,11 @@
       "recevoir-cheminee-960.webp"
     ],
     "poids": {
-      "recevoir-cheminee-480.webp": 48278,
-      "recevoir-cheminee-640.webp": 73020,
-      "recevoir-cheminee-960.webp": 130216
+      "recevoir-cheminee-480.webp": 47930,
+      "recevoir-cheminee-640.webp": 72450,
+      "recevoir-cheminee-960.webp": 128354
     },
-    "media": "c.media({ nom: 'recevoir-cheminee', alt: \"La cheminée décorée pour Noël et des fauteuils couverts de peaux\", cadrage: '51% 37%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+    "media": "c.media({ nom: 'recevoir-cheminee', alt: \"La cheminée décorée pour Noël et des fauteuils couverts de peaux\", sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
   },
   "carte-plein": {
     "nom": "carte-plein",
@@ -2017,7 +2015,7 @@
     "alt": "Une assiette du chef : purée, champignons poêlés et viande tranchée, sur une assiette sombre",
     "grok": false,
     "mention": null,
-    "empreinte": "d826397254f8406d",
+    "empreinte": "0ac01979d7f940c0",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -2029,41 +2027,41 @@
       "largeurs": [
         640
       ],
-      "cadrage": "50% 48%"
+      "cadrage": "50% 44%"
     },
-    "cadrage": "48% 50%",
+    "cadrage": "47% 50%",
     "sujet": {
-      "x": 11.9,
+      "x": 18.8,
       "y": 0,
-      "l": 72.1,
+      "l": 56.3,
       "h": 100
     },
     "zones_calmes": [
       {
         "cote": "droite",
-        "score": 0.1,
+        "score": 0.17,
         "ton": "sombre"
       },
       {
         "cote": "bas",
-        "score": 0.08,
+        "score": 0.16,
         "ton": "sombre"
       },
       {
         "cote": "gauche",
-        "score": 0.05,
+        "score": 0.1,
         "ton": "sombre"
       },
       {
         "cote": "haut",
-        "score": 0.03,
+        "score": 0.06,
         "ton": "moyen"
       }
     ],
     "zone_texte": null,
     "recadrage": {
       "left": 0,
-      "top": 69,
+      "top": 21,
       "width": 1776,
       "height": 999,
       "source": [
@@ -2084,11 +2082,1309 @@
       "carte-plein-mobile-640.webp"
     ],
     "poids": {
-      "carte-plein-640.webp": 48750,
-      "carte-plein-1280.webp": 164210,
-      "carte-plein-1920.webp": 245718,
-      "carte-plein-mobile-640.webp": 116916
+      "carte-plein-640.webp": 49026,
+      "carte-plein-1280.webp": 163632,
+      "carte-plein-1920.webp": 243496,
+      "carte-plein-mobile-640.webp": 116942
     },
-    "media": "c.media({ nom: 'carte-plein', alt: \"Une assiette du chef : purée, champignons poêlés et viande tranchée, sur une assiette sombre\", cadrage: '48% 50%', cadrageMobile: '50% 48%', sizes: '100vw', priorite: true })"
+    "media": "c.media({ nom: 'carte-plein', alt: \"Une assiette du chef : purée, champignons poêlés et viande tranchée, sur une assiette sombre\", cadrage: '47% 50%', cadrageMobile: '50% 44%', sizes: '100vw', priorite: true })"
+  },
+  "grok/braises": {
+    "nom": "grok/braises",
+    "source": "recu/grok/braises.jpg",
+    "role": "section-fond",
+    "alt": "",
+    "grok": true,
+    "mention": "Illustration générée",
+    "empreinte": "308484e71b234036",
+    "ratio": "16:9",
+    "largeurs": [
+      640,
+      1280
+    ],
+    "mobile": null,
+    "cadrage": "71% 67%",
+    "sujet": {
+      "x": 46.9,
+      "y": 40.3,
+      "l": 50,
+      "h": 48.8
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0.95,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0.89,
+        "ton": "sombre"
+      },
+      {
+        "cote": "droite",
+        "score": 0.21,
+        "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0.21,
+        "ton": "sombre"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 127,
+      "width": 1168,
+      "height": 657,
+      "source": [
+        1168,
+        784
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "largeurs retirées (source trop petite) : 1920",
+      "1168 px de large"
+    ],
+    "avertissements": [
+      "agrandie 1,1 fois (source de 1168 px après recadrage)"
+    ],
+    "fichiers": [
+      "grok/braises-640.webp",
+      "grok/braises-1280.webp"
+    ],
+    "poids": {
+      "grok/braises-640.webp": 19504,
+      "grok/braises-1280.webp": 43362
+    },
+    "media": "c.media({ nom: 'grok/braises', alt: \"\", cadrage: '71% 67%', sizes: '100vw' })"
+  },
+  "ete-ouverture": {
+    "nom": "ete-ouverture",
+    "source": "recu/terrasse-13.jpg",
+    "role": "ouverture",
+    "alt": "La piscine des Jardins de l'Hacienda, ses palmiers et ses paillotes sous le soleil",
+    "grok": false,
+    "mention": null,
+    "empreinte": "a8e3cce3b1f9847d",
+    "ratio": "16:9",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "9:16",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 60%"
+    },
+    "cadrage": "43% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.53,
+        "ton": "clair"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 130,
+      "width": 2000,
+      "height": 1125,
+      "source": [
+        2000,
+        1331
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "ete-ouverture-640.webp",
+      "ete-ouverture-1280.webp",
+      "ete-ouverture-1920.webp",
+      "ete-ouverture-mobile-640.webp",
+      "ete-ouverture-mobile-1080.webp"
+    ],
+    "poids": {
+      "ete-ouverture-640.webp": 45924,
+      "ete-ouverture-1280.webp": 161480,
+      "ete-ouverture-1920.webp": 268800,
+      "ete-ouverture-mobile-640.webp": 107184,
+      "ete-ouverture-mobile-1080.webp": 254298
+    },
+    "media": "c.media({ nom: 'ete-ouverture', alt: \"La piscine des Jardins de l'Hacienda, ses palmiers et ses paillotes sous le soleil\", cadrage: '43% 50%', cadrageMobile: '50% 60%', sizes: '100vw', priorite: true })"
+  },
+  "assiette-saumon": {
+    "nom": "assiette-saumon",
+    "source": "recu/restaurant-2.jpg",
+    "role": "galerie",
+    "alt": "Une assiette du chef vue de dessus : rose de saumon et petites fleurs",
+    "grok": false,
+    "mention": null,
+    "empreinte": "c161b3f0fccbbf1c",
+    "ratio": "1:1",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "34% 65%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.23,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0.08,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.07,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 511,
+      "width": 1489,
+      "height": 1489,
+      "source": [
+        1489,
+        2000
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "assiette-saumon-480.webp",
+      "assiette-saumon-640.webp",
+      "assiette-saumon-960.webp"
+    ],
+    "poids": {
+      "assiette-saumon-480.webp": 30282,
+      "assiette-saumon-640.webp": 50246,
+      "assiette-saumon-960.webp": 96958
+    },
+    "media": "c.media({ nom: 'assiette-saumon', alt: \"Une assiette du chef vue de dessus : rose de saumon et petites fleurs\", cadrage: '34% 65%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '1 / 1' })"
+  },
+  "assiette-cepes": {
+    "nom": "assiette-cepes",
+    "source": "recu/restaurant-33.jpg",
+    "role": "galerie",
+    "alt": "Une assiette du chef vue de dessus : purée, cèpes poêlés et viande tranchée",
+    "grok": false,
+    "mention": null,
+    "empreinte": "110f974a73f59fd7",
+    "ratio": "1:1",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "50% 44%",
+    "sujet": {
+      "x": 7.7,
+      "y": 0,
+      "l": 84.5,
+      "h": 90.9
+    },
+    "zones_calmes": [
+      {
+        "cote": "droite",
+        "score": 0.17,
+        "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0.16,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.1,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0.06,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 243,
+      "top": 0,
+      "width": 1184,
+      "height": 1184,
+      "source": [
+        1776,
+        1184
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "assiette-cepes-480.webp",
+      "assiette-cepes-640.webp",
+      "assiette-cepes-960.webp"
+    ],
+    "poids": {
+      "assiette-cepes-480.webp": 46686,
+      "assiette-cepes-640.webp": 75638,
+      "assiette-cepes-960.webp": 152016
+    },
+    "media": "c.media({ nom: 'assiette-cepes', alt: \"Une assiette du chef vue de dessus : purée, cèpes poêlés et viande tranchée\", cadrage: '50% 44%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '1 / 1' })"
+  },
+  "assiette-turquoise": {
+    "nom": "assiette-turquoise",
+    "source": "recu/terrasse-jardins-hacienda-6.jpg",
+    "role": "galerie",
+    "alt": "Une assiette du chef dressée sur une assiette bleu-vert",
+    "grok": false,
+    "mention": null,
+    "empreinte": "2c57d139486bf4e3",
+    "ratio": "1:1",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "46% 53%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "droite",
+        "score": 0.11,
+        "ton": "clair"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 1080,
+      "height": 1080,
+      "source": [
+        1080,
+        1080
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "1080 px de large"
+    ],
+    "avertissements": [],
+    "fichiers": [
+      "assiette-turquoise-480.webp",
+      "assiette-turquoise-640.webp",
+      "assiette-turquoise-960.webp"
+    ],
+    "poids": {
+      "assiette-turquoise-480.webp": 63772,
+      "assiette-turquoise-640.webp": 110598,
+      "assiette-turquoise-960.webp": 240402
+    },
+    "media": "c.media({ nom: 'assiette-turquoise', alt: \"Une assiette du chef dressée sur une assiette bleu-vert\", cadrage: '46% 53%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '1 / 1' })"
+  },
+  "ete-festives": {
+    "nom": "ete-festives",
+    "source": "recu/piscine-6.webp",
+    "role": "galerie",
+    "alt": "La piscine en journée festive, transats et parasols blancs",
+    "grok": false,
+    "mention": null,
+    "empreinte": "c6dd2ada6180867f",
+    "ratio": "4:3",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "50% 45%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 95.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 25,
+      "top": 0,
+      "width": 853,
+      "height": 640,
+      "source": [
+        960,
+        640
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "960 px de large"
+    ],
+    "avertissements": [
+      "agrandie 1,13 fois (source de 853 px après recadrage)"
+    ],
+    "fichiers": [
+      "ete-festives-480.webp",
+      "ete-festives-640.webp",
+      "ete-festives-960.webp"
+    ],
+    "poids": {
+      "ete-festives-480.webp": 51186,
+      "ete-festives-640.webp": 86652,
+      "ete-festives-960.webp": 160116
+    },
+    "media": "c.media({ nom: 'ete-festives', alt: \"La piscine en journée festive, transats et parasols blancs\", cadrage: '50% 45%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '4 / 3' })"
+  },
+  "ete-bar": {
+    "nom": "ete-bar",
+    "source": "recu/terrasse-26.jpg",
+    "role": "galerie",
+    "alt": "Cocktails frais servis au bar, au bord de la piscine",
+    "grok": false,
+    "mention": null,
+    "empreinte": "dcae565417060980",
+    "ratio": "4:3",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "55% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 96.2,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.09,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "clair"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 480,
+      "width": 1600,
+      "height": 1200,
+      "source": [
+        1600,
+        2000
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "ete-bar-480.webp",
+      "ete-bar-640.webp",
+      "ete-bar-960.webp"
+    ],
+    "poids": {
+      "ete-bar-480.webp": 25184,
+      "ete-bar-640.webp": 36752,
+      "ete-bar-960.webp": 63550
+    },
+    "media": "c.media({ nom: 'ete-bar', alt: \"Cocktails frais servis au bar, au bord de la piscine\", cadrage: '55% 50%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '4 / 3' })"
+  },
+  "ete-soir": {
+    "nom": "ete-soir",
+    "source": "recu/piscine-2.webp",
+    "role": "galerie",
+    "alt": "La piscine illuminée un soir de fête d'été",
+    "grok": false,
+    "mention": null,
+    "empreinte": "a93bfa3903997622",
+    "ratio": "4:3",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "43% 37%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 90.6,
+      "h": 87.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.36,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0.19,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0.18,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "sombre"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 960,
+      "height": 720,
+      "source": [
+        960,
+        720
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "960 px de large"
+    ],
+    "avertissements": [],
+    "fichiers": [
+      "ete-soir-480.webp",
+      "ete-soir-640.webp",
+      "ete-soir-960.webp"
+    ],
+    "poids": {
+      "ete-soir-480.webp": 27688,
+      "ete-soir-640.webp": 42714,
+      "ete-soir-960.webp": 72716
+    },
+    "media": "c.media({ nom: 'ete-soir', alt: \"La piscine illuminée un soir de fête d'été\", cadrage: '43% 37%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '4 / 3' })"
+  },
+  "table-deux": {
+    "nom": "table-deux",
+    "source": "recu/restaurant-5.jpg",
+    "role": "galerie",
+    "alt": "Une table dressée dans la salle, un fauteuil garni de peau de mouton",
+    "grok": false,
+    "mention": null,
+    "empreinte": "4b96c090c1a378b9",
+    "ratio": "4:3",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "46% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 95.5,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.19,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0.12,
+        "ton": "clair"
+      },
+      {
+        "cote": "bas",
+        "score": 0.05,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.02,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 520,
+      "width": 1334,
+      "height": 1001,
+      "source": [
+        1334,
+        2000
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "table-deux-480.webp",
+      "table-deux-640.webp",
+      "table-deux-960.webp"
+    ],
+    "poids": {
+      "table-deux-480.webp": 17208,
+      "table-deux-640.webp": 25616,
+      "table-deux-960.webp": 45164
+    },
+    "media": "c.media({ nom: 'table-deux', alt: \"Une table dressée dans la salle, un fauteuil garni de peau de mouton\", cadrage: '46% 50%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '4 / 3' })"
+  },
+  "table-douze": {
+    "nom": "table-douze",
+    "source": "recu/restaurant-31.jpg",
+    "role": "galerie",
+    "alt": "Les grandes tables de la salle, dressées pour un groupe",
+    "grok": false,
+    "mention": null,
+    "empreinte": "dad90ec8ff410647",
+    "ratio": "4:3",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "49% 53%",
+    "sujet": {
+      "x": 0,
+      "y": 4.5,
+      "l": 100,
+      "h": 90.9
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.06,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 1779,
+      "height": 1334,
+      "source": [
+        2000,
+        1334
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "table-douze-480.webp",
+      "table-douze-640.webp",
+      "table-douze-960.webp"
+    ],
+    "poids": {
+      "table-douze-480.webp": 31948,
+      "table-douze-640.webp": 49654,
+      "table-douze-960.webp": 91738
+    },
+    "media": "c.media({ nom: 'table-douze', alt: \"Les grandes tables de la salle, dressées pour un groupe\", cadrage: '49% 53%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '4 / 3' })"
+  },
+  "table-quarante": {
+    "nom": "table-quarante",
+    "source": "recu/terrasse-jardins-hacienda-2.jpg",
+    "role": "galerie",
+    "alt": "Des tables blanches dressées dans les jardins pour une réception",
+    "grok": false,
+    "mention": null,
+    "empreinte": "49ba328f034b68e0",
+    "ratio": "4:3",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "45% 41%",
+    "sujet": {
+      "x": 0,
+      "y": 4.1,
+      "l": 100,
+      "h": 95.9
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.33,
+        "ton": "clair"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 1080,
+      "height": 810,
+      "source": [
+        1080,
+        1080
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "1080 px de large"
+    ],
+    "avertissements": [],
+    "fichiers": [
+      "table-quarante-480.webp",
+      "table-quarante-640.webp",
+      "table-quarante-960.webp"
+    ],
+    "poids": {
+      "table-quarante-480.webp": 25528,
+      "table-quarante-640.webp": 36428,
+      "table-quarante-960.webp": 64252
+    },
+    "media": "c.media({ nom: 'table-quarante', alt: \"Des tables blanches dressées dans les jardins pour une réception\", cadrage: '45% 41%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '4 / 3' })"
+  },
+  "table-cent-vingt": {
+    "nom": "table-cent-vingt",
+    "source": "recu/terrasse-27.jpg",
+    "role": "galerie",
+    "alt": "De longues tables de réception sous la pergola",
+    "grok": false,
+    "mention": null,
+    "empreinte": "983c6debbb63bba6",
+    "ratio": "4:3",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "50% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 199,
+      "width": 1080,
+      "height": 810,
+      "source": [
+        1080,
+        1078
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "1080 px de large"
+    ],
+    "avertissements": [],
+    "fichiers": [
+      "table-cent-vingt-480.webp",
+      "table-cent-vingt-640.webp",
+      "table-cent-vingt-960.webp"
+    ],
+    "poids": {
+      "table-cent-vingt-480.webp": 49850,
+      "table-cent-vingt-640.webp": 76598,
+      "table-cent-vingt-960.webp": 130838
+    },
+    "media": "c.media({ nom: 'table-cent-vingt', alt: \"De longues tables de réception sous la pergola\", sizes: '(max-width: 760px) 100vw, 50vw', ratio: '4 / 3' })"
+  },
+  "ete-poolparty": {
+    "nom": "ete-poolparty",
+    "source": "recu/pool-party-11.jpg",
+    "role": "galerie",
+    "alt": "Un brasero allumé au bord de la piscine, un soir de pool party",
+    "grok": false,
+    "mention": null,
+    "empreinte": "8e5b88c68e59db9a",
+    "ratio": "4:3",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "53% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 68,
+      "width": 720,
+      "height": 540,
+      "source": [
+        720,
+        720
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "720 px de large"
+    ],
+    "avertissements": [
+      "agrandie 1,33 fois (source de 720 px après recadrage)"
+    ],
+    "fichiers": [
+      "ete-poolparty-480.webp",
+      "ete-poolparty-640.webp",
+      "ete-poolparty-960.webp"
+    ],
+    "poids": {
+      "ete-poolparty-480.webp": 18978,
+      "ete-poolparty-640.webp": 25768,
+      "ete-poolparty-960.webp": 39780
+    },
+    "media": "c.media({ nom: 'ete-poolparty', alt: \"Un brasero allumé au bord de la piscine, un soir de pool party\", cadrage: '53% 50%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '4 / 3' })"
+  },
+  "sylvestre-coupe": {
+    "nom": "sylvestre-coupe",
+    "source": "recu/restaurant-16.jpg",
+    "role": "galerie",
+    "alt": "Un cocktail servi devant la cheminée allumée",
+    "grok": false,
+    "mention": null,
+    "empreinte": "9a073c3789ff0b8e",
+    "ratio": "3:4",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "45% 49%",
+    "sujet": {
+      "x": 0,
+      "y": 3.5,
+      "l": 95.5,
+      "h": 94.9
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.19,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0.15,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0.15,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.05,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 1334,
+      "height": 1779,
+      "source": [
+        1334,
+        2000
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "sylvestre-coupe-480.webp",
+      "sylvestre-coupe-640.webp",
+      "sylvestre-coupe-960.webp"
+    ],
+    "poids": {
+      "sylvestre-coupe-480.webp": 29202,
+      "sylvestre-coupe-640.webp": 45398,
+      "sylvestre-coupe-960.webp": 81214
+    },
+    "media": "c.media({ nom: 'sylvestre-coupe', alt: \"Un cocktail servi devant la cheminée allumée\", cadrage: '45% 49%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+  },
+  "grok/nappe-lin": {
+    "nom": "grok/nappe-lin",
+    "source": "recu/grok/nappe-lin-douce.jpg",
+    "role": "section-fond",
+    "alt": "Nappe de lin crème vue de dessus",
+    "grok": true,
+    "mention": "Illustration générée",
+    "empreinte": "c68271bd285da1ce",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280
+    ],
+    "mobile": null,
+    "cadrage": "84% 51%",
+    "sujet": {
+      "x": 40.6,
+      "y": 0,
+      "l": 59.4,
+      "h": 96.1
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0.86,
+        "ton": "clair"
+      },
+      {
+        "cote": "bas",
+        "score": 0.57,
+        "ton": "clair"
+      },
+      {
+        "cote": "haut",
+        "score": 0.52,
+        "ton": "clair"
+      },
+      {
+        "cote": "droite",
+        "score": 0.36,
+        "ton": "clair"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 1168,
+      "height": 779,
+      "source": [
+        1168,
+        784
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "largeurs retirées (source trop petite) : 1920",
+      "1168 px de large"
+    ],
+    "avertissements": [
+      "agrandie 1,1 fois (source de 1168 px après recadrage)"
+    ],
+    "fichiers": [
+      "grok/nappe-lin-640.webp",
+      "grok/nappe-lin-1280.webp"
+    ],
+    "poids": {
+      "grok/nappe-lin-640.webp": 14878,
+      "grok/nappe-lin-1280.webp": 64214
+    },
+    "media": "c.media({ nom: 'grok/nappe-lin', alt: \"Nappe de lin crème vue de dessus\", cadrage: '84% 51%', sizes: '100vw' })"
+  },
+  "grok/eau-reflets": {
+    "nom": "grok/eau-reflets",
+    "source": "recu/grok/eau-reflets-sombre.jpg",
+    "role": "section-fond",
+    "alt": "Reflets du soleil sur l'eau d'une piscine",
+    "grok": true,
+    "mention": "Illustration générée",
+    "empreinte": "d4dd211457ebbc66",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280
+    ],
+    "mobile": null,
+    "cadrage": "54% 67%",
+    "sujet": {
+      "x": 3.1,
+      "y": 40.5,
+      "l": 90.6,
+      "h": 54.8
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.88,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.6,
+        "ton": "sombre"
+      },
+      {
+        "cote": "droite",
+        "score": 0.57,
+        "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0.4,
+        "ton": "sombre"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 5,
+      "width": 1168,
+      "height": 779,
+      "source": [
+        1168,
+        784
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "largeurs retirées (source trop petite) : 1920",
+      "1168 px de large",
+      "compression visible"
+    ],
+    "avertissements": [
+      "agrandie 1,1 fois (source de 1168 px après recadrage)"
+    ],
+    "fichiers": [
+      "grok/eau-reflets-640.webp",
+      "grok/eau-reflets-1280.webp"
+    ],
+    "poids": {
+      "grok/eau-reflets-640.webp": 16572,
+      "grok/eau-reflets-1280.webp": 38638
+    },
+    "media": "c.media({ nom: 'grok/eau-reflets', alt: \"Reflets du soleil sur l'eau d'une piscine\", cadrage: '54% 67%', sizes: '100vw' })"
+  },
+  "ete-plongee": {
+    "nom": "ete-plongee",
+    "source": "recu/piscine-5.webp",
+    "role": "galerie",
+    "alt": "La piscine en plein soleil, une bouée flamant rose sur l'eau",
+    "grok": false,
+    "mention": null,
+    "empreinte": "f37d8c1a4e0bc500",
+    "ratio": "1:1",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "50% 44%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 95.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 112,
+      "top": 0,
+      "width": 640,
+      "height": 640,
+      "source": [
+        960,
+        640
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "960 px de large"
+    ],
+    "avertissements": [
+      "agrandie 1,5 fois (source de 640 px après recadrage)"
+    ],
+    "fichiers": [
+      "ete-plongee-480.webp",
+      "ete-plongee-640.webp",
+      "ete-plongee-960.webp"
+    ],
+    "poids": {
+      "ete-plongee-480.webp": 38548,
+      "ete-plongee-640.webp": 55814,
+      "ete-plongee-960.webp": 84968
+    },
+    "media": "c.media({ nom: 'ete-plongee', alt: \"La piscine en plein soleil, une bouée flamant rose sur l'eau\", cadrage: '50% 44%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '1 / 1' })"
+  },
+  "noel-carte": {
+    "nom": "noel-carte",
+    "source": "recu/restaurant-9.jpg",
+    "role": "galerie",
+    "alt": "Une table de la salle décorée pour Noël, près du sapin",
+    "grok": false,
+    "mention": null,
+    "empreinte": "af1bd31be1b65f74",
+    "ratio": "4:5",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": null,
+    "cadrage": "51% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 95.5,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.04,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "sombre"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 246,
+      "width": 1334,
+      "height": 1668,
+      "source": [
+        1334,
+        2000
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "noel-carte-480.webp",
+      "noel-carte-640.webp",
+      "noel-carte-960.webp"
+    ],
+    "poids": {
+      "noel-carte-480.webp": 42380,
+      "noel-carte-640.webp": 65078,
+      "noel-carte-960.webp": 115982
+    },
+    "media": "c.media({ nom: 'noel-carte', alt: \"Une table de la salle décorée pour Noël, près du sapin\", cadrage: '51% 50%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '4 / 5' })"
   }
 }

@@ -3,7 +3,7 @@
    l'adresse (?table=…&couverts=…&espace=…), et son carton file jusqu'au récapitulatif (site.js, envol). */
 import { html, brut } from '../../outils/gabarit.mjs';
 
-export const page = { cle: 'reserver', fichier: 'reserver', imagePartage: 'grok/reserver-ouverture-1280.webp', modules: ['fil-conducteur', 'plan-de-salle', 'reservation-de-table', 'envol-vers-le-panier'] };
+export const page = { cle: 'reserver', fichier: 'reserver', imagePartage: 'grok/reserver-ouverture-1280.webp', modules: ['plan-de-salle', 'reservation-de-table', 'envol-vers-le-panier'] };
 
 const DECOR = `<svg class="pds__svg" viewBox="0 0 1000 640" aria-hidden="true" focusable="false">
   <defs>
@@ -43,60 +43,24 @@ export default (c) => {
   const reglages = JSON.stringify(c.donnees.reservation).replace(/</g, '\\u003c');
   const lien = (t) => c.url('reserver', 'formulaire', `table=${t.id}&couverts=${t.places}&espace=${t.zone === 'terrasse' ? 'terrasse' : 'salle'}`);
   return html`
-<section class="ouv-resa" id="debut" data-fil="gauche" data-grille="fil">
+<section class="ouv-resa" data-lueur id="debut" data-fil="gauche" data-grille="fil">
   ${c.media({ nom: 'grok/reserver-ouverture', alt: c.s('reserver.alt'), cadrage: '70% 56%', priorite: true, classe: 'ouv-resa__fond', sizes: '100vw' })}
   <div class="conteneur ouv-resa__grille">
     <div class="ouv-resa__texte">
       <p class="surtitre" data-anime>${c.t('reserver.surtitre')}</p>
       <h1 data-anime="lignes">${c.t('reserver.titre')}</h1>
-      <p class="masque-ecran-tres-bas" data-anime>${c.t('reserver.texte')}</p>
-      <p class="ouv-resa__actions"><a class="bouton" href="#plan" data-action-principale data-sans-transition>${c.t('reserver.planTitre')}</a> <a class="bouton bouton--contour" href="#formulaire" data-sans-transition>${c.t('reserver.direct')}</a> <a class="ouv-resa__tel" href="tel:${c.site.contact.telephoneLien}" data-info-cle>${c.t('reserver.info')}</a></p>
+      <p class="masque-ecran-tres-bas" data-anime>${c.t('reserver.texte')}<span data-saison-seul="ete"> ${c.t('reserver.noteEte')}</span></p>
+      <p class="ouv-resa__actions"><a class="bouton" href="#formulaire" data-action-principale data-sans-transition>${c.t('reserver.jour')}</a> <a class="bouton bouton--contour" href="#plan" data-sans-transition>${c.t('reserver.choisirTable')}</a> <a class="ouv-resa__tel" href="tel:${c.site.contact.telephoneLien}" data-info-cle>${c.t('reserver.info')}</a></p>
     </div>
     <div class="carton" data-iris-centre aria-hidden="true">
       <span class="carton__pli"></span>
       <p class="carton__ecrit" data-effet="carton" data-grille="typo" data-texte="${c.s('reserver.carton')}">${c.t('reserver.carton')}</p>
-      <p class="carton__detail">${c.t('reserver.cartonDetail')}</p>
+      <p class="carton__detail"><span data-saison-seul="hiver">${c.t('reserver.cartonDetail')}</span><span data-saison-seul="ete">${c.t('reserver.cartonDetailEte')}</span></p>
     </div>
   </div>
 </section>
 
-<section class="pds" id="plan" data-module="plan-de-salle" data-reservation="${c.url('reserver', 'formulaire')}" data-fil="droite" data-effet="plan-3d" aria-labelledby="pds-titre">
-  <div class="pds__grille socle-cadre">
-    <div class="pds__tete">
-      <p class="socle-surtitre">${c.t('reserver.planSurtitre')}</p>
-      <h2 id="pds-titre" data-anime="lignes">${c.t('reserver.planTitre')}</h2>
-      <p>${c.t('reserver.planTexte')}</p>
-      ${c.media({ nom: 'recevoir-salle', alt: c.s('reserver.planPhotoAlt'), classe: 'pds__photo', sizes: '(max-width: 760px) 92vw, 40vw' })}
-    </div>
-    <div class="pds__outils">
-      <div class="pds__filtres" role="group" aria-label="Zones de la salle" data-pds-filtres></div>
-      <div class="pds__couverts">
-        <label class="pds__libelle" for="pds-couverts">Couverts</label>
-        <div class="pds__qte">
-          <button type="button" data-pds-moins aria-label="Un couvert de moins" aria-controls="pds-couverts">−</button>
-          <input type="number" id="pds-couverts" value="2" min="1" max="10" step="1" inputmode="numeric">
-          <button type="button" data-pds-plus aria-label="Un couvert de plus" aria-controls="pds-couverts">+</button>
-        </div>
-      </div>
-    </div>
-    <div class="pds__scene" data-visuel><div class="pds__plan"><div class="pds__sol">${brut(DECOR)}</div></div></div>
-    <div class="pds__panneau">
-      <ul class="pds__liste">
-        ${s.tables.map((t) => brut(`<li class="pds__item" data-table="${t.id}" data-zone="${t.zone}" data-places="${t.places}" data-forme="${t.forme}" data-x="${t.x}" data-y="${t.y}" data-l="${t.l}"${t.h ? ` data-h="${t.h}"` : ''}${t.prise ? ' data-prise' : ''}>`
-          + (t.prise ? '<span class="pds__lien">' : `<a class="pds__lien" href="${lien(t).replace(/&/g, '&amp;')}">`)
-          + `<span class="pds__num">${t.id}</span><span class="pds__texte"><span class="pds__nom">Table ${t.id}</span><span class="pds__info"><span class="pds__zone-nom">${s.zones[t.zone]}</span> · ${t.places}&nbsp;places</span>`
-          + (t.prise ? `<span class="pds__etat">${t.prise}</span>` : t.note ? `<span class="pds__note">${t.note}</span>` : '')
-          + `</span>${t.prise ? '</span>' : '</a>'}</li>`))}
-      </ul>
-      <div class="pds__action">
-        <p class="pds__choix" aria-live="polite" data-pds-choix>Choisissez une table libre sur le plan ou dans la liste.</p>
-        <a class="socle-bouton socle-bouton--plein pds__reserver" href="${c.url('reserver', 'formulaire')}" data-pds-reserver aria-disabled="true">Réserver cette table</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="resa clair" id="formulaire" data-module="reservation-de-table" data-fil="gauche" data-grille="retour" aria-labelledby="resa-titre">
+<section class="resa clair" data-lueur id="formulaire" data-module="reservation-de-table" data-fil="gauche" data-grille="retour" aria-labelledby="resa-titre">
   <script type="application/json" data-reservation>${brut(reglages)}</script>
   <noscript><style>.resa__jours{display:none}.resa__creneaux{min-height:0}.resa__compteur button{display:none}</style></noscript>
   <div class="resa__grille socle-cadre">
@@ -160,10 +124,46 @@ export default (c) => {
           <label><span>E-mail <span class="resa__facultatif">(facultatif)</span></span><input type="email" id="resa-email" name="email" autocomplete="email"></label>
         </div>
       </fieldset>
-      <p class="resa__mention">Vos coordonnées servent seulement à confirmer la réservation. Politique de confidentialité&nbsp;: à compléter. Disponibilités simulées pour la maquette.</p>
+      <p class="resa__mention">Vos coordonnées servent seulement à confirmer la réservation. Disponibilités simulées pour la maquette.</p>
       <button type="submit" class="resa__bouton">Vérifier ma réservation</button>
     </form>
     <aside class="resa__recap" data-resa-recap aria-label="Récapitulatif de la réservation"></aside>
+  </div>
+</section>
+
+<section class="pds" data-lueur id="plan" data-module="plan-de-salle" data-reservation="${c.url('reserver', 'formulaire')}" data-fil="droite" data-effet="plan-3d" aria-labelledby="pds-titre">
+  <div class="pds__grille socle-cadre">
+    <div class="pds__tete">
+      <p class="socle-surtitre">${c.t('reserver.planSurtitre')}</p>
+      <h2 id="pds-titre" data-anime="lignes">${c.t('reserver.planTitre')}</h2>
+      <p>${c.t('reserver.planTexte')}</p>
+      ${c.media({ nom: 'recevoir-salle', alt: c.s('reserver.planPhotoAlt'), classe: 'pds__photo', sizes: '(max-width: 760px) 92vw, 40vw' })}
+    </div>
+    <div class="pds__outils">
+      <div class="pds__filtres" role="group" aria-label="Zones de la salle" data-pds-filtres></div>
+      <div class="pds__couverts">
+        <label class="pds__libelle" for="pds-couverts">Couverts</label>
+        <div class="pds__qte">
+          <button type="button" data-pds-moins aria-label="Un couvert de moins" aria-controls="pds-couverts">−</button>
+          <input type="number" id="pds-couverts" value="2" min="1" max="10" step="1" inputmode="numeric">
+          <button type="button" data-pds-plus aria-label="Un couvert de plus" aria-controls="pds-couverts">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="pds__scene" data-visuel><div class="pds__plan"><div class="pds__sol">${brut(DECOR)}</div></div></div>
+    <div class="pds__panneau">
+      <ul class="pds__liste">
+        ${s.tables.map((t) => brut(`<li class="pds__item" data-table="${t.id}" data-zone="${t.zone}" data-places="${t.places}" data-forme="${t.forme}" data-x="${t.x}" data-y="${t.y}" data-l="${t.l}"${t.h ? ` data-h="${t.h}"` : ''}${t.prise ? ' data-prise' : ''}>`
+          + (t.prise ? '<span class="pds__lien">' : `<a class="pds__lien" href="${lien(t).replace(/&/g, '&amp;')}">`)
+          + `<span class="pds__num">${t.id}</span><span class="pds__texte"><span class="pds__nom">Table ${t.id}</span><span class="pds__info"><span class="pds__zone-nom">${s.zones[t.zone]}</span> · ${t.places}&nbsp;places</span>`
+          + (t.prise ? `<span class="pds__etat">${t.prise}</span>` : t.note ? `<span class="pds__note">${t.note}</span>` : '')
+          + `</span>${t.prise ? '</span>' : '</a>'}</li>`))}
+      </ul>
+      <div class="pds__action">
+        <p class="pds__choix" aria-live="polite" data-pds-choix>Choisissez une table libre sur le plan ou dans la liste.</p>
+        <a class="socle-bouton socle-bouton--plein pds__reserver" href="${c.url('reserver', 'formulaire')}" data-pds-reserver aria-disabled="true">Réserver cette table</a>
+      </div>
+    </div>
   </div>
 </section>
 `;

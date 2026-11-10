@@ -3,7 +3,7 @@
 // au clavier : une carte de profil ou de dos sort de la tabulation (jamais une cible sous 44 px).
 // Sans JavaScript, en mode calme et sous « réduire les animations » : rangée de cartes qui défile à l'horizontale (CSS).
 // Aucune lecture de mise en page pendant le défilement : le rayon est mesuré au démarrage et au redimensionnement.
-import { pret } from '../../socle/socle.js?v=3';
+import { pret } from '../../socle/socle.js?v=4';
 
 /**
  * @param {HTMLElement} root  section.c3d (ul.c3d__cylindre > li.c3d__carte ; boutons .c3d__prec / .c3d__suiv facultatifs)

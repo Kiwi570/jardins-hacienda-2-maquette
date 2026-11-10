@@ -7,12 +7,12 @@
       "fichier": "assets/partage/accueil-fr.jpg",
       "gabarit": "droite",
       "image": "ouverture-plat-1280.webp",
-      "poids": 78544,
+      "poids": 77789,
       "sujet": {
         "x": 600,
-        "y": 316,
+        "y": 0,
         "l": 600,
-        "h": 273
+        "h": 590
       },
       "textes": [
         {
@@ -42,12 +42,12 @@
       "fichier": "assets/partage/infos-pratiques-fr.jpg",
       "gabarit": "droite",
       "image": "infos-ouverture-1280.webp",
-      "poids": 51663,
+      "poids": 52757,
       "sujet": {
-        "x": 678,
-        "y": 245,
-        "l": 445,
-        "h": 176
+        "x": 600,
+        "y": 188,
+        "l": 600,
+        "h": 407
       },
       "textes": [
         {
@@ -67,12 +67,6 @@
           "y": 543,
           "l": 480,
           "h": 35
-        },
-        {
-          "x": 600,
-          "y": 0,
-          "l": 70,
-          "h": 630
         }
       ],
       "recouvrement": 0
@@ -83,12 +77,12 @@
       "fichier": "assets/partage/la-carte-fr.jpg",
       "gabarit": "droite",
       "image": "carte-ouverture-1280.webp",
-      "poids": 79673,
+      "poids": 82712,
       "sujet": {
         "x": 600,
-        "y": 0,
+        "y": 13,
         "l": 600,
-        "h": 630
+        "h": 617
       },
       "textes": [
         {
@@ -118,12 +112,12 @@
       "fichier": "assets/partage/les-fetes-fr.jpg",
       "gabarit": "droite",
       "image": "fetes-ouverture-1280.webp",
-      "poids": 90588,
+      "poids": 93684,
       "sujet": {
-        "x": 829,
-        "y": 101,
-        "l": 170,
-        "h": 329
+        "x": 600,
+        "y": 0,
+        "l": 573,
+        "h": 630
       },
       "textes": [
         {
@@ -143,12 +137,6 @@
           "y": 543,
           "l": 480,
           "h": 35
-        },
-        {
-          "x": 600,
-          "y": 0,
-          "l": 90,
-          "h": 630
         }
       ],
       "recouvrement": 0

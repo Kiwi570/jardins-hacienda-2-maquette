@@ -2,12 +2,12 @@
    (module carte-cadeau-qui-se-compose, montants du site actuel, sans montant libre) et part dans son enveloppe. */
 import { html } from '../../outils/gabarit.mjs';
 
-export const page = { cle: 'offrir', fichier: 'offrir', imagePartage: 'grok/offrir-ouverture-1280.webp', modules: ['fil-conducteur', 'carte-cadeau-qui-se-compose'] };
+export const page = { cle: 'offrir', fichier: 'offrir', imagePartage: 'grok/offrir-ouverture-1280.webp', modules: ['carte-cadeau-qui-se-compose'] };
 
 const MONTANTS = [25, 50, 100, 150, 200];
 
 export default (c) => html`
-<section class="ouv-offrir" id="debut" data-fil="gauche" data-grille="fil">
+<section class="ouv-offrir" data-lueur id="debut" data-fil="gauche" data-grille="fil">
   ${c.media({ nom: 'grok/offrir-ouverture', alt: c.s('offrir.alt'), cadrage: '62% 50%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw', attrs: 'data-fx="parallaxe" data-fx-force="8"' })}
   <div class="conteneur ouv-offrir__centre">
     <p class="surtitre" data-anime>${c.t('offrir.surtitre')}</p>
@@ -20,7 +20,7 @@ export default (c) => html`
   </div>
 </section>
 
-<section class="ccq offrir-composer" id="composer" data-module="carte-cadeau-qui-se-compose" data-cachet="JH" data-fil="droite" data-grille="retour" aria-labelledby="ccq-titre">
+<section class="ccq offrir-composer" data-lueur id="composer" data-module="carte-cadeau-qui-se-compose" data-cachet="JH" data-fil="droite" data-grille="retour" aria-labelledby="ccq-titre">
   <div class="ccq__grille socle-cadre">
     <div class="ccq__tete">
       <p class="socle-surtitre">${c.t('offrir.composerSurtitre')}</p>
@@ -72,7 +72,7 @@ export default (c) => html`
       <p class="socle-sr" aria-live="polite" data-ccq-annonce></p>
       <div class="ccq__actions">
         <button type="submit" class="socle-bouton socle-bouton--plein ccq__offrir">Offrir cette carte</button>
-        <button type="button" class="socle-bouton" data-ccq-reprendre hidden>Composer une autre carte</button>
+        <button type="button" class="socle-bouton" data-ccq-reprendre hidden>Offrir une autre carte</button>
       </div>
       <p class="ccq__statut" role="status" data-ccq-statut hidden></p>
       <p class="ccq__note">${c.t('offrir.conditions')} ${c.t('offrir.remise')} ${c.t('offrir.simule')}</p>

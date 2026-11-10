@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-10T12:05:15.826Z",
+  "plan": "/home/claude/jardins-hacienda-2-maquette/plan-images.json",
+  "attendus": 7,
+  "recus": 7,
+  "planches": [
+    "planche.jpg"
+  ],
+  "inconnus": [],
+  "manquants": [],
+  "a_regenerer": [],
+  "images": [
+    {
+      "nom": "reserver-ouverture",
+      "attendu": "table-nuit.jpg",
+      "fichier": "table-nuit.jpg",
+      "priorite": "Indispensable",
+      "problemes": [],
+      "indications": [
+        "mains : 0, doigts reconnus - (indicatif, à regarder)"
+      ],
+      "largeur": 1168,
+      "hauteur": 784,
+      "boites": [],
+      "mains": {
+        "annoncees": true,
+        "vues": 0,
+        "doigts": []
+      }
+    },
+    {
+      "nom": "reserver-ouverture",
+      "mobile": true,
+      "attendu": "table-nuit-mobile.jpg",
+      "fichier": "table-nuit-mobile.jpg",
+      "priorite": "Indispensable",
+      "problemes": [],
+      "indications": [
+        "mains : 0, doigts reconnus - (indicatif, à regarder)"
+      ],
+      "largeur": 784,
+      "hauteur": 1168,
+      "boites": [],
+      "mains": {
+        "annoncees": true,
+        "vues": 0,
+        "doigts": []
+      }
+    },
+    {
+      "nom": "offrir-ouverture",
+      "attendu": "kraft-cire.jpg",
+      "fichier": "kraft-cire.jpg",
+      "priorite": "Indispensable",
+      "problemes": [],
+      "indications": [
+        "mains : 0, doigts reconnus - (indicatif, à regarder)"
+      ],
+      "largeur": 1168,
+      "hauteur": 784,
+      "boites": [],
+      "mains": {
+        "annoncees": true,
+        "vues": 0,
+        "doigts": []
+      }
+    },
+    {
+      "nom": "offrir-ouverture",
+      "mobile": true,
+      "attendu": "kraft-cire-mobile.jpg",
+      "fichier": "kraft-cire-mobile.jpg",
+      "priorite": "Indispensable",
+      "problemes": [],
+      "indications": [
+        "mains : 0, doigts reconnus - (indicatif, à regarder)"
+      ],
+      "largeur": 784,
+      "hauteur": 1168,
+      "boites": [],
+      "mains": {
+        "annoncees": true,
+        "vues": 0,
+        "doigts": []
+      }
+    },
+    {
+      "nom": "fetes-braises",
+      "attendu": "braises.jpg",
+      "fichier": "braises.jpg",
+      "priorite": "Conseillée",
+      "problemes": [],
+      "indications": [
+        "mains : 0, doigts reconnus - (indicatif, à regarder)"
+      ],
+      "largeur": 1168,
+      "hauteur": 784,
+      "boites": [],
+      "mains": {
+        "annoncees": true,
+        "vues": 0,
+        "doigts": []
+      }
+    },
+    {
+      "nom": "fetes-bougies",
+      "attendu": "bougies.jpg",
+      "fichier": "bougies.jpg",
+      "priorite": "Conseillée",
+      "problemes": [],
+      "indications": [],
+      "largeur": 1168,
+      "hauteur": 784,
+      "boites": []
+    },
+    {
+      "nom": "introuvable",
+      "attendu": "introuvable.jpg",
+      "fichier": "introuvable.jpg",
+      "priorite": "Conseillée",
+      "problemes": [],
+      "indications": [
+        "mains : 0, doigts reconnus - (indicatif, à regarder)"
+      ],
+      "largeur": 1168,
+      "hauteur": 784,
+      "boites": [],
+      "mains": {
+        "annoncees": true,
+        "vues": 0,
+        "doigts": []
+      }
+    }
+  ]
+}

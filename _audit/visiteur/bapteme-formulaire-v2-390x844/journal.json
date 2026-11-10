@@ -1,0 +1,153 @@
+{
+ "mission": "bapteme-formulaire-v2",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.5,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 7452,
+   "titres": [
+    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Passer à l’été",
+    "Menu",
+    "Hiver",
+    "Été",
+    "Réserver au coin du feu",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "menu",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 5.5,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 7452,
+   "titres": [
+    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Passer à l’été",
+    "Fermer",
+    "Accueil",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver une table",
+    "Appeler 06 18 21 28 10",
+    "Réduire les animations",
+    "Hiver",
+    "Été",
+    "Réserver au coin du feu"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": true
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Les fêtes",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 8,
+   "adresse": "/les-fetes",
+   "y": 0,
+   "hauteurPage": 5070,
+   "titres": [
+    "h1 Les fêtes à table"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Passer à l’été",
+    "Menu",
+    "Réserver la soirée",
+    "Réserver le déjeuner de Noël",
+    "Baptême, anniversaire, mariage : demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "cliquer demander une réception",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 10.3,
+   "adresse": "/infos-pratiques?sujet=reception#ecrire",
+   "y": 3042,
+   "hauteurPage": 5539,
+   "titres": [
+    "h2 Une demande"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-3.png"
+  }
+ ]
+}

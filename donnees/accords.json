@@ -1,6 +1,6 @@
 { "signature": "Le vin de l'accord", "choisi": "esturgeon",
   "plats": [
-    { "id": "amuse", "moment": "Amuse-bouche", "plat": "Bouchée gourmande", "detail": "et coupe de Champagne",
+    { "id": "amuse", "moment": "Pour commencer", "plat": "Amuse-bouche", "detail": "et coupe de Champagne",
       "accord": { "type": "petillant", "nom": "Coupe de Champagne", "region": "Servie avec l'amuse-bouche", "couleur": "#e8d38c" } },
     { "id": "foie-gras", "moment": "Entrée", "plat": "Velours de foie gras", "detail": "Éclats de truffe noire",
       "accord": { "type": "petillant", "nom": "Champagne blanc de blancs", "region": "Champagne", "couleur": "#ecdc9a" } },

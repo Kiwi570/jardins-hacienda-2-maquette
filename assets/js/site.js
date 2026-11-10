@@ -2,7 +2,7 @@
    le mode calme, les boucles et la bibliothèque d'effets ; les modules de la bibliothèque (dossier modules/) sont
    chargés ici, page par page, et réglés sans être réécrits. Effets propres (data-effet) : plateau, signature, braises,
    decompte, carton, plume, numero (et ceux des modules : vapeur, carrousel…). */
-import { demarrer, boucle, etat, versObjet, quand, aller } from './socle/index.js?v=3';
+import { demarrer, boucle, etat, versObjet, quand, aller } from './socle/index.js?v=4';
 
 const gsap = window.gsap;
 const $ = (s, r = document) => r.querySelector(s);
@@ -10,35 +10,54 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
 /* Modules de la bibliothèque : chemins écrits en clair pour que le générateur leur applique le numéro de version. */
 const MODULES = {
-  'plat-fumant': () => import('./modules/plat-fumant/module.js?v=3'),
-  'objet-a-faire-tourner': () => import('./modules/objet-a-faire-tourner/module.js?v=3'),
-  'assiette-qui-se-dresse': () => import('./modules/assiette-qui-se-dresse/module.js?v=3'),
-  'carrousel-3d': () => import('./modules/carrousel-3d/module.js?v=3'),
-  'ardoise-a-la-craie': () => import('./modules/ardoise-a-la-craie/module.js?v=3'),
-  'carte-du-restaurant': () => import('./modules/carte-du-restaurant/module.js?v=3'),
-  'accords-mets-et-vins': () => import('./modules/accords-mets-et-vins/module.js?v=3'),
-  'horaires-ouvert-maintenant': () => import('./modules/horaires-ouvert-maintenant/module.js?v=3'),
-  'plan-de-salle': () => import('./modules/plan-de-salle/module.js?v=3'),
-  'reservation-de-table': () => import('./modules/reservation-de-table/module.js?v=3'),
-  'carte-cadeau-qui-se-compose': () => import('./modules/carte-cadeau-qui-se-compose/module.js?v=3'),
+  'plat-fumant': () => import('./modules/plat-fumant/module.js?v=4'),
+  'objet-a-faire-tourner': () => import('./modules/objet-a-faire-tourner/module.js?v=4'),
+  'assiette-qui-se-dresse': () => import('./modules/assiette-qui-se-dresse/module.js?v=4'),
+  'carrousel-3d': () => import('./modules/carrousel-3d/module.js?v=4'),
+  'ardoise-a-la-craie': () => import('./modules/ardoise-a-la-craie/module.js?v=4'),
+  'carte-du-restaurant': () => import('./modules/carte-du-restaurant/module.js?v=4'),
+  'accords-mets-et-vins': () => import('./modules/accords-mets-et-vins/module.js?v=4'),
+  'horaires-ouvert-maintenant': () => import('./modules/horaires-ouvert-maintenant/module.js?v=4'),
+  'plan-de-salle': () => import('./modules/plan-de-salle/module.js?v=4'),
+  'reservation-de-table': () => import('./modules/reservation-de-table/module.js?v=4'),
+  'carte-cadeau-qui-se-compose': () => import('./modules/carte-cadeau-qui-se-compose/module.js?v=4'),
 };
 /* Réglages des modules pour ce client (options d'init, jamais le code des modules). */
 const OPTIONS = {
-  'plat-fumant': { densite: 0.85, hauteur: 0.55, vitesse: 0.85, intensite: 0.95, qualite: 0.3 },
-  'objet-a-faire-tourner': { repos: 0.22, defilement: 0.004, amorti: 1.2 },
+  'plat-fumant': { densite: 0.7, hauteur: 0.55, vitesse: 0.85, intensite: 1, qualite: 0.3 },
+  'objet-a-faire-tourner': { repos: 0.22, defilement: 0.004, amorti: 1.2, lumiere: 'aucune' },
   /* Test « vrai visiteur » (la scène retenait 4 défilements) et fluidité : épinglage raccourci. */
-  'assiette-qui-se-dresse': { longueur: 1.4 },
+  'assiette-qui-se-dresse': { longueur: 0.85 },
   /* v2 : l'ardoise s'écrit deux fois plus vite (le visiteur attendait les prix environ 4 s). */
-  'ardoise-a-la-craie': { vitesse: 2 },
+  'ardoise-a-la-craie': { vitesse: 3 },
   /* Fluidité (audit, processeur ralenti 4 fois) : rotation au défilement réduite, sans retard. */
   'carrousel-3d': { tour: 72, lissage: 0, face: 75, inclinaison: -3 },
   'accords-mets-et-vins': { textes: { avec: 'Avec', signature: "Le vin de l'accord", groupe: 'Les plats du menu' } },
   'plan-de-salle': { reservation: '/reserver#formulaire', couverts: 2, textes: { choix: '{nom} · {zone} · {places} places. ', prise: 'Indisponible (simulation)' } },
   'carte-cadeau-qui-se-compose': { cachet: 'JH', min: 25, max: 200, textes: {
-    statut: 'Carte prête\u00a0: {quoi}{pourQui}, total {total}. Valable 6 mois, à présenter à l’arrivée\u00a0; le restaurant vous dit comment la recevoir (mode de remise à confirmer). {simule}',
+    pourQui: ', à remettre à {pour}',
+    statut: 'Carte prête{pourQui}\u00a0: {quoi}, total {total}. Valable 6 mois\u00a0; pour la recevoir, appelez-nous au 06\u00a018\u00a021\u00a028\u00a010. {simule}',
   } },
 };
 const apis = {};
+
+/* Soirées d'exception (Saint-Sylvestre : jeudi 31 décembre au soir). Le module ne connaît que des fermetures par jour de la
+   semaine (M27) : le service fermé ce jour-là s'ouvre dans les réglages, et ses autres dates restent sans créneau libre
+   (« complet »), sauf les dates d'exception. Sans exception déclarée, les réglages du JSON sont gardés tels quels. */
+function reglagesResa(el) {
+  let R = null; try { R = JSON.parse(el.querySelector('script[data-reservation]')?.textContent || 'null'); } catch {}
+  const ex = (R && R.ouvertures_exceptionnelles) || [];
+  if (!ex.length) return {};
+  const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  const jour = (iso) => JOURS[new Date(iso + 'T12:00:00Z').getUTCDay()];
+  const F = R.fermetures || {}, S = { ...(F.services || {}) }, rouverts = [];
+  for (const e of ex) { const j = jour(e.date); if ((S[j] || []).includes(e.service)) { S[j] = S[j].filter((x) => x !== e.service); rouverts.push([j, e.service]); } }
+  const serviceDe = (t) => { const m = +t.slice(0, 2) * 60 + +t.slice(3, 5); return Object.entries(R.services || {}).find(([, v]) => { const d = +v.debut.slice(0, 2) * 60 + +v.debut.slice(3, 5), f = +v.fin.slice(0, 2) * 60 + +v.fin.slice(3, 5); return m >= d && m <= f; })?.[0]; };
+  return {
+    reglages: { ...R, fermetures: { ...F, services: S } },
+    complet: (iso, t) => { const sv = serviceDe(t); return rouverts.some(([j, s2]) => j === jour(iso) && s2 === sv) && !ex.some((e) => e.date === iso && e.service === sv); },
+  };
+}
 
 async function chargerModules() {
   for (const el of $$('[data-module]')) {
@@ -46,7 +65,7 @@ async function chargerModules() {
     if (!MODULES[nom] || nom === 'fil-conducteur') continue;
     try {
       const { init } = await MODULES[nom]();
-      apis[nom] = await init(el, OPTIONS[nom] || {});
+      apis[nom] = await init(el, nom === 'reservation-de-table' ? { ...(OPTIONS[nom] || {}), ...reglagesResa(el) } : (OPTIONS[nom] || {}));
       /* Accords : la liste devient un groupe de boutons radio (role="radiogroup") ; ses <li> ne sont plus des
          éléments de liste pour les lecteurs d'écran (axe « listitem »). */
       if (nom === 'accords-mets-et-vins') for (const li of el.querySelectorAll('.ame__liste > li')) li.setAttribute('role', 'none');
@@ -62,13 +81,38 @@ async function chargerModules() {
 }
 
 /* Lien « Un plat végétarien ? » de l'ardoise : la carte se filtre (API du module carte-du-restaurant). */
+/* v4 (famille recomposition) : quand on filtre la carte, les plats restants glissent à leur nouvelle place (FLIP)
+   et ceux qui reviennent apparaissent ; les positions sont relevées juste avant le filtre du module. */
+function recompositionCarte() {
+  const carte = $('.carte-resto'); if (!carte || !gsap || etat.calme) return () => {};
+  const plats = $$('.carte-resto__plat', carte);
+  let avant = null;
+  const relever = () => { avant = new Map(plats.filter((p) => !p.hidden).map((p) => [p, p.getBoundingClientRect()])); };
+  const jouer = () => requestAnimationFrame(() => {
+    if (!avant) return;
+    for (const p of plats) {
+      if (p.hidden) continue;
+      const b = p.getBoundingClientRect(), a = avant.get(p);
+      if (a) gsap.fromTo(p, { x: a.left - b.left, y: Math.max(-240, Math.min(240, a.top - b.top)) }, { x: 0, y: 0, duration: 0.55, ease: 'power3.out', clearProps: 'transform' });
+      else gsap.fromTo(p, { autoAlpha: 0, scale: 0.94 }, { autoAlpha: 1, scale: 1, duration: 0.45, ease: 'power2.out', clearProps: 'transform,opacity,visibility' });
+    }
+    avant = null;
+  });
+  const barre = $('.carte-resto__barre', carte);
+  if (barre) { barre.addEventListener('click', (e) => { if (e.target.closest('[data-filtre], [data-tout-afficher]')) { relever(); setTimeout(jouer, 0); } }, true); }
+  carte.dataset.effet = carte.dataset.effet || 'recomposition';
+  return () => { relever(); setTimeout(jouer, 0); };
+}
+
 function filtresLiens() {
   const api = apis['carte-du-restaurant'];
+  const avantFiltre = recompositionCarte();
   for (const a of $$('[data-filtre-lien]')) {
     a.addEventListener('click', (e) => {
       if (!api || !api.filtrer) return;
       e.preventDefault(); e.stopPropagation();
       history.pushState(null, '', a.getAttribute('href'));
+      avantFiltre();
       api.filtrer([a.dataset.filtreLien]);
       /* Test « vrai visiteur » : le premier plat filtré (nom et prix) arrive en haut, sous l'en-tête et la barre collée. */
       /* Après le ScrollTrigger.refresh() que déclenche la carte raccourcie (il remettrait la page où elle était). */
@@ -91,7 +135,7 @@ function ficelle() {
   if (!main || !$('[data-fil]', main)) return;
   quand('pret', async () => {
     try {
-      const { init } = await import('./modules/fil-conducteur/module.js?v=3');
+      const { init } = await import('./modules/fil-conducteur/module.js?v=4');
       main.dataset.module = 'fil-conducteur';
       await init(main, { onde: 8, boucle: 30, regard: 0.6, rail: false, lissage: 0 });
     } catch (e) { console.warn('fil', e); }
@@ -130,7 +174,7 @@ function signature() {
 
 /* Braises qui montent au-dessus de la salle (canvas léger, seulement à l'écran). */
 function braises() {
-  const cv = $('.cheminee__braises');
+  const cv = $('[data-effet="braises"]');
   if (!cv) return;
   const ctx = cv.getContext('2d');
   const n = matchMedia('(max-width: 760px)').matches ? 18 : 30;
@@ -163,10 +207,8 @@ function decomptes() {
     if (n < 0) { el.textContent = el.dataset.passe || 'A eu lieu'; continue; }
     if (n === 0) { el.textContent = el.dataset.aujourdhui || "Aujourd'hui"; continue; }
     if (etat.calme || !gsap || !window.ScrollTrigger) { cible.textContent = n; continue; }
-    const o = { v: 0 };
-    cible.textContent = '0';
-    gsap.to(o, { v: n, duration: 1.4, ease: 'power2.out', onUpdate: () => { cible.textContent = Math.round(o.v); },
-      scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+    /* Le nombre de jours est écrit d'emblée (jamais « Dans 0 jours » sur une capture ou pour un lecteur pressé). */
+    cible.textContent = n;
     gsap.fromTo(el, { '--decompte': 0 }, { '--decompte': 1, ease: 'none', scrollTrigger: { trigger: el, start: 'top 95%', end: 'bottom 30%', scrub: true } });
   }
 }
@@ -222,7 +264,7 @@ async function statutAccueil() {
   const lien = $('[data-statut-accueil]'), src = $('[data-horaires-accueil]');
   if (!lien || !src) return;
   try {
-    const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=3');
+    const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=4');
     const d = H.preparer(JSON.parse(src.textContent));
     const a = d.adresses[0];
     const maj = () => { const st = H.statut(a, H.maintenant(a.fuseau)); lien.textContent = st.texte; lien.dataset.etat = st.etat; };
@@ -236,7 +278,7 @@ async function envolCarton() {
   if (!recap || !plan || !table || etat.calme) return;
   quand('pret', async () => {
     try {
-      const { envol } = await import('./modules/envol-vers-le-panier/module.js?v=3');
+      const { envol } = await import('./modules/envol-vers-le-panier/module.js?v=4');
       const depuis = $('.pds__repere', plan) || $(`[data-table="${CSS.escape(table)}"]`, plan) || $('.carton', document);
       if (!depuis) return;
       setTimeout(() => envol({ depuis, vers: recap, forme: 'carte' }), 900);
@@ -295,6 +337,215 @@ function formerTitre(delai = 0) {
     onComplete: () => { gsap.set(lettresTitre, { clearProps: 'transform,opacity,textShadow' }); defaireTitre(); } });
 }
 
+/* ---------- v4 « Deux saisons, une maison » ---------- */
+/* Saison : html[data-saison] (décidée avant l'affichage par le script critique), cadran braise et soleil à faire glisser
+   avec élan, boutons Hiver et Été, interrupteur de l'en-tête ; choix gardé dans le navigateur. */
+const SAISONS = ['hiver', 'ete'];
+function poserSaison(s, { garder = true } = {}) {
+  if (!SAISONS.includes(s)) return;
+  /* Les photos de l'autre saison sont retirées du rendu après le fondu (la vapeur WebGL de l'hiver s'arrête l'été) ;
+     celles de la saison choisie reviennent avant le fondu. */
+  const photos = $$('[data-saison-photo]');
+  let revenu = false;
+  for (const el of photos) if (el.dataset.saisonPhoto === s && el.hidden) { el.hidden = false; revenu = true; }
+  if (revenu) void document.body.offsetWidth;
+  clearTimeout(poserSaison.t);
+  poserSaison.t = setTimeout(() => { for (const el of photos) if (el.dataset.saisonPhoto !== document.documentElement.getAttribute('data-saison')) el.hidden = true; }, 1000);
+  document.documentElement.setAttribute('data-saison', s);
+  if (garder) { try { localStorage.setItem('jh-saison', s); } catch {} }
+  for (const b of $$('[data-saison-choix]')) b.setAttribute('aria-pressed', String(b.dataset.saisonChoix === s));
+  for (const b of $$('[data-saison-bascule]')) { b.setAttribute('aria-pressed', String(s === 'ete')); b.setAttribute('aria-label', s === 'ete' ? 'Passer à l’hiver' : 'Passer à l’été'); }
+  for (const el of $$('[data-saison-photo]')) el.style.removeProperty('opacity');
+  placerCurseur(s === 'ete' ? 1 : 0);
+  window.dispatchEvent(new CustomEvent('saison', { detail: s }));
+}
+let placerCurseur = () => {};
+function saisons() {
+  const s0 = document.documentElement.getAttribute('data-saison') || 'hiver';
+  for (const b of $$('[data-saison-choix]')) b.addEventListener('click', () => poserSaison(b.dataset.saisonChoix));
+  for (const b of $$('[data-saison-bascule]')) b.addEventListener('click', () => poserSaison(document.documentElement.getAttribute('data-saison') === 'ete' ? 'hiver' : 'ete'));
+  const cadran = $('.cadran-saison'), svg = cadran && $('svg', cadran), curseur = cadran && $('[data-cadran-curseur]', cadran);
+  if (svg && curseur) {
+    /* Le curseur glisse sur l'arc (0 : braise, 1 : soleil) ; pendant le geste, les deux photos se fondent. */
+    let p = s0 === 'ete' ? 1 : 0;
+    placerCurseur = (x) => { p = Math.max(0, Math.min(1, x)); const a = Math.PI * (1 - p); curseur.setAttribute('transform', `translate(${120 + 100 * Math.cos(a)} ${120 - 100 * Math.sin(a)})`); cadran.style.setProperty('--p', p.toFixed(3)); };
+    placerCurseur(p);
+    const fondre = (x) => { for (const el of $$('[data-saison-photo]')) { el.hidden = false; el.style.visibility = 'visible'; el.style.opacity = String(el.dataset.saisonPhoto === 'ete' ? x : 1 - x); } };
+    let actif = false, dernier = 0, vitesse = 0, tPrec = 0;
+    const lire = (e) => { const r = svg.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width * 240 - 120, y = (e.clientY - r.top) / r.height * 132 - 120; return 1 - Math.atan2(-y, x) / Math.PI; };
+    svg.addEventListener('pointerdown', (e) => { actif = true; svg.setPointerCapture(e.pointerId); dernier = lire(e); tPrec = performance.now(); vitesse = 0; placerCurseur(dernier); fondre(p); });
+    svg.addEventListener('pointermove', (e) => { if (!actif) return; const x = lire(e), t = performance.now(); vitesse = (x - dernier) / Math.max(1, t - tPrec) * 1000; dernier = x; tPrec = t; placerCurseur(x); fondre(p); });
+    const lacherCurseur = () => {
+      if (!actif) return; actif = false;
+      /* Élan : un geste vif emporte le curseur jusqu'au bout dans son sens, sinon il rejoint le plus proche. */
+      const cible = Math.abs(vitesse) > 1.2 ? (vitesse > 0 ? 1 : 0) : p > 0.5 ? 1 : 0;
+      for (const el of $$('[data-saison-photo]')) el.style.removeProperty('visibility');
+      if (gsap && !etat.calme) gsap.to({ v: p }, { v: cible, duration: 0.45, ease: 'power3.out', onUpdate() { placerCurseur(this.targets()[0].v); fondre(p); }, onComplete: () => poserSaison(cible ? 'ete' : 'hiver') });
+      else poserSaison(cible ? 'ete' : 'hiver');
+    };
+    svg.addEventListener('pointerup', lacherCurseur); svg.addEventListener('pointercancel', lacherCurseur);
+    svg.addEventListener('click', (e) => { if (Math.abs(vitesse) < 0.01 && !actif) poserSaison(lire(e) > 0.5 ? 'ete' : 'hiver'); });
+  }
+  poserSaison(s0, { garder: false });
+  /* Fluidité de la bascule : les photos de l'autre saison (ouverture, plongée) se chargent et se décodent au repos,
+     pour que le fondu ne décode rien au moment du geste. */
+  const prechargeur = () => { for (const img of $$('.ouv-saisons [data-saison-photo] img, .table__plongee [data-saison-photo] img')) { img.loading = 'eager'; img.decode?.().catch(() => {}); } };
+  quand('pret', () => ('requestIdleCallback' in window ? requestIdleCallback(prechargeur, { timeout: 4000 }) : setTimeout(prechargeur, 2500)));
+}
+
+/* La table qui s'agrandit (famille recomposition) : 2, 12, 40 ou 120 invités ; la table s'allonge, les chaises se comptent,
+   la grille de photos se recompose et l'espace qui convient s'affiche. Le lien préremplit la demande de réception. */
+function tableAgrandit() {
+  const z = $('[data-effet="table-agrandit"]'); if (!z) return;
+  const paliers = $('input[type="range"]', z).dataset.paliers.split(',').map(Number);
+  const curseur = $('input[type="range"]', z), sortie = $('[data-invites]', z), chaises = $('[data-chaises]', z), plateauT = $('.recevoir__plateau', z);
+  const photos = $$('[data-photo]', z), lien = $('[data-lien-reception]', z);
+  const NS = 'http://www.w3.org/2000/svg';
+  const montrer = (i, anime = true) => {
+    const n = paliers[i];
+    curseur.value = String(i); curseur.setAttribute('aria-valuetext', `${n} invités`);
+    sortie.textContent = String(n);
+    for (const b of $$('[data-palier]', z)) b.setAttribute('aria-pressed', String(+b.dataset.palier === i));
+    for (const e of $$('[data-espace]', z)) e.hidden = +e.dataset.espace !== i;
+    /* Table : de 2 places (ronde) à une longue table ; une chaise dessinée par place jusqu'à 24, puis « × n ». */
+    const l = [90, 300, 440, 480][i], x = 300 - l / 2;
+    plateauT.setAttribute('x', String(x)); plateauT.setAttribute('width', String(l)); plateauT.setAttribute('rx', i === 0 ? '30' : '26');
+    chaises.replaceChildren();
+    const k = Math.min(n, 24), parRang = Math.ceil(k / 2);
+    for (let j = 0; j < k; j++) {
+      const rang = j < parRang ? 0 : 1, pos = rang ? j - parRang : j, nb = rang ? k - parRang : parRang;
+      const c = document.createElementNS(NS, 'circle');
+      c.setAttribute('cx', String(x + (l * (pos + 0.5)) / nb)); c.setAttribute('cy', rang ? '160' : '60'); c.setAttribute('r', i === 3 ? '9' : '13');
+      c.style.setProperty('--d', `${j * 18}ms`); chaises.append(c);
+    }
+    if (n > 24) { const t = document.createElementNS(NS, 'text'); t.setAttribute('x', '300'); t.setAttribute('y', '206'); t.setAttribute('text-anchor', 'middle'); t.textContent = `${n} couverts`; chaises.append(t); }
+    /* Recomposition : la photo du palier passe en grand (FLIP). */
+    const avant = photos.map((p) => p.getBoundingClientRect());
+    photos.forEach((p) => p.classList.toggle('est-choisie', +p.dataset.photo === i));
+    if (anime && gsap && !etat.calme) photos.forEach((p, k2) => {
+      const b = p.getBoundingClientRect(), a = avant[k2];
+      if (!b.width) return;
+      gsap.fromTo(p, { x: a.left - b.left, y: a.top - b.top, scaleX: a.width / b.width, scaleY: a.height / b.height, transformOrigin: '0 0' }, { x: 0, y: 0, scaleX: 1, scaleY: 1, duration: 0.6, ease: 'power3.out', clearProps: 'transform' });
+    });
+    if (lien) lien.href = lien.href.replace(/invites=\d+/, `invites=${n}`);
+  };
+  curseur.addEventListener('input', () => montrer(+curseur.value));
+  for (const b of $$('[data-palier]', z)) b.addEventListener('click', () => montrer(+b.dataset.palier));
+  montrer(+curseur.value, false);
+}
+
+/* Réserver (v4) : le formulaire d'abord, le plan ensuite et facultatif ; les couverts se règlent une seule fois
+   (dans le formulaire : le plan les reprend pour estomper les tables trop petites) ; la table choisie revient au
+   formulaire sans changer les couverts ; à la confirmation, une carte de placement se pose sous une cloche. */
+function reservationV4() {
+  const resa = $('[data-module="reservation-de-table"]'), plan = $('[data-module="plan-de-salle"]');
+  if (!resa) return;
+  const couvForm = $('[name="couverts"]', resa), couvPlan = plan && $('#pds-couverts', plan);
+  const synchro = () => { if (couvForm && couvPlan && couvPlan.value !== couvForm.value) { couvPlan.value = couvForm.value; couvPlan.dispatchEvent(new Event('input', { bubbles: true })); couvPlan.dispatchEvent(new Event('change', { bubbles: true })); } };
+  if (couvForm) { ['input', 'change'].forEach((t) => couvForm.addEventListener(t, synchro)); resa.addEventListener('click', (e) => { if (e.target.closest('[data-moins], [data-plus]')) setTimeout(synchro, 0); }); setTimeout(synchro, 300); }
+  if (plan) plan.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href*="table="]'); if (!a) return;
+    const u = new URL(a.href, location.href); u.searchParams.delete('couverts');
+    if (couvForm && couvForm.value) u.searchParams.set('couverts', couvForm.value);
+    a.href = u.pathname + u.search + u.hash;
+  }, true);
+  /* Plan agrandissable sur téléphone. */
+  const scene = plan && $('.pds__scene', plan);
+  if (scene && matchMedia('(max-width: 760px)').matches) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'pds__agrandir'; b.textContent = 'Agrandir le plan'; b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => { const on = !scene.classList.contains('est-agrandi'); scene.classList.toggle('est-agrandi', on); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Réduire le plan' : 'Agrandir le plan'; });
+    scene.before(b);
+  }
+  resa.addEventListener('reservation:envoyee', (e) => {
+    const d = e.detail || {}, recap = $('[data-resa-recap]', resa); if (!recap) return;
+    const jour = d.date ? new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(d.date + 'T12:00:00Z')) : '';
+    const heure = d.heure ? d.heure.replace(':00', ' h').replace(':', ' h ') : '';
+    const n = +d.couverts || 0;
+    recap.querySelector('.placement')?.remove();
+    const carte = document.createElement('div'); carte.className = 'placement'; carte.setAttribute('aria-hidden', 'true'); carte.dataset.effet = 'placement';
+    carte.innerHTML = `<p class="placement__carton"><span>Réservé</span><strong>${jour}${heure ? ' · ' + heure : ''}</strong><span>${n} couvert${n > 1 ? 's' : ''}${d.table ? ' · table ' + d.table : ''}</span></p><svg class="placement__cloche" viewBox="0 0 120 70"><path d="M8 62 Q 10 14 60 12 Q 110 14 112 62 Z" fill="#b8925a"/><path d="M4 62 H116" stroke="#7a5523" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="9" r="6" fill="#7a5523"/></svg>`;
+    recap.prepend(carte);
+    /* Sur le plan aussi, la table choisie reçoit son petit carton « Réservé ». */
+    /* Sur le plan aussi : l'étiquette posée sur la table choisie devient le carton « Réservé · jour · heure · couverts ». */
+    const rep = d.table && $('.pds__repere');
+    if (rep && !rep.hidden) {
+      rep.classList.add('est-reserve');
+      rep.querySelector('b').textContent = 'Réservé';
+      const jc = d.date ? new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(d.date + 'T12:00:00Z')) : '';
+      rep.querySelector('.pds__repere-etiquette > span').textContent = `${jc}${heure ? ' · ' + heure : ''} · ${n} couvert${n > 1 ? 's' : ''}`;
+    }
+    if (etat.calme) carte.classList.add('est-pose');
+    else requestAnimationFrame(() => requestAnimationFrame(() => carte.classList.add('est-pose')));
+  });
+}
+
+/* Infos pratiques (v4) : le cadran des horaires se manipule ; on choisit un jour, on fait glisser l'aiguille,
+   et l'on lit si le restaurant est ouvert à ce moment-là (mêmes données et mêmes calculs que le module). */
+async function cadranManipulable() {
+  const sec = $('[data-module="horaires-ouvert-maintenant"]'), cadran = sec && $('.horaires__cadran', sec), src = sec && $('script[data-horaires]', sec);
+  if (!cadran || !src || etat.calme) return;
+  const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=4');
+  const a = H.preparer(JSON.parse(src.textContent)).adresses[0];
+  const n0 = H.maintenant(a.fuseau);
+  const jours = Array.from({ length: 7 }, (_, k) => H.ajouter(n0.iso, k));
+  const zone = document.createElement('div'); zone.className = 'horaires__essai'; zone.dataset.effet = 'cadran-manipulable';
+  zone.innerHTML = `<p class="horaires__essai-titre">Faites glisser l’aiguille pour un autre moment</p><div class="horaires__essai-jours" role="group" aria-label="Jour">${jours.map((iso, k) => `<button type="button" data-iso="${iso}" aria-pressed="${k === 0}">${k === 0 ? 'Aujourd’hui' : H.JOURS[H.jourDe(iso)].replace(/^./, (x) => x.toUpperCase())}</button>`).join('')}</div><label class="horaires__essai-heure"><span>Heure</span><input type="range" min="0" max="1425" step="15" value="${Math.round(n0.min / 15) * 15}"></label><p class="horaires__essai-reponse" aria-live="polite"></p>`;
+  /* Dans la colonne du texte, sous le statut (la grille du module garde ses deux colonnes). */
+  ($('[data-horaires-statut]', sec) || cadran).after(zone);
+  /* Arrivée par un lien vers une section plus bas (#ecrire) : la zone ajoutée a poussé la section, on la ramène en haut. */
+  if (location.hash && performance.now() < 8000) {
+    let cible = null; try { cible = document.querySelector(decodeURIComponent(location.hash)); } catch {}
+    if (cible && (cadran.compareDocumentPosition(cible) & Node.DOCUMENT_POSITION_FOLLOWING)) requestAnimationFrame(() => aller(cible, { instant: true }));
+  }
+  const curseur = $('input', zone), rep = $('.horaires__essai-reponse', zone);
+  let iso = jours[0];
+  const dire = () => {
+    const m = +curseur.value, j = H.jour(a, iso), veille = H.jour(a, H.ajouter(iso, -1));
+    const ouvert = j.creneaux.some((c) => c[0] <= m && m < c[1]) || veille.creneaux.some((c) => c[1] > 1440 && m < c[1] - 1440);
+    const nom = iso === jours[0] ? 'Aujourd’hui' : H.JOURS[H.jourDe(iso)].replace(/^./, (x) => x.toUpperCase());
+    rep.textContent = `${nom} à ${H.heure(m)}\u00a0: ${ouvert ? 'ouvert' : 'fermé'}`;
+    rep.dataset.etat = ouvert ? 'ouvert' : 'ferme';
+    curseur.setAttribute('aria-valuetext', H.heure(m));
+    const aig = $('.horaires__aiguille', cadran); if (aig) aig.style.setProperty('--angle', (m / 1440 * 360).toFixed(2) + 'deg');
+    if (essai) { centre.innerHTML = `<b>${H.heure(m).replace(' h ', ':').replace(/ h$/, ':00')}</b><span>${nom}</span>`; cadran.classList.add('est-essai'); }
+  };
+  /* Au premier geste, le centre du cadran montre le moment choisi (et non plus l'heure de Paris). */
+  let essai = false;
+  const centre = document.createElement('p'); centre.className = 'horaires__centre horaires__centre--essai'; centre.setAttribute('aria-hidden', 'true'); cadran.append(centre);
+  zone.addEventListener('pointerdown', () => { essai = true; }, true); zone.addEventListener('keydown', () => { essai = true; }, true);
+  cadran.addEventListener('pointerdown', () => { essai = true; }, true);
+  /* Le module remet l'aiguille sur l'heure réelle à chaque minute : en mode essai, elle garde le moment choisi. */
+  const aiguille = $('.horaires__aiguille', cadran);
+  if (aiguille) new MutationObserver(() => { if (!essai) return; const v = (+curseur.value / 1440 * 360).toFixed(2) + 'deg'; if (aiguille.style.getPropertyValue('--angle') !== v) aiguille.style.setProperty('--angle', v); }).observe(aiguille, { attributes: true, attributeFilter: ['style'] });
+  for (const b of $$('[data-iso]', zone)) b.addEventListener('click', () => { iso = b.dataset.iso; for (const x of $$('[data-iso]', zone)) x.setAttribute('aria-pressed', String(x === b)); dire(); });
+  curseur.addEventListener('input', dire);
+  /* Glisser l'aiguille directement sur le cadran (minuit en haut, sens des aiguilles d'une montre). */
+  let actif = false;
+  const lire = (e) => { const r = cadran.getBoundingClientRect(); const ang = Math.atan2(e.clientX - (r.left + r.width / 2), -(e.clientY - (r.top + r.height / 2))); return Math.round((((ang / (2 * Math.PI)) + 1) % 1) * 1440 / 15) * 15 % 1440; };
+  cadran.style.touchAction = 'none'; cadran.style.cursor = 'grab';
+  cadran.addEventListener('pointerdown', (e) => { actif = true; cadran.setPointerCapture(e.pointerId); curseur.value = String(lire(e)); dire(); });
+  cadran.addEventListener('pointermove', (e) => { if (actif) { curseur.value = String(lire(e)); dire(); } });
+  ['pointerup', 'pointercancel'].forEach((t) => cadran.addEventListener(t, () => { actif = false; }));
+  setTimeout(dire, 1200);
+}
+
+/* Les fêtes : chaque plat du menu de Noël sort de sous sa cloche, l'un après l'autre, quand le menu arrive à l'écran. */
+function cloches() {
+  const liste = $('[data-effet="cloches"]'); if (!liste) return;
+  const items = $$('li', liste);
+  if (etat.calme || !('IntersectionObserver' in window)) { items.forEach((li) => li.classList.add('est-servi')); return; }
+  const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { io.disconnect(); items.forEach((li, i) => setTimeout(() => li.classList.add('est-servi'), 250 + i * 380)); } }, { threshold: 0.35 });
+  io.observe(liste);
+}
+
+/* Infos pratiques : la demande arrive préremplie depuis l'accueil (sujet, nombre d'invités). */
+function demandePreremplie() {
+  const f = $('[data-formulaire]'); if (!f) return;
+  const q = new URLSearchParams(location.search), n = q.get('invites');
+  const msg = f.querySelector('textarea'); if (n && msg && !msg.value) msg.value = `Réception pour ${n} personnes. `;
+  const inv = f.querySelector('[name="invites"]'); if (n && inv && !inv.value && /^\d{1,3}$/.test(n)) inv.value = n;
+}
+
 demarrer({
   preparer() {
     preparerTitre();
@@ -303,7 +554,12 @@ demarrer({
     braises();
     decomptes();
     ecritures();
-    ficelle();
+    saisons();
+    tableAgrandit();
+    demandePreremplie();
+    cloches();
+    reservationV4();
+    quand('pret', cadranManipulable);
     chargerModules();
   },
   /* Intro (environ 2 s) : la cloche, le nom qui s'écrit, un fil de vapeur ; puis la cloche rejoint l'objet
@@ -319,7 +575,7 @@ demarrer({
     /* Le titre se forme pendant que l'écran s'ouvre, hors de la timeline (elle ne s'allonge pas). */
     tl.call(() => formerTitre(0), null, 1.45);
     /* v3 : l'intro complète (environ 2,5 s) est pour l'accueil ; ailleurs elle passe trois fois plus vite. */
-    if (!$('.ouv-accueil')) tl.timeScale(3);
+    if (!$('.ouv-saisons')) tl.timeScale(3);
     return tl;
   },
   arrivee() { formerTitre(0.15); },

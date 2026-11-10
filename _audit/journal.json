@@ -205,6 +205,103 @@
       "effetsRetires": [],
       "grilleDispenses": {},
       "notes": "Demande : sections claires pour casser le sombre, carrousel « Recevoir » (animation, cartes trop petites), analyse des améliorations."
+    },
+    {
+      "version": 4,
+      "skill": "v10.9",
+      "perimetre": [
+        "accueil",
+        "la-carte",
+        "les-fetes",
+        "reserver",
+        "offrir",
+        "infos-pratiques",
+        "404"
+      ],
+      "etapes": [
+        {
+          "etape": "analyse, bibliothèque, directions et planche d'intention",
+          "budget": 20,
+          "debut": "2026-11-10T16:25:56+01:00",
+          "fin": "2026-11-10T16:29:00+01:00"
+        },
+        {
+          "etape": "plan v4, images du site et consignes Grok",
+          "budget": 15,
+          "debut": "2026-11-10T16:30:00+01:00",
+          "fin": "2026-11-10T16:36:00+01:00"
+        },
+        {
+          "etape": "construction : saisons, accueil en 6 sections, pages intérieures",
+          "budget": 60,
+          "debut": "2026-11-10T16:36:00+01:00",
+          "fin": "2026-11-10T16:49:00+01:00"
+        },
+        {
+          "etape": "vérifications ordinateur et téléphone, hiver et été ; accueil ramené à 7 écrans (plongée dans la scène)",
+          "budget": 20,
+          "debut": "2026-11-10T16:49:00+01:00",
+          "fin": "2026-11-10T17:08:00+01:00"
+        },
+        {
+          "etape": "audit complet, test visiteur, regard neuf et corrections",
+          "budget": 60,
+          "debut": "2026-11-10T17:08:00+01:00",
+          "fin": "2026-11-10T18:25:00+01:00"
+        },
+        {
+          "etape": "livraison : audit complet final, zip, aperçu, CHANGELOG, résumé",
+          "budget": 20,
+          "debut": "2026-11-10T18:25:00+01:00",
+          "fin": "2026-11-10T18:50:00+01:00"
+        }
+      ],
+      "attentes": [
+        {
+          "pour": "validation de la planche d'intention",
+          "debut": "2026-11-10T16:29:00+01:00",
+          "fin": "2026-11-10T16:30:00+01:00"
+        }
+      ],
+      "allersRetours": 0,
+      "modules": [
+        "plat-fumant",
+        "objet-a-faire-tourner",
+        "assiette-qui-se-dresse",
+        "carte-du-restaurant",
+        "ardoise-a-la-craie",
+        "accords-mets-et-vins",
+        "horaires-ouvert-maintenant",
+        "plan-de-salle",
+        "reservation-de-table",
+        "carte-cadeau-qui-se-compose",
+        "envol-vers-le-panier"
+      ],
+      "audit": {
+        "niveau": "complet (7 pages, 13 tailles, tous les modes)",
+        "echecsPremierPassage": 31,
+        "relances": 4,
+        "corrections": [
+          "accueil plus large que l'écran sur téléphone (assiettes qui tombent hors de la nappe) : nappe en overflow clip ; bouton Menu de nouveau atteignable",
+          "premier écran : téléphone à l'horizontale et sans JavaScript (cadran retiré sans JavaScript, titre réduit sur écran bas, hauteur sans l'en-tête)",
+          "zones tactiles du statut « ouvert maintenant » portées à 44 px",
+          "titre géant : marge au-dessus (boîte de la didone), contraste de la ligne de l'autre saison (couleur sourde et voile sous le titre)",
+          "cartes des fêtes en largeur : photo à la hauteur de la carte (mention « Illustration générée » qui chevauchait le bouton)",
+          "cloches de Noël masquées une fois levées (elles recouvraient le titre)",
+          "lien profond vers la demande de réception : section ramenée en haut après l'ajout du cadran manipulable",
+          "fluidité de l'accueil : vapeur du plateau retirée, ombres des assiettes fixes, photos de l'autre saison retirées du rendu après le fondu (17 % puis 12 % puis 6 à 7 % d'images lentes à 4 fois ralenti)",
+          "plateau : lumière qui suit la souris coupée (dérive sous la souris immobile)"
+        ]
+      },
+      "effetsRetires": [
+        "mots géants (bandeau)",
+        "ficelle dans la marge (fil-conducteur)",
+        "carrousel 3D (Recevoir)",
+        "cheminée en plein écran",
+        "plongée en section séparée (fondue dans la scène de la table pour tenir en 7 écrans)"
+      ],
+      "grilleDispenses": {},
+      "notes": "v4 « de A à Z » demandée après la v3 : plan journée (saisons), effets déjà vus retirés. Lecons/ vide (intégrées en v10.9). Test visiteur : 3 missions hors barème au premier passage (baptême, cadeau sur téléphone, premier écran téléphone), toutes dans le barème à la seconde passe. Regard neuf : Saint-Sylvestre non réservable (corrigé), mise en page des horaires (corrigée), photos et textes (corrigés). Non lancé : parcours:hauteur sur /reserver (le script perd les boutons des jours que le module redessine), vérifié à la main : 0 px de décalage ; Safari."
     }
   ]
 }

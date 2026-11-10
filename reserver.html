@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-v="3" data-curseur>
+<html lang="fr" data-v="4" data-saison="hiver" data-curseur>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -12,6 +12,10 @@
 var d = document.documentElement, ss = null, ls = null;
 try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
 d.classList.add('js');
+var saison = 'hiver';
+try { var mois = +new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', month: 'numeric' }).format(new Date()); saison = mois >= 5 && mois <= 9 ? 'ete' : 'hiver'; } catch (e) {}
+try { var choix = ls && ls.getItem('jh-saison'); if (choix === 'hiver' || choix === 'ete') saison = choix; } catch (e) {}
+d.setAttribute('data-saison', saison);
 var calme = false;
 try { calme = !!ls && ls.getItem('socle:calme') === 'oui'; } catch (e) {}
 if (!calme && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) calme = true;
@@ -41,18 +45,17 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 })();</script>
 <link rel="preload" href="/assets/fonts/bodoni-moda.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/socle.css?v=3">
-<link rel="stylesheet" href="/assets/js/modules/fil-conducteur/module.css?v=3">
-<link rel="stylesheet" href="/assets/js/modules/plan-de-salle/module.css?v=3">
-<link rel="stylesheet" href="/assets/js/modules/reservation-de-table/module.css?v=3">
-<link rel="stylesheet" href="/assets/js/modules/envol-vers-le-panier/module.css?v=3">
-<link rel="stylesheet" href="/assets/css/site.css?v=3">
-<link rel="modulepreload" href="/assets/js/site.js?v=3">
-<link rel="modulepreload" href="/assets/js/socle/index.js?v=3">
+<link rel="stylesheet" href="/assets/css/socle.css?v=4">
+<link rel="stylesheet" href="/assets/js/modules/plan-de-salle/module.css?v=4">
+<link rel="stylesheet" href="/assets/js/modules/reservation-de-table/module.css?v=4">
+<link rel="stylesheet" href="/assets/js/modules/envol-vers-le-panier/module.css?v=4">
+<link rel="stylesheet" href="/assets/css/site.css?v=4">
+<link rel="modulepreload" href="/assets/js/site.js?v=4">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=4">
 <script src="/assets/vendor/gsap.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/vendor/SplitText.min.js" defer></script>
-<script type="module" src="/assets/js/site.js?v=3"></script>
+<script type="module" src="/assets/js/site.js?v=4"></script>
 <meta name="theme-color" content="#15100c">
 <link rel="icon" href="/assets/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
@@ -91,6 +94,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
     </nav>
     <div class="entete-actions">
+      <button type="button" class="saison-mini" data-saison-bascule aria-pressed="false" aria-label="Passer à l’été"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="saison-mini__flamme" d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-3 2-5 3-7 0 2 1 3 2 3 0-2 0-4 0-6z"/><g class="saison-mini__soleil"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg></button>
       <a class="bouton" href="/reserver" data-libelle="Réserver">Réserver</a>
       <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="Menu" data-libelle-fermer="Fermer"><span data-libelle-bouton>Menu</span></button>
       <a class="menu-sansjs" href="#menu" data-menu-lien>Menu</a>
@@ -120,7 +124,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
 <main id="contenu" tabindex="-1">
-<section class="ouv-resa" id="debut" data-fil="gauche" data-grille="fil">
+<section class="ouv-resa" data-lueur id="debut" data-fil="gauche" data-grille="fil">
   <figure class="media ouv-resa__fond" data-grok style="--cadrage:70% 56%">
   <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/reserver-ouverture-mobile-640.webp 640w" sizes="100vw">
     <img src="/assets/images/grok/reserver-ouverture-1280.webp" srcset="/assets/images/grok/reserver-ouverture-640.webp 640w, /assets/images/grok/reserver-ouverture-1280.webp 1280w" sizes="100vw" alt="Coin de table dressée le soir : nappe crème, serviette sombre, verre et bougie" width="1280" height="720" fetchpriority="high" loading="eager" decoding="async">
@@ -130,84 +134,18 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <div class="ouv-resa__texte">
       <p class="surtitre" data-anime>Réservation</p>
       <h1 data-anime="lignes">Votre table</h1>
-      <p class="masque-ecran-tres-bas" data-anime>Choisissez votre table sur le plan, puis le jour et l&#39;heure. Une question, un groupe ? Appelez-nous.</p>
-      <p class="ouv-resa__actions"><a class="bouton" href="#plan" data-action-principale data-sans-transition>Choisissez votre table</a> <a class="bouton bouton--contour" href="#formulaire" data-sans-transition>Réserver sans choisir de table</a> <a class="ouv-resa__tel" href="tel:+33618212810" data-info-cle>06 18 21 28 10</a></p>
+      <p class="masque-ecran-tres-bas" data-anime>Le jour, l&#39;heure et le nombre de couverts d&#39;abord ; la table sur le plan ensuite, si vous le souhaitez. Une question, un groupe ? Appelez-nous.<span data-saison-seul="ete"> La terrasse et la piscine vous accueillent de juin à septembre ; le reste de l’année, la salle et sa cheminée.</span></p>
+      <p class="ouv-resa__actions"><a class="bouton" href="#formulaire" data-action-principale data-sans-transition>Choisir le jour</a> <a class="bouton bouton--contour" href="#plan" data-sans-transition>Choisir ma table</a> <a class="ouv-resa__tel" href="tel:+33618212810" data-info-cle>06 18 21 28 10</a></p>
     </div>
     <div class="carton" data-iris-centre aria-hidden="true">
       <span class="carton__pli"></span>
       <p class="carton__ecrit" data-effet="carton" data-grille="typo" data-texte="Votre table">Votre table</p>
-      <p class="carton__detail">au coin du feu</p>
+      <p class="carton__detail"><span data-saison-seul="hiver">au coin du feu</span><span data-saison-seul="ete">en terrasse, l’été</span></p>
     </div>
   </div>
 </section>
-<section class="pds" id="plan" data-module="plan-de-salle" data-reservation="/reserver#formulaire" data-fil="droite" data-effet="plan-3d" aria-labelledby="pds-titre">
-  <div class="pds__grille socle-cadre">
-    <div class="pds__tete">
-      <p class="socle-surtitre">Plan de la salle</p>
-      <h2 id="pds-titre" data-anime="lignes">Choisissez votre table</h2>
-      <p>Plan indicatif de la salle, d&#39;après les photos. Tables prises : simulation pour la maquette.</p>
-      <figure class="media pds__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/recevoir-salle-960.webp" srcset="/assets/images/recevoir-salle-480.webp 480w, /assets/images/recevoir-salle-640.webp 640w, /assets/images/recevoir-salle-960.webp 960w" sizes="(max-width: 760px) 92vw, 40vw" alt="La salle et ses tables rondes en verre, près des baies vitrées" width="960" height="1279" loading="lazy" decoding="async">
-  </picture>
-</figure>
-    </div>
-    <div class="pds__outils">
-      <div class="pds__filtres" role="group" aria-label="Zones de la salle" data-pds-filtres></div>
-      <div class="pds__couverts">
-        <label class="pds__libelle" for="pds-couverts">Couverts</label>
-        <div class="pds__qte">
-          <button type="button" data-pds-moins aria-label="Un couvert de moins" aria-controls="pds-couverts">−</button>
-          <input type="number" id="pds-couverts" value="2" min="1" max="10" step="1" inputmode="numeric">
-          <button type="button" data-pds-plus aria-label="Un couvert de plus" aria-controls="pds-couverts">+</button>
-        </div>
-      </div>
-    </div>
-    <div class="pds__scene" data-visuel><div class="pds__plan"><div class="pds__sol"><svg class="pds__svg" viewBox="0 0 1000 640" aria-hidden="true" focusable="false">
-  <defs>
-    <pattern id="pds-parquet" width="66" height="20" patternUnits="userSpaceOnUse"><rect class="pds__lame" width="66" height="20"/><path class="pds__joint" d="M0 19.5H66M24 0V20"/></pattern>
-    <pattern id="pds-dalles" width="44" height="44" patternUnits="userSpaceOnUse"><rect class="pds__dalle" width="44" height="44"/><path class="pds__joint" d="M0 43.5H44M43.5 0V44"/></pattern>
-    <radialGradient id="pds-braises" cx="0" cy=".5" r=".9"><stop offset="0" class="pds__lueur-a"/><stop offset="1" class="pds__lueur-b"/></radialGradient>
-    <linearGradient id="pds-jour" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="pds__jour-a"/><stop offset="1" class="pds__jour-b"/></linearGradient>
-  </defs>
-  <rect width="1000" height="640" fill="url(#pds-dalles)"/>
-  <rect class="pds__eau" x="926" y="40" width="54" height="560" rx="10"/>
-  <g class="pds__plantes"><circle cx="740" cy="42" r="17"/><circle cx="902" cy="40" r="11"/><circle cx="740" cy="600" r="17"/><circle cx="902" cy="604" r="11"/><circle cx="740" cy="404" r="9"/></g>
-  <rect x="20" y="20" width="680" height="600" fill="url(#pds-parquet)"/>
-  <g class="pds__zones">
-    <rect class="pds__zone" data-zone="cheminee" x="30" y="126" width="232" height="398" rx="18"/>
-    <rect class="pds__zone" data-zone="fenetre" x="252" y="30" width="438" height="150" rx="18"/>
-    <rect class="pds__zone" data-zone="grande-table" x="298" y="244" width="344" height="180" rx="18"/>
-    <rect class="pds__zone" data-zone="terrasse" x="714" y="22" width="204" height="596" rx="18"/>
-  </g>
-  <path class="pds__lumiere" d="M262 24H688L650 212H300Z" fill="url(#pds-jour)"/>
-  <ellipse cx="40" cy="330" rx="200" ry="160" fill="url(#pds-braises)"/>
-  <g class="pds__cheminee"><rect x="20" y="270" width="42" height="120" rx="4"/><path class="pds__feu" d="M38 354C30 338 46 330 40 312C54 326 56 342 48 354ZM46 354C44 346 52 342 52 332C58 340 58 350 54 354Z"/></g>
-  <g class="pds__bar"><rect x="36" y="568" width="224" height="36" rx="8"/><circle cx="66" cy="544" r="11"/><circle cx="116" cy="544" r="11"/><circle cx="166" cy="544" r="11"/><circle cx="216" cy="544" r="11"/></g>
-  <path class="pds__mur" d="M420 620H20V20H700V226M700 434V620H520"/>
-  <path class="pds__vitre" d="M262 20H684M700 232V428"/>
-  <g class="pds__etiquettes">
-    <text x="44" y="144">AU COIN DU FEU</text>
-    <text x="470" y="200" text-anchor="middle">LES BAIES VITRÉES</text>
-    <text x="470" y="414" text-anchor="middle">LA GRANDE TABLE</text>
-    <text x="816" y="590" text-anchor="middle">TERRASSE</text>
-    <text x="148" y="526" text-anchor="middle">BAR</text>
-    <text x="470" y="606" text-anchor="middle">ENTRÉE</text>
-  </g>
-</svg></div></div></div>
-    <div class="pds__panneau">
-      <ul class="pds__liste">
-        <li class="pds__item" data-table="1" data-zone="cheminee" data-places="2" data-forme="carree" data-x="150" data-y="210" data-l="58"><a class="pds__lien" href="/reserver?table=1&amp;couverts=2&amp;espace=salle#formulaire"><span class="pds__num">1</span><span class="pds__texte"><span class="pds__nom">Table 1</span><span class="pds__info"><span class="pds__zone-nom">Au coin du feu</span> · 2&nbsp;places</span><span class="pds__note">Fauteuils et peaux, près du feu</span></span></a></li><li class="pds__item" data-table="2" data-zone="cheminee" data-places="4" data-forme="carree" data-x="160" data-y="336" data-l="70"><a class="pds__lien" href="/reserver?table=2&amp;couverts=4&amp;espace=salle#formulaire"><span class="pds__num">2</span><span class="pds__texte"><span class="pds__nom">Table 2</span><span class="pds__info"><span class="pds__zone-nom">Au coin du feu</span> · 4&nbsp;places</span><span class="pds__note">La plus proche du feu</span></span></a></li><li class="pds__item" data-table="3" data-zone="cheminee" data-places="2" data-forme="carree" data-x="150" data-y="456" data-l="58" data-prise><span class="pds__lien"><span class="pds__num">3</span><span class="pds__texte"><span class="pds__nom">Table 3</span><span class="pds__info"><span class="pds__zone-nom">Au coin du feu</span> · 2&nbsp;places</span><span class="pds__etat">Déjà réservée (simulation)</span></span></span></li><li class="pds__item" data-table="4" data-zone="fenetre" data-places="4" data-forme="ronde" data-x="330" data-y="100" data-l="70"><a class="pds__lien" href="/reserver?table=4&amp;couverts=4&amp;espace=salle#formulaire"><span class="pds__num">4</span><span class="pds__texte"><span class="pds__nom">Table 4</span><span class="pds__info"><span class="pds__zone-nom">Les baies vitrées</span> · 4&nbsp;places</span><span class="pds__note">Table ronde en verre</span></span></a></li><li class="pds__item" data-table="5" data-zone="fenetre" data-places="6" data-forme="ronde" data-x="480" data-y="100" data-l="92"><a class="pds__lien" href="/reserver?table=5&amp;couverts=6&amp;espace=salle#formulaire"><span class="pds__num">5</span><span class="pds__texte"><span class="pds__nom">Table 5</span><span class="pds__info"><span class="pds__zone-nom">Les baies vitrées</span> · 6&nbsp;places</span><span class="pds__note">Table ronde en verre</span></span></a></li><li class="pds__item" data-table="6" data-zone="fenetre" data-places="2" data-forme="ronde" data-x="622" data-y="100" data-l="56" data-prise><span class="pds__lien"><span class="pds__num">6</span><span class="pds__texte"><span class="pds__nom">Table 6</span><span class="pds__info"><span class="pds__zone-nom">Les baies vitrées</span> · 2&nbsp;places</span><span class="pds__etat">Déjà réservée (simulation)</span></span></span></li><li class="pds__item" data-table="7" data-zone="grande-table" data-places="10" data-forme="longue" data-x="470" data-y="330" data-l="290" data-h="68"><a class="pds__lien" href="/reserver?table=7&amp;couverts=10&amp;espace=salle#formulaire"><span class="pds__num">7</span><span class="pds__texte"><span class="pds__nom">Table 7</span><span class="pds__info"><span class="pds__zone-nom">La grande table</span> · 10&nbsp;places</span><span class="pds__note">Pour une tablée</span></span></a></li><li class="pds__item" data-table="8" data-zone="fenetre" data-places="4" data-forme="ronde" data-x="330" data-y="520" data-l="70"><a class="pds__lien" href="/reserver?table=8&amp;couverts=4&amp;espace=salle#formulaire"><span class="pds__num">8</span><span class="pds__texte"><span class="pds__nom">Table 8</span><span class="pds__info"><span class="pds__zone-nom">Les baies vitrées</span> · 4&nbsp;places</span></span></a></li><li class="pds__item" data-table="9" data-zone="fenetre" data-places="4" data-forme="ronde" data-x="600" data-y="520" data-l="70"><a class="pds__lien" href="/reserver?table=9&amp;couverts=4&amp;espace=salle#formulaire"><span class="pds__num">9</span><span class="pds__texte"><span class="pds__nom">Table 9</span><span class="pds__info"><span class="pds__zone-nom">Les baies vitrées</span> · 4&nbsp;places</span></span></a></li><li class="pds__item" data-table="10" data-zone="terrasse" data-places="4" data-forme="ronde" data-x="818" data-y="146" data-l="74" data-prise><span class="pds__lien"><span class="pds__num">10</span><span class="pds__texte"><span class="pds__nom">Table 10</span><span class="pds__info"><span class="pds__zone-nom">Terrasse et piscine</span> · 4&nbsp;places</span><span class="pds__etat">Terrasse de juin à septembre</span></span></span></li><li class="pds__item" data-table="11" data-zone="terrasse" data-places="4" data-forme="ronde" data-x="818" data-y="316" data-l="74" data-prise><span class="pds__lien"><span class="pds__num">11</span><span class="pds__texte"><span class="pds__nom">Table 11</span><span class="pds__info"><span class="pds__zone-nom">Terrasse et piscine</span> · 4&nbsp;places</span><span class="pds__etat">Terrasse de juin à septembre</span></span></span></li><li class="pds__item" data-table="12" data-zone="terrasse" data-places="6" data-forme="longue" data-x="818" data-y="484" data-l="122" data-h="60" data-prise><span class="pds__lien"><span class="pds__num">12</span><span class="pds__texte"><span class="pds__nom">Table 12</span><span class="pds__info"><span class="pds__zone-nom">Terrasse et piscine</span> · 6&nbsp;places</span><span class="pds__etat">Terrasse de juin à septembre</span></span></span></li>
-      </ul>
-      <div class="pds__action">
-        <p class="pds__choix" aria-live="polite" data-pds-choix>Choisissez une table libre sur le plan ou dans la liste.</p>
-        <a class="socle-bouton socle-bouton--plein pds__reserver" href="/reserver#formulaire" data-pds-reserver aria-disabled="true">Réserver cette table</a>
-      </div>
-    </div>
-  </div>
-</section>
-<section class="resa clair" id="formulaire" data-module="reservation-de-table" data-fil="gauche" data-grille="retour" aria-labelledby="resa-titre">
-  <script type="application/json" data-reservation>{"fuseau":"Europe/Paris","delai_minutes":60,"jours_a_l_avance":60,"couverts_max":10,"telephone":"06 18 21 28 10","services":{"midi":{"libelle":"Midi","debut":"12:00","fin":"13:30","pas":15},"soir":{"libelle":"Soir","debut":"19:00","fin":"21:30","pas":15}},"fermetures":{"jours":["lundi","mardi"],"services":{"mercredi":["soir"],"jeudi":["soir"],"samedi":["midi"],"dimanche":["soir"]},"dates":[]},"espaces":[{"id":"salle","libelle":"En salle"},{"id":"terrasse","libelle":"En terrasse","mois":[6,7,8,9],"note":"selon la météo","hors_saison":"de juin à septembre"}],"complets":{},"complets_simules":true,"message_simule":"Réservation simulée : rien n'est envoyé dans cette maquette."}</script>
+<section class="resa clair" data-lueur id="formulaire" data-module="reservation-de-table" data-fil="gauche" data-grille="retour" aria-labelledby="resa-titre">
+  <script type="application/json" data-reservation>{"fuseau":"Europe/Paris","delai_minutes":60,"jours_a_l_avance":60,"couverts_max":10,"telephone":"06 18 21 28 10","services":{"midi":{"libelle":"Midi","debut":"12:00","fin":"13:30","pas":15},"soir":{"libelle":"Soir","debut":"19:00","fin":"21:30","pas":15}},"fermetures":{"jours":["lundi","mardi"],"services":{"mercredi":["soir"],"jeudi":["soir"],"samedi":["midi"],"dimanche":["soir"]},"dates":[]},"espaces":[{"id":"salle","libelle":"En salle"},{"id":"terrasse","libelle":"En terrasse","mois":[6,7,8,9],"note":"selon la météo","hors_saison":"de juin à septembre"}],"complets":{},"complets_simules":true,"message_simule":"Réservation simulée : rien n'est envoyé dans cette maquette.","ouvertures_exceptionnelles":[{"date":"2026-12-31","service":"soir","note":"Saint-Sylvestre"}]}</script>
   <noscript><style>.resa__jours{display:none}.resa__creneaux{min-height:0}.resa__compteur button{display:none}</style></noscript>
   <div class="resa__grille socle-cadre">
     <form class="resa__form" data-resa-form action="#" novalidate aria-labelledby="resa-titre">
@@ -274,10 +212,76 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
           <label><span>E-mail <span class="resa__facultatif">(facultatif)</span></span><input type="email" id="resa-email" name="email" autocomplete="email"></label>
         </div>
       </fieldset>
-      <p class="resa__mention">Vos coordonnées servent seulement à confirmer la réservation. Politique de confidentialité&nbsp;: à compléter. Disponibilités simulées pour la maquette.</p>
+      <p class="resa__mention">Vos coordonnées servent seulement à confirmer la réservation. Disponibilités simulées pour la maquette.</p>
       <button type="submit" class="resa__bouton">Vérifier ma réservation</button>
     </form>
     <aside class="resa__recap" data-resa-recap aria-label="Récapitulatif de la réservation"></aside>
+  </div>
+</section>
+<section class="pds" data-lueur id="plan" data-module="plan-de-salle" data-reservation="/reserver#formulaire" data-fil="droite" data-effet="plan-3d" aria-labelledby="pds-titre">
+  <div class="pds__grille socle-cadre">
+    <div class="pds__tete">
+      <p class="socle-surtitre">Plan de la salle</p>
+      <h2 id="pds-titre" data-anime="lignes">Choisir ma table (facultatif)</h2>
+      <p>Plan indicatif de la salle, d&#39;après les photos. Les tables indisponibles sont simulées pour la maquette.</p>
+      <figure class="media pds__photo" style="--cadrage:50% 50%">
+  <picture>
+    <img src="/assets/images/recevoir-salle-960.webp" srcset="/assets/images/recevoir-salle-480.webp 480w, /assets/images/recevoir-salle-640.webp 640w, /assets/images/recevoir-salle-960.webp 960w" sizes="(max-width: 760px) 92vw, 40vw" alt="La salle et ses tables rondes en verre, près des baies vitrées" width="960" height="1279" loading="lazy" decoding="async">
+  </picture>
+</figure>
+    </div>
+    <div class="pds__outils">
+      <div class="pds__filtres" role="group" aria-label="Zones de la salle" data-pds-filtres></div>
+      <div class="pds__couverts">
+        <label class="pds__libelle" for="pds-couverts">Couverts</label>
+        <div class="pds__qte">
+          <button type="button" data-pds-moins aria-label="Un couvert de moins" aria-controls="pds-couverts">−</button>
+          <input type="number" id="pds-couverts" value="2" min="1" max="10" step="1" inputmode="numeric">
+          <button type="button" data-pds-plus aria-label="Un couvert de plus" aria-controls="pds-couverts">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="pds__scene" data-visuel><div class="pds__plan"><div class="pds__sol"><svg class="pds__svg" viewBox="0 0 1000 640" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="pds-parquet" width="66" height="20" patternUnits="userSpaceOnUse"><rect class="pds__lame" width="66" height="20"/><path class="pds__joint" d="M0 19.5H66M24 0V20"/></pattern>
+    <pattern id="pds-dalles" width="44" height="44" patternUnits="userSpaceOnUse"><rect class="pds__dalle" width="44" height="44"/><path class="pds__joint" d="M0 43.5H44M43.5 0V44"/></pattern>
+    <radialGradient id="pds-braises" cx="0" cy=".5" r=".9"><stop offset="0" class="pds__lueur-a"/><stop offset="1" class="pds__lueur-b"/></radialGradient>
+    <linearGradient id="pds-jour" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="pds__jour-a"/><stop offset="1" class="pds__jour-b"/></linearGradient>
+  </defs>
+  <rect width="1000" height="640" fill="url(#pds-dalles)"/>
+  <rect class="pds__eau" x="926" y="40" width="54" height="560" rx="10"/>
+  <g class="pds__plantes"><circle cx="740" cy="42" r="17"/><circle cx="902" cy="40" r="11"/><circle cx="740" cy="600" r="17"/><circle cx="902" cy="604" r="11"/><circle cx="740" cy="404" r="9"/></g>
+  <rect x="20" y="20" width="680" height="600" fill="url(#pds-parquet)"/>
+  <g class="pds__zones">
+    <rect class="pds__zone" data-zone="cheminee" x="30" y="126" width="232" height="398" rx="18"/>
+    <rect class="pds__zone" data-zone="fenetre" x="252" y="30" width="438" height="150" rx="18"/>
+    <rect class="pds__zone" data-zone="grande-table" x="298" y="244" width="344" height="180" rx="18"/>
+    <rect class="pds__zone" data-zone="terrasse" x="714" y="22" width="204" height="596" rx="18"/>
+  </g>
+  <path class="pds__lumiere" d="M262 24H688L650 212H300Z" fill="url(#pds-jour)"/>
+  <ellipse cx="40" cy="330" rx="200" ry="160" fill="url(#pds-braises)"/>
+  <g class="pds__cheminee"><rect x="20" y="270" width="42" height="120" rx="4"/><path class="pds__feu" d="M38 354C30 338 46 330 40 312C54 326 56 342 48 354ZM46 354C44 346 52 342 52 332C58 340 58 350 54 354Z"/></g>
+  <g class="pds__bar"><rect x="36" y="568" width="224" height="36" rx="8"/><circle cx="66" cy="544" r="11"/><circle cx="116" cy="544" r="11"/><circle cx="166" cy="544" r="11"/><circle cx="216" cy="544" r="11"/></g>
+  <path class="pds__mur" d="M420 620H20V20H700V226M700 434V620H520"/>
+  <path class="pds__vitre" d="M262 20H684M700 232V428"/>
+  <g class="pds__etiquettes">
+    <text x="44" y="144">AU COIN DU FEU</text>
+    <text x="470" y="200" text-anchor="middle">LES BAIES VITRÉES</text>
+    <text x="470" y="414" text-anchor="middle">LA GRANDE TABLE</text>
+    <text x="816" y="590" text-anchor="middle">TERRASSE</text>
+    <text x="148" y="526" text-anchor="middle">BAR</text>
+    <text x="470" y="606" text-anchor="middle">ENTRÉE</text>
+  </g>
+</svg></div></div></div>
+    <div class="pds__panneau">
+      <ul class="pds__liste">
+        <li class="pds__item" data-table="1" data-zone="cheminee" data-places="2" data-forme="carree" data-x="150" data-y="210" data-l="58"><a class="pds__lien" href="/reserver?table=1&amp;couverts=2&amp;espace=salle#formulaire"><span class="pds__num">1</span><span class="pds__texte"><span class="pds__nom">Table 1</span><span class="pds__info"><span class="pds__zone-nom">Au coin du feu</span> · 2&nbsp;places</span><span class="pds__note">Fauteuils et peaux, près du feu</span></span></a></li><li class="pds__item" data-table="2" data-zone="cheminee" data-places="4" data-forme="carree" data-x="160" data-y="336" data-l="70"><a class="pds__lien" href="/reserver?table=2&amp;couverts=4&amp;espace=salle#formulaire"><span class="pds__num">2</span><span class="pds__texte"><span class="pds__nom">Table 2</span><span class="pds__info"><span class="pds__zone-nom">Au coin du feu</span> · 4&nbsp;places</span><span class="pds__note">La plus proche du feu</span></span></a></li><li class="pds__item" data-table="3" data-zone="cheminee" data-places="2" data-forme="carree" data-x="150" data-y="456" data-l="58" data-prise><span class="pds__lien"><span class="pds__num">3</span><span class="pds__texte"><span class="pds__nom">Table 3</span><span class="pds__info"><span class="pds__zone-nom">Au coin du feu</span> · 2&nbsp;places</span><span class="pds__etat">Déjà réservée (simulation)</span></span></span></li><li class="pds__item" data-table="4" data-zone="fenetre" data-places="4" data-forme="ronde" data-x="330" data-y="100" data-l="70"><a class="pds__lien" href="/reserver?table=4&amp;couverts=4&amp;espace=salle#formulaire"><span class="pds__num">4</span><span class="pds__texte"><span class="pds__nom">Table 4</span><span class="pds__info"><span class="pds__zone-nom">Les baies vitrées</span> · 4&nbsp;places</span><span class="pds__note">Table ronde en verre</span></span></a></li><li class="pds__item" data-table="5" data-zone="fenetre" data-places="6" data-forme="ronde" data-x="480" data-y="100" data-l="92"><a class="pds__lien" href="/reserver?table=5&amp;couverts=6&amp;espace=salle#formulaire"><span class="pds__num">5</span><span class="pds__texte"><span class="pds__nom">Table 5</span><span class="pds__info"><span class="pds__zone-nom">Les baies vitrées</span> · 6&nbsp;places</span><span class="pds__note">Table ronde en verre</span></span></a></li><li class="pds__item" data-table="6" data-zone="fenetre" data-places="2" data-forme="ronde" data-x="622" data-y="100" data-l="56" data-prise><span class="pds__lien"><span class="pds__num">6</span><span class="pds__texte"><span class="pds__nom">Table 6</span><span class="pds__info"><span class="pds__zone-nom">Les baies vitrées</span> · 2&nbsp;places</span><span class="pds__etat">Déjà réservée (simulation)</span></span></span></li><li class="pds__item" data-table="7" data-zone="grande-table" data-places="10" data-forme="longue" data-x="470" data-y="330" data-l="290" data-h="68"><a class="pds__lien" href="/reserver?table=7&amp;couverts=10&amp;espace=salle#formulaire"><span class="pds__num">7</span><span class="pds__texte"><span class="pds__nom">Table 7</span><span class="pds__info"><span class="pds__zone-nom">La grande table</span> · 10&nbsp;places</span><span class="pds__note">Pour une tablée</span></span></a></li><li class="pds__item" data-table="8" data-zone="fenetre" data-places="4" data-forme="ronde" data-x="330" data-y="520" data-l="70"><a class="pds__lien" href="/reserver?table=8&amp;couverts=4&amp;espace=salle#formulaire"><span class="pds__num">8</span><span class="pds__texte"><span class="pds__nom">Table 8</span><span class="pds__info"><span class="pds__zone-nom">Les baies vitrées</span> · 4&nbsp;places</span></span></a></li><li class="pds__item" data-table="9" data-zone="fenetre" data-places="4" data-forme="ronde" data-x="600" data-y="520" data-l="70"><a class="pds__lien" href="/reserver?table=9&amp;couverts=4&amp;espace=salle#formulaire"><span class="pds__num">9</span><span class="pds__texte"><span class="pds__nom">Table 9</span><span class="pds__info"><span class="pds__zone-nom">Les baies vitrées</span> · 4&nbsp;places</span></span></a></li><li class="pds__item" data-table="10" data-zone="terrasse" data-places="4" data-forme="ronde" data-x="818" data-y="146" data-l="74" data-prise><span class="pds__lien"><span class="pds__num">10</span><span class="pds__texte"><span class="pds__nom">Table 10</span><span class="pds__info"><span class="pds__zone-nom">Terrasse et piscine</span> · 4&nbsp;places</span><span class="pds__etat">Terrasse de juin à septembre</span></span></span></li><li class="pds__item" data-table="11" data-zone="terrasse" data-places="4" data-forme="ronde" data-x="818" data-y="316" data-l="74" data-prise><span class="pds__lien"><span class="pds__num">11</span><span class="pds__texte"><span class="pds__nom">Table 11</span><span class="pds__info"><span class="pds__zone-nom">Terrasse et piscine</span> · 4&nbsp;places</span><span class="pds__etat">Terrasse de juin à septembre</span></span></span></li><li class="pds__item" data-table="12" data-zone="terrasse" data-places="6" data-forme="longue" data-x="818" data-y="484" data-l="122" data-h="60" data-prise><span class="pds__lien"><span class="pds__num">12</span><span class="pds__texte"><span class="pds__nom">Table 12</span><span class="pds__info"><span class="pds__zone-nom">Terrasse et piscine</span> · 6&nbsp;places</span><span class="pds__etat">Terrasse de juin à septembre</span></span></span></li>
+      </ul>
+      <div class="pds__action">
+        <p class="pds__choix" aria-live="polite" data-pds-choix>Choisissez une table libre sur le plan ou dans la liste.</p>
+        <a class="socle-bouton socle-bouton--plein pds__reserver" href="/reserver#formulaire" data-pds-reserver aria-disabled="true">Réserver cette table</a>
+      </div>
+    </div>
   </div>
 </section>
 </main>
@@ -300,7 +304,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       </ul>
     </div>
   </div>
-  <div class="conteneur pied-bas"><p>Maquette : les informations marquées « à compléter » ou « à confirmer » seront fournies par l&#39;établissement. Réservations, cartes cadeaux et demandes simulées : rien n&#39;est envoyé.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
+  <div class="conteneur pied-bas"><p>Maquette : réservations, cartes cadeaux et demandes sont simulées, rien n&#39;est envoyé.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
 </footer>
 <div data-barre-fixe>
   <a class="bouton bouton--contour" href="tel:+33618212810">Appeler</a>

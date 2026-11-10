@@ -9,12 +9,12 @@
    "geste": "arrivée",
    "resultat": "ok",
    "gestes": 0,
-   "secondes": 3.3,
+   "secondes": 3.5,
    "adresse": "/",
    "y": 0,
-   "hauteurPage": 11894,
+   "hauteurPage": 6288,
    "titres": [
-    "h1 Les Jardins de l'Hacienda"
+    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
    ],
    "actions": [
     "Les Jardins de l'Hacienda",
@@ -22,9 +22,13 @@
     "Les fêtes",
     "Offrir",
     "Infos pratiques",
+    "Passer à l’été",
     "Réserver",
-    "Réserver une table",
-    "Voir la carte"
+    "Hiver",
+    "Été",
+    "Réserver au coin du feu",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h"
    ],
    "prixVus": [],
    "telephonesVus": [],
@@ -46,52 +50,13 @@
   },
   {
    "k": 1,
-   "geste": "attendre 3500",
-   "resultat": "ok",
-   "gestes": 0,
-   "secondes": 7.1,
-   "adresse": "/",
-   "y": 0,
-   "hauteurPage": 11894,
-   "titres": [
-    "h1 Les Jardins de l'Hacienda"
-   ],
-   "actions": [
-    "Les Jardins de l'Hacienda",
-    "La carte",
-    "Les fêtes",
-    "Offrir",
-    "Infos pratiques",
-    "Réserver",
-    "Réserver une table",
-    "Voir la carte"
-   ],
-   "prixVus": [],
-   "telephonesVus": [],
-   "prixDansLaPage": [
-    "21 €",
-    "26 €",
-    "24 €",
-    "45 €",
-    "12 €",
-    "11 €",
-    "10 €",
-    "79 €"
-   ],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
-   "menuOuvert": false
-  },
-  {
-   "k": 2,
    "geste": "cliquer Offrir",
    "resultat": "ok",
    "gestes": 1,
-   "secondes": 9.8,
+   "secondes": 7.7,
    "adresse": "/offrir",
    "y": 0,
-   "hauteurPage": 2578,
+   "hauteurPage": 2532,
    "titres": [
     "h1 Offrir une table"
    ],
@@ -101,17 +66,56 @@
     "Les fêtes",
     "Offrir",
     "Infos pratiques",
+    "Passer à l’été",
     "Réserver",
     "Composer la carte"
    ],
    "prixVus": [
+    "50 €",
     "200 €"
    ],
    "telephonesVus": [],
    "prixDansLaPage": [
+    "50 €",
     "200 €",
     "50€",
+    "25 €",
+    "100 €",
+    "150 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Composer la carte",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 10.6,
+   "adresse": "/offrir#composer",
+   "y": 823,
+   "hauteurPage": 2532,
+   "titres": [
+    "h2 Votre carte cadeau"
+   ],
+   "actions": [
+    "−",
+    "+"
+   ],
+   "prixVus": [
     "50 €",
+    "25 €",
+    "100 €",
+    "150 €",
+    "200 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "50 €",
+    "200 €",
+    "50€",
     "25 €",
     "100 €",
     "150 €"
@@ -123,13 +127,13 @@
   },
   {
    "k": 3,
-   "geste": "cliquer Composer la carte",
+   "geste": "cliquer 100 €",
    "resultat": "ok",
-   "gestes": 2,
-   "secondes": 12.1,
+   "gestes": 3,
+   "secondes": 13,
    "adresse": "/offrir#composer",
    "y": 823,
-   "hauteurPage": 2578,
+   "hauteurPage": 2532,
    "titres": [
     "h2 Votre carte cadeau"
    ],
@@ -138,19 +142,19 @@
     "+"
    ],
    "prixVus": [
-    "50 €",
-    "25 €",
     "100 €",
+    "25 €",
+    "50 €",
     "150 €",
     "200 €"
    ],
    "telephonesVus": [],
    "prixDansLaPage": [
-    "200 €",
-    "50€",
     "50 €",
-    "25 €",
+    "200 €",
+    "100€",
     "100 €",
+    "25 €",
     "150 €"
    ],
    "telephones": [
@@ -160,13 +164,13 @@
   },
   {
    "k": 4,
-   "geste": "cliquer 50 €",
+   "geste": "remplir Pour=Marc",
    "resultat": "ok",
-   "gestes": 3,
-   "secondes": 14.2,
+   "gestes": 4,
+   "secondes": 13.2,
    "adresse": "/offrir#composer",
    "y": 823,
-   "hauteurPage": 2578,
+   "hauteurPage": 2532,
    "titres": [
     "h2 Votre carte cadeau"
    ],
@@ -175,19 +179,19 @@
     "+"
    ],
    "prixVus": [
-    "50 €",
-    "25 €",
     "100 €",
+    "25 €",
+    "50 €",
     "150 €",
     "200 €"
    ],
    "telephonesVus": [],
    "prixDansLaPage": [
-    "200 €",
-    "50€",
     "50 €",
-    "25 €",
+    "200 €",
+    "100€",
     "100 €",
+    "25 €",
     "150 €"
    ],
    "telephones": [
@@ -197,13 +201,13 @@
   },
   {
    "k": 5,
-   "geste": "remplir ^Pour$=Julie",
+   "geste": "remplir De la part de=Julie",
    "resultat": "ok",
-   "gestes": 4,
-   "secondes": 14.3,
+   "gestes": 5,
+   "secondes": 13.3,
    "adresse": "/offrir#composer",
    "y": 823,
-   "hauteurPage": 2578,
+   "hauteurPage": 2532,
    "titres": [
     "h2 Votre carte cadeau"
    ],
@@ -212,19 +216,19 @@
     "+"
    ],
    "prixVus": [
-    "50 €",
-    "25 €",
     "100 €",
+    "25 €",
+    "50 €",
     "150 €",
     "200 €"
    ],
    "telephonesVus": [],
    "prixDansLaPage": [
-    "200 €",
-    "50€",
     "50 €",
-    "25 €",
+    "200 €",
+    "100€",
     "100 €",
+    "25 €",
     "150 €"
    ],
    "telephones": [
@@ -234,50 +238,13 @@
   },
   {
    "k": 6,
-   "geste": "remplir De la part de=Claire",
-   "resultat": "ok",
-   "gestes": 5,
-   "secondes": 14.3,
-   "adresse": "/offrir#composer",
-   "y": 823,
-   "hauteurPage": 2578,
-   "titres": [
-    "h2 Votre carte cadeau"
-   ],
-   "actions": [
-    "−",
-    "+"
-   ],
-   "prixVus": [
-    "50 €",
-    "25 €",
-    "100 €",
-    "150 €",
-    "200 €"
-   ],
-   "telephonesVus": [],
-   "prixDansLaPage": [
-    "200 €",
-    "50€",
-    "50 €",
-    "25 €",
-    "100 €",
-    "150 €"
-   ],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
-   "menuOuvert": false
-  },
-  {
-   "k": 7,
    "geste": "defiler",
    "resultat": "ok",
    "gestes": 6,
-   "secondes": 15,
+   "secondes": 14.1,
    "adresse": "/offrir#composer",
    "y": 1588,
-   "hauteurPage": 2578,
+   "hauteurPage": 2532,
    "titres": [],
    "actions": [
     "Offrir cette carte",
@@ -294,17 +261,61 @@
     "Retour en haut"
    ],
    "prixVus": [
-    "50 €"
+    "100 €"
    ],
    "telephonesVus": [
     "06 18 21 28 10"
    ],
    "prixDansLaPage": [
-    "200 €",
-    "50€",
     "50 €",
-    "25 €",
+    "200 €",
+    "100€",
     "100 €",
+    "25 €",
+    "150 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 7,
+   "geste": "cliquer Offrir cette carte",
+   "resultat": "ok",
+   "gestes": 7,
+   "secondes": 16.3,
+   "adresse": "/offrir#composer",
+   "y": 854,
+   "hauteurPage": 2532,
+   "titres": [
+    "h2 Votre carte cadeau"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Passer à l’été",
+    "Réserver",
+    "−",
+    "+"
+   ],
+   "prixVus": [
+    "100 €",
+    "25 €",
+    "50 €",
+    "150 €",
+    "200 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "50 €",
+    "200 €",
+    "100€",
+    "100 €",
+    "25 €",
     "150 €"
    ],
    "telephones": [
@@ -314,13 +325,13 @@
   },
   {
    "k": 8,
-   "geste": "cliquer Offrir cette carte",
+   "geste": "capture",
    "resultat": "ok",
    "gestes": 7,
-   "secondes": 17.2,
+   "secondes": 16.3,
    "adresse": "/offrir#composer",
    "y": 854,
-   "hauteurPage": 2578,
+   "hauteurPage": 2532,
    "titres": [
     "h2 Votre carte cadeau"
    ],
@@ -330,67 +341,64 @@
     "Les fêtes",
     "Offrir",
     "Infos pratiques",
+    "Passer à l’été",
     "Réserver",
     "−",
     "+"
    ],
    "prixVus": [
-    "50 €",
-    "25 €",
     "100 €",
+    "25 €",
+    "50 €",
     "150 €",
     "200 €"
    ],
    "telephonesVus": [],
    "prixDansLaPage": [
-    "200 €",
-    "50€",
     "50 €",
-    "25 €",
+    "200 €",
+    "100€",
     "100 €",
+    "25 €",
     "150 €"
    ],
    "telephones": [
     "06 18 21 28 10"
    ],
-   "menuOuvert": false
+   "menuOuvert": false,
+   "capture": "etape-8.png"
   },
   {
    "k": 9,
-   "geste": "attendre 4000",
+   "geste": "attendre 3000",
    "resultat": "ok",
    "gestes": 7,
-   "secondes": 21.2,
+   "secondes": 19.6,
    "adresse": "/offrir#composer",
-   "y": 854,
-   "hauteurPage": 2683,
+   "y": 1111,
+   "hauteurPage": 2666,
    "titres": [
     "h2 Votre carte cadeau"
    ],
    "actions": [
-    "Les Jardins de l'Hacienda",
-    "La carte",
-    "Les fêtes",
-    "Offrir",
-    "Infos pratiques",
-    "Réserver",
     "−",
-    "+"
+    "+",
+    "Offrir une autre carte"
    ],
    "prixVus": [
-    "50 €",
-    "25 €",
     "100 €",
+    "25 €",
+    "50 €",
     "150 €",
     "200 €"
    ],
    "telephonesVus": [],
    "prixDansLaPage": [
-    "200 €",
-    "50€",
     "50 €",
-    "25 €",
+    "200 €",
+    "100€",
     "100 €",
+    "25 €",
     "150 €"
    ],
    "telephones": [
@@ -403,37 +411,32 @@
    "geste": "capture",
    "resultat": "ok",
    "gestes": 7,
-   "secondes": 21.3,
+   "secondes": 19.6,
    "adresse": "/offrir#composer",
-   "y": 854,
-   "hauteurPage": 2683,
+   "y": 1111,
+   "hauteurPage": 2666,
    "titres": [
     "h2 Votre carte cadeau"
    ],
    "actions": [
-    "Les Jardins de l'Hacienda",
-    "La carte",
-    "Les fêtes",
-    "Offrir",
-    "Infos pratiques",
-    "Réserver",
     "−",
-    "+"
+    "+",
+    "Offrir une autre carte"
    ],
    "prixVus": [
-    "50 €",
-    "25 €",
     "100 €",
+    "25 €",
+    "50 €",
     "150 €",
     "200 €"
    ],
    "telephonesVus": [],
    "prixDansLaPage": [
-    "200 €",
-    "50€",
     "50 €",
-    "25 €",
+    "200 €",
+    "100€",
     "100 €",
+    "25 €",
     "150 €"
    ],
    "telephones": [
@@ -441,136 +444,6 @@
    ],
    "menuOuvert": false,
    "capture": "etape-10.png"
-  },
-  {
-   "k": 11,
-   "geste": "defiler",
-   "resultat": "ok",
-   "gestes": 8,
-   "secondes": 22.1,
-   "adresse": "/offrir#composer",
-   "y": 1619,
-   "hauteurPage": 2683,
-   "titres": [],
-   "actions": [
-    "Composer une autre carte",
-    "06 18 21 28 10",
-    "Facebook (nouvel onglet)",
-    "Instagram (nouvel onglet)",
-    "Accueil",
-    "La carte",
-    "Les fêtes",
-    "Offrir",
-    "Infos pratiques",
-    "Réserver",
-    "Réduire les animations",
-    "Retour en haut"
-   ],
-   "prixVus": [
-    "50 €"
-   ],
-   "telephonesVus": [
-    "06 18 21 28 10"
-   ],
-   "prixDansLaPage": [
-    "200 €",
-    "50€",
-    "50 €",
-    "25 €",
-    "100 €",
-    "150 €"
-   ],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
-   "menuOuvert": false
-  },
-  {
-   "k": 12,
-   "geste": "attendre 800",
-   "resultat": "ok",
-   "gestes": 8,
-   "secondes": 22.9,
-   "adresse": "/offrir#composer",
-   "y": 1619,
-   "hauteurPage": 2683,
-   "titres": [],
-   "actions": [
-    "Composer une autre carte",
-    "06 18 21 28 10",
-    "Facebook (nouvel onglet)",
-    "Instagram (nouvel onglet)",
-    "Accueil",
-    "La carte",
-    "Les fêtes",
-    "Offrir",
-    "Infos pratiques",
-    "Réserver",
-    "Réduire les animations",
-    "Retour en haut"
-   ],
-   "prixVus": [
-    "50 €"
-   ],
-   "telephonesVus": [
-    "06 18 21 28 10"
-   ],
-   "prixDansLaPage": [
-    "200 €",
-    "50€",
-    "50 €",
-    "25 €",
-    "100 €",
-    "150 €"
-   ],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
-   "menuOuvert": false
-  },
-  {
-   "k": 13,
-   "geste": "capture",
-   "resultat": "ok",
-   "gestes": 8,
-   "secondes": 22.9,
-   "adresse": "/offrir#composer",
-   "y": 1619,
-   "hauteurPage": 2683,
-   "titres": [],
-   "actions": [
-    "Composer une autre carte",
-    "06 18 21 28 10",
-    "Facebook (nouvel onglet)",
-    "Instagram (nouvel onglet)",
-    "Accueil",
-    "La carte",
-    "Les fêtes",
-    "Offrir",
-    "Infos pratiques",
-    "Réserver",
-    "Réduire les animations",
-    "Retour en haut"
-   ],
-   "prixVus": [
-    "50 €"
-   ],
-   "telephonesVus": [
-    "06 18 21 28 10"
-   ],
-   "prixDansLaPage": [
-    "200 €",
-    "50€",
-    "50 €",
-    "25 €",
-    "100 €",
-    "150 €"
-   ],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
-   "menuOuvert": false,
-   "capture": "etape-13.png"
   }
  ]
 }

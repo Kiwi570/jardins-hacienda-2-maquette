@@ -4,6 +4,6 @@
   "sylvestre": { "titre": "Saint-Sylvestre", "date": "2026-12-31", "debut": "2026-12-31T19:00:00+01:00", "jour": "Jeudi 31 décembre", "moment": "Le soir", "prix": "120 €", "prixDetail": "le menu", "prixAccord": "170 €", "prixAccordDetail": "formule accord mets et vins", "dj": "Soirée animée par DJ Laurent Geymet" },
   "passes": [
     { "titre": "Soirée libanaise", "date": "2026-10-31", "jour": "Samedi 31 octobre 2026" },
-    { "titre": "Le Grand Buffet", "date": "2026-08-30", "jour": "Dimanches 16, 23 et 30 août 2026" }
+    { "titre": "Le Grand Buffet", "date": "2026-08-30", "jour": "Les dimanches d’août 2026" }
   ]
 }

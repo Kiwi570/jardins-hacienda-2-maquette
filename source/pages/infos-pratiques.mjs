@@ -4,14 +4,14 @@
 import { html, brut, fragment } from '../../outils/gabarit.mjs';
 import { preparer, rendreBloc } from '../../assets/js/modules/horaires-ouvert-maintenant/horaires-calcul.js';
 
-export const page = { cle: 'infos-pratiques', fichier: 'infos-pratiques', imagePartage: 'infos-ouverture-1280.webp', modules: ['fil-conducteur', 'horaires-ouvert-maintenant'] };
+export const page = { cle: 'infos-pratiques', fichier: 'infos-pratiques', imagePartage: 'infos-ouverture-1280.webp', modules: ['horaires-ouvert-maintenant'] };
 
 export default (c) => {
   const h = c.donnees.horaires;
   const d = preparer(h);
   const json = JSON.stringify(h).replace(/<\//g, '<\\/');
   return html`
-<section class="ouv-infos clair" id="debut" data-fil="gauche" data-grille="fil">
+<section class="ouv-infos clair" data-lueur id="debut" data-fil="gauche" data-grille="fil">
   <div class="conteneur ouv-infos__tete">
     <p class="surtitre" data-anime>${c.t('infos.surtitre')}</p>
     <h1 data-anime="lignes">${c.t('infos.titre')}</h1>
@@ -21,7 +21,7 @@ export default (c) => {
   ${c.media({ nom: 'infos-ouverture', alt: c.s('infos.alt'), cadrage: '47% 61%', priorite: true, classe: 'ouv-infos__bandeau', sizes: '100vw', attrs: 'data-iris-centre data-fx="parallaxe" data-fx-force="10"' })}
 </section>
 
-<section class="horaires socle-cadre" id="horaires" data-module="horaires-ouvert-maintenant" data-fil="droite" aria-labelledby="horaires-titre">
+<section class="horaires socle-cadre" data-lueur id="horaires" data-module="horaires-ouvert-maintenant" data-fil="droite" aria-labelledby="horaires-titre">
   <div class="horaires__grille">
     <div class="horaires__cadran" aria-hidden="true" data-effet="cadran" data-visuel></div>
     <div class="horaires__texte">
@@ -38,7 +38,7 @@ export default (c) => {
   </div>
 </section>
 
-<section class="acces" id="acces" data-fil="gauche" aria-labelledby="acces-titre">
+<section class="acces" data-lueur id="acces" data-fil="gauche" aria-labelledby="acces-titre">
   <div class="acces__mots" data-fx="mots-geants" data-fx-force="18" aria-hidden="true" data-ruban data-visuel>
     <p data-fx-rangee>${c.t('infos.villes')} ${c.t('infos.villes')}</p>
   </div>
@@ -57,7 +57,7 @@ export default (c) => {
   </div>
 </section>
 
-<section class="ecrire clair" id="ecrire" data-fil="droite" aria-labelledby="ecrire-titre">
+<section class="ecrire clair" data-lueur id="ecrire" data-fil="droite" aria-labelledby="ecrire-titre">
   <div class="conteneur ecrire__grille">
     ${c.media({ nom: 'recevoir-mariages', alt: c.s('infos.ecrireAlt'), classe: 'ecrire__photo', sizes: '(max-width: 760px) 100vw, 40vw', attrs: 'data-anime="rideau"' })}
     <form class="ecrire__form" data-formulaire action="#ecrire" novalidate>
@@ -77,10 +77,14 @@ export default (c) => {
         <option value="evenement">${c.t('infos.sujetEvenement')}</option>
         <option value="autre">${c.t('infos.sujetAutre')}</option>
       </select></label>
-      <label><span>${c.t('infos.message')}</span><textarea name="message" rows="4"></textarea></label>
+      <div class="ecrire__deux">
+        <label><span>${c.t('infos.dateSouhaitee')}</span><input type="date" name="date"></label>
+        <label><span>${c.t('infos.nombreInvites')}</span><input type="number" name="invites" min="1" max="400" inputmode="numeric"></label>
+      </div>
+      <label><span>${c.t('infos.message')}</span><textarea name="message" rows="4" placeholder="${c.s('infos.messageIndice')}"></textarea></label>
       <p class="ecrire__rgpd">${c.t('infos.rgpd')}</p>
       <p><button type="submit" class="bouton">${c.t('infos.envoyer')}</button></p>
-      <p class="ecrire__message" data-message-envoi role="status" hidden></p>
+      <p class="ecrire__message" data-message-envoi data-texte="${c.s('infos.envoye')}" role="status" tabindex="-1" hidden></p>
     </form>
   </div>
 </section>

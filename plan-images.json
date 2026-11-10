@@ -244,5 +244,146 @@
    1280,
    1920
   ]
+ },
+ {
+  "source": "recu/grok/braises.jpg",
+  "nom": "grok/braises",
+  "role": "section-fond",
+  "page": "Accueil",
+  "emplacement": "Plongée de l'hiver (on entre dans le feu pour passer à la carte) et lueur d'hiver",
+  "priorite": "Indispensable",
+  "ratio": "16:9",
+  "gabarit": "section-fond",
+  "consigne_scene": "Extreme close-up of glowing embers and small low flames in a fireplace at night, deep orange and black, a few drifting sparks, shallow depth of field, no logs dominating the frame, no people, no text."
+ },
+ {
+  "source": "recu/terrasse-13.jpg",
+  "source_mobile": "recu/terrasse-6.jpg",
+  "nom": "ete-ouverture",
+  "role": "ouverture",
+  "mobile": "9:16",
+  "alt": "La piscine des Jardins de l'Hacienda, ses palmiers et ses paillotes sous le soleil"
+ },
+ {
+  "source": "recu/restaurant-2.jpg",
+  "nom": "assiette-saumon",
+  "role": "galerie",
+  "ratio": "1:1",
+  "cadrage": [
+   34,
+   74
+  ],
+  "alt": "Une assiette du chef vue de dessus : rose de saumon et petites fleurs"
+ },
+ {
+  "source": "recu/restaurant-33.jpg",
+  "nom": "assiette-cepes",
+  "role": "galerie",
+  "ratio": "1:1",
+  "alt": "Une assiette du chef vue de dessus : purée, cèpes poêlés et viande tranchée"
+ },
+ {
+  "source": "recu/terrasse-jardins-hacienda-6.jpg",
+  "nom": "assiette-turquoise",
+  "role": "galerie",
+  "ratio": "1:1",
+  "alt": "Une assiette du chef dressée sur une assiette bleu-vert"
+ },
+ {
+  "source": "recu/piscine-6.webp",
+  "nom": "ete-festives",
+  "role": "galerie",
+  "ratio": "4:3",
+  "alt": "La piscine en journée festive, transats et parasols blancs"
+ },
+ {
+  "source": "recu/terrasse-26.jpg",
+  "nom": "ete-bar",
+  "role": "galerie",
+  "ratio": "4:3",
+  "alt": "Cocktails frais servis au bar, au bord de la piscine"
+ },
+ {
+  "source": "recu/piscine-2.webp",
+  "nom": "ete-soir",
+  "role": "galerie",
+  "ratio": "4:3",
+  "alt": "La piscine illuminée un soir de fête d'été"
+ },
+ {
+  "source": "recu/restaurant-5.jpg",
+  "nom": "table-deux",
+  "role": "galerie",
+  "ratio": "4:3",
+  "alt": "Une table dressée dans la salle, un fauteuil garni de peau de mouton"
+ },
+ {
+  "source": "recu/restaurant-31.jpg",
+  "nom": "table-douze",
+  "role": "galerie",
+  "ratio": "4:3",
+  "alt": "Les grandes tables de la salle, dressées pour un groupe"
+ },
+ {
+  "source": "recu/terrasse-jardins-hacienda-2.jpg",
+  "nom": "table-quarante",
+  "role": "galerie",
+  "ratio": "4:3",
+  "alt": "Des tables blanches dressées dans les jardins pour une réception"
+ },
+ {
+  "source": "recu/terrasse-27.jpg",
+  "nom": "table-cent-vingt",
+  "role": "galerie",
+  "ratio": "4:3",
+  "alt": "De longues tables de réception sous la pergola"
+ },
+ {
+  "source": "recu/pool-party-11.jpg",
+  "nom": "ete-poolparty",
+  "role": "galerie",
+  "ratio": "4:3",
+  "alt": "Un brasero allumé au bord de la piscine, un soir de pool party"
+ },
+ {
+  "source": "recu/restaurant-16.jpg",
+  "nom": "sylvestre-coupe",
+  "role": "galerie",
+  "ratio": "3:4",
+  "alt": "Un cocktail servi devant la cheminée allumée"
+ },
+ {
+  "source": "recu/grok/nappe-lin-douce.jpg",
+  "nom": "grok/nappe-lin",
+  "role": "section-fond",
+  "page": "Accueil",
+  "emplacement": "Fond de la scène « La table se dresse » : la nappe vue de dessus",
+  "alt": "Nappe de lin crème vue de dessus",
+  "gabarit": "section-fond",
+  "note": "nappe-lin.jpg éclaircie et adoucie (luminosité 1,32, contraste 0,82, voile crème 25 %)"
+ },
+ {
+  "source": "recu/grok/eau-reflets-sombre.jpg",
+  "nom": "grok/eau-reflets",
+  "role": "section-fond",
+  "page": "Accueil",
+  "emplacement": "Fond des rendez-vous de l'été",
+  "alt": "Reflets du soleil sur l'eau d'une piscine",
+  "gabarit": "section-fond",
+  "note": "eau-reflets.jpg assombrie (luminosité 0,34) pour le texte clair"
+ },
+ {
+  "source": "recu/piscine-5.webp",
+  "nom": "ete-plongee",
+  "role": "galerie",
+  "ratio": "1:1",
+  "alt": "La piscine en plein soleil, une bouée flamant rose sur l'eau"
+ },
+ {
+  "source": "recu/restaurant-9.jpg",
+  "nom": "noel-carte",
+  "role": "galerie",
+  "ratio": "4:5",
+  "alt": "Une table de la salle décorée pour Noël, près du sapin"
  }
 ]

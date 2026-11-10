@@ -1,0 +1,271 @@
+{
+ "mission": "fetes-scan",
+ "taille": "390x844",
+ "depart": "/les-fetes",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 1.6,
+   "adresse": "/les-fetes",
+   "y": 0,
+   "hauteurPage": 5018,
+   "titres": [
+    "h1 Les fêtes à table"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Passer à l’été",
+    "Menu",
+    "Réserver la soirée",
+    "Réserver le déjeuner de Noël",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 2.9,
+   "adresse": "/les-fetes",
+   "y": 717,
+   "hauteurPage": 5018,
+   "titres": [
+    "h2 Le menu de la Saint-Sylvestre"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "120 €",
+    "170 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 4.1,
+   "adresse": "/les-fetes",
+   "y": 1434,
+   "hauteurPage": 5018,
+   "titres": [
+    "h3 Amuse-bouche",
+    "h3 Velours de foie gras",
+    "h3 Chablis premier cru"
+   ],
+   "actions": [
+    "Réserver la soirée",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "170 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 5.3,
+   "adresse": "/les-fetes",
+   "y": 2151,
+   "hauteurPage": 5018,
+   "titres": [
+    "h2 Le menu de Noël"
+   ],
+   "actions": [
+    "Réserver le déjeuner de Noël",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 6.5,
+   "adresse": "/les-fetes",
+   "y": 2868,
+   "hauteurPage": 5018,
+   "titres": [
+    "h2 Les soirées passées"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 7.7,
+   "adresse": "/les-fetes",
+   "y": 3585,
+   "hauteurPage": 5018,
+   "titres": [],
+   "actions": [
+    "06 18 21 28 10",
+    "Facebook (nouvel onglet)",
+    "Instagram (nouvel onglet)",
+    "Accueil",
+    "Offrir"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 8.9,
+   "adresse": "/les-fetes",
+   "y": 4174,
+   "hauteurPage": 5018,
+   "titres": [],
+   "actions": [
+    "06 18 21 28 10",
+    "Facebook (nouvel onglet)",
+    "Instagram (nouvel onglet)",
+    "Accueil",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 7,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 7,
+   "secondes": 9.6,
+   "adresse": "/les-fetes",
+   "y": 4174,
+   "hauteurPage": 5018,
+   "titres": [],
+   "actions": [
+    "06 18 21 28 10",
+    "Facebook (nouvel onglet)",
+    "Instagram (nouvel onglet)",
+    "Accueil",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-7.png"
+  }
+ ]
+}

@@ -58,6 +58,7 @@ function entete(c) {
       <ul>${navigation(c).filter((k) => k !== 'accueil').map((k) => html`<li>${c.lien(k)}</li>`)}</ul>
     </nav>
     <div class="entete-actions">
+      <button type="button" class="saison-mini" data-saison-bascule aria-pressed="false" aria-label="Passer à l’été"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="saison-mini__flamme" d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-3 2-5 3-7 0 2 1 3 2 3 0-2 0-4 0-6z"/><g class="saison-mini__soleil"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg></button>
       ${autreLangue.map((a) => html`<a class="entete-langue" href="${a.url}" hreflang="${a.l}" lang="${a.l}" data-langue="${a.l}" aria-label="${c.s('commun.langueAutre')}">${a.l}</a>`)}
       ${c.site.actionEntete ? html`<a class="bouton" href="${c.url(c.site.actionEntete.page, c.site.actionEntete.ancre || '')}" data-libelle="${c.libelle(c.site.actionEntete.page)}">${c.t('commun.actionEntete')}</a>` : ''}
       <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="${c.s('commun.menu')}" data-libelle-fermer="${c.s('commun.fermer')}"><span data-libelle-bouton>${c.t('commun.menu')}</span></button>
@@ -132,9 +133,11 @@ function voile(c) {
   return html`<div data-voile data-forme="${forme}" aria-hidden="true">${vagues}<div class="voile-contenu"><svg class="voile-cloche" viewBox="0 0 120 80" aria-hidden="true"><path d="M60 8a5 5 0 1 1 0 .1M14 66a46 46 0 0 1 92 0Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M6 70h108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><span data-voile-libelle>${c.libelle(c.page.cle)}</span></div></div>`;
 }
 
+/* Saison écrite à la génération (affichage sans JavaScript) : mai à septembre, l'été ; sinon l'hiver. */
+const saisonDuLieu = () => { const m = +new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', month: 'numeric' }).format(new Date()); return m >= 5 && m <= 9 ? 'ete' : 'hiver'; };
 export function page(c, contenu) {
   return html`<!doctype html>
-<html lang="${c.l}" data-v="${c.v}"${c.site.curseur ? brut(' data-curseur') : ''}>
+<html lang="${c.l}" data-v="${c.v}" data-saison="${saisonDuLieu()}"${c.site.curseur ? brut(' data-curseur') : ''}>
 ${tete(c)}
 <body id="haut">
 ${voile(c)}

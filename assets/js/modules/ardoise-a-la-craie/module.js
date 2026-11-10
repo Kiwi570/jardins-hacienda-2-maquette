@@ -4,7 +4,7 @@
 // ardoise dessinée en CSS (photo facultative), grain de craie par un filtre SVG, texte du jour modifiable sans toucher la page
 // (data-source : un petit fichier JSON), date du jour automatique, et ecrire(contenu) pour effacer et réécrire.
 // Mode calme, « réduire les animations », sans JavaScript : tout est écrit, rien ne bouge.
-import { pret } from '../../socle/socle.js?v=3';
+import { pret } from '../../socle/socle.js?v=4';
 
 const LIGNES = '.ardoise__date > span, .ardoise__titre > span, .ardoise__liste > li, .ardoise__mot > span';
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-v="3" data-curseur>
+<html lang="fr" data-v="4" data-saison="hiver" data-curseur>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -12,6 +12,10 @@
 var d = document.documentElement, ss = null, ls = null;
 try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
 d.classList.add('js');
+var saison = 'hiver';
+try { var mois = +new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', month: 'numeric' }).format(new Date()); saison = mois >= 5 && mois <= 9 ? 'ete' : 'hiver'; } catch (e) {}
+try { var choix = ls && ls.getItem('jh-saison'); if (choix === 'hiver' || choix === 'ete') saison = choix; } catch (e) {}
+d.setAttribute('data-saison', saison);
 var calme = false;
 try { calme = !!ls && ls.getItem('socle:calme') === 'oui'; } catch (e) {}
 if (!calme && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) calme = true;
@@ -41,14 +45,14 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 })();</script>
 <link rel="preload" href="/assets/fonts/bodoni-moda.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/socle.css?v=3">
-<link rel="stylesheet" href="/assets/css/site.css?v=3">
-<link rel="modulepreload" href="/assets/js/site.js?v=3">
-<link rel="modulepreload" href="/assets/js/socle/index.js?v=3">
+<link rel="stylesheet" href="/assets/css/socle.css?v=4">
+<link rel="stylesheet" href="/assets/css/site.css?v=4">
+<link rel="modulepreload" href="/assets/js/site.js?v=4">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=4">
 <script src="/assets/vendor/gsap.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/vendor/SplitText.min.js" defer></script>
-<script type="module" src="/assets/js/site.js?v=3"></script>
+<script type="module" src="/assets/js/site.js?v=4"></script>
 <meta name="theme-color" content="#15100c">
 <link rel="icon" href="/assets/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
@@ -87,6 +91,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
     </nav>
     <div class="entete-actions">
+      <button type="button" class="saison-mini" data-saison-bascule aria-pressed="false" aria-label="Passer à l’été"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="saison-mini__flamme" d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-3 2-5 3-7 0 2 1 3 2 3 0-2 0-4 0-6z"/><g class="saison-mini__soleil"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg></button>
       <a class="bouton" href="/reserver" data-libelle="Réserver">Réserver</a>
       <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="Menu" data-libelle-fermer="Fermer"><span data-libelle-bouton>Menu</span></button>
       <a class="menu-sansjs" href="#menu" data-menu-lien>Menu</a>
@@ -116,7 +121,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
 <main id="contenu" tabindex="-1">
-<section class="introuvable conteneur" id="debut">
+<section class="introuvable conteneur" data-lueur id="debut">
   <div class="introuvable__texte">
     <h1 data-anime="lettres">Table introuvable</h1>
     <p data-anime>Cette page n&#39;existe pas ou plus. La cloche est levée, mais l&#39;assiette est vide.</p>
@@ -148,7 +153,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       </ul>
     </div>
   </div>
-  <div class="conteneur pied-bas"><p>Maquette : les informations marquées « à compléter » ou « à confirmer » seront fournies par l&#39;établissement. Réservations, cartes cadeaux et demandes simulées : rien n&#39;est envoyé.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
+  <div class="conteneur pied-bas"><p>Maquette : réservations, cartes cadeaux et demandes sont simulées, rien n&#39;est envoyé.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
 </footer>
 <div data-barre-fixe>
   <a class="bouton bouton--contour" href="tel:+33618212810">Appeler</a>

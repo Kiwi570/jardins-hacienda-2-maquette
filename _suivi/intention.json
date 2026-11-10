@@ -1,0 +1,64 @@
+{
+  "client": "Les Jardins de l'Hacienda · v4",
+  "depot": "jardins-hacienda-2-maquette",
+  "site_actuel": "https://www.lesjardinsdelhacienda54.com",
+  "activite": "restaurant traditionnel de saison et lieu de réception, piscine et journées festives l'été",
+  "constat": "Le lieu a deux visages, la salle au coin du feu l'hiver et la terrasse, la piscine et les palmiers l'été, mais le site actuel les disperse sur des pages Wix sans réservation lisible ni horaires en texte. La v3 montrait surtout l'hiver, sur un récit linéaire de 10 sections et des effets déjà vus (carrousel 3D, mots géants, ficelle).",
+  "recentes": [
+    { "nom": "Lo Componaïro", "plan": "recit-lineaire", "familles": ["carrousel", "typo-geante", "3d"], "modules": ["carrousel-3d"] },
+    { "nom": "Red-Act", "plan": "recit-lineaire", "familles": ["carrousel", "typo-geante"], "modules": ["carrousel-3d"] }
+  ],
+  "directions": [
+    {
+      "nom": "Deux saisons, une maison",
+      "idee": "Le vrai slogan du lieu devient le moteur du site : « au coin du feu l'hiver, au bord de la piscine l'été ». Un cadran braise et soleil, en laiton, se fait glisser du doigt : toute la maison bascule (lumière, couleurs, photos, accroche, rendez-vous mis en avant, libellé du bouton « Réserver au coin du feu » ou « Réserver en terrasse »). Par défaut la saison réelle du lieu (novembre : l'hiver), le choix du visiteur est gardé. L'accueil suit une soirée ou une journée de la saison, en 6 sections et 7 écrans au plus.",
+      "plan": "journee",
+      "palette": ["#15100c", "#d8622a", "#b8925a", "#f3e7d3", "#2c7f8f", "#f6efe2", "#3f5a3a"],
+      "polices": ["Bodoni Moda", "Figtree", "Caveat"],
+      "grille": {
+        "objet": "cadran braise et soleil en demi-lune à faire glisser (au doigt : glissement horizontal), qui fait basculer la saison de tout le site ; le plateau du chef qu'on lance reste dans la carte de la semaine",
+        "fil": "la lumière de la saison dans la marge : lueur de braise qui descend en hiver, reflet d'eau qui ondule en été, un repère par moment (apéritif, table, desserts, nuit)",
+        "voile": "la cloche de service qui se pose et se relève (gardée de la v3)",
+        "forme_voile": "propre",
+        "familles": ["ambiance-qui-change", "plongee", "recomposition", "particules"],
+        "signature": "ambiance-qui-change",
+        "modernes": ["toute la maison change de saison sous le doigt (lumière, photos, accroche, rendez-vous)", "plongée dans l'assiette jusqu'à la carte, ou dans la piscine en été", "la table qui s'agrandit de 2 à 120 couverts et l'espace qui convient s'affiche", "vapeur du plat et braises l'hiver, reflets sur l'eau l'été"]
+      },
+      "modules": ["plat-fumant", "objet-a-faire-tourner", "assiette-qui-se-dresse", "carte-du-restaurant", "ardoise-a-la-craie", "accords-mets-et-vins", "horaires-ouvert-maintenant", "plan-de-salle", "reservation-de-table", "carte-cadeau-qui-se-compose", "envol-vers-le-panier"],
+      "deja_vu_voulu": "Demande de l'utilisateur : le plateau qu'on lance (objet-a-faire-tourner) et les modules de service sont gardés de la v3 du même client, habillés autrement ; ils ne portent pas l'effet signature.",
+      "sections": [
+        { "role": "ouverture", "reprend": "icc-maquette/hero", "plus": "Titre géant sur la moitié de l'écran ; le cadran braise et soleil sous la main ; l'hiver montre le plat fumant devant la cheminée, l'été la piscine aux palmiers avec une lumière qui joue sur l'eau ; sous les boutons, « ouvert maintenant » et le prochain service." },
+        { "role": "outil-interactif", "reprend": "meteofr-maquette/heures", "plus": "La bascule des saisons comme une journée en accéléré : la lumière de la page passe de la braise au soleil, les rendez-vous changent (Noël et Saint-Sylvestre, ou journées festives, piscine et bar)." },
+        { "role": "carte", "reprend": "jardins-hacienda-maquette/debut", "plus": "Plongée : on entre dans l'assiette fumante (ou dans l'eau de la piscine en été) et l'on ressort sur la carte de la semaine, le plateau du chef à lancer avec les vrais plats." },
+        { "role": "offre", "reprend": "chateau-haut-piquat-maquette/vins-cave", "plus": "Recevoir : « Combien serez-vous ? », la table passe de 2 à 12 puis 120 couverts et la grille de photos se recompose (salle, terrasse, jardins, pergola) ; lien qui préremplit la demande de réception." },
+        { "role": "appel", "reprend": "myrtille-et-compagnie-maquette/fin", "plus": "Offrir et venir en un écran : la carte cadeau en aperçu, l'accès (6 Vathier Haye, Moineville, entre Metz, Thionville et le Luxembourg), le prochain service ouvert." }
+      ],
+      "invente": ["cadran braise et soleil", "bascule des saisons sur tout le site", "plongée dans l'assiette ou dans l'eau", "table qui s'agrandit", "lueur de saison dans la marge", "dressage du suprême en vraies photos détourées"]
+    },
+    {
+      "nom": "Le domaine vu du dessus",
+      "idee": "Le domaine dessiné d'en haut (salle et cheminée, grande table, terrasse, piscine, jardins, parking), plan indicatif d'après les photos et dit comme tel, sert de sommaire. On plonge de la route jusqu'à la table, puis jusqu'à la réservation ; chaque lieu du plan ouvre sa section (la carte à table, la piscine, les réceptions sous la pergola).",
+      "plan": "territoire",
+      "palette": ["#f4ecdc", "#2b241c", "#c8643a", "#6f8a5b", "#2c7f8f"],
+      "polices": ["Bodoni Moda", "Figtree", "Caveat"],
+      "grille": {
+        "objet": "la cloche-loupe qu'on promène sur le plan du domaine : elle soulève la cloche sur chaque lieu et montre sa photo",
+        "fil": "le chemin du domaine, de la route à la table, tracé sur le plan ; un point par section",
+        "voile": "la cloche de service qui se pose et se relève (gardée de la v3)",
+        "forme_voile": "propre",
+        "familles": ["plongee", "profondeur", "morphing", "recomposition"],
+        "signature": "plongee",
+        "modernes": ["plongée de la route jusqu'à la table", "plans découpés du domaine en profondeur", "le lieu du plan se change en photo", "les réceptions qui se recomposent selon le nombre d'invités"]
+      },
+      "modules": ["plat-fumant", "objet-a-faire-tourner", "carte-du-restaurant", "ardoise-a-la-craie", "accords-mets-et-vins", "horaires-ouvert-maintenant", "plan-de-salle", "reservation-de-table", "carte-cadeau-qui-se-compose", "envol-vers-le-panier"],
+      "deja_vu_voulu": "Demande de l'utilisateur : le plateau qu'on lance et les modules de service sont gardés de la v3 du même client, habillés autrement.",
+      "sections": [
+        { "role": "ouverture", "reprend": "les-plus-hautes-eaux-maquette/haut", "plus": "Le domaine vu du ciel, la route et le portail ; on plonge jusqu'à la terrasse en un geste." },
+        { "role": "carte", "reprend": "winsbike-maquette/top", "plus": "La plongée continue jusqu'à la table et à l'assiette fumante : la carte de la semaine s'ouvre." },
+        { "role": "offre", "reprend": "vizrok-maquette/collections", "plus": "Les espaces de réception se recomposent selon le nombre d'invités, sur le plan." },
+        { "role": "appel", "reprend": "h-renovation-maquette/appel", "plus": "La table choisie sur le plan préremplit la réservation." }
+      ],
+      "invente": ["plan du domaine indicatif", "cloche-loupe", "chemin de la route à la table", "plans découpés du domaine"]
+    }
+  ]
+}

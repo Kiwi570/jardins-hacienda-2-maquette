@@ -44,5 +44,25 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       return { attendu: Math.round((Date.UTC(a, m - 1, j) - Date.UTC(+p.year, +p.month - 1, +p.day)) / 86400000), affiche: (e.querySelector('[data-jours]') || {}).textContent };
     }));
     for (const x of jours) if (String(x.attendu) !== String(x.affiche).trim()) R.regarder('decompte', `affiché ${x.affiche}, attendu ${x.attendu}`, { page: '/les-fetes', taille: '390×844' });
+
+    /* v4 : la saison bascule (bouton Été), reste choisie d'une page à l'autre, et le bouton principal change de libellé. */
+    await page.goto(BASE + '/', { waitUntil: 'load' });
+    await attendrePret(page);
+    await page.locator('[data-saison-choix="ete"]').click();
+    await attendre(400);
+    const ete = await page.evaluate(() => ({ s: document.documentElement.dataset.saison, bouton: document.querySelector('[data-action-principale]')?.innerText.trim() }));
+    if (ete.s !== 'ete' || !/terrasse/i.test(ete.bouton || '')) R.echec('saison', `bascule vers l'été : saison ${ete.s}, bouton « ${ete.bouton} »`, { page: '/', taille: '390×844' });
+    await page.goto(BASE + '/la-carte', { waitUntil: 'load' });
+    await attendrePret(page);
+    const garde = await page.evaluate(() => document.documentElement.dataset.saison);
+    if (garde !== 'ete') R.echec('saison', `saison non gardée d'une page à l'autre (${garde})`, { page: '/la-carte', taille: '390×844' });
+    await page.evaluate(() => { try { localStorage.removeItem('jh-saison'); } catch {} });
+    /* v4 : la table qui s'agrandit (120 invités : les jardins et la pergola, lien prérempli). */
+    await page.goto(BASE + '/', { waitUntil: 'load' });
+    await attendrePret(page);
+    await page.locator('[data-palier="3"]').click();
+    await attendre(300);
+    const rec = await page.evaluate(() => ({ espace: [...document.querySelectorAll('[data-espace]')].find((e) => !e.hidden)?.textContent, lien: document.querySelector('[data-lien-reception]')?.getAttribute('href') }));
+    if (!/pergola/i.test(rec.espace || '') || !/invites=120/.test(rec.lien || '')) R.echec('recevoir', `120 invités : « ${rec.espace} », lien ${rec.lien}`, { page: '/', taille: '390×844' });
   } finally { await ctx.close(); }
 }

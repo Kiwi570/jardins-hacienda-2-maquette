@@ -541,3 +541,322 @@ html:not(.js) .ouv-accueil { min-height: 0; }
 .mention-ia { opacity: .72; }
 /* Pied de page : le sommaire sur deux colonnes sur téléphone. */
 @media (max-width: 760px) { .pied nav ul { columns: 2; column-gap: 24px; } .pied nav li { break-inside: avoid; } }
+
+/* =====================================================================================================
+   v4 « Deux saisons, une maison » : la saison (html[data-saison]) change la lumière, les photos, les textes.
+   ===================================================================================================== */
+html[data-saison="hiver"] { --lueur: 216, 98, 42; --soleil: #f2b33d; }
+html[data-saison="ete"] { --lueur: 92, 200, 214; --accent: #f2b33d; --couleur-accent: #f2b33d; --soleil: #f2b33d; }
+html[data-saison="ete"] .clair { --accent: #1d6a77; --couleur-accent: #1d6a77; }
+html[data-saison="hiver"] [data-saison-seul="ete"], html[data-saison="ete"] [data-saison-seul="hiver"] { display: none !important; }
+[data-saison-photo] { transition: opacity .9s ease, visibility .9s; }
+html[data-saison="hiver"] [data-saison-photo="ete"], html[data-saison="ete"] [data-saison-photo="hiver"] { opacity: 0; visibility: hidden; }
+
+/* Lueur de saison (lien entre les sections et les pages, hors de la marge) : braise qui monte du bas en hiver,
+   reflet d'eau qui ondule en haut en été. */
+[data-lueur] { position: relative; }
+[data-lueur]::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: clamp(70px, 14vh, 140px); z-index: 0; pointer-events: none;
+  background: radial-gradient(55% 100% at 50% 100%, rgba(var(--lueur), .26), rgba(var(--lueur), 0) 72%); animation: lueur-braise 4.8s ease-in-out infinite alternate; }
+html[data-saison="ete"] [data-lueur]::after { top: 0; bottom: auto; background: radial-gradient(40% 70% at 30% 0%, rgba(var(--lueur), .22), transparent 70%), radial-gradient(40% 70% at 72% 0%, rgba(var(--lueur), .18), transparent 70%); animation-name: lueur-eau; }
+@keyframes lueur-braise { from { opacity: .55; transform: scaleY(.85); transform-origin: 50% 100%; } to { opacity: 1; transform: scaleY(1.1); transform-origin: 50% 100%; } }
+@keyframes lueur-eau { from { opacity: .6; transform: translateX(-3%); } to { opacity: 1; transform: translateX(3%); } }
+:is(html.calme, html:not(.js)) [data-lueur]::after { animation: none; }
+
+/* Interrupteur de saison de l'en-tête (toutes les pages). */
+.saison-mini { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--nappe) 30%, transparent); background: transparent; color: var(--nappe); cursor: pointer; }
+.saison-mini svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+.saison-mini__flamme { fill: #d8622a; stroke: none; }
+.saison-mini__soleil { display: none; stroke: #f2b33d; } .saison-mini__soleil circle { fill: #f2b33d; }
+html[data-saison="ete"] .saison-mini__flamme { display: none; } html[data-saison="ete"] .saison-mini__soleil { display: inline; }
+
+/* ---------- Ouverture des saisons ---------- */
+.ouv-saisons { min-height: 100svh; display: grid; align-items: end; padding: calc(var(--entete-h) + 24px) var(--gouttiere) clamp(28px, 6vh, 64px); overflow: hidden; background: var(--fumee); }
+.ouv-saisons__photos { position: absolute; inset: 0; z-index: 0; }
+.ouv-saisons__photo-saison { position: absolute; inset: 0; }
+.ouv-saisons__photo-saison .media { position: absolute; inset: 0; border-radius: 0; }
+.ouv-saisons__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.ouv-saisons::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: background .9s;
+  background: linear-gradient(90deg, rgba(21,16,12,.88) 0%, rgba(21,16,12,.62) 38%, rgba(21,16,12,0) 66%), linear-gradient(0deg, rgba(21,16,12,.8), rgba(21,16,12,0) 45%); }
+html[data-saison="ete"] .ouv-saisons::before { background: linear-gradient(90deg, rgba(10,38,46,.84) 0%, rgba(10,38,46,.55) 38%, rgba(10,38,46,0) 66%), linear-gradient(0deg, rgba(10,38,46,.78), rgba(10,38,46,0) 45%); }
+.ouv-saisons__texte { position: relative; z-index: 2; max-width: min(100%, 1040px); }
+.ouv-saisons__titre { margin: 0 0 .3em; font-size: clamp(2.5rem, min(6vw, 11vh), 7.2rem); line-height: 1.1; color: var(--nappe); }
+.ouv-saisons__ligne { display: block; transition: opacity .8s, color .8s; }
+.ouv-saisons__ligne[data-ligne="ete"] { font-style: italic; }
+html[data-saison="hiver"] .ouv-saisons__ligne[data-ligne="ete"], html[data-saison="ete"] .ouv-saisons__ligne[data-ligne="hiver"] { opacity: .4; }
+html[data-saison="hiver"] .ouv-saisons__ligne[data-ligne="hiver"] { color: #ffd9b8; }
+html[data-saison="ete"] .ouv-saisons__ligne[data-ligne="ete"] { color: #fff2c9; }
+.ouv-saisons__intro { max-width: 40em; margin: 0 0 18px; color: color-mix(in srgb, var(--nappe) 90%, transparent); font-size: clamp(1rem, .95rem + .3vw, 1.2rem); }
+.ouv-saisons__actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0 10px; }
+.ouv-saisons__info { margin: 0; font-weight: 600; color: var(--laiton); }
+.ouv-saisons__info a { color: inherit; text-underline-offset: .2em; }
+.ouv-saisons__statut::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: currentColor; vertical-align: .08em; }
+.ouv-saisons__statut[data-etat="ouvert"]::before { background: #8fc46a; } .ouv-saisons__statut[data-etat="bientot"]::before { background: #e0b04a; } .ouv-saisons__statut[data-etat="ferme"]::before { background: var(--braise); }
+/* Reflets de l'été sur l'eau : trois taches de lumière qui glissent (léger, sans WebGL). */
+.reflets { position: absolute; inset: 52% 0 0 34%; z-index: 1; pointer-events: none; mix-blend-mode: screen; overflow: hidden; }
+.reflets i { position: absolute; width: 46%; height: 60%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,255,240,.42), transparent); animation: reflet 7s ease-in-out infinite alternate; }
+.reflets i:nth-child(1) { left: 6%; top: 10%; } .reflets i:nth-child(2) { left: 38%; top: 30%; animation-duration: 9s; animation-delay: -3s; } .reflets i:nth-child(3) { left: 62%; top: 4%; animation-duration: 11s; animation-delay: -6s; }
+@keyframes reflet { from { transform: translate(-8%, 0) scale(1, .7); opacity: .5; } to { transform: translate(10%, 6%) scale(1.15, .9); opacity: 1; } }
+html.calme .reflets i { animation: none; }
+/* Cadran braise et soleil. */
+.cadran-saison { --p: 0; display: grid; justify-items: start; gap: 2px; margin: 4px 0 6px; }
+.cadran-saison__arc { width: 220px; height: auto; touch-action: none; cursor: grab; overflow: visible; }
+.cadran-saison__arc:active { cursor: grabbing; }
+.cadran-saison__coeur { fill: color-mix(in srgb, #d8622a calc((1 - var(--p)) * 100%), #f2b33d); }
+.cadran-saison__boutons { display: flex; align-items: center; gap: 10px; margin: 0; }
+.cadran-saison__boutons button { min-width: 64px; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--nappe) 35%, transparent); background: transparent; color: var(--nappe); font: inherit; font-weight: 600; cursor: pointer; }
+.cadran-saison__boutons button[aria-pressed="true"] { background: var(--nappe); color: var(--fumee); }
+.cadran-saison__indice { font-family: var(--police-main, Caveat), cursive; font-size: 1.15rem; color: var(--laiton); }
+@media (max-width: 760px) {
+  .ouv-saisons { align-items: end; padding-top: calc(var(--entete-h) + 12px); }
+  .ouv-saisons::before { background: linear-gradient(0deg, rgba(21,16,12,.92) 0%, rgba(21,16,12,.75) 52%, rgba(21,16,12,.1) 78%); }
+  html[data-saison="ete"] .ouv-saisons::before { background: linear-gradient(0deg, rgba(10,38,46,.92) 0%, rgba(10,38,46,.72) 52%, rgba(10,38,46,.1) 78%); }
+  .ouv-saisons__titre { font-size: clamp(2.1rem, 10.4vw, 3.2rem); }
+  .cadran-saison__arc { width: 180px; } .cadran-saison__indice { display: none; }
+  .reflets { inset: 30% 0 30% 0; }
+}
+@media (max-height: 760px) { .ouv-saisons .surtitre, .ouv-saisons__intro { display: none; } }
+
+/* ---------- La table qui se dresse, puis la plongée ---------- */
+.table-dressee { background: var(--fumee); }
+.table { --assiette-ombre: rgba(0, 0, 0, .45); }
+.table__nappe { border-radius: 18px; background: repeating-linear-gradient(0deg, rgba(120, 90, 50, .035) 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, rgba(120, 90, 50, .03) 0 1px, transparent 1px 5px), radial-gradient(120% 90% at 30% 20%, #fbf6ec, #efe3cc 70%, #e4d4b6); box-shadow: 0 40px 80px -40px rgba(0,0,0,.6); }
+.table__nappe .assiette__element > svg { overflow: visible; }
+.table__mention { font-size: max(12px, .82rem); color: var(--texte-doux); }
+/* Plongée (fin de la scène) : le cercle de l'assiette du milieu s'ouvre et la photo du plat grandit jusqu'à remplir la nappe ;
+   l'été, c'est l'eau de la piscine qui s'ouvre dans l'assiette. --m est posé par le module (0 à 1), comme pour les autres couches. */
+.table__lieu { position: relative; display: grid; width: min(100%, 560px); justify-self: center; }
+.table__lieu > * { grid-area: 1 / 1; }
+.table__lieu > .assiette__scene { width: 100%; }
+@media (min-width: 900px) { .table .table__lieu { grid-area: scene; align-self: center; width: min(100%, 620px, 74vh); } }
+.table.assiette--epingle .table__lieu { width: min(100%, 680px, calc(var(--ecran-h) - var(--entete-h) - var(--barres-h) - 40px)); }
+.table__plongee { position: relative; inset: auto; z-index: 3; overflow: hidden; border-radius: 18px; transform: none; filter: none;
+  --r: calc(20.5% + var(--m, 1) * 60%); --c: calc(56% - var(--m, 1) * 6%);
+  clip-path: circle(var(--r) at var(--c) var(--c)); opacity: clamp(0, calc(var(--m, 1) * 6), 1); }
+.table__plongee-photo { position: absolute; left: 35.5%; top: 35.5%; width: 41%; height: 41%; transform-origin: 50% 50%;
+  transform: translate(calc(var(--m, 1) * -14.6%), calc(var(--m, 1) * -14.6%)) scale(calc(1 + var(--m, 1) * 1.75)); }
+.table__plongee-photo .media { position: absolute; inset: 0; margin: 0; border-radius: 0; }
+.table__plongee-image img { width: 100%; height: 100%; object-fit: cover; }
+.table__plongee::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(14,10,7,.88) 0%, rgba(14,10,7,.35) 45%, rgba(14,10,7,0) 70%);
+  opacity: clamp(0, calc((var(--m, 1) - .55) * 3), 1); }
+.table__plongee-texte { position: absolute; inset: auto 0 0 0; z-index: 2; padding: 0 clamp(18px, 3vw, 40px) clamp(18px, 3vw, 36px); color: var(--nappe); text-shadow: 0 2px 14px rgba(0,0,0,.7);
+  opacity: clamp(0, calc((var(--m, 1) - .78) * 5), 1); transform: translateY(calc((1 - var(--m, 1)) * 60px)); }
+.table__plongee-texte h3 { font-size: clamp(1.7rem, min(3.4vw, 6vh), 3.2rem); line-height: 1.15; margin: 0 0 .25em; }
+.table__plongee-texte p { margin: 0 0 12px; font-weight: 600; }
+.table__plongee-texte p:last-child { margin: 0; }
+.table.est-dresse .table__plongee { pointer-events: auto; }
+/* Mode calme, sans JavaScript : la table dressée reste visible, la plongée devient une invitation sous les étapes. */
+:is(html.calme, html:not(.js)) .table__lieu { display: block; }
+:is(html.calme, html:not(.js)) .table__plongee { clip-path: none; opacity: 1; margin-top: 16px; background: var(--vin, #3a1418); pointer-events: auto; }
+:is(html.calme, html:not(.js)) .table__plongee-photo, :is(html.calme, html:not(.js)) .table__plongee::after { display: none; }
+:is(html.calme, html:not(.js)) .table__plongee-texte { position: relative; opacity: 1; transform: none; padding: 20px; }
+
+/* ---------- Rendez-vous de la saison ---------- */
+.rdv { padding-block: clamp(72px, 10vw, 130px); background: radial-gradient(70% 60% at 70% 30%, #3a1418, var(--vin) 70%); transition: background .9s; overflow: hidden; }
+html[data-saison="ete"] .rdv { background: radial-gradient(70% 60% at 70% 30%, #12505c, #0b2b33 70%); }
+.rdv__braises { position: absolute; inset: auto 0 0 0; width: 100%; height: 60%; pointer-events: none; z-index: 0; }
+html[data-saison="ete"] .rdv__braises { display: none; }
+.rdv__contenu { position: relative; z-index: 2; }
+.rdv__cartes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 28px); margin: 28px 0; }
+.rdv__cartes--ete { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.fete-carte, .ete-carte { display: grid; align-content: start; gap: 8px; padding: 16px; border-radius: var(--rayon); background: color-mix(in srgb, var(--nappe) 7%, transparent); border: 1px solid color-mix(in srgb, var(--nappe) 16%, transparent); }
+.fete-carte h3, .ete-carte h3 { margin: 0; font-size: clamp(1.3rem, 1.1rem + .8vw, 1.8rem); }
+.fete-carte__photo, .ete-carte__photo { margin: 0 0 6px; border-radius: calc(var(--rayon) - 4px); overflow: hidden; aspect-ratio: 16 / 10; }
+.fete-carte__photo img, .ete-carte__photo img { width: 100%; height: 100%; object-fit: cover; }
+.ete-carte__quand, .fete-carte__quand { margin: 0; font-weight: 600; color: var(--soleil); }
+@media (max-width: 900px) { .rdv__cartes--ete { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .rdv__cartes, .rdv__cartes--ete { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Recevoir : la table qui s'agrandit ---------- */
+.recevoir.clair { background: linear-gradient(180deg, var(--nappe), #efe2ca); padding-block: clamp(72px, 10vw, 130px); }
+.recevoir__grille { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 64px); align-items: center; }
+.recevoir__curseur { display: grid; gap: 8px; margin: 18px 0 8px; }
+.recevoir__nombre { font-family: var(--police-titres); font-size: clamp(2rem, 1.6rem + 1.6vw, 3.2rem); line-height: 1.2; }
+.recevoir__curseur input { width: min(100%, 420px); min-height: 44px; accent-color: var(--accent); }
+.recevoir__paliers { display: flex; gap: 8px; margin: 0 0 12px; }
+.recevoir__paliers button { min-width: 56px; min-height: 44px; border-radius: 999px; border: 1px solid var(--ligne); background: transparent; color: var(--encre); font: inherit; font-weight: 600; cursor: pointer; }
+.recevoir__paliers button[aria-pressed="true"] { background: var(--encre); color: var(--nappe); }
+.recevoir__espace { min-height: 3.2em; margin: 0 0 6px; font-weight: 700; font-size: 1.1rem; }
+.recevoir__note { font-size: max(12px, .85rem); color: var(--texte-doux); }
+.recevoir__table { width: 100%; height: auto; margin-bottom: 14px; overflow: visible; }
+.recevoir__plateau { fill: #7a5523; transition: x .5s, width .5s; }
+.recevoir__chaises circle { fill: #b8925a; animation: chaise .4s var(--d, 0ms) both cubic-bezier(.3, 1.5, .5, 1); }
+.recevoir__chaises text { fill: var(--encre); font-family: var(--police-texte); font-size: 18px; font-weight: 700; }
+@keyframes chaise { from { transform: scale(0); transform-box: fill-box; transform-origin: center; } to { transform: scale(1); transform-box: fill-box; transform-origin: center; } }
+html.calme .recevoir__chaises circle { animation: none; }
+.recevoir__photos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: clamp(70px, 9vw, 130px); gap: 10px; }
+.recevoir__photos li { border-radius: var(--rayon); overflow: hidden; grid-column: span 1; grid-row: span 1; }
+.recevoir__photos li.est-choisie { grid-column: span 3; grid-row: span 2; }
+.recevoir__photo { margin: 0; height: 100%; } .recevoir__photo img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 900px) { .recevoir__grille { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Offrir et venir ---------- */
+.offrir-venir { padding-block: clamp(72px, 10vw, 130px); background: var(--fumee); }
+.offrir-venir__grille { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 5vw, 80px); align-items: start; }
+.offrir-venir .mini-carte { margin: 14px 0 18px; }
+.offrir-venir .venir__carte { width: min(100%, 420px); color: var(--laiton); margin: 6px 0 10px; }
+.offrir-venir .venir__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+@media (max-width: 760px) { .offrir-venir__grille { grid-template-columns: minmax(0, 1fr); } }
+/* v4 : réglages de la table qui se dresse et longueur de l'accueil (7 écrans). */
+.table { background: var(--fumee); padding-block: clamp(40px, 6vw, 72px); }
+@media (min-width: 900px) { .table .assiette__suite { grid-area: etapes; } }
+@media (max-width: 899px) { .table .assiette__suite { order: 3; } }
+.clair[data-lueur]::after { opacity: .6; }
+.plateau.clair { padding-block: clamp(48px, 7vw, 96px); }
+.recevoir__table { max-width: 520px; }
+@media (max-width: 760px) { .ouv-saisons__intro { display: none; } .ouv-saisons__titre { font-size: clamp(1.9rem, 9vw, 2.8rem); } .ouv-saisons::before { background: linear-gradient(0deg, rgba(21,16,12,.94) 0%, rgba(21,16,12,.8) 46%, rgba(21,16,12,0) 70%); } html[data-saison="ete"] .ouv-saisons::before { background: linear-gradient(0deg, rgba(10,38,46,.94) 0%, rgba(10,38,46,.78) 46%, rgba(10,38,46,0) 70%); } }
+/* v4 : La carte, plats sous les onglets collants et fin d'appel. */
+.carte-resto__plat { scroll-margin-top: calc(var(--entete-h) + var(--carte-barre-h, 120px) + 12px); }
+.fin-carte { position: relative; min-height: 70svh; display: grid; align-items: end; padding-block: clamp(64px, 10vw, 120px); background: var(--fumee); overflow: hidden; }
+.fin-carte__fond { position: absolute; inset: 0; z-index: 0; border-radius: 0; margin: 0; }
+.fin-carte__fond img { width: 100%; height: 100%; object-fit: cover; }
+.fin-carte::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(21,16,12,.92) 10%, rgba(21,16,12,.35) 70%); pointer-events: none; }
+.fin-carte__contenu { position: relative; z-index: 2; color: var(--nappe); }
+.fin-carte__contenu h2 { font-size: clamp(2.4rem, min(6vw, 11vh), 5.6rem); margin: 0 0 .2em; }
+.fin-carte__statut { font-weight: 700; color: var(--laiton); } .fin-carte__statut a { color: inherit; }
+.fin-carte__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+/* v4 : Les fêtes, le menu de Noël révélé plat par plat, chaque cloche se soulève (B12) ; soirées passées « A eu lieu » (B11). */
+.passes__liste strong { text-decoration: none; }
+.noel__plats li { position: relative; }
+.noel__cloche { position: absolute; left: 50%; top: 50%; width: min(70%, 230px); height: auto; translate: -50% -50%; pointer-events: none; transition: transform .7s cubic-bezier(.3, 1.3, .5, 1), opacity .5s .25s; }
+html.js:not(.calme) .noel__plats li:not(.est-servi) > :not(.noel__cloche) { opacity: 0; }
+.noel__plats li > :not(.noel__cloche) { transition: opacity .45s .2s; }
+.noel__plats li.est-servi .noel__cloche { transform: translateY(-70%) rotate(-8deg); opacity: 0; }
+:is(html.calme, html:not(.js)) .noel__cloche { display: none; }
+/* v4 : Réserver, le plan facultatif après le formulaire, la carte de placement sous la cloche. */
+.pds__couverts { display: none !important; }
+.placement { position: relative; display: grid; place-items: center; height: 150px; margin: 0 0 14px; pointer-events: none; }
+.placement__carton { display: grid; gap: 2px; justify-items: center; margin: 0; padding: 14px 22px; border-radius: 6px; background: #fbf6ec; color: var(--encre); box-shadow: 0 10px 24px -12px rgba(0,0,0,.5); font-size: .95rem; transform: translateY(-60px) rotate(-6deg); opacity: 0; transition: transform .6s cubic-bezier(.3, 1.4, .5, 1), opacity .3s; }
+.placement__carton span:first-child { font-family: var(--police-main, Caveat), cursive; font-size: 1.5rem; color: #8a3612; }
+.placement__carton strong { font-family: var(--police-titres); font-weight: 500; font-size: 1.15rem; }
+.placement__cloche { position: absolute; left: 50%; top: 0; width: 200px; translate: -50% 0; opacity: 0; }
+.placement.est-pose .placement__carton { transform: none; opacity: 1; }
+.placement.est-pose .placement__cloche { animation: cloche-couvre 1.6s .55s ease-in-out both; }
+@keyframes cloche-couvre { 0% { opacity: 0; transform: translateY(-70px); } 30% { opacity: 1; transform: translateY(26px); } 60% { opacity: 1; transform: translateY(26px); } 100% { opacity: 0; transform: translateY(-90px); } }
+html.calme .placement__cloche { display: none; }
+.pds__agrandir { min-height: 44px; margin: 0 0 10px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--ligne); background: transparent; color: inherit; font: inherit; font-weight: 600; }
+@media (max-width: 760px) {
+  .pds__grille { display: flex; flex-direction: column; }
+  .pds__tete { order: 0; } .pds__outils { order: 1; } .pds__panneau { order: 2; } .pds__agrandir { order: 3; } .pds__scene { order: 4; }
+  .pds__scene.est-agrandi { width: 100vw; margin-inline: calc(50% - 50vw); }
+}
+/* v4 : le cadran des horaires se manipule. */
+.horaires__essai { display: grid; gap: 10px; margin-top: 14px; }
+.horaires__essai-titre { margin: 0; font-family: var(--police-main, Caveat), cursive; font-size: 1.3rem; color: var(--laiton); }
+.horaires__essai-jours { display: flex; flex-wrap: wrap; gap: 6px; }
+.horaires__essai-jours button { min-height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--ligne); background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.horaires__essai-jours button[aria-pressed="true"] { background: var(--nappe); color: var(--fumee); }
+.horaires__essai-heure { display: grid; gap: 4px; } .horaires__essai-heure input { min-height: 44px; accent-color: var(--accent); }
+.horaires__essai-reponse { margin: 0; font-weight: 700; font-size: 1.15rem; }
+.horaires__essai-reponse[data-etat="ouvert"] { color: #8fc46a; } .horaires__essai-reponse[data-etat="ferme"] { color: #f0a07a; }
+/* v4 : l'accueil tient en 7 écrans d'ordinateur (plongée dans la scène, cartes en largeur, marges resserrées). */
+.rdv, .recevoir.clair, .offrir-venir { padding-block: clamp(56px, 7vw, 100px); }
+@media (min-width: 1100px) { .plateau__rubriques { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+@media (min-width: 900px) {
+  .rdv__cartes:not(.rdv__cartes--ete) .fete-carte { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); column-gap: 22px; align-content: center; }
+  .rdv__cartes:not(.rdv__cartes--ete) .fete-carte__photo { grid-column: 1; grid-row: 1 / span 6; aspect-ratio: 4 / 5; margin: 0; align-self: stretch; }
+  .rdv__cartes:not(.rdv__cartes--ete) .fete-carte > :not(.fete-carte__photo) { grid-column: 2; justify-self: start; }
+  .ete-carte__photo { aspect-ratio: 4 / 3; }
+}
+.recevoir__photos { grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); grid-template-rows: repeat(3, clamp(64px, 7.6vw, 112px)); grid-auto-rows: auto; }
+.recevoir__photos li { grid-column: 2; grid-row: auto; }
+.recevoir__photos li.est-choisie { grid-column: 1; grid-row: 1 / span 3; }
+.recevoir__table { max-width: 440px; display: block; margin-inline: auto; }
+.recevoir__plateau { fill: #f8f1e3; stroke: #b8925a; stroke-width: 3; }
+.recevoir__chaises circle { fill: #9a7040; stroke: #f3e7d3; stroke-width: 3; }
+.offrir-venir .venir__carte { width: min(100%, 360px); }
+.plateau__vege { white-space: nowrap; }
+.offrir-venir .venir__carte { width: min(100%, 300px); }
+.mini-carte { background: linear-gradient(135deg, #e9cf98 0%, #c9a061 46%, #a77b3c 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 18px 40px rgba(0,0,0,.5); }
+.mini-carte .mini-carte__type { color: #2a1d14; font-weight: 700; }
+.mini-carte .mini-carte__montant { color: #1c140e; }
+.mini-carte .mini-carte__mono img { filter: invert(1) brightness(.2); }
+.plateau.clair { padding-block: clamp(48px, 6vw, 84px); }
+/* v4 téléphone : l'ouverture tient au-dessus de la barre du bas (statut visible sans geste). */
+@media (max-width: 760px) {
+  .ouv-saisons { padding-bottom: calc(var(--barres-h, 0px) + 14px); }
+  .ouv-saisons .surtitre { display: none; }
+  .ouv-saisons__titre { margin-bottom: 6px; }
+  .cadran-saison__arc { width: 150px; }
+  .cadran-saison { margin: 0 0 2px; }
+  .ouv-saisons__actions { gap: 8px; margin: 8px 0 6px; }
+  .ouv-saisons__actions .bouton { padding-inline: 16px; }
+}
+/* v4 téléphone : le titre en haut, le plat au milieu (photo sur les trois quarts du haut), le cadran et les boutons en bas. */
+@media (max-width: 760px) {
+  .ouv-saisons { align-items: stretch; }
+  .ouv-saisons__photos { bottom: 24%; }
+  .ouv-saisons__photos::after { content: ""; position: absolute; inset: auto 0 0 0; height: 30%; background: linear-gradient(0deg, var(--fumee), transparent); z-index: 1; transition: background .9s; }
+  html[data-saison="ete"] .ouv-saisons { background: #0a262e; }
+  html[data-saison="ete"] .ouv-saisons__photos::after { background: linear-gradient(0deg, #0a262e, transparent); }
+  .ouv-saisons::before, html[data-saison="ete"] .ouv-saisons::before { background: linear-gradient(180deg, rgba(21,16,12,.78) 0%, rgba(21,16,12,.25) 26%, rgba(21,16,12,0) 40%); }
+  html[data-saison="ete"] .ouv-saisons::before { background: linear-gradient(180deg, rgba(10,38,46,.78) 0%, rgba(10,38,46,.25) 26%, rgba(10,38,46,0) 40%); }
+  .ouv-saisons__texte { display: flex; flex-direction: column; }
+  .ouv-saisons .cadran-saison { margin-top: auto; }
+}
+@media (max-width: 400px) { .entete-logo { gap: 8px; } .entete-logo span { font-size: .9rem; line-height: 1.08; max-width: 7.6em; white-space: normal; } .entete-actions { gap: 6px; } }
+@media (max-width: 760px) and (max-height: 700px) { .ouv-saisons .cadran-saison__arc { display: none; } }
+.cadran-saison__boutons button[aria-pressed="false"] { background: rgba(21, 16, 12, .55); }
+html[data-saison="ete"] .cadran-saison__boutons button[aria-pressed="false"] { background: rgba(10, 38, 46, .55); }
+.horaires__centre--essai { display: none; margin: 0; }
+.horaires__cadran.est-essai .horaires__centre:not(.horaires__centre--essai) { visibility: hidden; }
+.horaires__cadran.est-essai .horaires__centre--essai { display: grid; }
+/* Réserver : sur le plan, l'étiquette de la table choisie devient le carton « Réservé ». */
+.pds__repere.est-reserve .pds__repere-etiquette { background: #fbf6ec; color: #2a1d14; box-shadow: 0 6px 16px rgba(0,0,0,.4); animation: carton-pose .55s cubic-bezier(.3, 1.5, .5, 1) both; }
+.pds__repere.est-reserve .pds__repere-etiquette b { color: #a1401b; }
+@keyframes carton-pose { from { opacity: 0; transform: translateY(-18px) rotate(-8deg); } }
+html.calme .pds__repere.est-reserve .pds__repere-etiquette { animation: none; }
+/* v4 : la nappe de lin sous les assiettes, l'eau de la piscine derrière les rendez-vous de l'été (illustrations générées). */
+.table__lin { position: absolute; inset: 0; z-index: 0; margin: 0; border-radius: 18px; overflow: hidden; }
+.table__lin img { width: 100%; height: 100%; object-fit: cover; }
+.rdv__eau { position: absolute; inset: 0; z-index: 0; }
+.rdv__eau .media { position: absolute; inset: 0; margin: 0; border-radius: 0; }
+.rdv__eau img { width: 100%; height: 100%; object-fit: cover; }
+html[data-saison="ete"] .rdv { background: #0b2b33; }
+/* v4, corrections de l'audit complet et du test visiteur. */
+/* Les assiettes qui tombent restent dans la nappe (pas de débordement de page, titre jamais recouvert). */
+.table__nappe { overflow: clip; }
+.table-dressee { overflow-x: clip; }
+/* Statut et liens courts : zone tactile de 44 px. */
+.ouv-saisons__statut, .fin-carte__statut a, .ouv-fetes__reception a { display: inline-flex; align-items: center; min-height: 44px; }
+.ouv-fetes__reception { margin: 6px 0 0; font-weight: 600; }
+.ouv-fetes__reception a { color: inherit; text-underline-offset: .2em; }
+/* Le titre géant ne touche pas le surtitre (boîte de la didone plus haute que la ligne). */
+.ouv-saisons__titre { margin-top: .24em; }
+.ouv-saisons .surtitre { margin-bottom: 0; }
+html[data-saison="hiver"] .ouv-saisons__ligne[data-ligne="ete"], html[data-saison="ete"] .ouv-saisons__ligne[data-ligne="hiver"] { opacity: .6; }
+/* Cartes des fêtes en largeur : la photo suit la hauteur de la carte. */
+@media (min-width: 900px) { .rdv__cartes:not(.rdv__cartes--ete) .fete-carte__photo { aspect-ratio: auto; height: 100%; min-height: 200px; } }
+/* Cloches de Noël : une fois levées, elles disparaissent pour de bon. */
+.noel__plats li.est-servi .noel__cloche { visibility: hidden; transition: transform .7s cubic-bezier(.3, 1.3, .5, 1), opacity .5s .25s, visibility 0s .8s; }
+/* Écrans bas (téléphone à l'horizontale) : l'ouverture tient au-dessus de la ligne de flottaison. */
+@media (max-height: 520px) {
+  .ouv-saisons .cadran-saison__arc, .ouv-saisons .cadran-saison__indice { display: none; }
+  .ouv-saisons__titre { font-size: clamp(1.6rem, 4.6vw, 2.3rem); margin-top: .1em; }
+  .ouv-saisons { padding-top: calc(var(--entete-h) + 8px); padding-bottom: 16px; }
+  .ouv-saisons__actions { margin: 6px 0 2px; }
+}
+/* Sans JavaScript : la bascule des saisons ne peut pas marcher, le cadran est retiré ; l'en-tête est dans le flux. */
+html:not(.js) .cadran-saison { display: none; }
+html:not(.js) .ouv-saisons { min-height: calc(100svh - 72px); }
+/* Téléphone : le surtitre dit quoi et où, sur une ligne. */
+@media (max-width: 760px) { .ouv-saisons .surtitre { display: block; font-size: 12px; letter-spacing: .08em; margin: 0 0 2px; } }
+/* Demande écrite : la section peut monter en haut de l'écran quand on y arrive par un lien. */
+@media (min-width: 900px) { .ecrire { min-height: calc(100svh - var(--entete-h)); } }
+@media (max-width: 760px) { html[data-saison="hiver"] .ouv-saisons__ligne[data-ligne="ete"], html[data-saison="ete"] .ouv-saisons__ligne[data-ligne="hiver"] { opacity: .74; } }
+/* Plongée : la photo garde la forme ronde de l'assiette en grandissant (plus d'octogone). */
+.table__plongee-photo { border-radius: calc((1 - var(--m, 1)) * 50%); overflow: hidden; }
+/* Été : le dégradé de gauche couvre davantage le ciel derrière le titre. */
+@media (min-width: 761px) { html[data-saison="ete"] .ouv-saisons::before { background: linear-gradient(180deg, rgba(10,38,46,.72) 0%, rgba(10,38,46,.35) 30%, rgba(10,38,46,0) 48%), linear-gradient(90deg, rgba(10,38,46,.92) 0%, rgba(10,38,46,.78) 34%, rgba(10,38,46,.2) 58%, rgba(10,38,46,0) 70%), linear-gradient(0deg, rgba(10,38,46,.78), rgba(10,38,46,0) 45%); } }
+/* Contraste : la ligne de l'autre saison reste lisible sur la photo (couleur sourde au lieu d'une transparence). */
+html[data-saison] .ouv-saisons__ligne[data-ligne] { opacity: 1; }
+html[data-saison="hiver"] .ouv-saisons__ligne[data-ligne="ete"], html[data-saison="ete"] .ouv-saisons__ligne[data-ligne="hiver"] { color: #d9c7a6; }
+/* Fluidité (audit, processeur ralenti 4 fois) : les assiettes de la table tombent sans ombre portée recalculée à chaque image ;
+   l'ombre est dessinée une fois, sous l'assiette (cercle flou du SVG). */
+.table .assiette__element { filter: none; }
+.ouv-saisons__photo-saison { will-change: opacity; }
+/* Contraste (audit complet) : un voile sombre sous le titre seulement ; le plat, en bas à droite, reste en pleine lumière. */
+@media (min-width: 761px) {
+  .ouv-saisons__photos::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: background .9s;
+    background: radial-gradient(62% 48% at 24% 36%, rgba(21,16,12,.78) 0%, rgba(21,16,12,.5) 55%, rgba(21,16,12,0) 100%); }
+  html[data-saison="ete"] .ouv-saisons__photos::after { background: radial-gradient(62% 48% at 24% 36%, rgba(10,38,46,.78) 0%, rgba(10,38,46,.5) 55%, rgba(10,38,46,0) 100%); }
+}

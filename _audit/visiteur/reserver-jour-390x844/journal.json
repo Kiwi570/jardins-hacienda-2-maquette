@@ -1,0 +1,139 @@
+{
+ "mission": "reserver-jour",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.2,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 7452,
+   "titres": [
+    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Passer à l’été",
+    "Menu",
+    "Hiver",
+    "Été",
+    "Réserver au coin du feu",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Réserver au coin du feu",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 5.6,
+   "adresse": "/reserver",
+   "y": 0,
+   "hauteurPage": 6288,
+   "titres": [
+    "h1 Votre table"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Passer à l’été",
+    "Menu",
+    "Choisir le jour",
+    "Choisir ma table",
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Choisir le jour",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 7.8,
+   "adresse": "/reserver#formulaire",
+   "y": 588,
+   "hauteurPage": 6288,
+   "titres": [
+    "h2 Le jour, l'heure, les couverts"
+   ],
+   "actions": [
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "cliquer Sam",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 10,
+   "adresse": "/reserver#formulaire",
+   "y": 588,
+   "hauteurPage": 6348,
+   "titres": [
+    "h2 Le jour, l'heure, les couverts"
+   ],
+   "actions": [
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-3.png"
+  }
+ ]
+}

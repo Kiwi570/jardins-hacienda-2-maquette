@@ -5,7 +5,7 @@
 // bulles qui montent dans le liquide) et chateau-haut-piquat-maquette/oenotourisme-ecrivins (couleur du vin et texte qui la décrit).
 // Clavier : boutons radio (flèches). Lecteurs d'écran : la fiche est annoncée. Mode calme : verre plein, fiche changée d'un coup.
 // Sans JavaScript : la liste montre chaque accord.
-import { pret } from '../../socle/socle.js?v=3';
+import { pret } from '../../socle/socle.js?v=4';
 
 const NS = 'http://www.w3.org/2000/svg';
 /* Verres : la coupe en quatre courbes (bord gauche → ventre → fond → ventre → bord droit, moitié droite en miroir), toujours

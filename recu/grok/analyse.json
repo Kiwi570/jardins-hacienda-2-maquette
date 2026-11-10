@@ -1,0 +1,753 @@
+{
+  "dossier": "/home/claude/v4/jardins-hacienda-2-maquette/recu/grok",
+  "date": "2026-11-10T16:51:41.294Z",
+  "detection": "mesures sharp seulement",
+  "planches": [
+    "planche.jpg"
+  ],
+  "legende_planche": "cadre jaune : sujet ; croix rouge : cadrage ; fond rose : à vérifier",
+  "doublons": [],
+  "images": [
+    {
+      "fichier": "bougies.jpg",
+      "nom": "bougies",
+      "drapeau": null,
+      "largeur": 1168,
+      "hauteur": 784,
+      "ratio": "3:2",
+      "ratio_valeur": 1.49,
+      "orientation": "paysage",
+      "format": "jpeg",
+      "poids": 131284,
+      "transparence": false,
+      "sujet": {
+        "x": 59.4,
+        "y": 27.3,
+        "l": 31.3,
+        "h": 68.2,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        77,
+        72
+      ],
+      "cadrage_css": "77% 72%",
+      "zones_calmes": [
+        {
+          "cote": "gauche",
+          "score": 0.97,
+          "ton": "sombre",
+          "recouvre_sujet": 0
+        },
+        {
+          "cote": "haut",
+          "score": 0.83,
+          "ton": "sombre",
+          "recouvre_sujet": 0.07
+        },
+        {
+          "cote": "bas",
+          "score": 0.5,
+          "ton": "sombre",
+          "recouvre_sujet": 0.27
+        },
+        {
+          "cote": "droite",
+          "score": 0.31,
+          "ton": "sombre",
+          "recouvre_sujet": 0.52
+        }
+      ],
+      "qualite": {
+        "nettete": 3.4,
+        "bruit": 0.32,
+        "compression": 1.5,
+        "faible": true,
+        "raisons": [
+          "1168 px de large",
+          "floue",
+          "compression visible"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "763eefcc4e4b5e7c",
+      "drapeaux": [
+        "petite",
+        "floue",
+        "compression visible",
+        "calme gauche/haut"
+      ]
+    },
+    {
+      "fichier": "braises.jpg",
+      "nom": "braises",
+      "drapeau": null,
+      "largeur": 1168,
+      "hauteur": 784,
+      "ratio": "3:2",
+      "ratio_valeur": 1.49,
+      "orientation": "paysage",
+      "format": "jpeg",
+      "poids": 186087,
+      "transparence": false,
+      "sujet": {
+        "x": 46.9,
+        "y": 50,
+        "l": 50,
+        "h": 40.9,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        71,
+        72
+      ],
+      "cadrage_css": "71% 72%",
+      "zones_calmes": [
+        {
+          "cote": "gauche",
+          "score": 0.95,
+          "ton": "sombre",
+          "recouvre_sujet": 0
+        },
+        {
+          "cote": "haut",
+          "score": 0.89,
+          "ton": "sombre",
+          "recouvre_sujet": 0
+        },
+        {
+          "cote": "droite",
+          "score": 0.21,
+          "ton": "sombre",
+          "recouvre_sujet": 0.38
+        },
+        {
+          "cote": "bas",
+          "score": 0.21,
+          "ton": "sombre",
+          "recouvre_sujet": 0.37
+        }
+      ],
+      "qualite": {
+        "nettete": 18,
+        "bruit": 0.5,
+        "compression": 1.14,
+        "faible": true,
+        "raisons": [
+          "1168 px de large"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "4edefcfefefcfc78",
+      "drapeaux": [
+        "petite",
+        "calme gauche/haut"
+      ]
+    },
+    {
+      "fichier": "eau-reflets-sombre.jpg",
+      "nom": "eau-reflets-sombre",
+      "drapeau": null,
+      "largeur": 1168,
+      "hauteur": 784,
+      "ratio": "3:2",
+      "ratio_valeur": 1.49,
+      "orientation": "paysage",
+      "format": "jpeg",
+      "poids": 122772,
+      "transparence": false,
+      "sujet": {
+        "x": 3.1,
+        "y": 40.9,
+        "l": 90.6,
+        "h": 54.5,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        54,
+        67
+      ],
+      "cadrage_css": "54% 67%",
+      "zones_calmes": [
+        {
+          "cote": "haut",
+          "score": 0.88,
+          "ton": "sombre",
+          "recouvre_sujet": 0
+        },
+        {
+          "cote": "gauche",
+          "score": 0.6,
+          "ton": "sombre",
+          "recouvre_sujet": 0.5
+        },
+        {
+          "cote": "droite",
+          "score": 0.57,
+          "ton": "sombre",
+          "recouvre_sujet": 0.46
+        },
+        {
+          "cote": "bas",
+          "score": 0.4,
+          "ton": "sombre",
+          "recouvre_sujet": 0.79
+        }
+      ],
+      "qualite": {
+        "nettete": 8.5,
+        "bruit": 0.4,
+        "compression": 1.59,
+        "faible": true,
+        "raisons": [
+          "1168 px de large",
+          "compression visible"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "9898c8f8f4f4e8d0",
+      "drapeaux": [
+        "petite",
+        "compression visible",
+        "calme haut"
+      ]
+    },
+    {
+      "fichier": "eau-reflets.jpg",
+      "nom": "eau-reflets",
+      "drapeau": null,
+      "largeur": 1168,
+      "hauteur": 784,
+      "ratio": "3:2",
+      "ratio_valeur": 1.49,
+      "orientation": "paysage",
+      "format": "jpeg",
+      "poids": 297914,
+      "transparence": false,
+      "sujet": {
+        "x": 3.1,
+        "y": 40.9,
+        "l": 90.6,
+        "h": 54.5,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        54,
+        67
+      ],
+      "cadrage_css": "54% 67%",
+      "zones_calmes": [
+        {
+          "cote": "haut",
+          "score": 0.63,
+          "ton": "sombre",
+          "recouvre_sujet": 0
+        },
+        {
+          "cote": "gauche",
+          "score": 0.15,
+          "ton": "sombre",
+          "recouvre_sujet": 0.5
+        },
+        {
+          "cote": "droite",
+          "score": 0.11,
+          "ton": "moyen",
+          "recouvre_sujet": 0.46
+        },
+        {
+          "cote": "bas",
+          "score": 0.02,
+          "ton": "moyen",
+          "recouvre_sujet": 0.79
+        }
+      ],
+      "qualite": {
+        "nettete": 24.2,
+        "bruit": 0.66,
+        "compression": 1.17,
+        "faible": true,
+        "raisons": [
+          "1168 px de large"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "9898c8f8f4f4e8f0",
+      "drapeaux": [
+        "petite"
+      ]
+    },
+    {
+      "fichier": "introuvable.jpg",
+      "nom": "introuvable",
+      "drapeau": null,
+      "largeur": 1168,
+      "hauteur": 784,
+      "ratio": "3:2",
+      "ratio_valeur": 1.49,
+      "orientation": "paysage",
+      "format": "jpeg",
+      "poids": 183024,
+      "transparence": false,
+      "sujet": {
+        "x": 50,
+        "y": 31.8,
+        "l": 46.9,
+        "h": 36.4,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        69,
+        56
+      ],
+      "cadrage_css": "69% 56%",
+      "zones_calmes": [
+        {
+          "cote": "gauche",
+          "score": 0.93,
+          "ton": "sombre",
+          "recouvre_sujet": 0
+        },
+        {
+          "cote": "haut",
+          "score": 0.84,
+          "ton": "sombre",
+          "recouvre_sujet": 0.04
+        },
+        {
+          "cote": "bas",
+          "score": 0.71,
+          "ton": "sombre",
+          "recouvre_sujet": 0.04
+        },
+        {
+          "cote": "droite",
+          "score": 0.41,
+          "ton": "sombre",
+          "recouvre_sujet": 0.34
+        }
+      ],
+      "qualite": {
+        "nettete": 22.9,
+        "bruit": 0.6,
+        "compression": 1.25,
+        "faible": true,
+        "raisons": [
+          "1168 px de large"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "f3f3f7eff8d8cce8",
+      "drapeaux": [
+        "petite",
+        "calme gauche/haut/bas"
+      ]
+    },
+    {
+      "fichier": "kraft-cire-mobile.jpg",
+      "nom": "kraft-cire-mobile",
+      "drapeau": null,
+      "largeur": 784,
+      "hauteur": 1168,
+      "ratio": "2:3",
+      "ratio_valeur": 0.671,
+      "orientation": "portrait",
+      "format": "jpeg",
+      "poids": 290772,
+      "transparence": false,
+      "sujet": {
+        "x": 0,
+        "y": 40.6,
+        "l": 68.2,
+        "h": 56.3,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        34,
+        65
+      ],
+      "cadrage_css": "34% 65%",
+      "zones_calmes": [
+        {
+          "cote": "haut",
+          "score": 0.92,
+          "ton": "sombre",
+          "recouvre_sujet": 0
+        },
+        {
+          "cote": "droite",
+          "score": 0.68,
+          "ton": "sombre",
+          "recouvre_sujet": 0.12
+        },
+        {
+          "cote": "gauche",
+          "score": 0.46,
+          "ton": "sombre",
+          "recouvre_sujet": 0.56
+        },
+        {
+          "cote": "bas",
+          "score": 0.39,
+          "ton": "sombre",
+          "recouvre_sujet": 0.62
+        }
+      ],
+      "qualite": {
+        "nettete": 27,
+        "bruit": 1.14,
+        "compression": 1.05,
+        "faible": true,
+        "raisons": [
+          "784 px de large"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "b2fefb6863610829",
+      "drapeaux": [
+        "petite",
+        "calme haut/droite"
+      ]
+    },
+    {
+      "fichier": "kraft-cire.jpg",
+      "nom": "kraft-cire",
+      "drapeau": null,
+      "largeur": 1168,
+      "hauteur": 784,
+      "ratio": "3:2",
+      "ratio_valeur": 1.49,
+      "orientation": "paysage",
+      "format": "jpeg",
+      "poids": 275671,
+      "transparence": false,
+      "sujet": {
+        "x": 46.9,
+        "y": 31.8,
+        "l": 53.1,
+        "h": 63.6,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        68,
+        57
+      ],
+      "cadrage_css": "68% 57%",
+      "zones_calmes": [
+        {
+          "cote": "gauche",
+          "score": 0.89,
+          "ton": "sombre",
+          "recouvre_sujet": 0
+        },
+        {
+          "cote": "haut",
+          "score": 0.75,
+          "ton": "sombre",
+          "recouvre_sujet": 0.05
+        },
+        {
+          "cote": "bas",
+          "score": 0.33,
+          "ton": "sombre",
+          "recouvre_sujet": 0.46
+        },
+        {
+          "cote": "droite",
+          "score": 0.11,
+          "ton": "sombre",
+          "recouvre_sujet": 0.64
+        }
+      ],
+      "qualite": {
+        "nettete": 22.8,
+        "bruit": 0.97,
+        "compression": 1.14,
+        "faible": true,
+        "raisons": [
+          "1168 px de large"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "f8edd898b8b9d6de",
+      "drapeaux": [
+        "petite",
+        "calme gauche/haut"
+      ]
+    },
+    {
+      "fichier": "nappe-lin-douce.jpg",
+      "nom": "nappe-lin-douce",
+      "drapeau": null,
+      "largeur": 1168,
+      "hauteur": 784,
+      "ratio": "3:2",
+      "ratio_valeur": 1.49,
+      "orientation": "paysage",
+      "format": "jpeg",
+      "poids": 194898,
+      "transparence": false,
+      "sujet": {
+        "x": 40.6,
+        "y": 0,
+        "l": 59.4,
+        "h": 95.5,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        84,
+        51
+      ],
+      "cadrage_css": "84% 51%",
+      "zones_calmes": [
+        {
+          "cote": "gauche",
+          "score": 0.86,
+          "ton": "clair",
+          "recouvre_sujet": 0
+        },
+        {
+          "cote": "bas",
+          "score": 0.57,
+          "ton": "clair",
+          "recouvre_sujet": 0.52
+        },
+        {
+          "cote": "haut",
+          "score": 0.52,
+          "ton": "clair",
+          "recouvre_sujet": 0.59
+        },
+        {
+          "cote": "droite",
+          "score": 0.36,
+          "ton": "clair",
+          "recouvre_sujet": 0.96
+        }
+      ],
+      "qualite": {
+        "nettete": 24,
+        "bruit": 1.35,
+        "compression": 1.07,
+        "faible": true,
+        "raisons": [
+          "1168 px de large"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "400964a4a4d4c2da",
+      "drapeaux": [
+        "petite",
+        "calme gauche"
+      ]
+    },
+    {
+      "fichier": "nappe-lin.jpg",
+      "nom": "nappe-lin",
+      "drapeau": null,
+      "largeur": 1168,
+      "hauteur": 784,
+      "ratio": "3:2",
+      "ratio_valeur": 1.49,
+      "orientation": "paysage",
+      "format": "jpeg",
+      "poids": 362900,
+      "transparence": false,
+      "sujet": {
+        "x": 0,
+        "y": 0,
+        "l": 100,
+        "h": 95.5,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        64,
+        47
+      ],
+      "cadrage_css": "64% 47%",
+      "zones_calmes": [
+        {
+          "cote": "gauche",
+          "score": 0.36,
+          "ton": "clair",
+          "recouvre_sujet": 0.96
+        },
+        {
+          "cote": "bas",
+          "score": 0.34,
+          "ton": "clair",
+          "recouvre_sujet": 0.87
+        },
+        {
+          "cote": "droite",
+          "score": 0.27,
+          "ton": "moyen",
+          "recouvre_sujet": 0.96
+        },
+        {
+          "cote": "haut",
+          "score": 0.21,
+          "ton": "clair",
+          "recouvre_sujet": 1
+        }
+      ],
+      "qualite": {
+        "nettete": 27.4,
+        "bruit": 2.25,
+        "compression": 1.04,
+        "faible": true,
+        "raisons": [
+          "1168 px de large"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "400164a4a4d4c2da",
+      "drapeaux": [
+        "petite"
+      ]
+    },
+    {
+      "fichier": "table-nuit-mobile.jpg",
+      "nom": "table-nuit-mobile",
+      "drapeau": null,
+      "largeur": 784,
+      "hauteur": 1168,
+      "ratio": "2:3",
+      "ratio_valeur": 0.671,
+      "orientation": "portrait",
+      "format": "jpeg",
+      "poids": 181322,
+      "transparence": false,
+      "sujet": {
+        "x": 36.4,
+        "y": 53.1,
+        "l": 54.5,
+        "h": 40.6,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        60,
+        72
+      ],
+      "cadrage_css": "60% 72%",
+      "zones_calmes": [
+        {
+          "cote": "haut",
+          "score": 0.93,
+          "ton": "sombre",
+          "recouvre_sujet": 0
+        },
+        {
+          "cote": "gauche",
+          "score": 0.79,
+          "ton": "sombre",
+          "recouvre_sujet": 0.04
+        },
+        {
+          "cote": "droite",
+          "score": 0.52,
+          "ton": "sombre",
+          "recouvre_sujet": 0.31
+        },
+        {
+          "cote": "bas",
+          "score": 0.38,
+          "ton": "sombre",
+          "recouvre_sujet": 0.45
+        }
+      ],
+      "qualite": {
+        "nettete": 25.7,
+        "bruit": 0.63,
+        "compression": 1.23,
+        "faible": true,
+        "raisons": [
+          "784 px de large"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "90b09819f870f0b1",
+      "drapeaux": [
+        "petite",
+        "calme haut/gauche"
+      ]
+    },
+    {
+      "fichier": "table-nuit.jpg",
+      "nom": "table-nuit",
+      "drapeau": null,
+      "largeur": 1168,
+      "hauteur": 784,
+      "ratio": "3:2",
+      "ratio_valeur": 1.49,
+      "orientation": "paysage",
+      "format": "jpeg",
+      "poids": 203350,
+      "transparence": false,
+      "sujet": {
+        "x": 34.4,
+        "y": 22.7,
+        "l": 65.6,
+        "h": 68.2,
+        "source": "contrastes"
+      },
+      "visages": 0,
+      "cadrage": [
+        70,
+        63
+      ],
+      "cadrage_css": "70% 63%",
+      "zones_calmes": [
+        {
+          "cote": "gauche",
+          "score": 0.82,
+          "ton": "sombre",
+          "recouvre_sujet": 0.1
+        },
+        {
+          "cote": "haut",
+          "score": 0.78,
+          "ton": "sombre",
+          "recouvre_sujet": 0.23
+        },
+        {
+          "cote": "bas",
+          "score": 0.37,
+          "ton": "sombre",
+          "recouvre_sujet": 0.49
+        },
+        {
+          "cote": "droite",
+          "score": 0.15,
+          "ton": "sombre",
+          "recouvre_sujet": 0.68
+        }
+      ],
+      "qualite": {
+        "nettete": 24.1,
+        "bruit": 0.76,
+        "compression": 1.18,
+        "faible": true,
+        "raisons": [
+          "1168 px de large"
+        ]
+      },
+      "lisible": null,
+      "empreinte": "c9cdc9f9f1f6be06",
+      "drapeaux": [
+        "petite",
+        "calme gauche/haut"
+      ]
+    }
+  ]
+}
