@@ -3386,5 +3386,393 @@
       "noel-carte-960.webp": 115982
     },
     "media": "c.media({ nom: 'noel-carte', alt: \"Une table de la salle décorée pour Noël, près du sapin\", cadrage: '51% 50%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '4 / 5' })"
+  },
+  "carte-ouverture-ete": {
+    "nom": "carte-ouverture-ete",
+    "source": "recu/terrasse-jardins-hacienda-3.jpg",
+    "role": "ouverture",
+    "alt": "Une assiette de saison servie sur la terrasse, au soleil",
+    "grok": false,
+    "mention": null,
+    "empreinte": "f2fbb4fdda30b75d",
+    "ratio": "16:7",
+    "largeurs": [
+      640,
+      1280
+    ],
+    "mobile": {
+      "ratio": "9:16",
+      "largeurs": [
+        640
+      ],
+      "cadrage": "50% 52%"
+    },
+    "cadrage": "45% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "sombre"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 325,
+      "width": 1080,
+      "height": 473,
+      "source": [
+        1080,
+        1080
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "largeurs retirées (source trop petite) : 1920",
+      "1080 px de large"
+    ],
+    "avertissements": [
+      "version téléphone sans 1080 px (source trop petite)",
+      "agrandie 1,19 fois (source de 1080 px après recadrage)",
+      "recadrage fort : 44 % de l'image gardée"
+    ],
+    "fichiers": [
+      "carte-ouverture-ete-640.webp",
+      "carte-ouverture-ete-1280.webp",
+      "carte-ouverture-ete-mobile-640.webp"
+    ],
+    "poids": {
+      "carte-ouverture-ete-640.webp": 35436,
+      "carte-ouverture-ete-1280.webp": 86726,
+      "carte-ouverture-ete-mobile-640.webp": 61538
+    },
+    "media": "c.media({ nom: 'carte-ouverture-ete', alt: \"Une assiette de saison servie sur la terrasse, au soleil\", cadrage: '45% 50%', cadrageMobile: '50% 52%', sizes: '100vw', priorite: true })"
+  },
+  "offrir-ete": {
+    "nom": "offrir-ete",
+    "source": "recu/terrasse-26.jpg",
+    "role": "ouverture",
+    "alt": "Cocktails servis au bar de la terrasse",
+    "grok": false,
+    "mention": null,
+    "empreinte": "e543aa90daeca27f",
+    "ratio": "16:9",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "9:16",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 54%"
+    },
+    "cadrage": "55% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 96.2,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.09,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "clair"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 630,
+      "width": 1600,
+      "height": 900,
+      "source": [
+        1600,
+        2000
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "agrandie 1,2 fois (source de 1600 px après recadrage)"
+    ],
+    "fichiers": [
+      "offrir-ete-640.webp",
+      "offrir-ete-1280.webp",
+      "offrir-ete-1920.webp",
+      "offrir-ete-mobile-640.webp",
+      "offrir-ete-mobile-1080.webp"
+    ],
+    "poids": {
+      "offrir-ete-640.webp": 28314,
+      "offrir-ete-1280.webp": 70708,
+      "offrir-ete-1920.webp": 109524,
+      "offrir-ete-mobile-640.webp": 75466,
+      "offrir-ete-mobile-1080.webp": 148352
+    },
+    "media": "c.media({ nom: 'offrir-ete', alt: \"Cocktails servis au bar de la terrasse\", cadrage: '55% 50%', cadrageMobile: '50% 54%', sizes: '100vw', priorite: true })"
+  },
+  "reserver-ete": {
+    "nom": "reserver-ete",
+    "source": "recu/terrasse-jardins-hacienda-2.jpg",
+    "role": "ouverture",
+    "alt": "Une table dressée en terrasse, fleurs et verres au soleil",
+    "grok": false,
+    "mention": null,
+    "empreinte": "5757a544bc6f07a2",
+    "ratio": "16:9",
+    "largeurs": [
+      640,
+      1280
+    ],
+    "mobile": {
+      "ratio": "9:16",
+      "largeurs": [
+        640
+      ],
+      "cadrage": "50% 31%"
+    },
+    "cadrage": "45% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0.4,
+      "l": 100,
+      "h": 99.6
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.33,
+        "ton": "clair"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 31,
+      "width": 1080,
+      "height": 608,
+      "source": [
+        1080,
+        1080
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "largeurs retirées (source trop petite) : 1920",
+      "1080 px de large"
+    ],
+    "avertissements": [
+      "version téléphone sans 1080 px (source trop petite)",
+      "agrandie 1,19 fois (source de 1080 px après recadrage)"
+    ],
+    "fichiers": [
+      "reserver-ete-640.webp",
+      "reserver-ete-1280.webp",
+      "reserver-ete-mobile-640.webp"
+    ],
+    "poids": {
+      "reserver-ete-640.webp": 28052,
+      "reserver-ete-1280.webp": 64526,
+      "reserver-ete-mobile-640.webp": 51082
+    },
+    "media": "c.media({ nom: 'reserver-ete', alt: \"Une table dressée en terrasse, fleurs et verres au soleil\", cadrage: '45% 50%', cadrageMobile: '50% 31%', sizes: '100vw', priorite: true })"
+  },
+  "grok/eau-lumiere": {
+    "nom": "grok/eau-lumiere",
+    "source": "recu/grok/eau-reflets.jpg",
+    "role": "section-fond",
+    "alt": "",
+    "grok": true,
+    "mention": "Illustration générée",
+    "empreinte": "2428d56d2ef9b54f",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280
+    ],
+    "mobile": null,
+    "cadrage": "54% 67%",
+    "sujet": {
+      "x": 3.1,
+      "y": 40.5,
+      "l": 90.6,
+      "h": 54.8
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.63,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.15,
+        "ton": "sombre"
+      },
+      {
+        "cote": "droite",
+        "score": 0.11,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0.02,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 5,
+      "width": 1168,
+      "height": 779,
+      "source": [
+        1168,
+        784
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "largeurs retirées (source trop petite) : 1920",
+      "1168 px de large"
+    ],
+    "avertissements": [
+      "agrandie 1,1 fois (source de 1168 px après recadrage)"
+    ],
+    "fichiers": [
+      "grok/eau-lumiere-640.webp",
+      "grok/eau-lumiere-1280.webp"
+    ],
+    "poids": {
+      "grok/eau-lumiere-640.webp": 39696,
+      "grok/eau-lumiere-1280.webp": 88206
+    },
+    "media": "c.media({ nom: 'grok/eau-lumiere', alt: \"\", cadrage: '54% 67%', sizes: '100vw' })"
+  },
+  "salle-feu": {
+    "nom": "salle-feu",
+    "source": "recu/restaurant-29.jpg",
+    "role": "section-fond",
+    "alt": "La salle du restaurant et sa cheminée allumée",
+    "grok": false,
+    "mention": null,
+    "empreinte": "8d806f05e08a251c",
+    "ratio": "16:9",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": null,
+    "cadrage": "50% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 24,
+      "width": 2000,
+      "height": 1125,
+      "source": [
+        2000,
+        1334
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "salle-feu-640.webp",
+      "salle-feu-1280.webp",
+      "salle-feu-1920.webp"
+    ],
+    "poids": {
+      "salle-feu-640.webp": 44238,
+      "salle-feu-1280.webp": 130360,
+      "salle-feu-1920.webp": 219090
+    },
+    "media": "c.media({ nom: 'salle-feu', alt: \"La salle du restaurant et sa cheminée allumée\", sizes: '100vw' })"
   }
 }

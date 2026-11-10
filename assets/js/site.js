@@ -2,7 +2,7 @@
    le mode calme, les boucles et la bibliothèque d'effets ; les modules de la bibliothèque (dossier modules/) sont
    chargés ici, page par page, et réglés sans être réécrits. Effets propres (data-effet) : plateau, signature, braises,
    decompte, carton, plume, numero (et ceux des modules : vapeur, carrousel…). */
-import { demarrer, boucle, etat, versObjet, quand, aller } from './socle/index.js?v=4';
+import { demarrer, boucle, etat, versObjet, quand, aller } from './socle/index.js?v=5';
 
 const gsap = window.gsap;
 const $ = (s, r = document) => r.querySelector(s);
@@ -10,17 +10,17 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
 /* Modules de la bibliothèque : chemins écrits en clair pour que le générateur leur applique le numéro de version. */
 const MODULES = {
-  'plat-fumant': () => import('./modules/plat-fumant/module.js?v=4'),
-  'objet-a-faire-tourner': () => import('./modules/objet-a-faire-tourner/module.js?v=4'),
-  'assiette-qui-se-dresse': () => import('./modules/assiette-qui-se-dresse/module.js?v=4'),
-  'carrousel-3d': () => import('./modules/carrousel-3d/module.js?v=4'),
-  'ardoise-a-la-craie': () => import('./modules/ardoise-a-la-craie/module.js?v=4'),
-  'carte-du-restaurant': () => import('./modules/carte-du-restaurant/module.js?v=4'),
-  'accords-mets-et-vins': () => import('./modules/accords-mets-et-vins/module.js?v=4'),
-  'horaires-ouvert-maintenant': () => import('./modules/horaires-ouvert-maintenant/module.js?v=4'),
-  'plan-de-salle': () => import('./modules/plan-de-salle/module.js?v=4'),
-  'reservation-de-table': () => import('./modules/reservation-de-table/module.js?v=4'),
-  'carte-cadeau-qui-se-compose': () => import('./modules/carte-cadeau-qui-se-compose/module.js?v=4'),
+  'plat-fumant': () => import('./modules/plat-fumant/module.js?v=5'),
+  'objet-a-faire-tourner': () => import('./modules/objet-a-faire-tourner/module.js?v=5'),
+  'assiette-qui-se-dresse': () => import('./modules/assiette-qui-se-dresse/module.js?v=5'),
+  'carrousel-3d': () => import('./modules/carrousel-3d/module.js?v=5'),
+  'ardoise-a-la-craie': () => import('./modules/ardoise-a-la-craie/module.js?v=5'),
+  'carte-du-restaurant': () => import('./modules/carte-du-restaurant/module.js?v=5'),
+  'accords-mets-et-vins': () => import('./modules/accords-mets-et-vins/module.js?v=5'),
+  'horaires-ouvert-maintenant': () => import('./modules/horaires-ouvert-maintenant/module.js?v=5'),
+  'plan-de-salle': () => import('./modules/plan-de-salle/module.js?v=5'),
+  'reservation-de-table': () => import('./modules/reservation-de-table/module.js?v=5'),
+  'carte-cadeau-qui-se-compose': () => import('./modules/carte-cadeau-qui-se-compose/module.js?v=5'),
 };
 /* Réglages des modules pour ce client (options d'init, jamais le code des modules). */
 const OPTIONS = {
@@ -77,7 +77,27 @@ async function chargerModules() {
   envolCarton();
   filtresLiens();
   confirmationsVisibles();
+  libellesReservation();
   statutAccueil();
+  reancrer();
+}
+
+/* v5 : arrivée par un lien vers une section (« Réceptions » → /#recevoir) : les modules ajoutent ensuite leurs
+   épinglages (la table qui se dresse), qui poussent la section plus bas ; si le visiteur n'a pas encore bougé,
+   la section est ramenée sous l'en-tête, après le recalcul des positions. */
+let geste = false;
+['wheel', 'touchmove', 'keydown'].forEach((t) => addEventListener(t, () => { if (performance.now() > 4000) geste = true; }, { passive: true }));
+function reancrer() {
+  if (!location.hash || location.hash.length < 2) return;
+  let cible = null; try { cible = document.querySelector(decodeURIComponent(location.hash)); } catch {}
+  if (!cible) return;
+  const remettre = () => {
+    if (geste) return;
+    window.ScrollTrigger?.refresh();
+    const eh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--entete-h')) || 0;
+    if (Math.abs(cible.getBoundingClientRect().top - eh - 12) > 24) aller(cible, { instant: true });
+  };
+  setTimeout(remettre, 300); setTimeout(remettre, 1200);
 }
 
 /* Lien « Un plat végétarien ? » de l'ardoise : la carte se filtre (API du module carte-du-restaurant). */
@@ -135,7 +155,7 @@ function ficelle() {
   if (!main || !$('[data-fil]', main)) return;
   quand('pret', async () => {
     try {
-      const { init } = await import('./modules/fil-conducteur/module.js?v=4');
+      const { init } = await import('./modules/fil-conducteur/module.js?v=5');
       main.dataset.module = 'fil-conducteur';
       await init(main, { onde: 8, boucle: 30, regard: 0.6, rail: false, lissage: 0 });
     } catch (e) { console.warn('fil', e); }
@@ -225,9 +245,43 @@ function amenerDansEcran(el, haut = false) {
   else if (r.bottom > innerHeight - bas - 12) dy = Math.min(r.bottom - (innerHeight - bas - 16), r.top - eh - 16);
   if (Math.abs(dy) > 4) aller(scrollY + dy);
 }
+/* v5 : libellés du module de réservation accordés au site (le module les écrit en dur, M28) :
+   « À compléter » devient une consigne, « Demande enregistrée » s'accorde avec la carte « Réservé »,
+   et les soirs fermés rouverts pour une date d'exception (M27) disent « fermé » et non « complet ». */
+function libellesReservation() {
+  const resa = $('[data-module="reservation-de-table"]'); if (!resa) return;
+  const form = $('[data-resa-form]', resa);
+  let R = null; try { R = JSON.parse($('script[data-reservation]', resa)?.textContent || 'null'); } catch {}
+  const ex = (R && R.ouvertures_exceptionnelles) || [];
+  const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  const fermesHebdo = ex.map((e) => [JOURS[new Date(e.date + 'T12:00:00Z').getUTCDay()], e.service]);
+  const estFerme = (iso, sv) => !!iso && fermesHebdo.some(([j, s2]) => s2 === sv && j === JOURS[new Date(iso + 'T12:00:00Z').getUTCDay()]) && !ex.some((e) => e.date === iso && e.service === sv);
+  const corriger = () => {
+    for (const t of $$('.resa__recap-titre', resa)) if (t.textContent.trim() === 'À compléter') t.textContent = 'Choisissez le jour et l’heure';
+    for (const t of $$('.resa__recap-sur', resa)) if (t.textContent.trim() === 'Demande enregistrée') t.textContent = 'Votre table est réservée';
+    if (!form) return;
+    const iso = form.elements.date?.value;
+    for (const r of $$('[name="service"]', form)) {
+      const note = r.closest('label')?.querySelector('[data-note]');
+      if (note && note.textContent === 'complet' && estFerme(iso, r.value)) note.textContent = 'fermé';
+    }
+    const sv = $('[name="service"]:checked', form)?.value;
+    if (estFerme(iso, sv)) for (const sm of $$('.resa__creneau small', form)) if (sm.textContent === 'complet') sm.textContent = 'fermé';
+  };
+  let attente = 0;
+  new MutationObserver(() => { cancelAnimationFrame(attente); attente = requestAnimationFrame(corriger); }).observe(resa, { childList: true, subtree: true, characterData: true });
+  corriger();
+}
+
 function confirmationsVisibles() {
   const resa = $('[data-module="reservation-de-table"]');
-  if (resa) resa.addEventListener('reservation:envoyee', () => setTimeout(() => amenerDansEcran($('[data-resa-recap]', resa), true), 450));
+  if (resa) resa.addEventListener('reservation:envoyee', () => setTimeout(() => {
+    /* v5 : la confirmation (carton sous la cloche) arrive au milieu de l'écran, jamais sous l'en-tête. */
+    const el = $('[data-resa-recap]', resa); if (!el) return;
+    const eh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--entete-h')) || 0, r = el.getBoundingClientRect();
+    const libre = innerHeight - eh, dy = r.height < libre - 32 ? r.top - eh - (libre - r.height) / 2 : r.top - eh - 16;
+    if (Math.abs(dy) > 4) aller(scrollY + dy);
+  }, 450));
   /* v3 (regard neuf) : après « Vérifier », le premier champ manquant est amené à l'écran avec son message
      (le scrollIntoView du module est annulé par le défilement adouci du projet, voir M15). */
   const form = resa && $('[data-resa-form]', resa);
@@ -264,7 +318,7 @@ async function statutAccueil() {
   const lien = $('[data-statut-accueil]'), src = $('[data-horaires-accueil]');
   if (!lien || !src) return;
   try {
-    const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=4');
+    const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=5');
     const d = H.preparer(JSON.parse(src.textContent));
     const a = d.adresses[0];
     const maj = () => { const st = H.statut(a, H.maintenant(a.fuseau)); lien.textContent = st.texte; lien.dataset.etat = st.etat; };
@@ -278,7 +332,7 @@ async function envolCarton() {
   if (!recap || !plan || !table || etat.calme) return;
   quand('pret', async () => {
     try {
-      const { envol } = await import('./modules/envol-vers-le-panier/module.js?v=4');
+      const { envol } = await import('./modules/envol-vers-le-panier/module.js?v=5');
       const depuis = $('.pds__repere', plan) || $(`[data-table="${CSS.escape(table)}"]`, plan) || $('.carton', document);
       if (!depuis) return;
       setTimeout(() => envol({ depuis, vers: recap, forme: 'carte' }), 900);
@@ -351,6 +405,14 @@ function poserSaison(s, { garder = true } = {}) {
   if (revenu) void document.body.offsetWidth;
   clearTimeout(poserSaison.t);
   poserSaison.t = setTimeout(() => { for (const el of photos) if (el.dataset.saisonPhoto !== document.documentElement.getAttribute('data-saison')) el.hidden = true; }, 1000);
+  /* v5 : la bascule voulue par le visiteur part de son geste, en vague de lumière (soleil l'été, braise l'hiver). */
+  const avant = document.documentElement.getAttribute('data-saison');
+  if (garder && avant && avant !== s && !etat.calme) {
+    const v = document.createElement('div'); v.className = 'vague-saison'; v.setAttribute('aria-hidden', 'true');
+    v.style.setProperty('--x', (dernierGeste.x ?? innerWidth / 2) + 'px'); v.style.setProperty('--y', (dernierGeste.y ?? innerHeight / 2) + 'px');
+    v.style.setProperty('--teinte', s === 'ete' ? 'rgba(255, 236, 170, .9)' : 'rgba(232, 110, 50, .85)');
+    document.body.append(v); setTimeout(() => v.remove(), 1100);
+  }
   document.documentElement.setAttribute('data-saison', s);
   if (garder) { try { localStorage.setItem('jh-saison', s); } catch {} }
   for (const b of $$('[data-saison-choix]')) b.setAttribute('aria-pressed', String(b.dataset.saisonChoix === s));
@@ -360,6 +422,8 @@ function poserSaison(s, { garder = true } = {}) {
   window.dispatchEvent(new CustomEvent('saison', { detail: s }));
 }
 let placerCurseur = () => {};
+const dernierGeste = {};
+addEventListener('pointerdown', (e) => { dernierGeste.x = e.clientX; dernierGeste.y = e.clientY; }, { capture: true, passive: true });
 function saisons() {
   const s0 = document.documentElement.getAttribute('data-saison') || 'hiver';
   for (const b of $$('[data-saison-choix]')) b.addEventListener('click', () => poserSaison(b.dataset.saisonChoix));
@@ -455,6 +519,15 @@ function reservationV4() {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'pds__agrandir'; b.textContent = 'Agrandir le plan'; b.setAttribute('aria-pressed', 'false');
     b.addEventListener('click', () => { const on = !scene.classList.contains('est-agrandi'); scene.classList.toggle('est-agrandi', on); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Réduire le plan' : 'Agrandir le plan'; });
     scene.before(b);
+    /* v5 : sur téléphone, le plan d'abord ; la liste des tables se replie (« Voir les 12 tables »). */
+    const liste = $('.pds__liste', plan);
+    if (liste) {
+      const n = $$('li', liste).length, t = document.createElement('button');
+      t.type = 'button'; t.className = 'pds__agrandir pds__voir'; t.setAttribute('aria-expanded', 'false'); t.textContent = `Voir les ${n} tables`;
+      liste.id ||= 'pds-liste'; t.setAttribute('aria-controls', liste.id); liste.classList.add('est-pliee');
+      t.addEventListener('click', () => { const on = liste.classList.toggle('est-pliee') === false; t.setAttribute('aria-expanded', String(on)); t.textContent = on ? 'Masquer les tables' : `Voir les ${n} tables`; });
+      liste.before(t);
+    }
   }
   resa.addEventListener('reservation:envoyee', (e) => {
     const d = e.detail || {}, recap = $('[data-resa-recap]', resa); if (!recap) return;
@@ -463,7 +536,8 @@ function reservationV4() {
     const n = +d.couverts || 0;
     recap.querySelector('.placement')?.remove();
     const carte = document.createElement('div'); carte.className = 'placement'; carte.setAttribute('aria-hidden', 'true'); carte.dataset.effet = 'placement';
-    carte.innerHTML = `<p class="placement__carton"><span>Réservé</span><strong>${jour}${heure ? ' · ' + heure : ''}</strong><span>${n} couvert${n > 1 ? 's' : ''}${d.table ? ' · table ' + d.table : ''}</span></p><svg class="placement__cloche" viewBox="0 0 120 70"><path d="M8 62 Q 10 14 60 12 Q 110 14 112 62 Z" fill="#b8925a"/><path d="M4 62 H116" stroke="#7a5523" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="9" r="6" fill="#7a5523"/></svg>`;
+    const f = $('[data-resa-form]', resa), qui = f ? [f.elements.prenom?.value, f.elements.nom?.value].filter(Boolean).join(' ').trim() : '';
+    carte.innerHTML = `<p class="placement__carton"><span>Réservé</span>${qui ? `<em>${qui.replace(/[<>&"]/g, '')}</em>` : ''}<strong>${jour}${heure ? ' · ' + heure : ''}</strong><span>${n} couvert${n > 1 ? 's' : ''}${d.table ? ' · table ' + d.table : ''}</span></p><svg class="placement__cloche" viewBox="0 0 120 70"><path d="M8 62 Q 10 14 60 12 Q 110 14 112 62 Z" fill="#b8925a"/><path d="M4 62 H116" stroke="#7a5523" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="9" r="6" fill="#7a5523"/></svg>`;
     recap.prepend(carte);
     /* Sur le plan aussi, la table choisie reçoit son petit carton « Réservé ». */
     /* Sur le plan aussi : l'étiquette posée sur la table choisie devient le carton « Réservé · jour · heure · couverts ». */
@@ -484,7 +558,7 @@ function reservationV4() {
 async function cadranManipulable() {
   const sec = $('[data-module="horaires-ouvert-maintenant"]'), cadran = sec && $('.horaires__cadran', sec), src = sec && $('script[data-horaires]', sec);
   if (!cadran || !src || etat.calme) return;
-  const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=4');
+  const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=5');
   const a = H.preparer(JSON.parse(src.textContent)).adresses[0];
   const n0 = H.maintenant(a.fuseau);
   const jours = Array.from({ length: 7 }, (_, k) => H.ajouter(n0.iso, k));

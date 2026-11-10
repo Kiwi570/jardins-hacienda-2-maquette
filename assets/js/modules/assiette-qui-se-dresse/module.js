@@ -4,7 +4,7 @@
 // Rien n'est dessiné en JavaScript : le module pose --m (0 à 1) sur chaque élément, le CSS décrit leur arrivée.
 // Téléphone ou écran bas : pas d'épinglage, le plat se dresse pendant que l'assiette traverse l'écran.
 // Mode calme, « réduire les animations », sans JavaScript : l'assiette dressée, toutes les étapes visibles (CSS).
-import { pret } from '../../socle/socle.js?v=4';
+import { pret } from '../../socle/socle.js?v=5';
 
 /**
  * @param {HTMLElement} root  section.assiette (.assiette__scene > .assiette__element[data-de][data-a] ; ol.assiette__etapes > li[data-de])

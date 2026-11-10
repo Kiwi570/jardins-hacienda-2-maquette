@@ -1,0 +1,336 @@
+{
+ "mission": "bapteme-v5",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 4,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 6273,
+   "titres": [
+    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Passer à l’été",
+    "Réserver",
+    "Hiver",
+    "Été",
+    "Réserver au coin du feu",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Réceptions",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 8.3,
+   "adresse": "/#recevoir",
+   "y": 4142,
+   "hauteurPage": 6273,
+   "titres": [
+    "h2 Combien serez-vous ?"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Passer à l’été",
+    "Réserver",
+    "2",
+    "12",
+    "40",
+    "120",
+    "Demander pour une réception"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "9 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Demander pour une réception",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 11.9,
+   "adresse": "/infos-pratiques?sujet=reception&invites=40#ecrire",
+   "y": 2816,
+   "hauteurPage": 4517,
+   "titres": [
+    "h2 Une demande"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 11.9,
+   "adresse": "/infos-pratiques?sujet=reception&invites=40#ecrire",
+   "y": 2816,
+   "hauteurPage": 4517,
+   "titres": [
+    "h2 Une demande"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-3.png"
+  },
+  {
+   "k": 4,
+   "geste": "remplir Prénom=Claire",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 12.1,
+   "adresse": "/infos-pratiques?sujet=reception&invites=40#ecrire",
+   "y": 2816,
+   "hauteurPage": 4517,
+   "titres": [
+    "h2 Une demande"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "remplir ^Nom=Muller",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 12.1,
+   "adresse": "/infos-pratiques?sujet=reception&invites=40#ecrire",
+   "y": 2816,
+   "hauteurPage": 4517,
+   "titres": [
+    "h2 Une demande"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "remplir E-mail=claire.muller@example.fr",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 12.2,
+   "adresse": "/infos-pratiques?sujet=reception&invites=40#ecrire",
+   "y": 2816,
+   "hauteurPage": 4517,
+   "titres": [
+    "h2 Une demande"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 7,
+   "geste": "remplir Téléphone=06 98 76 54 32",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 12.2,
+   "adresse": "/infos-pratiques?sujet=reception&invites=40#ecrire",
+   "y": 2816,
+   "hauteurPage": 4517,
+   "titres": [
+    "h2 Une demande"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 8,
+   "geste": "remplir Date souhaitée=2027-05-16",
+   "resultat": "ok",
+   "gestes": 7,
+   "secondes": 12.2,
+   "adresse": "/infos-pratiques?sujet=reception&invites=40#ecrire",
+   "y": 2816,
+   "hauteurPage": 4517,
+   "titres": [
+    "h2 Une demande"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 9,
+   "geste": "remplir Message=Baptême de notre fils, déjeuner.",
+   "resultat": "ok",
+   "gestes": 8,
+   "secondes": 12.3,
+   "adresse": "/infos-pratiques?sujet=reception&invites=40#ecrire",
+   "y": 2816,
+   "hauteurPage": 4517,
+   "titres": [
+    "h2 Une demande"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 10,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 9,
+   "secondes": 13,
+   "adresse": "/infos-pratiques?sujet=reception&invites=40#ecrire",
+   "y": 3581,
+   "hauteurPage": 4547,
+   "titres": [],
+   "actions": [
+    "Envoyer",
+    "06 18 21 28 10",
+    "Facebook (nouvel onglet)",
+    "Instagram (nouvel onglet)",
+    "Accueil",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 11,
+   "geste": "cliquer Envoyer",
+   "resultat": "ok",
+   "gestes": 10,
+   "secondes": 15.1,
+   "adresse": "/infos-pratiques?sujet=reception&invites=40#ecrire",
+   "y": 3581,
+   "hauteurPage": 4660,
+   "titres": [],
+   "actions": [
+    "Envoyer",
+    "06 18 21 28 10",
+    "Facebook (nouvel onglet)",
+    "Instagram (nouvel onglet)",
+    "Accueil",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-11.png"
+  }
+ ]
+}

@@ -385,5 +385,35 @@
   "role": "galerie",
   "ratio": "4:5",
   "alt": "Une table de la salle décorée pour Noël, près du sapin"
+ },
+ {
+  "source": "recu/terrasse-jardins-hacienda-3.jpg",
+  "nom": "carte-ouverture-ete",
+  "role": "ouverture",
+  "ratio": "16:7",
+  "alt": "Une assiette de saison servie sur la terrasse, au soleil"
+ },
+ {
+  "source": "recu/terrasse-26.jpg",
+  "nom": "offrir-ete",
+  "role": "ouverture",
+  "ratio": "16:9",
+  "mobile": "9:16",
+  "alt": "Cocktails servis au bar de la terrasse"
+ },
+ {
+  "source": "recu/terrasse-jardins-hacienda-2.jpg",
+  "nom": "reserver-ete",
+  "role": "ouverture",
+  "ratio": "16:9",
+  "mobile": "9:16",
+  "alt": "Une table dressée en terrasse, fleurs et verres au soleil"
+ },
+ {
+  "source": "recu/grok/eau-reflets.jpg",
+  "nom": "grok/eau-lumiere",
+  "role": "section-fond",
+  "alt": "",
+  "note": "calque de lumière sur l'eau de la piscine (ouverture d'été)"
  }
 ]

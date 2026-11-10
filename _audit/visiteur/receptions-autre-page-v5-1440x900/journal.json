@@ -1,0 +1,236 @@
+{
+ "mission": "receptions-autre-page-v5",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.3,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 6273,
+   "titres": [
+    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Passer à l’été",
+    "Réserver",
+    "Hiver",
+    "Été",
+    "Réserver au coin du feu",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Voir la carte",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 6.9,
+   "adresse": "/la-carte",
+   "y": 0,
+   "hauteurPage": 6635,
+   "titres": [
+    "h1 La carte"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Passer à l’été",
+    "Réserver",
+    "Réserver une table"
+   ],
+   "prixVus": [
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "9 €",
+    "26 €",
+    "16 €",
+    "21 €",
+    "24 €",
+    "10 €",
+    "18 €",
+    "14 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Réceptions",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 9.6,
+   "adresse": "/#recevoir",
+   "y": 3377,
+   "hauteurPage": 6273,
+   "titres": [
+    "h2 Les fêtes au coin du feu",
+    "h3 Menu de Noël",
+    "h3 Saint-Sylvestre"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Passer à l’été",
+    "Réserver",
+    "Les menus des fêtes"
+   ],
+   "prixVus": [
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "9 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "attendre 2000",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 11.6,
+   "adresse": "/#recevoir",
+   "y": 3377,
+   "hauteurPage": 6273,
+   "titres": [
+    "h2 Les fêtes au coin du feu",
+    "h3 Menu de Noël",
+    "h3 Saint-Sylvestre"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Passer à l’été",
+    "Réserver",
+    "Les menus des fêtes"
+   ],
+   "prixVus": [
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "9 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 11.7,
+   "adresse": "/#recevoir",
+   "y": 3377,
+   "hauteurPage": 6273,
+   "titres": [
+    "h2 Les fêtes au coin du feu",
+    "h3 Menu de Noël",
+    "h3 Saint-Sylvestre"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Passer à l’été",
+    "Réserver",
+    "Les menus des fêtes"
+   ],
+   "prixVus": [
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "9 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-4.png"
+  }
+ ]
+}

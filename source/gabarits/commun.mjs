@@ -3,6 +3,9 @@
 import { html, brut } from '../../outils/gabarit.mjs';
 
 const navigation = (c) => c.site.navigation.filter((cle) => c.pages[cle] && (c.pages[cle].langues || c.langues).includes(c.l));
+/* v5 : les réceptions ont leur entrée (la section « Combien serez-vous ? » de l'accueil), juste après « Les fêtes ». */
+const lienReceptions = (c, classe = '') => html`<a href="${c.url('accueil', 'recevoir')}"${classe ? brut(` class="${classe}"`) : ''} data-libelle="${c.s('commun.receptions')}">${c.t('commun.receptions')}</a>`;
+const avecReceptions = (c, cles, rendre, classe = '') => cles.flatMap((k, i) => k === 'les-fetes' ? [rendre(k, i), html`<li${classe}>${lienReceptions(c, classe ? 'menu-lien' : '')}</li>`] : [rendre(k, i)]);
 
 function tete(c) {
   const p = c.page, cle = p.cle;
@@ -55,7 +58,7 @@ function entete(c) {
       <img src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>${c.site.nom}</span>
     </a>
     <nav data-nav aria-label="${c.s('commun.navigation')}">
-      <ul>${navigation(c).filter((k) => k !== 'accueil').map((k) => html`<li>${c.lien(k)}</li>`)}</ul>
+      <ul>${avecReceptions(c, navigation(c).filter((k) => k !== 'accueil'), (k) => html`<li>${c.lien(k)}</li>`)}</ul>
     </nav>
     <div class="entete-actions">
       <button type="button" class="saison-mini" data-saison-bascule aria-pressed="false" aria-label="Passer à l’été"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="saison-mini__flamme" d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-3 2-5 3-7 0 2 1 3 2 3 0-2 0-4 0-6z"/><g class="saison-mini__soleil"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg></button>
@@ -84,8 +87,8 @@ function entete(c) {
 <span id="menu-ferme" aria-hidden="true"></span>
 <div id="menu" data-menu role="dialog" aria-modal="true" aria-label="${c.s('commun.menu')}">
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">${c.t('commun.fermer')}</a></p>
-  <ul>${navigation(c).map((k, i) => html`<li style="--i:${i}">${c.lien(k, { classe: 'menu-lien' })}</li>`)}</ul>
-  <p class="menu-actions">${c.site.actionEntete ? html`<a class="bouton" href="${c.url(c.site.actionEntete.page)}" data-libelle="${c.libelle(c.site.actionEntete.page)}">${c.t('commun.actionMenu')}</a>` : ''}<a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
+  <ul>${navigation(c).flatMap((k, i) => k === 'les-fetes' ? [html`<li style="--i:${i}">${c.lien(k, { classe: 'menu-lien' })}</li>`, html`<li style="--i:${i}">${lienReceptions(c, 'menu-lien')}</li>`] : [html`<li style="--i:${i}">${c.lien(k, { classe: 'menu-lien' })}</li>`])}</ul>
+  <p class="menu-actions">${c.site.actionEntete ? html`<a class="bouton" href="${c.url(c.site.actionEntete.page, c.site.actionEntete.ancre || '')}" data-libelle="${c.libelle(c.site.actionEntete.page)}">${c.t('commun.actionMenu')}</a>` : ''}<a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
   ${autreLangue.map((a) => html`<p><a class="entete-langue" href="${a.url}" hreflang="${a.l}" lang="${a.l}" data-langue="${a.l}">${c.s('commun.langueAutre')}</a></p>`)}
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="${c.s('commun.calmeReduire')}" data-libelle-retablir="${c.s('commun.calmeRetablir')}" data-libelle-systeme="${c.s('commun.calmeSysteme')}"><span data-libelle-bouton>${c.t('commun.calmeReduire')}</span></button></p>
 </div>`;
@@ -97,11 +100,11 @@ function pied(c) {
     <div>
       <p><strong>${c.site.nom}</strong></p>
       <p>${c.site.contact.adresse}<br><a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a>${c.site.contact.email ? html`<br><a href="mailto:${c.site.contact.email}">${c.site.contact.email}</a>` : ''}</p>
-      <p class="pied-reseaux"><a href="${c.site.contact.facebook}" target="_blank" rel="noopener">${c.t('commun.facebook')}</a><br><a href="${c.site.contact.instagram}" target="_blank" rel="noopener">${c.t('commun.instagram')}</a></p>
+      <p class="pied-reseaux"><a href="${c.site.contact.facebook}" target="_blank" rel="noopener">${brut(c.s('commun.facebook').replace(' (nouvel onglet)', '<span class="visuellement-cache"> (nouvel onglet)</span>'))}</a><br><a href="${c.site.contact.instagram}" target="_blank" rel="noopener">${brut(c.s('commun.instagram').replace(' (nouvel onglet)', '<span class="visuellement-cache"> (nouvel onglet)</span>'))}</a></p>
     </div>
     <nav aria-label="${c.s('commun.sommaire')}">
       <p><strong>${c.t('commun.sommaire')}</strong></p>
-      <ul>${navigation(c).map((k) => html`<li>${c.lien(k)}</li>`)}${c.site.actionEntete ? html`<li>${c.lien(c.site.actionEntete.page)}</li>` : ''}</ul>
+      <ul>${avecReceptions(c, navigation(c), (k) => html`<li>${c.lien(k)}</li>`)}${c.site.actionEntete ? html`<li>${c.lien(c.site.actionEntete.page)}</li>` : ''}</ul>
     </nav>
     <div>
       <p><strong>${c.t('commun.confort')}</strong></p>

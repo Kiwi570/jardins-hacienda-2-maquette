@@ -144,3 +144,47 @@ Nouvel ordre des gênes à corriger :
 - « remplir Nom=… » remplit le champ « Prénom », parce qu'il contient « nom ». J'ai utilisé « remplir ^Nom=… ».
 - « cliquer 20 h » ne trouve pas le créneau, à cause de l'espace insécable. J'ai cliqué avec l'espace insécable.
 - Les dossiers « -scan », « menu-test », « -attente » et « -suite » sont des repérages et des preuves. Ils ne comptent pas comme des missions.
+
+## Troisième passe (v5)
+
+Mêmes outil et règles, sans lire le code, en regardant les captures. Missions suffixées « -v5 ». Test fait vers 19 h 15 le mardi 10 novembre.
+Un audit tournait en parallèle : les secondes peuvent être gonflées. Sur ordinateur, le premier clic « Réserver au coin du feu » a pris jusqu'à 7,7 s une fois, et 4,1 s lors du second essai.
+
+| Mission | Format | Réussie | Gestes | Secondes | Capture de référence |
+|---|---|---|---|---|---|
+| 3. reserver : atteindre le jour | 390x844 | oui | jour visible au 1er geste, samedi choisi au 2e | 5,8 ; 8,1 | reserver-jour-v5-390x844/etape-2.png |
+| 3. reserver : jusqu'à la confirmation | 390x844 | oui | 13 | 23,5 au clic (25,6 avec 2 s d'attente) | reserver-v5-390x844/etape-14.png |
+| 3. reserver : atteindre le jour | 1440x900 | oui | jour visible au 1er geste, samedi choisi au 2e | 7,5 ; 9,8 | reserver-jour-v5-1440x900/etape-2.png |
+| 3. reserver : jusqu'à la confirmation | 1440x900 | oui | 11 | 26,8 (dont 7,7 s pour le seul premier clic) | reserver-v5-1440x900/etape-12.png |
+| 6. bapteme : atteindre le formulaire | 390x844 | oui, prérempli | 3 (Menu, Réceptions, Demander) | 9,8 | bapteme-v5-390x844/etape-7.png |
+| 6. bapteme : jusqu'à l'envoi | 390x844 | oui | 11 | 13,3 | bapteme-v5-390x844/etape-12.png |
+| 6. bapteme : atteindre le formulaire | 1440x900 | oui, prérempli | 2 (Réceptions, Demander) | 11,9 | bapteme-v5-1440x900/etape-3.png |
+| 6. bapteme : jusqu'à l'envoi | 1440x900 | oui | 10 | 15,1 | bapteme-v5-1440x900/etape-11.png |
+| 7. ete (contrôle) | 1440x900 | oui | 1 | 5,9 à 7 | ete-v5-1440x900/etape-2.png ; ete-v5-1440x900/etape-4.png |
+
+Pour comparer : la réservation demandait 14 gestes sur téléphone et 13 sur ordinateur, avec le jour visible au 2e geste. Le baptême demandait 7 à 8 gestes pour atteindre le formulaire (1re passe), puis 3 et 2 (2e passe, par « Les fêtes »).
+
+Ce qui est corrigé :
+- Les boutons « Réserver » mènent droit à « Quel jour ? ». Le jour est visible au 1er geste, et les jours sont bien placés dans l'écran, même sur ordinateur.
+- Le formulaire de réservation est plus court : « Une demande particulière » est repliée sous un « + ». Sur ordinateur, tout le formulaire tient dans un écran après un défilement.
+- Le nombre de personnes vient avant l'heure. Le service « Soir » se sélectionne seul pour le samedi.
+- La carte « Réservé » porte le nom (« Julie Weber »), la date, l'heure et les couverts. Le bloc « Votre table est réservée » donne la référence. C'est clair et rassurant.
+- « Réceptions » est dans le menu, sur téléphone comme sur ordinateur. Le lien mène au bloc « Combien serez-vous ? », avec 40 déjà sélectionné.
+- Le formulaire de demande arrive prérempli : sujet « Réception privée », « Nombre d'invités : 40 », message « Réception pour 40 personnes. ».
+- Le message final dit : « votre demande arrivera au restaurant, qui vous recontactera ». Le mot « client » a disparu.
+- En été, l'en-tête passe au bleu canard, avec un soleil et un bouton « Réserver » jaune. La couleur reste sur les autres pages (La carte : en-tête et bouton « Réserver une table » bleus). Sur l'accueil, le bloc des fêtes de Noël devient « Les journées au bord de l'eau » (piscine, bar, pool parties). Une phrase précise enfin : « Terrasse et piscine de juin à septembre ; d'ici là, la salle et sa cheminée ».
+
+Ce qui gêne encore :
+- **Le lien « Réceptions » depuis une autre page, sur ordinateur, tombe une section trop haut.** Il ouvre sur « Les fêtes au coin du feu » (Noël) en hiver, et sur « Les journées au bord de l'eau » en été. Le visiteur ne voit pas « Combien serez-vous ? » sans défiler (receptions-autre-page-v5-1440x900/etape-4.png, ete-receptions-v5-1440x900/etape-5.png). Une fois, en été, il est même resté en haut de l'accueil. Depuis l'accueil, ou sur téléphone, il tombe juste.
+- Réservation : il faut toujours deux clics, « Vérifier ma réservation » puis « Confirmer la réservation ». Sur téléphone, « Confirmer » est sous le pli après « Vérifier » : il faut un défilement de plus.
+- Le formulaire présélectionne « Demain » et « Midi ». Le récapitulatif affiche donc une date avant tout choix.
+- Sur ordinateur, après confirmation, les choix du formulaire restent barrés (« Soir », « En salle »). On peut croire que la réservation est annulée.
+- Sur téléphone, la référence est coupée sur deux lignes (« R- / 1114-6178 »). Le bouton « Vérifier » reste affiché, pâle, au-dessus de la carte « Réservé ».
+- Sur ordinateur, après le 1er défilement du formulaire, la question « Combien de personnes ? » est coupée en haut de l'écran : on voit les boutons − 2 + sans leur titre.
+- Pour 40 invités, on propose toujours « La terrasse et les jardins », en novembre.
+- Les dates s'affichent au format américain (« 11/11/2026 », « 05/16/2027 »). C'est peut-être dû au navigateur de test : à vérifier sur un vrai téléphone.
+
+Gênes restantes, par ordre d'importance :
+1. Le lien « Réceptions » depuis une autre page, sur ordinateur, ne tombe pas sur « Combien serez-vous ? ».
+2. La double étape « Vérifier » puis « Confirmer », avec « Confirmer » sous le pli sur téléphone.
+3. Les choix barrés après la confirmation, sur ordinateur, qui font croire à une annulation.

@@ -2,6 +2,33 @@
 
 Chaque version ajoute sa partie en tête de ce fichier, construite en comparant l'archive précédente et la nouvelle, jamais de mémoire.
 
+## v5 — les améliorations de l'audit UX et design
+
+Comparaison de la v4 livrée et de la v5, fichier par fichier : aucun fichier retiré ; 13 fichiers d'images ajoutés (versions d'été des ouvertures de La carte, de Réserver et d'Offrir, lumière de l'eau de la piscine) ; sources modifiées : les 6 pages (`source/pages/`), le gabarit commun, `site.css`, `site.js`, `fr.json`, `site.json`, `plan-images.json`, pages régénérées. Les copies des modules et l'adaptateur du socle n'ont pas changé (seul le numéro `?v=5` de leurs imports).
+
+**Réceptions et réservation**
+- « Réceptions » entre dans le menu (en-tête, menu du téléphone, pied de page) : il mène à « Combien serez-vous ? » et à la demande préremplie.
+- Tous les boutons « Réserver » (en-tête, barre du bas, accueil, fêtes, carte) mènent droit au formulaire.
+- Formulaire plus court : service et couverts côte à côte, « Une demande particulière ? » repliée, la photo d'en-tête du formulaire retirée.
+- Le récapitulatif dit « Choisissez le jour et l'heure » au lieu de « À compléter » ; après l'envoi, « Votre table est réservée », et la carte de placement porte votre nom ; elle arrive au milieu de l'écran, sous la cloche.
+- Les jeudis soir disent « fermé » (et non « complet ») ; seul le 31 décembre au soir s'ouvre.
+- Plan de salle moins incliné, numéros de tables plus grands ; sur téléphone, le plan à pleine largeur d'abord, la liste des tables repliée (« Voir les 12 tables »).
+
+**Les deux saisons**
+- La bascule part du geste en vague de lumière (soleil l'été, braise l'hiver) ; l'en-tête, la barre du bas et le pied de page passent au bleu nuit l'été.
+- Le cadran est plus grand sur ordinateur ; sous les boutons d'été : « Terrasse et piscine de juin à septembre ; d'ici là, la salle et sa cheminée ».
+- L'eau de la piscine bouge vraiment (lumière de l'eau qui glisse sur la photo d'été, illustration générée).
+- La carte, Réserver et Offrir ont leur photo d'ouverture d'été (assiette en terrasse, table fleurie en terrasse, cocktails du bar) ; la lueur de saison est plus présente au bord des sections.
+
+**Ton, typographie, rythme**
+- Les textes parlent de cuisine : « Cette semaine, Régis Clauss cuisine le risotto de Saint-Jacques au riz noir, le suprême de pintade et les figues rôties au miel » ; la nappe de la table est dite « illustration générée ».
+- Chiffres et euros en Figtree (comptes à rebours, montants des cartes cadeaux, nombre d'invités) : le 4 et le € de la didone se lisaient mal.
+- Pastille « végétarien » sous le nom du plat ; chaque carte d'été a sa ligne utile (piscine, bar, pool parties).
+- Fin d'accueil forte : la salle et sa cheminée (la piscine le soir, l'été) sous « Offrir et venir » ; marges resserrées entre les sections.
+- Offrir s'allume : photo moins voilée, carte d'ouverture dorée.
+- « (nouvel onglet) » n'est plus écrit en clair : une flèche ↗, et le texte reste pour les lecteurs d'écran.
+- Audit complet de la version finale (7 pages, 13 tailles, tous les modes) : 0 échec après les corrections (ouverture sur écrans bas, jours de la réservation vers 1000 px, contraste du surtitre d'Offrir, visuel du formulaire, titre des fêtes ligne par ligne) ; fluidité de l'accueil 5 % d'images lentes sur ordinateur ralenti 4 fois, 0 % au doigt. Test visiteur (3e passe) : réserver en 11 à 13 gestes, baptême au formulaire en 2 à 3 gestes ; le lien « Réceptions » arrive sur sa section depuis toutes les pages.
+
 ## v4 — « Deux saisons, une maison », de A à Z
 
 Comparaison de l'archive v3 (commit 832fc7a) et de la v4, fichier par fichier : aucun fichier retiré ; 47 fichiers d'images ajoutés, toutes tailles comprises (l'été : terrasse, piscine, bar, pool party ; trois assiettes vues de dessus ; les tables de 2 à 120 ; la Saint-Sylvestre ; deux illustrations générées, nappe de lin et eau de la piscine), une photo changée (`table-deux` : une table de la salle au lieu de la cheminée de Noël), les autres images refaites par le pipeline de la skill v10.9 ; sources modifiées : les 7 pages (`source/pages/`), le gabarit commun, `critique.js`, `site.css`, `site.js`, `fr.json`, `carte.json`, `accords.json`, `site.json`, `plan-images.json`, pages régénérées ; outils de génération et d'audit repris de la skill v10.9. Les copies des modules et l'adaptateur du socle n'ont pas changé (seul le numéro `?v=4` de leurs imports).

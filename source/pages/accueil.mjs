@@ -54,7 +54,7 @@ export default (c) => {
     </div>
     <div class="ouv-saisons__photo-saison" data-saison-photo="ete">
       ${c.media({ nom: 'ete-ouverture', alt: c.s('v4.altEte'), cadrage: '50% 60%', classe: 'ouv-saisons__photo', sizes: '100vw' })}
-      <span class="reflets" data-effet="reflets" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="reflets" data-effet="reflets" aria-hidden="true"><img src="/assets/images/grok/eau-lumiere-1280.webp" alt="" width="1280" height="854" loading="lazy" decoding="async"></span>
     </div>
   </div>
   <div class="ouv-saisons__texte">
@@ -77,9 +77,10 @@ export default (c) => {
       </p>
     </div>
     <p class="ouv-saisons__actions">
-      ${c.lien('reserver', { classe: 'bouton', texte: brut(`<span data-saison-seul="hiver">${c.s('v4.reserverHiver')}</span><span data-saison-seul="ete">${c.s('v4.reserverEte')}</span>`), attrs: 'data-action-principale data-survol="magnetique"' })}
+      ${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: brut(`<span data-saison-seul="hiver">${c.s('v4.reserverHiver')}</span><span data-saison-seul="ete">${c.s('v4.reserverEte')}</span>`), attrs: 'data-action-principale data-survol="magnetique"' })}
       ${c.lien('la-carte', { classe: 'bouton bouton--contour', texte: c.t('v4.voirCarte') })}
     </p>
+    <p class="ouv-saisons__note" data-saison-seul="ete">${c.t('v4.noteEte')}</p>
     <p class="ouv-saisons__info" data-info-cle><a href="/infos-pratiques#horaires" class="ouv-saisons__statut" data-statut-accueil>${c.t('v4.horaires')}</a></p>
     <script type="application/json" data-horaires-accueil>${brut(JSON.stringify(c.donnees.horaires).replace(/<\//g, '<\\/'))}</script>
   </div>
@@ -150,7 +151,7 @@ export default (c) => {
   <canvas class="rdv__braises" width="480" height="320" aria-hidden="true" data-effet="braises" data-audit-ignorer></canvas>
   <div class="conteneur rdv__contenu">
     <p class="surtitre">${saison(c, 'rdvSurtitre')}</p>
-    <h2 id="rdv-titre" data-anime="lettres">${saison(c, 'rdvTitre')}</h2>
+    <h2 id="rdv-titre" data-anime="lignes">${saison(c, 'rdvTitre')}</h2>
     <div class="rdv__cartes" data-saison-seul="hiver">
       <article class="fete-carte" data-date="${f.noel.debut}">
         ${c.media({ nom: 'noel-carte', alt: '', classe: 'fete-carte__photo', sizes: '(max-width: 760px) 100vw, 22vw' })}
@@ -158,7 +159,7 @@ export default (c) => {
         <h3>${c.t('accueil.fetes.noel')}</h3>
         <p class="fete-carte__decompte" data-effet="decompte" data-cible="${f.noel.date}">${c.t('accueil.fetes.dans')} <strong data-jours>—</strong> ${c.t('accueil.fetes.jours')}</p>
         <p class="fete-carte__prix" data-prix>${c.t('accueil.fetes.noelPrix')}</p>
-        ${c.lien('reserver', { params: 'date=2026-12-25&service=midi', classe: 'bouton bouton--contour', texte: c.t('accueil.fetes.reserver') })}
+        ${c.lien('reserver', { ancre: 'formulaire', params: 'date=2026-12-25&service=midi', classe: 'bouton bouton--contour', texte: c.t('accueil.fetes.reserver') })}
       </article>
       <article class="fete-carte fete-carte--sylvestre" data-date="${f.sylvestre.debut}">
         ${c.media({ nom: 'sylvestre-coupe', alt: '', classe: 'fete-carte__photo', sizes: '(max-width: 760px) 100vw, 22vw' })}
@@ -166,16 +167,16 @@ export default (c) => {
         <h3>${c.t('accueil.fetes.sylvestre')}</h3>
         <p class="fete-carte__decompte" data-effet="decompte" data-cible="${f.sylvestre.date}">${c.t('accueil.fetes.dans')} <strong data-jours>—</strong> ${c.t('accueil.fetes.jours')}</p>
         <p class="fete-carte__prix" data-prix>${c.t('accueil.fetes.sylvestrePrix')}</p>
-        ${c.lien('reserver', { params: 'date=2026-12-31&service=soir', classe: 'bouton bouton--contour', texte: c.t('accueil.fetes.reserver') })}
+        ${c.lien('reserver', { ancre: 'formulaire', params: 'date=2026-12-31&service=soir', classe: 'bouton bouton--contour', texte: c.t('accueil.fetes.reserver') })}
       </article>
     </div>
     <div class="rdv__cartes rdv__cartes--ete" data-saison-seul="ete">
       <article class="ete-carte">${c.media({ nom: 'ete-festives', alt: c.s('v4.festives'), classe: 'ete-carte__photo', sizes: '(max-width: 760px) 100vw, 30vw' })}<h3>${c.t('v4.festives')}</h3><p class="ete-carte__quand">${c.t('v4.festivesQuand')}</p><p>${c.t('v4.festivesTexte')}</p></article>
-      <article class="ete-carte">${c.media({ nom: 'recevoir-piscine', alt: c.s('v4.piscine'), classe: 'ete-carte__photo', sizes: '(max-width: 760px) 100vw, 30vw' })}<h3>${c.t('v4.piscine')}</h3><p class="ete-carte__quand">${c.t('v4.piscineQuand')}</p></article>
-      <article class="ete-carte">${c.media({ nom: 'ete-bar', alt: c.s('v4.bar'), classe: 'ete-carte__photo', sizes: '(max-width: 760px) 100vw, 30vw' })}<h3>${c.t('v4.bar')}</h3><p class="ete-carte__quand">${c.t('v4.barQuand')}</p></article>
-      <article class="ete-carte">${c.media({ nom: 'ete-poolparty', alt: c.s('v4.poolParties'), classe: 'ete-carte__photo', sizes: '(max-width: 760px) 100vw, 30vw' })}<h3>${c.t('v4.poolParties')}</h3><p class="ete-carte__quand">${c.t('v4.poolPartiesQuand')}</p></article>
+      <article class="ete-carte">${c.media({ nom: 'recevoir-piscine', alt: c.s('v4.piscine'), classe: 'ete-carte__photo', sizes: '(max-width: 760px) 100vw, 30vw' })}<h3>${c.t('v4.piscine')}</h3><p class="ete-carte__quand">${c.t('v4.piscineQuand')}</p><p>${c.t('v4.piscineTexte')}</p></article>
+      <article class="ete-carte">${c.media({ nom: 'ete-bar', alt: c.s('v4.bar'), classe: 'ete-carte__photo', sizes: '(max-width: 760px) 100vw, 30vw' })}<h3>${c.t('v4.bar')}</h3><p class="ete-carte__quand">${c.t('v4.barQuand')}</p><p>${c.t('v4.barTexte')}</p></article>
+      <article class="ete-carte">${c.media({ nom: 'ete-poolparty', alt: c.s('v4.poolParties'), classe: 'ete-carte__photo', sizes: '(max-width: 760px) 100vw, 30vw' })}<h3>${c.t('v4.poolParties')}</h3><p class="ete-carte__quand">${c.t('v4.poolPartiesQuand')}</p><p>${c.t('v4.poolPartiesTexte')}</p></article>
     </div>
-    <p class="rdv__actions"><span data-saison-seul="hiver">${c.lien('les-fetes', { classe: 'bouton', texte: c.t('accueil.fetes.voir') })}</span><span data-saison-seul="ete">${c.lien('reserver', { classe: 'bouton', texte: c.t('v4.eteAction') })}</span></p>
+    <p class="rdv__actions"><span data-saison-seul="hiver">${c.lien('les-fetes', { classe: 'bouton', texte: c.t('accueil.fetes.voir') })}</span><span data-saison-seul="ete">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('v4.eteAction') })}</span></p>
   </div>
 </section>
 
@@ -202,6 +203,8 @@ export default (c) => {
 </section>
 
 <section class="offrir-venir" id="offrir" data-lueur aria-labelledby="offrir-titre">
+  <div class="offrir-venir__fond" data-saison-photo="hiver">${c.media({ nom: 'cheminee', alt: '', cadrage: '40% 50%', classe: 'offrir-venir__image', sizes: '100vw' })}</div>
+  <div class="offrir-venir__fond" data-saison-photo="ete">${c.media({ nom: 'ete-soir', alt: '', classe: 'offrir-venir__image', sizes: '100vw' })}</div>
   <div class="conteneur offrir-venir__grille">
     <div class="offrir-venir__offrir">
       <p class="surtitre">${c.t('v4.offrirSurtitre')}</p>
@@ -220,7 +223,7 @@ export default (c) => {
         ${brut(`<g class="venir__ici" data-repere><circle cx="${MOINEVILLE.x}" cy="${MOINEVILLE.y}" r="14"/><circle cx="${MOINEVILLE.x}" cy="${MOINEVILLE.y}" r="5"/><text x="${MOINEVILLE.x - 20}" y="${MOINEVILLE.y + 40}">Moineville</text></g>`)}
       </svg>
       <p class="venir__adresse">${c.site.contact.adresse}<br><a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
-      <p class="venir__actions">${c.lien('infos-pratiques', { classe: 'bouton bouton--contour', texte: c.t('v4.venirInfos') })} <a class="bouton bouton--contour" href="https://www.google.com/maps/search/?api=1&amp;query=6+Vathier+Haye+54580+Moineville" target="_blank" rel="noopener">${c.t('v4.itineraire')}</a></p>
+      <p class="venir__actions">${c.lien('infos-pratiques', { classe: 'bouton bouton--contour', texte: c.t('v4.venirInfos') })} <a class="bouton bouton--contour" href="https://www.google.com/maps/search/?api=1&amp;query=6+Vathier+Haye+54580+Moineville" target="_blank" rel="noopener">${brut(c.s('v4.itineraire').replace(' (nouvel onglet)', '<span class="visuellement-cache"> (nouvel onglet)</span>'))}</a></p>
     </div>
   </div>
 </section>

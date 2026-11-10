@@ -8,7 +8,8 @@ const MONTANTS = [25, 50, 100, 150, 200];
 
 export default (c) => html`
 <section class="ouv-offrir" data-lueur id="debut" data-fil="gauche" data-grille="fil">
-  ${c.media({ nom: 'grok/offrir-ouverture', alt: c.s('offrir.alt'), cadrage: '62% 50%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw', attrs: 'data-fx="parallaxe" data-fx-force="8"' })}
+  ${c.media({ nom: 'grok/offrir-ouverture', alt: c.s('offrir.alt'), cadrage: '62% 50%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw', attrs: 'data-saison-photo="hiver" data-fx="parallaxe" data-fx-force="8"' })}
+  ${c.media({ nom: 'offrir-ete', alt: c.s('offrir.altEte'), cadrage: '50% 50%', classe: 'ouv-offrir__fond', sizes: '100vw', attrs: 'data-saison-photo="ete"' })}
   <div class="conteneur ouv-offrir__centre">
     <p class="surtitre" data-anime>${c.t('offrir.surtitre')}</p>
     <h1 data-anime="lettres">${c.t('offrir.titre')}</h1>

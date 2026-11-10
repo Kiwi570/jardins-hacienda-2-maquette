@@ -1,4 +1,4 @@
-# Les Jardins de l'Hacienda (2) · maquette v4 « Deux saisons, une maison »
+# Les Jardins de l'Hacienda (2) · maquette v5 « Deux saisons, une maison »
 
 Deuxième maquette du futur site des Jardins de l'Hacienda, restaurant et lieu de réception à Moineville (54), près de Metz.
 Adresse prévue : https://jardins-hacienda-2-maquette.vercel.app. La maquette n'est pas reliée au site actuel.
@@ -20,6 +20,7 @@ Elle sert aussi de test réel aux 9 modules restaurant de la bibliothèque des m
 
 Le vrai slogan du lieu devient le moteur du site. Un cadran braise et soleil (ouverture de l'accueil) et un petit bouton flamme ou soleil (en-tête de toutes les pages) font basculer la maison : lumière et couleurs, photos, accroche, rendez-vous mis en avant, libellé du bouton principal (« Réserver au coin du feu » ou « Réserver en terrasse »).
 - Par défaut, la saison réelle à Paris (mai à septembre : l'été ; sinon l'hiver), décidée avant l'affichage (`source/critique/critique.js`) ; le choix du visiteur est gardé dans son navigateur (`localStorage`, clé `jh-saison`, lecture et écriture dans un try/catch). Sans JavaScript et en mode calme : la saison du jour de la génération, complète.
+- v5 : la bascule part du geste en vague de lumière ; l'été, l'en-tête, la barre du bas et le pied de page passent au bleu nuit, et La carte, Réserver et Offrir prennent leur photo d'été. « Réceptions » est dans le menu (lien vers « Combien serez-vous ? » de l'accueil).
 - Ce qui relie les pages : la lueur de la saison au bord de chaque section (braise qui monte l'hiver, reflet d'eau l'été), à la place de la ficelle de la v3.
 - Familles d'effets de l'accueil : ambiance qui change (signature), plongée, recomposition (table qui s'agrandit, carte filtrée), particules (braises, vapeur, reflets).
 - Palette : fumée #15100c, braise #d8622a, laiton #b8925a, nappe #f3e7d3 ; l'été, eau #2c7f8f et soleil #f2b33d. Bodoni Moda (titres), Figtree (texte), Caveat (écriture à la main).

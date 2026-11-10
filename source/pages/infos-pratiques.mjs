@@ -47,7 +47,7 @@ export default (c) => {
       <p class="surtitre">${c.t('infos.accesSurtitre')}</p>
       <h2 id="acces-titre" data-anime="lignes">${c.t('infos.accesTitre')}</h2>
       <p data-anime>${c.t('infos.accesTexte')}</p>
-      <p data-anime><a class="bouton bouton--contour" href="https://www.google.com/maps/search/?api=1&amp;query=6+Vathier+Haye+54580+Moineville" target="_blank" rel="noopener">${c.t('infos.itineraire')}</a></p>
+      <p data-anime><a class="bouton bouton--contour" href="https://www.google.com/maps/search/?api=1&amp;query=6+Vathier+Haye+54580+Moineville" target="_blank" rel="noopener">${brut(c.s('infos.itineraire').replace(' (nouvel onglet)', '<span class="visuellement-cache"> (nouvel onglet)</span>'))}</a></p>
     </div>
     <dl class="acces__regles" data-anime="cascade">
       <div><dt>${c.t('infos.festivesTitre')}</dt><dd>${c.t('infos.festivesTexte')}</dd></div>

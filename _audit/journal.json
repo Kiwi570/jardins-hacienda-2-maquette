@@ -302,6 +302,63 @@
       ],
       "grilleDispenses": {},
       "notes": "v4 « de A à Z » demandée après la v3 : plan journée (saisons), effets déjà vus retirés. Lecons/ vide (intégrées en v10.9). Test visiteur : 3 missions hors barème au premier passage (baptême, cadeau sur téléphone, premier écran téléphone), toutes dans le barème à la seconde passe. Regard neuf : Saint-Sylvestre non réservable (corrigé), mise en page des horaires (corrigée), photos et textes (corrigés). Non lancé : parcours:hauteur sur /reserver (le script perd les boutons des jours que le module redessine), vérifié à la main : 0 px de décalage ; Safari."
+    },
+    {
+      "version": 5,
+      "skill": "v10.9",
+      "perimetre": [
+        "accueil",
+        "la-carte",
+        "les-fetes",
+        "reserver",
+        "offrir",
+        "infos-pratiques",
+        "404"
+      ],
+      "etapes": [
+        {
+          "etape": "audit UX et design de la v4 (document)",
+          "budget": 20,
+          "debut": "2026-11-10T18:59:00+01:00",
+          "fin": "2026-11-10T19:04:00+01:00"
+        },
+        {
+          "etape": "améliorations : réceptions, réservation, saisons, été, ton, typographie, rythme, plan, finitions",
+          "budget": 60,
+          "debut": "2026-11-10T19:04:00+01:00",
+          "fin": "2026-11-10T19:22:00+01:00"
+        },
+        {
+          "etape": "audit complet, test visiteur et corrections",
+          "budget": 45,
+          "debut": "2026-11-10T19:22:00+01:00",
+          "fin": "2026-11-10T20:08:00+01:00"
+        },
+        {
+          "etape": "livraison v5 : zip, aperçu, CHANGELOG, résumé",
+          "budget": 15,
+          "debut": "2026-11-10T20:08:00+01:00",
+          "fin": "2026-11-10T20:15:00+01:00"
+        }
+      ],
+      "attentes": [],
+      "allersRetours": 0,
+      "audit": {
+        "niveau": "complet (7 pages, 13 tailles, tous les modes)",
+        "echecsPremierPassage": 4,
+        "relances": 2,
+        "corrections": [
+          "ouverture de l'accueil : arc du cadran retiré sous 620 px de haut (en-tête sur deux rangées vers 1000 px), cadran ramené à 260 px",
+          "jours de la réservation sur deux rangées jusqu'à 1180 px (ils chevauchaient le récapitulatif)",
+          "Offrir : voile plus dense derrière le surtitre (contraste 2,99:1)",
+          "formulaire de réservation : bandeau photo (bougies) rétabli, plus fin (section sans visuel)",
+          "titre « Les fêtes au coin du feu » : apparition ligne par ligne (lettres qui se chevauchaient pendant l'animation)",
+          "lien « Réceptions » depuis une autre page : section ramenée sous l'en-tête après les épinglages (test visiteur)"
+        ]
+      },
+      "effetsRetires": [],
+      "grilleDispenses": {},
+      "notes": "Demande : réaliser toutes les améliorations relevées dans l'audit UX et design de la v4. Test visiteur 3e passe : réserver 13 gestes (téléphone) et 11 (ordinateur), baptême au formulaire en 3 et 2 gestes ; lien Réceptions corrigé ensuite."
     }
   ]
 }

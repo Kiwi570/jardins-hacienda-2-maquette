@@ -44,7 +44,8 @@ export default (c) => {
   const lien = (t) => c.url('reserver', 'formulaire', `table=${t.id}&couverts=${t.places}&espace=${t.zone === 'terrasse' ? 'terrasse' : 'salle'}`);
   return html`
 <section class="ouv-resa" data-lueur id="debut" data-fil="gauche" data-grille="fil">
-  ${c.media({ nom: 'grok/reserver-ouverture', alt: c.s('reserver.alt'), cadrage: '70% 56%', priorite: true, classe: 'ouv-resa__fond', sizes: '100vw' })}
+  ${c.media({ nom: 'grok/reserver-ouverture', alt: c.s('reserver.alt'), cadrage: '70% 56%', priorite: true, classe: 'ouv-resa__fond', sizes: '100vw', attrs: 'data-saison-photo="hiver"' })}
+  ${c.media({ nom: 'reserver-ete', alt: c.s('reserver.altEte'), cadrage: '50% 50%', classe: 'ouv-resa__fond', sizes: '100vw', attrs: 'data-saison-photo="ete"' })}
   <div class="conteneur ouv-resa__grille">
     <div class="ouv-resa__texte">
       <p class="surtitre" data-anime>${c.t('reserver.surtitre')}</p>
@@ -66,7 +67,7 @@ export default (c) => {
   <div class="resa__grille socle-cadre">
     <form class="resa__form" data-resa-form action="#" novalidate aria-labelledby="resa-titre">
       <header class="resa__tete">
-        ${c.media({ nom: 'cheminee', alt: c.s('reserver.bandeauAlt'), cadrage: '38% 50%', classe: 'resa__bandeau', sizes: '(max-width: 760px) 100vw, 55vw', attrs: 'data-fx="parallaxe" data-fx-force="8"' })}
+        ${c.media({ nom: 'grok/fetes-bougies', alt: '', classe: 'resa__bandeau resa__bandeau--bougies', sizes: '(max-width: 760px) 100vw, 55vw' })}
         <p class="socle-surtitre">${c.t('reserver.formSurtitre')}</p>
         <h2 id="resa-titre" data-anime="lignes">${c.t('reserver.formTitre')}</h2>
         <p>${c.t('reserver.formTexte')}</p>
@@ -83,13 +84,6 @@ export default (c) => {
           <label class="resa__puce"><input type="radio" name="service" value="soir" checked><span>Soir</span><small data-note></small></label>
         </div>
       </fieldset>
-      <fieldset class="resa__champ" data-champ="heure">
-        <legend>À quelle heure&nbsp;?</legend>
-        <div class="resa__creneaux" data-resa-creneaux>
-          <label class="resa__date"><span>Heure d'arrivée</span><select name="heure" id="resa-heure"><option value="">Choisir</option><optgroup label="Midi"><option value="12:00">12 h</option><option value="12:15">12 h 15</option><option value="12:30">12 h 30</option><option value="12:45">12 h 45</option><option value="13:00">13 h</option><option value="13:15">13 h 15</option><option value="13:30">13 h 30</option></optgroup><optgroup label="Soir"><option value="19:00">19 h</option><option value="19:15">19 h 15</option><option value="19:30">19 h 30</option><option value="19:45">19 h 45</option><option value="20:00">20 h</option><option value="20:15">20 h 15</option><option value="20:30">20 h 30</option><option value="20:45">20 h 45</option><option value="21:00">21 h</option><option value="21:15">21 h 15</option><option value="21:30">21 h 30</option></optgroup></select></label>
-        </div>
-        <p class="resa__aide" data-resa-creneaux-aide aria-live="polite"></p>
-      </fieldset>
       <div class="resa__champ" data-champ="couverts">
         <label class="resa__libelle" for="resa-couverts">Combien de personnes&nbsp;?</label>
         <div class="resa__compteur">
@@ -99,6 +93,13 @@ export default (c) => {
         </div>
         <p class="resa__aide" data-resa-groupe hidden>Au-delà de 10 personnes, appelez-nous au <a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a> : nous préparons la salle.</p>
       </div>
+      <fieldset class="resa__champ" data-champ="heure">
+        <legend>À quelle heure&nbsp;?</legend>
+        <div class="resa__creneaux" data-resa-creneaux>
+          <label class="resa__date"><span>Heure d'arrivée</span><select name="heure" id="resa-heure"><option value="">Choisir</option><optgroup label="Midi"><option value="12:00">12 h</option><option value="12:15">12 h 15</option><option value="12:30">12 h 30</option><option value="12:45">12 h 45</option><option value="13:00">13 h</option><option value="13:15">13 h 15</option><option value="13:30">13 h 30</option></optgroup><optgroup label="Soir"><option value="19:00">19 h</option><option value="19:15">19 h 15</option><option value="19:30">19 h 30</option><option value="19:45">19 h 45</option><option value="20:00">20 h</option><option value="20:15">20 h 15</option><option value="20:30">20 h 30</option><option value="20:45">20 h 45</option><option value="21:00">21 h</option><option value="21:15">21 h 15</option><option value="21:30">21 h 30</option></optgroup></select></label>
+        </div>
+        <p class="resa__aide" data-resa-creneaux-aide aria-live="polite"></p>
+      </fieldset>
       <fieldset class="resa__champ" data-champ="espace">
         <legend>Où souhaitez-vous vous installer&nbsp;?</legend>
         <div class="resa__puces">
@@ -106,8 +107,10 @@ export default (c) => {
           <label class="resa__puce"><input type="radio" name="espace" value="terrasse"><span>En terrasse</span><small data-note></small></label>
         </div>
       </fieldset>
+      <details class="resa__plus">
+      <summary>Une demande particulière&nbsp;? <span class="resa__facultatif">(facultatif)</span></summary>
       <fieldset class="resa__champ" data-champ="demande">
-        <legend>Une demande particulière&nbsp;? <span class="resa__facultatif">(facultatif)</span></legend>
+        <legend class="sr-only">Une demande particulière</legend>
         <div class="resa__puces resa__puces--demandes">
           <label class="resa__puce"><input type="checkbox" name="demande" value="Une occasion à fêter"><span>Une occasion à fêter</span></label>
           <label class="resa__puce"><input type="checkbox" name="demande" value="Chaise haute"><span>Chaise haute</span></label>
@@ -115,6 +118,7 @@ export default (c) => {
         </div>
         <label class="resa__date resa__date--large"><span>Précisez si besoin</span><textarea name="message" id="resa-message" rows="3"></textarea></label>
       </fieldset>
+      </details>
       <fieldset class="resa__champ" data-champ="contact">
         <legend>Vos coordonnées</legend>
         <div class="resa__contact">

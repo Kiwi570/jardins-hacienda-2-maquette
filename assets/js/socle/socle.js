@@ -5,7 +5,7 @@
    ScrollTrigger.refresh() regroupé. Cet adaptateur ne charge donc rien : il renvoie le GSAP du projet, pour ne jamais
    avoir deux GSAP ni deux jeux de ScrollTrigger dans la page. Même API que socle/socle.js de la bibliothèque. */
 
-import { aller } from './defilement.js?v=4';
+import { aller } from './defilement.js?v=5';
 
 const html = document.documentElement;
 const mqReduit = matchMedia('(prefers-reduced-motion: reduce)');

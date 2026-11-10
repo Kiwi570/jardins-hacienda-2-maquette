@@ -16,11 +16,14 @@ export default (c) => {
     <h1 class="ouv-carte__titre" data-anime="lettres">${c.t('carte.titre')}</h1>
     <div class="ouv-carte__ligne">
       <p class="ouv-carte__texte masque-ecran-tres-bas">${c.t('carte.texte')}</p>
-      <p class="ouv-carte__actions">${c.lien('reserver', { classe: 'bouton', texte: c.t('carte.action'), attrs: 'data-action-principale' })}</p>
+      <p class="ouv-carte__actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('carte.action'), attrs: 'data-action-principale' })}</p>
       <p class="ouv-carte__info" data-info-cle data-prix>${c.t('carte.info')}</p>
     </div>
   </div>
-  ${c.media({ nom: 'carte-ouverture', alt: c.s('carte.alt'), cadrage: '54% 45%', priorite: true, classe: 'ouv-carte__bandeau', sizes: '100vw', attrs: 'data-anime="rideau" data-iris-centre' })}
+  <div class="ouv-carte__duo">
+  ${c.media({ nom: 'carte-ouverture', alt: c.s('carte.alt'), cadrage: '54% 45%', priorite: true, classe: 'ouv-carte__bandeau', sizes: '100vw', attrs: 'data-anime="rideau" data-iris-centre data-saison-photo="hiver"' })}
+  ${c.media({ nom: 'carte-ouverture-ete', alt: c.s('carte.altEte'), cadrage: '50% 55%', classe: 'ouv-carte__bandeau', sizes: '100vw', attrs: 'data-saison-photo="ete"' })}
+  </div>
 </section>
 
 <section class="ardoise-section ardoise-carte" data-lueur id="ardoise" data-module="ardoise-a-la-craie" data-fil="droite" aria-labelledby="ardoise-titre">
@@ -64,7 +67,7 @@ ${fragment(carte)}
     <p class="fin-carte__statut" data-info-cle><a href="/infos-pratiques#horaires" data-statut-accueil>${c.t('v4.horaires')}</a></p>
     <script type="application/json" data-horaires-accueil>${brut(JSON.stringify(c.donnees.horaires).replace(/<\//g, '<\\/'))}</script>
     <p>${c.t('carte.finTexte')}</p>
-    <p class="fin-carte__actions">${c.lien('reserver', { classe: 'bouton', texte: c.t('carte.action'), attrs: 'data-action-principale' })} <a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
+    <p class="fin-carte__actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('carte.action'), attrs: 'data-action-principale' })} <a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
   </div>
 </section>
 `;

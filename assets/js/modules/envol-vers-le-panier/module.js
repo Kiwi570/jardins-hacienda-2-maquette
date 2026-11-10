@@ -2,7 +2,7 @@
 // du panier visible (en-tête sur ordinateur, barre du bas sur téléphone), qui rebondit à l'arrivée.
 // Un en-tête caché par le défilement redescend pour recevoir la pièce. Le module ne gère pas le panier :
 // le projet appelle envol() après son propre ajout, ou laisse init() écouter les boutons [data-envol].
-import { pret } from '../../socle/socle.js?v=4';
+import { pret } from '../../socle/socle.js?v=5';
 
 let S = null;
 const visible = el => el && el.offsetParent !== null && el.getBoundingClientRect().width > 0 && getComputedStyle(el).visibility !== 'hidden';

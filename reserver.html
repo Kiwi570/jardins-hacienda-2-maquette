@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-v="4" data-saison="hiver" data-curseur>
+<html lang="fr" data-v="5" data-saison="hiver" data-curseur>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -45,17 +45,17 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 })();</script>
 <link rel="preload" href="/assets/fonts/bodoni-moda.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/socle.css?v=4">
-<link rel="stylesheet" href="/assets/js/modules/plan-de-salle/module.css?v=4">
-<link rel="stylesheet" href="/assets/js/modules/reservation-de-table/module.css?v=4">
-<link rel="stylesheet" href="/assets/js/modules/envol-vers-le-panier/module.css?v=4">
-<link rel="stylesheet" href="/assets/css/site.css?v=4">
-<link rel="modulepreload" href="/assets/js/site.js?v=4">
-<link rel="modulepreload" href="/assets/js/socle/index.js?v=4">
+<link rel="stylesheet" href="/assets/css/socle.css?v=5">
+<link rel="stylesheet" href="/assets/js/modules/plan-de-salle/module.css?v=5">
+<link rel="stylesheet" href="/assets/js/modules/reservation-de-table/module.css?v=5">
+<link rel="stylesheet" href="/assets/js/modules/envol-vers-le-panier/module.css?v=5">
+<link rel="stylesheet" href="/assets/css/site.css?v=5">
+<link rel="modulepreload" href="/assets/js/site.js?v=5">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=5">
 <script src="/assets/vendor/gsap.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/vendor/SplitText.min.js" defer></script>
-<script type="module" src="/assets/js/site.js?v=4"></script>
+<script type="module" src="/assets/js/site.js?v=5"></script>
 <meta name="theme-color" content="#15100c">
 <link rel="icon" href="/assets/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
@@ -91,11 +91,11 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <img src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>Les Jardins de l&#39;Hacienda</span>
     </a>
     <nav data-nav aria-label="Navigation principale">
-      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/#recevoir" data-libelle="Réceptions">Réceptions</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
     </nav>
     <div class="entete-actions">
       <button type="button" class="saison-mini" data-saison-bascule aria-pressed="false" aria-label="Passer à l’été"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="saison-mini__flamme" d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-3 2-5 3-7 0 2 1 3 2 3 0-2 0-4 0-6z"/><g class="saison-mini__soleil"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg></button>
-      <a class="bouton" href="/reserver" data-libelle="Réserver">Réserver</a>
+      <a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver</a>
       <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="Menu" data-libelle-fermer="Fermer"><span data-libelle-bouton>Menu</span></button>
       <a class="menu-sansjs" href="#menu" data-menu-lien>Menu</a>
     </div>
@@ -119,16 +119,21 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <span id="menu-ferme" aria-hidden="true"></span>
 <div id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu">
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
-  <ul><li style="--i:0"><a href="/" class="menu-lien" data-libelle="Accueil">Accueil</a></li><li style="--i:1"><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:3"><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:4"><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
-  <p class="menu-actions"><a class="bouton" href="/reserver" data-libelle="Réserver">Réserver une table</a><a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
+  <ul><li style="--i:0"><a href="/" class="menu-lien" data-libelle="Accueil">Accueil</a></li><li style="--i:1"><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:2"><a href="/#recevoir" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:4"><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+  <p class="menu-actions"><a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver une table</a><a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
 <main id="contenu" tabindex="-1">
 <section class="ouv-resa" data-lueur id="debut" data-fil="gauche" data-grille="fil">
-  <figure class="media ouv-resa__fond" data-grok style="--cadrage:70% 56%">
+  <figure class="media ouv-resa__fond" data-grok data-saison-photo="hiver" style="--cadrage:70% 56%">
   <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/reserver-ouverture-mobile-640.webp 640w" sizes="100vw">
     <img src="/assets/images/grok/reserver-ouverture-1280.webp" srcset="/assets/images/grok/reserver-ouverture-640.webp 640w, /assets/images/grok/reserver-ouverture-1280.webp 1280w" sizes="100vw" alt="Coin de table dressée le soir : nappe crème, serviette sombre, verre et bougie" width="1280" height="720" fetchpriority="high" loading="eager" decoding="async">
   </picture><figcaption class="mention-ia">Illustration générée</figcaption>
+</figure>
+  <figure class="media ouv-resa__fond" data-saison-photo="ete" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/reserver-ete-mobile-640.webp 640w" sizes="100vw">
+    <img src="/assets/images/reserver-ete-1280.webp" srcset="/assets/images/reserver-ete-640.webp 640w, /assets/images/reserver-ete-1280.webp 1280w" sizes="100vw" alt="Une table dressée en terrasse, fleurs et verres au soleil" width="1280" height="721" loading="lazy" decoding="async">
+  </picture>
 </figure>
   <div class="conteneur ouv-resa__grille">
     <div class="ouv-resa__texte">
@@ -150,10 +155,10 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <div class="resa__grille socle-cadre">
     <form class="resa__form" data-resa-form action="#" novalidate aria-labelledby="resa-titre">
       <header class="resa__tete">
-        <figure class="media resa__bandeau" data-fx="parallaxe" data-fx-force="8" style="--cadrage:38% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/cheminee-mobile-640.webp 640w, /assets/images/cheminee-mobile-1080.webp 1080w" sizes="(max-width: 760px) 100vw, 55vw">
-    <img src="/assets/images/cheminee-1280.webp" srcset="/assets/images/cheminee-640.webp 640w, /assets/images/cheminee-1280.webp 1280w, /assets/images/cheminee-1920.webp 1920w" sizes="(max-width: 760px) 100vw, 55vw" alt="La salle décorée pour Noël, la cheminée et les tables dressées" width="1280" height="720" loading="lazy" decoding="async">
-  </picture>
+        <figure class="media resa__bandeau resa__bandeau--bougies" data-grok style="--cadrage:50% 50%">
+  <picture>
+    <img src="/assets/images/grok/fetes-bougies-1280.webp" srcset="/assets/images/grok/fetes-bougies-640.webp 640w, /assets/images/grok/fetes-bougies-1280.webp 1280w" sizes="(max-width: 760px) 100vw, 55vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
+  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
 </figure>
         <p class="socle-surtitre">Votre réservation</p>
         <h2 id="resa-titre" data-anime="lignes">Le jour, l&#39;heure, les couverts</h2>
@@ -171,13 +176,6 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
           <label class="resa__puce"><input type="radio" name="service" value="soir" checked><span>Soir</span><small data-note></small></label>
         </div>
       </fieldset>
-      <fieldset class="resa__champ" data-champ="heure">
-        <legend>À quelle heure&nbsp;?</legend>
-        <div class="resa__creneaux" data-resa-creneaux>
-          <label class="resa__date"><span>Heure d'arrivée</span><select name="heure" id="resa-heure"><option value="">Choisir</option><optgroup label="Midi"><option value="12:00">12 h</option><option value="12:15">12 h 15</option><option value="12:30">12 h 30</option><option value="12:45">12 h 45</option><option value="13:00">13 h</option><option value="13:15">13 h 15</option><option value="13:30">13 h 30</option></optgroup><optgroup label="Soir"><option value="19:00">19 h</option><option value="19:15">19 h 15</option><option value="19:30">19 h 30</option><option value="19:45">19 h 45</option><option value="20:00">20 h</option><option value="20:15">20 h 15</option><option value="20:30">20 h 30</option><option value="20:45">20 h 45</option><option value="21:00">21 h</option><option value="21:15">21 h 15</option><option value="21:30">21 h 30</option></optgroup></select></label>
-        </div>
-        <p class="resa__aide" data-resa-creneaux-aide aria-live="polite"></p>
-      </fieldset>
       <div class="resa__champ" data-champ="couverts">
         <label class="resa__libelle" for="resa-couverts">Combien de personnes&nbsp;?</label>
         <div class="resa__compteur">
@@ -187,6 +185,13 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         </div>
         <p class="resa__aide" data-resa-groupe hidden>Au-delà de 10 personnes, appelez-nous au <a href="tel:+33618212810">06 18 21 28 10</a> : nous préparons la salle.</p>
       </div>
+      <fieldset class="resa__champ" data-champ="heure">
+        <legend>À quelle heure&nbsp;?</legend>
+        <div class="resa__creneaux" data-resa-creneaux>
+          <label class="resa__date"><span>Heure d'arrivée</span><select name="heure" id="resa-heure"><option value="">Choisir</option><optgroup label="Midi"><option value="12:00">12 h</option><option value="12:15">12 h 15</option><option value="12:30">12 h 30</option><option value="12:45">12 h 45</option><option value="13:00">13 h</option><option value="13:15">13 h 15</option><option value="13:30">13 h 30</option></optgroup><optgroup label="Soir"><option value="19:00">19 h</option><option value="19:15">19 h 15</option><option value="19:30">19 h 30</option><option value="19:45">19 h 45</option><option value="20:00">20 h</option><option value="20:15">20 h 15</option><option value="20:30">20 h 30</option><option value="20:45">20 h 45</option><option value="21:00">21 h</option><option value="21:15">21 h 15</option><option value="21:30">21 h 30</option></optgroup></select></label>
+        </div>
+        <p class="resa__aide" data-resa-creneaux-aide aria-live="polite"></p>
+      </fieldset>
       <fieldset class="resa__champ" data-champ="espace">
         <legend>Où souhaitez-vous vous installer&nbsp;?</legend>
         <div class="resa__puces">
@@ -194,8 +199,10 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
           <label class="resa__puce"><input type="radio" name="espace" value="terrasse"><span>En terrasse</span><small data-note></small></label>
         </div>
       </fieldset>
+      <details class="resa__plus">
+      <summary>Une demande particulière&nbsp;? <span class="resa__facultatif">(facultatif)</span></summary>
       <fieldset class="resa__champ" data-champ="demande">
-        <legend>Une demande particulière&nbsp;? <span class="resa__facultatif">(facultatif)</span></legend>
+        <legend class="sr-only">Une demande particulière</legend>
         <div class="resa__puces resa__puces--demandes">
           <label class="resa__puce"><input type="checkbox" name="demande" value="Une occasion à fêter"><span>Une occasion à fêter</span></label>
           <label class="resa__puce"><input type="checkbox" name="demande" value="Chaise haute"><span>Chaise haute</span></label>
@@ -203,6 +210,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         </div>
         <label class="resa__date resa__date--large"><span>Précisez si besoin</span><textarea name="message" id="resa-message" rows="3"></textarea></label>
       </fieldset>
+      </details>
       <fieldset class="resa__champ" data-champ="contact">
         <legend>Vos coordonnées</legend>
         <div class="resa__contact">
@@ -290,11 +298,11 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <div>
       <p><strong>Les Jardins de l&#39;Hacienda</strong></p>
       <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
-      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener">Facebook (nouvel onglet)</a><br><a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener">Instagram (nouvel onglet)</a></p>
+      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener">Facebook<span class="visuellement-cache"> (nouvel onglet)</span></a><br><a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener">Instagram<span class="visuellement-cache"> (nouvel onglet)</span></a></p>
     </div>
     <nav aria-label="Sommaire">
       <p><strong>Sommaire</strong></p>
-      <ul><li><a href="/" data-libelle="Accueil">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver" data-libelle="Réserver" aria-current="page">Réserver</a></li></ul>
+      <ul><li><a href="/" data-libelle="Accueil">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/#recevoir" data-libelle="Réceptions">Réceptions</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver" data-libelle="Réserver" aria-current="page">Réserver</a></li></ul>
     </nav>
     <div>
       <p><strong>Confort de lecture</strong></p>
@@ -308,7 +316,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 </footer>
 <div data-barre-fixe>
   <a class="bouton bouton--contour" href="tel:+33618212810">Appeler</a>
-  <a class="bouton" href="/reserver" data-libelle="Réserver">Réserver</a>
+  <a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver</a>
 </div>
 </body>
 </html>

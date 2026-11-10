@@ -24,7 +24,8 @@
     "suivre": "Nous suivre",
     "facebook": "Facebook (nouvel onglet)",
     "instagram": "Instagram (nouvel onglet)",
-    "filIndice": "Ficelle de cuisine"
+    "filIndice": "Ficelle de cuisine",
+    "receptions": "Réceptions"
   },
   "pages": {
     "accueil": {
@@ -211,7 +212,8 @@
     "pleinAlt": "Une assiette du chef : purée, champignons poêlés et viande tranchée, sur une assiette sombre",
     "pleinG": "Chaque semaine,",
     "pleinD": "une nouvelle carte",
-    "pleinTexte": "Le chef Régis Clauss suit le marché et les saisons : la carte change chaque semaine, les suggestions s'annoncent de vive voix."
+    "pleinTexte": "Le chef Régis Clauss suit le marché et les saisons : la carte change chaque semaine, les suggestions s'annoncent de vive voix.",
+    "altEte": "Une assiette de saison servie sur la terrasse, au soleil"
   },
   "fetes": {
     "surtitre": "Fin d'année",
@@ -266,7 +268,8 @@
     "jour": "Choisir le jour",
     "choisirTable": "Choisir ma table",
     "cartonDetailEte": "en terrasse, l’été",
-    "noteEte": "La terrasse et la piscine vous accueillent de juin à septembre ; le reste de l’année, la salle et sa cheminée."
+    "noteEte": "La terrasse et la piscine vous accueillent de juin à septembre ; le reste de l’année, la salle et sa cheminée.",
+    "altEte": "Une table dressée en terrasse, fleurs et verres au soleil"
   },
   "offrir": {
     "surtitre": "Carte cadeau",
@@ -280,7 +283,8 @@
     "composerTexte": "Choisissez le montant, ajoutez un mot : la carte se prépare sous vos yeux.",
     "conditions": "Valable 6 mois sur toute la carte proposée par le chef. À présenter à votre arrivée ; ne peut être échangée contre des espèces.",
     "remise": "Pour la recevoir, appelez-nous au 06 18 21 28 10.",
-    "simule": "Achat simulé : rien n'est payé ni envoyé dans cette maquette."
+    "simule": "Achat simulé : rien n'est payé ni envoyé dans cette maquette.",
+    "altEte": "Cocktails servis au bar de la terrasse"
   },
   "infos": {
     "surtitre": "Infos pratiques",
@@ -349,10 +353,10 @@
     "altHiver": "Un plat de légumes de saison dressé sur une table en bois, devant la cheminée allumée",
     "carteSurtitre": "La carte de la semaine",
     "carteTitre": "Lancez le plateau du chef",
-    "carteTexte": "Le chef Régis Clauss renouvelle sa carte chaque semaine avec les produits de saison. Attrapez le plateau et lancez-le : chaque quart est une rubrique, avec deux vrais plats et leurs prix.",
+    "carteTexte": "Cette semaine, Régis Clauss cuisine le risotto de Saint-Jacques au riz noir, le suprême de pintade et les figues rôties au miel. La carte change chaque semaine, au fil des produits de saison.",
     "tableSurtitre": "En cuisine",
     "tableTitre": "La table se dresse",
-    "tableIntro": "Des assiettes du chef, photographiées au restaurant, se posent une à une sur la nappe.",
+    "tableIntro": "Trois assiettes du restaurant, dressées en cuisine et servies chaudes, à côté de la cheminée ou sur la terrasse.",
     "tableScene": "Vue de dessus d'une table dressée : couverts, verres et trois assiettes du chef",
     "e1": "La nappe et les couverts",
     "e1t": "La table est mise avant le service.",
@@ -362,7 +366,7 @@
     "e3t": "Dressé en cuisine, servi chaud.",
     "e4": "Les suggestions",
     "e4t": "Elles s'annoncent de vive voix, à table.",
-    "tableMention": "Photos d'assiettes du restaurant ; la carte change chaque semaine.",
+    "tableMention": "Photos d’assiettes du restaurant ; la nappe est une illustration générée.",
     "plongeeHiver": "Entrez dans la carte de la semaine",
     "plongeeEte": "Plongez dans la carte de la semaine",
     "plongeeTexte": "Entrées dès 9 €, plats de 21 à 26 €, menu enfant 16 €, planches à partager.",
@@ -383,7 +387,7 @@
     "eteAction": "Réserver une journée",
     "recevoirSurtitre": "Recevoir",
     "recevoirTitre": "Combien serez-vous ?",
-    "recevoirTexte": "Mariage, baptême, anniversaire, pot de départ : faites glisser, la table s'agrandit et l'espace qui convient s'affiche.",
+    "recevoirTexte": "Mariage, baptême, anniversaire, pot de départ : de la table pour deux au repas pour 120 sous la pergola.",
     "recevoirInvites": "invités",
     "recevoirCurseur": "Nombre d'invités",
     "espace2": "En salle, au coin du feu ou près des baies vitrées",
@@ -403,6 +407,10 @@
     "venirInfos": "Horaires et accès",
     "itineraire": "Itinéraire (nouvel onglet)",
     "carteAcces": "Carte : Moineville entre Metz, Thionville et le Luxembourg",
-    "altEte": "La piscine des Jardins de l'Hacienda, ses palmiers et ses paillotes sous le soleil"
+    "altEte": "La piscine des Jardins de l'Hacienda, ses palmiers et ses paillotes sous le soleil",
+    "noteEte": "Terrasse et piscine de juin à septembre ; d’ici là, la salle et sa cheminée.",
+    "piscineTexte": "Transats et paillotes au bord de l’eau.",
+    "barTexte": "Cocktails et boissons fraîches, en terrasse.",
+    "poolPartiesTexte": "Les dates de l’été 2027 seront annoncées ici."
   }
 }

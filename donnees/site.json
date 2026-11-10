@@ -2,7 +2,7 @@
   "nom": "Les Jardins de l'Hacienda",
   "adresse": "https://jardins-hacienda-2-maquette.vercel.app",
   "siteActuel": "lesjardinsdelhacienda54.com",
-  "version": 4,
+  "version": 5,
   "langues": [
     "fr"
   ],
@@ -15,7 +15,7 @@
   ],
   "actionEntete": {
     "page": "reserver",
-    "ancre": ""
+    "ancre": "formulaire"
   },
   "couleurs": {
     "fond": "#15100c",

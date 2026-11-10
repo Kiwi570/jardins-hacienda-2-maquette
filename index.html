@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-v="4" data-saison="hiver" data-curseur>
+<html lang="fr" data-v="5" data-saison="hiver" data-curseur>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -45,17 +45,17 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 })();</script>
 <link rel="preload" href="/assets/fonts/bodoni-moda.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/socle.css?v=4">
-<link rel="stylesheet" href="/assets/js/modules/plat-fumant/module.css?v=4">
-<link rel="stylesheet" href="/assets/js/modules/objet-a-faire-tourner/module.css?v=4">
-<link rel="stylesheet" href="/assets/js/modules/assiette-qui-se-dresse/module.css?v=4">
-<link rel="stylesheet" href="/assets/css/site.css?v=4">
-<link rel="modulepreload" href="/assets/js/site.js?v=4">
-<link rel="modulepreload" href="/assets/js/socle/index.js?v=4">
+<link rel="stylesheet" href="/assets/css/socle.css?v=5">
+<link rel="stylesheet" href="/assets/js/modules/plat-fumant/module.css?v=5">
+<link rel="stylesheet" href="/assets/js/modules/objet-a-faire-tourner/module.css?v=5">
+<link rel="stylesheet" href="/assets/js/modules/assiette-qui-se-dresse/module.css?v=5">
+<link rel="stylesheet" href="/assets/css/site.css?v=5">
+<link rel="modulepreload" href="/assets/js/site.js?v=5">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=5">
 <script src="/assets/vendor/gsap.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/vendor/SplitText.min.js" defer></script>
-<script type="module" src="/assets/js/site.js?v=4"></script>
+<script type="module" src="/assets/js/site.js?v=5"></script>
 <meta name="theme-color" content="#15100c">
 <link rel="icon" href="/assets/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
@@ -91,11 +91,11 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <img src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>Les Jardins de l&#39;Hacienda</span>
     </a>
     <nav data-nav aria-label="Navigation principale">
-      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/#recevoir" data-libelle="Réceptions">Réceptions</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
     </nav>
     <div class="entete-actions">
       <button type="button" class="saison-mini" data-saison-bascule aria-pressed="false" aria-label="Passer à l’été"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="saison-mini__flamme" d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-3 2-5 3-7 0 2 1 3 2 3 0-2 0-4 0-6z"/><g class="saison-mini__soleil"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg></button>
-      <a class="bouton" href="/reserver" data-libelle="Réserver">Réserver</a>
+      <a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver</a>
       <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="Menu" data-libelle-fermer="Fermer"><span data-libelle-bouton>Menu</span></button>
       <a class="menu-sansjs" href="#menu" data-menu-lien>Menu</a>
     </div>
@@ -119,8 +119,8 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <span id="menu-ferme" aria-hidden="true"></span>
 <div id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu">
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
-  <ul><li style="--i:0"><a href="/" class="menu-lien" data-libelle="Accueil" aria-current="page">Accueil</a></li><li style="--i:1"><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:3"><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:4"><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
-  <p class="menu-actions"><a class="bouton" href="/reserver" data-libelle="Réserver">Réserver une table</a><a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
+  <ul><li style="--i:0"><a href="/" class="menu-lien" data-libelle="Accueil" aria-current="page">Accueil</a></li><li style="--i:1"><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:2"><a href="/#recevoir" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:4"><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+  <p class="menu-actions"><a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver une table</a><a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
 <main id="contenu" tabindex="-1">
@@ -139,7 +139,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <img src="/assets/images/ete-ouverture-1280.webp" srcset="/assets/images/ete-ouverture-640.webp 640w, /assets/images/ete-ouverture-1280.webp 1280w, /assets/images/ete-ouverture-1920.webp 1920w" sizes="100vw" alt="La piscine des Jardins de l&#39;Hacienda, ses palmiers et ses paillotes sous le soleil" width="1280" height="720" loading="lazy" decoding="async">
   </picture>
 </figure>
-      <span class="reflets" data-effet="reflets" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="reflets" data-effet="reflets" aria-hidden="true"><img src="/assets/images/grok/eau-lumiere-1280.webp" alt="" width="1280" height="854" loading="lazy" decoding="async"></span>
     </div>
   </div>
   <div class="ouv-saisons__texte">
@@ -162,9 +162,10 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       </p>
     </div>
     <p class="ouv-saisons__actions">
-      <a href="/reserver" class="bouton" data-libelle="Réserver" data-action-principale data-survol="magnetique"><span data-saison-seul="hiver">Réserver au coin du feu</span><span data-saison-seul="ete">Réserver en terrasse</span></a>
+      <a href="/reserver#formulaire" class="bouton" data-libelle="Réserver" data-action-principale data-survol="magnetique"><span data-saison-seul="hiver">Réserver au coin du feu</span><span data-saison-seul="ete">Réserver en terrasse</span></a>
       <a href="/la-carte" class="bouton bouton--contour" data-libelle="La carte">Voir la carte</a>
     </p>
+    <p class="ouv-saisons__note" data-saison-seul="ete">Terrasse et piscine de juin à septembre ; d’ici là, la salle et sa cheminée.</p>
     <p class="ouv-saisons__info" data-info-cle><a href="/infos-pratiques#horaires" class="ouv-saisons__statut" data-statut-accueil>Horaires et accès</a></p>
     <script type="application/json" data-horaires-accueil>{"fuseau":"Europe/Paris","seuil_ferme_bientot":30,"regle_feries":"ouvert","feries":[{"date":"2026-11-11","nom":"Armistice"},{"date":"2026-12-25","nom":"Noël"},{"date":"2027-01-01","nom":"Jour de l'an"}],"adresses":[{"id":"restaurant","nom":"Le restaurant","adresse":"6 Vathier Haye, 54580 Moineville","telephone":"06 18 21 28 10","semaine":{"lundi":[],"mardi":[],"mercredi":["12:00-14:30"],"jeudi":["12:00-14:30"],"vendredi":["12:00-14:30","19:00-00:00"],"samedi":["19:00-00:00"],"dimanche":["12:00-16:00"]},"exceptions":[]}]}</script>
   </div>
@@ -174,7 +175,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <div class="plateau__texte">
       <p class="surtitre">La carte de la semaine</p>
       <h2 data-anime="lignes">Lancez le plateau du chef</h2>
-      <p data-anime>Le chef Régis Clauss renouvelle sa carte chaque semaine avec les produits de saison. Attrapez le plateau et lancez-le : chaque quart est une rubrique, avec deux vrais plats et leurs prix.</p>
+      <p data-anime>Cette semaine, Régis Clauss cuisine le risotto de Saint-Jacques au riz noir, le suprême de pintade et les figues rôties au miel. La carte change chaque semaine, au fil des produits de saison.</p>
       <ol class="plateau__rubriques" data-anime="cascade">
         <li class="plateau__rubrique" data-quart="0">
           <p class="plateau__rubrique-tete"><span class="plateau__rubrique-nom">Nos entrées</span><span class="plateau__fourchette" data-prix>9 à 21 €</span></p>
@@ -223,7 +224,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <div class="assiette__texte" data-tient>
         <p class="socle-surtitre">En cuisine</p>
         <h2 class="assiette__titre" id="table-titre">La table se dresse</h2>
-        <p class="assiette__intro masque-ecran-bas">Des assiettes du chef, photographiées au restaurant, se posent une à une sur la nappe.</p>
+        <p class="assiette__intro masque-ecran-bas">Trois assiettes du restaurant, dressées en cuisine et servies chaudes, à côté de la cheminée ou sur la terrasse.</p>
       </div>
       <div class="table__lieu" data-tient>
         <div class="assiette__scene table__nappe" role="img" aria-label="Vue de dessus d&#39;une table dressée : couverts, verres et trois assiettes du chef">
@@ -261,7 +262,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
           <li data-de=".3"><div><strong>Le plat</strong><span>Dressé en cuisine, servi chaud.</span></div></li>
           <li data-de=".46"><div><strong>Les suggestions</strong><span>Elles s&#39;annoncent de vive voix, à table.</span></div></li>
         </ol>
-        <p class="table__mention">Photos d&#39;assiettes du restaurant ; la carte change chaque semaine.</p>
+        <p class="table__mention">Photos d’assiettes du restaurant ; la nappe est une illustration générée.</p>
       </div>
     </div>
   </div>
@@ -275,7 +276,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <canvas class="rdv__braises" width="480" height="320" aria-hidden="true" data-effet="braises" data-audit-ignorer></canvas>
   <div class="conteneur rdv__contenu">
     <p class="surtitre"><span data-saison-seul="hiver">Les rendez-vous de l&#39;hiver</span><span data-saison-seul="ete">Les rendez-vous de l&#39;été</span></p>
-    <h2 id="rdv-titre" data-anime="lettres"><span data-saison-seul="hiver">Les fêtes au coin du feu</span><span data-saison-seul="ete">Les journées au bord de l&#39;eau</span></h2>
+    <h2 id="rdv-titre" data-anime="lignes"><span data-saison-seul="hiver">Les fêtes au coin du feu</span><span data-saison-seul="ete">Les journées au bord de l&#39;eau</span></h2>
     <div class="rdv__cartes" data-saison-seul="hiver">
       <article class="fete-carte" data-date="2026-12-25T12:00:00+01:00">
         <figure class="media fete-carte__photo" style="--cadrage:50% 50%">
@@ -287,7 +288,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         <h3>Menu de Noël</h3>
         <p class="fete-carte__decompte" data-effet="decompte" data-cible="2026-12-25">Dans <strong data-jours>—</strong> jours</p>
         <p class="fete-carte__prix" data-prix>79 € par personne, hors boissons</p>
-        <a href="/reserver?date=2026-12-25&amp;service=midi" class="bouton bouton--contour" data-libelle="Réserver">Réserver</a>
+        <a href="/reserver?date=2026-12-25&amp;service=midi#formulaire" class="bouton bouton--contour" data-libelle="Réserver">Réserver</a>
       </article>
       <article class="fete-carte fete-carte--sylvestre" data-date="2026-12-31T19:00:00+01:00">
         <figure class="media fete-carte__photo" style="--cadrage:50% 50%">
@@ -299,7 +300,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         <h3>Saint-Sylvestre</h3>
         <p class="fete-carte__decompte" data-effet="decompte" data-cible="2026-12-31">Dans <strong data-jours>—</strong> jours</p>
         <p class="fete-carte__prix" data-prix>120 € le menu · 170 € avec l&#39;accord mets et vins</p>
-        <a href="/reserver?date=2026-12-31&amp;service=soir" class="bouton bouton--contour" data-libelle="Réserver">Réserver</a>
+        <a href="/reserver?date=2026-12-31&amp;service=soir#formulaire" class="bouton bouton--contour" data-libelle="Réserver">Réserver</a>
       </article>
     </div>
     <div class="rdv__cartes rdv__cartes--ete" data-saison-seul="ete">
@@ -312,19 +313,19 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <picture>
     <img src="/assets/images/recevoir-piscine-960.webp" srcset="/assets/images/recevoir-piscine-480.webp 480w, /assets/images/recevoir-piscine-640.webp 640w, /assets/images/recevoir-piscine-960.webp 960w" sizes="(max-width: 760px) 100vw, 30vw" alt="La piscine" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
-</figure><h3>La piscine</h3><p class="ete-carte__quand">Le dimanche, dès 14 h 30</p></article>
+</figure><h3>La piscine</h3><p class="ete-carte__quand">Le dimanche, dès 14 h 30</p><p>Transats et paillotes au bord de l’eau.</p></article>
       <article class="ete-carte"><figure class="media ete-carte__photo" style="--cadrage:50% 50%">
   <picture>
     <img src="/assets/images/ete-bar-960.webp" srcset="/assets/images/ete-bar-480.webp 480w, /assets/images/ete-bar-640.webp 640w, /assets/images/ete-bar-960.webp 960w" sizes="(max-width: 760px) 100vw, 30vw" alt="Le bar" width="960" height="720" loading="lazy" decoding="async">
   </picture>
-</figure><h3>Le bar</h3><p class="ete-carte__quand">Les journées festives, dès 15 h 30, avec droit d&#39;entrée</p></article>
+</figure><h3>Le bar</h3><p class="ete-carte__quand">Les journées festives, dès 15 h 30, avec droit d&#39;entrée</p><p>Cocktails et boissons fraîches, en terrasse.</p></article>
       <article class="ete-carte"><figure class="media ete-carte__photo" style="--cadrage:50% 50%">
   <picture>
     <img src="/assets/images/ete-poolparty-960.webp" srcset="/assets/images/ete-poolparty-480.webp 480w, /assets/images/ete-poolparty-640.webp 640w, /assets/images/ete-poolparty-960.webp 960w" sizes="(max-width: 760px) 100vw, 30vw" alt="Les pool parties" width="960" height="720" loading="lazy" decoding="async">
   </picture>
-</figure><h3>Les pool parties</h3><p class="ete-carte__quand">L&#39;été, aux Jardins</p></article>
+</figure><h3>Les pool parties</h3><p class="ete-carte__quand">L&#39;été, aux Jardins</p><p>Les dates de l’été 2027 seront annoncées ici.</p></article>
     </div>
-    <p class="rdv__actions"><span data-saison-seul="hiver"><a href="/les-fetes" class="bouton" data-libelle="Les fêtes">Les menus des fêtes</a></span><span data-saison-seul="ete"><a href="/reserver" class="bouton" data-libelle="Réserver">Réserver une journée</a></span></p>
+    <p class="rdv__actions"><span data-saison-seul="hiver"><a href="/les-fetes" class="bouton" data-libelle="Les fêtes">Les menus des fêtes</a></span><span data-saison-seul="ete"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une journée</a></span></p>
   </div>
 </section>
 <section class="recevoir clair" id="recevoir" data-lueur aria-labelledby="recevoir-titre">
@@ -332,7 +333,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <div class="recevoir__texte">
       <p class="surtitre">Recevoir</p>
       <h2 id="recevoir-titre" data-anime="lignes">Combien serez-vous ?</h2>
-      <p>Mariage, baptême, anniversaire, pot de départ : faites glisser, la table s&#39;agrandit et l&#39;espace qui convient s&#39;affiche.</p>
+      <p>Mariage, baptême, anniversaire, pot de départ : de la table pour deux au repas pour 120 sous la pergola.</p>
       <label class="recevoir__curseur"><span class="recevoir__nombre"><output data-invites>40</output> invités</span>
         <input type="range" min="0" max="3" step="1" value="2" data-paliers="2,12,40,120" aria-label="Nombre d&#39;invités" aria-valuetext="40 invités"></label>
       <p class="recevoir__paliers"><button type="button" data-palier="0" aria-pressed="false">2</button><button type="button" data-palier="1" aria-pressed="false">12</button><button type="button" data-palier="2" aria-pressed="true">40</button><button type="button" data-palier="3" aria-pressed="false">120</button></p>
@@ -365,6 +366,16 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   </div>
 </section>
 <section class="offrir-venir" id="offrir" data-lueur aria-labelledby="offrir-titre">
+  <div class="offrir-venir__fond" data-saison-photo="hiver"><figure class="media offrir-venir__image" style="--cadrage:40% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/cheminee-mobile-640.webp 640w, /assets/images/cheminee-mobile-1080.webp 1080w" sizes="100vw">
+    <img src="/assets/images/cheminee-1280.webp" srcset="/assets/images/cheminee-640.webp 640w, /assets/images/cheminee-1280.webp 1280w, /assets/images/cheminee-1920.webp 1920w" sizes="100vw" alt="" width="1280" height="720" loading="lazy" decoding="async">
+  </picture>
+</figure></div>
+  <div class="offrir-venir__fond" data-saison-photo="ete"><figure class="media offrir-venir__image" style="--cadrage:50% 50%">
+  <picture>
+    <img src="/assets/images/ete-soir-960.webp" srcset="/assets/images/ete-soir-480.webp 480w, /assets/images/ete-soir-640.webp 640w, /assets/images/ete-soir-960.webp 960w" sizes="100vw" alt="" width="960" height="720" loading="lazy" decoding="async">
+  </picture>
+</figure></div>
   <div class="conteneur offrir-venir__grille">
     <div class="offrir-venir__offrir">
       <p class="surtitre">Offrir</p>
@@ -383,7 +394,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         <g class="venir__ici" data-repere><circle cx="131" cy="238" r="14"/><circle cx="131" cy="238" r="5"/><text x="111" y="278">Moineville</text></g>
       </svg>
       <p class="venir__adresse">6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
-      <p class="venir__actions"><a href="/infos-pratiques" class="bouton bouton--contour" data-libelle="Infos pratiques">Horaires et accès</a> <a class="bouton bouton--contour" href="https://www.google.com/maps/search/?api=1&amp;query=6+Vathier+Haye+54580+Moineville" target="_blank" rel="noopener">Itinéraire (nouvel onglet)</a></p>
+      <p class="venir__actions"><a href="/infos-pratiques" class="bouton bouton--contour" data-libelle="Infos pratiques">Horaires et accès</a> <a class="bouton bouton--contour" href="https://www.google.com/maps/search/?api=1&amp;query=6+Vathier+Haye+54580+Moineville" target="_blank" rel="noopener">Itinéraire<span class="visuellement-cache"> (nouvel onglet)</span></a></p>
     </div>
   </div>
 </section>
@@ -393,11 +404,11 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <div>
       <p><strong>Les Jardins de l&#39;Hacienda</strong></p>
       <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
-      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener">Facebook (nouvel onglet)</a><br><a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener">Instagram (nouvel onglet)</a></p>
+      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener">Facebook<span class="visuellement-cache"> (nouvel onglet)</span></a><br><a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener">Instagram<span class="visuellement-cache"> (nouvel onglet)</span></a></p>
     </div>
     <nav aria-label="Sommaire">
       <p><strong>Sommaire</strong></p>
-      <ul><li><a href="/" data-libelle="Accueil" aria-current="page">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver" data-libelle="Réserver">Réserver</a></li></ul>
+      <ul><li><a href="/" data-libelle="Accueil" aria-current="page">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/#recevoir" data-libelle="Réceptions">Réceptions</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver" data-libelle="Réserver">Réserver</a></li></ul>
     </nav>
     <div>
       <p><strong>Confort de lecture</strong></p>
@@ -411,7 +422,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 </footer>
 <div data-barre-fixe>
   <a class="bouton bouton--contour" href="tel:+33618212810">Appeler</a>
-  <a class="bouton" href="/reserver" data-libelle="Réserver">Réserver</a>
+  <a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver</a>
 </div>
 </body>
 </html>
