@@ -207,7 +207,11 @@
     "finTitre": "Une table vous attend",
     "finTexte": "Réservez en ligne, ou appelez-nous pour une question.",
     "fetes": "Les menus des fêtes",
-    "finAlt": "Dessert en coupe sur une table en bois, devant le feu"
+    "finAlt": "Dessert en coupe sur une table en bois, devant le feu",
+    "pleinAlt": "Une assiette du chef : purée, champignons poêlés et viande tranchée, sur une assiette sombre",
+    "pleinG": "Chaque semaine,",
+    "pleinD": "une nouvelle carte",
+    "pleinTexte": "Le chef Régis Clauss suit le marché et les saisons : la carte change chaque semaine, les suggestions s'annoncent de vive voix."
   },
   "fetes": {
     "surtitre": "Fin d'année",

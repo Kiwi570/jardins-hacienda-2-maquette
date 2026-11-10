@@ -41,7 +41,7 @@ Défauts trouvés par trois sources : l'audit standard et la passe des formats (
 - **Temps d'intégration** : 16 min (12 de dessin adapté, 4 pour le défaut de `--ecran-h`), plus 5 min de réglage après le visiteur et la fluidité.
 - **Réglages** : couleurs des dégradés (`g-tranche`, `g-jus`, `g-girolle`), girolles dessinées à la place des figues, pousses et fleur de sel retirées ; 4 étapes ; `longueur: 1.4` (au lieu de 2,4).
 - **Défauts** : (intégration) scène à 0 px sans `--ecran-h` (M1). (Visiteur) sur ordinateur, la scène retenait 4 défilements : « la page semble bloquée » ; « l'illustration ne donne pas faim ». (Regard neuf) « dessinée comme une icône naïve, le suprême ressemble à un churros » : le style vectoriel plat jure à côté des vraies photos. (Audit, fluidité) les masques animés repeignent la scène à chaque image : un quart des images lentes de l'accueil ; passer chaque couche sur son calque (`will-change`) aggrave (trop de grands calques).
-- **Corrections** : `--ecran-h` sur `:root` ; épinglage raccourci à 1,4 écran.
+- **Corrections** : `--ecran-h` sur `:root` ; épinglage raccourci à 1,4 écran ; v2 : dessin repeint en gravure laiton et crème sur une assiette d'ardoise (`source/fragments/assiette-pintade.html` : dégradés et traits ; `--assiette-porcelaine` sombre, `--couleur-accent` laiton sur la scène), plus cohérent avec la cloche et les photos ; les formes restent celles du dessin.
 - **Verdict** : **à améliorer**.
 - **Améliorations proposées** : `var(--ecran-h, 100svh)` (M1) ; longueur par défaut 1,4 ; un rendu plus réaliste (couches tirées de photos détourées du plat, ou trait gravé laiton) et un guide « adapter le dessin à un autre plat » ; masques moins coûteux (un seul masque par couche, chemins simplifiés).
 
@@ -51,7 +51,7 @@ Défauts trouvés par trois sources : l'audit standard et la passe des formats (
 - **Temps d'intégration** : 5 min, plus 2 min pour le bâton de craie.
 - **Réglages** : `donnees/ardoise.json` (4 plats de saison de la carte avec leurs prix) ; date « Cette semaine » ; `--ardoise-police: Caveat` ; lien « Un plat végétarien ? » qui filtre la carte voisine.
 - **Défauts** : (audit) une fois les prix écrits, le bâton de craie reste posé sur un prix (« 9 € » recouvert à 1366×768). (Visiteur) la craie met environ 4 s à écrire les prix, le tableau reste vide en attendant. (Regard neuf) sur ordinateur, l'ardoise paraît presque vide (titre écrit petit sur un grand panneau) ; sur téléphone elle occupe un écran entier.
-- **Corrections** : le bâton se retire 5,5 s après le début de l'écriture (`site.css`, animation sur `.ardoise.est-ecrit .ardoise__baton`).
+- **Corrections** : le bâton se retire après l'écriture (`site.css`, animation sur `.ardoise.est-ecrit .ardoise__baton`) ; v2 : `vitesse: 2` (écriture deux fois plus rapide).
 - **Verdict** : **à améliorer**.
 - **Améliorations proposées** : classe de fin d'écriture (`est-fini`) et bâton qui se range hors du texte (M14) ; prix écrits avant les noms ou vitesse réglable (`options.vitesse`) ; hauteur de l'ardoise proportionnée au nombre de lignes.
 
@@ -91,7 +91,7 @@ Défauts trouvés par trois sources : l'audit standard et la passe des formats (
 - **Temps d'intégration** : 8 min, plus 4 min de corrections.
 - **Réglages** : `donnees/salle.json` (12 tables d'un plan indicatif d'après les photos ; tables 3 et 6 « Déjà réservée (simulation) » ; terrasse de juin à septembre) ; `couverts: 2` ; `textes.choix` ; couleurs `--pds-*` (tables en bois sombre).
 - **Défauts** : (intégration) annonce du choix collée (M4). (Audit) numéros des tables illisibles sur tables claires (M10) ; sans JavaScript, la section n'a plus de visuel. (Visiteur) passage obligé avant la date : le jour n'arrive qu'au 7e geste ; « Prise ce soir » affiché alors que le restaurant est fermé ce soir et qu'on réserve pour samedi ; numéros quasi illisibles. (Regard neuf) le panneau collant « Réserver cette table » cache des lignes de la liste en défilant ; le nombre de couverts se règle deux fois (plan puis formulaire). Point fort : « plan 3D filtrable, au-dessus de la barre outil interactif ».
-- **Corrections** : `--pds-table` sombre ; lien « Réserver sans choisir de table » dans l'ouverture ; « Déjà réservée (simulation) » ; photo de la salle sans JavaScript.
+- **Corrections** : `--pds-table` sombre ; lien « Réserver sans choisir de table » dans l'ouverture ; photo de la salle sans JavaScript ; v2 : `textes.prise: 'Indisponible (simulation)'` (en v1, le libellé changé dans `salle.json` n'avait aucun effet : le module le remplace, M18) ; panneau collant plus compact sur ordinateur.
 - **Verdict** : **à améliorer**.
 - **Améliorations proposées** : M4, M10 ; tables prises calculées pour la date et le service choisis (ou mention neutre) ; plan facultatif par défaut (« choisir ma table » après la date) ; marge sous le panneau collant égale à sa hauteur ; couverts partagés avec la réservation sans double réglage.
 
@@ -161,3 +161,4 @@ Un module prêt tel quel, huit à améliorer, dont la plupart pour des correctio
 ## Temps
 
 Intégration des 9 modules : 70 min au premier passage (assemblage et tests compris), plus environ 50 min de corrections après l'audit, le visiteur et le regard neuf, dont 20 min pour le seul défaut de défilement M15.
+| M18 | `modules/plan-de-salle/module.js` | 14 et 78 | l'état d'une table prise est toujours le texte `textes.prise` (« Prise ce soir ») : le libellé propre à la table dans le HTML (« Terrasse de juin à septembre ») est remplacé, et « ce soir » est faux quand on réserve pour un autre jour (visiteur) | garder le texte de `.pds__etat` s'il existe, sinon `textes.prise` ; libellé par défaut sans « ce soir » ; réglé dans le projet par `textes.prise: 'Indisponible (simulation)'` (v2) |

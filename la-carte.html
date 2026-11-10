@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-v="1" data-curseur>
+<html lang="fr" data-v="2" data-curseur>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -41,17 +41,17 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 })();</script>
 <link rel="preload" href="/assets/fonts/bodoni-moda.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/socle.css?v=1">
-<link rel="stylesheet" href="/assets/js/modules/fil-conducteur/module.css?v=1">
-<link rel="stylesheet" href="/assets/js/modules/ardoise-a-la-craie/module.css?v=1">
-<link rel="stylesheet" href="/assets/js/modules/carte-du-restaurant/module.css?v=1">
-<link rel="stylesheet" href="/assets/css/site.css?v=1">
-<link rel="modulepreload" href="/assets/js/site.js?v=1">
-<link rel="modulepreload" href="/assets/js/socle/index.js?v=1">
+<link rel="stylesheet" href="/assets/css/socle.css?v=2">
+<link rel="stylesheet" href="/assets/js/modules/fil-conducteur/module.css?v=2">
+<link rel="stylesheet" href="/assets/js/modules/ardoise-a-la-craie/module.css?v=2">
+<link rel="stylesheet" href="/assets/js/modules/carte-du-restaurant/module.css?v=2">
+<link rel="stylesheet" href="/assets/css/site.css?v=2">
+<link rel="modulepreload" href="/assets/js/site.js?v=2">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=2">
 <script src="/assets/vendor/gsap.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/vendor/SplitText.min.js" defer></script>
-<script type="module" src="/assets/js/site.js?v=1"></script>
+<script type="module" src="/assets/js/site.js?v=2"></script>
 <meta name="theme-color" content="#15100c">
 <link rel="icon" href="/assets/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
@@ -153,6 +153,19 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <h2 id="ardoise-titre" data-anime="lignes">Les produits de saison</h2>
       <p>Quatre plats de saison de la carte de la semaine. Les suggestions du chef, elles, s&#39;annoncent de vive voix.</p>
       <p><a class="bouton bouton--contour" href="#toute-la-carte" data-filtre-lien="vegetarien" data-sans-transition>Un plat végétarien ?</a></p>
+    </div>
+  </div>
+</section>
+<section class="plein-carte" id="assiette-du-chef" data-fx="plein-ecran" aria-labelledby="plein-carte-titre" data-gouttiere="#15100c">
+  <div data-collant>
+    <figure class="media plein-carte__photo" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/carte-plein-mobile-640.webp 640w" sizes="100vw">
+    <img src="/assets/images/carte-plein-1280.webp" srcset="/assets/images/carte-plein-640.webp 640w, /assets/images/carte-plein-1280.webp 1280w, /assets/images/carte-plein-1920.webp 1920w" sizes="100vw" alt="Une assiette du chef : purée, champignons poêlés et viande tranchée, sur une assiette sombre" width="1280" height="720" loading="lazy" decoding="async">
+  </picture>
+</figure>
+    <h2 class="plein-carte__titre" id="plein-carte-titre"><span data-fx-ecarte="g">Chaque semaine,</span> <span data-fx-ecarte="d">une nouvelle carte</span></h2>
+    <div class="plein-carte__apres" data-fx-apres>
+      <p>Le chef Régis Clauss suit le marché et les saisons : la carte change chaque semaine, les suggestions s&#39;annoncent de vive voix.</p>
     </div>
   </div>
 </section>

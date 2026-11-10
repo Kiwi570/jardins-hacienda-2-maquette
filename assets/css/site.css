@@ -135,7 +135,9 @@ section { position: relative; }
 @media (max-width: 899px) { .plateau__grille { grid-template-columns: minmax(0, 1fr); } .plateau__objet { order: -1; width: min(100%, 420px); } }
 
 /* Le chef dresse (assiette qui se dresse). */
-.chef { background: var(--fumee); --assiette-porcelaine: #efe6d6; }
+.chef { background: var(--fumee); --assiette-porcelaine: #2b231c; }
+/* v2 : assiette en gravure laiton sur assiette d’ardoise (le regard neuf jugeait le dessin en couleurs naïf). */
+.chef .assiette__scene { --couleur-accent: var(--laiton); --assiette-ombre: rgba(0, 0, 0, .55); }
 .chef__signature { margin: 6px 0 0; display: flex; align-items: baseline; gap: 14px; }
 .chef__nom { position: relative; font-family: var(--police-main); font-size: clamp(2.2rem, 4vw, 3.2rem); line-height: 1.2; color: var(--laiton); padding-inline: .1em; clip-path: inset(-20% var(--signature-reste, 0%) -20% -5%); }
 .chef__role { font-size: max(12px, .8rem); letter-spacing: .16em; text-transform: uppercase; color: var(--texte-doux); }
@@ -443,7 +445,7 @@ html:not(.js) .ouv-accueil { min-height: 0; }
 :is(html.calme, html:not(.js)) .horaires__photo { display: block; }
 @media (scripting: none) { .pds__photo { display: block; } }
 /* Ardoise : le bâton de craie se retire une fois les prix écrits (il ne reste pas posé sur un prix). */
-.ardoise.est-ecrit .ardoise__baton { animation: ardoise-baton-fin .4s 5.5s forwards; }
+.ardoise.est-ecrit .ardoise__baton { animation: ardoise-baton-fin .4s 3s forwards; }
 @keyframes ardoise-baton-fin { to { opacity: 0; visibility: hidden; } }
 /* Plat végétarien : repère sur le plateau de l'accueil. */
 .plateau__vege { display: inline-block; margin-left: .4em; padding: 1px 8px; border-radius: 999px; font-size: max(12px, .74rem); font-weight: 700; letter-spacing: .04em; color: #cfe3b0; box-shadow: inset 0 0 0 1px currentColor; vertical-align: .1em; }
@@ -484,3 +486,22 @@ html:not(.js) .ouv-accueil { min-height: 0; }
 .ouv-accueil__fetes > span[aria-hidden] { display: none; }
 @media (max-height: 600px) and (min-width: 761px) { html:not(.js) .ouv-offrir__carte { display: none; } }
 @media (max-width: 380px) and (max-height: 700px) { .ouv-accueil__fetes { display: none; } }
+
+/* ---------- v2 : la carte, une assiette du chef qui s'ouvre en plein écran (famille « plein écran ») ---------- */
+.plein-carte { background: var(--fumee); }
+.plein-carte [data-collant] { display: grid; place-items: center; }
+.plein-carte__photo img { width: 100%; height: 100%; object-fit: cover; }
+.plein-carte__titre { position: absolute; z-index: 3; inset: auto 0; top: 50%; transform: translateY(-50%); margin: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: .3em; row-gap: .34em;
+  font-size: clamp(2.2rem, min(6.4vw, 10vh), 6rem); line-height: 1.25; color: var(--nappe); text-align: center; text-shadow: 0 2px 18px rgba(21, 16, 12, .85), 0 0 2px rgba(21, 16, 12, .6); }
+.plein-carte__titre span:last-child { font-style: italic; }
+.plein-carte__apres { position: absolute; z-index: 3; left: var(--gouttiere); right: var(--gouttiere); bottom: calc(var(--barres-h) + clamp(24px, 6vh, 64px)); max-width: 34em; margin-inline: auto; text-align: center; color: var(--nappe); }
+.plein-carte__apres p { margin: 0; font-size: clamp(1.05rem, 1rem + .4vw, 1.3rem); text-shadow: 0 1px 12px rgba(21, 16, 12, .9); }
+.plein-carte [data-collant]::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(70% 60% at 50% 50%, rgba(21, 16, 12, .5), rgba(21, 16, 12, .15) 70%), linear-gradient(0deg, rgba(21, 16, 12, .7), transparent 40%); }
+:is(html.calme, html.secours, html:not(.js)) .plein-carte__titre, :is(html.calme, html.secours, html:not(.js)) .plein-carte__apres { position: static; transform: none; padding: 24px var(--gouttiere); text-shadow: none; }
+:is(html.calme, html.secours, html:not(.js)) .plein-carte [data-collant] { display: block; }
+:is(html.calme, html.secours, html:not(.js)) .plein-carte [data-collant]::after { display: none; }
+/* v2 : plan de salle, le panneau collant « Réserver cette table » plus compact sur ordinateur (il cachait des lignes de la liste). */
+@media (min-width: 1000px) and (scripting: enabled) {
+  .pds__action { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 14px; padding: 8px 12px; }
+  .pds__item { scroll-margin-top: calc(var(--entete-h) + 96px); }
+}

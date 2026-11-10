@@ -232,5 +232,17 @@
   "role": "galerie",
   "alt": "La cheminée décorée pour Noël et des fauteuils couverts de peaux",
   "ratio": "3:4"
+ },
+ {
+  "source": "recu/restaurant-33.jpg",
+  "nom": "carte-plein",
+  "role": "ouverture",
+  "alt": "Une assiette du chef : purée, champignons poêlés et viande tranchée, sur une assiette sombre",
+  "ratio": "16:9",
+  "largeurs": [
+   640,
+   1280,
+   1920
+  ]
  }
 ]

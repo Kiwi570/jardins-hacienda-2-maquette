@@ -2,14 +2,42 @@
   "nom": "Les Jardins de l'Hacienda",
   "adresse": "https://jardins-hacienda-2-maquette.vercel.app",
   "siteActuel": "lesjardinsdelhacienda54.com",
-  "version": 1,
-  "langues": ["fr"],
-  "navigation": ["accueil", "la-carte", "les-fetes", "offrir", "infos-pratiques"],
-  "actionEntete": { "page": "reserver", "ancre": "" },
-  "couleurs": { "fond": "#15100c", "texte": "#f3e7d3", "voile": "#1d1611", "ouverture": "#15100c", "menu": "#1d1611", "theme": "#15100c" },
+  "version": 2,
+  "langues": [
+    "fr"
+  ],
+  "navigation": [
+    "accueil",
+    "la-carte",
+    "les-fetes",
+    "offrir",
+    "infos-pratiques"
+  ],
+  "actionEntete": {
+    "page": "reserver",
+    "ancre": ""
+  },
+  "couleurs": {
+    "fond": "#15100c",
+    "texte": "#f3e7d3",
+    "voile": "#1d1611",
+    "ouverture": "#15100c",
+    "menu": "#1d1611",
+    "theme": "#15100c"
+  },
   "formeVoile": "cloche",
-  "contact": { "telephone": "06 18 21 28 10", "telephoneLien": "+33618212810", "email": "", "adresse": "6 Vathier Haye, 54580 Moineville", "facebook": "https://www.facebook.com/lesjardinsdelhacienda54", "instagram": "https://www.instagram.com/lesjardinsdel.hacienda/" },
-  "polices": ["/assets/fonts/bodoni-moda.woff2", "/assets/fonts/figtree.woff2"],
+  "contact": {
+    "telephone": "06 18 21 28 10",
+    "telephoneLien": "+33618212810",
+    "email": "",
+    "adresse": "6 Vathier Haye, 54580 Moineville",
+    "facebook": "https://www.facebook.com/lesjardinsdelhacienda54",
+    "instagram": "https://www.instagram.com/lesjardinsdel.hacienda/"
+  },
+  "polices": [
+    "/assets/fonts/bodoni-moda.woff2",
+    "/assets/fonts/figtree.woff2"
+  ],
   "imagePartage": "ouverture-plat-1280.webp",
   "curseur": true
 }

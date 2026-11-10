@@ -2021,5 +2021,86 @@
       "recevoir-cheminee-960.webp": 130216
     },
     "media": "c.media({ nom: 'recevoir-cheminee', alt: \"La cheminée décorée pour Noël et des fauteuils couverts de peaux\", cadrage: '51% 37%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+  },
+  "carte-plein": {
+    "nom": "carte-plein",
+    "source": "recu/restaurant-33.jpg",
+    "role": "ouverture",
+    "alt": "Une assiette du chef : purée, champignons poêlés et viande tranchée, sur une assiette sombre",
+    "grok": false,
+    "mention": null,
+    "empreinte": "d826397254f8406d",
+    "ratio": "16:9",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "9:16",
+      "largeurs": [
+        640
+      ],
+      "cadrage": "50% 48%"
+    },
+    "cadrage": "48% 50%",
+    "sujet": {
+      "x": 11.9,
+      "y": 0,
+      "l": 72.1,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "droite",
+        "score": 0.1,
+        "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0.08,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.05,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0.03,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 69,
+      "width": 1776,
+      "height": 999,
+      "source": [
+        1776,
+        1184
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "version téléphone sans 1080 px (source trop petite)",
+      "agrandie 1,08 fois (source de 1776 px après recadrage)"
+    ],
+    "fichiers": [
+      "carte-plein-640.webp",
+      "carte-plein-1280.webp",
+      "carte-plein-1920.webp",
+      "carte-plein-mobile-640.webp"
+    ],
+    "poids": {
+      "carte-plein-640.webp": 48750,
+      "carte-plein-1280.webp": 164210,
+      "carte-plein-1920.webp": 245718,
+      "carte-plein-mobile-640.webp": 116916
+    },
+    "media": "c.media({ nom: 'carte-plein', alt: \"Une assiette du chef : purée, champignons poêlés et viande tranchée, sur une assiette sombre\", cadrage: '48% 50%', cadrageMobile: '50% 48%', sizes: '100vw', priorite: true })"
   }
 }

@@ -2,6 +2,27 @@
 
 Chaque version ajoute sa partie en tête de ce fichier, construite en comparant l'archive précédente et la nouvelle, jamais de mémoire.
 
+## v2 — ajustements d'effets
+
+Comparaison de l'archive v1 et de la v2, fichier par fichier : 4 images ajoutées, 7 fichiers source modifiés (`site.css`, `site.js`, `assiette-pintade.html`, `la-carte.mjs`, `fr.json`, `site.json`, `plan-images.json`), pages régénérées, rien de retiré.
+
+**L'accueil**
+- La scène « Le chef dresse le suprême de pintade » est repeinte en gravure laiton et crème sur une assiette d'ardoise, dans l'esprit de la cloche, au lieu du dessin en couleurs.
+
+**La carte**
+- Nouvelle section entre l'ardoise et la carte : une assiette du chef (photo du site) qui s'ouvre jusqu'au plein écran, « Chaque semaine, une nouvelle carte ».
+- L'ardoise s'écrit deux fois plus vite, et le bâton de craie se retire plus tôt.
+
+**Réserver**
+- Les tables indisponibles du plan affichent « Indisponible (simulation) » au lieu de « Prise ce soir » (faux pour un autre jour, et appliqué aussi à la terrasse fermée).
+- Sur ordinateur, le panneau « Réserver cette table » est plus compact et cache moins la liste des tables.
+
+**Fluidité**
+- Pour garder l'accueil sous le seuil de 10 % d'images lentes : vapeur un peu plus légère, carrousel 3D qui tourne de 72° au défilement (au lieu de 90°).
+
+**Technique**
+- Numéro de version des fichiers : ?v=2.
+
 ## v1 — la base
 
 Première version : pas d'archive précédente, cette partie décrit ce qui est livré.

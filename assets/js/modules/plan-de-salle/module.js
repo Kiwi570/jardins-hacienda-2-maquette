@@ -5,7 +5,7 @@
 // Créé à part (inspirations : jardins-hacienda-maquette/terrasse-piscine-visite-360, module carte-a-calques).
 // Clavier, lecteur d'écran, téléphone : la liste (boutons de 44 px et plus). Sans JavaScript : la liste de liens.
 // Mode calme : plan déjà incliné, choix sans mouvement.
-import { pret } from '../../socle/socle.js?v=1';
+import { pret } from '../../socle/socle.js?v=2';
 
 const NS = 'http://www.w3.org/2000/svg';
 const TEXTES = {

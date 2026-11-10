@@ -5,7 +5,7 @@
 // Tiré de jardins-hacienda-maquette/reserver-formulaire (champs, préremplissage, erreurs à côté du champ, envoi simulé)
 // et de pizzalyght-maquette/panier (créneaux calculés à l'heure du lieu avec un délai, état relu, focus rendu après rendu).
 // Sans JavaScript : un formulaire ordinaire (calendrier, liste d'heures, nombre). Mode calme : sans transition.
-import { pret } from '../../socle/socle.js?v=1';
+import { pret } from '../../socle/socle.js?v=2';
 
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);

@@ -1,13 +1,13 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 10/11/2026 15:12:09 · 2 min · 1 page(s) · audit complet ciblé sur / (étapes : fichiers, mesures)
+Projet : `jardins-hacienda-2-maquette` · 10/11/2026 15:33:33 · 1 min · 1 page(s) · audit standard ciblé sur / (étapes : fichiers, fluidite)
 
 ## Résumé
 
 - Échecs : **0**
-- À regarder : **0**
+- À regarder : **1**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (52), balayage (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), fluidité (2), défilement selon l’appareil (5)
 
 ## Échecs
 
@@ -15,7 +15,9 @@ Aucun.
 
 ## À regarder
 
-Rien.
+### fluidité (1)
+
+- **fluidité** — `/` — 10 % d'images de plus de 50 ms _(1366×768 défilement à la molette, processeur ralenti 4 fois)_
 
 ## Non lancé
 
@@ -24,10 +26,11 @@ Tout a été lancé.
 
 ## Repères
 
-- Numéro de version des fichiers : ?v=1
-- Journal v1 : 6 étape(s) notée(s), 79 min de travail pour 105 min de budget, 15 min d’attente de l’utilisateur.
-- Journal : « construction : contact et page de catégorie » 16 min pour 10 prévues.
+- Numéro de version des fichiers : ?v=2
+- Journal v2 : 0 étape(s) notée(s), 0 min de travail, 0 min d’attente de l’utilisateur.
+- Audit standard : étapes lourdes sur /.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
+- Fluidité / 390×844 (doigt) : 0 % d'images lentes sur 1424, tâche la plus longue 0 ms
 
 ## Fichiers
 

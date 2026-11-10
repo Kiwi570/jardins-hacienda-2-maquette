@@ -2,7 +2,7 @@
    le mode calme, les boucles et la bibliothèque d'effets ; les modules de la bibliothèque (dossier modules/) sont
    chargés ici, page par page, et réglés sans être réécrits. Effets propres (data-effet) : plateau, signature, braises,
    decompte, carton, plume, numero (et ceux des modules : vapeur, carrousel…). */
-import { demarrer, boucle, etat, versObjet, quand, aller } from './socle/index.js?v=1';
+import { demarrer, boucle, etat, versObjet, quand, aller } from './socle/index.js?v=2';
 
 const gsap = window.gsap;
 const $ = (s, r = document) => r.querySelector(s);
@@ -10,28 +10,30 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
 /* Modules de la bibliothèque : chemins écrits en clair pour que le générateur leur applique le numéro de version. */
 const MODULES = {
-  'plat-fumant': () => import('./modules/plat-fumant/module.js?v=1'),
-  'objet-a-faire-tourner': () => import('./modules/objet-a-faire-tourner/module.js?v=1'),
-  'assiette-qui-se-dresse': () => import('./modules/assiette-qui-se-dresse/module.js?v=1'),
-  'carrousel-3d': () => import('./modules/carrousel-3d/module.js?v=1'),
-  'ardoise-a-la-craie': () => import('./modules/ardoise-a-la-craie/module.js?v=1'),
-  'carte-du-restaurant': () => import('./modules/carte-du-restaurant/module.js?v=1'),
-  'accords-mets-et-vins': () => import('./modules/accords-mets-et-vins/module.js?v=1'),
-  'horaires-ouvert-maintenant': () => import('./modules/horaires-ouvert-maintenant/module.js?v=1'),
-  'plan-de-salle': () => import('./modules/plan-de-salle/module.js?v=1'),
-  'reservation-de-table': () => import('./modules/reservation-de-table/module.js?v=1'),
-  'carte-cadeau-qui-se-compose': () => import('./modules/carte-cadeau-qui-se-compose/module.js?v=1'),
+  'plat-fumant': () => import('./modules/plat-fumant/module.js?v=2'),
+  'objet-a-faire-tourner': () => import('./modules/objet-a-faire-tourner/module.js?v=2'),
+  'assiette-qui-se-dresse': () => import('./modules/assiette-qui-se-dresse/module.js?v=2'),
+  'carrousel-3d': () => import('./modules/carrousel-3d/module.js?v=2'),
+  'ardoise-a-la-craie': () => import('./modules/ardoise-a-la-craie/module.js?v=2'),
+  'carte-du-restaurant': () => import('./modules/carte-du-restaurant/module.js?v=2'),
+  'accords-mets-et-vins': () => import('./modules/accords-mets-et-vins/module.js?v=2'),
+  'horaires-ouvert-maintenant': () => import('./modules/horaires-ouvert-maintenant/module.js?v=2'),
+  'plan-de-salle': () => import('./modules/plan-de-salle/module.js?v=2'),
+  'reservation-de-table': () => import('./modules/reservation-de-table/module.js?v=2'),
+  'carte-cadeau-qui-se-compose': () => import('./modules/carte-cadeau-qui-se-compose/module.js?v=2'),
 };
 /* Réglages des modules pour ce client (options d'init, jamais le code des modules). */
 const OPTIONS = {
-  'plat-fumant': { densite: 0.9, hauteur: 0.55, vitesse: 0.85, intensite: 0.95, qualite: 0.35 },
+  'plat-fumant': { densite: 0.85, hauteur: 0.55, vitesse: 0.85, intensite: 0.95, qualite: 0.3 },
   'objet-a-faire-tourner': { repos: 0.22, defilement: 0.004, amorti: 1.2 },
   /* Test « vrai visiteur » (la scène retenait 4 défilements) et fluidité : épinglage raccourci. */
   'assiette-qui-se-dresse': { longueur: 1.4 },
+  /* v2 : l'ardoise s'écrit deux fois plus vite (le visiteur attendait les prix environ 4 s). */
+  'ardoise-a-la-craie': { vitesse: 2 },
   /* Fluidité (audit, processeur ralenti 4 fois) : rotation au défilement réduite, sans retard. */
-  'carrousel-3d': { tour: 90, lissage: 0 },
+  'carrousel-3d': { tour: 72, lissage: 0 },
   'accords-mets-et-vins': { textes: { avec: 'Avec', signature: "Le vin de l'accord", groupe: 'Les plats du menu' } },
-  'plan-de-salle': { reservation: '/reserver#formulaire', couverts: 2, textes: { choix: '{nom} · {zone} · {places} places. ' } },
+  'plan-de-salle': { reservation: '/reserver#formulaire', couverts: 2, textes: { choix: '{nom} · {zone} · {places} places. ', prise: 'Indisponible (simulation)' } },
   'carte-cadeau-qui-se-compose': { cachet: 'JH', min: 25, max: 200, textes: {
     statut: 'Carte prête\u00a0: {quoi}{pourQui}, total {total}. Valable 6 mois, à présenter à l’arrivée\u00a0; le restaurant vous dit comment la recevoir (mode de remise à confirmer). {simule}',
   } },
@@ -89,7 +91,7 @@ function ficelle() {
   if (!main || !$('[data-fil]', main)) return;
   quand('pret', async () => {
     try {
-      const { init } = await import('./modules/fil-conducteur/module.js?v=1');
+      const { init } = await import('./modules/fil-conducteur/module.js?v=2');
       main.dataset.module = 'fil-conducteur';
       await init(main, { onde: 8, boucle: 30, regard: 0.6, rail: false, lissage: 0 });
     } catch (e) { console.warn('fil', e); }
@@ -203,7 +205,7 @@ async function statutAccueil() {
   const lien = $('[data-statut-accueil]'), src = $('[data-horaires-accueil]');
   if (!lien || !src) return;
   try {
-    const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=1');
+    const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=2');
     const d = H.preparer(JSON.parse(src.textContent));
     const a = d.adresses[0];
     const maj = () => { const st = H.statut(a, H.maintenant(a.fuseau)); lien.textContent = st.texte; lien.dataset.etat = st.etat; };
@@ -217,7 +219,7 @@ async function envolCarton() {
   if (!recap || !plan || !table || etat.calme) return;
   quand('pret', async () => {
     try {
-      const { envol } = await import('./modules/envol-vers-le-panier/module.js?v=1');
+      const { envol } = await import('./modules/envol-vers-le-panier/module.js?v=2');
       const depuis = $('.pds__repere', plan) || $(`[data-table="${CSS.escape(table)}"]`, plan) || $('.carton', document);
       if (!depuis) return;
       setTimeout(() => envol({ depuis, vers: recap, forme: 'carte' }), 900);

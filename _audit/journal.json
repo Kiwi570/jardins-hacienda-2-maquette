@@ -128,6 +128,44 @@
       ],
       "grilleDispenses": {},
       "notes": "Le site actuel ne donne les horaires et les menus de fête qu'en images (pages /horaires et /evenements) : à lire dans le zip des images du site. Outil grok.mjs : le compteur des indispensables attend la valeur « Indispensable » avec majuscule (avec « indispensable », il affiche 0) ; à reporter dans la bibliothèque. La carte (page) a été construite pendant le tournage de l'aperçu ; les pages d'onglet et la page de catégorie se chevauchent dans le temps (13 h 20 à 13 h 36). Visiteur : 15 missions réussies sur 16 au premier passage ; la mission ratée (plat végétarien, téléphone) réussit après correction. Regard neuf : 8 points à corriger, dont 4 corrigés (confirmation de réservation, couleurs, carte cadeau, titre de la cheminée ombré) ; restent le dessin de l'assiette, le panneau collant du plan, le double réglage des couverts et une famille d'effets plus moderne sur La carte. La machine de mesure n'a que 2 processeurs : les mesures de fluidité faites pendant les captures du regard neuf étaient faussées."
+    },
+    {
+      "version": 2,
+      "skill": "v10.8.2",
+      "perimetre": [
+        "accueil",
+        "la-carte",
+        "reserver"
+      ],
+      "etapes": [
+        {
+          "etape": "ajustements d'effets (assiette, plein écran sur La carte, ardoise, plan de salle)",
+          "budget": 25,
+          "debut": "2026-11-10T15:17:00+01:00",
+          "fin": "2026-11-10T15:24:00+01:00"
+        },
+        {
+          "etape": "audit ciblé et livraison",
+          "budget": 15,
+          "debut": "2026-11-10T15:24:00+01:00",
+          "fin": "2026-11-10T15:35:00+01:00"
+        }
+      ],
+      "attentes": [],
+      "allersRetours": 0,
+      "audit": {
+        "niveau": "ciblé (/, /la-carte, /reserver, standard complet)",
+        "echecsPremierPassage": 1,
+        "relances": 1,
+        "corrections": [
+          "fluidité de l'accueil à 10 % : vapeur qualite .3, carrousel 72°"
+        ]
+      },
+      "effetsRetires": [
+        "carrousel 3D : rotation au défilement de 90° à 72° (fluidité)"
+      ],
+      "grilleDispenses": {},
+      "notes": "Demande : ajuster d'abord des effets (points restants du regard neuf). Plan de salle : le libellé « Prise ce soir » n'avait pas changé en v1 (le module remplace le texte de salle.json) ; réglé par textes.prise (M18)."
     }
   ]
 }

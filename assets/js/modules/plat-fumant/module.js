@@ -3,7 +3,7 @@
 // portées par un courant doux (pas de dégradé recalculé à chaque image). La boucle s'arrête hors de l'écran et onglet caché.
 // La source de vapeur se place en fractions de l'image (data-vapeur), recalculée selon le recadrage (object-fit: cover).
 // Mode calme, « réduire les animations », sans JavaScript : la photo seule.
-import { pret } from '../../socle/socle.js?v=1';
+import { pret } from '../../socle/socle.js?v=2';
 
 /** Couleur CSS (variables, color-mix) → [r, g, b] 0-255, lue par un élément témoin puis par un canvas d'un pixel. */
 function rgb(root, valeur) {

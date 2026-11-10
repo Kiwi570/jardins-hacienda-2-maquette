@@ -45,6 +45,16 @@ export default (c) => {
   </div>
 </section>
 
+<section class="plein-carte" id="assiette-du-chef" data-fx="plein-ecran" aria-labelledby="plein-carte-titre" data-gouttiere="#15100c">
+  <div data-collant>
+    ${c.media({ nom: 'carte-plein', alt: c.s('carte.pleinAlt'), classe: 'plein-carte__photo', sizes: '100vw' })}
+    <h2 class="plein-carte__titre" id="plein-carte-titre"><span data-fx-ecarte="g">${c.t('carte.pleinG')}</span> <span data-fx-ecarte="d">${c.t('carte.pleinD')}</span></h2>
+    <div class="plein-carte__apres" data-fx-apres>
+      <p>${c.t('carte.pleinTexte')}</p>
+    </div>
+  </div>
+</section>
+
 <section class="carte-resto clair" id="toute-la-carte" data-module="carte-du-restaurant" data-fil="gauche" aria-labelledby="carte-titre">
   <header class="carte-resto__tete socle-cadre">
     <p class="socle-surtitre">${c.t('carte.carteSurtitre')}</p>
