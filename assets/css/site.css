@@ -1,0 +1,486 @@
+/* Les Jardins de l'Hacienda · « La table du soir ». Fond fumée, nappe crème, braise et laiton.
+   Le socle (socle.css) donne les règles communes ; les modules de la bibliothèque lisent les variables --couleur-*. */
+@font-face { font-family: "Bodoni Moda"; src: url(/assets/fonts/bodoni-moda.woff2) format("woff2"); font-weight: 400 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Bodoni Moda"; src: url(/assets/fonts/bodoni-moda-italique.woff2) format("woff2"); font-weight: 400 900; font-style: italic; font-display: swap; }
+@font-face { font-family: Figtree; src: url(/assets/fonts/figtree.woff2) format("woff2"); font-weight: 300 900; font-display: swap; }
+@font-face { font-family: Caveat; src: url(/assets/fonts/caveat.woff2) format("woff2"); font-weight: 400 700; font-display: swap; }
+/* Polices de secours ajustées : le texte ne saute pas à l'arrivée de la vraie police. */
+@font-face { font-family: "Bodoni secours"; src: local("Georgia"), local("Times New Roman"); size-adjust: 96%; ascent-override: 92%; descent-override: 24%; }
+@font-face { font-family: "Figtree secours"; src: local("Arial"), local("Helvetica"); size-adjust: 98%; ascent-override: 95%; descent-override: 25%; }
+
+:root {
+  --fumee: #15100c; --bois: #2a211a; --nappe: #f3e7d3; --braise: #d8622a; --laiton: #b8925a; --vin: #2b1014; --encre: #2b1e17;
+  --accent: var(--braise);
+  --police-titres: "Bodoni Moda", "Bodoni secours", Georgia, serif;
+  --police-texte: Figtree, "Figtree secours", system-ui, sans-serif;
+  --police-main: Caveat, "Segoe Script", cursive;
+  --police-mono: ui-monospace, Menlo, monospace;
+  --rayon: 10px;
+  /* Variables lues par les modules de la bibliothèque. */
+  --couleur-fond: var(--fond); --couleur-texte: var(--texte); --couleur-accent: var(--accent); --couleur-secondaire: var(--laiton);
+  --couleur-texte-doux: color-mix(in oklab, var(--couleur-texte) 74%, var(--couleur-fond));
+  --couleur-ligne: color-mix(in oklab, var(--couleur-texte) 20%, var(--couleur-fond));
+  --couleur-surface: color-mix(in oklab, var(--couleur-texte) 7%, var(--couleur-fond));
+  --couleur-sur-accent: var(--fumee);
+  --espace: var(--gouttiere);
+  /* Hauteur d'écran lue par le module assiette-qui-se-dresse (définie par le socle des modules, absente du socle du projet). */
+  --ecran-h: 100vh;
+}
+@supports (height: 100svh) { :root { --ecran-h: 100svh; } }
+/* Section claire (nappe) : toutes les couleurs basculent, l'accent fonce pour garder 4,5:1. */
+.clair { --fond: var(--nappe); --texte: var(--encre); --accent: #a8441a; --couleur-sur-accent: var(--nappe);
+  --couleur-fond: var(--nappe); --couleur-texte: var(--encre); --couleur-accent: #a8441a;
+  --texte-doux: color-mix(in srgb, var(--encre) 80%, var(--nappe)); --ligne: color-mix(in srgb, var(--encre) 18%, var(--nappe));
+  --couleur-texte-doux: color-mix(in oklab, var(--encre) 80%, var(--nappe)); --couleur-ligne: color-mix(in oklab, var(--encre) 20%, var(--nappe)); --couleur-surface: color-mix(in oklab, var(--encre) 7%, var(--nappe));
+  background: var(--nappe); color: var(--encre); }
+.clair .bouton { color: var(--nappe); }
+.clair .bouton--contour { color: var(--encre); }
+
+body { font-family: var(--police-texte); }
+h1, h2, h3 { font-weight: 500; letter-spacing: -.01em; line-height: 1.12; }
+h2 { font-size: clamp(2rem, min(4.6vw, 7.5vh), 3.8rem); }
+.surtitre, .socle-surtitre { font-family: var(--police-texte); font-size: max(12px, .8rem); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--laiton); margin: 0 0 .9em; }
+.clair .surtitre, .clair .socle-surtitre { color: #7a5523; }
+.bouton { color: var(--fumee); }
+.bouton--contour { color: var(--texte); }
+section { position: relative; }
+
+/* Classes du socle des modules (bibliothèque), reprises telles quelles. */
+.socle-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.socle-cadre { width: min(100% - 2 * var(--gouttiere), 1320px); margin-inline: auto; }
+.socle-bouton { display: inline-flex; align-items: center; justify-content: center; gap: .5em; min-height: 44px; padding: .7em 1.3em; border-radius: 999px; border: 1px solid currentColor; background: transparent; text-decoration: none; cursor: pointer; font-weight: 600; }
+.socle-bouton--plein { background: var(--couleur-accent); color: var(--couleur-sur-accent); border-color: var(--couleur-accent); }
+
+/* En-tête opaque, sombre sur toutes les pages. */
+[data-entete] { background: var(--fumee); color: var(--nappe); border-bottom: 1px solid color-mix(in srgb, var(--nappe) 12%, var(--fumee)); }
+.entete-logo { font-family: var(--police-titres); font-size: 1.12rem; text-decoration: none; }
+.entete-logo img { width: 40px; height: 40px; }
+@media (max-width: 420px) { .entete-logo span { font-size: .95rem; } }
+#menu { background: #1d1611; color: var(--nappe); }
+.menu-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+[data-barre-fixe] { background: var(--fumee); border-top: 1px solid color-mix(in srgb, var(--nappe) 14%, var(--fumee)); }
+
+/* Intro : la cloche de service, le nom, un fil de vapeur ; la cloche rejoint le plat (versObjet). */
+.ouverture-panneau { gap: 16px; padding: var(--gouttiere); background: radial-gradient(60% 50% at 50% 46%, #2a1d14, var(--fumee) 70%); }
+.ouverture-cloche { position: relative; width: clamp(150px, 22vw, 230px); aspect-ratio: 200 / 150; }
+.ouverture-dome { width: 100%; height: 100%; filter: none; }
+.ouverture-logo { position: absolute; left: 50%; top: 52%; width: 26%; height: auto; transform: translate(-50%, -50%); opacity: .9; mix-blend-mode: normal; }
+.ouverture-nom { margin: 0; font-family: var(--police-titres); font-size: clamp(2rem, min(7vw, 10vh), 5.4rem); line-height: 1.05; color: var(--nappe); }
+.ouverture-trait { display: block; width: min(300px, 60vw); height: 1px; background: var(--laiton); transform-origin: 50% 50%; transform: scaleX(0); }
+.ouverture-ligne { margin: 0; font-size: max(12px, .82rem); letter-spacing: .22em; text-transform: uppercase; color: var(--laiton); }
+.ouverture-vapeur { position: absolute; left: 50%; top: calc(50% - 150px); width: 2px; height: 70px; background: linear-gradient(to top, color-mix(in srgb, var(--nappe) 50%, transparent), transparent); transform: translateX(-50%) scaleY(0); transform-origin: 50% 100%; border-radius: 2px; }
+@media (max-height: 500px) { .ouverture-cloche { width: 110px; } .ouverture-nom { font-size: 2rem; } .ouverture-vapeur { display: none; } }
+
+/* Voile « cloche » : sa forme est dans le socle (voile.js) ; ici, son contenu. */
+[data-voile] { background: radial-gradient(70% 60% at 50% 40%, #2a1d14, #1d1611 70%); color: var(--laiton); }
+.voile-cloche { width: 92px; height: auto; margin: 0 auto 10px; color: var(--laiton); }
+
+/* ===================== Accueil ===================== */
+.ouv-accueil { min-height: 100svh; display: grid; align-items: end; padding: calc(var(--entete-h) + 24px) var(--gouttiere) clamp(36px, 7vh, 80px); overflow: hidden; background: var(--fumee); }
+.ouv-accueil__photo { position: absolute; inset: 0 0 0 30%; z-index: 0; border-radius: 0; }
+.ouv-accueil__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.ouv-accueil::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, var(--fumee) 0%, var(--fumee) 30%, rgba(21,16,12,.55) 40%, rgba(21,16,12,0) 58%), linear-gradient(0deg, rgba(21,16,12,.75), rgba(21,16,12,0) 40%), linear-gradient(180deg, rgba(21,16,12,.7), rgba(21,16,12,0) calc(var(--entete-h) + 110px)); }
+.ouv-accueil__texte { position: relative; z-index: 2; max-width: min(640px, 52vw); }
+.ouv-accueil__titre { font-size: clamp(2.6rem, min(6.6vw, 11vh), 6.4rem); line-height: 1.02; margin: 0 0 .32em; color: var(--nappe); }
+.ouv-accueil__titre .lettre { display: inline-block; }
+.ouv-accueil__intro { font-size: clamp(1.05rem, 1rem + .35vw, 1.3rem); max-width: 30em; color: color-mix(in srgb, var(--nappe) 90%, var(--fumee)); }
+.ouv-accueil__actions { display: flex; flex-wrap: wrap; gap: 12px 14px; margin-bottom: 14px; }
+.ouv-accueil__info { display: inline-flex; align-items: center; gap: 10px; margin: 0; font-weight: 600; color: var(--laiton); }
+.ouv-accueil__info::before { content: ""; width: 26px; height: 1px; background: currentColor; }
+.ouv-accueil__indice { position: absolute; z-index: 2; right: var(--gouttiere); bottom: clamp(24px, 5vh, 56px); margin: 0; font-family: var(--police-main); font-size: 1.5rem; color: color-mix(in srgb, var(--nappe) 82%, transparent); }
+.ouv-accueil .fumant__vapeur { z-index: 1; }
+@media (hover: none) { .ouv-accueil__indice { display: none; } }
+@media (max-width: 760px) {
+  .ouv-accueil { min-height: 0; align-items: start; grid-template-rows: auto auto; padding: calc(var(--entete-h) + 14px) var(--gouttiere) 28px; gap: 16px; }
+  .ouv-accueil::before { display: none; }
+  .ouv-accueil__photo { position: relative; inset: auto; order: 2; height: min(42svh, 360px); border-radius: var(--rayon); }
+  .ouv-accueil__texte { max-width: none; order: 1; }
+  .ouv-accueil__titre { font-size: clamp(2.3rem, 11vw, 3.2rem); }
+  .ouv-accueil__intro { font-size: 1rem; margin-bottom: .8em; }
+}
+@media (max-height: 820px) and (min-width: 761px) { .ouv-accueil__titre { font-size: clamp(2.4rem, min(6vw, 9.5vh), 5rem); } .ouv-accueil__intro { font-size: 1.05rem; } }
+@media (max-height: 500px) and (min-width: 761px) {
+  .ouv-accueil { padding-top: calc(var(--entete-h) + 8px); padding-bottom: 14px; }
+  .ouv-accueil__titre { font-size: 2.1rem; margin-bottom: .2em; } .ouv-accueil .surtitre { display: none; }
+  .ouv-accueil__actions { margin-bottom: 6px; } .ouv-accueil__actions .bouton { min-height: 44px; padding-block: .5em; }
+}
+
+/* Bandeau géant des plats de la semaine. */
+.ruban-plats { z-index: 2; padding-block: clamp(36px, 7vw, 80px); background: var(--fumee); border-block: 1px solid color-mix(in srgb, var(--nappe) 10%, var(--fumee)); }
+.ruban-plats__mots p { font-family: var(--police-titres); font-style: italic; font-size: clamp(2.6rem, 8vw, 7.4rem); line-height: 1.12; color: var(--nappe); padding-block: .05em; }
+.ruban-plats__evide { color: transparent !important; -webkit-text-stroke: 1px var(--laiton); font-style: normal !important; }
+
+/* Le plateau du chef (objet à faire tourner). */
+.plateau { padding-block: clamp(72px, 11vw, 140px); background: radial-gradient(70% 60% at 75% 50%, #241913, var(--fumee) 75%); }
+.plateau__grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(28px, 5vw, 80px); align-items: center; }
+.plateau__rubriques { list-style: none; margin: 22px 0 26px; padding: 0; display: grid; gap: 10px; }
+.plateau__rubrique { padding: 12px 16px; border-radius: var(--rayon); border: 1px solid var(--ligne); transition: border-color .4s, background-color .4s; }
+.plateau__rubrique.est-devant { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--fumee)); }
+.plateau__rubrique-tete { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 4px; }
+.plateau__rubrique-nom { font-family: var(--police-titres); font-size: 1.3rem; }
+.plateau__fourchette { color: var(--laiton); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.plateau__rubrique ul { list-style: none; margin: 0; padding: 0; font-size: .95rem; color: var(--texte-doux); }
+.plateau__rubrique ul li { display: flex; justify-content: space-between; gap: 12px; }
+.plateau__prix { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.plateau__objet { width: min(100%, 560px); aspect-ratio: 1; justify-self: center; }
+.plateau__disque { position: relative; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle at 50% 50%, #3a2a1d 0 34%, #2a1d14 35% 64%, #6b4c2a 65% 66%, #2c2018 67% 98%, #8a6a36 99%); box-shadow: inset 0 0 0 6px #1d1611, 0 30px 80px rgba(0,0,0,.5); }
+.plateau__part { position: absolute; width: 32%; aspect-ratio: 1; left: 34%; top: 34%; transform: rotate(calc(var(--q) * 90deg)) translateY(-96%) rotate(calc(var(--q) * -90deg)); }
+.plateau__photo { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; box-shadow: 0 10px 24px rgba(0,0,0,.55), 0 0 0 4px #e9dcc4; }
+.plateau__photo img { width: 100%; height: 100%; object-fit: cover; }
+.plateau__etiquette { position: absolute; z-index: 2; left: 50%; bottom: 6%; transform: translateX(-50%) rotate(calc(-1 * var(--oat-angle, 0deg))); white-space: nowrap; font-size: max(12px, .78rem); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--nappe); background: var(--fumee); padding: 3px 10px; border-radius: 999px; }
+.plateau__centre { position: absolute; left: 50%; top: 50%; width: 18%; aspect-ratio: 1; transform: translate(-50%, -50%); display: grid; place-items: center; border-radius: 50%; background: #1d1611; box-shadow: 0 0 0 2px var(--laiton); }
+.plateau__centre img { width: 70%; height: auto; }
+.plateau__photos { margin-top: 18px; font-size: max(12px, .8rem); color: var(--texte-doux); }
+@media (max-width: 899px) { .plateau__grille { grid-template-columns: minmax(0, 1fr); } .plateau__objet { order: -1; width: min(100%, 420px); } }
+
+/* Le chef dresse (assiette qui se dresse). */
+.chef { background: var(--fumee); --assiette-porcelaine: #efe6d6; }
+.chef__signature { margin: 6px 0 0; display: flex; align-items: baseline; gap: 14px; }
+.chef__nom { position: relative; font-family: var(--police-main); font-size: clamp(2.2rem, 4vw, 3.2rem); line-height: 1.2; color: var(--laiton); padding-inline: .1em; clip-path: inset(-20% var(--signature-reste, 0%) -20% -5%); }
+.chef__role { font-size: max(12px, .8rem); letter-spacing: .16em; text-transform: uppercase; color: var(--texte-doux); }
+.chef__prix { margin: 12px 0 2px; font-weight: 700; color: var(--laiton); }
+.chef__mention { margin: 0; font-size: max(12px, .8rem); color: var(--texte-doux); }
+@media (min-width: 900px) { .chef .assiette__suite { grid-area: etapes; } }
+@media (max-width: 899px) { .chef { padding-block: 64px; } .chef .assiette__suite { order: 3; } }
+@media (max-height: 820px) and (min-width: 900px) { .chef__nom { font-size: 2rem; } .chef__mention { display: none; } }
+
+/* Au creux de la cheminée : vignette qui s'ouvre en plein écran. */
+.cheminee { background: var(--fumee); }
+.cheminee [data-collant] { display: grid; place-items: center; }
+.cheminee__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.cheminee__braises { position: absolute; inset: auto 0 0 0; width: 100%; height: 60%; pointer-events: none; z-index: 2; }
+.cheminee__titre { position: absolute; z-index: 3; inset: auto 0 auto 0; top: 50%; transform: translateY(-50%); margin: 0; display: flex; justify-content: center; gap: .3em; flex-wrap: wrap; font-size: clamp(2.4rem, min(7vw, 11vh), 6.6rem); color: var(--nappe); text-shadow: 0 2px 30px rgba(0,0,0,.7); pointer-events: none; }
+.cheminee__titre span:last-child { font-style: italic; }
+.cheminee__apres { position: absolute; z-index: 3; left: var(--gouttiere); right: var(--gouttiere); bottom: calc(var(--barres-h) + clamp(24px, 6vh, 64px)); max-width: 34em; margin-inline: auto; text-align: center; color: var(--nappe); text-shadow: 0 1px 16px rgba(0,0,0,.85); }
+.cheminee__apres p { margin: 0 0 .4em; font-size: clamp(1.05rem, 1rem + .4vw, 1.35rem); }
+.cheminee__legende { font-size: max(12px, .85rem) !important; color: color-mix(in srgb, var(--nappe) 86%, transparent); }
+.cheminee::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+:is(html.calme, html.secours, html:not(.js)) .cheminee__titre, :is(html.calme, html.secours, html:not(.js)) .cheminee__apres { position: static; transform: none; padding: 24px var(--gouttiere); text-shadow: none; }
+:is(html.calme, html.secours, html:not(.js)) .cheminee [data-collant] { display: block; }
+
+/* Les fêtes à table (accueil). */
+.fetes-accueil { padding-block: clamp(80px, 12vw, 150px); overflow: hidden; background: #1b0f0c; }
+.fetes-accueil__fond { position: absolute; inset: 0; border-radius: 0; opacity: .55; }
+.fetes-accueil__fond img { width: 100%; height: 100%; object-fit: cover; }
+.fetes-accueil__fond .mention-ia { z-index: 2; }
+.fetes-accueil__contenu { position: relative; z-index: 1; }
+.fetes-accueil__cartes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 3vw, 32px); margin: 28px 0 32px; max-width: 980px; }
+.fete-carte { padding: clamp(20px, 3vw, 34px); border-radius: var(--rayon); background: rgba(21,16,12,.88); border: 1px solid color-mix(in srgb, var(--laiton) 45%, transparent); display: grid; gap: 8px; align-content: start; justify-items: start; }
+.fete-carte h3 { margin: 0; font-size: clamp(1.6rem, 2.6vw, 2.3rem); }
+.fete-carte__quand { margin: 0; color: var(--laiton); font-weight: 600; }
+.fete-carte__decompte { margin: 0; font-variant-numeric: tabular-nums; }
+.fete-carte__decompte strong { display: inline-block; min-width: 2.2ch; text-align: right; font-family: var(--police-titres); font-size: 2rem; color: var(--accent); }
+.fete-carte__prix { margin: 0 0 8px; font-weight: 600; }
+@media (max-width: 760px) { .fetes-accueil__cartes { grid-template-columns: minmax(0, 1fr); } }
+
+/* Recevoir : carrousel 3D. */
+.recevoir { padding-block: clamp(72px, 10vw, 130px); background: var(--fumee); }
+.recevoir .c3d__intro { max-width: 40em; color: var(--texte-doux); }
+.recevoir .c3d__nom { font-family: var(--police-titres); font-size: 1.25rem; }
+.recevoir .c3d__media { aspect-ratio: 3 / 4; border-radius: var(--rayon) var(--rayon) 0 0; }
+.recevoir .c3d__media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Offrir (accueil). */
+.offrir-accueil { padding-block: clamp(72px, 10vw, 130px); background: linear-gradient(180deg, var(--fumee), #20170f); }
+.offrir-accueil__grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.offrir-accueil__photo { aspect-ratio: 4 / 3; border-radius: var(--rayon); }
+.offrir-accueil__photo img { width: 100%; height: 100%; object-fit: cover; }
+.mini-carte { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; align-items: center; gap: 4px 14px; width: min(320px, 100%); aspect-ratio: 16 / 10; padding: 18px 20px; margin: 4px 0 24px; border-radius: 12px; background: linear-gradient(135deg, #2a1d14, #120d0a); box-shadow: inset 0 0 0 1px var(--laiton), 0 18px 40px rgba(0,0,0,.45); }
+.mini-carte__mono img { width: 40px; height: 40px; }
+.mini-carte__type { font-size: max(12px, .75rem); letter-spacing: .18em; text-transform: uppercase; color: var(--laiton); }
+.mini-carte__montant { grid-column: 1 / -1; align-self: end; font-family: var(--police-titres); font-size: 2.6rem; color: var(--nappe); }
+@media (max-width: 760px) { .offrir-accueil__grille { grid-template-columns: minmax(0, 1fr); } }
+
+/* Venir. */
+.venir { padding-block: clamp(72px, 10vw, 130px); background: var(--fumee); }
+.venir__grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.venir__adresse { font-weight: 600; }
+.venir__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.venir__carte { width: min(100%, 420px); justify-self: center; color: var(--laiton); overflow: visible; }
+.venir__ville circle { fill: var(--laiton); }
+.venir__ville text, .venir__ici text { fill: var(--nappe); font-family: var(--police-texte); font-size: 18px; }
+.venir__ici circle:first-child { fill: none; stroke: var(--accent); stroke-width: 2; }
+.venir__ici circle:last-child { fill: var(--accent); }
+.venir__ici text { font-family: var(--police-titres); font-size: 22px; }
+@media (max-width: 760px) { .venir__grille { grid-template-columns: minmax(0, 1fr); } .venir__carte { width: min(100%, 320px); } }
+
+/* Ficelle de cuisine (fil conducteur) : braise et laiton, un nœud au bout. */
+main { --fic-epaisseur: 2px; }
+.ficelle-noeud circle { fill: var(--accent); }
+.ficelle-noeud path { stroke: var(--laiton); }
+
+/* Pied de page. */
+.pied { background: #0f0b08; color: var(--nappe); }
+.pied-reseaux a { text-decoration: underline; }
+.pied-bas p { font-size: max(12px, .82rem); color: color-mix(in srgb, var(--nappe) 76%, #0f0b08); }
+
+/* 404 : table introuvable. */
+.introuvable { min-height: 100svh; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(24px, 5vw, 64px); align-items: center; padding-top: calc(var(--entete-h) + 24px); padding-bottom: 48px; }
+.introuvable h1 { font-size: clamp(2.6rem, min(6vw, 10vh), 5.6rem); }
+.introuvable__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.introuvable__photo { aspect-ratio: 16 / 9; border-radius: var(--rayon); }
+.introuvable__photo img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 760px) { .introuvable { grid-template-columns: minmax(0, 1fr); min-height: 0; } }
+/* Bas de la scène de la cheminée : voile sombre sous la phrase, pour la lire sur la photo. */
+.cheminee [data-collant]::after { content: ""; position: absolute; inset: auto 0 0 0; height: 46%; z-index: 2; pointer-events: none; background: linear-gradient(0deg, rgba(15,11,8,.9), rgba(15,11,8,0)); }
+:is(html.calme, html.secours, html:not(.js)) .cheminee [data-collant]::after { display: none; }
+
+/* ===================== La carte ===================== */
+.ouv-carte { padding-top: calc(var(--entete-h) + clamp(28px, 6vh, 64px)); padding-bottom: clamp(48px, 8vw, 96px); }
+.ouv-carte__titre { font-size: clamp(4.2rem, min(17vw, 26vh), 15rem); line-height: .95; margin: 0 0 .12em; letter-spacing: -.03em; font-style: italic; }
+.ouv-carte__ligne { display: grid; grid-template-columns: minmax(0, 1.3fr) auto auto; gap: 16px 28px; align-items: center; margin-bottom: clamp(20px, 4vh, 40px); }
+.ouv-carte__texte { margin: 0; max-width: 34em; }
+.ouv-carte__actions { margin: 0; }
+.ouv-carte__info { margin: 0; font-weight: 700; color: #7a5523; }
+.ouv-carte__bandeau { width: min(100% - 2 * var(--gouttiere), 1500px); margin-inline: auto; height: clamp(220px, 42vh, 520px); border-radius: var(--rayon); }
+.ouv-carte__bandeau img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+@media (max-width: 900px) { .ouv-carte__ligne { grid-template-columns: minmax(0, 1fr); justify-items: start; } }
+@media (max-width: 760px) { .ouv-carte__titre { font-size: clamp(3.6rem, 22vw, 6rem); } .ouv-carte__bandeau { height: 30svh; } }
+@media (max-height: 820px) and (min-width: 761px) { .ouv-carte__titre { font-size: clamp(3.6rem, min(14vw, 20vh), 9rem); } .ouv-carte__bandeau { height: 30vh; } }
+@media (max-height: 500px) and (min-width: 761px) { .ouv-carte .surtitre { display: none; } .ouv-carte__titre { font-size: 3.4rem; } .ouv-carte__ligne { grid-template-columns: auto auto; margin-bottom: 12px; } .ouv-carte__bandeau { height: 34vh; } }
+
+.ardoise-carte { padding-block: clamp(72px, 10vw, 130px); background: radial-gradient(80% 70% at 30% 40%, #2a1d14, var(--fumee) 75%); --ardoise-police: var(--police-main); }
+.ardoise-carte .ardoise-section__texte h2 { font-size: clamp(2rem, 4vw, 3.4rem); }
+
+.carte-resto.clair { padding-block: clamp(64px, 9vw, 120px); }
+.carte-resto.clair .carte-resto__tete { margin-bottom: 18px; }
+.carte-resto__photo { border-radius: var(--rayon); overflow: hidden; }
+
+.fin-carte { padding-block: clamp(72px, 10vw, 130px); background: var(--fumee); }
+.fin-carte__grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.fin-carte__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.fin-carte__photo { aspect-ratio: 4 / 5; border-radius: var(--rayon); max-height: 70vh; }
+.fin-carte__photo img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 760px) { .fin-carte__grille { grid-template-columns: minmax(0, 1fr); } .fin-carte__photo { aspect-ratio: 4 / 3; } }
+
+/* Boost « plateau en vraie 3D » : le plateau bascule vers le visiteur au défilement. */
+.plateau__objet { perspective: 1400px; }
+.plateau__objet > .oat__objet { transform: rotateX(var(--incl, 16deg)); transform-origin: 50% 60%; }
+.plateau__photo { box-shadow: 0 18px 30px rgba(0,0,0,.6), 0 0 0 4px #e9dcc4; }
+html.calme .plateau__objet > .oat__objet { transform: rotateX(16deg); }
+/* Boost « vapeur sur le plateau » : la vapeur monte de la rubrique placée devant (une seule source, fixe). */
+.plateau__vapeur { position: absolute; inset: 0; z-index: 3; pointer-events: none; margin: 0; background: transparent !important; box-shadow: none !important; }
+.plateau__vapeur > img { width: 100%; height: 100%; opacity: 0; }
+/* Boost « titre dans la vapeur » : lettres qui se condensent (état de départ posé avant le premier affichage). */
+.ouv-accueil__titre .mot { display: inline-block; white-space: nowrap; }
+.ouv-accueil__titre .lettre { display: inline-block; }
+html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) .ouv-accueil__titre:not(.est-forme) { opacity: 0; }
+
+/* ===================== Réserver ===================== */
+.ouv-resa { min-height: min(78svh, 760px); display: grid; align-items: center; padding: calc(var(--entete-h) + 32px) 0 48px; overflow: hidden; background: var(--bois); }
+.ouv-resa__fond { position: absolute; inset: 0; border-radius: 0; z-index: 0; }
+.ouv-resa__fond img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.ouv-resa::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(21,16,12,.92) 0%, rgba(21,16,12,.75) 42%, rgba(21,16,12,.1) 75%); pointer-events: none; }
+.ouv-resa__grille { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); gap: clamp(24px, 5vw, 64px); align-items: center; }
+.ouv-resa h1 { font-size: clamp(2.8rem, min(7vw, 11vh), 6rem); margin: 0 0 .25em; }
+.ouv-resa__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
+.ouv-resa__tel { font-weight: 700; color: var(--laiton); font-size: 1.15rem; min-height: 44px; display: inline-flex; align-items: center; }
+.carton { position: relative; justify-self: center; width: min(100%, 380px); aspect-ratio: 3 / 2; padding: 26px 28px; background: #f4ead8; color: var(--encre); border-radius: 6px; box-shadow: 0 30px 60px rgba(0,0,0,.55); transform: rotate(-4deg); display: grid; align-content: center; justify-items: center; }
+.carton__pli { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(43,30,23,.18); }
+.carton__ecrit { margin: 0; font-family: var(--police-main); font-size: clamp(2.4rem, 4vw, 3.4rem); line-height: 1.1; color: #6e2f12; clip-path: inset(-20% var(--ecrit, 0%) -20% -4%); }
+.carton__detail { margin: 6px 0 0; font-size: max(12px, .78rem); letter-spacing: .18em; text-transform: uppercase; color: #6b4d27; }
+@media (max-width: 760px) { .ouv-resa { min-height: 0; } .ouv-resa__grille { grid-template-columns: minmax(0, 1fr); } .carton { width: min(76%, 300px); } }
+@media (max-height: 500px) and (min-width: 761px) { .ouv-resa { min-height: 0; padding-top: calc(var(--entete-h) + 10px); padding-bottom: 16px; } .ouv-resa h1 { font-size: 2.4rem; } .ouv-resa .surtitre { display: none; } .carton { width: 240px; padding: 14px; } }
+.pds { padding-block: clamp(64px, 9vw, 120px); background: var(--fumee); --pds-eau: #1f5a63; --pds-vert: #2f4a32; --pds-vitre: #9cc3c9; --pds-parquet: #6b4a2c; --pds-dalle: #3a2f27; --pds-table: #e9dcc4; --pds-chaise: #b8925a; }
+.resa { padding-block: clamp(64px, 9vw, 120px); }
+.resa__date--large { max-width: none; }
+
+/* ===================== Les fêtes ===================== */
+.ouv-fetes { min-height: 100svh; display: grid; align-items: center; padding: calc(var(--entete-h) + 32px) 0 48px; background: radial-gradient(70% 70% at 75% 40%, #4a1620, var(--vin) 70%); }
+.ouv-fetes__grille { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.ouv-fetes h1 { font-size: clamp(2.8rem, min(6.6vw, 11vh), 6rem); margin: 0 0 .3em; }
+.ouv-fetes__dates { list-style: none; margin: 18px 0 22px; padding: 0; display: grid; gap: 10px; }
+.ouv-fetes__dates li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 12px 16px; border-radius: var(--rayon); border: 1px solid color-mix(in srgb, var(--laiton) 45%, transparent); background: rgba(21,16,12,.35); }
+.ouv-fetes__jour { grid-column: 1 / -1; font-weight: 700; color: var(--laiton); }
+.ouv-fetes__decompte { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ouv-fetes__decompte strong, .fete-carte__decompte strong { display: inline-block; min-width: 2.2ch; text-align: right; font-family: var(--police-titres); font-size: 1.6rem; color: #f0a070; }
+.ouv-fetes__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.ouv-fetes__arche { justify-self: center; width: min(100%, 460px); aspect-ratio: 3 / 4; max-height: 74svh; border-radius: 999px 999px 14px 14px; box-shadow: 0 0 0 6px rgba(184,146,90,.5), 0 40px 80px rgba(0,0,0,.5); }
+.ouv-fetes__arche img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+@media (max-width: 760px) { .ouv-fetes { min-height: 0; } .ouv-fetes__grille { grid-template-columns: minmax(0, 1fr); } .ouv-fetes__arche { width: min(80%, 320px); max-height: 46svh; } }
+@media (max-height: 820px) and (min-width: 761px) { .ouv-fetes__arche { max-height: 66vh; } .ouv-fetes__dates { margin-block: 10px 14px; } }
+@media (max-height: 500px) and (min-width: 761px) { .ouv-fetes { min-height: 0; padding-top: calc(var(--entete-h) + 8px); } .ouv-fetes h1 { font-size: 2.3rem; } .ouv-fetes .surtitre { display: none; } .ouv-fetes__dates li { padding: 6px 12px; } .ouv-fetes__arche { max-height: 70vh; width: 220px; } }
+.sylvestre { padding-block: clamp(72px, 10vw, 130px); background: #120a0c; overflow: hidden; --couleur-fond: #120a0c; }
+.sylvestre__fond { position: absolute; inset: 0; border-radius: 0; opacity: .5; }
+.sylvestre__fond img { width: 100%; height: 100%; object-fit: cover; }
+.sylvestre .ame__grille, .sylvestre__actions { position: relative; z-index: 1; }
+.sylvestre__titre { font-size: clamp(2.2rem, 4.4vw, 3.8rem); background: linear-gradient(100deg, #f3e0b0, #c99a4a 60%, #f3e0b0); -webkit-background-clip: text; background-clip: text; color: transparent; clip-path: inset(-10% var(--ecrit, 0%) -15% -2%); }
+.sylvestre__prix { font-size: 1.1rem; }
+.sylvestre__dj { color: var(--texte-doux); font-size: .95rem; }
+.sylvestre__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 28px; }
+.sylvestre__alcool { font-size: max(12px, .82rem); color: var(--texte-doux); }
+.noel { padding-block: clamp(72px, 10vw, 130px); }
+.noel__grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.noel__plats { list-style: none; margin: 18px 0; padding: 0; display: grid; gap: 12px; }
+.noel__plats li { display: grid; gap: 2px; padding-bottom: 10px; border-bottom: 1px solid var(--ligne); }
+.noel__plats strong { font-family: var(--police-titres); font-size: 1.3rem; font-weight: 500; }
+.noel__plats span { font-style: italic; color: var(--texte-doux); }
+.noel__prix { font-weight: 700; font-size: 1.15rem; color: #7a3a18; }
+.noel__photo { aspect-ratio: 4 / 5; border-radius: var(--rayon); max-height: 78vh; }
+.noel__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.noel__acompte { margin-top: 28px; font-size: max(12px, .85rem); color: var(--texte-doux); }
+.passes { padding-block: clamp(64px, 9vw, 110px); background: var(--fumee); }
+.passes__grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .7fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.passes__liste { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 10px; }
+.passes__liste li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; padding: 12px 16px; border-radius: var(--rayon); border: 1px dashed var(--ligne); color: var(--texte-doux); }
+.passes__liste li span:last-child { grid-column: 2; }
+.passes__etat { grid-row: span 2; align-self: center; font-size: max(12px, .75rem); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: color-mix(in srgb, var(--texte) 12%, var(--fond)); }
+.passes__liste strong { color: var(--texte); text-decoration: line-through; text-decoration-color: var(--laiton); }
+.passes__photo { aspect-ratio: 3 / 4; border-radius: var(--rayon); max-height: 60vh; }
+.passes__photo img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 760px) { .noel__grille, .passes__grille { grid-template-columns: minmax(0, 1fr); } .noel__photo, .passes__photo { aspect-ratio: 4 / 3; } }
+
+/* ===================== Offrir ===================== */
+.ouv-offrir { min-height: 100svh; display: grid; align-items: center; padding: calc(var(--entete-h) + 32px) 0 48px; overflow: hidden; background: #1a130d; text-align: center; }
+.ouv-offrir__fond { position: absolute; inset: 0; border-radius: 0; opacity: .7; }
+.ouv-offrir__fond img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.ouv-offrir::before { content: ""; position: absolute; inset: 0; z-index: 1; background: radial-gradient(60% 60% at 50% 45%, rgba(21,16,12,.88), rgba(21,16,12,.45)); pointer-events: none; }
+.ouv-offrir__centre { position: relative; z-index: 2; display: grid; justify-items: center; }
+.ouv-offrir h1 { font-size: clamp(2.8rem, min(7.4vw, 12vh), 6.6rem); margin: 0 0 .2em; }
+.ouv-offrir__carte { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 6px 14px; width: min(340px, 82vw); aspect-ratio: 16 / 10; padding: 20px 22px; margin: 18px 0 24px; border-radius: 12px; text-align: left; background: linear-gradient(135deg, #2a1d14, #120d0a); box-shadow: inset 0 0 0 1px var(--laiton), 0 30px 60px rgba(0,0,0,.55); }
+.ouv-offrir__type { font-size: max(12px, .75rem); letter-spacing: .18em; text-transform: uppercase; color: var(--laiton); }
+.ouv-offrir__montant { grid-column: 1 / -1; align-self: end; font-family: var(--police-titres); font-size: 2.2rem; color: var(--nappe); }
+.ouv-offrir__actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 20px; }
+.ouv-offrir__info { font-weight: 700; color: var(--laiton); }
+@media (max-height: 820px) and (min-width: 761px) { .ouv-offrir__carte { width: 280px; margin: 10px 0 16px; } }
+@media (max-height: 500px) and (min-width: 761px) { .ouv-offrir { min-height: 0; padding-top: calc(var(--entete-h) + 8px); padding-bottom: 14px; } .ouv-offrir h1 { font-size: 2.4rem; } .ouv-offrir .surtitre { display: none; } .ouv-offrir__carte { width: 200px; padding: 10px 14px; margin: 6px 0 10px; } .ouv-offrir__montant { font-size: 1.5rem; } }
+.offrir-composer { padding-block: clamp(64px, 9vw, 120px); background: linear-gradient(180deg, var(--fumee), #20170f); --ccq-main: var(--police-main); --ccq-or: var(--laiton); }
+
+/* ===================== Infos pratiques ===================== */
+.ouv-infos { padding-top: calc(var(--entete-h) + clamp(24px, 5vh, 56px)); padding-bottom: clamp(40px, 7vw, 90px); }
+.ouv-infos h1 { font-size: clamp(1.6rem, 2.6vw, 2.2rem); margin: 0; }
+.ouv-infos__numero { margin: .1em 0 .2em; font-family: var(--police-titres); font-size: clamp(3rem, min(11vw, 17vh), 10rem); line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.ouv-infos__numero a { text-decoration: none; color: var(--encre); display: inline-block; clip-path: inset(-10% var(--ecrit, 0%) -15% -2%); }
+.ouv-infos__ligne { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-bottom: clamp(18px, 4vh, 40px); }
+.ouv-infos__adresse { font-weight: 700; color: #7a3a18; }
+.ouv-infos__bandeau { width: min(100% - 2 * var(--gouttiere), 1500px); margin-inline: auto; height: clamp(200px, 34vh, 420px); border-radius: var(--rayon); }
+.ouv-infos__bandeau img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+@media (max-width: 760px) { .ouv-infos__numero { font-size: clamp(2.4rem, 13.5vw, 4rem); } .ouv-infos__bandeau { height: 26svh; } }
+@media (max-height: 500px) and (min-width: 761px) { .ouv-infos { padding-top: calc(var(--entete-h) + 8px); } .ouv-infos .surtitre { display: none; } .ouv-infos__numero { font-size: 3.4rem; } .ouv-infos__bandeau { height: 30vh; } }
+.horaires { padding-block: clamp(64px, 9vw, 120px); }
+.horaires__note { margin-top: 16px; font-size: max(12px, .85rem); color: var(--texte-doux); }
+.acces { padding-block: clamp(56px, 8vw, 110px); background: #1d1611; overflow: hidden; }
+.acces__mots p { font-family: var(--police-titres); font-style: italic; font-size: clamp(2.4rem, 7vw, 6.2rem); color: color-mix(in srgb, var(--laiton) 70%, var(--fumee)); margin-bottom: clamp(28px, 5vw, 56px); }
+.acces__grille { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 72px); }
+.acces__regles { margin: 0; display: grid; gap: 14px; }
+.acces__regles div { padding: 16px 18px; border-radius: var(--rayon); border: 1px solid var(--ligne); }
+.acces__regles dt { font-family: var(--police-titres); font-size: 1.25rem; margin-bottom: 4px; }
+.acces__regles dd { margin: 0; color: var(--texte-doux); font-size: .97rem; }
+.ecrire { padding-block: clamp(64px, 9vw, 120px); background: var(--fumee); }
+.ecrire__grille { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
+.ecrire__photo { aspect-ratio: 3 / 4; border-radius: var(--rayon); position: sticky; top: calc(var(--entete-h) + 24px); }
+.ecrire__photo img { width: 100%; height: 100%; object-fit: cover; }
+.ecrire__form { display: grid; gap: 14px; }
+.ecrire__form label { display: grid; gap: 6px; font-weight: 600; font-size: .95rem; }
+.ecrire__form input, .ecrire__form select, .ecrire__form textarea { min-height: 48px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--ligne); background: #1f1813; color: var(--texte); }
+.ecrire__deux { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.ecrire__rgpd { font-size: max(12px, .82rem); color: var(--texte-doux); }
+@media (max-width: 760px) { .acces__grille, .ecrire__grille, .ecrire__deux { grid-template-columns: minmax(0, 1fr); } .ecrire__photo { position: static; aspect-ratio: 16 / 9; } }
+
+/* ===================== Corrections de l'audit standard (v1) ===================== */
+/* Interlignes : la boîte de la police (Bodoni Moda) dépasse un interligne serré ; titres de plusieurs lignes à 1,25. */
+h1, h2 { line-height: 1.25; }
+.ouv-accueil__titre, .ouv-fetes h1, .ouv-resa h1, .ouv-offrir h1 { line-height: 1.22; padding-block: .04em; }
+.ouv-carte__titre { line-height: 1.2; padding-block: .06em; }
+.ouv-infos__numero { line-height: 1.25; }
+.ouv-infos__numero a { min-height: 44px; }
+.cheminee__titre { line-height: 1.25; row-gap: .12em; }
+.ame__accord, .sylvestre__prix { line-height: 1.7; }
+.carton__ecrit { line-height: 1.35; }
+/* Fonds photo sous le contenu : le fil conducteur donne z-index 2 aux enfants des sections. */
+.fetes-accueil__fond, .sylvestre__fond, .ouv-offrir__fond, .ouv-resa__fond { z-index: 0 !important; }
+.fetes-accueil__contenu, .sylvestre .ame__grille, .sylvestre__actions { position: relative; z-index: 3; }
+/* Carrousel 3D : cartes de profil ou de dos masquées (elles ne sont déjà ni cliquables ni atteignables au clavier). */
+.c3d.est-actif .c3d__carte:not(.est-de-face) { visibility: hidden; }
+/* Plan de salle : tables en bois sombre, numéros crème lisibles. */
+.pds { --pds-table: #4a3626; --pds-chaise: #b8925a; }
+/* Réservation : services et créneaux fermés ou complets lisibles (barrés), pas pâles. */
+.resa__puce:has(input:disabled), .resa__creneau:has(input:disabled) { color: var(--couleur-texte-doux); }
+.resa__puce:has(input:disabled) span { text-decoration: line-through; }
+/* Zones tactiles de la navigation. */
+[data-nav] a { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; min-height: 44px; }
+/* Carte cadeau : le nom de la maison passe à la ligne et reste à 12 px au moins. */
+.offrir-composer .ccq__maison { white-space: normal; font-size: max(12px, 4.2cqi); line-height: 1.2; }
+/* Offrir : le kraft reste derrière un voile plus sombre sous le texte. */
+.ouv-offrir__fond { opacity: .5; }
+.ouv-offrir::before { background: radial-gradient(70% 70% at 50% 48%, rgba(21,16,12,.94), rgba(21,16,12,.7)); }
+/* Petits téléphones : le premier écran garde le titre, le bouton et l'information clé. */
+@media (max-width: 380px) and (max-height: 700px) {
+  .ouv-fetes .ouv-fetes__texte > p.masque-ecran-tres-bas, .ouv-offrir .masque-ecran-tres-bas { display: none; }
+  .ouv-fetes h1 { font-size: 2.2rem; } .ouv-fetes__dates { margin-block: 8px 12px; gap: 6px; } .ouv-fetes__dates li { padding: 6px 10px; }
+  .ouv-offrir h1 { font-size: 2.3rem; } .ouv-offrir__carte { width: 200px; padding: 10px 14px; margin: 8px 0 12px; } .ouv-offrir__montant { font-size: 1.5rem; }
+  .ouv-fetes .surtitre, .ouv-offrir .surtitre { display: none; }
+}
+@media (max-height: 820px) and (min-width: 761px) { .ouv-accueil .surtitre { display: none; } .ouv-accueil__titre { font-size: clamp(2.3rem, min(5.6vw, 8.6vh), 4.4rem); } }
+/* Fluidité : pas d'ombre floue sur ce qui tourne à chaque image (plateau). */
+.plateau__photo { box-shadow: 0 0 0 4px #e9dcc4; }
+.plateau__disque { box-shadow: inset 0 0 0 6px #1d1611; }
+.plateau__objet::before { content: ""; position: absolute; inset: 6% 6% 0; border-radius: 50%; box-shadow: 0 34px 70px rgba(0,0,0,.55); pointer-events: none; }
+/* Réservation : bandeau photo au-dessus du formulaire (la section a son visuel). */
+.resa__bandeau { aspect-ratio: 16 / 5; border-radius: var(--rayon); margin-bottom: 18px; }
+.resa__bandeau img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+
+/* ---------- Corrections de l'audit (deuxième passage) et du test « vrai visiteur » (v1) ---------- */
+/* Fluidité : la ficelle (SVG de toute la hauteur de la page) sur son propre calque, sans repeindre les sections. */
+.fic__svg { will-change: transform; }
+/* Zones tactiles du sommaire du pied de page. */
+.pied nav a { display: inline-flex; align-items: center; min-width: 48px; min-height: 44px; }
+/* Bodoni Moda a une boîte de texte très haute (1,53 em) : plus d'air entre les titres et leurs voisins. */
+.cheminee__titre { row-gap: .34em; }
+.ouv-infos__numero { margin-top: .32em; }
+.ouv-carte__titre { margin-top: .16em; }
+.sylvestre__prix strong, .ame__accord > span { display: inline-block; }
+/* Sans JavaScript : l'ouverture de l'accueil ne pousse pas les boutons sous l'écran. */
+html:not(.js) .ouv-accueil { min-height: 0; }
+/* Carte cadeau : le nom de la maison peut passer sur deux lignes sans être coupé. */
+.offrir-composer .ccq__maison { overflow: visible; line-height: 1.3; }
+/* Offrir : bouton crème sur la photo (contraste). */
+.ouv-offrir .bouton:not(.bouton--contour) { background: var(--nappe); color: var(--fumee); }
+/* Mode calme et sans JavaScript : le cadran des horaires et le plan 3D laissent la place à une photo. */
+.horaires__photo, .pds__photo { display: none; margin: 18px 0 0; border-radius: var(--rayon); overflow: hidden; aspect-ratio: 16 / 10; }
+.horaires__photo img, .pds__photo img { width: 100%; height: 100%; object-fit: cover; }
+:is(html.calme, html:not(.js)) .horaires__photo { display: block; }
+@media (scripting: none) { .pds__photo { display: block; } }
+/* Ardoise : le bâton de craie se retire une fois les prix écrits (il ne reste pas posé sur un prix). */
+.ardoise.est-ecrit .ardoise__baton { animation: ardoise-baton-fin .4s 5.5s forwards; }
+@keyframes ardoise-baton-fin { to { opacity: 0; visibility: hidden; } }
+/* Plat végétarien : repère sur le plateau de l'accueil. */
+.plateau__vege { display: inline-block; margin-left: .4em; padding: 1px 8px; border-radius: 999px; font-size: max(12px, .74rem); font-weight: 700; letter-spacing: .04em; color: #cfe3b0; box-shadow: inset 0 0 0 1px currentColor; vertical-align: .1em; }
+/* Accueil : ouvert ou fermé, et la Saint-Sylvestre, en liens. */
+.ouv-accueil__info { flex-wrap: wrap; row-gap: 4px; }
+.ouv-accueil__info a { color: inherit; text-underline-offset: .2em; }
+.ouv-accueil__statut::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: currentColor; vertical-align: .08em; }
+.ouv-accueil__statut[data-etat="ouvert"]::before { background: #8fc46a; }
+.ouv-accueil__statut[data-etat="bientot"]::before { background: #e0b04a; }
+.ouv-accueil__statut[data-etat="ferme"]::before { background: var(--braise); }
+/* La carte, filtre actif : pas de photo de rubrique (une volaille sous « végétarien » trompe). */
+.carte-resto:has(.carte-resto__filtre[aria-pressed="true"]) .carte-resto__photo { display: none; }
+/* Réservation : les sept jours sur deux lignes (le samedi n'est plus caché à droite) ; chiffres lisibles. */
+@media (max-width: 760px) { .resa__jours { grid-auto-flow: row; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; } }
+.resa__compteur input { font-family: var(--police-texte); font-weight: 600; }
+/* La cheminée : le titre reste lisible sur la photo claire. */
+.cheminee__titre { text-shadow: 0 2px 18px rgba(21, 16, 12, .85), 0 0 2px rgba(21, 16, 12, .6); }
+/* Fluidité : les rangées de mots géants (texte évidé coûteux à repeindre) sur leur propre calque. */
+[data-fx="mots-geants"] [data-fx-rangee] { will-change: transform; }
+/* Réservation envoyée : couleurs de la palette (le vert du module jurait), référence entière. */
+.resa__recap-corps.est-envoye { border-color: var(--laiton); }
+.resa__recap-corps.est-envoye .resa__recap-sur { color: var(--laiton); }
+.resa__recap-corps { overflow-wrap: anywhere; }
+/* Carte cadeau : « Carte cadeau » en encre de la carte (en laiton sur la carte dorée, il disparaissait). */
+.offrir-composer .ccq__type { color: var(--ccq-encre); }
+/* Passe des formats : information clé en ligne de texte (liens en ligne), la Saint-Sylvestre retirée sur les très petits écrans. */
+.ouv-accueil__info { display: block; }
+.ouv-accueil__info::before { display: inline-block; vertical-align: middle; margin-right: 10px; }
+@media (max-width: 380px) and (max-height: 700px) { .ouv-accueil__fetes { display: none; } }
+@media (max-width: 380px) { .plateau__etiquette { white-space: normal; max-width: 92%; text-align: center; letter-spacing: .02em; } }
+@media (max-height: 600px) and (min-width: 761px) {
+  .ouv-fetes { padding-top: calc(var(--entete-h) + 12px); padding-bottom: 20px; } .ouv-fetes h1 { font-size: 2.6rem; }
+  .ouv-fetes .surtitre, .ouv-fetes .ouv-fetes__texte > p.masque-ecran-tres-bas { display: none; }
+  .ouv-offrir { padding-top: calc(var(--entete-h) + 12px); padding-bottom: 16px; } .ouv-offrir h1 { font-size: 2.6rem; }
+  .ouv-offrir__carte { width: 220px; margin: 8px 0 12px; } .ouv-offrir .surtitre { display: none; }
+}
+.ouv-accueil__fetes { display: block; margin-top: 6px; }
+.ouv-accueil__fetes > span[aria-hidden] { display: none; }
+@media (max-height: 600px) and (min-width: 761px) { html:not(.js) .ouv-offrir__carte { display: none; } }
+@media (max-width: 380px) and (max-height: 700px) { .ouv-accueil__fetes { display: none; } }

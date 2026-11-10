@@ -1,0 +1,5 @@
+{ "fuseau": "Europe/Paris", "seuil_ferme_bientot": 30, "regle_feries": "ouvert",
+  "feries": [ { "date": "2026-11-11", "nom": "Armistice" }, { "date": "2026-12-25", "nom": "Noël" }, { "date": "2027-01-01", "nom": "Jour de l'an" } ],
+  "adresses": [ { "id": "restaurant", "nom": "Le restaurant", "adresse": "6 Vathier Haye, 54580 Moineville", "telephone": "06 18 21 28 10",
+    "semaine": { "lundi": [], "mardi": [], "mercredi": ["12:00-14:30"], "jeudi": ["12:00-14:30"], "vendredi": ["12:00-14:30", "19:00-00:00"], "samedi": ["19:00-00:00"], "dimanche": ["12:00-16:00"] },
+    "exceptions": [] } ] }

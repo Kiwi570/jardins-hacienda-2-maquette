@@ -1,0 +1,6 @@
+{
+  "siteActuel": "lesjardinsdelhacienda54.com",
+  "pagesTypes": ["/", "/la-carte", "/les-fetes", "/reserver", "/offrir", "/infos-pratiques"],
+  "effets": ["vapeur", "plateau", "titre-vapeur", "signature", "braises", "decompte", "carrousel", "ardoise", "plume", "plan-3d", "carton", "numero", "cadran"],
+  "grille": { "dispenses": {} }
+}

@@ -1,0 +1,6 @@
+{ "fuseau": "Europe/Paris", "delai_minutes": 60, "jours_a_l_avance": 60, "couverts_max": 10, "telephone": "06 18 21 28 10",
+  "services": { "midi": { "libelle": "Midi", "debut": "12:00", "fin": "13:30", "pas": 15 }, "soir": { "libelle": "Soir", "debut": "19:00", "fin": "21:30", "pas": 15 } },
+  "fermetures": { "jours": ["lundi", "mardi"], "services": { "mercredi": ["soir"], "jeudi": ["soir"], "samedi": ["midi"], "dimanche": ["soir"] }, "dates": [] },
+  "espaces": [ { "id": "salle", "libelle": "En salle" }, { "id": "terrasse", "libelle": "En terrasse", "mois": [6, 7, 8, 9], "note": "selon la météo", "hors_saison": "de juin à septembre" } ],
+  "complets": {}, "complets_simules": true,
+  "message_simule": "Réservation simulée : rien n'est envoyé dans cette maquette." }

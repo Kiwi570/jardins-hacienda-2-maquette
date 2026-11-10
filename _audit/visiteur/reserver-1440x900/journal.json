@@ -1,0 +1,852 @@
+{
+ "mission": "reserver",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.1,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11862,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver une table",
+    "Voir la carte"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "attendre 3500",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 6.8,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11862,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver une table",
+    "Voir la carte"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Réserver une table",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 9.5,
+   "adresse": "/reserver",
+   "y": 0,
+   "hauteurPage": 5010,
+   "titres": [
+    "h1 Votre table"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Choisissez votre table",
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "cliquer Choisissez votre table",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 11.7,
+   "adresse": "/reserver#plan",
+   "y": 625,
+   "hauteurPage": 5010,
+   "titres": [
+    "h2 Choisissez votre table"
+   ],
+   "actions": [
+    "Toute la salle 7",
+    "Au coin du feu 2",
+    "Les baies vitrées 4",
+    "La grande table 1",
+    "Terrasse et piscine 0",
+    "−",
+    "+",
+    "1 Table 1 Au coin du feu · 2 places"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "cliquer +",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 13.8,
+   "adresse": "/reserver#plan",
+   "y": 625,
+   "hauteurPage": 5033,
+   "titres": [
+    "h2 Choisissez votre table"
+   ],
+   "actions": [
+    "Toute la salle 7",
+    "Au coin du feu 2",
+    "Les baies vitrées 4",
+    "La grande table 1",
+    "Terrasse et piscine 0",
+    "−",
+    "+",
+    "1 Table 1 Au coin du feu · 2 places Trop petite pour 3"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "cliquer +",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 16,
+   "adresse": "/reserver#plan",
+   "y": 625,
+   "hauteurPage": 5033,
+   "titres": [
+    "h2 Choisissez votre table"
+   ],
+   "actions": [
+    "Toute la salle 7",
+    "Au coin du feu 2",
+    "Les baies vitrées 4",
+    "La grande table 1",
+    "Terrasse et piscine 0",
+    "−",
+    "+",
+    "1 Table 1 Au coin du feu · 2 places Trop petite pour 4"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 16.7,
+   "adresse": "/reserver#plan",
+   "y": 1390,
+   "hauteurPage": 5033,
+   "titres": [],
+   "actions": [
+    "1 Table 1 Au coin du feu · 2 places Trop petite pour 4",
+    "2 Table 2 Au coin du feu · 4 places",
+    "3 Table 3 Au coin du feu · 2 places Prise ce soir",
+    "4 Table 4 Les baies vitrées · 4 places",
+    "5 Table 5 Les baies vitrées · 6 places",
+    "6 Table 6 Les baies vitrées · 2 places Prise ce soir",
+    "7 Table 7 La grande table · 10 places",
+    "8 Table 8 Les baies vitrées · 4 places",
+    "9 Table 9 Les baies vitrées · 4 places",
+    "10 Table 10 Terrasse et piscine · 4 places Prise ce soir",
+    "11 Table 11 Terrasse et piscine · 4 places Prise ce soir"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 7,
+   "geste": "cliquer Table 2",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 19,
+   "adresse": "/reserver#plan",
+   "y": 722,
+   "hauteurPage": 5062,
+   "titres": [
+    "h2 Choisissez votre table"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Toute la salle 7",
+    "Au coin du feu 2",
+    "Les baies vitrées 4",
+    "La grande table 1",
+    "Terrasse et piscine 0",
+    "−",
+    "+",
+    "1 Table 1 Au coin du feu · 2 places Trop petite pour 4"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 8,
+   "geste": "cliquer Réserver cette table",
+   "resultat": "ok",
+   "gestes": 7,
+   "secondes": 21.3,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 2273,
+   "hauteurPage": 5039,
+   "titres": [
+    "h2 Le jour, l'heure, les couverts",
+    "h3 À compléter"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "11 Table 11 Terrasse et piscine · 4 places Prise ce soir",
+    "12 Table 12 Terrasse et piscine · 6 places Prise ce soir",
+    "Réserver cette table",
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov."
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 9,
+   "geste": "cliquer Sam",
+   "resultat": "ok",
+   "gestes": 8,
+   "secondes": 23.5,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 2273,
+   "hauteurPage": 5039,
+   "titres": [
+    "h2 Le jour, l'heure, les couverts",
+    "h3 À compléter"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "11 Table 11 Terrasse et piscine · 4 places Prise ce soir",
+    "12 Table 12 Terrasse et piscine · 6 places Prise ce soir",
+    "Réserver cette table",
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov."
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 10,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 9,
+   "secondes": 24.3,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3038,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 À compléter"
+   ],
+   "actions": [
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé",
+    "−",
+    "+",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 11,
+   "geste": "cliquer 20",
+   "resultat": "ok",
+   "gestes": 10,
+   "secondes": 26.4,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3038,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé",
+    "−",
+    "+",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 12,
+   "geste": "cliquer Allergie ou régime",
+   "resultat": "ok",
+   "gestes": 11,
+   "secondes": 28.6,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3038,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé",
+    "−",
+    "+",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 13,
+   "geste": "remplir Précisez si besoin=Deux convives végétariens",
+   "resultat": "ok",
+   "gestes": 12,
+   "secondes": 28.6,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3038,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé",
+    "−",
+    "+",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 14,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 13,
+   "secondes": 29.4,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3803,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Vérifier ma réservation",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation",
+    "Modifier : demande",
+    "Modifier : au nom de",
+    "06 18 21 28 10",
+    "Accueil",
+    "La carte",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 15,
+   "geste": "remplir Prénom=Claire",
+   "resultat": "ok",
+   "gestes": 14,
+   "secondes": 29.4,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3803,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Vérifier ma réservation",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation",
+    "Modifier : demande",
+    "Modifier : au nom de",
+    "06 18 21 28 10",
+    "Accueil",
+    "La carte",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 16,
+   "geste": "remplir ^Nom$=Martin",
+   "resultat": "ok",
+   "gestes": 15,
+   "secondes": 29.5,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3803,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Vérifier ma réservation",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation",
+    "Modifier : demande",
+    "Modifier : au nom de",
+    "06 18 21 28 10",
+    "Accueil",
+    "La carte",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 17,
+   "geste": "remplir Téléphone=06 12 34 56 78",
+   "resultat": "ok",
+   "gestes": 16,
+   "secondes": 29.5,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3803,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Vérifier ma réservation",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation",
+    "Modifier : demande",
+    "Modifier : au nom de",
+    "06 18 21 28 10",
+    "Accueil",
+    "La carte",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 12 34 56 78",
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10",
+    "06 12 34 56 78"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 18,
+   "geste": "attendre 800",
+   "resultat": "ok",
+   "gestes": 16,
+   "secondes": 30.3,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3803,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Vérifier ma réservation",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation",
+    "Modifier : demande",
+    "Modifier : au nom de",
+    "06 18 21 28 10",
+    "Accueil",
+    "La carte",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 12 34 56 78",
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10",
+    "06 12 34 56 78"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 19,
+   "geste": "cliquer Vérifier ma réservation",
+   "resultat": "ok",
+   "gestes": 17,
+   "secondes": 32.5,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3678,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Vérifier ma réservation",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation",
+    "Modifier : demande",
+    "Modifier : au nom de"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 12 34 56 78"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10",
+    "06 12 34 56 78"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 20,
+   "geste": "attendre 800",
+   "resultat": "ok",
+   "gestes": 17,
+   "secondes": 33.3,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3678,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Vérifier ma réservation",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation",
+    "Modifier : demande",
+    "Modifier : au nom de"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 12 34 56 78"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10",
+    "06 12 34 56 78"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 21,
+   "geste": "cliquer Confirmer la réservation",
+   "resultat": "ok",
+   "gestes": 18,
+   "secondes": 35.4,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3678,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 À samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Vérifier ma réservation",
+    "Faire une autre réservation"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 22,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 18,
+   "secondes": 36.9,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3678,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 À samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Vérifier ma réservation",
+    "Faire une autre réservation"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 23,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 18,
+   "secondes": 37,
+   "adresse": "/reserver?table=2&couverts=4&espace=salle#formulaire",
+   "y": 3678,
+   "hauteurPage": 5039,
+   "titres": [
+    "h3 À samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Vérifier ma réservation",
+    "Faire une autre réservation"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-23.png"
+  }
+ ]
+}

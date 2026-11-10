@@ -1,0 +1,13 @@
+{ "signature": "Le vin de l'accord", "choisi": "esturgeon",
+  "plats": [
+    { "id": "amuse", "moment": "Amuse-bouche", "plat": "Bouchée gourmande", "detail": "et coupe de Champagne",
+      "accord": { "type": "petillant", "nom": "Coupe de Champagne", "region": "Servie avec l'amuse-bouche", "couleur": "#e8d38c" } },
+    { "id": "foie-gras", "moment": "Entrée", "plat": "Velours de foie gras", "detail": "Éclats de truffe noire",
+      "accord": { "type": "petillant", "nom": "Champagne blanc de blancs", "region": "Champagne", "couleur": "#ecdc9a" } },
+    { "id": "esturgeon", "moment": "Poisson", "plat": "Esturgeon délicatement poché", "detail": "Sauce citronnée au caviar et lentilles noires Béluga",
+      "accord": { "type": "vin-blanc", "nom": "Chablis premier cru", "region": "Bourgogne, Chablis", "couleur": "#e4cf78" } },
+    { "id": "boeuf", "moment": "Plat", "plat": "Filet de bœuf d'exception", "detail": "Aux morilles, jus réduit infusé au café",
+      "accord": { "type": "vin-rouge", "nom": "Pomerol ou Côte-Rôtie", "region": "Bordeaux ou vallée du Rhône", "couleur": "#5e1626" } },
+    { "id": "sable", "moment": "Dessert", "plat": "Sablé breton au yuzu", "detail": "Crémeux de yuzu et meringue délicatement brûlée",
+      "accord": { "type": "vin-blanc", "nom": "Jurançon moelleux", "region": "Sud-Ouest, Jurançon", "couleur": "#d6a03a", "verre": "tulipe" } }
+  ] }

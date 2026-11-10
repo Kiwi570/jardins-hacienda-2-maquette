@@ -1,0 +1,169 @@
+{
+ "mission": "ouvert",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 4,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11894,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver une table",
+    "Voir la carte"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "attendre 3500",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 8.4,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11894,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver une table",
+    "Voir la carte"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Infos pratiques",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 11.9,
+   "adresse": "/infos-pratiques",
+   "y": 0,
+   "hauteurPage": 4195,
+   "titres": [
+    "h1 Nous appeler"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 12.8,
+   "adresse": "/infos-pratiques",
+   "y": 764,
+   "hauteurPage": 4195,
+   "titres": [
+    "h2 Ouvert maintenant ?"
+   ],
+   "actions": [
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 12.8,
+   "adresse": "/infos-pratiques",
+   "y": 764,
+   "hauteurPage": 4195,
+   "titres": [
+    "h2 Ouvert maintenant ?"
+   ],
+   "actions": [
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-4.png"
+  }
+ ]
+}

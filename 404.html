@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr" data-v="1" data-curseur>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Table introuvable : Les Jardins de l&#39;Hacienda</title>
+<meta name="description" content="Cette page n&#39;existe pas ou plus.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://jardins-hacienda-2-maquette.vercel.app/404">
+<style>:root{--fond:#15100c;--texte:#f3e7d3;--voile-fond:#1d1611;--ouverture-fond:#15100c;--menu-fond:#1d1611}:root { --entete-h: 72px; --barres-h: 0px; } html { background: var(--fond); color: var(--texte); scrollbar-gutter: stable; } body { margin: 0; background: var(--fond); } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime] { opacity: 0; } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime].vu { opacity: 1; } [data-voile] { position: fixed; inset: 0; z-index: 900; background: var(--voile-fond); transform: translateY(100%); visibility: hidden; pointer-events: none; } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) [data-voile] { transform: none; visibility: visible; } html.calme [data-voile], html.secours [data-voile] { visibility: hidden !important; } .ouverture-panneau { position: fixed; inset: 0; z-index: 850; display: none; place-content: center; justify-items: center; background: var(--ouverture-fond, var(--voile-fond)); color: var(--fond); text-align: center; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) .ouverture-panneau { display: grid; } html.defilement-bloque, html.defilement-bloque body, html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie), html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) body, html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours), html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { overflow: hidden; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); }</style>
+<script>(function () {
+var d = document.documentElement, ss = null, ls = null;
+try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
+d.classList.add('js');
+var calme = false;
+try { calme = !!ls && ls.getItem('socle:calme') === 'oui'; } catch (e) {}
+if (!calme && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) calme = true;
+if (calme) d.classList.add('calme');
+var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+var type = nav ? nav.type : 'navigate';
+var depart = null;
+try { depart = JSON.parse(ss.getItem('socle:depart') || 'null'); ss.removeItem('socle:depart'); } catch (e) {}
+if (depart && !(Date.now() - depart.t < 15000)) depart = null;
+var retourSection = false;
+try { retourSection = !!ss.getItem('socle:calme-retour'); } catch (e) {}
+var mode = type === 'back_forward' || retourSection ? 'retour' : type === 'reload' ? 'intro' : depart ? 'voile' : 'intro';
+d.setAttribute('data-arrivee', mode);
+if (mode === 'voile' && depart.couleur) d.style.setProperty('--voile-fond', depart.couleur);
+if (type === 'reload' && 'scrollRestoration' in history) {
+if (!retourSection) history.scrollRestoration = 'manual';
+}
+try {
+var choisie = ls && ls.getItem('socle:langue');
+var langue = (d.lang || '').slice(0, 2);
+if (choisie && choisie !== langue && type === 'navigate' && !depart) {
+var alt = document.querySelector('link[rel="alternate"][hreflang="' + choisie + '"]');
+if (alt) location.replace(new URL(alt.href).pathname + location.search + location.hash);
+}
+} catch (e) {}
+setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('secours'); }, 2000);
+})();</script>
+<link rel="preload" href="/assets/fonts/bodoni-moda.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/socle.css?v=1">
+<link rel="stylesheet" href="/assets/css/site.css?v=1">
+<link rel="modulepreload" href="/assets/js/site.js?v=1">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=1">
+<script src="/assets/vendor/gsap.min.js" defer></script>
+<script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/assets/vendor/SplitText.min.js" defer></script>
+<script type="module" src="/assets/js/site.js?v=1"></script>
+<meta name="theme-color" content="#15100c">
+<link rel="icon" href="/assets/images/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Les Jardins de l&#39;Hacienda">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Table introuvable : Les Jardins de l&#39;Hacienda">
+<meta property="og:description" content="Cette page n&#39;existe pas ou plus.">
+<meta property="og:url" content="https://jardins-hacienda-2-maquette.vercel.app/404">
+<meta property="og:image" content="https://jardins-hacienda-2-maquette.vercel.app/assets/partage/accueil-fr.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Les Jardins de l&#39;Hacienda : un plat du chef devant la cheminée">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":"Les Jardins de l'Hacienda","url":"https://jardins-hacienda-2-maquette.vercel.app/","telephone":"+33 6 18 21 28 10","servesCuisine":"Cuisine traditionnelle de saison","address":{"@type":"PostalAddress","streetAddress":"6 Vathier Haye","postalCode":"54580","addressLocality":"Moineville","addressCountry":"FR"},"sameAs":["https://www.facebook.com/lesjardinsdelhacienda54","https://www.instagram.com/lesjardinsdel.hacienda/"],"acceptsReservations":true}</script>
+</head>
+<body id="haut">
+<div data-voile data-forme="cloche" aria-hidden="true"><div class="voile-contenu"><svg class="voile-cloche" viewBox="0 0 120 80" aria-hidden="true"><path d="M60 8a5 5 0 1 1 0 .1M14 66a46 46 0 0 1 92 0Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M6 70h108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><span data-voile-libelle>Table introuvable</span></div></div>
+<div class="ouverture-panneau" data-ouverture aria-hidden="true">
+  <div class="ouverture-cloche" data-ouverture-objet>
+    <svg class="ouverture-dome" viewBox="0 0 200 150" aria-hidden="true"><defs><linearGradient id="g-laiton" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2c48c"/><stop offset=".45" stop-color="#b8925a"/><stop offset="1" stop-color="#6e5228"/></linearGradient></defs><circle cx="100" cy="14" r="9" fill="url(#g-laiton)"/><path d="M18 128a82 82 0 0 1 164 0Z" fill="url(#g-laiton)"/><path d="M40 112a62 62 0 0 1 34-48" fill="none" stroke="#f6e6c4" stroke-width="5" stroke-linecap="round" opacity=".55"/><rect x="6" y="128" width="188" height="10" rx="5" fill="#8a6a36"/></svg>
+    <img class="ouverture-logo" src="/assets/images/logo-clair.png" alt="" width="64" height="64">
+  </div>
+  <span class="ouverture-vapeur" aria-hidden="true"></span>
+  <p class="ouverture-nom">Les Jardins de l&#39;Hacienda</p>
+  <span class="ouverture-trait"></span>
+  <p class="ouverture-ligne">Restaurant et réceptions · Moineville</p>
+</div>
+<a class="evitement" href="#contenu">Aller au contenu</a>
+<header data-entete>
+  <div class="entete-rangee">
+    <a class="entete-logo" href="/" data-libelle="Accueil">
+      <img src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>Les Jardins de l&#39;Hacienda</span>
+    </a>
+    <nav data-nav aria-label="Navigation principale">
+      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+    </nav>
+    <div class="entete-actions">
+      <a class="bouton" href="/reserver" data-libelle="Réserver">Réserver</a>
+      <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="Menu" data-libelle-fermer="Fermer"><span data-libelle-bouton>Menu</span></button>
+      <a class="menu-sansjs" href="#menu" data-menu-lien>Menu</a>
+    </div>
+  </div>
+</header>
+<script>/* Avant le premier affichage : rangées de la navigation (même règle que ajusterNav dans assets/js/socle/entete.js)
+   et hauteur réelle de l'en-tête, pour que rien ne saute quand le JavaScript du site prend la main. */
+(function () {
+  var h = document.documentElement, u = document.querySelector('[data-nav] ul'), e = document.querySelector('[data-entete]');
+  if (u) {
+    var deborde = function () { return u.scrollWidth > u.clientWidth + 1; }, c = deborde();
+    if (c && window.matchMedia('(min-width: 900px)').matches) {
+      h.classList.add('nav-deux-rangees'); c = deborde();
+      if (c) { h.classList.add('nav-deux-lignes'); var a = u.querySelector('a'); c = !a || u.getBoundingClientRect().height > a.getBoundingClientRect().height * 2.5; }
+      if (c) h.classList.remove('nav-deux-rangees', 'nav-deux-lignes');
+    }
+    if (c) h.classList.add('nav-compacte');
+  }
+  if (e) h.style.setProperty('--entete-h', Math.round(e.getBoundingClientRect().height) + 'px');
+})();</script>
+<span id="menu-ferme" aria-hidden="true"></span>
+<div id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu">
+  <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
+  <ul><li style="--i:0"><a href="/" class="menu-lien" data-libelle="Accueil">Accueil</a></li><li style="--i:1"><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:3"><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:4"><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+  <p class="menu-actions"><a class="bouton" href="/reserver" data-libelle="Réserver">Réserver une table</a><a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
+  <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
+</div>
+<main id="contenu" tabindex="-1">
+<section class="introuvable conteneur" id="debut">
+  <div class="introuvable__texte">
+    <h1 data-anime="lettres">Table introuvable</h1>
+    <p data-anime>Cette page n&#39;existe pas ou plus. La cloche est levée, mais l&#39;assiette est vide.</p>
+    <p class="introuvable__actions" data-anime><a href="/" class="bouton" data-libelle="Accueil" data-action-principale>Retour à l&#39;accueil</a> <a href="/la-carte" class="bouton bouton--contour" data-libelle="La carte">Voir la carte</a></p>
+  </div>
+  <figure class="media introuvable__photo" data-grok data-iris-centre data-fx="zoom" style="--cadrage:50% 50%">
+  <picture>
+    <img src="/assets/images/grok/introuvable-1600.webp" srcset="/assets/images/grok/introuvable-800.webp 800w, /assets/images/grok/introuvable-1600.webp 1600w" sizes="(max-width: 760px) 100vw, 50vw" alt="Planche de service vide, serviette pliée et cloche couchée" width="1600" height="900" fetchpriority="high" loading="eager" decoding="async">
+  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
+</figure>
+</section>
+</main>
+<footer class="pied" id="pied">
+  <div class="conteneur pied-grille">
+    <div>
+      <p><strong>Les Jardins de l&#39;Hacienda</strong></p>
+      <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
+      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener">Facebook (nouvel onglet)</a><br><a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener">Instagram (nouvel onglet)</a></p>
+    </div>
+    <nav aria-label="Sommaire">
+      <p><strong>Sommaire</strong></p>
+      <ul><li><a href="/" data-libelle="Accueil">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver" data-libelle="Réserver">Réserver</a></li></ul>
+    </nav>
+    <div>
+      <p><strong>Confort de lecture</strong></p>
+      <ul>
+        <li><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></li>
+        <li><a href="#haut" data-sans-transition>Retour en haut</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="conteneur pied-bas"><p>Maquette : les informations marquées « à compléter » ou « à confirmer » seront fournies par l&#39;établissement. Réservations, cartes cadeaux et demandes simulées : rien n&#39;est envoyé.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
+</footer>
+<div data-barre-fixe>
+  <a class="bouton bouton--contour" href="tel:+33618212810">Appeler</a>
+  <a class="bouton" href="/reserver" data-libelle="Réserver">Réserver</a>
+</div>
+</body>
+</html>

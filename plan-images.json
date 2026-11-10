@@ -1,0 +1,236 @@
+[
+ {
+  "source": "recu/grok/table-nuit.jpg",
+  "source_mobile": "recu/grok/table-nuit-mobile.jpg",
+  "nom": "grok/reserver-ouverture",
+  "role": "ouverture",
+  "page": "Réserver",
+  "emplacement": "Ouverture compacte de la page Réserver, derrière le titre et le carton de table",
+  "priorite": "Indispensable",
+  "zone_texte": "gauche",
+  "mobile": "9:16",
+  "alt": "Coin de table dressée le soir : nappe crème, serviette sombre, verre et bougie",
+  "gabarit": "ouverture",
+  "consigne_scene": "Detail of the corner of a dressed restaurant table at night: heavy cream linen tablecloth, a folded dark napkin, an empty stemmed wine glass and a small brass candle holder with a lit candle, warm light from one side, the left half of the frame falls into soft deep shadow, no food, no plate with food, no bottle, no menu, no people."
+ },
+ {
+  "source": "recu/grok/kraft-cire.jpg",
+  "source_mobile": "recu/grok/kraft-cire-mobile.jpg",
+  "nom": "grok/offrir-ouverture",
+  "role": "ouverture",
+  "page": "Offrir",
+  "emplacement": "Ouverture de la page Offrir, fond de la carte cadeau",
+  "priorite": "Indispensable",
+  "zone_texte": "gauche",
+  "mobile": "9:16",
+  "alt": "Enveloppe en papier kraft nouée de ficelle, cire rouge et cachet en laiton",
+  "gabarit": "ouverture",
+  "consigne_scene": "Overhead still life on dark oak: a blank kraft paper envelope tied with natural twine, a stick of deep red sealing wax and a blank brass wax seal stamp, a few dried eucalyptus leaves, warm low side light, the left half of the frame is calm dark wood, no writing, no letters, no logo, no food, no hands."
+ },
+ {
+  "source": "recu/grok/braises.jpg",
+  "nom": "grok/fetes-braises",
+  "role": "section-fond",
+  "page": "Accueil",
+  "emplacement": "Fond de la section « Les fêtes » de l'accueil, sous les deux dates",
+  "priorite": "Conseillée",
+  "zone_texte": "gauche",
+  "alt": "Braises rougeoyantes et cendres au fond d'un foyer",
+  "gabarit": "section-fond",
+  "consigne_scene": "Abstract macro of glowing embers and soft grey ash at the bottom of a hearth, a few sparks rising, deep black shadows above, shallow depth of field, nothing recognizable, no logs shaped like objects, no fireplace frame, no food, no hands."
+ },
+ {
+  "source": "recu/grok/bougies.jpg",
+  "nom": "grok/fetes-bougies",
+  "role": "section-fond",
+  "page": "Les fêtes",
+  "emplacement": "Fond sombre de la section du menu de la Saint-Sylvestre (accords mets et vins)",
+  "priorite": "Conseillée",
+  "zone_texte": "gauche",
+  "alt": "Lumière dorée de bougies dans la pénombre",
+  "gabarit": "section-fond",
+  "consigne_scene": "Out-of-focus warm golden candlelight bokeh over deep wine-red and black velvet darkness, a few tiny gold glints, very soft, nothing in sharp focus, no glasses, no bottles, no table, no people, no text."
+ },
+ {
+  "source": "recu/grok/introuvable.jpg",
+  "nom": "grok/introuvable",
+  "role": "404",
+  "page": "404",
+  "emplacement": "Image en tête de la page « Table introuvable »",
+  "priorite": "Conseillée",
+  "zone_texte": "gauche",
+  "alt": "Planche de service vide, serviette pliée et cloche couchée",
+  "gabarit": "404",
+  "consigne_scene": "An empty dark oak serving board on a dark counter with only a few crumbs, a folded cream linen napkin and an empty brass cloche lid lying on its side, soft warm side light, a gentle touch of humour, the left half of the frame in calm shadow, no food."
+ },
+ {
+  "source": "recu/restaurant-plat-deguster.png",
+  "nom": "ouverture-plat",
+  "role": "ouverture",
+  "alt": "Assiette de légumes de saison dressée sur une table en bois, devant la cheminée allumée",
+  "mobile": "4:5",
+  "cadrage": [
+   51,
+   70
+  ],
+  "zone_texte": "gauche"
+ },
+ {
+  "source": "recu/restaurant-29.jpg",
+  "nom": "cheminee",
+  "role": "ouverture",
+  "alt": "La salle du restaurant décorée pour Noël, la cheminée, le sapin et les tables dressées",
+  "mobile": "9:16"
+ },
+ {
+  "source": "recu/restaurant-25.jpg",
+  "nom": "fetes-ouverture",
+  "role": "ouverture",
+  "alt": "La cheminée de la salle, son sapin décoré et une table dressée",
+  "ratio": "3:4",
+  "mobile": "3:4"
+ },
+ {
+  "source": "recu/restaurant-14.jpg",
+  "nom": "carte-ouverture",
+  "role": "ouverture",
+  "alt": "Tartelette aux fruits vue de dessus, rondelles de citron et coulis, sur une table en bois",
+  "mobile": "9:16",
+  "cadrage": [
+   54,
+   45
+  ]
+ },
+ {
+  "source": "recu/restaurant-26.jpg",
+  "nom": "carte-entrees",
+  "role": "carte-service",
+  "alt": "Foie gras et sa briochette, verre de vin blanc",
+  "ratio": "4:5"
+ },
+ {
+  "source": "recu/restaurant-20.jpg",
+  "nom": "carte-plats",
+  "role": "carte-service",
+  "alt": "Volaille rôtie, pommes de terre grenaille et pousses fraîches",
+  "ratio": "4:5"
+ },
+ {
+  "source": "recu/menus-side-image-7077f229.jpg",
+  "nom": "carte-partager",
+  "role": "carte-service",
+  "alt": "Assiette de houmous, pain grillé et salade, vue de dessus",
+  "ratio": "4:5"
+ },
+ {
+  "source": "recu/restaurant-27.jpg",
+  "nom": "carte-desserts",
+  "role": "carte-service",
+  "alt": "Dessert en coupe sur une table en bois, devant le feu",
+  "ratio": "4:5"
+ },
+ {
+  "source": "recu/restaurant-jardins-hacienda-2.jpg",
+  "nom": "plateau-entree",
+  "role": "vignette",
+  "alt": "Salade de saison vue de dessus",
+  "ratio": "1:1"
+ },
+ {
+  "source": "recu/restaurant-jardins-hacienda-6.jpg",
+  "nom": "plateau-plat",
+  "role": "vignette",
+  "alt": "Pièce de viande tranchée et sa garniture, vue de dessus",
+  "ratio": "1:1"
+ },
+ {
+  "source": "recu/menus-side-image-7077f229.jpg",
+  "nom": "plateau-partager",
+  "role": "vignette",
+  "alt": "Houmous et pain grillé, vue de dessus",
+  "ratio": "1:1"
+ },
+ {
+  "source": "recu/restaurant-jardins-hacienda-8.jpg",
+  "nom": "plateau-dessert",
+  "role": "vignette",
+  "alt": "Dessert au chocolat et framboises, vu de dessus",
+  "ratio": "1:1"
+ },
+ {
+  "source": "recu/mariages-jardins-hacienda.png",
+  "nom": "recevoir-mariages",
+  "role": "galerie",
+  "alt": "Longue table de mariage fleurie sous la pergola",
+  "ratio": "3:4"
+ },
+ {
+  "source": "recu/moment-4.webp",
+  "nom": "recevoir-baptemes",
+  "role": "galerie",
+  "alt": "Tables dressées en blanc et verdure sur la terrasse",
+  "ratio": "3:4"
+ },
+ {
+  "source": "recu/mariages-4.png",
+  "nom": "recevoir-anniversaires",
+  "role": "galerie",
+  "alt": "Verres et bouquet de roses rouges sur une table de fête",
+  "ratio": "3:4"
+ },
+ {
+  "source": "recu/mariages-10.jpg",
+  "nom": "recevoir-depart",
+  "role": "galerie",
+  "alt": "Invités au cocktail dans le jardin, sous les palmiers",
+  "ratio": "3:4"
+ },
+ {
+  "source": "recu/terrasse-13.jpg",
+  "nom": "recevoir-terrasse",
+  "role": "galerie",
+  "alt": "La terrasse et la piscine sous les palmiers",
+  "ratio": "3:4"
+ },
+ {
+  "source": "recu/terrasse-7.jpg",
+  "nom": "recevoir-piscine",
+  "role": "galerie",
+  "alt": "La piscine bordée de transats et de paillotes",
+  "ratio": "3:4"
+ },
+ {
+  "source": "recu/diner-intime.jpg",
+  "nom": "offrir-soiree",
+  "role": "section-fond",
+  "alt": "Dîner aux chandelles, le vin servi à table",
+  "ratio": "3:2"
+ },
+ {
+  "source": "recu/terrasse-3.jpg",
+  "nom": "infos-ouverture",
+  "role": "ouverture",
+  "alt": "L'enseigne des Jardins de l'Hacienda à l'entrée, sous le ciel de Moineville",
+  "mobile": "9:16"
+ },
+ {
+  "source": "recu/logo-sombre.png",
+  "nom": "logo",
+  "role": "logo",
+  "alt": "Les Jardins de l'Hacienda"
+ },
+ {
+  "source": "recu/restaurant-3.jpg",
+  "nom": "recevoir-salle",
+  "role": "galerie",
+  "alt": "La salle du restaurant, ses tables rondes et ses fauteuils clairs",
+  "ratio": "3:4"
+ },
+ {
+  "source": "recu/restaurant-19.jpg",
+  "nom": "recevoir-cheminee",
+  "role": "galerie",
+  "alt": "La cheminée décorée pour Noël et des fauteuils couverts de peaux",
+  "ratio": "3:4"
+ }
+]

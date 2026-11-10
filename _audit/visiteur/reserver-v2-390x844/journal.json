@@ -1,0 +1,247 @@
+{
+ "mission": "reserver-v2",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.2,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 10272,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h",
+    "Saint-Sylvestre · jeudi 31 décembre · 120 €",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "120 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "attendre 3500",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 6.8,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 10272,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h",
+    "Saint-Sylvestre · jeudi 31 décembre · 120 €",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "120 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Réserver une table",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 9.3,
+   "adresse": "/reserver",
+   "y": 0,
+   "hauteurPage": 6427,
+   "titres": [
+    "h1 Votre table"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Choisissez votre table",
+    "Réserver sans choisir de table",
+    "06 18 21 28 10",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "attendre 2500",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 11.8,
+   "adresse": "/reserver",
+   "y": 0,
+   "hauteurPage": 6427,
+   "titres": [
+    "h1 Votre table"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Choisissez votre table",
+    "Réserver sans choisir de table",
+    "06 18 21 28 10",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "cliquer Réserver sans choisir de table",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 14,
+   "adresse": "/reserver#formulaire",
+   "y": 2504,
+   "hauteurPage": 6427,
+   "titres": [
+    "h2 Le jour, l'heure, les couverts"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 15.5,
+   "adresse": "/reserver#formulaire",
+   "y": 2504,
+   "hauteurPage": 6427,
+   "titres": [
+    "h2 Le jour, l'heure, les couverts"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 15.5,
+   "adresse": "/reserver#formulaire",
+   "y": 2504,
+   "hauteurPage": 6427,
+   "titres": [
+    "h2 Le jour, l'heure, les couverts"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Aujourd'hui 10 nov. fermé",
+    "Demain 11 nov.",
+    "Jeu 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-6.png"
+  }
+ ]
+}

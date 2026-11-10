@@ -1,0 +1,162 @@
+{
+ "mission": "prix",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.2,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 10154,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Voir la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "attendre 3500",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 6.8,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 10154,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Voir la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Voir la carte",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 9.4,
+   "adresse": "/la-carte",
+   "y": 0,
+   "hauteurPage": 8358,
+   "titres": [
+    "h1 La carte"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "26 €",
+    "16 €",
+    "21 €",
+    "24 €",
+    "9 €",
+    "10 €",
+    "18 €",
+    "14 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 9.4,
+   "adresse": "/la-carte",
+   "y": 0,
+   "hauteurPage": 8358,
+   "titres": [
+    "h1 La carte"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "26 €",
+    "16 €",
+    "21 €",
+    "24 €",
+    "9 €",
+    "10 €",
+    "18 €",
+    "14 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-3.png"
+  }
+ ]
+}

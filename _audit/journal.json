@@ -1,0 +1,133 @@
+{
+  "projet": "jardins-hacienda-2-maquette",
+  "client": "Les Jardins de l'Hacienda (deuxième maquette, test réel des 9 modules restaurant)",
+  "siteActuel": "https://www.lesjardinsdelhacienda54.com/",
+  "versions": [
+    {
+      "version": 1,
+      "skill": "v10.8.2",
+      "perimetre": [
+        "accueil",
+        "la-carte",
+        "les-fetes",
+        "reserver",
+        "offrir",
+        "infos-pratiques",
+        "404"
+      ],
+      "etapes": [
+        {
+          "etape": "analyse, bibliothèque et questions",
+          "budget": 20,
+          "debut": "2026-11-10T12:28:20+01:00",
+          "fin": "2026-11-10T12:47:00+01:00"
+        },
+        {
+          "etape": "plans, images du site et document Grok",
+          "budget": 15,
+          "debut": "2026-11-10T12:49:30+01:00",
+          "fin": "2026-11-10T12:54:00+01:00"
+        },
+        {
+          "etape": "construction : accueil",
+          "budget": 30,
+          "debut": "2026-11-10T12:54:47+01:00",
+          "fin": "2026-11-10T13:25:00+01:00"
+        },
+        {
+          "etape": "aperçu de l'accueil en films (attente de la réponse notée à part)",
+          "budget": 5,
+          "debut": "2026-11-10T13:25:00+01:00",
+          "fin": "2026-11-10T13:28:00+01:00"
+        },
+        {
+          "etape": "construction : pages d'onglet",
+          "budget": 25,
+          "debut": "2026-11-10T13:29:30+01:00",
+          "fin": "2026-11-10T13:36:00+01:00"
+        },
+        {
+          "etape": "construction : contact et page de catégorie",
+          "budget": 10,
+          "debut": "2026-11-10T13:20:00+01:00",
+          "fin": "2026-11-10T13:36:00+01:00"
+        },
+        {
+          "etape": "audit, regard neuf et corrections",
+          "budget": 35,
+          "debut": "2026-11-10T13:37:00+01:00",
+          "fin": "2026-11-10T15:11:00+01:00"
+        },
+        {
+          "etape": "livraison",
+          "budget": 5,
+          "debut": "2026-11-10T15:11:00+01:00",
+          "fin": "2026-11-10T15:16:00+01:00"
+        }
+      ],
+      "attentes": [
+        {
+          "pour": "réponses aux questions",
+          "debut": "2026-11-10T12:47:00+01:00",
+          "fin": "2026-11-10T12:49:30+01:00"
+        },
+        {
+          "pour": "validation des plans, images du site et images Grok",
+          "debut": "2026-11-10T12:54:00+01:00",
+          "fin": "2026-11-10T13:04:30+01:00"
+        },
+        {
+          "pour": "horaires (question)",
+          "debut": "2026-11-10T13:03:40+01:00",
+          "fin": "2026-11-10T13:04:20+01:00"
+        },
+        {
+          "pour": "validation de l'aperçu de l'accueil",
+          "debut": "2026-11-10T13:28:00+01:00",
+          "fin": "2026-11-10T13:29:20+01:00"
+        }
+      ],
+      "allersRetours": 3,
+      "modules": [
+        "plat-fumant",
+        "assiette-qui-se-dresse",
+        "ardoise-a-la-craie",
+        "carte-du-restaurant",
+        "accords-mets-et-vins",
+        "horaires-ouvert-maintenant",
+        "plan-de-salle",
+        "reservation-de-table",
+        "carte-cadeau-qui-se-compose",
+        "objet-a-faire-tourner",
+        "fil-conducteur",
+        "carrousel-3d",
+        "envol-vers-le-panier"
+      ],
+      "audit": {
+        "niveau": "standard",
+        "echecsPremierPassage": 232,
+        "relances": 6,
+        "corrections": [
+          "177 échecs hors fichiers de travail (planche, plans, document Grok, assemblage laissés à la racine : sortis du dossier)",
+          "contrastes : allergènes absents, puces fermées de la réservation, numéros des tables du plan de salle, texte doux des sections claires",
+          "chevauchements : interlignes des titres, de l'accord mets et vins, du prix de la Saint-Sylvestre et du carton ; cartes de profil du carrousel 3D masquées",
+          "zones tactiles : liens du menu, du sommaire et du carrousel à 44 px",
+          "premier écran : action principale et info clé visibles sur petits écrans (paragraphes d'intro masqués sous 380 px de large ou 700 px de haut)",
+          "fluidité : vapeur allégée (qualite 0.35), moins de braises, ombres sorties des objets qui tournent",
+          "horaires : minuit au lieu de 0 h ; rôle des éléments de la liste des accords",
+          "deuxième passage (61 échecs) : chevauchements dus à la boîte très haute de Bodoni Moda (titre de l'accueil rendu en texte simple une fois formé, écarts des titres), zones tactiles du pied de page, photos de repli en mode calme et sans JavaScript, bouton crème sur la photo d'Offrir, bâton de craie retiré après l'écriture, boutons radio des accords marqués data-superpose",
+          "fluidité de l'accueil (32 % d'images lentes) : ficelle sans rail ni retard et sur son calque, carrousel 3D à 90° au lieu de 180°, mots géants sur leur calque, épinglage de l'assiette à 1,4 écran : 8 %",
+          "défilement des modules annulé par le défilement adouci du projet et par ScrollTrigger.refresh() : adaptateur socle.lenis vers aller(), défilements refaits après le recalcul ; aller() borné par la hauteur réelle de la page",
+          "test « vrai visiteur » (15 missions sur 16) : plat végétarien sur téléphone corrigé et relancé (3 gestes), statut ouvert ou fermé sur l'accueil, accès direct au formulaire, jours sur deux lignes, confirmations à l'écran, textes et prix",
+          "regard neuf : couleurs de la confirmation de réservation, « Carte cadeau » lisible sur la carte dorée ; vérifié sur l'affiche que le menu de la Saint-Sylvestre est exact"
+        ]
+      },
+      "effetsRetires": [
+        "carrousel 3D : rotation au défilement réduite de 180° à 90° (fluidité)",
+        "ficelle : rail pâle retiré (fluidité)"
+      ],
+      "grilleDispenses": {},
+      "notes": "Le site actuel ne donne les horaires et les menus de fête qu'en images (pages /horaires et /evenements) : à lire dans le zip des images du site. Outil grok.mjs : le compteur des indispensables attend la valeur « Indispensable » avec majuscule (avec « indispensable », il affiche 0) ; à reporter dans la bibliothèque. La carte (page) a été construite pendant le tournage de l'aperçu ; les pages d'onglet et la page de catégorie se chevauchent dans le temps (13 h 20 à 13 h 36). Visiteur : 15 missions réussies sur 16 au premier passage ; la mission ratée (plat végétarien, téléphone) réussit après correction. Regard neuf : 8 points à corriger, dont 4 corrigés (confirmation de réservation, couleurs, carte cadeau, titre de la cheminée ombré) ; restent le dessin de l'assiette, le panneau collant du plan, le double réglage des couverts et une famille d'effets plus moderne sur La carte. La machine de mesure n'a que 2 processeurs : les mesures de fluidité faites pendant les captures du regard neuf étaient faussées."
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "avertissements": [],
+  "cartes": [
+    {
+      "page": "accueil",
+      "langue": "fr",
+      "fichier": "assets/partage/accueil-fr.jpg",
+      "gabarit": "droite",
+      "image": "ouverture-plat-1280.webp",
+      "poids": 78544,
+      "sujet": {
+        "x": 600,
+        "y": 316,
+        "l": 600,
+        "h": 273
+      },
+      "textes": [
+        {
+          "x": 64,
+          "y": 56,
+          "l": 280,
+          "h": 64
+        },
+        {
+          "x": 64,
+          "y": 235,
+          "l": 480,
+          "h": 193
+        },
+        {
+          "x": 64,
+          "y": 543,
+          "l": 480,
+          "h": 35
+        }
+      ],
+      "recouvrement": 0
+    },
+    {
+      "page": "infos-pratiques",
+      "langue": "fr",
+      "fichier": "assets/partage/infos-pratiques-fr.jpg",
+      "gabarit": "droite",
+      "image": "infos-ouverture-1280.webp",
+      "poids": 51663,
+      "sujet": {
+        "x": 678,
+        "y": 245,
+        "l": 445,
+        "h": 176
+      },
+      "textes": [
+        {
+          "x": 64,
+          "y": 56,
+          "l": 280,
+          "h": 64
+        },
+        {
+          "x": 64,
+          "y": 267,
+          "l": 480,
+          "h": 129
+        },
+        {
+          "x": 64,
+          "y": 543,
+          "l": 480,
+          "h": 35
+        },
+        {
+          "x": 600,
+          "y": 0,
+          "l": 70,
+          "h": 630
+        }
+      ],
+      "recouvrement": 0
+    },
+    {
+      "page": "la-carte",
+      "langue": "fr",
+      "fichier": "assets/partage/la-carte-fr.jpg",
+      "gabarit": "droite",
+      "image": "carte-ouverture-1280.webp",
+      "poids": 79673,
+      "sujet": {
+        "x": 600,
+        "y": 0,
+        "l": 600,
+        "h": 630
+      },
+      "textes": [
+        {
+          "x": 64,
+          "y": 56,
+          "l": 280,
+          "h": 64
+        },
+        {
+          "x": 64,
+          "y": 267,
+          "l": 480,
+          "h": 129
+        },
+        {
+          "x": 64,
+          "y": 543,
+          "l": 480,
+          "h": 35
+        }
+      ],
+      "recouvrement": 0
+    },
+    {
+      "page": "les-fetes",
+      "langue": "fr",
+      "fichier": "assets/partage/les-fetes-fr.jpg",
+      "gabarit": "droite",
+      "image": "fetes-ouverture-1280.webp",
+      "poids": 90588,
+      "sujet": {
+        "x": 829,
+        "y": 101,
+        "l": 170,
+        "h": 329
+      },
+      "textes": [
+        {
+          "x": 64,
+          "y": 56,
+          "l": 280,
+          "h": 64
+        },
+        {
+          "x": 64,
+          "y": 267,
+          "l": 480,
+          "h": 129
+        },
+        {
+          "x": 64,
+          "y": 543,
+          "l": 480,
+          "h": 35
+        },
+        {
+          "x": 600,
+          "y": 0,
+          "l": 90,
+          "h": 630
+        }
+      ],
+      "recouvrement": 0
+    },
+    {
+      "page": "offrir",
+      "langue": "fr",
+      "fichier": "assets/partage/offrir-fr.jpg",
+      "gabarit": "droite",
+      "image": "grok/offrir-ouverture-1280.webp",
+      "poids": 61649,
+      "sujet": {
+        "x": 605,
+        "y": 126,
+        "l": 595,
+        "h": 478
+      },
+      "textes": [
+        {
+          "x": 64,
+          "y": 56,
+          "l": 280,
+          "h": 64
+        },
+        {
+          "x": 64,
+          "y": 299,
+          "l": 480,
+          "h": 64
+        },
+        {
+          "x": 64,
+          "y": 543,
+          "l": 480,
+          "h": 35
+        }
+      ],
+      "recouvrement": 0
+    },
+    {
+      "page": "reserver",
+      "langue": "fr",
+      "fichier": "assets/partage/reserver-fr.jpg",
+      "gabarit": "droite",
+      "image": "grok/reserver-ouverture-1280.webp",
+      "poids": 54767,
+      "sujet": {
+        "x": 600,
+        "y": 49,
+        "l": 600,
+        "h": 513
+      },
+      "textes": [
+        {
+          "x": 64,
+          "y": 56,
+          "l": 280,
+          "h": 64
+        },
+        {
+          "x": 64,
+          "y": 267,
+          "l": 480,
+          "h": 129
+        },
+        {
+          "x": 64,
+          "y": 543,
+          "l": 480,
+          "h": 35
+        }
+      ],
+      "recouvrement": 0
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{ "tables": [
+  { "id": "1", "zone": "cheminee", "places": 2, "forme": "carree", "x": 150, "y": 210, "l": 58, "note": "Fauteuils et peaux, près du feu" },
+  { "id": "2", "zone": "cheminee", "places": 4, "forme": "carree", "x": 160, "y": 336, "l": 70, "note": "La plus proche du feu" },
+  { "id": "3", "zone": "cheminee", "places": 2, "forme": "carree", "x": 150, "y": 456, "l": 58, "prise": "Déjà réservée (simulation)" },
+  { "id": "4", "zone": "fenetre", "places": 4, "forme": "ronde", "x": 330, "y": 100, "l": 70, "note": "Table ronde en verre" },
+  { "id": "5", "zone": "fenetre", "places": 6, "forme": "ronde", "x": 480, "y": 100, "l": 92, "note": "Table ronde en verre" },
+  { "id": "6", "zone": "fenetre", "places": 2, "forme": "ronde", "x": 622, "y": 100, "l": 56, "prise": "Déjà réservée (simulation)" },
+  { "id": "7", "zone": "grande-table", "places": 10, "forme": "longue", "x": 470, "y": 330, "l": 290, "h": 68, "note": "Pour une tablée" },
+  { "id": "8", "zone": "fenetre", "places": 4, "forme": "ronde", "x": 330, "y": 520, "l": 70 },
+  { "id": "9", "zone": "fenetre", "places": 4, "forme": "ronde", "x": 600, "y": 520, "l": 70 },
+  { "id": "10", "zone": "terrasse", "places": 4, "forme": "ronde", "x": 818, "y": 146, "l": 74, "prise": "Terrasse de juin à septembre" },
+  { "id": "11", "zone": "terrasse", "places": 4, "forme": "ronde", "x": 818, "y": 316, "l": 74, "prise": "Terrasse de juin à septembre" },
+  { "id": "12", "zone": "terrasse", "places": 6, "forme": "longue", "x": 818, "y": 484, "l": 122, "h": 60, "prise": "Terrasse de juin à septembre" }
+],
+  "zones": { "cheminee": "Au coin du feu", "fenetre": "Les baies vitrées", "grande-table": "La grande table", "terrasse": "Terrasse et piscine" } }

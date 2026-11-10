@@ -1,0 +1,343 @@
+{
+ "mission": "vegetarien-v2",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.4,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 10272,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h",
+    "Saint-Sylvestre · jeudi 31 décembre · 120 €",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "120 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "attendre 3500",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 7,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 10272,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Voir la carte",
+    "Fermé · ouvre demain à 12 h",
+    "Saint-Sylvestre · jeudi 31 décembre · 120 €",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "120 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Voir la carte",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 9.3,
+   "adresse": "/la-carte",
+   "y": 0,
+   "hauteurPage": 8190,
+   "titres": [
+    "h1 La carte"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "9 €",
+    "26 €",
+    "16 €",
+    "21 €",
+    "24 €",
+    "10 €",
+    "18 €",
+    "14 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 10.8,
+   "adresse": "/la-carte",
+   "y": 0,
+   "hauteurPage": 8190,
+   "titres": [
+    "h1 La carte"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "9 €",
+    "26 €",
+    "16 €",
+    "21 €",
+    "24 €",
+    "10 €",
+    "18 €",
+    "14 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 12.3,
+   "adresse": "/la-carte",
+   "y": 717,
+   "hauteurPage": 8190,
+   "titres": [
+    "h2 Les produits de saison"
+   ],
+   "actions": [
+    "Un plat végétarien ?",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "10 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "9 €",
+    "26 €",
+    "16 €",
+    "21 €",
+    "24 €",
+    "10 €",
+    "18 €",
+    "14 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "cliquer Un plat végétarien",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 15,
+   "adresse": "/la-carte#toute-la-carte",
+   "y": 1980,
+   "hauteurPage": 4882,
+   "titres": [
+    "h3 Nos plats",
+    "h3 À partager",
+    "h3 Allergènes et régimes"
+   ],
+   "actions": [
+    "Nos plats 1",
+    "À partager 1",
+    "Végétarien",
+    "À partager",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "10 €",
+    "25 €",
+    "12 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "9 €",
+    "26 €",
+    "16 €",
+    "21 €",
+    "24 €",
+    "10 €",
+    "25 €",
+    "12 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "attendre 1800",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 16.8,
+   "adresse": "/la-carte#toute-la-carte",
+   "y": 1980,
+   "hauteurPage": 4882,
+   "titres": [
+    "h3 Nos plats",
+    "h3 À partager",
+    "h3 Allergènes et régimes"
+   ],
+   "actions": [
+    "Nos plats 1",
+    "À partager 1",
+    "Végétarien",
+    "À partager",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "10 €",
+    "25 €",
+    "12 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "9 €",
+    "26 €",
+    "16 €",
+    "21 €",
+    "24 €",
+    "10 €",
+    "25 €",
+    "12 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 7,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 16.8,
+   "adresse": "/la-carte#toute-la-carte",
+   "y": 1980,
+   "hauteurPage": 4882,
+   "titres": [
+    "h3 Nos plats",
+    "h3 À partager",
+    "h3 Allergènes et régimes"
+   ],
+   "actions": [
+    "Nos plats 1",
+    "À partager 1",
+    "Végétarien",
+    "À partager",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "10 €",
+    "25 €",
+    "12 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "9 €",
+    "26 €",
+    "16 €",
+    "21 €",
+    "24 €",
+    "10 €",
+    "25 €",
+    "12 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-7.png"
+  }
+ ]
+}

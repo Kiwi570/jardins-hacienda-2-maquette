@@ -1,0 +1,698 @@
+{
+ "mission": "difference",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.1,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 10154,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Voir la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "attendre 3500",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 6.7,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 10154,
+   "titres": [
+    "h1 Les Jardins de l'Hacienda"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "Menu",
+    "Réserver une table",
+    "Voir la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 7.9,
+   "adresse": "/",
+   "y": 717,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Faites tourner le plateau"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 9.4,
+   "adresse": "/",
+   "y": 717,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Faites tourner le plateau"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 9.4,
+   "adresse": "/",
+   "y": 717,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Faites tourner le plateau"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-4.png"
+  },
+  {
+   "k": 5,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 10.7,
+   "adresse": "/",
+   "y": 1434,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Faites tourner le plateau"
+   ],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "26 €",
+    "24 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 12.2,
+   "adresse": "/",
+   "y": 1434,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Faites tourner le plateau"
+   ],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "26 €",
+    "24 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 7,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 12.2,
+   "adresse": "/",
+   "y": 1434,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Faites tourner le plateau"
+   ],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "26 €",
+    "24 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-7.png"
+  },
+  {
+   "k": 8,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 13.4,
+   "adresse": "/",
+   "y": 2151,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Le chef dresse le suprême de pintade"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 9,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 14.9,
+   "adresse": "/",
+   "y": 2151,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Le chef dresse le suprême de pintade"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 10,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 14.9,
+   "adresse": "/",
+   "y": 2151,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Le chef dresse le suprême de pintade"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-10.png"
+  },
+  {
+   "k": 11,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 16.1,
+   "adresse": "/",
+   "y": 2868,
+   "hauteurPage": 10154,
+   "titres": [],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "24 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 12,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 17.6,
+   "adresse": "/",
+   "y": 2868,
+   "hauteurPage": 10154,
+   "titres": [],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "24 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 13,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 17.6,
+   "adresse": "/",
+   "y": 2868,
+   "hauteurPage": 10154,
+   "titres": [],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "24 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-13.png"
+  },
+  {
+   "k": 14,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 18.9,
+   "adresse": "/",
+   "y": 3585,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Au creux de la cheminée"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 15,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 20.4,
+   "adresse": "/",
+   "y": 3585,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Au creux de la cheminée"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 16,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 20.4,
+   "adresse": "/",
+   "y": 3585,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Au creux de la cheminée"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-16.png"
+  },
+  {
+   "k": 17,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 21.6,
+   "adresse": "/",
+   "y": 4302,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Au creux de la cheminée"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 18,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 23.1,
+   "adresse": "/",
+   "y": 4302,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Au creux de la cheminée"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 19,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 23.2,
+   "adresse": "/",
+   "y": 4302,
+   "hauteurPage": 10154,
+   "titres": [
+    "h2 Au creux de la cheminée"
+   ],
+   "actions": [
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "24 €",
+    "45 €",
+    "12 €",
+    "11 €",
+    "10 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-19.png"
+  }
+ ]
+}
