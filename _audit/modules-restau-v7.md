@@ -15,7 +15,7 @@ Règle suivie : un module par endroit, accroché à l'heure ou au geste de la pa
 | agenda-des-dates | Les fêtes, « Les prochaines dates » | Soirées des affiches du site, brunch, Noël, Saint-Sylvestre ; ajout à l'agenda, « Réserver » au bon jour, dates passées. `donnees/agenda.json` |
 | accords-mets-et-vins | Les fêtes, Saint-Sylvestre | Le verre change de forme et de couleur (v6) |
 | depliant-3d | Les fêtes, Noël | Le menu de Noël en trois volets qui s'ouvre au défilement, couverture d'abord |
-| rideau-en-lanieres | Réceptions | Le voile violet de 19 h s'ouvre en palmes qui s'écartent (seulement à l'arrivée depuis une autre page, jamais après l'intro) |
+| rideau-en-lanieres | Réceptions | Le voile vert de nuit de 19 h s'ouvre en palmes qui s'écartent (seulement à l'arrivée depuis une autre page, jamais après l'intro) |
 | reservation-de-table | Réserver | (v6) habillé sans cadres : pastilles, ticket dentelé |
 | plan-de-salle | Réserver | (v6) liste des tables en lignes |
 | envol-vers-le-panier | Réserver | La carte de placement s'envole vers le récapitulatif (v6) |

@@ -12,7 +12,7 @@
   --police-titres: 'Instrument Serif', 'Instrument Fallback', Georgia, serif;
   --police-texte: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif;
   --creme: #f6f1e7; --sable: #efe3cb; --encre: #1c1712;
-  --eau: #0c6f7b; --eau-vive: #1aa3b0; --or: #e9a23b; --or-fonce: #9a5a12; --violet: #3b2c56; --nuit-bleue: #1f1a35;
+  --eau: #0c6f7b; --eau-vive: #1aa3b0; --or: #e9a23b; --or-fonce: #9a5a12; --violet: #24453e; --nuit-bleue: #11201b;
   --braise: #e8642c; --braise-claire: #f08a4b; --nuit: #120c09; --cendre: #f6efe2;
   --rouge: #b8322c;
   --accent: var(--rouge);
@@ -157,7 +157,7 @@ html.calme .horloge__sep { animation: none; }
 .apresmidi { --avant: #f3ead9; background: #f3ead9; color: var(--encre); overflow: hidden; }
 
 /* ===== 19 h · La terrasse s'allume (scène collante : coucher du soleil, guirlandes) ===== */
-.terrasse { --p: 0; position: relative; height: 260svh; background: #2a2140; color: var(--cendre); }
+.terrasse { --p: 0; position: relative; height: 260svh; background: #13241f; color: var(--cendre); }
 .terrasse__cadre { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; align-items: end; }
 .terrasse__images { position: absolute; inset: 0; }
 .terrasse__img { position: absolute; inset: 0; height: 100%; }
@@ -193,7 +193,7 @@ html.calme .horloge__sep { animation: none; }
 @media (max-height: 500px) and (min-width: 761px) { .terrasse__etapes { display: none; } .terrasse .heure-section { font-size: 2.6rem; } .terrasse__texte h2 { font-size: 1.8rem; } }
 
 /* ===== 21 h · Le dîner (réserver dans la page) ===== */
-.diner { --avant: #2a2140; background: #11201b; color: var(--cendre); padding-block: clamp(80px, 12vh, 140px); }
+.diner { --avant: #13241f; background: #11201b; color: var(--cendre); padding-block: clamp(80px, 12vh, 140px); }
 .diner__grille { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 6vw, 96px); align-items: center; }
 .diner__assiette { aspect-ratio: 4 / 5; border-radius: 6px 6px 999px 999px; overflow: hidden; }
 .diner h2 { color: var(--cendre); }
@@ -232,7 +232,7 @@ html.calme .horloge__sep { animation: none; }
 @media (max-height: 500px) { .feu__indice { display: none; } .feu__legende { bottom: 10px; padding: 8px 12px; font-size: .9rem; } }
 
 /* ===== 23 h 30 · Les fêtes (Saint-Sylvestre, Noël) ===== */
-.fetes-hiver { --avant: #120c09; background: #1a0f0b; color: var(--cendre); padding-block: clamp(64px, 10vh, 120px); }
+.fetes-hiver { --avant: #120c09; background: #1a0f0b; color: var(--cendre); padding-block: clamp(64px, 10vh, 120px) clamp(40px, 6vh, 72px); }
 .fetes-hiver .conteneur { position: relative; z-index: 1; }
 .fete__photo { aspect-ratio: 3 / 4; border-radius: 999px 999px 4px 4px; overflow: hidden; max-height: 52vh; }
 .fete__photo img { width: 100%; height: 100%; object-fit: cover; }
@@ -246,7 +246,7 @@ html.calme .horloge__sep { animation: none; }
 @media (max-width: 760px) { .fetes-hiver__grille { grid-template-columns: minmax(0, 1fr); } .fete__photo { width: 60%; } }
 
 /* ===== Minuit · Offrir et venir ===== */
-.minuit { --avant: #1a0f0b; background: #0e0a08; color: var(--cendre); padding-block: clamp(72px, 12vh, 140px) clamp(48px, 8vh, 96px); }
+.minuit { --avant: #1a0f0b; background: #0e0a08; color: var(--cendre); padding-block: clamp(48px, 8vh, 96px) clamp(48px, 8vh, 96px); }
 .minuit__grille { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
 .minuit h2 { color: var(--cendre); }
 .carte-cadeau-apercu { perspective: 900px; }
@@ -351,7 +351,7 @@ html:not([data-saison="ete"]) .bascule-saison [data-saison-choix="hiver"], html[
 html[data-saison="ete"][data-page="les-fetes"] { --entete-fond: #f6f1e7; --entete-texte: #1c1712; }
 
 /* ===================== Réceptions : « la grande table » ===================== */
-.ouv-recep { position: relative; min-height: 100svh; display: grid; align-items: end; overflow: hidden; background: #1f1a35; color: #f6efe2; }
+.ouv-recep { position: relative; min-height: 100svh; display: grid; align-items: end; overflow: hidden; background: #11201b; color: #f6efe2; }
 .ouv-recep__fond { position: absolute; inset: 0; height: 100%; }
 .ouv-recep__fond img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
 .ouv-recep::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(18, 12, 9, .92), rgba(18, 12, 9, .5) 45%, rgba(18, 12, 9, 0) 75%); }
@@ -364,7 +364,7 @@ html[data-saison="ete"][data-page="les-fetes"] { --entete-fond: #f6f1e7; --entet
 .ouv-recep__info a { display: inline-flex; min-height: 44px; align-items: center; font-weight: 600; color: #ffcf9e; }
 @media (max-height: 500px) and (min-width: 761px) { .ouv-recep__heure { font-size: 3rem; } .ouv-recep__titre { font-size: 2.2rem; } .ouv-recep .surtitre { display: none; } .ouv-recep__contenu { padding-bottom: 8px; } }
 @media (max-width: 760px) { .ouv-recep__titre { font-size: clamp(2.1rem, 9.4vw, 3rem); } }
-.espaces { padding-block: clamp(64px, 10vh, 120px); background: #1f1a35; color: #f6efe2; }
+.espaces { padding-block: clamp(64px, 10vh, 120px); background: #11201b; color: #f6efe2; }
 .espaces h2 { color: #f6efe2; }
 .volets { width: min(100% - 2 * var(--gouttiere), 1500px); margin: 24px auto 0; display: flex; gap: 10px; height: min(78svh, 680px); }
 .volet { position: relative; flex: 1 1 0; min-width: 0; border-radius: 6px; overflow: hidden; transition: flex-grow .7s var(--courbe); display: flex; flex-direction: column; justify-content: flex-end; }
@@ -393,7 +393,7 @@ html[data-saison="ete"] .volet[data-saison-ordre="hiver"] { order: 3; }
 .occasion__photo img { width: 100%; height: 100%; object-fit: cover; }
 .occasions__liste span { font-family: var(--police-titres); font-size: clamp(1.4rem, 2.2vw, 2rem); }
 @media (max-width: 760px) { .occasions__liste { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.demande { padding-block: clamp(72px, 12vh, 140px); background: #1f1a35; color: #f6efe2; }
+.demande { padding-block: clamp(72px, 12vh, 140px); background: #11201b; color: #f6efe2; }
 .demande h2 { color: #f6efe2; }
 .demande__grille { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 80px); align-items: start; }
 .demande__etapes { list-style: none; margin: 18px 0 24px; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
@@ -776,7 +776,7 @@ html:not(.calme):not(.secours).js .feu__legende { left: var(--gouttiere); transf
 @media (min-width: 761px) and (max-width: 1100px) { .midi__surtitre { max-width: 30em; } .midi__intro { max-width: 26em; } }
 /* Ouvertures qui ne se répètent plus : Offrir serre sur le foyer (Les fêtes montre la salle entière),
    la page fermée serre sur la grande table vide (Réceptions montre la terrasse entière). */
-.ouv-offrir__fond img { transform: scale(1.6); transform-origin: 50% 64%; }
+.ouv-offrir__fond img { transform: scale(1.04); transform-origin: 62% 20%; }
 .introuvable__photo img { transform: scale(1.45); transform-origin: 54% 80%; }
 /* Audit complet de la v6 : derniers réglages. */
 :is(html.calme, html:not(.js), html.secours) .feu__indice { display: none; }
@@ -978,8 +978,8 @@ html[data-saison="ete"] .ouv-fetes :is(.givre__canvas, .givre__statique) { displ
 .noel__actions { margin: 0; }
 .noel__acompte { margin: 8px 0 0; font-size: .85rem; color: #5b4e42; }
 
-/* v7 · Réceptions : le voile violet de 19 h s'ouvre en palmes qui s'écartent sur la pergola. */
-.rdl { --rdl-couleur-1: #3b2c56; --rdl-couleur-2: #33264b; --rdl-couleur-3: #4a3768; --rdl-ombre: rgba(18, 12, 30, .45); }
+/* v7 · Réceptions : le voile vert de 19 h s'ouvre en palmes qui s'écartent sur la pergola. */
+.rdl { --rdl-couleur-1: #24453e; --rdl-couleur-2: #1c3832; --rdl-couleur-3: #2f574d; --rdl-ombre: rgba(6, 18, 15, .45); }
 .rdl__passer { position: absolute; right: var(--gouttiere); bottom: calc(var(--barres-h) + 20px); pointer-events: auto; }
 
 /* v7 · Deux styles d'heure seulement : le jour, fine et bleu canard ; la nuit (19 h et après), grasse et braise. */
@@ -1237,8 +1237,20 @@ html:not([data-saison="ete"]) .fetes-hiver { --avant: #11201b; }
 .feu__photo::after { z-index: 2; background: radial-gradient(ellipse 60% 42% at 50% 46%, rgba(18, 12, 9, .42), rgba(18, 12, 9, 0) 75%), linear-gradient(0deg, rgba(18, 12, 9, .85) 0%, rgba(18, 12, 9, 0) 34%); }
 
 /* L'hiver, la terrasse d'été ferme la page, en clin d'œil. */
-.terrasse--clin { margin-top: 0; }
+.terrasse.terrasse--clin { height: auto; }
+.terrasse--clin .terrasse__cadre { position: relative; height: auto; min-height: min(100svh, 860px); }
+.terrasse--clin .terrasse__etapes li { opacity: 1; }
 @media (max-width: 760px) { .feu__indice { display: none; } }
 /* Les petites assiettes ne se chevauchent plus (chacune se touche en son centre). */
 .dejeuner__vraies { z-index: 3; gap: 8px; }
 .dejeuner__vraies .vraie { margin-left: 0; }
+
+/* v7.3 · Contrastes des ouvertures sur photo : un voile du côté du texte. */
+@media (min-width: 761px) {
+  .ouv-fetes::after { background: linear-gradient(270deg, rgba(18, 12, 9, .82) 0%, rgba(18, 12, 9, .6) 36%, rgba(18, 12, 9, 0) 62%), linear-gradient(0deg, rgba(18, 12, 9, .95) 0%, rgba(18, 12, 9, .82) 45%, rgba(18, 12, 9, .35) 72%, rgba(18, 12, 9, .1) 100%); }
+  .ouv-recep::after { background: radial-gradient(ellipse 34% 30% at 14% 44%, rgba(18, 12, 9, .7), rgba(18, 12, 9, 0) 75%), linear-gradient(90deg, rgba(18, 12, 9, .72) 0%, rgba(18, 12, 9, .45) 34%, rgba(18, 12, 9, 0) 58%), linear-gradient(0deg, rgba(18, 12, 9, .95) 0%, rgba(18, 12, 9, .82) 45%, rgba(18, 12, 9, .35) 72%, rgba(18, 12, 9, .05) 100%); }
+}
+.ouv-fetes__geant, .ouv-recep__heure { text-shadow: 0 2px 24px rgba(18, 12, 9, .55); }
+.ardoise__date { color: color-mix(in oklab, var(--ardoise-craie) 94%, var(--ardoise-fond)); }
+.terrasse--clin .terrasse__img:not(.terrasse__img--3) { display: none; }
+.terrasse--clin .terrasse__img--3 { opacity: 1; }

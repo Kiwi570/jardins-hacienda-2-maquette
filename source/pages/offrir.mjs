@@ -3,13 +3,13 @@
    (module carte-cadeau-qui-se-compose, montants du site actuel) et part dans son enveloppe (code gardé de la v5). */
 import { html } from '../../outils/gabarit.mjs';
 
-export const page = { cle: 'offrir', fichier: 'offrir', theme: 'nuit', imagePartage: 'grok/salle-feu-1280.webp', modules: ['carte-cadeau-qui-se-compose'] };
+export const page = { cle: 'offrir', fichier: 'offrir', theme: 'nuit', imagePartage: 'vraie/diner-feu-1080.webp', modules: ['carte-cadeau-qui-se-compose'] };
 
 const MONTANTS = [25, 50, 100, 150, 200];
 
 export default (c) => html`
 <section class="ouv-offrir" id="debut">
-  ${c.media({ nom: 'grok/salle-feu', alt: c.s('offrir.alt'), cadrage: '50% 60%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw' })}
+  ${c.media({ nom: 'vraie/diner-feu', alt: c.s('offrir.alt'), cadrage: '60% 8%', cadrageMobile: '50% 20%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw' })}
   <canvas class="ouv-offrir__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
   <div class="conteneur ouv-offrir__grille">
     <div class="ouv-offrir__texte">

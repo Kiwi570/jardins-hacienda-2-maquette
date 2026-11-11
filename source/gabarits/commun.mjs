@@ -10,8 +10,8 @@ const navigation = (c) => c.site.navigation.filter((cle) => c.pages[cle] && (c.p
 export const HEURES = {
   accueil: { h: '12', m: '00', voile: '#0c6f7b' },
   'la-carte': { h: '12', m: '30', voile: '#9c4a22' },
-  receptions: { h: '19', m: '00', voile: '#3b2c56' },
-  reserver: { h: '21', m: '00', voile: '#1f1a35' },
+  receptions: { h: '19', m: '00', voile: '#24453e' },
+  reserver: { h: '21', m: '00', voile: '#11201b' },
   'les-fetes': { h: '23', m: '30', voile: '#2a120a' },
   offrir: { h: '00', m: '00', voile: '#120c09' },
   'infos-pratiques': { h: '--', m: '--', voile: '#1c1712', reelle: true },

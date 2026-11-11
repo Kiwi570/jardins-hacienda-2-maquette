@@ -1,0 +1,17 @@
+{
+ "id": "20261111-185503-complet-cible-partiel",
+ "date": "2026-11-11T19:05:06.648Z",
+ "niveau": "complet",
+ "pages": "/,/la-carte,/les-fetes,/receptions",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "parcours"
+ ],
+ "version": "7",
+ "echecs": 3,
+ "aRegarder": 2,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "échecs"
+}

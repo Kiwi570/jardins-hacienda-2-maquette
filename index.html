@@ -149,7 +149,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   </div>
   <p class="saison-tag midi__saison" data-texte-ete="Piscine et terrasse de juin à septembre">L&#39;hiver, près des baies vitrées</p>
   <p class="indice midi__indice" aria-hidden="true"><span class="indice--souris" data-texte-ete="Passez la main sur l&#39;eau">Passez la main dans le soleil</span><span class="indice--doigt" data-texte-ete="Touchez l&#39;eau">Touchez le soleil</span></p>
-  <script>(function(){if(document.documentElement.getAttribute('data-saison')!=='ete')return;var l=document.querySelectorAll('#midi [data-texte-ete]');for(var i=0;i<l.length;i++)l[i].textContent=l[i].getAttribute('data-texte-ete');})();</script>
+  <script>(function(){var ete=document.documentElement.getAttribute('data-saison')==='ete';var im=document.querySelector(ete?'#midi .midi__eau:not(.midi__hiver) img':'#midi .midi__hiver img');if(im){im.loading='eager';im.setAttribute('fetchpriority','high');}if(!ete)return;var l=document.querySelectorAll('#midi [data-texte-ete]');for(var i=0;i<l.length;i++)l[i].textContent=l[i].getAttribute('data-texte-ete');})();</script>
 </section>
 <section class="dejeuner" id="dejeuner" data-heure="12:30" data-lumiere="dejeuner" aria-labelledby="dejeuner-titre">
   <div class="conteneur dejeuner__grille">

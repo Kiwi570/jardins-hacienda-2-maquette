@@ -13,7 +13,7 @@ const telephone = () => matchMedia('(max-width: 760px)').matches;
 
 /* ---------- Heures des pages : couleur du voile et chiffres de l'heure d'arrivée ---------- */
 const HEURES = {
-  '/': ['12:00', '#0c6f7b'], '/la-carte': ['12:30', '#9c4a22'], '/receptions': ['19:00', '#3b2c56'], '/reserver': ['21:00', '#1f1a35'],
+  '/': ['12:00', '#0c6f7b'], '/la-carte': ['12:30', '#9c4a22'], '/receptions': ['19:00', '#24453e'], '/reserver': ['21:00', '#11201b'],
   '/les-fetes': ['23:30', '#2a120a'], '/offrir': ['00:00', '#120c09'], '/infos-pratiques': [null, '#1c1712'],
 };
 const cheminDe = (u) => { let p = u.pathname.replace(/\.html$/, '').replace(/\/index$/, '/'); if (p.length > 1) p = p.replace(/\/$/, ''); return p || '/'; };
@@ -239,7 +239,7 @@ async function statuts() {
 }
 
 /* ---------- La lumière de la journée (signature) : horloge de l'en-tête, couleur de l'en-tête, chiffres variables ---------- */
-const TEINTES = { midi: [246, 241, 231], dejeuner: [243, 234, 217], apresmidi: [242, 222, 178], terrasse: [42, 33, 64], diner: [17, 32, 27], feu: [18, 12, 9], fetes: [26, 15, 11], minuit: [14, 10, 8] };
+const TEINTES = { midi: [246, 241, 231], dejeuner: [243, 234, 217], apresmidi: [242, 222, 178], terrasse: [19, 36, 31], diner: [17, 32, 27], feu: [18, 12, 9], fetes: [26, 15, 11], minuit: [14, 10, 8] };
 const NUIT = new Set(['terrasse', 'diner', 'feu', 'fetes', 'minuit']);
 const enMinutes = (h) => { const [a, b] = h.split(':').map(Number); return a * 60 + b; };
 function axes(el, f) {
@@ -425,7 +425,8 @@ function terrasse() {
     const allumees = Math.round(Math.max(0, Math.min(1, (p - 0.28) / 0.34)) * ampoules.length);
     ampoules.forEach((a, i) => a.classList.toggle('est-allumee', i < allumees || touchees.has(a)));
   };
-  if (etat.calme || !gsap || !window.ScrollTrigger) { appliquer(1); return; }
+  /* L'hiver, la terrasse ferme la page en clin d'œil : une seule image, la nuit, guirlandes allumées (pas de scène épinglée). */
+  if (etat.calme || !gsap || !window.ScrollTrigger || sec.classList.contains('terrasse--clin')) { appliquer(1); return; }
   appliquer(0);
   gsap.timeline({ scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.4, invalidateOnRefresh: true, onUpdate: (st) => appliquer(st.progress) } });
 }

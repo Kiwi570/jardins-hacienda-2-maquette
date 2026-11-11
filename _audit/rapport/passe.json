@@ -1,14 +1,11 @@
 {
- "id": "20261111-180131-standard-cible-partiel",
- "date": "2026-11-11T18:05:54.919Z",
- "niveau": "standard",
- "pages": "/",
+ "id": "20261111-190530-complet-cible-partiel",
+ "date": "2026-11-11T19:07:56.260Z",
+ "niveau": "complet",
+ "pages": "/,/receptions",
  "etapes": [
   "fichiers",
-  "mesures",
-  "parcours",
-  "ecran",
-  "fluidite"
+  "mesures"
  ],
  "version": "7",
  "echecs": 0,

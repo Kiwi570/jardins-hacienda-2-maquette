@@ -68,7 +68,7 @@ export default (c) => {
   </div>
   <p class="saison-tag midi__saison" data-texte-ete="${c.s('accueil.midi.saison')}">${c.t('accueil.midi.saisonHiver')}</p>
   <p class="indice midi__indice" aria-hidden="true"><span class="indice--souris" data-texte-ete="${c.s('accueil.midi.indice')}">${c.t('accueil.midi.indiceHiver')}</span><span class="indice--doigt" data-texte-ete="${c.s('accueil.midi.indiceTactile')}">${c.t('accueil.midi.indiceTactileHiver')}</span></p>
-  <script>(function(){if(document.documentElement.getAttribute('data-saison')!=='ete')return;var l=document.querySelectorAll('#midi [data-texte-ete]');for(var i=0;i<l.length;i++)l[i].textContent=l[i].getAttribute('data-texte-ete');})();</script>
+  <script>(function(){var ete=document.documentElement.getAttribute('data-saison')==='ete';var im=document.querySelector(ete?'#midi .midi__eau:not(.midi__hiver) img':'#midi .midi__hiver img');if(im){im.loading='eager';im.setAttribute('fetchpriority','high');}if(!ete)return;var l=document.querySelectorAll('#midi [data-texte-ete]');for(var i=0;i<l.length;i++)l[i].textContent=l[i].getAttribute('data-texte-ete');})();</script>
 </section>
 
 <section class="dejeuner" id="dejeuner" data-heure="12:30" data-lumiere="dejeuner" aria-labelledby="dejeuner-titre">
