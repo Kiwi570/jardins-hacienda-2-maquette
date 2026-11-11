@@ -1,0 +1,367 @@
+{
+ "mission": "v7-distinction",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.2,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 12928,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver une table",
+    "Demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "attendre 3000",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 6.2,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 12928,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver une table",
+    "Demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 7.4,
+   "adresse": "/",
+   "y": 717,
+   "hauteurPage": 12928,
+   "titres": [
+    "h2 La carte de la semaine"
+   ],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "attendre 2000",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 9.4,
+   "adresse": "/",
+   "y": 717,
+   "hauteurPage": 12928,
+   "titres": [
+    "h2 La carte de la semaine"
+   ],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 9.4,
+   "adresse": "/",
+   "y": 717,
+   "hauteurPage": 12928,
+   "titres": [
+    "h2 La carte de la semaine"
+   ],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-4.png"
+  },
+  {
+   "k": 5,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 10.6,
+   "adresse": "/",
+   "y": 1434,
+   "hauteurPage": 12928,
+   "titres": [],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "9 €",
+    "21 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "attendre 2000",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 12.6,
+   "adresse": "/",
+   "y": 1434,
+   "hauteurPage": 12928,
+   "titres": [],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "9 €",
+    "21 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 7,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 12.6,
+   "adresse": "/",
+   "y": 1434,
+   "hauteurPage": 12928,
+   "titres": [],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "9 €",
+    "21 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-7.png"
+  },
+  {
+   "k": 8,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 13.8,
+   "adresse": "/",
+   "y": 2151,
+   "hauteurPage": 12928,
+   "titres": [
+    "h2 L'été, la maison vit dehors",
+    "h3 Les journées festives"
+   ],
+   "actions": [
+    "L'été aux Jardins",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 9,
+   "geste": "attendre 2000",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 15.8,
+   "adresse": "/",
+   "y": 2151,
+   "hauteurPage": 12928,
+   "titres": [
+    "h2 L'été, la maison vit dehors",
+    "h3 Les journées festives"
+   ],
+   "actions": [
+    "L'été aux Jardins",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-9.png"
+  }
+ ]
+}

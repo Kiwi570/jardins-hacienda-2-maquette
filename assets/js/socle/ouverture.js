@@ -9,14 +9,16 @@
    - section : rechargement dû au bouton du mode calme : état final, retour à la section.
    - calme, secours : état final directement.
    Aucune attente ne peut bloquer l'écran : en cas d'erreur, la page passe dans son état final. */
-import { html, etat, emettre, stockage, prochaineImage, attendre } from './etat.js?v=6';
-import { bloquerDefilement, debloquerDefilement, aller } from './defilement.js?v=6';
-import { toutAfficher, demarrerApparitions } from './apparitions.js?v=6';
-import { suivre, lacher, lacherTout } from './gouttiere.js?v=6';
-import { voile, decouvrir, reinitialiser } from './voile.js?v=6';
+import { html, etat, emettre, stockage, prochaineImage, attendre } from './etat.js?v=7';
+import { bloquerDefilement, debloquerDefilement, aller } from './defilement.js?v=7';
+import { toutAfficher, demarrerApparitions } from './apparitions.js?v=7';
+import { suivre, lacher, lacherTout } from './gouttiere.js?v=7';
+import { voile, decouvrir, reinitialiser } from './voile.js?v=7';
 
 const MAX_ATTENTE = 1500;
 const BUDGET = 2900; /* ms depuis le premier octet jusqu'à la fin de l'intro */
+/* Accueil la nuit (Jardins de l'Hacienda) : l'heure réelle reste lisible un instant, l'intro a 0,8 s de plus. */
+const budget = () => BUDGET + (document.documentElement.classList.contains('intro-nuit') ? 800 : 0);
 let tlCourante = null;
 let restauree = false;
 
@@ -100,7 +102,7 @@ async function jouerIntro(jouer, ctl) {
   if (pilotable && typeof tl.duration === 'function') {
     const nav = performance.getEntriesByType('navigation')[0];
     const ecoule = performance.now() - (nav ? nav.responseStart : 0);
-    const reste = Math.max(600, BUDGET - ecoule);
+    const reste = Math.max(600, budget() - ecoule);
     if (tl.duration() * 1000 > reste) tl.timeScale((tl.duration() * 1000) / reste);
   }
   /* Les apparitions de la page démarrent pendant la fin de l'intro (quand le panneau se retire),
@@ -205,7 +207,8 @@ export async function ouvrir(o = {}) {
       /* Défilement bloqué sous le voile (barre de défilement cachée, bande peinte à la couleur du voile). */
       bloquerDefilement('voile');
       suivre(voile());
-      await attendrePret(o.pret);
+      /* Le voile ne s'attarde pas (regard neuf v6 : une seconde sur un aplat) : 650 ms au plus pour la page. */
+      await Promise.race([attendrePret(o.pret), attendre(650)]);
       allerAuHash();
       await prochaineImage();
       const leve = leverVoile();

@@ -1,0 +1,93 @@
+{
+ "mission": "v7-prix",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.4,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 12377,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver une table",
+    "Demander une réception"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer La carte",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 12.4,
+   "adresse": "/la-carte",
+   "y": 0,
+   "hauteurPage": 8204,
+   "titres": [
+    "h1 La carte de la semaine",
+    "h2 Ce midi, à la carte"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver un déjeuner",
+    "Passer au dîner",
+    "Toute la carte, plus bas"
+   ],
+   "prixVus": [
+    "21 €",
+    "26 €",
+    "16 €",
+    "14 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "16 €",
+    "14 €",
+    "9 €",
+    "18 €",
+    "24 €",
+    "10 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-1.png"
+  }
+ ]
+}

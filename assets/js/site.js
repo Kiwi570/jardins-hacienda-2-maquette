@@ -3,7 +3,7 @@
    bibliothèque (dossier modules/) sont chargés ici, page par page, et réglés sans être réécrits.
    Effets propres (data-effet) : heure (horloge de l'en-tête), axes (chiffres variables), heure-section, eau (WebGL),
    passe, vraies, apres-midi, terrasse, guirlandes, carton, braises, decompte, carte-apercu. */
-import { demarrer, boucle, etat, versObjet, quand, aller, partir } from './socle/index.js?v=6';
+import { demarrer, boucle, etat, versObjet, quand, aller, partir } from './socle/index.js?v=7';
 
 const gsap = window.gsap;
 const $ = (s, r = document) => r.querySelector(s);
@@ -37,7 +37,7 @@ function heurePage(u) {
       try { const R = JSON.parse(($('[data-reservation-globale]') || $('[data-reservation-accueil]')).textContent); sv = prochainsServices(R, 1)[0]?.sv; } catch { sv = null; }
       if (!sv) sv = momentDe(u) === 'soir' ? 'soir' : 'midi';
     }
-    return [sv === 'soir' ? '20:00' : '12:30', h[1]];
+    return [sv === 'soir' ? '21:00' : '12:30', h[1]];
   }
   return h;
 }
@@ -45,6 +45,9 @@ function preparerVoile(url) {
   let u; try { u = new URL(url, location.href); } catch { return; }
   if (u.origin !== location.origin) return;
   const h = heurePage(u); if (!h) return;
+  /* Le voile est un ciel : la couleur de l'heure de départ en bas, celle de l'heure d'arrivée en haut. */
+  const ici = heurePage(new URL(location.href));
+  if (ici && ici[1]) html.style.setProperty('--voile-avant', ici[1]);
   html.style.setProperty('--voile-fond', h[1]);
   const el = $('[data-voile-heure]'); if (el) el.textContent = h[0] || heureParis();
 }
@@ -56,6 +59,18 @@ function heureDArrivee() {
   if (rh) rh.lastElementChild.textContent = hh; if (rm) rm.lastElementChild.textContent = mm;
   const v = $('[data-voile-heure]'); if (v) v.textContent = h[0];
   if (!$('main [data-heure]')) { const a = $('[data-horloge-h]'), b = $('[data-horloge-m]'); if (a && b && !$('[data-horloge-reelle]')) { a.textContent = hh; b.textContent = mm; } }
+  /* Accueil, la nuit et le matin (avant 11 h) : l'intro s'arrête d'abord sur l'heure réelle (« 01:26 · la maison dort »),
+     puis roule jusqu'à midi (« Rendez-vous à midi »), au lieu d'afficher « 12:00 » à une heure où tout est fermé. */
+  if (rh && rm && $('.midi') && html.dataset.arrivee === 'intro') {
+    const [rH, rM] = heureParis().split(':'); const t = +rH * 60 + +rM;
+    if (t < 11 * 60) {
+      const hs = [...rh.children], ms = [...rm.children], n = hs.length - 1;
+      hs.forEach((e, i) => { e.textContent = String(Math.round(+rH + ((12 - +rH) * i) / n)).padStart(2, '0'); });
+      ms.forEach((e, i) => { e.textContent = i === 0 ? rM : i === n ? '00' : String((Math.round((+rM * (n - i)) / n / 5) * 5) % 60).padStart(2, '0'); });
+      const l = $('.ouverture-ligne'); if (l) l.textContent = `${rH}:${rM} · ${t < 7 * 60 ? 'la maison dort' : 'la maison se prépare'}. Rendez-vous à midi.`;
+      html.classList.add('intro-nuit');
+    }
+  }
 }
 function voileALHeure() {
   document.addEventListener('click', (e) => {
@@ -69,14 +84,36 @@ function voileALHeure() {
 
 /* ---------- Modules de la bibliothèque (pages intérieures) ---------- */
 const MODULES = {
-  'carte-du-restaurant': () => import('./modules/carte-du-restaurant/module.js?v=6'),
-  'accords-mets-et-vins': () => import('./modules/accords-mets-et-vins/module.js?v=6'),
-  'horaires-ouvert-maintenant': () => import('./modules/horaires-ouvert-maintenant/module.js?v=6'),
-  'plan-de-salle': () => import('./modules/plan-de-salle/module.js?v=6'),
-  'reservation-de-table': () => import('./modules/reservation-de-table/module.js?v=6'),
-  'carte-cadeau-qui-se-compose': () => import('./modules/carte-cadeau-qui-se-compose/module.js?v=6'),
+  'carte-du-restaurant': () => import('./modules/carte-du-restaurant/module.js?v=7'),
+  'accords-mets-et-vins': () => import('./modules/accords-mets-et-vins/module.js?v=7'),
+  'horaires-ouvert-maintenant': () => import('./modules/horaires-ouvert-maintenant/module.js?v=7'),
+  'plan-de-salle': () => import('./modules/plan-de-salle/module.js?v=7'),
+  'reservation-de-table': () => import('./modules/reservation-de-table/module.js?v=7'),
+  'carte-cadeau-qui-se-compose': () => import('./modules/carte-cadeau-qui-se-compose/module.js?v=7'),
+  'ardoise-a-la-craie': () => import('./modules/ardoise-a-la-craie/module.js?v=7'),
+  'assiette-qui-se-dresse': () => import('./modules/assiette-qui-se-dresse/module.js?v=7'),
+  'plat-fumant': () => import('./modules/plat-fumant/module.js?v=7'),
+  'depliant-3d': () => import('./modules/depliant-3d/module.js?v=7'),
+  'givre-webgl': () => import('./modules/givre-webgl/module.js?v=7'),
+  'agenda-des-dates': () => import('./modules/agenda-des-dates/module.js?v=7'),
+  'ciel-en-direct': () => import('./modules/ciel-en-direct/module.js?v=7'),
+  'formulaire-par-etapes': () => import('./modules/formulaire-par-etapes/module.js?v=7'),
+  'rideau-en-lanieres': () => import('./modules/rideau-en-lanieres/module.js?v=7'),
+  'lumiere-au-pointeur': () => import('./modules/lumiere-au-pointeur/module.js?v=7'),
 };
 const OPTIONS = {
+  'ardoise-a-la-craie': { vitesse: 2 },
+  'assiette-qui-se-dresse': { longueur: 1.4 },
+  'givre-webgl': { delai: 900, force: 0.9 },
+  'agenda-des-dates': { fuseau: 'Europe/Paris', textes: {
+    prochaine: (t, q) => `Prochaine date\u00a0: ${t}, ${q}`,
+    /* Jours de calendrier (comme les comptes à rebours de l'accueil) : une date sans heure commence à minuit. */
+    dans: (j, h, m) => { if (j < 1 && !h && !m) return 'aujourd’hui'; const n = j + (h || m ? 1 : 0); return n <= 1 ? 'demain' : `dans ${n} jours`; },
+  } },
+  'lumiere-au-pointeur': { source: 'bougie', focus: [0.68, 0.46], repos: 'promenade', relief: 2.2 },
+  'ciel-en-direct': { timeZone: 'Europe/Paris', lat: 49.204, lon: 5.946, mer: false, etoiles: 1.1 },
+  'rideau-en-lanieres': { effet: 'ecarte', forme: 'feuille', nombre: 7, nombreTelephone: 5, coeur: 0, delai: 0.05, duree: 0.75, decalage: 0.05, unique: false },
+  'plat-fumant': { densite: 0.9, hauteur: 0.55, vitesse: 0.85, intensite: 0.95, qualite: 0.35 },
   'accords-mets-et-vins': { textes: { avec: 'Avec', signature: "Le vin de l'accord", groupe: 'Les plats du menu' } },
   'plan-de-salle': { reservation: '/reserver#formulaire', couverts: 2, textes: { choix: '{nom} · {zone} · {places} places. ', prise: 'Indisponible (simulation)' } },
   'carte-cadeau-qui-se-compose': { cachet: 'JH', min: 25, max: 200, textes: {
@@ -101,13 +138,60 @@ function reglagesResa(el) {
     complet: (iso, t) => { const sv = serviceDe(t); return rouverts.some(([j, s2]) => j === jour(iso) && s2 === sv) && !ex.some((e) => e.date === iso && e.service === sv); },
   };
 }
+/* L'ardoise de La carte : celle du midi ou celle du soir, selon l'heure de la page (avant que le module l'écrive). */
+function contenuArdoise(el, mo) {
+  let A = null; try { A = JSON.parse($('script[data-ardoise]', el)?.textContent || 'null'); } catch {}
+  return A && A[mo] ? { date: A.date, ...A[mo] } : null;
+}
+function ardoiseDuMoment(el) {
+  const mo = html.dataset.moment === 'soir' ? 'soir' : 'jour', a = contenuArdoise(el, mo);
+  if (!a || mo === 'jour') return;
+  const t = $('.ardoise__titre > span', el), m = $('.ardoise__mot > span', el), li = $$('.ardoise__liste > li', el);
+  if (t) t.textContent = a.titre; if (m) m.textContent = a.mot;
+  a.lignes.forEach((l, i) => { if (li[i]) { $('.ardoise__plat', li[i]).textContent = l.plat; $('.ardoise__prix', li[i]).textContent = l.prix; } });
+}
+/* Agenda : le lien « Réserver » d'une date ouvre le formulaire au bon jour (la date seule, sans l'heure). */
+function datesVersReservation(el) {
+  for (const a of $$('a.agd__reserver', el)) { try { const u = new URL(a.href); const d = u.searchParams.get('date'); if (d) u.searchParams.set('date', d.slice(0, 10)); u.searchParams.delete('sujet'); const li = a.closest('[id^="date-"]'); if (li) u.searchParams.set('soiree', li.id.slice(5)); a.href = u.pathname + u.search + u.hash; } catch {} }
+}
+/* Réserver : arrivée depuis une date des fêtes (?soiree=…) : la soirée est rappelée au-dessus du formulaire. */
+function rappelSoiree() {
+  const el = $('[data-soiree]'), id = new URLSearchParams(location.search).get('soiree'); if (!el || !id) return;
+  let L = []; try { L = JSON.parse($('script[data-agenda]').textContent); } catch {}
+  const x = L.find((d) => d.id === id); if (!x) return;
+  const jour = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(x.d.slice(0, 10) + 'T12:00:00Z'));
+  el.textContent = `Pour\u00a0: ${x.t}, ${jour}${x.p ? ` · ${x.p}` : ''}.`; el.hidden = false;
+}
+/* Une question (Infos pratiques) : après l'envoi, le message de fin revient à l'écran. */
+document.addEventListener('formulaire:envoye', (e) => { const fin = e.target.closest('[data-module="formulaire-par-etapes"]')?.querySelector('.fpe__fin'); if (fin) setTimeout(() => amenerDansEcran(fin, true), 120); });
+let givreEnAttente = null;
+function givreAuRepos() {
+  let t = 0;
+  const essayer = () => { clearTimeout(t); t = setTimeout(() => { if (scrollY < 40) { removeEventListener('scroll', essayer); givreHiver(); } }, 700); };
+  addEventListener('scroll', essayer, { passive: true }); essayer();
+}
+async function givreHiver() {
+  if (!givreEnAttente || html.dataset.saison !== 'hiver' || innerWidth < 761) return;
+  const el = givreEnAttente; givreEnAttente = null;
+  try { const { init } = await MODULES['givre-webgl'](); apis['givre-webgl'] = await init(el, OPTIONS['givre-webgl'] || {}); } catch (e) { console.warn('module givre-webgl', e); }
+}
 async function chargerModules() {
   for (const el of $$('[data-module]')) {
     const nom = el.dataset.module;
     if (!MODULES[nom]) continue;
+    /* La vitre givrée n'existe que l'hiver : elle s'installe au premier passage à l'hiver (bascule de saison). */
+    if (nom === 'givre-webgl' && html.dataset.saison === 'ete') { givreEnAttente = el; continue; }
+    /* Sur téléphone, le givre reste figé (motif CSS du module) : le shader coûte trop au défilement.
+       Sur ordinateur, il ne s'installe que le visiteur arrêté en haut de la page (jamais pendant un défilement). */
+    if (nom === 'givre-webgl' && innerWidth < 761) continue;
+    if (nom === 'givre-webgl') { givreEnAttente = el; givreAuRepos(); continue; }
+    /* Les lanières ne prennent le relais que du voile (arrivée depuis une autre page) : jamais après l'intro. */
+    if (nom === 'rideau-en-lanieres' && html.classList.contains('rdl-vu')) { el.remove(); continue; }
     try {
+      if (nom === 'ardoise-a-la-craie') ardoiseDuMoment(el);
       const { init } = await MODULES[nom]();
       apis[nom] = await init(el, nom === 'reservation-de-table' ? { ...(OPTIONS[nom] || {}), ...reglagesResa(el) } : (OPTIONS[nom] || {}));
+      if (nom === 'agenda-des-dates') datesVersReservation(el);
       if (nom === 'accords-mets-et-vins') {
         for (const li of el.querySelectorAll('.ame__liste > li')) li.setAttribute('role', 'none');
         for (const r of el.querySelectorAll('.ame__radio')) r.setAttribute('data-superpose', '');
@@ -115,14 +199,33 @@ async function chargerModules() {
     } catch (e) { console.warn('module', nom, e); }
   }
   window.dispatchEvent(new CustomEvent('hacienda:modules'));
+  /* Lien profond (page#section) : les modules (agenda, dépliant épinglé, carte…) changent les hauteurs après le premier
+     placement ; si le visiteur n'a pas encore bougé, on revient sur la section visée. */
+  if (location.hash && !aBouge) { const cible = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (cible) requestAnimationFrame(() => requestAnimationFrame(() => { window.ScrollTrigger?.refresh(); if (!aBouge) aller(cible, { instant: true }); })); }
 }
+let aBouge = false;
+/* Lien profond : pendant 4 s, tant que le visiteur n'a pas bougé, la section visée reste en haut même si des blocs
+   au-dessus changent de hauteur (cadran des horaires, modules, images). */
+function garderAncre() {
+  if (!location.hash) return;
+  let cible = null; try { cible = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch {}
+  if (!cible) return;
+  const t0 = performance.now(); let h0 = document.documentElement.scrollHeight, attente = 0;
+  const ro = new ResizeObserver(() => {
+    if (aBouge || performance.now() - t0 > 4000) { ro.disconnect(); return; }
+    const h = document.documentElement.scrollHeight; if (h === h0) return; h0 = h;
+    cancelAnimationFrame(attente); attente = requestAnimationFrame(() => { if (!aBouge) aller(cible, { instant: true }); });
+  });
+  ro.observe(document.body);
+}
+['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((t) => addEventListener(t, () => { aBouge = true; }, { once: true, passive: true }));
 
 /* ---------- Statut ouvert / fermé (module horaires : mêmes données et mêmes calculs partout) ---------- */
 async function statuts() {
   const src = $('[data-horaires-accueil]'); const cibles = $$('[data-statut-accueil], [data-statut-accueil-bis]');
   if (!src || !cibles.length) return;
   try {
-    const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=6');
+    const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=7');
     const a = H.preparer(JSON.parse(src.textContent)).adresses[0];
     const maj = () => {
       const st = H.statut(a, H.maintenant(a.fuseau));
@@ -306,6 +409,37 @@ function terrasse() {
   gsap.timeline({ scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.4, invalidateOnRefresh: true, onUpdate: (st) => appliquer(st.progress) } });
 }
 
+/* ---------- 14 h 30 · le panorama : la caméra parcourt la piscine, l'heure avance jusqu'à 19 h, la lumière dore ---------- */
+function panorama() {
+  const sec = $('.panorama'); if (!sec) return;
+  const h = $('[data-panorama-heure] span', sec), lieux = $$('[data-lieu]', sec);
+  const fmt = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  const piste = $('[data-panorama-piste]', sec), legende = $('.panorama__legende', sec);
+  const appliquer = (p) => {
+    sec.style.setProperty('--p', p.toFixed(3));
+    if (h) h.textContent = fmt(870 + Math.round((p * 270) / 15) * 15);
+    /* Une légende ne s'allume que si son point est dans l'écran, et s'ouvre du côté où elle tient (jamais coupée). */
+    const vw = document.documentElement.clientWidth, W = piste ? piste.offsetWidth : vw, tx = p * (vw - W);
+    lieux.forEach((l) => {
+      const x = (parseFloat(l.style.getPropertyValue('--x')) / 100) * W + tx, place = Math.min(320, vw * 0.7) + 60;
+      const dedans = x > 24 && x < vw - 24;
+      l.classList.toggle('est-allume', dedans && p >= +l.dataset.lieu - 0.14);
+      l.dataset.cote = x + place > vw ? 'gauche' : 'droite';
+    });
+    /* Téléphone : la légende du lieu le plus près du centre s'écrit dans un bandeau en bas de l'image (jamais coupée). */
+    if (legende && vw < 761) {
+      const allumes = lieux.filter((l) => l.classList.contains('est-allume'));
+      const proche = allumes.sort((a, b) => Math.abs((parseFloat(a.style.getPropertyValue('--x')) / 100) * W + tx - vw / 2) - Math.abs((parseFloat(b.style.getPropertyValue('--x')) / 100) * W + tx - vw / 2))[0];
+      const id = proche ? proche.id : '';
+      if (legende.dataset.lieu !== id) { legende.dataset.lieu = id; legende.innerHTML = proche ? $('.lieu__texte', proche).innerHTML : ''; }
+    }
+  };
+  if (etat.calme || !gsap || !window.ScrollTrigger) { lieux.forEach((l) => l.classList.add('est-allume')); return; }
+  sec.classList.add('est-actif');
+  appliquer(0);
+  gsap.timeline({ scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.5, invalidateOnRefresh: true, onUpdate: (st) => appliquer(st.progress) } });
+}
+
 /* ---------- 21 h · réserver dans la page : prochains services ouverts, carte de placement qui s'envole ---------- */
 function prochainsServices(R, nb = 6) {
   const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
@@ -428,6 +562,16 @@ function decomptes() {
     const o = { v: Math.min(n + 40, 400) };
     gsap.to(o, { v: n, duration: 1.2, ease: 'power3.out', onUpdate: () => { cible.textContent = Math.round(o.v); }, scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
   }
+  /* 23 h 30 : la prochaine date (soirées à thème et brunch des affiches du site), calculée au jour réel à Moineville. */
+  const ps = $('[data-prochaine-soiree]'), txt = ps && $('[data-soiree-texte]', ps);
+  if (ps && txt) {
+    let L = []; try { L = JSON.parse($('script', ps).textContent); } catch {}
+    const prochaine = L.filter((x) => joursAvant(x.d.slice(0, 10)) >= 0).sort((a, b) => a.d.localeCompare(b.d))[0];
+    if (prochaine) {
+      const jour = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(prochaine.d.slice(0, 10) + 'T12:00:00Z'));
+      txt.textContent = `À venir\u00a0: ${prochaine.t}, ${jour}${prochaine.p ? ` · ${prochaine.p}` : ''}.`;
+    }
+  }
 }
 
 /* ---------- Minuit · la carte cadeau se redresse au défilement ---------- */
@@ -469,6 +613,9 @@ function basculeMoment() {
   for (const b of $$('[data-bascule-moment]')) b.addEventListener('click', () => {
     html.classList.add('transition-moment');
     poser(html.dataset.moment === 'soir' ? 'jour' : 'soir');
+    /* L'ardoise passe au chiffon et se réécrit pour l'autre service. */
+    const mur = $('[data-module="ardoise-a-la-craie"]'), a = mur && contenuArdoise(mur, html.dataset.moment);
+    if (a && apis['ardoise-a-la-craie']?.ecrire) apis['ardoise-a-la-craie'].ecrire(a);
     setTimeout(() => html.classList.remove('transition-moment'), 900);
     rafraichir();
   });
@@ -489,12 +636,13 @@ function saisonFetes() {
     for (const b of choix) b.setAttribute('aria-pressed', String(b.dataset.saisonChoix === sa));
     const ete = sa === 'ete';
     html.dataset.theme = 'nuit';
+    html.dataset.enteteTheme = ete ? 'jour' : 'nuit';
     try { const u = new URL(location.href); u.searchParams.set('saison', sa); history.replaceState(history.state, '', u); } catch {}
     for (const el of $$('.heure-geante')) axes(el, ete ? 0.1 : 0.8);
-    poserHorloge(ete ? '15:30' : '23:00');
+    poserHorloge(ete ? '15:30' : '23:30');
   };
   poser(html.dataset.saison || 'hiver');
-  for (const b of choix) b.addEventListener('click', () => { html.classList.add('transition-moment'); poser(b.dataset.saisonChoix); setTimeout(() => html.classList.remove('transition-moment'), 900); rafraichir(); });
+  for (const b of choix) b.addEventListener('click', () => { html.classList.add('transition-moment'); poser(b.dataset.saisonChoix); givreHiver(); setTimeout(() => html.classList.remove('transition-moment'), 900); rafraichir(); });
 }
 
 /* Réceptions : le mot de l'occasion (un tour à l'arrivée, puis au toucher), les volets des espaces, la demande. */
@@ -623,7 +771,7 @@ function lumiereService() {
     html.style.setProperty('--entete-fond', sv === 'midi' ? '#f6f1e7' : '#120c09');
     html.style.setProperty('--entete-texte', sv === 'midi' ? '#1c1712' : '#f6efe2');
     html.dataset.enteteTheme = sv === 'midi' ? 'jour' : 'nuit';
-    poserHorloge(sv === 'midi' ? '12:30' : '20:00');
+    poserHorloge(sv === 'midi' ? '12:30' : '21:00');
     for (const el of $$('.heure-geante')) axes(el, sv === 'midi' ? 0.04 : 0.66);
   };
   poser();
@@ -699,7 +847,7 @@ function reservationPlacement() {
   /* Arrivée avec une table choisie sur le plan : son carton file jusqu'au récapitulatif. */
   const table = new URLSearchParams(location.search).get('table'), recap = $('[data-resa-recap]');
   if (recap && plan && table && !etat.calme) quand('pret', async () => {
-    try { const { envol } = await import('./modules/envol-vers-le-panier/module.js?v=6'); const depuis = $('.pds__repere', plan) || $(`[data-table="${CSS.escape(table)}"]`, plan); if (depuis) setTimeout(() => envol({ depuis, vers: recap, forme: 'carte' }), 900); } catch (e) { console.warn('envol', e); }
+    try { const { envol } = await import('./modules/envol-vers-le-panier/module.js?v=7'); const depuis = $('.pds__repere', plan) || $(`[data-table="${CSS.escape(table)}"]`, plan); if (depuis) setTimeout(() => envol({ depuis, vers: recap, forme: 'carte' }), 900); } catch (e) { console.warn('envol', e); }
   });
 }
 function carteCadeauStatut() {
@@ -712,7 +860,11 @@ function carteCadeauStatut() {
 /* Infos pratiques : l'heure réelle à Moineville, en chiffres géants qui tournent. */
 function heureReelle() {
   const el = $('[data-heure-reelle]'); if (!el) return;
-  const maj = () => { el.textContent = heureParis(); };
+  /* Le curseur du ciel (Infos pratiques) choisit une autre heure : la grande heure la suit, puis revient à l'heure réelle. */
+  const ciel = $('[data-module="ciel-en-direct"]'), choisie = ciel && $('[data-ced-heure]', ciel), drapeau = ciel && $('[data-ced-drapeau]', ciel);
+  const maj = () => { const v = choisie && drapeau && !drapeau.hidden && /\d/.test(choisie.textContent) ? choisie.textContent : heureParis(); if (el.textContent !== v) el.textContent = v; };
+  const carte = ciel && $('.ced__carte', ciel);
+  if (carte) new MutationObserver(maj).observe(carte, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['hidden'] });
   maj(); setInterval(maj, 20000);
   const [h, m] = heureParis().split(':');
   const rh = $('[data-rouleau="h"]'), rm = $('[data-rouleau="m"]');
@@ -722,7 +874,7 @@ function heureReelle() {
 async function cadranManipulable() {
   const sec = $('[data-module="horaires-ouvert-maintenant"]'), cadran = sec && $('.horaires__cadran', sec), src = sec && $('script[data-horaires]', sec);
   if (!cadran || !src || etat.calme) return;
-  const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=6');
+  const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=7');
   const a = H.preparer(JSON.parse(src.textContent)).adresses[0];
   const n0 = H.maintenant(a.fuseau);
   const jours = Array.from({ length: 7 }, (_, k) => H.ajouter(n0.iso, k));
@@ -812,6 +964,7 @@ demarrer({
     passe();
     pisteTelephone();
     terrasse();
+    panorama();
     miniResa();
     braises();
     decomptes();
@@ -833,6 +986,8 @@ demarrer({
     cloches();
     eteHeures();
     quand('pret', cadranManipulable);
+    garderAncre();
+    rappelSoiree();
     chargerModules();
   },
   pret: [eau()].filter(Boolean),
@@ -841,11 +996,13 @@ demarrer({
   jouer() {
     if (!gsap) return null;
     const tl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
+    /* La nuit, l'heure réelle reste lisible un instant avant de rouler vers midi. */
+    const pause = html.classList.contains('intro-nuit') ? 0.9 : 0;
     $$('[data-rouleau]').forEach((r, i) => {
       const n = r.children.length - 1;
-      tl.fromTo(r.children, { yPercent: 0 }, { yPercent: -100 * n, duration: 0.85 + i * 0.12 }, 0.12);
+      tl.fromTo(r.children, { yPercent: 0 }, { yPercent: -100 * n, duration: 0.85 + i * 0.12 }, 0.12 + pause);
     });
-    tl.to('.ouverture-nom, .ouverture-ligne', { opacity: 0, duration: 0.25, ease: 'power1.out' }, 0.95);
+    tl.to('.ouverture-nom, .ouverture-ligne', { opacity: 0, duration: 0.25, ease: 'power1.out' }, 0.95 + pause);
     /* L'horloge de l'intro arrive à la taille exacte de l'heure géante (hauteur pour hauteur), sans rétrécir puis regrossir. */
     const cible = $('[data-iris-centre]'), objet = $('[data-ouverture-objet]');
     const ec = cible && objet && objet.getBoundingClientRect().height ? cible.getBoundingClientRect().height / objet.getBoundingClientRect().height : null;

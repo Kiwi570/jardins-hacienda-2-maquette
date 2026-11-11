@@ -1,0 +1,17 @@
+{
+ "id": "20261111-165328-complet-cible-partiel",
+ "date": "2026-11-11T16:58:00.784Z",
+ "niveau": "complet",
+ "pages": "/,/les-fetes",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "fluidite"
+ ],
+ "version": "7",
+ "echecs": 1,
+ "aRegarder": 5,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "échecs"
+}

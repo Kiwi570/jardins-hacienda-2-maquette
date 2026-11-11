@@ -1,0 +1,71 @@
+{
+  "source": "Affiches « En ce moment ! » de l'accueil du site actuel et page Évènements, relevées le 11 novembre 2026",
+  "dates": [
+    {
+      "id": "cote-de-boeuf",
+      "titre": "Soirée côte de bœuf",
+      "debut": "2026-11-21",
+      "type": "Soirée",
+      "prix": "50 € hors boissons",
+      "service": "soir"
+    },
+    {
+      "id": "raclette",
+      "titre": "Soirée raclette",
+      "debut": "2026-11-28",
+      "type": "Soirée",
+      "prix": "39 € hors boissons",
+      "service": "soir"
+    },
+    {
+      "id": "brunch",
+      "titre": "Le brunch",
+      "debut": "2026-11-29",
+      "type": "Brunch",
+      "prix": "50 € hors boissons",
+      "service": "midi"
+    },
+    {
+      "id": "libanaise",
+      "titre": "Soirée libanaise",
+      "debut": "2026-12-19",
+      "type": "Soirée",
+      "prix": "49 € hors boissons",
+      "service": "soir"
+    },
+    {
+      "id": "noel",
+      "titre": "Le menu de Noël",
+      "debut": "2026-12-25",
+      "type": "Fête",
+      "prix": "79 € par personne, hors boissons",
+      "service": "midi",
+      "ancre": "noel"
+    },
+    {
+      "id": "saint-sylvestre",
+      "titre": "La Saint-Sylvestre",
+      "debut": "2026-12-31",
+      "type": "Fête",
+      "prix": "120 € le menu · 170 € avec l'accord mets et vins",
+      "service": "soir",
+      "ancre": "saint-sylvestre"
+    },
+    {
+      "id": "libanaise-octobre",
+      "titre": "Soirée libanaise",
+      "debut": "2026-10-31",
+      "type": "Soirée",
+      "prix": "",
+      "service": "soir"
+    },
+    {
+      "id": "grand-buffet",
+      "titre": "Le Grand Buffet",
+      "debut": "2026-08-30",
+      "type": "Soirée",
+      "prix": "Les dimanches d'août",
+      "service": "midi"
+    }
+  ]
+}

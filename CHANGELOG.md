@@ -2,6 +2,49 @@
 
 Chaque version ajoute sa partie en tête de ce fichier, construite en comparant l'archive précédente et la nouvelle, jamais de mémoire.
 
+## v7 — vraies photos, une scène par page, les modules restaurant de la bibliothèque
+
+Comparaison de l'archive v6 (commit 0cc7532) et de la v7, fichier par fichier : 21 vraies photos du site actuel ajoutées en grand format (`assets/images/vraie/`, originaux dans `recu/site/`, choisies parmi les 366 images récupérées le 11 novembre 2026) et l'enseigne détourée ; 10 modules de la bibliothèque ajoutés (`assets/js/modules/` : ardoise-a-la-craie, assiette-qui-se-dresse, plat-fumant, givre-webgl, agenda-des-dates, depliant-3d, rideau-en-lanieres, ciel-en-direct, formulaire-par-etapes, lumiere-au-pointeur) avec OGL (`assets/vendor/ogl.min.js`) et la police Caveat (licence jointe) ; données ajoutées : `donnees/ardoise.json`, `donnees/agenda.json` ; les couches de la passe tirées d'une vraie photo (`assets/images/vraie/passe/`) ; les deux boucles vidéo quittent le site (gardées dans `recu/videos-v6/`). Sources modifiées : les 8 pages, le gabarit commun (pied de page), `site.js`, `site.css`, l'adaptateur `socle/socle.js` (OGL à la demande), `socle/voile.js`, `socle/ouverture.js`, `socle/transitions.js`, le script et le style critiques, `fr.json`, `site.json` (version 7), `images.json`, `plan-images.json`, `_audit/releve.md` (compléments du 11 novembre). Gardés tels quels dans leur logique : la réservation et sa carte de placement, le plan de salle, la carte cadeau et son enveloppe, la carte, les fêtes, les horaires, les accords de la Saint-Sylvestre, la transition en assiette, le statut ouvert ou fermé.
+
+**De vraies photos de la maison partout**
+- 12 h 30 : la salle au soleil de midi (tables rondes en verre, baies vitrées) à la place de l'assiette générée.
+- 14 h 30 : un seul panorama de la piscine et de la grande pergola que l'on parcourt en défilant ; l'heure avance de 14:30 à 19:00, l'ombre gagne et la lumière dore ; les journées festives, le bar, la piscine et les pool parties s'allument à leur place sur la photo (la galerie de quatre vignettes est retirée).
+- 21 h : la vraie assiette devant la cheminée ; la vapeur monte du plat et s'écarte sous la main (module plat-fumant ; plus de vidéo).
+- Réceptions : la pergola dressée pour un mariage en ouverture ; les espaces en vraies photos (la salle et son mur de pierre, le brasero sous la pergola, la piscine sous les palmiers) ; « Mariages » et « Anniversaires » avec des photos nettes de la maison.
+- Les fêtes l'été, Réserver, Infos pratiques, la page fermée : vraies photos (piscine, paillotes, lanternes au-dessus de l'eau la nuit, la salle).
+- La mention « Illustration générée » reste sur chaque image générée, plus discrète ; une ligne du pied de page l'explique.
+
+**Une scène à chaque page**
+- La carte : l'ardoise de la semaine, écrite à la craie (celle du midi ou du soir selon l'heure réelle) ; « Passer au dîner » l'efface au chiffon et la réécrit. Sur la passe, une vraie assiette du chef se dresse au défilement : la photo du site, découpée en couches (purée, pièce rôtie, girolles, légumes, herbes), qui se posent nettes une à une sur la même assiette floue et dans l'ombre. La page finit sur une vraie assiette en grand.
+- Les fêtes : le décompte de la Saint-Sylvestre derrière une vitre givrée qui fond sous la main ; les prochaines dates (soirée côte de bœuf le 21 novembre, raclette le 28, brunch le 29, soirée libanaise le 19 décembre, Noël, Saint-Sylvestre) avec l'ajout à l'agenda et « Réserver » au bon jour, les dates passées en dessous ; le menu de Noël en dépliant de trois volets qui s'ouvre au défilement.
+- Réceptions : en arrivant d'une autre page, le voile violet de 19 h s'ouvre en palmes qui s'écartent sur la pergola.
+- Infos pratiques : le vrai ciel de Moineville à l'heure qu'il est (soleil, lune et étoiles calculés pour le lieu ; un curseur pour voir une autre heure) au-dessus de la vraie enseigne ; une vraie carte d'accès (Moselle, A31, frontière ; 19 km de Metz, 24 km de Thionville, 47 km de Luxembourg à vol d'oiseau) ; « Une question » en quatre étapes avec de grandes cartes de choix.
+- La page fermée : la salle dans le noir ; une bougie suit la main et l'éclaire.
+- Offrir : « Offrir un moment aux Jardins » (le titre ne contredit plus l'exemple du déjeuner).
+
+**L'accueil**
+- La nuit et le matin, l'intro s'arrête d'abord sur l'heure réelle (« 01:26 · la maison dort. Rendez-vous à midi. ») avant de rouler jusqu'à midi.
+- 23 h : « Au creux de la cheminée », les mots du site, au-dessus de « Au coin du feu ».
+- 23 h 30 : sous Noël et la Saint-Sylvestre, la prochaine date à venir (calculée au jour réel).
+- Minuit : offrir seul, en plein écran, la carte qui brille dans le noir ; « Venir » passe au pied de page (distances et lien vers l'accès).
+
+**Partout**
+- Deux styles d'heure seulement : le jour, fine et bleu canard ; à partir de 19 h, grasse et braise.
+- La transition entre les pages est plus courte (le voile ne s'attarde plus) et devient un ciel : la couleur de l'heure de départ en bas, celle de l'heure d'arrivée en haut.
+- Réserver sans cadres : jours et créneaux en texte, la sélection en pastille pleine, le récapitulatif en ticket à bords dentelés, la liste des tables en lignes.
+- Une heure par page, partout : Les fêtes 23:30, Réserver 21:00 le soir (voile, en-tête et ouverture disent la même).
+- Typographie : espace insécable avant « ; », « ! », « ? », point médian jamais en début de ligne.
+
+**Après le test « vrai visiteur » (Claire, de Thionville, sept missions sur téléphone et sur ordinateur) et le regard neuf**
+- Les dates des fêtes : chaque date dans sa colonne, comptée en jours de calendrier ; « Réserver » ouvre le formulaire au bon jour et rappelle la soirée choisie ; Noël et la Saint-Sylvestre sans heure inventée.
+- Infos pratiques : l'adresse et les distances dès le premier écran, « Une question ? » et « Venir » en raccourcis ; l'enseigne à droite, le texte à gauche ; la grande heure suit l'heure choisie sur le ciel.
+- La passe de La carte en vraie photo (le dessin était jugé plat) ; le bouton de fin suit le service affiché.
+- Le message de fin d'« Une question » revient à l'écran ; « Faire une autre réservation » est lisible ; l'été, le logo des Fêtes reste visible ; la 404 reste lisible sur téléphone ; Réceptions s'ouvre plus clair.
+
+**Après l'audit complet (13 tailles)**
+- La vitre givrée ne se redessine que quand elle change, jamais pendant le défilement, et ne s'installe qu'au repos en haut de page : Les fêtes défilent sans à-coup sur un ordinateur lent.
+- Les fêtes : Noël avant la Saint-Sylvestre ; le titre de la Saint-Sylvestre ne chevauche plus son texte ; les scènes épinglées tiennent sur les écrans bas.
+
 ## v6 — « De midi à minuit », refonte de A à Z
 
 Comparaison de l'archive v5 (commit 9b8e0a0) et de la v6, fichier par fichier : 112 fichiers retirés (les images de la v5 refaites ou abandonnées, dont 9 illustrations générées : nappe de lin, eau de la piscine, braises, bougies, ouvertures de Réserver et d'Offrir… ; les polices Bodoni Moda, Caveat et Figtree ; 6 modules qui ne servent plus : ardoise à la craie, assiette qui se dresse, carrousel 3D, fil conducteur, objet à faire tourner, plat fumant ; `donnees/ardoise.json` et le fragment de l'assiette) ; 44 fichiers ajoutés (une page Réceptions, 10 nouvelles illustrations générées en 29 fichiers, 2 boucles vidéo, les polices Bricolage Grotesque et Instrument Serif avec leurs licences, les positions des ampoules de la terrasse, 2 images de partage) ; sources modifiées : toutes les pages, le gabarit commun, le socle (repris de la skill v10.9.2), `site.css` et `site.js` réécrits, `fr.json`, `site.json`, `carte.json`, `images.json`, `plan-images.json`. Gardés tels quels dans leur logique : la réservation et sa carte de placement, le plan de salle, la carte cadeau qui s'écrit et son enveloppe, la carte, les fêtes, les horaires, les accords de la Saint-Sylvestre, la transition en assiette, le statut ouvert ou fermé.

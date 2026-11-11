@@ -5,7 +5,7 @@
    ScrollTrigger.refresh() regroupé. Cet adaptateur ne charge donc rien : il renvoie le GSAP du projet, pour ne jamais
    avoir deux GSAP ni deux jeux de ScrollTrigger dans la page. Même API que socle/socle.js de la bibliothèque. */
 
-import { aller } from './defilement.js?v=6';
+import { aller } from './defilement.js?v=7';
 
 const html = document.documentElement;
 const mqReduit = matchMedia('(prefers-reduced-motion: reduce)');
@@ -55,9 +55,18 @@ function attendreGsap() {
   });
 }
 
+/* OGL (WebGL : givre, lumière au pointeur) n'est chargé que si un module le demande, une seule fois. */
+let ogl = null;
+function chargerOgl() {
+  if (window.OGL) return Promise.resolve();
+  return (ogl ??= new Promise((ok) => { const s = document.createElement('script'); s.src = '/assets/vendor/ogl.min.js'; s.onload = ok; s.onerror = ok; document.head.appendChild(s); }));
+}
+
 export async function pret(besoins = []) {
   const voulus = besoins.map((b) => b.toLowerCase());
-  if (voulus.length) await attendreGsap();
+  if (voulus.some((b) => b !== 'ogl')) await attendreGsap();
+  if (voulus.includes('ogl') && !(mqReduit.matches || html.classList.contains('calme'))) await chargerOgl();
+  if (window.OGL) socle.OGL = window.OGL;
   const g = window.gsap || null;
   socle.gsap = g;
   if (g && window.ScrollTrigger && !socle.ScrollTrigger) { g.registerPlugin(window.ScrollTrigger); socle.ScrollTrigger = window.ScrollTrigger; }

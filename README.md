@@ -1,15 +1,19 @@
-# Les Jardins de l'Hacienda (2) · maquette v6 « De midi à minuit »
+# Les Jardins de l'Hacienda (2) · maquette v7 « De midi à minuit »
 
 Maquette du futur site des Jardins de l'Hacienda, restaurant et lieu de réception à Moineville (54), entre Metz, Thionville et le Luxembourg.
 Adresse : https://jardins-hacienda-2-maquette.vercel.app (à mettre dans le module Wix « Intégrer un site »). La maquette n'est pas reliée au site actuel.
 La v6 est une refonte complète : nouvelle direction, nouvelle base (socle de la skill v10.9.2), nouvelles images ; la logique des modules de la v5 est gardée.
+La v7 garde l'idée et la met au propre : une vraie photo de la maison dans chaque section (366 images récupérées sur le site actuel, une vingtaine retenues), une scène propre à chaque page, et 17 modules restaurant de la bibliothèque placés chacun à son heure (10 de plus qu'en v6).
 
 ## L'idée
 
 L'accueil est une journée à l'Hacienda, réglée sur les vraies heures de la maison : 12 h la piscine (l'eau bouge sous le doigt),
-12 h 30 le déjeuner (la carte de la semaine et ses prix), 14 h 30 l'après-midi d'été (piscine, bar, journées festives, pool parties),
-19 h la terrasse s'allume (le soleil se couche sur la table de réception, les guirlandes s'allument), 21 h le dîner (réserver dans la page),
-23 h au coin du feu (la fenêtre de la salle s'ouvre jusqu'au plein écran, les braises qu'on attise, Saint-Sylvestre et Noël), minuit offrir et venir.
+12 h 30 le déjeuner (la salle au soleil, la carte de la semaine et ses prix), 14 h 30 l'après-midi d'été (un panorama de la piscine que l'on parcourt,
+l'heure avance jusqu'à 19 h et la lumière dore ; piscine, bar, journées festives, pool parties accrochés à leur place), 19 h la terrasse s'allume
+(le soleil se couche sur la table de réception, les guirlandes s'allument), 21 h le dîner (la vraie assiette devant la cheminée, sa vapeur qu'on écarte
+de la main ; réserver dans la page), 23 h au coin du feu (« Au creux de la cheminée » : la fenêtre de la salle s'ouvre jusqu'au plein écran, les braises
+qu'on attise), 23 h 30 Noël, la Saint-Sylvestre et la prochaine soirée à thème, minuit offrir (venir est au pied de page).
+La nuit et le matin (avant 11 h), l'intro s'arrête d'abord sur l'heure réelle (« 01:26 · la maison dort ») avant de rouler jusqu'à midi.
 La lumière de la page passe du blanc de midi à la braise de minuit ; l'horloge de l'en-tête suit le défilement. Chaque moment dit sa saison réelle
 (« Piscine et terrasse de juin à septembre », « Cet hiver »).
 
@@ -26,12 +30,12 @@ La lumière de la page passe du blanc de midi à la braise de minuit ; l'horloge
 | Infos pratiques | `/infos-pratiques` | « Il est 21 h 04 à Moineville » : l'heure réelle en grand, la photo de ce moment, le statut, le cadran des horaires à faire tourner, l'accès, l'été | horaires-ouvert-maintenant |
 | Page fermée | `/404` | « Cette page a fermé à minuit » | — |
 
-Transition entre les pages : la transition en assiette de la v5 (voile « cloche »), à la couleur et aux chiffres de l'heure de la page d'arrivée.
+Transition entre les pages : la transition en assiette de la v5 (voile « cloche »), plus courte en v7 ; le voile est un ciel, de la couleur de l'heure de départ (en bas) à celle de l'heure d'arrivée (en haut), avec les chiffres de l'heure d'arrivée.
 
 ## Mettre à jour le contenu
 
-- Textes : `donnees/textes/fr.json`. Carte : `donnees/carte.json`. Fêtes : `donnees/fetes.json`, `donnees/accords.json`. Horaires : `donnees/horaires.json`. Salle : `donnees/salle.json`. Réservation : `donnees/reservation.json`. Coordonnées : `donnees/site.json`.
-- Images : `plan-images.json` puis le pipeline de la bibliothèque (`node <bibliothèque>/images/produire.mjs plan-images.json`) ; boucles vidéo dans `assets/videos/` : boucle-eau (après-midi, carte « La piscine ») et boucle-vapeur (dîner et carte du soir ; seule la fumée bouge, l'assiette reste l'image nette). Chaque boucle est recadrée exactement comme son image (même cadre, pas de saut quand elle démarre) ; aucune vidéo sur téléphone en portrait, en mode calme ou en économie de données.
+- Textes : `donnees/textes/fr.json`. Carte : `donnees/carte.json`. Ardoise de la semaine (midi et soir) : `donnees/ardoise.json`. Dates des fêtes et soirées : `donnees/agenda.json`. Fêtes : `donnees/fetes.json`, `donnees/accords.json`. Horaires : `donnees/horaires.json`. Salle : `donnees/salle.json`. Réservation : `donnees/reservation.json`. Coordonnées : `donnees/site.json`.
+- Images : `plan-images.json` puis le pipeline de la bibliothèque (`node <bibliothèque>/images/produire.mjs plan-images.json`) ; plus de boucle vidéo en v7 : la vapeur du dîner est dessinée en direct sur la vraie photo (module plat-fumant) et l'eau de midi est un effet WebGL ; les boucles de la v6 sont gardées dans `recu/videos-v6/`.
 - Puis `node outils/generer.mjs`, les images de partage (`node <bibliothèque>/images/partage.mjs`), et l'audit (`node _audit/audit.mjs`, `--complet` pour la version finale).
 
 ## À fournir par l'établissement (à compléter)
@@ -45,8 +49,10 @@ Transition entre les pages : la transition en assiette de la v5 (voile « cloche
 - **Adresse e-mail** de contact ; stationnement ; **dates des pool parties** de l'été 2027.
 - **Incohérences du site actuel à trancher** : le logo porte le numéro +33 609 386 764 (le site donne 06 18 21 28 10) ; la carte cadeau indique « 6 rue du Benelux · Chemin Valtier » (le site : 6 Vathier Haye) ; « Saison d'été jusqu'au 30/09/2024 » ; code postal 54000 dans une page.
 - **Vidéos en meilleure définition** (facultatif) : Grok a livré les boucles en 672 × 448 px. La flamme (salle et cheminée) et le crépuscule sur la terrasse, trop flous en grand, ne sont pas utilisés (originaux dans `recu/videos/`) ; en 1280 px ou plus, la flamme pourrait animer l'ouverture d'Offrir et la scène « Au coin du feu ».
-- **Textes de la carte et du menu de la Saint-Sylvestre à confirmer** : repris tels quels de la v5 (données à garder), ils contiennent des détails absents du relevé résumé : « Éclats de truffe noire », « Esturgeon délicatement poché », « Filet de bœuf d'exception », « Crémeux de yuzu et meringue délicatement brûlée », « Supplément de 10 € par personne… Pour deux : 25 € » (À partager), « Jusqu'à 10 ans : un plat et un dessert » (menu enfant), « Assortiment de charcuteries italiennes ». À vérifier sur le site actuel ou avec le chef.
-- **Crédits** : photos du site actuel (petits formats) ; illustrations générées par IA (dossier `assets/images/grok/`, boucles `assets/videos/`), toutes marquées « Illustration générée ».
+- **Textes de la carte à confirmer** : le menu de la Saint-Sylvestre est confirmé par l'affiche du site (v7). Restent à vérifier sur le site actuel ou avec le chef : « Supplément de 10 € par personne… Pour deux : 25 € » (À partager), « Jusqu'à 10 ans : un plat et un dessert » (menu enfant), « Assortiment de charcuteries italiennes ».
+- **Ardoise de la semaine** : les huit plats des ardoises du midi et du soir sont des plats de la carte, choisis pour la maquette ; au restaurant de dire ce qu'il veut y écrire chaque semaine (`donnees/ardoise.json`).
+- **Dates des soirées** (`donnees/agenda.json`) : relevées sur les affiches du site le 11 novembre 2026 ; heures de début non indiquées sur les affiches.
+- **Crédits** : photos du site actuel (dossier `assets/images/vraie/` en grand format, originaux dans `recu/site/`, et les petits formats de la v5) ; illustrations générées par IA (dossier `assets/images/grok/`, boucles `assets/videos/`), toutes marquées « Illustration générée », et une ligne du pied de page l'explique. L'enseigne d'Infos pratiques est la photo du site détourée (ciel retiré) pour laisser voir le ciel calculé.
 
 ## Faits retirés ou dits autrement
 

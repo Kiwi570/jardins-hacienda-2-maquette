@@ -11,12 +11,12 @@
    la page se prépare dessous, le voile se retire ; mode calme : rien ; retour arrière : reinitialiser().
    Repli sans clip-path ni masque (iris, rideau) : fondu. Une autre forme (tampon, empreinte, étoile) se branche ici,
    dans couvrir() et decouvrir(), sur le modèle des quatre formes. */
-import { html, etat } from './etat.js?v=6';
+import { html, etat } from './etat.js?v=7';
 
 export const FORMES = ['glisse', 'iris', 'vague', 'rideau', 'cloche'];
 const COURBE = 'cubic-bezier(.65,0,.35,1)';
 /* Durées par défaut en ms : [couvrir, découvrir]. */
-const DUREES = { glisse: [450, 520], iris: [550, 800], vague: [700, 850], rideau: [600, 700], cloche: [620, 780] };
+const DUREES = { glisse: [450, 520], iris: [550, 800], vague: [700, 850], rideau: [600, 700], cloche: [480, 580] };
 
 export function voile() { return document.querySelector('[data-voile]'); }
 export function forme() {

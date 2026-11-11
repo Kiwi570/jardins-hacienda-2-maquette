@@ -1,11 +1,11 @@
 /* Accueil v6 « De midi à minuit » : une journée à l'Hacienda, réglée sur les vraies heures de la maison.
-   12 h la piscine (l'eau bouge sous le doigt), 12 h 30 le déjeuner, 14 h 30 l'après-midi d'été (de côté),
-   19 h la terrasse s'allume (scène), 21 h le dîner (réserver dans la page), 23 h au coin du feu (plein écran, braises),
-   minuit offrir et venir. La lumière de la page passe du blanc de midi à la braise ; l'horloge de l'en-tête suit. */
+   12 h la piscine (l'eau bouge sous le doigt), 12 h 30 le déjeuner (la salle au soleil), 14 h 30 l'après-midi d'été
+   (un panorama de la piscine que l'on parcourt jusqu'à 19 h), 19 h la terrasse s'allume (scène), 21 h le dîner (la vraie
+   assiette, sa vapeur qu'on écarte : module plat-fumant ; réserver dans la page), 23 h au coin du feu (plein écran, braises),
+   minuit offrir (venir est au pied de page). La lumière de la page passe du blanc de midi à la braise ; l'horloge de l'en-tête suit. */
 import { html, brut } from '../../outils/gabarit.mjs';
-import { avecVideo } from '../gabarits/video.mjs';
 
-export const page = { cle: 'accueil', fichier: 'index', theme: 'jour', imagePartage: 'grok/midi-piscine-1280.webp' };
+export const page = { cle: 'accueil', fichier: 'index', theme: 'jour', imagePartage: 'grok/midi-piscine-1280.webp', modules: ['plat-fumant'] };
 
 /* Carte de la semaine : les plats réels mis en avant au déjeuner (noms et prix du relevé). */
 const PASSE = ['Risotto de Saint-Jacques au riz noir', 'Foie gras de canard maison', 'Suprême de pintade', 'Dhal aux trois lentilles', "L'os à moelle"];
@@ -18,6 +18,13 @@ const guirlandes = (a) => {
   const bulbes = a.ampoules.map(([x, y], i) => `<g class="ampoule" style="--i:${i}"><circle class="halo" cx="${x}" cy="${y}" r="30"/><circle class="coeur" cx="${x}" cy="${y}" r="5.5"/><circle class="cible" cx="${x}" cy="${y}" r="18"/></g>`).join('');
   return `<svg class="guirlandes" data-effet="guirlandes" viewBox="0 0 ${W} ${H}" data-vue="0 0 ${W} ${H}" data-vue-telephone="${m}" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-audit-ignorer><defs><radialGradient id="halo-ampoule"><stop offset="0" stop-color="#fff0c2" stop-opacity=".95"/><stop offset=".28" stop-color="#ffc766" stop-opacity=".5"/><stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/></radialGradient></defs>${bulbes}</svg>`;
 };
+/* L'après-midi : les lieux sur la photo de la piscine (positions en % de l'image), et le moment du parcours où chacun s'allume. */
+const LIEUX = [
+  { id: 'journees-festives', cle: 'festives', x: 22, y: 34, p: 0.12 },
+  { id: 'bar', cle: 'bar', x: 47, y: 30, p: 0.38 },
+  { id: 'piscine', cle: 'piscine', x: 70, y: 70, p: 0.62 },
+  { id: 'pool-parties', cle: 'pool', x: 90, y: 50, p: 0.86 },
+];
 const heure = (texte, classe = '') => html`<p class="heure-section ${classe}" data-effet="heure-section"><span>${texte}</span></p>`;
 
 export default (c) => {
@@ -64,7 +71,7 @@ export default (c) => {
       <p class="dejeuner__actions">${c.lien('la-carte', { classe: 'bouton bouton--contour', texte: c.t('accueil.dejeuner.lien') })} <span class="saison-tag saison-tag--clair">${c.t('accueil.dejeuner.saison')}</span></p>
     </div>
     <div class="dejeuner__visuel">
-      ${c.media({ nom: 'grok/assiette-midi', alt: c.s('accueil.dejeuner.alt'), cadrage: '50% 50%', classe: 'dejeuner__assiette', sizes: '(max-width: 760px) 92vw, 42vw', attrs: 'data-fx="parallaxe" data-fx-force="8"' })}
+      ${c.media({ nom: 'vraie/salle-soleil', alt: c.s('accueil.dejeuner.alt'), cadrage: '46% 50%', classe: 'dejeuner__assiette', sizes: '(max-width: 760px) 92vw, 42vw', attrs: 'data-fx="parallaxe" data-fx-force="8"' })}
       <div class="dejeuner__vraies" data-effet="vraies" aria-label="${c.s('accueil.dejeuner.photos')}" role="group">
         ${['assiette-cepes', 'assiette-turquoise', 'assiette-saumon'].map((n, i) => c.media({ nom: n, alt: '', classe: `vraie vraie--${i + 1}`, sizes: '160px' }))}
       </div>
@@ -72,41 +79,26 @@ export default (c) => {
   </div>
 </section>
 
-<section class="apresmidi ecran epingle" id="apres-midi" data-heure="14:30" data-lumiere="apresmidi" data-fx="galerie" aria-labelledby="apresmidi-titre">
-  <div class="conteneur apresmidi__tete">
-    ${heure(c.s('accueil.apresmidi.heure'))}
-    <div>
-      <h2 id="apresmidi-titre" data-anime="lignes">${c.t('accueil.apresmidi.titre')}</h2>
-      <p><span class="masque-ecran-bas">${c.t('accueil.apresmidi.texte')}</span> <span class="saison-tag saison-tag--clair">${c.t('accueil.apresmidi.saison')}</span> ${c.lien('les-fetes', { ancre: 'ete', params: 'saison=ete', classe: 'lien-fleche', texte: c.t('accueil.apresmidi.lien') })}</p>
+<section class="apresmidi panorama" id="apres-midi" data-heure="14:30" data-lumiere="apresmidi" data-effet="panorama" aria-labelledby="apresmidi-titre">
+  <div class="panorama__cadre">
+    <div class="panorama__piste" data-panorama-piste>
+      ${c.media({ nom: 'vraie/piscine-pergola', alt: c.s('accueil.apresmidi.altPanorama'), cadrage: '50% 50%', classe: 'panorama__photo', sizes: '(max-width: 760px) 300vw, 160vw' })}
+      <div class="panorama__soleil" aria-hidden="true"></div>
+      <ol class="panorama__lieux" aria-label="${c.s('accueil.apresmidi.region')}">
+        ${LIEUX.map((l) => html`<li class="lieu" id="${l.id}" style="--x:${l.x}%;--y:${l.y}%" data-lieu="${l.p}"><span class="lieu__point" aria-hidden="true"></span><div class="lieu__texte"><p class="lieu__heure">${c.t(`accueil.apresmidi.${l.cle}H`)}</p><h3>${c.t(`accueil.apresmidi.${l.cle}T`)}</h3><p>${c.t(`accueil.apresmidi.${l.cle}X`)}</p></div></li>`)}
+      </ol>
     </div>
+    <div class="panorama__tete">
+      <p class="heure-section" data-effet="heure-section" data-panorama-heure><span>${c.s('accueil.apresmidi.heure')}</span></p>
+      <div>
+        <p class="surtitre">${c.t('accueil.apresmidi.surtitre')}</p>
+        <h2 id="apresmidi-titre" data-anime="lignes">${c.t('accueil.apresmidi.titre')}</h2>
+        <p class="panorama__texte"><span class="masque-ecran-bas">${c.t('accueil.apresmidi.texte')}</span> ${c.lien('les-fetes', { ancre: 'ete', params: 'saison=ete', classe: 'lien-fleche', texte: c.t('accueil.apresmidi.lien') })}</p>
+      </div>
+    </div>
+    <div class="panorama__legende" aria-live="polite"></div>
+    <p class="indice panorama__indice" aria-hidden="true">${c.t('accueil.apresmidi.indice')}</p>
   </div>
-  <div class="piste apresmidi__piste" data-galerie tabindex="0" role="region" aria-label="${c.s('accueil.apresmidi.region')}" data-effet="apres-midi">
-    <article class="moment moment--grand" id="piscine">
-      ${avecVideo(c.media({ nom: 'grok/midi-piscine', alt: '', cadrage: '40% 70%', classe: 'moment__photo', sizes: '(max-width: 760px) 80vw, 34vw', }), 'boucle-eau')}
-      <p class="moment__heure">${c.t('accueil.apresmidi.piscineH')}</p>
-      <h3>${c.t('accueil.apresmidi.piscineT')}</h3><p>${c.t('accueil.apresmidi.piscineX')}</p>
-    </article>
-    <article class="moment" id="bar">
-      ${c.media({ nom: 'grok/bar-apres-midi', alt: c.s('accueil.apresmidi.altBar'), cadrage: '50% 55%', classe: 'moment__photo', sizes: '(max-width: 760px) 70vw, 26vw' })}
-      <p class="moment__heure">${c.t('accueil.apresmidi.barH')}</p>
-      <h3>${c.t('accueil.apresmidi.barT')}</h3><p>${c.t('accueil.apresmidi.barX')}</p>
-    </article>
-    <article class="moment" id="journees-festives">
-      ${c.media({ nom: 'ete-festives', alt: c.s('accueil.apresmidi.altFestives'), cadrage: '50% 60%', classe: 'moment__photo moment__photo--vraie', sizes: '(max-width: 760px) 70vw, 26vw' })}
-      <p class="moment__heure">${c.t('accueil.apresmidi.festivesH')}</p>
-      <h3>${c.t('accueil.apresmidi.festivesT')}</h3><p>${c.t('accueil.apresmidi.festivesX')}</p>
-    </article>
-    <article class="moment" id="pool-parties">
-      ${c.media({ nom: 'ete-plongee', alt: c.s('accueil.apresmidi.altPool'), cadrage: '50% 55%', classe: 'moment__photo moment__photo--vraie', sizes: '(max-width: 760px) 70vw, 26vw' })}
-      <p class="moment__heure">${c.t('accueil.apresmidi.poolH')}</p>
-      <h3>${c.t('accueil.apresmidi.poolT')}</h3><p>${c.t('accueil.apresmidi.poolX')}</p>
-    </article>
-    <article class="moment moment--suite" id="vers-le-soir">
-      <p class="moment__heure moment__heure--grande">19:00</p>
-      <h3>${c.t('accueil.apresmidi.suiteT')}</h3>
-    </article>
-  </div>
-  <div class="galerie-progres apresmidi__progres" aria-hidden="true"><span></span></div>
 </section>
 
 <section class="terrasse" id="terrasse" data-heure="19:00" data-lumiere="terrasse" data-scene data-entete-cache data-grille="scene" aria-labelledby="terrasse-titre">
@@ -139,7 +131,8 @@ export default (c) => {
 <section class="diner" id="diner" data-heure="21:00" data-lumiere="diner" aria-labelledby="diner-titre">
   <div class="conteneur diner__grille">
     <div class="diner__visuel">
-      ${avecVideo(c.media({ nom: 'grok/assiette-soir', alt: c.s('accueil.diner.alt'), cadrage: '50% 50%', classe: 'diner__assiette', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-anime="rideau"' }), 'boucle-vapeur', { masque: 'vapeur' })}
+      ${c.media({ nom: 'vraie/plat-cheminee', alt: c.s('accueil.diner.alt'), cadrage: '50% 70%', classe: 'diner__assiette fumant', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-module="plat-fumant" data-vapeur=".5 .74 .34" data-anime="rideau"' })}
+      <p class="indice diner__indice" aria-hidden="true"><span class="indice--souris">${c.t('accueil.diner.indice')}</span><span class="indice--doigt">${c.t('accueil.diner.indiceTactile')}</span></p>
     </div>
     <div class="diner__texte">
       ${heure(c.s('accueil.diner.heure'), 'heure-section--nuit')}
@@ -176,6 +169,7 @@ export default (c) => {
     ${c.media({ nom: 'grok/salle-feu', alt: c.s('accueil.feu.alt'), cadrage: '50% 55%', classe: 'feu__photo', sizes: '100vw' })}
     <canvas class="feu__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
     <p class="heure-section heure-section--nuit feu__heure" data-fx-apres aria-hidden="true"><span>${c.s('accueil.feu.heure')}</span></p>
+    <p class="feu__sous" data-fx-apres>${c.t('accueil.feu.sous')}</p>
     <h2 class="feu__titre" id="feu-titre"><span data-fx-ecarte="g">${c.t('accueil.feu.motG')}</span> <span data-fx-ecarte="d">${c.t('accueil.feu.motD')}</span></h2>
     <p class="feu__legende" data-fx-apres>${c.t('accueil.feu.texte')} <span class="saison-tag saison-tag--nuit">${c.t('accueil.feu.saison')}</span></p>
     <p class="indice feu__indice" aria-hidden="true">${c.t('accueil.feu.indice')}</p>
@@ -203,6 +197,11 @@ export default (c) => {
         ${c.lien('les-fetes', { ancre: 'saint-sylvestre', classe: 'lien-fleche', texte: c.t('accueil.feu.sylvestreT') })}
       </article>
     </div>
+    <p class="fetes-hiver__soirees" data-prochaine-soiree>
+      <span data-soiree-texte>${c.t('accueil.feu.soirees')}</span>
+      ${c.lien('les-fetes', { ancre: 'dates', classe: 'lien-fleche', texte: c.t('accueil.feu.dates') })}
+      <script type="application/json">${brut(JSON.stringify(c.donnees.agenda.dates.filter((d) => d.type !== 'Fête').map((d) => ({ t: d.titre, d: d.debut, p: d.prix }))).replace(/<\//g, '<\\/'))}</script>
+    </p>
   </div>
 </section>
 
@@ -210,33 +209,18 @@ export default (c) => {
   <div class="conteneur minuit__grille">
     <div class="minuit__offrir">
       ${heure(c.s('accueil.minuit.heure'), 'heure-section--nuit')}
+      <p class="surtitre">${c.t('accueil.minuit.surtitre')}</p>
       <h2 id="minuit-titre" data-anime="lignes">${c.t('accueil.minuit.titre')}</h2>
       <p data-anime>${c.t('accueil.minuit.texte')}</p>
       <p>${c.lien('offrir', { classe: 'bouton', texte: c.t('accueil.minuit.action') })}</p>
     </div>
-    <div class="carte-cadeau-apercu" data-effet="carte-apercu" aria-hidden="true">
+    <div class="carte-cadeau-apercu" data-effet="carte-apercu" data-visuel aria-hidden="true">
       <div class="cca__face">
         <img src="/assets/images/logo-clair.png" alt="" width="56" height="56">
         <p class="cca__nom">${c.t('accueil.minuit.carteNom')}</p>
         <p class="cca__montant">${c.t('accueil.minuit.carteMontant')}</p>
         <p class="cca__pour">${c.t('accueil.minuit.cartePour')}</p>
       </div>
-    </div>
-    <div class="minuit__venir">
-      <h3>${c.t('accueil.minuit.venirT')}</h3>
-      <p>${c.t('accueil.minuit.venir')}</p>
-      <svg class="minuit__carte" viewBox="0 0 360 230" role="img" aria-label="${c.s('accueil.minuit.carteAlt')}" data-fx="trace">
-        <path class="carte__route" d="M150 150 C 190 130 220 108 252 84" fill="none"/>
-        <path class="carte__route" d="M150 150 C 190 160 230 172 270 188" fill="none"/>
-        <path class="carte__route carte__route--fine" d="M252 84 C 252 60 250 40 246 18" fill="none"/>
-        <circle cx="246" cy="18" r="4"/><text x="258" y="22">Luxembourg</text>
-        <circle cx="252" cy="84" r="4"/><text x="264" y="88">Thionville</text>
-        <circle cx="270" cy="188" r="4"/><text x="282" y="192">Metz</text>
-        <circle class="carte__ici" cx="150" cy="150" r="7"/><text class="carte__ici-nom" x="138" y="146" text-anchor="end">Moineville</text>
-        <text class="carte__note" x="12" y="222">Plan schématique</text>
-      </svg>
-      <p class="statut statut--nuit"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil-bis>${c.t('accueil.minuit.fin')}</span></p>
-      <p>${c.lien('infos-pratiques', { classe: 'lien-fleche', texte: c.t('accueil.minuit.infos') })}</p>
     </div>
   </div>
 </section>

@@ -4,7 +4,7 @@
 // s'écrit sur l'enveloppe (achat simulé, ou envoyer() du site). Tiré de jardins-hacienda-maquette/carte-cadeau-composer
 // (carte en direct et total) et beat-haechler-maquette/bons-cadeaux-hero (enveloppe, rabat en 3D, inclinaison sous la souris).
 // Mode calme, « réduire les animations » : mêmes états, sans mouvement. Sans JavaScript : un formulaire ordinaire.
-import { pret } from '../../socle/socle.js?v=6';
+import { pret } from '../../socle/socle.js?v=7';
 
 const TEXTES = {
   pour: 'Pour {pour}', de: 'De la part de {de}', quantite: '× {n}',

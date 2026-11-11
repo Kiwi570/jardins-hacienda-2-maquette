@@ -1,0 +1,173 @@
+{
+ "mission": "v7-prix-diner",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.4,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 12928,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver une table",
+    "Demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "menu",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 4.4,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 12928,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Fermer",
+    "Accueil",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver une table",
+    "Appeler 06 18 21 28 10",
+    "Réduire les animations",
+    "Demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": true
+  },
+  {
+   "k": 2,
+   "geste": "cliquer La carte",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 7.8,
+   "adresse": "/la-carte",
+   "y": 0,
+   "hauteurPage": 8874,
+   "titres": [
+    "h1 La carte de la semaine",
+    "h2 Ce midi, à la carte"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver un déjeuner",
+    "Passer au dîner",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "26 €",
+    "16 €",
+    "14 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "16 €",
+    "14 €",
+    "9 €",
+    "18 €",
+    "24 €",
+    "10 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "cliquer Passer au dîner",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 10.7,
+   "adresse": "/la-carte",
+   "y": 0,
+   "hauteurPage": 8874,
+   "titres": [
+    "h1 La carte de la semaine",
+    "h2 Ce soir, à la carte"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver un dîner",
+    "Passer au déjeuner",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "26 €",
+    "16 €",
+    "24 €",
+    "9 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "26 €",
+    "16 €",
+    "24 €",
+    "9 €",
+    "10 €",
+    "18 €",
+    "14 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-3.png"
+  }
+ ]
+}

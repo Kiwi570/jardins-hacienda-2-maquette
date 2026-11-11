@@ -1,0 +1,282 @@
+{
+ "mission": "v7-soiree",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.2,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 12377,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver une table",
+    "Demander une réception"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Les fêtes",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 7.9,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 0,
+   "hauteurPage": 7711,
+   "titres": [
+    "h1 Les fêtes au coin du feu"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver la Saint-Sylvestre",
+    "Cet hiver",
+    "Cet été"
+   ],
+   "prixVus": [
+    "120 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "50 €",
+    "39 €",
+    "49 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 9.8,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 398,
+   "hauteurPage": 7711,
+   "titres": [
+    "h1 Les fêtes au coin du feu",
+    "h3 NOVEMBRE 2026"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver la Saint-Sylvestre",
+    "Cet hiver",
+    "Cet été",
+    "Toutes",
+    "Soirée",
+    "Brunch",
+    "Fête"
+   ],
+   "prixVus": [
+    "120 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "50 €",
+    "39 €",
+    "49 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 11.2,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 1515,
+   "hauteurPage": 7711,
+   "titres": [
+    "h3 Soirée côte de bœuf",
+    "h3 Soirée raclette",
+    "h3 DÉCEMBRE 2026",
+    "h3 Soirée libanaise",
+    "h3 Le menu de Noël"
+   ],
+   "actions": [
+    "Ajouter à mon agenda",
+    "Réserver"
+   ],
+   "prixVus": [
+    "50 €",
+    "49 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "50 €",
+    "39 €",
+    "49 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 12.7,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 1530,
+   "hauteurPage": 7711,
+   "titres": [
+    "h3 Soirée côte de bœuf",
+    "h3 Soirée raclette",
+    "h3 DÉCEMBRE 2026",
+    "h3 Soirée libanaise",
+    "h3 Le menu de Noël"
+   ],
+   "actions": [
+    "Ajouter à mon agenda",
+    "Réserver",
+    "Voir le menu"
+   ],
+   "prixVus": [
+    "50 €",
+    "49 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "50 €",
+    "39 €",
+    "49 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 12.7,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 1530,
+   "hauteurPage": 7711,
+   "titres": [
+    "h3 Soirée côte de bœuf",
+    "h3 Soirée raclette",
+    "h3 DÉCEMBRE 2026",
+    "h3 Soirée libanaise",
+    "h3 Le menu de Noël"
+   ],
+   "actions": [
+    "Ajouter à mon agenda",
+    "Réserver",
+    "Voir le menu"
+   ],
+   "prixVus": [
+    "50 €",
+    "49 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "50 €",
+    "39 €",
+    "49 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-5.png"
+  },
+  {
+   "k": 6,
+   "geste": "cliquer Réserver",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 15,
+   "adresse": "/reserver?date=2026-11-21&service=soir#formulaire",
+   "y": 603,
+   "hauteurPage": 4646,
+   "titres": [
+    "h2 Le jour, l'heure, les couverts",
+    "h3 Choisissez le jour et l’heure"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Aujourd'hui 11 nov. complet",
+    "Demain 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé",
+    "Mar 17 nov. fermé"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-6.png"
+  }
+ ]
+}

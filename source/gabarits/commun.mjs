@@ -121,6 +121,11 @@ function pied(c) {
       <p>${c.site.contact.adresse}<br><a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
       <p class="pied-reseaux"><a href="${c.site.contact.facebook}" target="_blank" rel="noopener" aria-label="${c.s('commun.facebook')}">Facebook <span aria-hidden="true">↗</span></a> <a href="${c.site.contact.instagram}" target="_blank" rel="noopener" aria-label="${c.s('commun.instagram')}">Instagram <span aria-hidden="true">↗</span></a></p>
     </div>
+    <div class="pied-venir">
+      <p><strong>${c.t('commun.venirT')}</strong></p>
+      <p>${c.t('commun.venir')}</p>
+      <p>${c.lien('infos-pratiques', { ancre: 'acces', classe: 'lien-fleche', texte: c.t('commun.venirLien') })}</p>
+    </div>
     <nav aria-label="${c.s('commun.sommaire')}">
       <p><strong>${c.t('commun.sommaire')}</strong></p>
       <ul>${navigation(c).map((k) => html`<li>${c.lien(k)}</li>`)}<li>${c.lien('reserver', { ancre: 'formulaire' })}</li></ul>
@@ -133,7 +138,7 @@ function pied(c) {
       </ul>
     </div>
   </div>
-  <div class="conteneur pied-bas"><p>${c.t('commun.maquette')}</p><p>${c.t('commun.mentionsLegales')} · ${c.t('commun.confidentialite')}</p><p>© ${c.site.nom}</p></div>
+  <div class="conteneur pied-bas"><p>${c.t('commun.maquette')}</p><p>${c.t('commun.mentionIaPied')}</p><p>${c.t('commun.mentionsLegales')} · ${c.t('commun.confidentialite')}</p><p>© ${c.site.nom}</p></div>
 </footer>`;
 }
 

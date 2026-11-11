@@ -153,50 +153,8 @@ html.calme .horloge__sep { animation: none; }
   .dejeuner__vraies { left: 0; bottom: -18px; }
 }
 
-/* ===== 14 h 30 · L'après-midi qui avance de côté (la lumière dore) ===== */
+/* ===== 14 h 30 · L'après-midi (panorama : voir le bloc v7) ===== */
 .apresmidi { --avant: #f3ead9; background: #f3ead9; color: var(--encre); overflow: hidden; }
-.apresmidi.ecran.epingle { display: flex; flex-direction: column; justify-content: center; padding-top: calc(var(--entete-h) + 12px); padding-bottom: 16px; }
-.apresmidi__tete { position: relative; z-index: 1; display: flex; align-items: flex-end; gap: clamp(16px, 3vw, 40px); margin-bottom: clamp(10px, 2vh, 24px); }
-.apresmidi__tete h2 { margin: 0 0 .15em; font-size: clamp(2rem, min(4.4vw, 7vh), 3.8rem); }
-.apresmidi__tete p { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
-.apresmidi .heure-section { color: var(--or-fonce); margin: 0; }
-.apresmidi__piste { position: relative; z-index: 1; display: flex; gap: clamp(18px, 3vw, 48px); padding-inline: var(--gouttiere); width: max-content; flex: 1 1 auto; min-height: 0; max-height: 640px; align-items: stretch;
-  background: linear-gradient(90deg, rgba(243, 234, 217, 0) 0%, rgba(240, 210, 150, .55) 55%, rgba(233, 162, 59, .5) 100%); border-radius: 0 0 0 0; }
-.moment { height: 100%; display: flex; flex-direction: column; width: clamp(240px, 26vw, 400px); }
-.moment--grand { width: clamp(300px, 36vw, 560px); }
-.moment__photo { flex: 1 1 auto; min-height: 0; border-radius: 3px; overflow: hidden; }
-.moment__photo img { height: 100%; }
-.moment__heure { margin: 12px 0 0; font-variant-numeric: tabular-nums; font-size: clamp(1.6rem, 2.4vw, 2.4rem); font-weight: 300; line-height: 1; letter-spacing: -.03em; color: var(--or-fonce); }
-.moment h3 { margin: 6px 0 2px; }
-.moment p { margin: 0; font-size: .98rem; }
-.moment--suite { justify-content: flex-end; width: clamp(240px, 22vw, 340px); padding-bottom: 8px; }
-.moment__heure--grande { font-size: clamp(4rem, 9vw, 8rem) !important; color: var(--braise) !important; }
-.moment__photo--vraie { filter: saturate(1.05); }
-.moment__polas { position: relative; flex: 1 1 auto; min-height: 120px; }
-.pola { position: absolute; width: 62%; aspect-ratio: 4 / 5; background: #fff; padding: 8px 8px 26px; box-shadow: 0 12px 30px rgba(28, 23, 18, .2); }
-.pola img { width: 100%; height: 100%; object-fit: cover; }
-.pola--1 { left: 0; top: 4%; transform: rotate(-5deg); }
-.pola--2 { right: 0; top: 14%; transform: rotate(4deg); }
-.moment__h3-2 { margin-top: 12px !important; }
-.apresmidi__progres { position: relative; z-index: 1; }
-.galerie-progres { height: 3px; margin: 14px var(--gouttiere) 0; background: color-mix(in srgb, var(--encre) 14%, transparent); flex: none; }
-.galerie-progres span { display: block; height: 100%; background: var(--or); transform-origin: 0 50%; transform: scaleX(0); }
-:is(html.calme, html:not(.js), html.secours) .apresmidi.ecran.epingle { height: auto; min-height: 0; padding-block: 72px 48px; }
-:is(html.calme, html:not(.js), html.secours) .apresmidi__piste { width: auto; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
-:is(html.calme, html:not(.js), html.secours) .moment { height: auto; scroll-snap-align: start; flex: none; }
-:is(html.calme, html:not(.js), html.secours) .moment__photo { aspect-ratio: 4 / 5; flex: none; }
-:is(html.calme, html:not(.js), html.secours) .moment__polas { height: 300px; flex: none; }
-@media (max-width: 760px) {
-  .apresmidi.ecran.epingle { height: auto; min-height: 0; padding-block: 64px 40px; }
-  .apresmidi__tete { flex-direction: column; align-items: flex-start; }
-  .apresmidi__piste { width: auto; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; max-height: none; }
-  .moment, .moment--grand, .moment--suite { width: 78vw; height: auto; scroll-snap-align: start; flex: none; }
-  .moment__photo { aspect-ratio: 4 / 5; flex: none; }
-  .moment__polas { height: 260px; flex: none; }
-  .apresmidi__progres { display: none; }
-}
-@media (max-height: 820px) and (min-width: 761px) { .apresmidi__tete h2 { font-size: clamp(1.8rem, 4vh + 1rem, 3rem); } .apresmidi .heure-section { font-size: clamp(2.8rem, 10vh, 5rem); } }
-@media (max-height: 500px) and (min-width: 761px) { .apresmidi__tete { margin-bottom: 4px; } .moment p { display: none; } .moment h3 { font-size: 1.05rem; } }
 
 /* ===== 19 h · La terrasse s'allume (scène collante : coucher du soleil, guirlandes) ===== */
 .terrasse { --p: 0; position: relative; height: 260svh; background: #2a2140; color: var(--cendre); }
@@ -297,17 +255,7 @@ html.calme .horloge__sep { animation: none; }
 .cca__nom { margin: 0; font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; }
 .cca__montant { margin: 0; font-family: var(--police-texte); font-size: clamp(2.4rem, 4vw, 3.4rem); font-weight: 300; letter-spacing: -.04em; line-height: 1; }
 .cca__pour { margin: 0; font-family: var(--police-titres); font-style: italic; font-size: 1.15rem; }
-.minuit__venir h3 { color: var(--cendre); }
-.minuit__carte { width: 100%; max-width: 360px; height: auto; margin: 6px 0 12px; overflow: visible; }
-.minuit__carte .carte__route { stroke: var(--or); stroke-width: 2; stroke-linecap: round; }
-.minuit__carte .carte__route--fine { stroke-dasharray: 4 6; stroke-width: 1.5; }
-.minuit__carte circle { fill: var(--cendre); }
-.minuit__carte .carte__ici { fill: var(--braise); }
-.minuit__carte text { fill: var(--cendre); font-size: 14px; font-family: var(--police-texte); }
-.minuit__carte .carte__ici-nom { fill: #ffcf9e; font-weight: 700; font-size: 16px; }
-.minuit__carte .carte__note { font-size: 12px; opacity: .75; }
 .statut--nuit { margin-bottom: 8px; }
-@media (max-width: 1000px) { .minuit__grille { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .minuit__venir { grid-column: 1 / -1; } }
 @media (max-width: 760px) { .minuit__grille { grid-template-columns: minmax(0, 1fr); } }
 
 /* ===== Pied de page de nuit ===== */
@@ -360,48 +308,17 @@ html[data-theme="jour"] { --entete-fond: #f6f1e7; --entete-texte: #1c1712; }
 .transition-moment, .transition-moment body, .transition-moment [data-entete], .transition-moment section { transition: background-color .7s ease, color .7s ease; }
 
 /* ===================== La carte : « la carte se met à l'heure » ===================== */
-.ouv-carte { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 100svh; }
-.ouv-carte__photo { position: relative; overflow: hidden; }
-.ouv-carte__img { position: absolute; inset: 0; height: 100%; transition: opacity .8s ease; }
-.ouv-carte__img img, .ouv-carte__img video { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
-html[data-moment="soir"] .ouv-carte__img--jour, html:not([data-moment="soir"]) .ouv-carte__img--soir { opacity: 0; visibility: hidden; }
-.ouv-carte__heure { position: absolute; z-index: 2; left: var(--gouttiere); bottom: clamp(16px, 4vh, 40px); color: #fff; text-shadow: 0 2px 30px rgba(0, 0, 0, .45); font-size: clamp(4.4rem, min(12vw, 20vh), 11rem); }
-.ouv-carte__photo .mention-ia { z-index: 3; }
-.ouv-carte__texte { display: grid; align-content: center; justify-items: start; padding: calc(var(--entete-h) + 24px) clamp(20px, 6vw, 96px) 40px; }
-.ouv-carte__texte h1 { font-size: clamp(2.8rem, min(6vw, 10vh), 6.2rem); line-height: 1; margin-bottom: .3em; }
-.ouv-carte__texte > p:not(.surtitre) { max-width: 30em; }
-.ouv-carte__info { font-weight: 600; color: var(--or-fonce); }
-html[data-moment="soir"] .ouv-carte__info { color: #ffcf9e; }
-.ouv-carte__actions { display: flex; flex-wrap: wrap; gap: 10px; }
-@media (max-width: 760px) { .ouv-carte { grid-template-columns: minmax(0, 1fr); min-height: 0; } .ouv-carte__photo { height: 38svh; order: 2; } .ouv-carte__texte { padding: calc(var(--entete-h) + 16px) var(--gouttiere) 20px; } .ouv-carte__heure { font-size: 4.4rem; } }
-@media (max-height: 500px) and (min-width: 761px) { .ouv-carte__texte { padding-top: calc(var(--entete-h) + 8px); padding-bottom: 8px; } .ouv-carte__texte h1 { font-size: 2.4rem; } .ouv-carte__heure { font-size: 4rem; } .ouv-carte .surtitre { display: none; } }
 .carte-resto { background: var(--fond); color: var(--texte); }
 .carte-resto__plat-nom { font-family: var(--police-titres); font-size: 1.32em; line-height: 1.15; }
 .carte-resto__prix { font-variant-numeric: tabular-nums; font-weight: 600; }
 .carte-resto__rubrique-titre { font-size: clamp(2.2rem, 4.4vw, 3.6rem); line-height: 1; }
 .carte-resto:has(.carte-resto__filtre[aria-pressed="true"]) .carte-resto__photo { display: none; }
-.passe-chef { position: relative; min-height: 86svh; display: grid; align-items: center; overflow: hidden; color: #f6efe2; background: #1a1410; }
-.passe-chef__photo { position: absolute; inset: 0; height: 100%; }
-.passe-chef__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
-.passe-chef::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(18, 12, 9, .85), rgba(18, 12, 9, .1) 60%); pointer-events: none; }
-.passe-chef__texte { position: relative; z-index: 2; }
-.passe-chef__texte h2 { max-width: 8em; color: #f6efe2; }
-.passe-chef .mention-ia { z-index: 3; }
-.fin-carte { padding-block: clamp(64px, 10vh, 120px); background: var(--fond); color: var(--texte); }
-.fin-carte__grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
-.fin-carte__actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.fin-carte__vraies { display: flex; justify-content: center; }
-.fin-carte__vraie { width: clamp(110px, 13vw, 180px); aspect-ratio: 1; border-radius: 50%; overflow: hidden; margin-left: -22px; border: 5px solid var(--fond); box-shadow: 0 14px 30px rgba(0, 0, 0, .2); }
-.fin-carte__vraie img { width: 100%; height: 100%; object-fit: cover; }
-.fin-carte .statut a { color: inherit; min-height: 44px; display: inline-flex; align-items: center; }
-@media (max-width: 760px) { .fin-carte__grille { grid-template-columns: minmax(0, 1fr); } }
 
 /* ===================== Les fêtes : « la saison décide » ===================== */
 .ouv-fetes { position: relative; min-height: 100svh; display: grid; align-items: end; overflow: hidden; color: #f6efe2; background: #1a0f0b; }
 .ouv-fetes__fond { position: absolute; inset: 0; height: 100%; }
 .ouv-fetes__fond img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
 .ouv-fetes::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1; background: linear-gradient(0deg, rgba(18, 12, 9, .92) 0%, rgba(18, 12, 9, .6) 40%, rgba(18, 12, 9, .05) 75%); }
-.ouv-fetes__braises { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; touch-action: pan-y; }
 .ouv-fetes .mention-ia { z-index: 3; }
 .ouv-fetes__contenu { position: relative; z-index: 2; padding-top: calc(var(--entete-h) + 24px); padding-bottom: clamp(28px, 7vh, 72px); }
 .ouv-fetes__geant { color: var(--braise-claire); font-size: clamp(5rem, min(17vw, 26vh), 15rem); }
@@ -422,28 +339,6 @@ html:not([data-saison="ete"]) .bascule-saison [data-saison-choix="hiver"], html[
 .sylvestre__dj, .sylvestre__alcool { font-size: .92rem; opacity: .85; }
 .sylvestre__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 28px; }
 .ame__accord, .sylvestre__prix { line-height: 1.7; }
-.noel { padding-block: clamp(72px, 10vw, 130px); background: #f3ead9; color: #1c1712; --fond: #f3ead9; --texte: #1c1712; --couleur-fond: #f3ead9; --couleur-texte: #1c1712; }
-.noel__grille { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
-.noel__plats { list-style: none; margin: 18px 0; padding: 0; display: grid; gap: 12px; }
-.noel__plats li { position: relative; display: grid; gap: 2px; padding: 0 0 10px 0; border-bottom: 1px solid rgba(28, 23, 18, .16); }
-.noel__plats strong { font-family: var(--police-titres); font-size: 1.45rem; font-weight: 400; }
-.noel__plats span { font-style: italic; opacity: .8; }
-.noel__cloche { position: absolute; right: 0; top: -6px; width: 64px; height: 38px; transition: transform .6s var(--courbe), opacity .5s; }
-.noel__plats li.est-servi .noel__cloche { transform: translateY(-22px) rotate(-8deg); opacity: 0; }
-html.js:not(.calme) .noel__plats li:not(.est-servi) > :not(.noel__cloche) { opacity: .5; }
-.noel__plats li > :not(.noel__cloche) { transition: opacity .5s; }
-.noel__prix { font-weight: 700; font-size: 1.15rem; color: var(--rouge); }
-.noel__photo { aspect-ratio: 3 / 4; border-radius: 999px 999px 6px 6px; overflow: hidden; }
-.noel__photo img { width: 100%; height: 100%; object-fit: cover; }
-.noel__acompte { margin-top: 18px; font-size: .88rem; opacity: .85; }
-.passes { padding-block: clamp(56px, 8vw, 100px); background: #1a0f0b; color: #f6efe2; }
-.passes__grille { display: grid; gap: 16px; }
-.passes__liste { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 40px; }
-.passes__liste li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; padding: 12px 0; border-top: 1px solid rgba(246, 239, 226, .2); }
-.passes__liste li span:last-child { grid-column: 2; opacity: .8; }
-.passes__etat { grid-row: span 2; align-self: center; font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: rgba(246, 239, 226, .12); }
-.passes__liste strong { text-decoration: line-through; text-decoration-color: var(--braise); font-family: var(--police-titres); font-size: 1.4rem; font-weight: 400; }
-@media (max-width: 760px) { .noel__grille { grid-template-columns: minmax(0, 1fr); } .noel__photo { width: 70%; justify-self: center; } }
 .ete-heures { padding-block: clamp(72px, 10vw, 130px); background: linear-gradient(180deg, #f6f1e7, #f2dcae); color: #1c1712; }
 .ete-heures__liste { list-style: none; margin: 24px 0; padding: 0; display: grid; }
 .ete-heure { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) minmax(0, 15rem); gap: clamp(16px, 3vw, 40px); align-items: center; padding: 22px 0; border-top: 1px solid rgba(28, 23, 18, .18); }
@@ -700,7 +595,6 @@ h1, h2 { line-height: 1.15; }
 .ouv-fetes::after { background: linear-gradient(0deg, rgba(18, 12, 9, .95) 0%, rgba(18, 12, 9, .82) 45%, rgba(18, 12, 9, .35) 72%, rgba(18, 12, 9, .1) 100%); }
 .ouv-recep::after { background: linear-gradient(0deg, rgba(18, 12, 9, .95) 0%, rgba(18, 12, 9, .82) 45%, rgba(18, 12, 9, .35) 72%, rgba(18, 12, 9, .05) 100%); }
 .ouv-offrir::after { background: linear-gradient(90deg, rgba(18, 12, 9, .94), rgba(18, 12, 9, .7) 55%, rgba(18, 12, 9, .3)); }
-.ouv-carte__photo::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(0deg, rgba(18, 12, 9, .78), rgba(18, 12, 9, 0) 45%); }
 .volet .mention-ia { top: 10px; bottom: auto; right: 10px; }
 .ouv-resa__photo--tel { display: none; }
 @media (max-width: 760px) {
@@ -714,16 +608,12 @@ h1, h2 { line-height: 1.15; }
 @media (max-width: 380px) { .ouv-resa__photo { display: none; } .ouv-resa { grid-template-columns: minmax(0, 1fr); } .ouv-resa__texte { grid-column: 1; } .ouv-infos__heure { font-size: 3.6rem; } .ouv-infos .surtitre { display: none; } }
 html:not(.js) .ouv-fetes, html:not(.js) .ouv-recep, html:not(.js) .ouv-infos { min-height: 0; }
 @media (max-width: 760px) { html:not(.js) .midi__eau { height: 22svh; } html:not(.js) .midi__saison { display: none; } }
-.noel__plats li { padding-right: 76px; }
 .ame__statique { display: none; width: min(180px, 50%); margin: 0 auto; color: var(--or); }
 html:not(.js) .ame__statique { display: block; }
-.passes__photo { aspect-ratio: 4 / 3; border-radius: 3px; overflow: hidden; max-width: 360px; }
-.passes__photo img { width: 100%; height: 100%; object-fit: cover; }
 /* Audit : boîtes de texte des titres d'affichage (Instrument Serif dépasse un interligne serré). */
-.midi__titre, .ouv-offrir h1, .ouv-recep__titre, .ouv-carte__texte h1, .ouv-fetes h1, .ouv-resa h1, .introuvable h1 { line-height: 1.24; }
+.midi__titre, .ouv-offrir h1, .ouv-recep__titre, .ouv-carte h1, .ouv-fetes h1, .ouv-resa h1, .introuvable h1 { line-height: 1.24; }
 .mot-tournant { display: inline-block; white-space: nowrap; }
 .mot-tournant__mot { display: inline-block; font-style: italic; color: #ffcf9e; opacity: 1; transform: none; visibility: visible; }
-.ouv-carte__heure { background: rgba(18, 12, 9, .62); padding: .02em .16em; border-radius: 6px; line-height: 1.15; }
 .pds__svg .pds__num { color: #f6efe2; }
 @media (max-width: 380px) {
   .ouv-resa__photo { display: block; width: 64px; height: 80px; } .ouv-resa { grid-template-columns: auto minmax(0, 1fr); } .ouv-resa__texte { grid-column: 2; }
@@ -746,7 +636,6 @@ html:not(.js) .ame__statique { display: block; }
   .ouv-resa__texte { grid-column: 1; }
 }
 .ouv-recep .surtitre { margin-bottom: 1em; }
-.apresmidi__tete p .lien-fleche { margin-left: 4px; }
 .ouv-recep__titre { margin-top: .45em; }
 .volet .video-pause { top: 10px; bottom: auto; }
 /* Vapeur : seule la moitié haute de la vidéo (fumée, bougie, feu au fond) passe sur l'image nette ; l'assiette et le verre restent ceux de l'image. */
@@ -791,7 +680,6 @@ html:not(.js) .ame__statique { display: block; }
 /* La carte : la barre des rubriques monte tout en haut quand l'en-tête se cache (rien ne dépasse au-dessus) ; sur téléphone, les plats arrivent plus tôt. */
 .carte-resto__barre { transition: top .3s var(--courbe, ease); }
 html.entete-cache .carte-resto__barre { top: 0; }
-@media (max-width: 760px) { .ouv-carte__photo { height: 28svh; } .ouv-carte__heure { font-size: 3.6rem; } }
 /* Infos pratiques sur téléphone : les horaires de la semaine avant le cadran. */
 @media (max-width: 760px) { .horaires__grille { display: grid; } .horaires__cadran { order: 2; } }
 /* Heures de section sur une ligne (« 14 h 30 » ne se coupe plus) ; déjeuner : moins de vide au-dessus sur téléphone,
@@ -801,7 +689,6 @@ html.entete-cache .carte-resto__barre { top: 0; }
 @media (min-width: 761px) and (max-width: 1100px) { .dejeuner__vraies { left: auto; right: -4%; } }
 body { padding-bottom: 0; }
 .pied { padding-bottom: calc(var(--barres-h) + 32px); }
-.diner__assiette .mention-ia { top: 12px; bottom: auto; right: 12px; }
 @media (max-width: 760px) and (max-height: 640px) { .terrasse .saison-tag { display: none; } .terrasse__etapes { gap: 4px; } .terrasse__etapes li { font-size: .9rem; } }
 /* Petits téléphones (320 × 568) : l'information clé des Fêtes et de Réceptions reste dans le premier écran. */
 @media (max-width: 760px) and (max-height: 640px) {
@@ -881,11 +768,7 @@ html:not(.calme):not(.secours).js .feu__legende { left: var(--gouttiere); transf
 @media (max-width: 760px) { .ouv-fetes::after { background: linear-gradient(0deg, rgba(18, 12, 9, .95) 0%, rgba(18, 12, 9, .72) 48%, rgba(18, 12, 9, 0) 78%); } }
 .invitation .est-vide { opacity: .45; font-style: italic; }
 /* Soirées passées : « a eu lieu », jamais barré (on lisait « annulé ») ; la photo et la liste côte à côte, sans vide. */
-.passes__liste strong { text-decoration: none; }
 @media (min-width: 761px) {
-  .passes__grille { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); column-gap: clamp(28px, 5vw, 72px); align-items: center; }
-  .passes__grille > h2 { grid-column: 1 / -1; }
-  .passes__photo { grid-row: span 2; max-width: none; width: 100%; }
 }
 .fetes-hiver__grille { align-items: start; }
 .fetes-hiver__grille .fete__photo { align-self: end; }
@@ -902,8 +785,7 @@ html:not(.calme):not(.secours).js .feu__legende { left: var(--gouttiere); transf
 .introuvable::after { background: linear-gradient(0deg, rgba(18, 12, 9, .94) 0%, rgba(18, 12, 9, .78) 40%, rgba(18, 12, 9, .35) 75%), linear-gradient(90deg, rgba(18, 12, 9, .5), rgba(18, 12, 9, 0) 60%); }
 html[data-moment="soir"] .ouv-infos::after { background: linear-gradient(0deg, var(--fond) 8%, color-mix(in srgb, var(--fond) 82%, transparent) 46%, color-mix(in srgb, var(--fond) 35%, transparent) 80%), linear-gradient(90deg, color-mix(in srgb, var(--fond) 55%, transparent), transparent 62%); }
 .ouv-fetes::after { background: linear-gradient(0deg, rgba(18, 12, 9, .94) 0%, rgba(18, 12, 9, .66) 40%, rgba(18, 12, 9, .1) 66%), linear-gradient(90deg, rgba(18, 12, 9, .72) 0%, rgba(18, 12, 9, .3) 40%, rgba(18, 12, 9, 0) 62%); }
-@media (min-width: 761px) { html:not(.js) .ouv-carte { min-height: calc(100svh - 104px); } }
-@media (min-width: 761px) and (max-height: 640px) { .ouv-carte__texte > p.masque-ecran-tres-bas, .ouv-carte__texte > p:nth-of-type(2) { display: none; } .midi__texte { padding-bottom: 32px; } }
+@media (min-width: 761px) and (max-height: 640px) { .midi__texte { padding-bottom: 32px; } }
 @media (max-width: 760px) and (max-height: 700px) {
   .ouv-fetes__geant { font-size: 2.8rem; line-height: 1.15; margin-bottom: .12em; }
   .ouv-fetes h1 { font-size: 1.6rem; margin-bottom: .3em; }
@@ -914,3 +796,388 @@ html[data-moment="soir"] .ouv-infos::after { background: linear-gradient(0deg, v
   .ouv-recep__heure { font-size: 2.8rem; }
   .ouv-recep__titre { font-size: 1.8rem; }
 }
+
+/* =====================================================================================================================
+   v7 · La carte : l'ardoise de la semaine (scène propre), la passe où le plat se dresse, la fin en grande photo.
+   ===================================================================================================================== */
+@font-face { font-family: 'Caveat'; src: url('/assets/fonts/caveat.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
+:root { --ecran-h: 100svh; }
+.ouv-carte { position: relative; isolation: isolate; min-height: 100svh; display: grid; align-items: center; overflow: hidden;
+  padding: calc(var(--entete-h) + clamp(20px, 4vh, 48px)) var(--gouttiere) clamp(28px, 6vh, 64px);
+  background: radial-gradient(70% 90% at 78% 40%, #fbf6ec, transparent 70%), linear-gradient(115deg, #efe4cf, #f6efe2 45%, #ebdcc0); transition: background .8s ease; }
+/* La lumière du mur : le jour, la fenêtre ; le soir, une bougie sous l'ardoise. */
+.ouv-carte::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; transition: opacity .9s ease;
+  background: repeating-linear-gradient(100deg, rgba(255, 255, 255, .0) 0 140px, rgba(255, 255, 255, .28) 140px 200px, rgba(255, 255, 255, 0) 200px 360px); mix-blend-mode: soft-light; }
+html[data-moment="soir"] .ouv-carte { background: radial-gradient(46% 60% at 72% 62%, #4a2a17, transparent 72%), radial-gradient(120% 100% at 50% 0%, #1f1610, #0f0a07 80%); color: var(--cendre); }
+html[data-moment="soir"] .ouv-carte::before { opacity: 0; }
+.ouv-carte__grille { width: min(100%, 1320px); margin-inline: auto; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(28px, 5vw, 88px); align-items: center; }
+.ouv-carte__texte { display: grid; justify-items: start; }
+.ouv-carte__heure { margin-bottom: .05em; }
+.ouv-carte h1 { font-size: clamp(2.6rem, min(5.4vw, 9vh), 5.6rem); line-height: 1.02; margin: 0 0 .35em; }
+.ouv-carte__texte > p:not(.surtitre):not(.heure-section) { max-width: 30em; }
+.ouv-carte__info { font-weight: 600; color: var(--or-fonce); }
+html[data-moment="soir"] .ouv-carte__info { color: #ffcf9e; }
+.ouv-carte__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: .4em; }
+.ouv-carte__mur { position: relative; display: grid; justify-items: center; gap: 14px; }
+.ouv-carte__mur .ardoise { width: min(100%, 680px); --ardoise-police: 'Caveat', 'Segoe Print', cursive; --ardoise-fond: #2e3533; --ardoise-bois: #8a5a33;
+  transform: rotate(-1.2deg); transition: box-shadow .9s ease, filter .9s ease; }
+.ouv-carte__mur .ardoise__surface { aspect-ratio: 16 / 11; }
+.ouv-carte__mur .ardoise__titre { font-size: clamp(1.9rem, 8.4cqi, 3.6rem); font-weight: 700; }
+.ouv-carte__mur .ardoise__liste { font-size: clamp(19px, 4.6cqi, 2.05rem); font-weight: 600; }
+.ouv-carte__mur .ardoise__date, .ouv-carte__mur .ardoise__mot { font-size: clamp(17px, 3.8cqi, 1.6rem); font-weight: 500; }
+/* La ficelle et le clou : l'ardoise est accrochée au mur. */
+.ouv-carte__mur .ardoise::before { content: ''; position: absolute; left: 50%; top: -46px; width: 44%; height: 50px; transform: translateX(-50%); pointer-events: none;
+  background: linear-gradient(to top right, transparent calc(50% - 1px), #6b5440 50%, transparent calc(50% + 1px)) left / 50% 100% no-repeat,
+              linear-gradient(to top left, transparent calc(50% - 1px), #6b5440 50%, transparent calc(50% + 1px)) right / 50% 100% no-repeat; }
+.ouv-carte__mur .ardoise::after { content: ''; position: absolute; left: 50%; top: -52px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #d8c3a0, #6b5440); box-shadow: 0 2px 3px rgba(0, 0, 0, .35); }
+html[data-moment="soir"] .ouv-carte__mur .ardoise { box-shadow: 0 0 0 1px rgba(255, 190, 120, .08), 0 40px 90px -30px rgba(255, 140, 60, .35), 0 24px 50px -18px rgba(0, 0, 0, .7); }
+.ouv-carte__lien { margin: 0; }
+.ouv-carte__lien a { display: inline-flex; align-items: center; min-height: 44px; color: inherit; font-weight: 600; text-underline-offset: .25em; }
+.ouv-carte__lien a::after { content: '↓'; margin-left: .45em; }
+.ardoise.est-fini .ardoise__baton, .ardoise.est-ecrit .ardoise__baton { animation: ardoise-baton-fin .4s 2.2s forwards; }
+@keyframes ardoise-baton-fin { to { opacity: 0; visibility: hidden; } }
+@media (max-width: 900px) { .ouv-carte__grille { grid-template-columns: minmax(0, 1fr); } .ouv-carte__mur { order: 2; } }
+@media (max-width: 760px) { .ouv-carte { min-height: 0; } .ouv-carte h1 { font-size: clamp(2.3rem, 10vw, 3rem); } .ouv-carte__mur .ardoise { transform: none; } .ouv-carte__mur .ardoise__surface { aspect-ratio: auto; } }
+@media (min-width: 901px) and (max-height: 760px) { .ouv-carte .masque-ecran-tres-bas { display: none; } .ouv-carte__mur .ardoise { width: min(100%, 560px); } }
+
+/* La passe : le suprême de pintade se dresse (gravure sur assiette d'ardoise). */
+.passe-chef { background: radial-gradient(60% 70% at 70% 50%, #2a1d14, #15100c 75%); color: var(--cendre); --couleur-fond: #15100c; --couleur-texte: #f6efe2; --couleur-texte-doux: #cbbfae; --couleur-ligne: #3a2e25; --couleur-accent: #c9a46a; --assiette-porcelaine: #2b231c; }
+.passe-chef .assiette__titre { color: var(--cendre); }
+.passe-chef .assiette__scene { position: relative; }
+.passe__mention { position: absolute; right: 0; bottom: 0; }
+
+/* La fin : une vraie assiette en grand. */
+.fin-carte { position: relative; isolation: isolate; min-height: 82svh; display: grid; align-items: end; overflow: hidden; color: var(--cendre); background: #15100c; }
+.fin-carte__photo { position: absolute; inset: 0; z-index: -2; height: 100%; }
+.fin-carte__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.fin-carte::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(90deg, rgba(18, 12, 9, .88), rgba(18, 12, 9, .35) 55%, rgba(18, 12, 9, .05)), linear-gradient(0deg, rgba(18, 12, 9, .7), transparent 50%); }
+.fin-carte__texte { padding-block: clamp(64px, 12vh, 140px); }
+.fin-carte__texte h2 { color: var(--cendre); max-width: 9em; }
+.fin-carte__texte > p { max-width: 30em; }
+.fin-carte__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.fin-carte .statut a { color: inherit; min-height: 44px; display: inline-flex; align-items: center; }
+
+/* =====================================================================================================================
+   v7 · Accueil : 12 h 30 la salle au soleil, 14 h 30 le panorama de la piscine, 21 h la vraie assiette fumante,
+   23 h « Au creux de la cheminée », minuit = offrir seul.
+   ===================================================================================================================== */
+.dejeuner__assiette { border-radius: 999px 999px 6px 6px; }
+.dejeuner__assiette img { object-position: var(--cadrage); }
+
+.apresmidi.panorama { overflow: clip; }
+.panorama { position: relative; height: 330svh; background: #f3ead9; color: var(--encre); --p: 0; }
+.panorama__cadre { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.panorama__piste { position: absolute; top: 0; left: 0; height: 100%; width: max(150vw, 100svh * 1.5);
+  transform: translate3d(calc(var(--p) * (100vw - 100%)), 0, 0); will-change: transform; }
+.panorama__photo { position: absolute; inset: 0; height: 100%; }
+.panorama__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); filter: saturate(1.18) contrast(1.06); }
+/* La lumière qui tourne : l'ombre gagne depuis la droite, l'or monte avec l'heure. */
+.panorama__soleil { position: absolute; inset: 0; pointer-events: none; opacity: calc(.15 + var(--p) * .85); will-change: opacity;
+  background: linear-gradient(230deg, rgba(40, 22, 8, .34) 0%, rgba(40, 22, 8, 0) 46%), linear-gradient(0deg, rgba(214, 112, 30, .26), rgba(255, 170, 90, .14)); }
+.panorama__cadre::before { content: ''; position: absolute; inset: 0 0 auto; z-index: 2; height: 36%; pointer-events: none;
+  background: linear-gradient(180deg, rgba(243, 234, 217, .94) 0%, rgba(243, 234, 217, .7) 45%, rgba(243, 234, 217, 0) 100%); }
+.panorama__tete { position: absolute; z-index: 3; left: var(--gouttiere); right: var(--gouttiere); top: calc(var(--entete-h) + clamp(8px, 2vh, 20px));
+  display: flex; align-items: flex-end; gap: clamp(16px, 3vw, 40px); }
+.panorama__tete .heure-section { margin: 0; color: var(--eau); min-width: 4.2ch; }
+.panorama__tete h2 { margin: 0 0 .1em; font-size: clamp(2rem, min(4.4vw, 7vh), 3.8rem); }
+.panorama__tete .surtitre { margin-bottom: .3em; }
+.panorama__texte { margin: 0; max-width: 40em; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+.panorama__lieux { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; }
+.lieu { position: absolute; left: var(--x); top: var(--y); width: min(300px, 70vw); transform: translate(-14px, -14px); }
+.lieu__point { position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; background: rgba(255, 255, 255, .92); box-shadow: 0 0 0 6px rgba(255, 255, 255, .28), 0 4px 14px rgba(0, 0, 0, .3); }
+.lieu__point::after { content: ''; position: absolute; inset: 9px; border-radius: 50%; background: var(--braise); }
+.lieu__texte { position: absolute; left: 40px; top: -6px; width: 100%; padding: 12px 16px 14px; border-radius: 14px; color: #fff;
+  background: radial-gradient(120% 140% at 0% 0%, rgba(18, 12, 9, .72), rgba(18, 12, 9, .5)); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; transform: translateY(10px); transition: opacity .5s ease, transform .5s ease; }
+.lieu.est-allume .lieu__texte { opacity: 1; transform: none; }
+.lieu__heure { margin: 0 0 4px; font-variant-numeric: tabular-nums; font-weight: 600; font-size: .9rem; color: #ffd9a8; }
+.lieu h3 { margin: 0 0 4px; color: #fff; font-size: clamp(1.25rem, 1.6vw, 1.6rem); }
+.lieu__texte > p:last-child { margin: 0; font-size: .95rem; line-height: 1.45; }
+.panorama__indice { position: absolute; z-index: 3; right: var(--gouttiere); bottom: calc(var(--barres-h) + 18px); margin: 0; }
+@media (max-width: 760px) {
+  .panorama { height: 300svh; }
+  .panorama__piste { width: calc(100svh * 1.5); }
+  .panorama__tete { flex-direction: column; align-items: flex-start; gap: 0; }
+  .panorama__tete h2 { font-size: clamp(1.7rem, 8vw, 2.3rem); }
+  .panorama__texte .masque-ecran-bas { display: none; }
+  .lieu { width: min(250px, 66vw); }
+  .lieu__texte { padding: 10px 12px 12px; }
+}
+@media (max-height: 640px) and (min-width: 761px) { .panorama__texte .masque-ecran-bas { display: none; } .lieu__texte > p:last-child { display: none; } }
+/* Sans animation (mode calme, sans JavaScript) : la photo entière, puis les lieux en liste. */
+:is(html.calme, html:not(.js), html.secours) .panorama { height: auto; }
+:is(html.calme, html:not(.js), html.secours) .panorama__cadre { position: relative; height: auto; display: flex; flex-direction: column; padding-top: calc(var(--entete-h) + 24px); }
+:is(html.calme, html:not(.js), html.secours) .panorama__cadre::before { display: none; }
+:is(html.calme, html:not(.js), html.secours) .panorama__tete { position: relative; inset: auto; order: -1; padding: 0 var(--gouttiere) 20px; left: 0; right: 0; top: 0; }
+:is(html.calme, html:not(.js), html.secours) .panorama__piste { position: relative; width: 100%; height: auto; transform: none; }
+:is(html.calme, html:not(.js), html.secours) .panorama__photo { position: relative; height: 62svh; }
+:is(html.calme, html:not(.js), html.secours) .panorama__lieux { position: static; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; padding: 22px var(--gouttiere) 56px; }
+:is(html.calme, html:not(.js), html.secours) .lieu { position: static; width: auto; transform: none; }
+:is(html.calme, html:not(.js), html.secours) .lieu__point { display: none; }
+:is(html.calme, html:not(.js), html.secours) .lieu__texte { position: static; opacity: 1; transform: none; color: var(--encre); background: none; padding: 0; backdrop-filter: none; }
+:is(html.calme, html:not(.js), html.secours) .lieu h3 { color: var(--encre); }
+:is(html.calme, html:not(.js), html.secours) .lieu__heure { color: var(--or-fonce); }
+:is(html.calme, html:not(.js), html.secours) .panorama__indice { display: none; }
+
+/* 21 h : la vapeur sur la vraie assiette. */
+.diner__assiette.fumant { background: none; }
+.diner__assiette.fumant img { object-position: var(--cadrage); }
+.diner__indice { margin: 10px 0 0; text-align: center; }
+
+/* 23 h : les mots de la maison. */
+.feu__sous { position: absolute; z-index: 3; left: 0; right: 0; top: calc(50% - clamp(3rem, min(10vw, 16vh), 9.5rem) * .9); margin: 0; text-align: center; pointer-events: none;
+  font-family: var(--police-titres); font-style: italic; font-size: clamp(1.15rem, 2vw, 1.7rem); color: #ffcf9e; text-shadow: 0 2px 14px rgba(0, 0, 0, .8); }
+:is(html.calme, html:not(.js), html.secours) .feu__sous { position: relative; top: auto; margin-bottom: 8px; }
+
+/* Minuit : offrir, seul, en plein écran ; la carte brille dans le noir. */
+.minuit { min-height: 100svh; display: grid; align-items: center; }
+.minuit__grille { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.minuit h2 { font-size: clamp(2.4rem, 5vw, 4.4rem); max-width: 10em; }
+.carte-cadeau-apercu { position: relative; max-width: 460px; justify-self: center; width: 100%; }
+.carte-cadeau-apercu::before { content: ''; position: absolute; inset: -30%; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, rgba(233, 162, 59, .32), rgba(233, 162, 59, 0)); }
+@media (max-width: 760px) { .minuit { min-height: 0; } .minuit__grille { grid-template-columns: minmax(0, 1fr); } }
+
+/* =====================================================================================================================
+   v7 · Les fêtes : la vitre givrée (givre-webgl), les dates (agenda-des-dates), Noël en dépliant (depliant-3d).
+   ===================================================================================================================== */
+.ouv-fetes.givre { --couleur-fond: #120c09; --couleur-texte: #f6efe2; --couleur-secondaire: #cfe3ea; --couleur-accent: #ffcf9e; min-height: 100svh; padding-top: 0; }
+.ouv-fetes .givre__voile { display: none; }
+.ouv-fetes::after { z-index: 0; }
+.ouv-fetes .givre__canvas, .ouv-fetes .givre__statique { z-index: 1; }
+.ouv-fetes .givre__fond .media { position: absolute; inset: 0; height: 100%; }
+html[data-saison="ete"] .ouv-fetes :is(.givre__canvas, .givre__statique) { display: none; }
+.ouv-fetes__indice { margin: 10px 0 0; }
+@media (max-width: 760px) { .ouv-fetes__indice { display: none; } }
+
+/* Les dates : une ligne par date, la pastille du jour, sans cadre. */
+.dates { padding-block: clamp(72px, 10vw, 130px); background: #f3ead9; color: #1c1712;
+  --couleur-fond: #f3ead9; --couleur-texte: #1c1712; --couleur-accent: #b8322c; --couleur-secondaire: #9a5a12;
+  --couleur-texte-doux: #5b4e42; --couleur-ligne: rgba(28, 23, 18, .16); --couleur-surface: rgba(28, 23, 18, .05); }
+.dates .agd__tete { display: grid; gap: 6px; margin-bottom: 18px; }
+.dates .agd__h2 { margin: 0; font-size: clamp(2.2rem, 4.6vw, 4rem); }
+.dates .agd__prochaine { margin: 4px 0 0; font-weight: 600; color: #9a5a12; }
+.dates .agd__date { border: 0; border-top: 1px solid var(--couleur-ligne); border-radius: 0; background: none; box-shadow: none; }
+.dates .agd__titre { font-family: var(--police-titres); font-weight: 400; font-size: clamp(1.4rem, 2.2vw, 1.9rem); }
+.dates .agd__texte a { color: inherit; font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; }
+.dates__source { margin: 22px 0 0; max-width: 46em; color: #5b4e42; }
+
+/* Noël : le dépliant sur le bois de la salle. */
+.noel.d3d { background: radial-gradient(80% 70% at 60% 40%, #3a2416, #1a0f0b 75%); color: #f6efe2;
+  --couleur-fond: #f6efe2; --couleur-texte: #1c1712; --couleur-accent: #b8322c; --couleur-secondaire: #9a5a12; --couleur-texte-doux: #5b4e42; --couleur-ligne: rgba(28, 23, 18, .14); --couleur-surface: #efe3cb; }
+.noel .d3d__tete, .noel .d3d__titre, .noel .socle-surtitre { color: #f6efe2; }
+.noel .d3d__intro { color: #e8dccb; }
+.noel .d3d__volet { color: #1c1712; background: #fbf6ec; }
+.noel .d3d__volet h3 { font-family: var(--police-titres); font-weight: 400; font-size: clamp(1.5rem, 2.2vw, 2rem); margin: .1em 0 .2em; }
+.noel .d3d__liste { list-style: none; padding: 0; }
+.noel .d3d__liste em { display: block; font-style: italic; color: #5b4e42; }
+.noel .d3d__media img { object-position: var(--cadrage); }
+.noel__couverture { background: radial-gradient(100% 80% at 50% 30%, #4a2a17, #1a0f0b) !important; color: #f6efe2 !important; }
+.noel__couverture strong { font-family: var(--police-titres); font-weight: 400; font-size: clamp(1.8rem, 3vw, 2.6rem); }
+.noel__couv-prix { color: #ffcf9e; font-weight: 600; }
+.noel__prix { margin: 10px 0 6px; font-weight: 700; color: var(--rouge); }
+.noel__actions { margin: 0; }
+.noel__acompte { margin: 8px 0 0; font-size: .85rem; color: #5b4e42; }
+
+/* v7 · Réceptions : le voile violet de 19 h s'ouvre en palmes qui s'écartent sur la pergola. */
+.rdl { --rdl-couleur-1: #3b2c56; --rdl-couleur-2: #33264b; --rdl-couleur-3: #4a3768; --rdl-ombre: rgba(18, 12, 30, .45); }
+.rdl__passer { position: absolute; right: var(--gouttiere); bottom: calc(var(--barres-h) + 20px); pointer-events: auto; }
+
+/* v7 · Deux styles d'heure seulement : le jour, fine et bleu canard ; la nuit (19 h et après), grasse et braise. */
+.ouv-recep__heure { color: var(--braise-claire); }
+.ouv-carte__heure { color: var(--eau); }
+html[data-moment="soir"] .ouv-carte__heure { color: var(--braise-claire); }
+@media (max-width: 760px) { .terrasse .heure-section { color: var(--braise-claire); } }
+
+/* v7 · Réserver sans cadres (regard neuf G) : jours et créneaux en texte, la sélection en pastille pleine ;
+   le récapitulatif est un ticket à bords dentelés ; la liste des tables, des lignes. */
+.resa .resa__jour { border-color: transparent; background: transparent; border-radius: 999px; min-height: 58px; }
+.resa .resa__jour:not(:disabled):hover { background: var(--couleur-surface); }
+.resa .resa__jour:disabled { border-color: transparent; background: transparent; opacity: .55; }
+.resa .resa__jour[aria-pressed="true"] { border-color: var(--couleur-texte); background: var(--couleur-texte); color: var(--couleur-fond); }
+.resa :is(.resa__puce, .resa__creneau) { border-color: transparent; background: var(--couleur-surface); }
+.resa :is(.resa__puce, .resa__creneau):hover { border-color: transparent; background: color-mix(in oklab, var(--couleur-texte) 10%, var(--couleur-fond)); }
+.resa :is(.resa__puce, .resa__creneau):has(input:disabled) { border-color: transparent; background: transparent; }
+.resa .resa__creneau { border-radius: 999px; min-height: 46px; }
+.resa .resa__form :is(input[type="text"], input[type="email"], input[type="tel"], input[type="date"], textarea, select) { border-color: transparent; border-bottom-color: var(--couleur-ligne); border-radius: 0; background: transparent; padding-inline: 2px; }
+.resa .resa__recap-corps { border: 0; border-radius: 0; background: #fbf6ec; color: #1c1712; box-shadow: 0 18px 40px -22px rgba(28, 23, 18, .45);
+  -webkit-mask: radial-gradient(9px at 9px 50%, #0000 98%, #000) -9px 0 / 100% 22px repeat-y, linear-gradient(#000 0 0);
+  -webkit-mask-composite: source-in; mask: radial-gradient(9px at 9px 50%, #0000 98%, #000) -9px 0 / 100% 22px repeat-y; padding-inline: clamp(24px, 3vw, 36px); }
+.resa .resa__recap-corps.est-verif { box-shadow: 0 0 0 3px color-mix(in oklab, var(--couleur-accent) 30%, transparent), 0 18px 40px -22px rgba(28, 23, 18, .45); }
+.pds .pds__lien { border-color: transparent; border-bottom-color: var(--couleur-ligne); border-radius: 0; }
+.pds .pds__item.est-choisie .pds__lien { box-shadow: none; border-radius: 10px; }
+.pds .pds__item[data-prise] .pds__lien { border-style: solid; border-color: transparent; border-bottom-color: var(--couleur-ligne); }
+
+/* =====================================================================================================================
+   v7 · Infos pratiques : le vrai ciel de Moineville (ciel-en-direct) au-dessus de la vraie enseigne détourée ;
+   le plan d'accès en vraie carte ; « Une question » par étapes (formulaire-par-etapes).
+   ===================================================================================================================== */
+.ouv-infos.ced { min-height: 100svh; align-items: start; --couleur-fond: #120c09; --couleur-texte: #f6efe2; --couleur-secondaire: #3b6f8f; --couleur-accent: #f08a4b; }
+.ouv-infos.ced::after { display: none; }
+.ouv-infos__enseigne { position: absolute; left: 0; right: 0; bottom: 0; z-index: 0; height: min(calc(100vw / 2.88), 56%); pointer-events: none; transition: filter 1.2s ease; }
+.ouv-infos__enseigne img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+.ced[data-phase="crepuscule"] .ouv-infos__enseigne { filter: brightness(.62) saturate(.85) sepia(.12); }
+.ced[data-phase="aube"] .ouv-infos__enseigne { filter: brightness(.72) saturate(.9); }
+.ced[data-phase="nuit"] .ouv-infos__enseigne { filter: brightness(.3) saturate(.65) contrast(1.08); }
+.ouv-infos .ced__cadre { position: relative; z-index: 2; align-items: start; padding-block: calc(var(--entete-h) + clamp(12px, 3vh, 32px)) 24px; }
+.ouv-infos .ced__texte { padding: clamp(14px, 1.6vw, 22px); gap: 8px; }
+.ouv-infos .ouv-infos__contenu { padding-top: clamp(14px, 1.6vw, 22px); padding-bottom: clamp(14px, 1.6vw, 22px); }
+.ouv-infos .ouv-infos__ilest { color: var(--ced-texte); }
+.ouv-infos .ouv-infos__heure { font-size: clamp(3.6rem, min(10vw, 15vh), 8.4rem); }
+.ouv-infos .ced__texte h1, .ouv-infos .ced__texte .surtitre, .ouv-infos .ouv-infos__adresse, .ouv-infos .statut { color: var(--ced-texte); }
+.ouv-infos .ced__carte { justify-self: end; width: min(100%, 340px); }
+@media (max-width: 900px) { .ouv-infos .ced__cadre { grid-template-columns: minmax(0, 1fr); } .ouv-infos .ced__carte { display: none; } }
+@media (max-width: 760px) and (orientation: portrait) { .ouv-infos__enseigne { height: min(calc(100vw / 1.62), 42%); } }
+@media (max-height: 640px) and (min-width: 761px) { .ouv-infos .ced__carte { display: none; } .ouv-infos__enseigne { height: 58%; } }
+:is(html.calme, html:not(.js)) .ouv-infos .ced__carte { display: none; }
+
+/* Le plan d'accès : la Moselle, l'A31, la frontière ; Moineville et ses distances. */
+.acces__carte { display: block; width: min(100%, 420px); height: auto; margin: 12px 0 16px; overflow: visible; }
+.acces__carte .carte__frontiere { stroke: rgba(246, 239, 226, .45); stroke-width: 1.4; stroke-dasharray: 2 5; stroke-linecap: round; }
+.acces__carte .carte__moselle { stroke: #5fb3c7; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
+.acces__carte .carte__route { stroke: var(--or); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.acces__carte .carte__vol { stroke: #ffcf9e; stroke-width: 1.3; stroke-dasharray: 3 5; }
+.acces__carte .carte__ville { fill: var(--cendre); }
+.acces__carte .carte__ici { fill: var(--braise); stroke: rgba(240, 138, 75, .35); stroke-width: 8; }
+.acces__carte text { font-family: var(--police-texte); fill: var(--cendre); }
+.acces__carte .carte__nom { font-size: 14px; font-weight: 600; }
+.acces__carte .carte__ici-nom { font-size: 16px; font-weight: 700; fill: #ffcf9e; }
+.acces__carte .carte__km { font-size: 12px; font-weight: 700; fill: #ffcf9e; }
+.acces__carte .carte__pays { font-size: 10px; letter-spacing: .24em; fill: rgba(246, 239, 226, .5); }
+.acces__carte .carte__eau { font-size: 11px; font-style: italic; fill: #8fd0de; }
+.acces__carte .carte__a31 { font-size: 11px; font-weight: 700; fill: var(--or); }
+.acces__carte .carte__note { font-size: 10px; fill: rgba(246, 239, 226, .65); }
+
+/* Une question : sans cadre, des cartes de choix plates. */
+.ecrire.fpe { --couleur-fond: var(--fond); --couleur-texte: var(--texte); --couleur-accent: var(--rouge); --couleur-secondaire: var(--or-fonce); }
+.ecrire__intro { display: grid; gap: 10px; align-content: start; }
+.ecrire__intro .ecrire__photo { position: relative; top: auto; aspect-ratio: 4 / 3; margin-top: 10px; }
+.ecrire .fpe__carton { border: 0; box-shadow: none; background: transparent; padding: 0; }
+.ecrire .fpe__carte { border-color: transparent; background: var(--couleur-surface); border-radius: 14px; }
+.ecrire .fpe__carte:has(input:checked) { background: var(--texte); color: var(--fond); }
+.ecrire .fpe__carte:has(input:checked) .fpe__carte-texte { color: color-mix(in oklab, var(--fond) 80%, var(--texte)); }
+.ecrire .fpe__icone { color: var(--rouge); }
+.ecrire .fpe__carte:has(input:checked) .fpe__icone { color: var(--or); }
+.ecrire .fpe__champ :is(input, textarea) { border-radius: 0; border: 0; border-bottom: 1px solid color-mix(in oklab, var(--texte) 30%, transparent); background: transparent; }
+.ecrire .fpe__deux { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 760px) { .ecrire .fpe__deux { grid-template-columns: minmax(0, 1fr); } }
+.ouv-infos.ced { color: var(--ced-texte); }
+.ouv-infos__enseigne { background: none; border-radius: 0; }
+/* Pas de boîte autour du texte : un halo de la couleur du ciel garde le contraste. */
+.ouv-infos .ced__texte { background: none; box-shadow: none; }
+.ouv-infos .ced__texte :is(.surtitre, .ouv-infos__ilest, h1, .statut, .ouv-infos__adresse) { text-shadow: 0 0 22px var(--ced-voile), 0 0 6px color-mix(in srgb, var(--ced-voile) 70%, transparent); }
+.ouv-infos .ced__texte { max-width: min(36rem, 44vw); }
+.ouv-infos .ouv-infos__heure { font-size: clamp(3.4rem, min(9vw, 13vh), 7.6rem); }
+@media (max-width: 900px) { .ouv-infos .ced__texte { max-width: none; } }
+
+/* v7 · La page fermée : la salle dans le noir, une bougie suit la main (lumiere-au-pointeur). */
+.introuvable.lum { --couleur-fond: #120c09; --couleur-texte: #f6efe2; --couleur-accent: #f08a4b; }
+.introuvable.lum::after { display: none; }
+.introuvable .lum__fond { position: absolute; inset: 0; }
+.introuvable .lum__fond .media { position: absolute; inset: 0; height: 100%; border-radius: 0; }
+.introuvable .introuvable__photo img { transform: none; }
+.introuvable .lum__cadre { position: relative; z-index: 3; }
+.introuvable .lum__indice { margin-top: 14px; }
+.introuvable .lum__cadre { justify-self: start; margin-inline: 0 auto; width: min(100%, 46rem); padding-left: var(--gouttiere); padding-right: var(--gouttiere); }
+.introuvable .lum__voile { background: linear-gradient(90deg, rgba(18, 12, 9, .78) 0%, rgba(18, 12, 9, .35) 46%, rgba(18, 12, 9, 0) 70%), linear-gradient(0deg, rgba(18, 12, 9, .7), rgba(18, 12, 9, 0) 40%); }
+.introuvable.lum { grid-template-columns: minmax(0, 1fr); justify-content: stretch; justify-items: stretch; }
+
+/* v7 · La mention « Illustration générée » reste, plus discrète (une ligne du pied de page l'explique). */
+.mention-ia { font-size: 10.5px !important; letter-spacing: .02em; padding: 3px 8px !important; opacity: .82; background: rgba(18, 12, 9, .42) !important; backdrop-filter: blur(4px); }
+.pied-venir p { margin: 0 0 .5em; }
+/* La passe : les étapes sans cadre, un trait qui s'allume. */
+.passe-chef .assiette__etapes li { border: 0; border-left: 2px solid var(--couleur-ligne); border-radius: 0; background: none; padding: 8px 0 8px 16px; }
+.passe-chef.est-actif .assiette__etapes li.est-active { background: none; border-left-color: #f08a4b; color: var(--cendre); }
+.passe-chef.est-actif .assiette__etapes li.est-active span { color: #e8dccb; }
+.passe-chef.est-actif .assiette__etapes li.est-faite { border-left-color: #8a6a48; }
+/* Panorama : à droite de l'image, la légende passe à gauche de son point (elle reste dans l'écran). */
+@media (max-width: 760px) { .ouv-carte__mur .ardoise::before, .ouv-carte__mur .ardoise::after { display: none; } .ouv-carte__mur { margin-top: 8px; } }
+.fetes-hiver__soirees { margin: 26px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; color: #e8dccb; }
+
+/* v7 · corrections d'audit */
+.mention-ia { font-size: 12px !important; background: rgba(0, 0, 0, .64) !important; opacity: 1; padding: 2px 8px !important; }
+.passe__mention { font-size: 12px; }
+.acces__carte .carte__pays { font-size: 15px; letter-spacing: .14em; }
+.acces__carte .carte__eau, .acces__carte .carte__a31 { font-size: 15px; }
+.acces__carte .carte__note { font-size: 14px; }
+.acces__carte .carte__km { font-size: 15px; }
+.acces__carte .carte__nom { font-size: 16px; }
+.acces__carte .carte__ici-nom { font-size: 18px; }
+.acces__carte { width: 100%; max-width: 460px; }
+html[data-theme="jour"] .horaires__essai-reponse[data-etat="ferme"] { color: var(--rouge); }
+@media (max-width: 1000px) { .ecrire .fpe__repere:not([aria-current]) .fpe__nom { display: none; } }
+.ouv-carte__mur .ardoise__date { margin-bottom: .25em; line-height: 1.2; }
+.ouv-carte__mur .ardoise__titre { line-height: 1.1; }
+@media (max-height: 559px) { .d3d__verso { display: none !important; } }
+.ouv-fetes .givre__canvas, .ouv-fetes .givre__statique { z-index: 0; }
+.ouv-fetes::after { z-index: 1; }
+.ouv-fetes__contenu { z-index: 2; }
+.ouv-fetes__geant, .ouv-fetes h1, .ouv-fetes .surtitre { text-shadow: 0 2px 18px rgba(18, 12, 9, .85), 0 0 3px rgba(18, 12, 9, .7); }
+.ouv-recep__heure, .ouv-recep__titre { text-shadow: 0 2px 18px rgba(18, 12, 9, .85), 0 0 3px rgba(18, 12, 9, .7); }
+.ouv-infos .ouv-infos__heure { color: var(--ced-texte); }
+html:not(.js) .ouv-infos.ced .ced__ciel { background: linear-gradient(180deg, #14213a, #2f4f74 70%); }
+.rdl__passer { opacity: 0; }
+.rdl__passer:focus-visible { opacity: 1; }
+.dates__grille { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+.dates__photo { position: sticky; top: calc(var(--entete-h) + 24px); aspect-ratio: 3 / 4; border-radius: 4px; overflow: hidden; }
+@media (max-width: 860px) { .dates__grille { grid-template-columns: minmax(0, 1fr); } .dates__photo { position: relative; top: auto; aspect-ratio: 16 / 10; } }
+@media (max-width: 380px) { .ouv-offrir h1 { font-size: 1.9rem; } }
+.lieu .lieu__texte { left: 40px; right: auto; }
+.lieu[data-cote="gauche"] .lieu__texte { left: auto; right: 40px; }
+
+.ouv-infos.ced { background-color: #14213a; }
+.ouv-carte__mur .ardoise__date { margin-bottom: .55em; }
+@media (max-height: 640px) and (min-width: 761px) { .noel .noel__acompte { display: none; } .noel .d3d__media { min-height: 64px; } }
+.panorama__legende { display: none; }
+@media (max-width: 760px) {
+  .panorama .lieu__texte { display: none; }
+  .panorama__legende { display: block; position: absolute; z-index: 3; left: var(--gouttiere); right: var(--gouttiere); bottom: calc(var(--barres-h) + 46px); margin: 0; padding: 12px 16px 14px; border-radius: 14px; color: #fff;
+    background: rgba(18, 12, 9, .66); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: opacity .35s ease; }
+  .panorama__legende:empty { opacity: 0; }
+  .panorama__legende .lieu__heure { margin: 0 0 2px; }
+  .panorama__legende h3 { margin: 0 0 2px; color: #fff; font-size: 1.25rem; }
+  .panorama__legende p { margin: 0; font-size: .95rem; }
+  :is(html.calme, html:not(.js), html.secours) .panorama .lieu__texte { display: block; }
+  :is(html.calme, html:not(.js), html.secours) .panorama__legende { display: none; }
+}
+.introuvable.lum { min-height: 100svh; padding-top: calc(var(--entete-h) + 12px); align-content: center; justify-content: stretch; }
+.introuvable .lum__cadre { padding-bottom: clamp(20px, 4vh, 48px); gap: clamp(10px, 2vh, 22px); }
+.introuvable .heure-geante { text-shadow: 0 2px 22px rgba(18, 12, 9, .9), 0 0 4px rgba(18, 12, 9, .8); }
+@media (max-height: 820px) and (min-width: 761px) { .introuvable h1 { font-size: clamp(2.4rem, 7.5vh, 4rem); } }
+.dates .agd__h2 { line-height: 1.12; padding-bottom: .08em; }
+.dates .agd__tete { margin-bottom: 24px; }
+/* La passe en vraie photo : l'assiette floue dans l'ombre, chaque élément s'y pose net. */
+.passe-chef .passe__scene { border-radius: 18px; overflow: hidden; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .7); }
+.passe-chef .passe__fond { inset: 0; border-radius: 0; background: #1a1714; box-shadow: none; }
+.passe-chef .passe__fond::before, .passe-chef .passe__fond::after { display: none; }
+.passe-chef .passe__fond img, .passe-chef .assiette__element img { width: 100%; height: 100%; object-fit: cover; }
+.passe-chef .assiette__element { filter: none; }
+/* Infos : l'enseigne à droite, fondue dans le ciel ; le texte garde la gauche. */
+@media (min-width: 901px) {
+  .ouv-infos__enseigne { left: auto; right: 0; width: min(76vw, 1500px); height: auto; aspect-ratio: 2000 / 704; max-height: 58%;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 20%); mask-image: linear-gradient(90deg, transparent 0, #000 20%); }
+  .ouv-infos__enseigne img { object-position: 50% 100%; }
+}
+.ouv-infos__adresse { margin: 0 0 4px; font-weight: 700; }
+.ouv-infos__distances { font-weight: 500; font-size: .95rem; }
+.ouv-infos__actions { margin-top: 6px; }
+/* Les fêtes : la vitre givrée se voit de nouveau (au-dessus du dégradé), le texte garde son ombre portée. */
+.ouv-fetes .givre__canvas, .ouv-fetes .givre__statique { z-index: 1; }
+.ouv-fetes::after { z-index: 0; }
+.ouv-fetes__contenu { z-index: 2; }
+.ouv-fetes .mention-ia { z-index: 3; }
+@media (min-width: 901px) { .ouv-infos__enseigne { max-height: 54%; } }
+html .ouv-infos .ouv-infos__heure { color: var(--ced-texte); }
+.pin-spacer:has(> .passe-chef), .pin-spacer:has(> .noel) { background: #15100c; }
+/* 404 sur téléphone : le texte en bas reste lisible quand la bougie passe derrière. */
+@media (max-width: 760px) { .introuvable .lum__voile { background: linear-gradient(0deg, rgba(18, 12, 9, .9) 0%, rgba(18, 12, 9, .7) 45%, rgba(18, 12, 9, .1) 75%); } .introuvable .lum__cadre :is(h1, p) { text-shadow: 0 2px 14px rgba(18, 12, 9, .9); } }
+/* Réceptions : la pergola plus lumineuse, le voile seulement sous le texte. */
+.ouv-recep::after { background: linear-gradient(0deg, rgba(18, 12, 9, .9) 0%, rgba(18, 12, 9, .55) 38%, rgba(18, 12, 9, 0) 68%), linear-gradient(90deg, rgba(18, 12, 9, .55) 0%, rgba(18, 12, 9, 0) 52%) !important; }
+/* Panorama sur téléphone : la consigne laisse la place à la légende. */
+@media (max-width: 760px) { .panorama__indice { display: none; } }
+.resa__soiree { margin: 4px 0 10px; padding: 10px 14px; border-radius: 10px; font-weight: 600; background: color-mix(in srgb, var(--or) 22%, transparent); }
+/* Le ticket du récapitulatif est clair à toute heure : ses couleurs le suivent (bouton « Faire une autre réservation »). */
+.resa .resa__recap-corps { --couleur-texte: #1c1712; --couleur-texte-doux: #5b4e42; --couleur-ligne: rgba(28, 23, 18, .16); --couleur-surface: rgba(28, 23, 18, .05); --couleur-fond: #fbf6ec; }
+.resa .resa__recap-corps .resa__bouton--ligne { color: #1c1712; border-color: #1c1712; }
+/* Écrans bas (téléphone à l'horizontale, petits portables) : l'essentiel d'abord. */
+@media (max-height: 520px) { .ouv-infos .ouv-infos__distances, .ouv-infos .surtitre, .ouv-infos .ouv-infos__actions .lien-fleche { display: none; } .ouv-infos .ouv-infos__heure { font-size: 2.8rem; } .ouv-infos h1 { font-size: 1.4rem; margin: 0 0 .3em; } .ouv-infos .ced__cadre { padding-top: calc(var(--entete-h) + 6px); } }
+@media (max-height: 600px) and (min-width: 761px) { .ouv-offrir h1 { font-size: clamp(2rem, 6.4vh, 2.8rem); } .ouv-offrir__texte > p:not(.ouv-offrir__actions):not(.heure-geante):not(.surtitre) { display: none; } .ouv-fetes__texte { display: none; } .ouv-fetes h1 { font-size: clamp(1.9rem, 6.4vh, 2.6rem); } }

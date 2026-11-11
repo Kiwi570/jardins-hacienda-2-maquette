@@ -12,3 +12,11 @@
 - Réservations en ligne ; un acompte par couvert peut être demandé pour les soirées (montant non renseigné sur le site : « x € »).
 - Visiteurs : couples et familles de Metz, Thionville, Luxembourg ; groupes pour les fêtes et réceptions. Ce qu'ils cherchent : donner envie, la carte et ses prix, réserver une table, savoir si c'est ouvert, venir, les fêtes de fin d'année, offrir une carte cadeau.
 - Maquette : 6 pages (accueil, la carte, les fêtes, réserver, offrir, infos pratiques) + 404 ; direction « La table du soir » (fond fumée, nappe crème, braise, laiton ; Bodoni Moda, Figtree, Caveat).
+
+## Compléments v7 (images du site récupérées le 11 novembre 2026, 366 fichiers)
+
+- Affiches « En ce moment ! » de l'accueil du site : Soirée côte de bœuf, samedi 21 novembre, 50 € hors boissons ; Soirée raclette, samedi 28 novembre, 39 € hors boissons ; Brunch, dimanche 29 novembre, 50 € hors boissons ; Soirée libanaise, samedi 19 décembre, 49 € hors boissons ; Menu de Noël (confirmé, 79 € par personne hors boissons) ; Saint-Sylvestre (confirmée).
+- L'affiche de la Saint-Sylvestre confirme le détail du menu repris de la v5 : « Bouchée gourmande et coupe de Champagne », « Velours de foie gras, éclats de truffe noire », « Esturgeon délicatement poché, sauce citronnée au caviar et lentilles noires Béluga », « Filet de bœuf d'exception aux morilles, jus réduit infusé au café », « Sablé breton au yuzu, crémeux de yuzu et meringue délicatement brûlée » ; 120 € le menu, 170 € formule accord mets et vins ; DJ Laurent Geymet.
+- Page Évènements : « Évènements passés » (Soirée libanaise).
+- Photos : séries professionnelles de la salle en plein jour (baies vitrées, tables rondes en verre sur pied de bois), de la piscine et des paillotes, de la pergola dressée pour les mariages, du brasero, de l'enseigne au bord de la route, des lanternes au-dessus de la piscine la nuit, des plats. Les visuels des soirées (côte de bœuf, raclette, brunch, libanaise, tourtes, pâté lorrain, saumon gravlax) sont des images de synthèse du restaurant : non reprises comme photos.
+- Coordonnées utilisées pour la carte d'accès (distances à vol d'oiseau, calculées) : Moineville 49,204 N 5,946 E ; Metz 19 km ; Thionville 24 km ; Luxembourg 47 km.

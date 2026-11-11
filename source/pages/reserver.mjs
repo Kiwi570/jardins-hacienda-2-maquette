@@ -46,8 +46,8 @@ export default (c) => {
   return html`
 <section class="ouv-resa" id="debut" data-effet="service">
   <div class="ouv-resa__photo">
-    ${c.media({ nom: 'grok/assiette-midi', alt: c.s('reserver.altMidi'), cadrage: '50% 50%', classe: 'ouv-resa__img ouv-resa__img--midi', sizes: '(max-width: 760px) 40vw, 30vw' })}
-    ${c.media({ nom: 'grok/terrasse-nuit', alt: c.s('reserver.altSoir'), cadrage: '50% 50%', priorite: true, classe: 'ouv-resa__img ouv-resa__img--soir', sizes: '(max-width: 760px) 40vw, 30vw' })}
+    ${c.media({ nom: 'vraie/salle-baies', alt: c.s('reserver.altMidi'), cadrage: '50% 50%', classe: 'ouv-resa__img ouv-resa__img--midi', sizes: '(max-width: 760px) 40vw, 30vw' })}
+    ${c.media({ nom: 'grok/assiette-soir', alt: c.s('reserver.altSoir'), cadrage: '50% 50%', priorite: true, classe: 'ouv-resa__img ouv-resa__img--soir', sizes: '(max-width: 760px) 40vw, 30vw' })}
   </div>
   <div class="ouv-resa__texte">
     <p class="heure-geante ouv-resa__heure" data-iris-centre data-grille="typo" data-effet="axes" aria-hidden="true"><span class="ouv-resa__h-midi">${c.s('reserver.heureMidi')}</span><span class="ouv-resa__h-soir">${c.s('reserver.heureSoir')}</span></p>
@@ -64,9 +64,11 @@ export default (c) => {
   <div class="resa__grille socle-cadre">
     <form class="resa__form" data-resa-form action="#" novalidate aria-labelledby="resa-titre">
       <header class="resa__tete">
-        ${c.media({ nom: 'recevoir-salle', alt: c.s('reserver.planPhotoAlt'), cadrage: '50% 34%', classe: 'resa__bandeau', sizes: '(max-width: 760px) 92vw, 50vw' })}
+        ${c.media({ nom: 'vraie/salle-soleil', alt: c.s('reserver.planPhotoAlt'), cadrage: '50% 34%', classe: 'resa__bandeau', sizes: '(max-width: 760px) 92vw, 50vw' })}
         <p class="socle-surtitre">${c.t('reserver.formSur')}</p>
         <h2 id="resa-titre" data-anime="lignes">${c.t('reserver.formTitre')}</h2>
+        <p class="resa__soiree" data-soiree hidden></p>
+        <script type="application/json" data-agenda>${brut(JSON.stringify(c.donnees.agenda.dates.map((d) => ({ id: d.id, t: d.titre, d: d.debut, p: d.prix }))).replace(/<\//g, '<\\/'))}</script>
         <p>${c.t('reserver.formTexte')}</p>
       </header>
       <fieldset class="resa__champ" data-champ="date">
@@ -138,7 +140,7 @@ export default (c) => {
       <p class="socle-surtitre">${c.t('reserver.planSur')}</p>
       <h2 id="pds-titre" data-anime="lignes">${c.t('reserver.planTitre')}</h2>
       <p>${c.t('reserver.planTexte')}</p>
-      ${c.media({ nom: 'recevoir-salle', alt: c.s('reserver.planPhotoAlt'), classe: 'pds__photo', sizes: '(max-width: 760px) 92vw, 40vw' })}
+      ${c.media({ nom: 'vraie/salle-soleil', alt: c.s('reserver.planPhotoAlt'), classe: 'pds__photo', sizes: '(max-width: 760px) 92vw, 40vw' })}
     </div>
     <div class="pds__outils">
       <div class="pds__filtres" role="group" aria-label="Zones de la salle" data-pds-filtres></div>

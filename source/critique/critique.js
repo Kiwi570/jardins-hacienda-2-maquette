@@ -26,6 +26,7 @@
   var mode = type === 'back_forward' || retourSection ? 'retour' : type === 'reload' ? 'intro' : depart ? 'voile' : 'intro';
   d.setAttribute('data-arrivee', mode);
   if (mode === 'voile' && depart.couleur) d.style.setProperty('--voile-fond', depart.couleur);
+  if (mode === 'voile' && depart.avant) d.style.setProperty('--voile-avant', depart.avant);
   /* Au rechargement, l'intro repart du haut de la page. */
   if (type === 'reload' && 'scrollRestoration' in history) {
     if (!retourSection) history.scrollRestoration = 'manual';

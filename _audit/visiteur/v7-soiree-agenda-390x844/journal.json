@@ -1,0 +1,238 @@
+{
+ "mission": "v7-soiree-agenda",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.1,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 12928,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver une table",
+    "Demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "menu",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 4,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 12928,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Fermer",
+    "Accueil",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver une table",
+    "Appeler 06 18 21 28 10",
+    "Réduire les animations",
+    "Demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": true
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Les fêtes",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 6.2,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 0,
+   "hauteurPage": 8073,
+   "titres": [
+    "h1 Les fêtes au coin du feu"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver la Saint-Sylvestre",
+    "Cet hiver",
+    "Cet été",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "120 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "50 €",
+    "39 €",
+    "49 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 7.4,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 717,
+   "hauteurPage": 8073,
+   "titres": [
+    "h2 Les prochaines dates",
+    "h3 NOVEMBRE 2026",
+    "h3 Soirée côte de bœuf"
+   ],
+   "actions": [
+    "Toutes",
+    "Soirée",
+    "Brunch",
+    "Fête",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "120 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "50 €",
+    "39 €",
+    "49 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 8.6,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 1434,
+   "hauteurPage": 8073,
+   "titres": [
+    "h3 NOVEMBRE 2026",
+    "h3 Soirée côte de bœuf",
+    "h3 Soirée raclette",
+    "h3 Le brunch"
+   ],
+   "actions": [
+    "Ajouter à mon agenda",
+    "Réserver",
+    "Appeler"
+   ],
+   "prixVus": [
+    "50 €",
+    "39 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "50 €",
+    "39 €",
+    "49 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "cliquer Ajouter à mon agenda",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 10.7,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 1434,
+   "hauteurPage": 8073,
+   "titres": [
+    "h3 NOVEMBRE 2026",
+    "h3 Soirée côte de bœuf",
+    "h3 Soirée raclette",
+    "h3 Le brunch"
+   ],
+   "actions": [
+    "Ajouté à mon agenda",
+    "Réserver",
+    "Ajouter à mon agenda",
+    "Appeler"
+   ],
+   "prixVus": [
+    "50 €",
+    "39 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "50 €",
+    "39 €",
+    "49 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-5.png"
+  }
+ ]
+}

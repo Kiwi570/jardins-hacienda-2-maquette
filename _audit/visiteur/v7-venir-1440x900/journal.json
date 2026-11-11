@@ -1,0 +1,217 @@
+{
+ "mission": "v7-venir",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.1,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 12377,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver une table",
+    "Demander une réception"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Infos pratiques",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 6.5,
+   "adresse": "/infos-pratiques",
+   "y": 0,
+   "hauteurPage": 4758,
+   "titres": [
+    "h1 Horaires, accès et contact"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Appeler 06 18 21 28 10",
+    "Midi",
+    "Crépuscule",
+    "Nuit",
+    "Maintenant"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "200 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 7.3,
+   "adresse": "/infos-pratiques",
+   "y": 765,
+   "hauteurPage": 4787,
+   "titres": [
+    "h2 Ouvert maintenant ?"
+   ],
+   "actions": [
+    "Aujourd’hui",
+    "Jeudi",
+    "Vendredi",
+    "Samedi",
+    "Dimanche",
+    "Lundi",
+    "Mardi"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "200 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 7.3,
+   "adresse": "/infos-pratiques",
+   "y": 765,
+   "hauteurPage": 4787,
+   "titres": [
+    "h2 Ouvert maintenant ?"
+   ],
+   "actions": [
+    "Aujourd’hui",
+    "Jeudi",
+    "Vendredi",
+    "Samedi",
+    "Dimanche",
+    "Lundi",
+    "Mardi"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "200 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-3.png"
+  },
+  {
+   "k": 4,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 8,
+   "adresse": "/infos-pratiques",
+   "y": 1530,
+   "hauteurPage": 4787,
+   "titres": [
+    "h2 Venir à Moineville"
+   ],
+   "actions": [
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "200 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 8,
+   "adresse": "/infos-pratiques",
+   "y": 1530,
+   "hauteurPage": 4787,
+   "titres": [
+    "h2 Venir à Moineville"
+   ],
+   "actions": [
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "200 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-5.png"
+  },
+  {
+   "k": 6,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 8.7,
+   "adresse": "/infos-pratiques",
+   "y": 2295,
+   "hauteurPage": 4787,
+   "titres": [
+    "h2 Venir à Moineville"
+   ],
+   "actions": [
+    "Itinéraire (nouvel onglet) ↗"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "200 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-6.png"
+  }
+ ]
+}

@@ -1,0 +1,520 @@
+{
+ "mission": "v7-question",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.4,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 12377,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver une table",
+    "Demander une réception"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "79 €",
+    "120 €",
+    "170 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Infos pratiques",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 7.6,
+   "adresse": "/infos-pratiques",
+   "y": 0,
+   "hauteurPage": 4758,
+   "titres": [
+    "h1 Horaires, accès et contact"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Appeler 06 18 21 28 10",
+    "Midi",
+    "Crépuscule",
+    "Nuit",
+    "Maintenant"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "200 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "defiler 4",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 10.6,
+   "adresse": "/infos-pratiques",
+   "y": 3060,
+   "hauteurPage": 4787,
+   "titres": [
+    "h2 Une question",
+    "h3 Votre question porte sur…"
+   ],
+   "actions": [
+    "Itinéraire (nouvel onglet) ↗",
+    "Préparer une réception"
+   ],
+   "prixVus": [
+    "200 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "200 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "cliquer Une table",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 12.9,
+   "adresse": "/infos-pratiques",
+   "y": 3060,
+   "hauteurPage": 4787,
+   "titres": [
+    "h2 Une question",
+    "h3 Votre question porte sur…"
+   ],
+   "actions": [
+    "Itinéraire (nouvel onglet) ↗",
+    "Préparer une réception"
+   ],
+   "prixVus": [
+    "200 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "200 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 7,
+   "secondes": 13.6,
+   "adresse": "/infos-pratiques",
+   "y": 3825,
+   "hauteurPage": 4787,
+   "titres": [],
+   "actions": [
+    "Continuer",
+    "06 18 21 28 10",
+    "Facebook ↗",
+    "Instagram ↗",
+    "Horaires et accès",
+    "Accueil",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "200 €"
+   ],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "cliquer Continuer",
+   "resultat": "ok",
+   "gestes": 8,
+   "secondes": 15.8,
+   "adresse": "/infos-pratiques",
+   "y": 3301,
+   "hauteurPage": 4787,
+   "titres": [
+    "h2 Une question",
+    "h3 Que voulez-vous nous demander ?"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Préparer une réception",
+    "Retour",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "remplir Message=Bonjour, mon compagnon est allergique aux fruits à coque. Pouvez-vous adapter le menu un samedi soir ? Merci, Claire",
+   "resultat": "ok",
+   "gestes": 9,
+   "secondes": 15.8,
+   "adresse": "/infos-pratiques",
+   "y": 3301,
+   "hauteurPage": 4787,
+   "titres": [
+    "h2 Une question",
+    "h3 Que voulez-vous nous demander ?"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Préparer une réception",
+    "Retour",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 7,
+   "geste": "cliquer Continuer",
+   "resultat": "ok",
+   "gestes": 10,
+   "secondes": 18,
+   "adresse": "/infos-pratiques",
+   "y": 3301,
+   "hauteurPage": 4800,
+   "titres": [
+    "h2 Une question",
+    "h3 Où vous répondre ?"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Préparer une réception",
+    "Retour",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 8,
+   "geste": "remplir Prénom=Claire",
+   "resultat": "ok",
+   "gestes": 11,
+   "secondes": 18,
+   "adresse": "/infos-pratiques",
+   "y": 3301,
+   "hauteurPage": 4800,
+   "titres": [
+    "h2 Une question",
+    "h3 Où vous répondre ?"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Préparer une réception",
+    "Retour",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 9,
+   "geste": "remplir ^Nom=Martin",
+   "resultat": "ok",
+   "gestes": 12,
+   "secondes": 18.1,
+   "adresse": "/infos-pratiques",
+   "y": 3301,
+   "hauteurPage": 4800,
+   "titres": [
+    "h2 Une question",
+    "h3 Où vous répondre ?"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Préparer une réception",
+    "Retour",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 10,
+   "geste": "remplir E-mail=claire.martin@example.fr",
+   "resultat": "ok",
+   "gestes": 13,
+   "secondes": 18.1,
+   "adresse": "/infos-pratiques",
+   "y": 3301,
+   "hauteurPage": 4800,
+   "titres": [
+    "h2 Une question",
+    "h3 Où vous répondre ?"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Préparer une réception",
+    "Retour",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 11,
+   "geste": "cliquer Vos coordonnées servent",
+   "resultat": "ok",
+   "gestes": 14,
+   "secondes": 20.2,
+   "adresse": "/infos-pratiques",
+   "y": 3301,
+   "hauteurPage": 4800,
+   "titres": [
+    "h2 Une question",
+    "h3 Où vous répondre ?"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Préparer une réception",
+    "Retour",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 12,
+   "geste": "cliquer Continuer",
+   "resultat": "ok",
+   "gestes": 15,
+   "secondes": 22.4,
+   "adresse": "/infos-pratiques",
+   "y": 3301,
+   "hauteurPage": 4981,
+   "titres": [
+    "h2 Une question",
+    "h3 Tout est juste ?"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Préparer une réception",
+    "Modifier : Sujet",
+    "Modifier : Message",
+    "Modifier : Coordonnées"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 13,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 15,
+   "secondes": 22.4,
+   "adresse": "/infos-pratiques",
+   "y": 3301,
+   "hauteurPage": 4981,
+   "titres": [
+    "h2 Une question",
+    "h3 Tout est juste ?"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Préparer une réception",
+    "Modifier : Sujet",
+    "Modifier : Message",
+    "Modifier : Coordonnées"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-13.png"
+  },
+  {
+   "k": 14,
+   "geste": "defiler",
+   "resultat": "ok",
+   "gestes": 16,
+   "secondes": 23.1,
+   "adresse": "/infos-pratiques",
+   "y": 4066,
+   "hauteurPage": 4981,
+   "titres": [],
+   "actions": [
+    "Retour",
+    "Envoyer",
+    "06 18 21 28 10",
+    "Facebook ↗",
+    "Instagram ↗",
+    "Horaires et accès",
+    "Accueil",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réduire les animations"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false
+  },
+  {
+   "k": 15,
+   "geste": "cliquer Envoyer",
+   "resultat": "ok",
+   "gestes": 17,
+   "secondes": 25.2,
+   "adresse": "/infos-pratiques",
+   "y": 3321,
+   "hauteurPage": 4787,
+   "titres": [
+    "h2 Une question",
+    "h3 Merci, c’est noté"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Préparer une réception",
+    "Poser une autre question"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [],
+   "menuOuvert": false,
+   "capture": "etape-15.png"
+  }
+ ]
+}

@@ -1,0 +1,23 @@
+{
+  "date": "Cette semaine",
+  "jour": {
+    "titre": "Ce midi, à la carte",
+    "lignes": [
+      { "plat": "Œuf cocotte à la bourguignonne", "prix": "14 €" },
+      { "plat": "Poisson selon l'arrivage", "prix": "26 €" },
+      { "plat": "Dhal aux trois lentilles", "prix": "21 €" },
+      { "plat": "Tarte aux fruits de saison", "prix": "9 €" }
+    ],
+    "mot": "La carte change chaque semaine"
+  },
+  "soir": {
+    "titre": "Ce soir, à la carte",
+    "lignes": [
+      { "plat": "Risotto de Saint-Jacques au riz noir", "prix": "21 €" },
+      { "plat": "Suprême de pintade et girolles", "prix": "24 €" },
+      { "plat": "L'os à moelle", "prix": "9 €" },
+      { "plat": "Figues rôties au miel", "prix": "10 €" }
+    ],
+    "mot": "Et les suggestions du chef, de vive voix"
+  }
+}

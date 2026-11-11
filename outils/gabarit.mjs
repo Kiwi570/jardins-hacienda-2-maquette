@@ -12,7 +12,8 @@ const UNITES = '€|%|°C|°|km|kg|cm|mm|min|h|s|m|g|ml|cl|l|ans|an|jours|jour|m
 export function typo(s, { inserer = true } = {}) {
   if (!s || !reglages.langue.startsWith('fr')) return s;
   let t = String(s)
-    .replace(/ ([;!?])/g, FINE + '$1')
+    .replace(/ ([;!?])/g, NB + '$1')
+    .replace(/ · /g, NB + '· ')
     .replace(/ :/g, NB + ':')
     .replace(/« /g, '«' + NB)
     .replace(/ »/g, NB + '»')
@@ -21,7 +22,7 @@ export function typo(s, { inserer = true } = {}) {
   for (let i = 0; i < 3; i++) t = t.replace(/(?<!\d)(\d{1,3}) (?=\d{3}(?!\d))/g, '$1' + FINE);
   if (inserer) {
     t = t
-      .replace(/([\p{L}\d»)’'])([;!?])(?=[\s  ]|$|[»)"])/gu, '$1' + FINE + '$2')
+      .replace(/([\p{L}\d»)’'])([;!?])(?=[\s  ]|$|[»)"])/gu, '$1' + NB + '$2')
       .replace(/([\p{L}»)])(:)(?=[\s]|$)/gu, '$1' + NB + '$2')
       .replace(/«(?=[^\s  ])/g, '«' + NB)
       .replace(/([^\s  ])»/g, '$1' + NB + '»');

@@ -6,7 +6,7 @@
     "alt": "La piscine à midi, l'eau turquoise, les palmiers et les parasols de paille",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "88091e0b0e035d2f",
+    "empreinte": "740a6c8bf0f00121",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -87,7 +87,7 @@
     "alt": "La longue table de réception dressée sous la pergola, au coucher du soleil",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "770ea6a9edc54ffd",
+    "empreinte": "774ffda69d772072",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -168,7 +168,7 @@
     "alt": "La même table après le coucher du soleil, les guirlandes allumées",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "d845015a103924d1",
+    "empreinte": "82b7f8fb010f237f",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -249,7 +249,7 @@
     "alt": "La même table la nuit, sous les guirlandes et à la lueur des bougies",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "9291cd1a12e651fe",
+    "empreinte": "868d7c2b03a0f29a",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -330,7 +330,7 @@
     "alt": "La salle le soir, la cheminée allumée et deux tables dressées près du feu",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "a4c23d8c3df99e92",
+    "empreinte": "6397f655ff4e8cea",
     "ratio": "16:9",
     "largeurs": [
       640,
@@ -411,7 +411,7 @@
     "alt": "Une assiette de saison sur une nappe blanche, à l'ombre d'un parasol de paille",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "3649b729a7717f22",
+    "empreinte": "40099e55ab5d5da6",
     "ratio": "4:5",
     "largeurs": [
       480,
@@ -485,7 +485,7 @@
     "alt": "Une assiette d'automne aux champignons, à la lueur des bougies",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "83a9b05d89fffd33",
+    "empreinte": "c3267823735e4776",
     "ratio": "4:5",
     "largeurs": [
       480,
@@ -559,7 +559,7 @@
     "alt": "Les mains du chef dressent une assiette sur la passe",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "cc8b1a842b8f7ed9",
+    "empreinte": "2cf5257080e5275e",
     "ratio": "3:2",
     "largeurs": [
       640,
@@ -631,7 +631,7 @@
     "alt": "Trois cocktails glacés sur le comptoir du bar, la piscine derrière",
     "grok": true,
     "mention": "Illustration générée",
-    "empreinte": "eb3b95d05c915e35",
+    "empreinte": "f153d1f7780c54cf",
     "ratio": "3:4",
     "largeurs": [
       480,
@@ -697,5 +697,1688 @@
       "grok/bar-apres-midi-960.webp": 137172
     },
     "media": "c.media({ nom: 'grok/bar-apres-midi', alt: \"Trois cocktails glacés sur le comptoir du bar, la piscine derrière\", cadrage: '48% 50%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+  },
+  "vraie/salle-soleil": {
+    "nom": "vraie/salle-soleil",
+    "source": "recu/site/restaurant-3.jpg",
+    "role": "section-fond",
+    "alt": "La salle au soleil de midi : tables rondes en verre sur pied de bois, fauteuils crème, baies vitrées et plantes",
+    "grok": false,
+    "mention": null,
+    "empreinte": "3ebe3c30877fbc82",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 35%"
+    },
+    "cadrage": "43% 35%",
+    "sujet": {
+      "x": 20.6,
+      "y": 22.1,
+      "l": 48.5,
+      "h": 26.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.35,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0.2,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.17,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0.14,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": "gauche",
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 2000,
+      "height": 1333,
+      "source": [
+        2000,
+        1334
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/salle-soleil-640.webp",
+      "vraie/salle-soleil-1280.webp",
+      "vraie/salle-soleil-1920.webp",
+      "vraie/salle-soleil-mobile-640.webp",
+      "vraie/salle-soleil-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/salle-soleil-640.webp": 41918,
+      "vraie/salle-soleil-1280.webp": 130632,
+      "vraie/salle-soleil-1920.webp": 229464,
+      "vraie/salle-soleil-mobile-640.webp": 59632,
+      "vraie/salle-soleil-mobile-1080.webp": 113128
+    },
+    "media": "c.media({ nom: 'vraie/salle-soleil', alt: \"La salle au soleil de midi : tables rondes en verre sur pied de bois, fauteuils crème, baies vitrées et plantes\", cadrage: '43% 35%', cadrageMobile: '50% 35%', sizes: '100vw' })"
+  },
+  "vraie/salle-pierre": {
+    "nom": "vraie/salle-pierre",
+    "source": "recu/site/restaurant-31.jpg",
+    "role": "section-fond",
+    "alt": "La salle, son mur de pierre et ses bûches, les tables dressées et les fauteuils crème",
+    "grok": false,
+    "mention": null,
+    "empreinte": "9b15ecf95a782dce",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 65%"
+    },
+    "cadrage": "69% 65%",
+    "sujet": {
+      "x": 50.5,
+      "y": 53.3,
+      "l": 37.5,
+      "h": 46.1
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.43,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.28,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0.15,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0.14,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 1,
+      "width": 2000,
+      "height": 1333,
+      "source": [
+        2000,
+        1334
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/salle-pierre-640.webp",
+      "vraie/salle-pierre-1280.webp",
+      "vraie/salle-pierre-1920.webp",
+      "vraie/salle-pierre-mobile-640.webp",
+      "vraie/salle-pierre-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/salle-pierre-640.webp": 41424,
+      "vraie/salle-pierre-1280.webp": 135598,
+      "vraie/salle-pierre-1920.webp": 239520,
+      "vraie/salle-pierre-mobile-640.webp": 63394,
+      "vraie/salle-pierre-mobile-1080.webp": 123610
+    },
+    "media": "c.media({ nom: 'vraie/salle-pierre', alt: \"La salle, son mur de pierre et ses bûches, les tables dressées et les fauteuils crème\", cadrage: '69% 65%', cadrageMobile: '50% 65%', sizes: '100vw' })"
+  },
+  "vraie/salle-baies": {
+    "nom": "vraie/salle-baies",
+    "source": "recu/site/restaurant-30.jpg",
+    "role": "section-fond",
+    "alt": "La salle le long des baies vitrées, tables dressées et serviettes pliées en pointe",
+    "grok": false,
+    "mention": null,
+    "empreinte": "ad575bacec686043",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 47%"
+    },
+    "cadrage": "40% 47%",
+    "sujet": {
+      "x": 26.5,
+      "y": 29.4,
+      "l": 27.9,
+      "h": 35.3
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.35,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0.27,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0.25,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.18,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 2000,
+      "height": 1333,
+      "source": [
+        2000,
+        1334
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/salle-baies-640.webp",
+      "vraie/salle-baies-1280.webp",
+      "vraie/salle-baies-1920.webp",
+      "vraie/salle-baies-mobile-640.webp",
+      "vraie/salle-baies-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/salle-baies-640.webp": 45700,
+      "vraie/salle-baies-1280.webp": 139874,
+      "vraie/salle-baies-1920.webp": 241156,
+      "vraie/salle-baies-mobile-640.webp": 64832,
+      "vraie/salle-baies-mobile-1080.webp": 124388
+    },
+    "media": "c.media({ nom: 'vraie/salle-baies', alt: \"La salle le long des baies vitrées, tables dressées et serviettes pliées en pointe\", cadrage: '40% 47%', cadrageMobile: '50% 47%', sizes: '100vw' })"
+  },
+  "vraie/piscine-pergola": {
+    "nom": "vraie/piscine-pergola",
+    "source": "recu/site/informations-importantes.jpg",
+    "role": "section-fond",
+    "alt": "La piscine, la pergola de paille et les transats, l'après-midi",
+    "grok": false,
+    "mention": null,
+    "empreinte": "d23a90548b0ba6b5",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 60%"
+    },
+    "cadrage": "55% 60%",
+    "sujet": {
+      "x": 24.8,
+      "y": 45.4,
+      "l": 61.8,
+      "h": 28.4
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.44,
+        "ton": "clair"
+      },
+      {
+        "cote": "droite",
+        "score": 0.2,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.16,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0.15,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 1600,
+      "height": 1067,
+      "source": [
+        1600,
+        1067
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "agrandie 1,2 fois (source de 1600 px après recadrage)"
+    ],
+    "fichiers": [
+      "vraie/piscine-pergola-640.webp",
+      "vraie/piscine-pergola-1280.webp",
+      "vraie/piscine-pergola-1920.webp",
+      "vraie/piscine-pergola-mobile-640.webp",
+      "vraie/piscine-pergola-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/piscine-pergola-640.webp": 54720,
+      "vraie/piscine-pergola-1280.webp": 193440,
+      "vraie/piscine-pergola-1920.webp": 271016,
+      "vraie/piscine-pergola-mobile-640.webp": 93866,
+      "vraie/piscine-pergola-mobile-1080.webp": 195628
+    },
+    "media": "c.media({ nom: 'vraie/piscine-pergola', alt: \"La piscine, la pergola de paille et les transats, l'après-midi\", cadrage: '55% 60%', cadrageMobile: '50% 60%', sizes: '100vw' })"
+  },
+  "vraie/piscine-palmiers": {
+    "nom": "vraie/piscine-palmiers",
+    "source": "recu/site/terrasse-15.jpg",
+    "role": "section-fond",
+    "alt": "La piscine sous les palmiers, les matelas blancs et les paillotes",
+    "grok": false,
+    "mention": null,
+    "empreinte": "1a1bc2b09bd7dee5",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "51% 62%"
+    },
+    "cadrage": "55% 62%",
+    "sujet": {
+      "x": 27.8,
+      "y": 48.5,
+      "l": 51.6,
+      "h": 26.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.84,
+        "ton": "clair"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.22,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0.16,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0.15,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 3,
+      "top": 0,
+      "width": 1997,
+      "height": 1331,
+      "source": [
+        2000,
+        1331
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/piscine-palmiers-640.webp",
+      "vraie/piscine-palmiers-1280.webp",
+      "vraie/piscine-palmiers-1920.webp",
+      "vraie/piscine-palmiers-mobile-640.webp",
+      "vraie/piscine-palmiers-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/piscine-palmiers-640.webp": 48094,
+      "vraie/piscine-palmiers-1280.webp": 170754,
+      "vraie/piscine-palmiers-1920.webp": 279092,
+      "vraie/piscine-palmiers-mobile-640.webp": 95338,
+      "vraie/piscine-palmiers-mobile-1080.webp": 221716
+    },
+    "media": "c.media({ nom: 'vraie/piscine-palmiers', alt: \"La piscine sous les palmiers, les matelas blancs et les paillotes\", cadrage: '55% 62%', cadrageMobile: '51% 62%', sizes: '100vw' })"
+  },
+  "vraie/piscine-paillotes": {
+    "nom": "vraie/piscine-paillotes",
+    "source": "recu/site/terrasse-8.jpg",
+    "role": "section-fond",
+    "alt": "Une journée festive au bord de la piscine, sous les paillotes",
+    "grok": false,
+    "mention": null,
+    "empreinte": "8a6388c13c48b084",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 62%"
+    },
+    "cadrage": "50% 62%",
+    "sujet": {
+      "x": 13.3,
+      "y": 75.8,
+      "l": 62.9,
+      "h": 24.2
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.85,
+        "ton": "clair"
+      },
+      {
+        "cote": "droite",
+        "score": 0.19,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.17,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0.07,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 2,
+      "top": 0,
+      "width": 1997,
+      "height": 1331,
+      "source": [
+        2000,
+        1331
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/piscine-paillotes-640.webp",
+      "vraie/piscine-paillotes-1280.webp",
+      "vraie/piscine-paillotes-1920.webp",
+      "vraie/piscine-paillotes-mobile-640.webp",
+      "vraie/piscine-paillotes-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/piscine-paillotes-640.webp": 50416,
+      "vraie/piscine-paillotes-1280.webp": 176732,
+      "vraie/piscine-paillotes-1920.webp": 286056,
+      "vraie/piscine-paillotes-mobile-640.webp": 84178,
+      "vraie/piscine-paillotes-mobile-1080.webp": 191046
+    },
+    "media": "c.media({ nom: 'vraie/piscine-paillotes', alt: \"Une journée festive au bord de la piscine, sous les paillotes\", cadrage: '50% 62%', cadrageMobile: '50% 62%', sizes: '100vw' })"
+  },
+  "vraie/brasero": {
+    "nom": "vraie/brasero",
+    "source": "recu/site/mariages-6.jpg",
+    "role": "section-fond",
+    "alt": "Le brasero allumé devant la pergola de paille, les tables dressées de rouge et de blanc",
+    "grok": false,
+    "mention": null,
+    "empreinte": "505e7ff0f384d9bf",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 70%"
+    },
+    "cadrage": "45% 70%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 95.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "sombre"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "sombre"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 1997,
+      "height": 1331,
+      "source": [
+        2000,
+        1331
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/brasero-640.webp",
+      "vraie/brasero-1280.webp",
+      "vraie/brasero-1920.webp",
+      "vraie/brasero-mobile-640.webp",
+      "vraie/brasero-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/brasero-640.webp": 57474,
+      "vraie/brasero-1280.webp": 189670,
+      "vraie/brasero-1920.webp": 296096,
+      "vraie/brasero-mobile-640.webp": 82652,
+      "vraie/brasero-mobile-1080.webp": 182192
+    },
+    "media": "c.media({ nom: 'vraie/brasero', alt: \"Le brasero allumé devant la pergola de paille, les tables dressées de rouge et de blanc\", cadrage: '45% 70%', cadrageMobile: '50% 70%', sizes: '100vw' })"
+  },
+  "vraie/nid-piscine": {
+    "nom": "vraie/nid-piscine",
+    "source": "recu/site/mariages-86.jpg",
+    "role": "galerie",
+    "alt": "Un fauteuil en nid tressé au bord de la piscine, les palmiers et les paillotes",
+    "grok": false,
+    "mention": null,
+    "empreinte": "f44ac0a289321717",
+    "ratio": "3:4",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 55%"
+    },
+    "cadrage": "50% 55%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 95.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.09,
+        "ton": "clair"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "clair"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 560,
+      "top": 0,
+      "width": 800,
+      "height": 1067,
+      "source": [
+        1600,
+        1067
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "agrandie 1,2 fois (source de 800 px après recadrage)"
+    ],
+    "fichiers": [
+      "vraie/nid-piscine-480.webp",
+      "vraie/nid-piscine-640.webp",
+      "vraie/nid-piscine-960.webp",
+      "vraie/nid-piscine-mobile-640.webp",
+      "vraie/nid-piscine-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/nid-piscine-480.webp": 67934,
+      "vraie/nid-piscine-640.webp": 108500,
+      "vraie/nid-piscine-960.webp": 179446,
+      "vraie/nid-piscine-mobile-640.webp": 103814,
+      "vraie/nid-piscine-mobile-1080.webp": 204554
+    },
+    "media": "c.media({ nom: 'vraie/nid-piscine', alt: \"Un fauteuil en nid tressé au bord de la piscine, les palmiers et les paillotes\", cadrage: '50% 55%', cadrageMobile: '50% 55%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+  },
+  "vraie/lanternes": {
+    "nom": "vraie/lanternes",
+    "source": "recu/site/mariages-111.jpg",
+    "role": "section-fond",
+    "alt": "La nuit, des lanternes s'envolent au-dessus de la piscine éclairée",
+    "grok": false,
+    "mention": null,
+    "empreinte": "793db0fc46caecf5",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640
+      ],
+      "cadrage": "50% 55%"
+    },
+    "cadrage": "50% 55%",
+    "sujet": {
+      "x": 25,
+      "y": 13.6,
+      "l": 65.6,
+      "h": 72.7
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.77,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.5,
+        "ton": "sombre"
+      },
+      {
+        "cote": "droite",
+        "score": 0.47,
+        "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0.44,
+        "ton": "sombre"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 853,
+      "source": [
+        1280,
+        853
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "version téléphone sans 1080 px (source trop petite)",
+      "agrandie 1,5 fois (source de 1280 px après recadrage)"
+    ],
+    "fichiers": [
+      "vraie/lanternes-640.webp",
+      "vraie/lanternes-1280.webp",
+      "vraie/lanternes-1920.webp",
+      "vraie/lanternes-mobile-640.webp"
+    ],
+    "poids": {
+      "vraie/lanternes-640.webp": 18664,
+      "vraie/lanternes-1280.webp": 45858,
+      "vraie/lanternes-1920.webp": 71474,
+      "vraie/lanternes-mobile-640.webp": 25008
+    },
+    "media": "c.media({ nom: 'vraie/lanternes', alt: \"La nuit, des lanternes s'envolent au-dessus de la piscine éclairée\", cadrage: '50% 55%', cadrageMobile: '50% 55%', sizes: '100vw' })"
+  },
+  "vraie/pergola-banquet": {
+    "nom": "vraie/pergola-banquet",
+    "source": "recu/site/mariages-7.jpg",
+    "role": "section-fond",
+    "alt": "Sous la pergola, les tables d'un mariage dressées de blanc, guirlandes allumées",
+    "grok": false,
+    "mention": null,
+    "empreinte": "e52884e10bd7b2f3",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 39%"
+    },
+    "cadrage": "48% 39%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 95.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 1997,
+      "height": 1331,
+      "source": [
+        2000,
+        1331
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/pergola-banquet-640.webp",
+      "vraie/pergola-banquet-1280.webp",
+      "vraie/pergola-banquet-1920.webp",
+      "vraie/pergola-banquet-mobile-640.webp",
+      "vraie/pergola-banquet-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/pergola-banquet-640.webp": 66484,
+      "vraie/pergola-banquet-1280.webp": 181802,
+      "vraie/pergola-banquet-1920.webp": 303984,
+      "vraie/pergola-banquet-mobile-640.webp": 90144,
+      "vraie/pergola-banquet-mobile-1080.webp": 172904
+    },
+    "media": "c.media({ nom: 'vraie/pergola-banquet', alt: \"Sous la pergola, les tables d'un mariage dressées de blanc, guirlandes allumées\", cadrage: '48% 39%', cadrageMobile: '50% 39%', sizes: '100vw' })"
+  },
+  "vraie/table-piscine": {
+    "nom": "vraie/table-piscine",
+    "source": "recu/site/mariages-88.jpg",
+    "role": "galerie",
+    "alt": "Une longue table de bois dressée de fleurs blanches, sous la pergola, au bord de la piscine",
+    "grok": false,
+    "mention": null,
+    "empreinte": "402a4254c53ad0a2",
+    "ratio": "3:4",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 47%"
+    },
+    "cadrage": "50% 47%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 95.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 400,
+      "top": 0,
+      "width": 800,
+      "height": 1067,
+      "source": [
+        1600,
+        1067
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "agrandie 1,2 fois (source de 800 px après recadrage)"
+    ],
+    "fichiers": [
+      "vraie/table-piscine-480.webp",
+      "vraie/table-piscine-640.webp",
+      "vraie/table-piscine-960.webp",
+      "vraie/table-piscine-mobile-640.webp",
+      "vraie/table-piscine-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/table-piscine-480.webp": 61692,
+      "vraie/table-piscine-640.webp": 94332,
+      "vraie/table-piscine-960.webp": 150120,
+      "vraie/table-piscine-mobile-640.webp": 91498,
+      "vraie/table-piscine-mobile-1080.webp": 169870
+    },
+    "media": "c.media({ nom: 'vraie/table-piscine', alt: \"Une longue table de bois dressée de fleurs blanches, sous la pergola, au bord de la piscine\", cadrage: '50% 47%', cadrageMobile: '50% 47%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+  },
+  "vraie/buffet-nuit": {
+    "nom": "vraie/buffet-nuit",
+    "source": "recu/site/mariages-jardins-hacienda-3.jpg",
+    "role": "section-fond",
+    "alt": "Le soir d'une réception : la pièce montée et le buffet de desserts au bord de la piscine",
+    "grok": false,
+    "mention": null,
+    "empreinte": "b7045c76c8f600e6",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 60%"
+    },
+    "cadrage": "40% 55%",
+    "sujet": {
+      "x": 0,
+      "y": 1.5,
+      "l": 100,
+      "h": 93.7
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.19,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "sombre"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 167,
+      "width": 2000,
+      "height": 1333,
+      "source": [
+        2000,
+        1500
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/buffet-nuit-640.webp",
+      "vraie/buffet-nuit-1280.webp",
+      "vraie/buffet-nuit-1920.webp",
+      "vraie/buffet-nuit-mobile-640.webp",
+      "vraie/buffet-nuit-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/buffet-nuit-640.webp": 72752,
+      "vraie/buffet-nuit-1280.webp": 235014,
+      "vraie/buffet-nuit-1920.webp": 299314,
+      "vraie/buffet-nuit-mobile-640.webp": 107732,
+      "vraie/buffet-nuit-mobile-1080.webp": 245272
+    },
+    "media": "c.media({ nom: 'vraie/buffet-nuit', alt: \"Le soir d'une réception : la pièce montée et le buffet de desserts au bord de la piscine\", cadrage: '40% 55%', cadrageMobile: '50% 60%', sizes: '100vw' })"
+  },
+  "vraie/danse": {
+    "nom": "vraie/danse",
+    "source": "recu/site/mariages-82.jpg",
+    "role": "galerie",
+    "alt": "Un couple danse sous la paillote éclairée de guirlandes",
+    "grok": false,
+    "mention": null,
+    "empreinte": "dde28bbf98f1f12a",
+    "ratio": "3:4",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 50%"
+    },
+    "cadrage": "50% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 95.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.06,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "sombre"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 480,
+      "top": 0,
+      "width": 800,
+      "height": 1067,
+      "source": [
+        1600,
+        1067
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "agrandie 1,2 fois (source de 800 px après recadrage)"
+    ],
+    "fichiers": [
+      "vraie/danse-480.webp",
+      "vraie/danse-640.webp",
+      "vraie/danse-960.webp",
+      "vraie/danse-mobile-640.webp",
+      "vraie/danse-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/danse-480.webp": 48656,
+      "vraie/danse-640.webp": 74722,
+      "vraie/danse-960.webp": 122104,
+      "vraie/danse-mobile-640.webp": 71452,
+      "vraie/danse-mobile-1080.webp": 137998
+    },
+    "media": "c.media({ nom: 'vraie/danse', alt: \"Un couple danse sous la paillote éclairée de guirlandes\", cadrageMobile: '50% 50%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+  },
+  "vraie/gateaux": {
+    "nom": "vraie/gateaux",
+    "source": "recu/site/mariages-87.jpg",
+    "role": "galerie",
+    "alt": "Une table de gâteaux et de pièces montées, entre ballons dorés et fleurs blanches",
+    "grok": false,
+    "mention": null,
+    "empreinte": "26cdfc4a707677e8",
+    "ratio": "3:4",
+    "largeurs": [
+      480,
+      640,
+      960
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 51%"
+    },
+    "cadrage": "50% 51%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 95.5
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 432,
+      "top": 0,
+      "width": 800,
+      "height": 1067,
+      "source": [
+        1600,
+        1067
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "agrandie 1,2 fois (source de 800 px après recadrage)"
+    ],
+    "fichiers": [
+      "vraie/gateaux-480.webp",
+      "vraie/gateaux-640.webp",
+      "vraie/gateaux-960.webp",
+      "vraie/gateaux-mobile-640.webp",
+      "vraie/gateaux-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/gateaux-480.webp": 43034,
+      "vraie/gateaux-640.webp": 62566,
+      "vraie/gateaux-960.webp": 98618,
+      "vraie/gateaux-mobile-640.webp": 61610,
+      "vraie/gateaux-mobile-1080.webp": 114026
+    },
+    "media": "c.media({ nom: 'vraie/gateaux', alt: \"Une table de gâteaux et de pièces montées, entre ballons dorés et fleurs blanches\", cadrage: '50% 51%', cadrageMobile: '50% 51%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+  },
+  "vraie/enseigne": {
+    "nom": "vraie/enseigne",
+    "source": "recu/site/terrasse-3.jpg",
+    "role": "ouverture",
+    "alt": "L'enseigne « les jardins de l'hacienda » entre deux cyprès, au bord de la route",
+    "grok": false,
+    "mention": null,
+    "empreinte": "7e5c85bfdfb5e059",
+    "ratio": "16:9",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 72%"
+    },
+    "cadrage": "57% 67%",
+    "sujet": {
+      "x": 0,
+      "y": 29.9,
+      "l": 100,
+      "h": 64.6
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.93,
+        "ton": "clair"
+      },
+      {
+        "cote": "droite",
+        "score": 0.17,
+        "ton": "clair"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.15,
+        "ton": "clair"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": "gauche",
+    "recadrage": {
+      "left": 0,
+      "top": 209,
+      "width": 2000,
+      "height": 1125,
+      "source": [
+        2000,
+        1334
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/enseigne-640.webp",
+      "vraie/enseigne-1280.webp",
+      "vraie/enseigne-1920.webp",
+      "vraie/enseigne-mobile-640.webp",
+      "vraie/enseigne-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/enseigne-640.webp": 22690,
+      "vraie/enseigne-1280.webp": 72328,
+      "vraie/enseigne-1920.webp": 138706,
+      "vraie/enseigne-mobile-640.webp": 33642,
+      "vraie/enseigne-mobile-1080.webp": 72524
+    },
+    "media": "c.media({ nom: 'vraie/enseigne', alt: \"L'enseigne « les jardins de l'hacienda » entre deux cyprès, au bord de la route\", cadrage: '57% 67%', cadrageMobile: '50% 72%', sizes: '100vw', priorite: true })"
+  },
+  "vraie/plat-cheminee": {
+    "nom": "vraie/plat-cheminee",
+    "source": "recu/site/restaurant-plat-deguster.jpg",
+    "role": "section-fond",
+    "alt": "Une assiette de légumes de saison sur une table de bois, devant la cheminée allumée",
+    "grok": false,
+    "mention": null,
+    "empreinte": "cec6e71c77f0a587",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 72%"
+    },
+    "cadrage": "51% 71%",
+    "sujet": {
+      "x": 3.1,
+      "y": 11.6,
+      "l": 87.5,
+      "h": 79.1
+    },
+    "zones_calmes": [
+      {
+        "cote": "haut",
+        "score": 0.32,
+        "ton": "sombre"
+      },
+      {
+        "cote": "droite",
+        "score": 0.08,
+        "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0.05,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.01,
+        "ton": "sombre"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 21,
+      "width": 1358,
+      "height": 905,
+      "source": [
+        1358,
+        926
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "agrandie 1,41 fois (source de 1358 px après recadrage)"
+    ],
+    "fichiers": [
+      "vraie/plat-cheminee-640.webp",
+      "vraie/plat-cheminee-1280.webp",
+      "vraie/plat-cheminee-1920.webp",
+      "vraie/plat-cheminee-mobile-640.webp",
+      "vraie/plat-cheminee-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/plat-cheminee-640.webp": 33248,
+      "vraie/plat-cheminee-1280.webp": 77588,
+      "vraie/plat-cheminee-1920.webp": 121854,
+      "vraie/plat-cheminee-mobile-640.webp": 43798,
+      "vraie/plat-cheminee-mobile-1080.webp": 77580
+    },
+    "media": "c.media({ nom: 'vraie/plat-cheminee', alt: \"Une assiette de légumes de saison sur une table de bois, devant la cheminée allumée\", cadrage: '51% 71%', cadrageMobile: '50% 72%', sizes: '100vw' })"
+  },
+  "vraie/dessert-cheminee": {
+    "nom": "vraie/dessert-cheminee",
+    "source": "recu/site/restaurant-27.jpg",
+    "role": "portrait",
+    "alt": "Un dessert en verre sur une table de bois, près de la cheminée",
+    "grok": false,
+    "mention": null,
+    "empreinte": "113cb33adfa5bfe7",
+    "ratio": "4:5",
+    "largeurs": [
+      480,
+      640,
+      784
+    ],
+    "mobile": null,
+    "cadrage": "49% 38%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 95.5,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.11,
+        "ton": "moyen"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.08,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "sombre"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 46,
+      "width": 1334,
+      "height": 1668,
+      "source": [
+        1334,
+        2000
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/dessert-cheminee-480.webp",
+      "vraie/dessert-cheminee-640.webp",
+      "vraie/dessert-cheminee-784.webp"
+    ],
+    "poids": {
+      "vraie/dessert-cheminee-480.webp": 33268,
+      "vraie/dessert-cheminee-640.webp": 49544,
+      "vraie/dessert-cheminee-784.webp": 64618
+    },
+    "media": "c.media({ nom: 'vraie/dessert-cheminee', alt: \"Un dessert en verre sur une table de bois, près de la cheminée\", cadrage: '49% 38%', sizes: '(max-width: 760px) 100vw, 40vw', ratio: '4 / 5' })"
+  },
+  "vraie/assiette-girolles": {
+    "nom": "vraie/assiette-girolles",
+    "source": "recu/site/restaurant-jardins-hacienda.jpg",
+    "role": "produit",
+    "alt": "Une assiette du chef : purée, viande rôtie, girolles, carottes et céleri",
+    "grok": false,
+    "mention": null,
+    "empreinte": "648f91380f96a606",
+    "ratio": "3:2",
+    "largeurs": [
+      480,
+      640,
+      1600
+    ],
+    "mobile": null,
+    "cadrage": "48% 50%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 440,
+      "width": 1500,
+      "height": 1000,
+      "source": [
+        1500,
+        2000
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "agrandie 1,07 fois (source de 1500 px après recadrage)"
+    ],
+    "fichiers": [
+      "vraie/assiette-girolles-480.webp",
+      "vraie/assiette-girolles-640.webp",
+      "vraie/assiette-girolles-1600.webp"
+    ],
+    "poids": {
+      "vraie/assiette-girolles-480.webp": 32674,
+      "vraie/assiette-girolles-640.webp": 50656,
+      "vraie/assiette-girolles-1600.webp": 171092
+    },
+    "media": "c.media({ nom: 'vraie/assiette-girolles', alt: \"Une assiette du chef : purée, viande rôtie, girolles, carottes et céleri\", cadrage: '48% 50%', sizes: '(max-width: 760px) 50vw, 25vw', ratio: '3 / 2' })"
+  },
+  "vraie/table-mariage": {
+    "nom": "vraie/table-mariage",
+    "source": "recu/site/mariages-115.jpg",
+    "role": "galerie",
+    "alt": "Une table de mariage dressée d'olivier et de bougies, au bord de la piscine",
+    "grok": false,
+    "mention": null,
+    "empreinte": "e59e0b7c05a6b73a",
+    "ratio": "3:4",
+    "largeurs": [
+      480,
+      640
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640
+      ],
+      "cadrage": "50% 41%"
+    },
+    "cadrage": "50% 41%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 100,
+      "h": 100
+    },
+    "zones_calmes": [
+      {
+        "cote": "gauche",
+        "score": 0,
+        "ton": "clair"
+      },
+      {
+        "cote": "droite",
+        "score": 0,
+        "ton": "clair"
+      },
+      {
+        "cote": "haut",
+        "score": 0,
+        "ton": "moyen"
+      },
+      {
+        "cote": "bas",
+        "score": 0,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 302,
+      "top": 0,
+      "width": 600,
+      "height": 800,
+      "source": [
+        1280,
+        800
+      ]
+    },
+    "faible": true,
+    "raisons_faible": [
+      "largeurs retirées (source trop petite) : 960"
+    ],
+    "avertissements": [
+      "version téléphone sans 1080 px (source trop petite)",
+      "agrandie 1,07 fois (source de 600 px après recadrage)"
+    ],
+    "fichiers": [
+      "vraie/table-mariage-480.webp",
+      "vraie/table-mariage-640.webp",
+      "vraie/table-mariage-mobile-640.webp"
+    ],
+    "poids": {
+      "vraie/table-mariage-480.webp": 74932,
+      "vraie/table-mariage-640.webp": 113066,
+      "vraie/table-mariage-mobile-640.webp": 118634
+    },
+    "media": "c.media({ nom: 'vraie/table-mariage', alt: \"Une table de mariage dressée d'olivier et de bougies, au bord de la piscine\", cadrage: '50% 41%', cadrageMobile: '50% 41%', sizes: '(max-width: 760px) 100vw, 50vw', ratio: '3 / 4' })"
+  },
+  "vraie/coupe-cheminee": {
+    "nom": "vraie/coupe-cheminee",
+    "source": "recu/site/restaurant-13.jpg",
+    "role": "portrait",
+    "alt": "Une coupe glacée sur une table de bois, devant la cheminée",
+    "grok": false,
+    "mention": null,
+    "empreinte": "17f8f388f5a656d6",
+    "ratio": "4:5",
+    "largeurs": [
+      480,
+      640,
+      784
+    ],
+    "mobile": null,
+    "cadrage": "45% 38%",
+    "sujet": {
+      "x": 0,
+      "y": 0,
+      "l": 95.5,
+      "h": 90.2
+    },
+    "zones_calmes": [
+      {
+        "cote": "bas",
+        "score": 0.19,
+        "ton": "moyen"
+      },
+      {
+        "cote": "droite",
+        "score": 0.15,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0.15,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.05,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 246,
+      "width": 1334,
+      "height": 1668,
+      "source": [
+        1334,
+        2000
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [],
+    "fichiers": [
+      "vraie/coupe-cheminee-480.webp",
+      "vraie/coupe-cheminee-640.webp",
+      "vraie/coupe-cheminee-784.webp"
+    ],
+    "poids": {
+      "vraie/coupe-cheminee-480.webp": 31260,
+      "vraie/coupe-cheminee-640.webp": 49328,
+      "vraie/coupe-cheminee-784.webp": 66178
+    },
+    "media": "c.media({ nom: 'vraie/coupe-cheminee', alt: \"Une coupe glacée sur une table de bois, devant la cheminée\", cadrage: '45% 38%', sizes: '(max-width: 760px) 100vw, 40vw', ratio: '4 / 5' })"
+  },
+  "vraie/cepes": {
+    "nom": "vraie/cepes",
+    "source": "recu/site/restaurant-33.jpg",
+    "role": "section-fond",
+    "alt": "Une assiette du chef : viande rosée, cèpes et purée",
+    "grok": false,
+    "mention": null,
+    "empreinte": "d31a5cc97b096a20",
+    "ratio": "3:2",
+    "largeurs": [
+      640,
+      1280,
+      1920
+    ],
+    "mobile": {
+      "ratio": "4:5",
+      "largeurs": [
+        640,
+        1080
+      ],
+      "cadrage": "50% 44%"
+    },
+    "cadrage": "47% 44%",
+    "sujet": {
+      "x": 18.8,
+      "y": 0,
+      "l": 56.3,
+      "h": 90.9
+    },
+    "zones_calmes": [
+      {
+        "cote": "droite",
+        "score": 0.17,
+        "ton": "sombre"
+      },
+      {
+        "cote": "bas",
+        "score": 0.16,
+        "ton": "sombre"
+      },
+      {
+        "cote": "gauche",
+        "score": 0.1,
+        "ton": "sombre"
+      },
+      {
+        "cote": "haut",
+        "score": 0.06,
+        "ton": "moyen"
+      }
+    ],
+    "zone_texte": null,
+    "recadrage": {
+      "left": 0,
+      "top": 0,
+      "width": 1776,
+      "height": 1184,
+      "source": [
+        1776,
+        1184
+      ]
+    },
+    "faible": false,
+    "raisons_faible": [],
+    "avertissements": [
+      "agrandie 1,08 fois (source de 1776 px après recadrage)"
+    ],
+    "fichiers": [
+      "vraie/cepes-640.webp",
+      "vraie/cepes-1280.webp",
+      "vraie/cepes-1920.webp",
+      "vraie/cepes-mobile-640.webp",
+      "vraie/cepes-mobile-1080.webp"
+    ],
+    "poids": {
+      "vraie/cepes-640.webp": 56680,
+      "vraie/cepes-1280.webp": 193018,
+      "vraie/cepes-1920.webp": 287596,
+      "vraie/cepes-mobile-640.webp": 85936,
+      "vraie/cepes-mobile-1080.webp": 193234
+    },
+    "media": "c.media({ nom: 'vraie/cepes', alt: \"Une assiette du chef : viande rosée, cèpes et purée\", cadrage: '47% 44%', cadrageMobile: '50% 44%', sizes: '100vw' })"
   }
 }

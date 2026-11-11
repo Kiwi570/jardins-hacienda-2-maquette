@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-v="6" data-page="reserver" data-theme="nuit" style="--voile-page:#1f1a35;--ouverture-fond:#120c09;--ouverture-texte:#f6efe2">
+<html lang="fr" data-v="7" data-page="reserver" data-theme="nuit" style="--voile-page:#1f1a35;--ouverture-fond:#120c09;--ouverture-texte:#f6efe2">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -7,7 +7,7 @@
 <meta name="description" content="Le jour, le service, les couverts, puis la table sur le plan de la salle si vous le souhaitez. Réservation simulée dans cette maquette.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://jardins-hacienda-2-maquette.vercel.app/reserver">
-<style>:root{--fond:#f6f1e7;--texte:#1c1712;--voile-fond:#1a0f0b;--ouverture-fond:#f6f1e7;--menu-fond:#16100c}:root { --entete-h: 72px; --barres-h: 0px; } html { background: var(--fond); color: var(--texte); scrollbar-gutter: stable; } body { margin: 0; background: var(--fond); } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime] { opacity: 0; } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime].vu { opacity: 1; } [data-voile] { position: fixed; inset: 0; z-index: 900; background: var(--voile-fond); transform: translateY(100%); visibility: hidden; pointer-events: none; } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) [data-voile] { transform: none; visibility: visible; } html.calme [data-voile], html.secours [data-voile] { visibility: hidden !important; } .ouverture-panneau { position: fixed; inset: 0; z-index: 850; display: none; place-content: center; justify-items: center; background: var(--ouverture-fond, var(--voile-fond)); color: var(--fond); text-align: center; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) .ouverture-panneau { display: grid; } html.defilement-bloque, html.defilement-bloque body, html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie), html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) body, html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours), html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { overflow: hidden; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); } .ouverture-panneau { gap: 10px; color: var(--ouverture-texte, #1c1712); } .ouverture-heure { margin: 0; display: flex; align-items: flex-start; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(5rem, min(22vw, 30vh), 15rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } .ouverture-rouleau { display: block; height: 1em; overflow: hidden; } .ouverture-rouleau > span { display: block; height: 1em; } .ouverture-sep { display: block; padding-inline: .02em; } .ouverture-nom { margin: 0; font-family: 'Instrument Serif', 'Instrument Fallback', Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.1; } .ouverture-ligne { margin: 0; font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; opacity: .72; } .voile-contenu { display: grid; justify-items: center; gap: 6px; color: #f6efe2; } .voile-heure { margin: 0; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(4rem, 16vw, 11rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } html:not([data-moment="soir"]) [data-moment-seul="soir"], html[data-moment="soir"] [data-moment-seul="jour"] { display: none !important; } html:not([data-saison="ete"]) [data-saison-seul="ete"], html[data-saison="ete"] [data-saison-seul="hiver"] { display: none !important; }</style>
+<style>:root{--fond:#f6f1e7;--texte:#1c1712;--voile-fond:#1a0f0b;--ouverture-fond:#f6f1e7;--menu-fond:#16100c}:root { --entete-h: 72px; --barres-h: 0px; } html { background: var(--fond); color: var(--texte); scrollbar-gutter: stable; } body { margin: 0; background: var(--fond); } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime] { opacity: 0; } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime].vu { opacity: 1; } [data-voile] { position: fixed; inset: 0; z-index: 900; background: var(--voile-fond); background: linear-gradient(0deg, var(--voile-avant, var(--voile-fond)) 0%, var(--voile-fond) 78%); transform: translateY(100%); visibility: hidden; pointer-events: none; } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) [data-voile] { transform: none; visibility: visible; } html.calme [data-voile], html.secours [data-voile] { visibility: hidden !important; } .ouverture-panneau { position: fixed; inset: 0; z-index: 850; display: none; place-content: center; justify-items: center; background: var(--ouverture-fond, var(--voile-fond)); color: var(--fond); text-align: center; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) .ouverture-panneau { display: grid; } html.defilement-bloque, html.defilement-bloque body, html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie), html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) body, html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours), html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { overflow: hidden; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); } .ouverture-panneau { gap: 10px; color: var(--ouverture-texte, #1c1712); } .ouverture-heure { margin: 0; display: flex; align-items: flex-start; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(5rem, min(22vw, 30vh), 15rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } .ouverture-rouleau { display: block; height: 1em; overflow: hidden; } .ouverture-rouleau > span { display: block; height: 1em; } .ouverture-sep { display: block; padding-inline: .02em; } .ouverture-nom { margin: 0; font-family: 'Instrument Serif', 'Instrument Fallback', Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.1; } .ouverture-ligne { margin: 0; font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; opacity: .72; } .voile-contenu { display: grid; justify-items: center; gap: 6px; color: #f6efe2; } .voile-heure { margin: 0; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(4rem, 16vw, 11rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } html:not([data-moment="soir"]) [data-moment-seul="soir"], html[data-moment="soir"] [data-moment-seul="jour"] { display: none !important; } html:not([data-saison="ete"]) [data-saison-seul="ete"], html[data-saison="ete"] [data-saison-seul="hiver"] { display: none !important; }</style>
 <script>(function () {
 var d = document.documentElement, ss = null, ls = null;
 try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
@@ -26,6 +26,7 @@ try { retourSection = !!ss.getItem('socle:calme-retour'); } catch (e) {}
 var mode = type === 'back_forward' || retourSection ? 'retour' : type === 'reload' ? 'intro' : depart ? 'voile' : 'intro';
 d.setAttribute('data-arrivee', mode);
 if (mode === 'voile' && depart.couleur) d.style.setProperty('--voile-fond', depart.couleur);
+if (mode === 'voile' && depart.avant) d.style.setProperty('--voile-avant', depart.avant);
 if (type === 'reload' && 'scrollRestoration' in history) {
 if (!retourSection) history.scrollRestoration = 'manual';
 }
@@ -42,17 +43,17 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <script>(function(){try{var d=document.documentElement,p={};new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit',month:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});var h=+p.hour,m=+p.month;var mo=h>=5&&h<17?'jour':'soir';try{var q=new URLSearchParams(location.search).get('moment');if(q==='jour'||q==='soir')mo=q;}catch(e){}d.setAttribute('data-moment',mo);if(d.hasAttribute('data-theme-auto')){d.setAttribute('data-theme',mo==='soir'?'nuit':'jour');if(mo==='soir'){d.style.setProperty('--ouverture-fond','#120c09');d.style.setProperty('--ouverture-texte','#f6efe2');}}var sa=m>=5&&m<=9?'ete':'hiver';try{var qs=new URLSearchParams(location.search).get('saison');if(qs==='ete'||qs==='hiver')sa=qs;}catch(e){}d.setAttribute('data-saison',sa);d.style.setProperty('--heure-reelle',"'"+p.hour+':'+p.minute+"'");}catch(e){}})();</script>
 <link rel="preload" href="/assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/socle.css?v=6">
-<link rel="stylesheet" href="/assets/js/modules/plan-de-salle/module.css?v=6">
-<link rel="stylesheet" href="/assets/js/modules/reservation-de-table/module.css?v=6">
-<link rel="stylesheet" href="/assets/js/modules/envol-vers-le-panier/module.css?v=6">
-<link rel="stylesheet" href="/assets/css/site.css?v=6">
-<link rel="modulepreload" href="/assets/js/site.js?v=6">
-<link rel="modulepreload" href="/assets/js/socle/index.js?v=6">
+<link rel="stylesheet" href="/assets/css/socle.css?v=7">
+<link rel="stylesheet" href="/assets/js/modules/plan-de-salle/module.css?v=7">
+<link rel="stylesheet" href="/assets/js/modules/reservation-de-table/module.css?v=7">
+<link rel="stylesheet" href="/assets/js/modules/envol-vers-le-panier/module.css?v=7">
+<link rel="stylesheet" href="/assets/css/site.css?v=7">
+<link rel="modulepreload" href="/assets/js/site.js?v=7">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=7">
 <script src="/assets/vendor/gsap.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/vendor/SplitText.min.js" defer></script>
-<script type="module" src="/assets/js/site.js?v=6"></script>
+<script type="module" src="/assets/js/site.js?v=7"></script>
 <meta name="theme-color" content="#f6f1e7">
 <link rel="icon" href="/assets/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
@@ -75,7 +76,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <div class="ouverture-panneau" data-ouverture aria-hidden="true">
   <p class="ouverture-heure" data-ouverture-objet><span class="ouverture-rouleau" data-rouleau="h"><span>00</span><span>07</span><span>14</span><span>20</span><span>21</span></span><span class="ouverture-sep">:</span><span class="ouverture-rouleau" data-rouleau="m"><span>00</span><span>15</span><span>30</span><span>45</span><span>00</span></span></p>
   <p class="ouverture-nom">Les Jardins de l&#39;Hacienda</p>
-  <p class="ouverture-ligne">Restaurant et réceptions · Moineville</p>
+  <p class="ouverture-ligne">Restaurant et réceptions · Moineville</p>
 </div>
 <a class="evitement" href="#contenu">Aller au contenu</a>
 <header data-entete>
@@ -119,22 +120,22 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <main id="contenu" tabindex="-1">
 <section class="ouv-resa" id="debut" data-effet="service">
   <div class="ouv-resa__photo">
-    <figure class="media ouv-resa__img ouv-resa__img--midi" data-grok style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/grok/assiette-midi-960.webp" srcset="/assets/images/grok/assiette-midi-480.webp 480w, /assets/images/grok/assiette-midi-640.webp 640w, /assets/images/grok/assiette-midi-960.webp 960w" sizes="(max-width: 760px) 40vw, 30vw" alt="Une assiette de saison à l&#39;ombre d&#39;un parasol de paille" width="960" height="1200" loading="lazy" decoding="async">
-  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
+    <figure class="media ouv-resa__img ouv-resa__img--midi" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-baies-mobile-640.webp 640w, /assets/images/vraie/salle-baies-mobile-1080.webp 1080w" sizes="(max-width: 760px) 40vw, 30vw">
+    <img src="/assets/images/vraie/salle-baies-1280.webp" srcset="/assets/images/vraie/salle-baies-640.webp 640w, /assets/images/vraie/salle-baies-1280.webp 1280w, /assets/images/vraie/salle-baies-1920.webp 1920w" sizes="(max-width: 760px) 40vw, 30vw" alt="La salle le long des baies vitrées, à midi, les tables dressées" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
 </figure>
     <figure class="media ouv-resa__img ouv-resa__img--soir" data-grok style="--cadrage:50% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/terrasse-nuit-mobile-640.webp 640w" sizes="(max-width: 760px) 40vw, 30vw">
-    <img src="/assets/images/grok/terrasse-nuit-1280.webp" srcset="/assets/images/grok/terrasse-nuit-640.webp 640w, /assets/images/grok/terrasse-nuit-1280.webp 1280w, /assets/images/grok/terrasse-nuit-1920.webp 1920w" sizes="(max-width: 760px) 40vw, 30vw" alt="La table de réception sous les guirlandes, la nuit" width="1280" height="720" fetchpriority="high" loading="eager" decoding="async">
+  <picture>
+    <img src="/assets/images/grok/assiette-soir-960.webp" srcset="/assets/images/grok/assiette-soir-480.webp 480w, /assets/images/grok/assiette-soir-640.webp 640w, /assets/images/grok/assiette-soir-960.webp 960w" sizes="(max-width: 760px) 40vw, 30vw" alt="Une assiette d’automne aux champignons, à la lueur des bougies" width="960" height="1200" fetchpriority="high" loading="eager" decoding="async">
   </picture><figcaption class="mention-ia">Illustration générée</figcaption>
 </figure>
   </div>
   <div class="ouv-resa__texte">
-    <p class="heure-geante ouv-resa__heure" data-iris-centre data-grille="typo" data-effet="axes" aria-hidden="true"><span class="ouv-resa__h-midi">12:30</span><span class="ouv-resa__h-soir">20:00</span></p>
+    <p class="heure-geante ouv-resa__heure" data-iris-centre data-grille="typo" data-effet="axes" aria-hidden="true"><span class="ouv-resa__h-midi">12:30</span><span class="ouv-resa__h-soir">21:00</span></p>
     <p class="surtitre"><span class="ouv-resa__h-midi">Au déjeuner</span><span class="ouv-resa__h-soir">Au dîner</span></p>
     <h1>Votre table</h1>
-    <p class="masque-ecran-bas masque-petit">Le jour, le service, les couverts d&#39;abord ; la table sur le plan ensuite, si vous le souhaitez. Plus de 10 personnes ? Demandez une réception.</p>
+    <p class="masque-ecran-bas masque-petit">Le jour, le service, les couverts d&#39;abord ; la table sur le plan ensuite, si vous le souhaitez. Plus de 10 personnes ? Demandez une réception.</p>
     <p class="ouv-resa__actions"><a class="bouton" href="#formulaire" data-action-principale data-sans-transition>Choisir le jour</a> <a class="bouton bouton--contour" href="#plan" data-sans-transition>Choisir ma table</a> <a class="ouv-resa__tel" href="tel:+33618212810" data-info-cle>06 18 21 28 10</a></p>
   </div>
 </section>
@@ -145,12 +146,14 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <form class="resa__form" data-resa-form action="#" novalidate aria-labelledby="resa-titre">
       <header class="resa__tete">
         <figure class="media resa__bandeau" style="--cadrage:50% 34%">
-  <picture>
-    <img src="/assets/images/recevoir-salle-960.webp" srcset="/assets/images/recevoir-salle-480.webp 480w, /assets/images/recevoir-salle-640.webp 640w, /assets/images/recevoir-salle-960.webp 960w" sizes="(max-width: 760px) 92vw, 50vw" alt="La salle et ses tables rondes en verre, près des baies vitrées" width="960" height="1279" loading="lazy" decoding="async">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soleil-mobile-640.webp 640w, /assets/images/vraie/salle-soleil-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 50vw">
+    <img src="/assets/images/vraie/salle-soleil-1280.webp" srcset="/assets/images/vraie/salle-soleil-640.webp 640w, /assets/images/vraie/salle-soleil-1280.webp 1280w, /assets/images/vraie/salle-soleil-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 50vw" alt="La salle au soleil de midi : tables rondes en verre, fauteuils crème et baies vitrées" width="1280" height="853" loading="lazy" decoding="async">
   </picture>
 </figure>
         <p class="socle-surtitre">Une table pour vous</p>
         <h2 id="resa-titre" data-anime="lignes">Le jour, l&#39;heure, les couverts</h2>
+        <p class="resa__soiree" data-soiree hidden></p>
+        <script type="application/json" data-agenda>[{"id":"cote-de-boeuf","t":"Soirée côte de bœuf","d":"2026-11-21","p":"50 € hors boissons"},{"id":"raclette","t":"Soirée raclette","d":"2026-11-28","p":"39 € hors boissons"},{"id":"brunch","t":"Le brunch","d":"2026-11-29","p":"50 € hors boissons"},{"id":"libanaise","t":"Soirée libanaise","d":"2026-12-19","p":"49 € hors boissons"},{"id":"noel","t":"Le menu de Noël","d":"2026-12-25","p":"79 € par personne, hors boissons"},{"id":"saint-sylvestre","t":"La Saint-Sylvestre","d":"2026-12-31","p":"120 € le menu · 170 € avec l'accord mets et vins"},{"id":"libanaise-octobre","t":"Soirée libanaise","d":"2026-10-31","p":""},{"id":"grand-buffet","t":"Le Grand Buffet","d":"2026-08-30","p":"Les dimanches d'août"}]</script>
         <p>Le midi du mercredi au dimanche (sauf le samedi), le soir le vendredi et le samedi. Réservation simulée dans cette maquette.</p>
       </header>
       <fieldset class="resa__champ" data-champ="date">
@@ -222,8 +225,8 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <h2 id="pds-titre" data-anime="lignes">Choisir ma table (facultatif)</h2>
       <p>Plan indicatif de la salle, d&#39;après les photos. Les tables indisponibles sont simulées pour la maquette.</p>
       <figure class="media pds__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/recevoir-salle-960.webp" srcset="/assets/images/recevoir-salle-480.webp 480w, /assets/images/recevoir-salle-640.webp 640w, /assets/images/recevoir-salle-960.webp 960w" sizes="(max-width: 760px) 92vw, 40vw" alt="La salle et ses tables rondes en verre, près des baies vitrées" width="960" height="1279" loading="lazy" decoding="async">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soleil-mobile-640.webp 640w, /assets/images/vraie/salle-soleil-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 40vw">
+    <img src="/assets/images/vraie/salle-soleil-1280.webp" srcset="/assets/images/vraie/salle-soleil-640.webp 640w, /assets/images/vraie/salle-soleil-1280.webp 1280w, /assets/images/vraie/salle-soleil-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 40vw" alt="La salle au soleil de midi : tables rondes en verre, fauteuils crème et baies vitrées" width="1280" height="853" loading="lazy" decoding="async">
   </picture>
 </figure>
     </div>
@@ -290,6 +293,11 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
       <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener" aria-label="Facebook (nouvel onglet)">Facebook <span aria-hidden="true">↗</span></a> <a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener" aria-label="Instagram (nouvel onglet)">Instagram <span aria-hidden="true">↗</span></a></p>
     </div>
+    <div class="pied-venir">
+      <p><strong>Venir</strong></p>
+      <p>À 19 km de Metz, 24 km de Thionville, 47 km de Luxembourg (à vol d’oiseau).</p>
+      <p><a href="/infos-pratiques#acces" class="lien-fleche" data-libelle="Infos pratiques">Horaires et accès</a></p>
+    </div>
     <nav aria-label="Sommaire">
       <p><strong>Sommaire</strong></p>
       <ul><li><a href="/" data-libelle="Accueil">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li></ul>
@@ -302,7 +310,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       </ul>
     </div>
   </div>
-  <div class="conteneur pied-bas"><p>Maquette : réservations, cartes cadeaux et demandes sont simulées, rien n&#39;est envoyé.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
+  <div class="conteneur pied-bas"><p>Maquette : réservations, cartes cadeaux et demandes sont simulées, rien n&#39;est envoyé.</p><p>Les images marquées « Illustration générée » sont créées par IA ; toutes les autres sont des photos de la maison.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
 </footer>
 <div data-barre-fixe>
   <a class="bouton bouton--contour" href="tel:+33618212810">Appeler</a>

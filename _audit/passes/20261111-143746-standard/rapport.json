@@ -1,0 +1,1359 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "grille : objet d’ouverture absent (points 2 et 3)",
+      "detail": "aucun élément data-iris-centre : l’intro et le voile s’ouvrent alors depuis le centre de l’écran, pas depuis l’objet de la page",
+      "etape": "grille",
+      "page": "/la-carte",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.5 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "section#midi > div.midi__eau:nth-of-type(1) > figure.media.midi__photo > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "768×1024 normal",
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "390×844 calme",
+        "1366×768 normal",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.5 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "div.terrasse__cadre > div.terrasse__images:nth-of-type(1) > figure.media.terrasse__img:nth-of-type(1) > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "768×1024 normal",
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.5 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "section#feu > div.feu__cadre > figure.media.feu__photo > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "768×1024 normal",
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "390×844 calme",
+        "1366×768 normal",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte coupé",
+      "detail": "coupé par section#apres-midi > div.panorama__cadre « 12 h – 19 h Les journées festives Du mardi au jeud »",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "li#bar > div.lieu__texte > p.lieu__heure:nth-of-type(1) « Dès 15 h 30 »",
+      "lieux": [
+        "768×1024 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte coupé",
+      "detail": "coupé par section#apres-midi > div.panorama__cadre « 12 h – 19 h Les journées festives Du mardi au jeud »",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "li#bar > div.lieu__texte > h3 « Le bar »",
+      "lieux": [
+        "768×1024 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte coupé",
+      "detail": "coupé par section#apres-midi > div.panorama__cadre « 12 h – 19 h Les journées festives Du mardi au jeud »",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "li#bar > div.lieu__texte > p:nth-of-type(2) « Dès 15 h 30 les journées festives, avec droit d'en »",
+      "lieux": [
+        "768×1024 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "3.57:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "section#midi > div.midi__eau:nth-of-type(1) > figure.media.midi__photo > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "768×1024 normal",
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "390×844 calme",
+        "1366×768 normal",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "3.57:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "div.terrasse__cadre > div.terrasse__images:nth-of-type(1) > figure.media.terrasse__img:nth-of-type(1) > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "768×1024 normal",
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "3.57:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "section#feu > div.feu__cadre > figure.media.feu__photo > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "768×1024 normal",
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "390×844 calme",
+        "1366×768 normal",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "section sans visuel",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "section#minuit « 00:00 MINUIT, AU COIN DU FEU Offrir un moment, de  »",
+      "lieux": [
+        "768×1024 normal",
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "390×844 calme",
+        "1366×768 normal",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » trop petite",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "section#midi > div.midi__eau:nth-of-type(1) > figure.media.midi__photo > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "768×1024 normal",
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "390×844 calme",
+        "1366×768 normal",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » trop petite",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "div.terrasse__cadre > div.terrasse__images:nth-of-type(1) > figure.media.terrasse__img:nth-of-type(1) > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "768×1024 normal",
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » trop petite",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "section#feu > div.feu__cadre > figure.media.feu__photo > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "768×1024 normal",
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "390×844 calme",
+        "1366×768 normal",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte coupé",
+      "detail": "coupé par section#apres-midi > div.panorama__cadre « 12 h – 19 h Les journées festives Du mardi au jeud »",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "li#journees-festives > div.lieu__texte > p.lieu__heure:nth-of-type(1) « 12 h – 19 h »",
+      "lieux": [
+        "390×844 normal",
+        "390×844 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte coupé",
+      "detail": "coupé par section#apres-midi > div.panorama__cadre « 12 h – 19 h Les journées festives Du mardi au jeud »",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "li#journees-festives > div.lieu__texte > h3 « Les journées festives »",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "390×844 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte coupé",
+      "detail": "coupé par section#apres-midi > div.panorama__cadre « 12 h – 19 h Les journées festives Du mardi au jeud »",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "li#journees-festives > div.lieu__texte > p:nth-of-type(2) « Du mardi au jeudi, de 12 h à 19 h, de juin à septe »",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "390×844 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.5 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "390×844",
+      "mode": "calme",
+      "selecteur": "div.terrasse__cadre > div.terrasse__images:nth-of-type(1) > figure.media.terrasse__img:nth-of-type(3) > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "390×844 calme",
+        "390×844 sansJs",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "844×390 calme"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "3.57:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "390×844",
+      "mode": "calme",
+      "selecteur": "div.terrasse__cadre > div.terrasse__images:nth-of-type(1) > figure.media.terrasse__img:nth-of-type(3) > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "390×844 calme",
+        "390×844 sansJs",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "844×390 calme"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » trop petite",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "390×844",
+      "mode": "calme",
+      "selecteur": "div.terrasse__cadre > div.terrasse__images:nth-of-type(1) > figure.media.terrasse__img:nth-of-type(3) > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "390×844 calme",
+        "390×844 sansJs",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "844×390 calme"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.0 px",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.conteneur.acces__grille > div > svg.acces__carte > text.carte__pays:nth-of-type(1)",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.0 px",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.conteneur.acces__grille > div > svg.acces__carte > text.carte__pays:nth-of-type(2)",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.0 px",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.conteneur.acces__grille > div > svg.acces__carte > text.carte__pays:nth-of-type(3)",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "11.0 px",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.conteneur.acces__grille > div > svg.acces__carte > text.carte__eau:nth-of-type(4)",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "11.0 px",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.conteneur.acces__grille > div > svg.acces__carte > text.carte__a31:nth-of-type(5)",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.0 px",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.conteneur.acces__grille > div > svg.acces__carte > text.carte__note:nth-of-type(13)",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "2.21:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.horaires__grille > div.horaires__texte:nth-of-type(2) > div.horaires__essai:nth-of-type(2) > p.horaires__essai-reponse:nth-of-type(2) « Aujourd’hui à 15 h 45 : fermé »",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte coupé",
+      "detail": "le contenu dépasse de son cadre",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "div.fpe__progression:nth-of-type(1) > ol.fpe__reperes > li.fpe__repere:nth-of-type(3) > span.fpe__nom:nth-of-type(2) « Coordonnées »",
+      "lieux": [
+        "768×1024 normal",
+        "844×390 normal",
+        "844×390 calme"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec div.fpe__progression:nth-of-type(1) > ol.fpe__reperes > li.fpe__repere:nth-of-type(4) > span.fpe__num:nth-of-type(1) « 4 »",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "div.fpe__progression:nth-of-type(1) > ol.fpe__reperes > li.fpe__repere:nth-of-type(3) > span.fpe__nom:nth-of-type(2) « Coordonnées »",
+      "lieux": [
+        "768×1024 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "accessibilité (axe) : color-contrast",
+      "detail": "Elements must meet minimum color contrast ratio thresholds",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "calme",
+      "selecteur": "a[data-action-principale=\"\"]",
+      "lieux": [
+        "390×844 calme",
+        "1366×768 calme"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "1.02:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "sansJs",
+      "selecteur": "section#debut > div.ced__cadre.conteneur:nth-of-type(2) > div.ced__texte.ouv-infos__contenu:nth-of-type(1) > p.surtitre:nth-of-type(1) « INFOS PRATIQUES »",
+      "lieux": [
+        "390×844 sansJs",
+        "1366×768 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "1.02:1 (minimum 3:1)",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "sansJs",
+      "selecteur": "h1#infos-h1 « Horaires, accès et contact »",
+      "lieux": [
+        "390×844 sansJs",
+        "1366×768 sansJs",
+        "320×568 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "1.02:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "sansJs",
+      "selecteur": "div.ced__cadre.conteneur:nth-of-type(2) > div.ced__texte.ouv-infos__contenu:nth-of-type(1) > p.statut.ouv-infos__statut:nth-of-type(3) > span:nth-of-type(2) « Horaires »",
+      "lieux": [
+        "390×844 sansJs",
+        "1366×768 sansJs",
+        "320×568 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "1.02:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "sansJs",
+      "selecteur": "div.ced__cadre.conteneur:nth-of-type(2) > div.ced__texte.ouv-infos__contenu:nth-of-type(1) > p.ouv-infos__actions:nth-of-type(4) > span.ouv-infos__adresse « 6 Vathier Haye, 54580 Moineville »",
+      "lieux": [
+        "390×844 sansJs",
+        "1366×768 sansJs",
+        "320×568 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.5 px",
+      "etape": "mesures",
+      "page": "/la-carte",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "section#passe > div.assiette__cadre.socle-cadre > div.assiette__scene:nth-of-type(2) > span.mention-ia.passe__mention « Dressage dessiné d’après la carte »",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "320×568 sansJs",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "section sans visuel",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/la-carte",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "section#debut « 12:30 LE DÉJEUNER La carte de la semaine À midi, s »",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "768×1024 normal",
+        "1366×768 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "390×844 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "320×568 sansJs",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec div.ardoise.est-craie > div.ardoise__surface > h2.ardoise__titre > span « Ce midi, à la carte »",
+      "etape": "mesures",
+      "page": "/la-carte",
+      "taille": "768×1024",
+      "mode": "normal",
+      "selecteur": "div.ardoise.est-craie > div.ardoise__surface > p.ardoise__date:nth-of-type(1) > span « Cette semaine »",
+      "lieux": [
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "1920×1080 normal",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "section sans visuel",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/la-carte",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "section#debut « 12:30 LE DÉJEUNER La carte de la semaine Entrées d »",
+      "lieux": [
+        "844×390 normal",
+        "844×390 calme"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec div.ardoise > div.ardoise__surface > h2.ardoise__titre > span « Ce midi, à la carte »",
+      "etape": "mesures",
+      "page": "/la-carte",
+      "taille": "1366×768",
+      "mode": "sansJs",
+      "selecteur": "div.ardoise > div.ardoise__surface > p.ardoise__date:nth-of-type(1) > span « Cette semaine »",
+      "lieux": [
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "844×390 calme"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.5 px",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "section#debut > div.givre__fond:nth-of-type(1) > figure.media.ouv-fetes__fond:nth-of-type(1) > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "768×1024 normal",
+        "1366×768 normal",
+        "1920×1080 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "390×844 sansWebgl",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "1366×768 calme",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "section sans visuel",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "section#dates « CET HIVER Les prochaines dates Prochaine date : So »",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "768×1024 normal",
+        "1366×768 normal",
+        "1920×1080 normal",
+        "390×844 calme",
+        "390×844 sansWebgl",
+        "1366×768 calme",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » trop petite",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "section#debut > div.givre__fond:nth-of-type(1) > figure.media.ouv-fetes__fond:nth-of-type(1) > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "390×844 normal",
+        "320×568 normal",
+        "844×390 normal",
+        "768×1024 normal",
+        "1366×768 normal",
+        "1920×1080 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "390×844 sansWebgl",
+        "1366×768 sansJs",
+        "320×568 sansJs",
+        "1366×768 calme",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec div.d3d__cadre.socle-cadre > div.d3d__depliant:nth-of-type(2) > article.d3d__volet:nth-of-type(3) > p.noel__prix:nth-of-type(2) « 79 € par personne, hors boissons »",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.d3d__depliant:nth-of-type(2) > article.d3d__volet:nth-of-type(3) > span.d3d__verso.noel__couverture > span.d3d__num:nth-of-type(1) « VENDREDI 25 DÉCEMBRE, AU DÉJEUNER »",
+      "lieux": [
+        "844×390 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec div.d3d__depliant:nth-of-type(2) > article.d3d__volet:nth-of-type(3) > p.noel__actions:nth-of-type(3) > a.bouton « Réserver le déjeuner de Noël »",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.d3d__depliant:nth-of-type(2) > article.d3d__volet:nth-of-type(3) > span.d3d__verso.noel__couverture > strong « Le menu de Noël »",
+      "lieux": [
+        "844×390 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec div.d3d__depliant:nth-of-type(2) > article.d3d__volet:nth-of-type(3) > p.noel__actions:nth-of-type(3) > a.bouton « Réserver le déjeuner de Noël »",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.d3d__depliant:nth-of-type(2) > article.d3d__volet:nth-of-type(3) > span.d3d__verso.noel__couverture > span.noel__couv-prix:nth-of-type(2) « 79 € par personne, hors boissons »",
+      "lieux": [
+        "844×390 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec div.d3d__cadre.socle-cadre > div.d3d__depliant:nth-of-type(2) > article.d3d__volet:nth-of-type(3) > p.noel__acompte:nth-of-type(4) « Un acompte par couvert peut être demandé pour les  »",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.d3d__depliant:nth-of-type(2) > article.d3d__volet:nth-of-type(3) > span.d3d__verso.noel__couverture > span.noel__couv-prix:nth-of-type(2) « 79 € par personne, hors boissons »",
+      "lieux": [
+        "844×390 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste sur image",
+      "detail": "1.17:1 sur les 10 % de la photo les moins favorables (minimum 3:1)",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "section#debut > div.conteneur.ouv-fetes__contenu:nth-of-type(4) > p.heure-geante.ouv-fetes__geant:nth-of-type(1) > span:nth-of-type(1) « J-50 »",
+      "lieux": [
+        "1366×768 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste sur image",
+      "detail": "2.60:1 sur les 10 % de la photo les moins favorables (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "section#debut > div.conteneur.ouv-fetes__contenu:nth-of-type(4) > p.surtitre:nth-of-type(2) > span:nth-of-type(1) « CET HIVER »",
+      "lieux": [
+        "1366×768 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste sur image",
+      "detail": "2.83:1 sur les 10 % de la photo les moins favorables (minimum 3:1)",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "h1#fetes-h1 > span:nth-of-type(1) « Les fêtes au coin du feu »",
+      "lieux": [
+        "1366×768 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "section sans visuel",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "390×844",
+      "mode": "sansJs",
+      "selecteur": "section#dates « CET HIVER Les prochaines dates Soirée côte de bœuf »",
+      "lieux": [
+        "390×844 sansJs",
+        "1366×768 sansJs",
+        "320×568 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "premier écran : information clé hors de l’écran",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/offrir",
+      "taille": "320×568",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-offrir__grille > div.ouv-offrir__texte:nth-of-type(1) > p.ouv-offrir__actions:nth-of-type(4) > span.ouv-offrir__info « De 25 à 200 € · valable 6 mois »",
+      "lieux": [
+        "320×568 normal",
+        "320×568 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.5 px",
+      "etape": "mesures",
+      "page": "/offrir",
+      "taille": "320×568",
+      "mode": "normal",
+      "selecteur": "section#debut > figure.media.ouv-offrir__fond > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "320×568 normal",
+        "390×844 normal",
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "1366×768 sansJs",
+        "390×844 sansWebgl",
+        "320×568 sansJs",
+        "1366×768 calme",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » trop petite",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/offrir",
+      "taille": "320×568",
+      "mode": "normal",
+      "selecteur": "section#debut > figure.media.ouv-offrir__fond > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "320×568 normal",
+        "390×844 normal",
+        "768×1024 normal",
+        "844×390 normal",
+        "1366×768 normal",
+        "390×844 calme",
+        "390×844 sansJs",
+        "1920×1080 normal",
+        "1366×768 sansJs",
+        "390×844 sansWebgl",
+        "320×568 sansJs",
+        "1366×768 calme",
+        "844×390 calme",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste sur image",
+      "detail": "2.89:1 sur les 10 % de la photo les moins favorables (minimum 3:1)",
+      "etape": "mesures",
+      "page": "/receptions",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "section#debut > div.conteneur.ouv-recep__contenu > p.heure-geante.heure-geante--nuit:nth-of-type(1) « 19:00 »",
+      "lieux": [
+        "1366×768 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "10.5 px",
+      "etape": "mesures",
+      "page": "/reserver",
+      "taille": "390×844",
+      "mode": "sansJs",
+      "selecteur": "section#debut > div.ouv-resa__photo:nth-of-type(1) > figure.media.ouv-resa__img:nth-of-type(2) > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "390×844 sansJs",
+        "1366×768 sansJs",
+        "320×568 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » trop petite",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/reserver",
+      "taille": "390×844",
+      "mode": "sansJs",
+      "selecteur": "section#debut > div.ouv-resa__photo:nth-of-type(1) > figure.media.ouv-resa__img:nth-of-type(2) > figcaption.mention-ia « Illustration générée »",
+      "lieux": [
+        "390×844 sansJs",
+        "1366×768 sansJs",
+        "320×568 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "transition : élément qui apparaît puis disparaît",
+      "detail": "",
+      "etape": "films",
+      "page": "/la-carte → /receptions",
+      "taille": "1366×768",
+      "mode": "film",
+      "selecteur": "main#contenu > div.rdl > button.rdl__passer.socle-bouton « Passer l’ouverture »",
+      "lieux": [
+        "1366×768 film",
+        "390×844 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien profond",
+      "detail": "section pas en haut de l'écran (553 px)",
+      "etape": "parcours",
+      "page": "/ → /les-fetes#saint-sylvestre",
+      "taille": "1366×768",
+      "mode": "lien profond",
+      "lieux": [
+        "1366×768 lien profond"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien profond",
+      "detail": "section pas en haut de l'écran (298 px)",
+      "etape": "parcours",
+      "page": "/reserver → /infos-pratiques#acces",
+      "taille": "1366×768",
+      "mode": "lien profond",
+      "lieux": [
+        "1366×768 lien profond"
+      ]
+    }
+  ],
+  "aRegarder": [
+    {
+      "niveau": "regarder",
+      "controle": "clearProps « all »",
+      "detail": "assets/js/modules/formulaire-par-etapes/module.js : efface aussi les variables CSS posées dans le HTML ; nommer les propriétés (clearProps: 'transform,opacity')",
+      "etape": "fichiers",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "clearProps « all »",
+      "detail": "assets/js/modules/rideau-en-lanieres/module.js : efface aussi les variables CSS posées dans le HTML ; nommer les propriétés (clearProps: 'transform,opacity')",
+      "etape": "fichiers",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "journal du projet",
+      "detail": "aucune entrée pour la version 7 de donnees/site.json",
+      "etape": "fichiers",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "contraste sur image",
+      "detail": "4.37:1 sur les 10 % de la photo les moins favorables (minimum 4.5:1), ombre portée à vérifier",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "section#debut > div.ced__cadre.conteneur:nth-of-type(2) > div.ced__texte.ouv-infos__contenu:nth-of-type(1) > p.surtitre:nth-of-type(1) « INFOS PRATIQUES »",
+      "lieux": [
+        "390×844 normal"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "contraste sur image",
+      "detail": "1.40:1 sur les 10 % de la photo les moins favorables (minimum 3:1), ombre portée à vérifier",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.ced__cadre.conteneur:nth-of-type(2) > div.ced__texte.ouv-infos__contenu:nth-of-type(1) > p.ouv-infos__ilest:nth-of-type(2) > span.heure-geante.ouv-infos__heure:nth-of-type(2) « 15:38 »",
+      "lieux": [
+        "390×844 normal"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "contraste sur image",
+      "detail": "4.44:1 sur les 10 % de la photo les moins favorables (minimum 4.5:1), ombre portée à vérifier",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "section#debut > div.ced__cadre.conteneur:nth-of-type(2) > div.ced__texte.ouv-infos__contenu:nth-of-type(1) > p.surtitre:nth-of-type(1) « INFOS PRATIQUES »",
+      "lieux": [
+        "1366×768 normal"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "contraste sur image",
+      "detail": "1.44:1 sur les 10 % de la photo les moins favorables (minimum 3:1), ombre portée à vérifier",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ced__cadre.conteneur:nth-of-type(2) > div.ced__texte.ouv-infos__contenu:nth-of-type(1) > p.ouv-infos__ilest:nth-of-type(2) > span.heure-geante.ouv-infos__heure:nth-of-type(2) « 15:38 »",
+      "lieux": [
+        "1366×768 normal"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "contraste sur image",
+      "detail": "1.05:1 sur les 10 % de la photo les moins favorables (minimum 4.5:1), ombre portée à vérifier",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ced__cadre.conteneur:nth-of-type(2) > div.ced__texte.ouv-infos__contenu:nth-of-type(1) > p.ouv-infos__actions:nth-of-type(4) > span.ouv-infos__adresse « 6 Vathier Haye, 54580 Moineville »",
+      "lieux": [
+        "1366×768 normal"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "contraste sur image",
+      "detail": "4.14:1 sur les 10 % de la photo les moins favorables (minimum 4.5:1), ombre portée à vérifier",
+      "etape": "mesures",
+      "page": "/la-carte",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.ardoise.est-craie > div.ardoise__surface > p.ardoise__date:nth-of-type(1) > span « Cette semaine »",
+      "lieux": [
+        "390×844 normal"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "typographie française",
+      "detail": "espace insécable manquante avant ou après « : »",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "section#dates > div.conteneur > div.agd__tete:nth-of-type(1) > p.agd__prochaine:nth-of-type(2) « Prochaine date : Soirée côte de bœuf, dans 9 jours »",
+      "lieux": [
+        "1366×768 normal"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "rechargement au milieu de la page",
+      "detail": "écran différent à la même position après rechargement (70.8 %), voir comparaisons/rechargement-la-carte-*.png",
+      "etape": "parcours",
+      "page": "/la-carte",
+      "taille": "1366×768",
+      "lieux": [
+        "1366×768"
+      ]
+    }
+  ],
+  "nonLances": [
+    {
+      "controle": "parcours:hauteur",
+      "raison": "browserContext.close: Protocol error (Target.disposeBrowserContext): Failed to find context with id BCAAFC6E17D3164EB7BC463E77259095",
+      "etape": "parcours"
+    },
+    {
+      "controle": "parcours:calme",
+      "raison": "browser.newContext: Target page, context or browser has been closed",
+      "etape": "parcours"
+    },
+    {
+      "controle": "parcours:projet",
+      "raison": "browser.newContext: Target page, context or browser has been closed",
+      "etape": "parcours"
+    },
+    {
+      "controle": "ecran",
+      "raison": "browser.newContext: Target page, context or browser has been closed",
+      "etape": "ecran"
+    },
+    {
+      "controle": "fluidite",
+      "raison": "browser.newContext: Target page, context or browser has been closed",
+      "etape": "fluidite"
+    },
+    {
+      "controle": "mouvement",
+      "raison": "browser.newContext: Target page, context or browser has been closed",
+      "etape": "mouvement"
+    },
+    {
+      "controle": "vitesse",
+      "raison": "browser.newContext: Target page, context or browser has been closed",
+      "etape": "vitesse"
+    },
+    {
+      "controle": "captures",
+      "raison": "browser.newContext: Target page, context or browser has been closed",
+      "etape": "captures"
+    },
+    {
+      "controle": "Safari (WebKit)",
+      "raison": "WebKit ne peut pas s’installer ici : vérification à faire dans Safari sur le Mac (liste dans le rapport)",
+      "etape": "safari"
+    }
+  ],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "grille wouahou": 6,
+    "mesures": 112,
+    "balayage": 7,
+    "films d’ouverture": 14,
+    "films de transition": 14,
+    "bords de l’écran": 8,
+    "intro accélérable et passable": 7,
+    "menu": 1,
+    "clavier": 8,
+    "liens et boutons": 8,
+    "liens profonds": 16,
+    "liens vers la page en cours": 7,
+    "changements de hauteur": 6
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=7",
+    "Audit standard : étapes lourdes sur /, /infos-pratiques, /la-carte, /les-fetes, /offrir, /receptions, /reserver.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.",
+    "Ouverture / (1366×768) : 2583 ms depuis le premier octet",
+    "Ouverture /infos-pratiques (1366×768) : 2523 ms depuis le premier octet",
+    "Ouverture /la-carte (1366×768) : 2509 ms depuis le premier octet",
+    "Ouverture /les-fetes (1366×768) : 2501 ms depuis le premier octet",
+    "Ouverture /offrir (1366×768) : 2497 ms depuis le premier octet",
+    "Ouverture /receptions (1366×768) : 2534 ms depuis le premier octet",
+    "Ouverture /reserver (1366×768) : 2477 ms depuis le premier octet",
+    "Ouverture / (390×844) : 2557 ms depuis le premier octet",
+    "Ouverture /infos-pratiques (390×844) : 2480 ms depuis le premier octet",
+    "Ouverture /la-carte (390×844) : 2503 ms depuis le premier octet",
+    "Ouverture /les-fetes (390×844) : 2502 ms depuis le premier octet",
+    "Ouverture /offrir (390×844) : 2495 ms depuis le premier octet",
+    "Ouverture /receptions (390×844) : 2502 ms depuis le premier octet",
+    "Ouverture /reserver (390×844) : 2493 ms depuis le premier octet",
+    "bords de l’écran /la-carte 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)",
+    "bords de l’écran /les-fetes 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)",
+    "bords de l’écran /offrir 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)",
+    "Bords de l’écran : 530 images d’intro, 18 de voile et 214 de menu jugées (panneau immobile couvrant tout l’écran), barre de défilement classique de 15 px."
+  ],
+  "grille": [
+    {
+      "cle": "manipuler",
+      "nom": "1. L’effet signature se manipule",
+      "statut": "présent",
+      "detail": "accueil"
+    },
+    {
+      "cle": "intro",
+      "nom": "2. L’intro devient la page",
+      "statut": "absent",
+      "detail": "sans objet d’ouverture : /la-carte"
+    },
+    {
+      "cle": "voile",
+      "nom": "3. La transition reprend le motif",
+      "statut": "présent",
+      "detail": "voile en cloche"
+    },
+    {
+      "cle": "fil",
+      "nom": "4. Quelque chose relie les sections et les pages",
+      "statut": "présent",
+      "detail": "sur les 7 page(s)"
+    },
+    {
+      "cle": "typo",
+      "nom": "5. Un titre fait l’événement sur chaque page",
+      "statut": "présent",
+      "detail": "sur les 7 page(s)"
+    },
+    {
+      "cle": "scene",
+      "nom": "6. La scène est un geste du métier",
+      "statut": "présent",
+      "detail": "geste du métier sur /, /la-carte"
+    },
+    {
+      "cle": "retour",
+      "nom": "7. L’action principale a un retour physique",
+      "statut": "présent",
+      "detail": "sur /, /les-fetes, /offrir, /receptions, /reserver"
+    }
+  ]
+}

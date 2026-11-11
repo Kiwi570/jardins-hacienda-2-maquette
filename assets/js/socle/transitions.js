@@ -4,11 +4,11 @@
    Les liens vers la page en cours font défiler sans recharger (chemins normalisés, cleanUrls).
    Les grands sauts dans une même page passent aussi sous le voile.
    La forme du voile (glisse, iris, vague, rideau) est dans voile.js. */
-import { html, etat, chemin, stockage, emettre } from './etat.js?v=6';
-import { aller, bloquerDefilement, debloquerDefilement } from './defilement.js?v=6';
-import { fermerMenu } from './entete.js?v=6';
-import { suivre, lacher } from './gouttiere.js?v=6';
-import { voile, couvrir, decouvrir } from './voile.js?v=6';
+import { html, etat, chemin, stockage, emettre } from './etat.js?v=7';
+import { aller, bloquerDefilement, debloquerDefilement } from './defilement.js?v=7';
+import { fermerMenu } from './entete.js?v=7';
+import { suivre, lacher } from './gouttiere.js?v=7';
+import { voile, couvrir, decouvrir } from './voile.js?v=7';
 
 const prechargees = new Set();
 let enDepart = false;
@@ -57,7 +57,8 @@ export async function partir(url, libelle, point) {
   fermerMenu({ rendreFocus: false });
   const ss = stockage();
   const couleur = getComputedStyle(html).getPropertyValue('--voile-fond').trim();
-  try { ss && ss.setItem('socle:depart', JSON.stringify({ t: Date.now(), couleur })); } catch {}
+  const avant = getComputedStyle(html).getPropertyValue('--voile-avant').trim();
+  try { ss && ss.setItem('socle:depart', JSON.stringify({ t: Date.now(), couleur, avant })); } catch {}
   const lib = document.querySelector('[data-voile-libelle]');
   if (lib && libelle) lib.textContent = libelle;
   emettre('depart', { url: url.href });

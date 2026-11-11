@@ -1,0 +1,19 @@
+{
+ "id": "20261111-164058-complet-cible-partiel",
+ "date": "2026-11-11T16:52:26.853Z",
+ "niveau": "complet",
+ "pages": "/,/infos-pratiques,/les-fetes,/offrir",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "ecran",
+  "fluidite",
+  "films"
+ ],
+ "version": "7",
+ "echecs": 8,
+ "aRegarder": 7,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "échecs"
+}

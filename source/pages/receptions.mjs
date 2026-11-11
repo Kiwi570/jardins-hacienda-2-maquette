@@ -1,24 +1,30 @@
-/* Réceptions · « la grande table » (nouvelle page v6) : la terrasse de nuit en panorama, le mot de l'occasion qui
+/* Réceptions · « la grande table » (nouvelle page v6, vraies photos en v7) : en arrivant d'une autre page, le voile
+   s'ouvre en lanières comme des palmes qui s'écartent (module rideau-en-lanieres) sur la pergola dressée, le mot de l'occasion qui
    change dans le titre (mariage, baptême, anniversaire, pot de départ), trois espaces en volets qui s'ouvrent
    (la salle d'abord l'hiver, la terrasse d'abord l'été), ce que l'on fête ici (vraies photos), puis la demande
    en trois étapes ; à l'envoi, un carton d'invitation reçoit le tampon « Demande reçue ». */
 import { html } from '../../outils/gabarit.mjs';
 import { avecVideo } from '../gabarits/video.mjs';
 
-export const page = { cle: 'receptions', fichier: 'receptions', theme: 'nuit', imagePartage: 'grok/terrasse-nuit-1280.webp' };
+export const page = { cle: 'receptions', fichier: 'receptions', theme: 'nuit', imagePartage: 'vraie/pergola-banquet-1280.webp', modules: ['rideau-en-lanieres'] };
 
 const ESPACES = [
-  { cle: 'salle', image: 'grok/salle-feu', cadrage: '50% 55%', saison: 'hiver' },
-  { cle: 'terrasse', image: 'grok/terrasse-or', cadrage: '50% 55%', saison: 'ete' },
-  { cle: 'piscine', image: 'grok/midi-piscine', cadrage: '45% 65%', saison: 'ete' },
+  { cle: 'salle', image: 'vraie/salle-pierre', cadrage: '60% 55%', saison: 'hiver' },
+  { cle: 'terrasse', image: 'vraie/brasero', cadrage: '45% 62%', saison: 'ete' },
+  { cle: 'piscine', image: 'vraie/piscine-palmiers', cadrage: '55% 62%', saison: 'ete' },
 ];
 const OCCASIONS = ['mariages', 'baptemes', 'anniversaires', 'depart'];
 
 export default (c) => {
   const mots = c.s('receptions.mots').split('|');
   return html`
+<script>try{var d=document.documentElement;if(d.getAttribute('data-arrivee')!=='voile'||d.classList.contains('calme'))d.classList.add('rdl-vu')}catch(e){}</script>
+<div class="rdl" data-module="rideau-en-lanieres" aria-hidden="true">
+  <div class="rdl__lanieres"></div>
+  <button type="button" class="rdl__passer socle-bouton">${c.t('receptions.passerOuverture')}</button>
+</div>
 <section class="ouv-recep" id="debut">
-  ${c.media({ nom: 'grok/terrasse-nuit', alt: c.s('receptions.alt'), cadrage: '50% 52%', priorite: true, classe: 'ouv-recep__fond', sizes: '100vw', attrs: 'data-fx="zoom" data-fx-force="10"' })}
+  ${c.media({ nom: 'vraie/pergola-banquet', alt: c.s('receptions.alt'), cadrage: '50% 52%', priorite: true, classe: 'ouv-recep__fond', sizes: '100vw', attrs: 'data-fx="zoom" data-fx-force="10"' })}
   <div class="conteneur ouv-recep__contenu">
     <p class="heure-geante heure-geante--nuit ouv-recep__heure" data-iris-centre data-effet="axes" aria-hidden="true">19:00</p>
     <p class="surtitre">${c.t('receptions.sur')}</p>
@@ -48,8 +54,8 @@ export default (c) => {
   <div class="conteneur">
     <h2 id="occasions-titre" data-anime="lignes">${c.t('receptions.occasionsTitre')}</h2>
     <ul class="occasions__liste" data-effet="occasions">
-      <li>${c.media({ nom: 'recevoir-mariages', alt: c.s('receptions.altMariages'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.mariages')}</span></li>
-      <li>${c.media({ nom: 'recevoir-anniversaires', alt: c.s('receptions.altAnniversaires'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.anniversaires')}</span></li>
+      <li>${c.media({ nom: 'vraie/table-piscine', alt: c.s('receptions.altMariages'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.mariages')}</span></li>
+      <li>${c.media({ nom: 'vraie/gateaux', alt: c.s('receptions.altAnniversaires'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.anniversaires')}</span></li>
       <li>${c.media({ nom: 'recevoir-depart', alt: c.s('receptions.altDepart'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.depart')}</span></li>
       <li>${c.media({ nom: 'recevoir-baptemes', alt: c.s('receptions.altBaptemes'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.baptemes')}</span></li>
     </ul>
