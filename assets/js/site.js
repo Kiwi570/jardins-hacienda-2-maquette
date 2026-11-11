@@ -113,7 +113,7 @@ const OPTIONS = {
   'lumiere-au-pointeur': { source: 'bougie', focus: [0.68, 0.46], repos: 'promenade', relief: 2.2 },
   'ciel-en-direct': { timeZone: 'Europe/Paris', lat: 49.204, lon: 5.946, mer: false, etoiles: 1.1 },
   'rideau-en-lanieres': { effet: 'ecarte', forme: 'feuille', nombre: 7, nombreTelephone: 5, coeur: 0, delai: 0.05, duree: 0.75, decalage: 0.05, unique: false },
-  'plat-fumant': { densite: 1.3, hauteur: 0.85, vitesse: 0.9, intensite: 1.8, qualite: 0.45 },
+  'plat-fumant': { densite: 1, hauteur: 0.85, vitesse: 0.9, intensite: 2.1, qualite: 0.3 },
   'accords-mets-et-vins': { textes: { avec: 'Avec', signature: "Le vin de l'accord", groupe: 'Les plats du menu' } },
   'plan-de-salle': { reservation: '/reserver#formulaire', couverts: 2, textes: { choix: '{nom} · {zone} · {places} places. ', prise: 'Indisponible (simulation)' } },
   'carte-cadeau-qui-se-compose': { cachet: 'JH', min: 25, max: 200, textes: {
@@ -239,7 +239,7 @@ async function statuts() {
 }
 
 /* ---------- La lumière de la journée (signature) : horloge de l'en-tête, couleur de l'en-tête, chiffres variables ---------- */
-const TEINTES = { midi: [246, 241, 231], dejeuner: [243, 234, 217], apresmidi: [242, 222, 178], terrasse: [42, 33, 64], diner: [30, 24, 48], feu: [18, 12, 9], fetes: [26, 15, 11], minuit: [14, 10, 8] };
+const TEINTES = { midi: [246, 241, 231], dejeuner: [243, 234, 217], apresmidi: [242, 222, 178], terrasse: [42, 33, 64], diner: [17, 32, 27], feu: [18, 12, 9], fetes: [26, 15, 11], minuit: [14, 10, 8] };
 const NUIT = new Set(['terrasse', 'diner', 'feu', 'fetes', 'minuit']);
 const enMinutes = (h) => { const [a, b] = h.split(':').map(Number); return a * 60 + b; };
 function axes(el, f) {
@@ -537,6 +537,95 @@ function miniResa() {
 }
 
 /* ---------- 23 h · braises qui montent du feu ; le doigt les attise ---------- */
+/* Le foyer de la cheminée (fractions du cadre) : mesuré sur la vraie photo par feuVivant, lu par les braises. */
+const foyer = { x: 0.5, y: 0.62, l: 0.22 };
+
+/* Le coin du feu, sur la vraie cheminée de la salle : les flammes ondulent (bandes de la photo décalées par une onde
+   qui monte), la lueur vacille sur la salle, les braises partent du foyer. Tout se mesure dans le repère de la photo
+   (object-fit: cover, recadrage réel) ; 30 images par seconde au plus, arrêté hors écran (boucle du socle). */
+function feuVivant() {
+  const fig = $('.feu__photo[data-foyer]'), img = fig && $('img', fig);
+  if (!img || etat.calme) return;
+  const cv = document.createElement('canvas'); cv.className = 'feu__flammes'; cv.setAttribute('aria-hidden', 'true');
+  const lueur = document.createElement('span'); lueur.className = 'feu__lueur'; lueur.setAttribute('aria-hidden', 'true');
+  fig.append(cv, lueur);
+  const ctx = cv.getContext('2d'); if (!ctx) return;
+  let z = null, k = 1;
+  const mesurer = () => {
+    const iw = img.naturalWidth, ih = img.naturalHeight, W = fig.offsetWidth, H = fig.offsetHeight;
+    if (!iw || !ih || !W || !H) return;
+    const zone = (ih > iw ? fig.dataset.foyerMobile : fig.dataset.foyer).split(' ').map(Number);
+    const e = Math.max(W / iw, H / ih), dw = iw * e, dh = ih * e;
+    const [px, py] = getComputedStyle(img).objectPosition.split(' ').map((v) => (v.endsWith('%') ? parseFloat(v) / 100 : 0.5));
+    const ox = (W - dw) * px, oy = (H - dh) * py;
+    const x0 = ox + zone[0] * dw, y0 = oy + zone[1] * dh, w = (zone[2] - zone[0]) * dw, h = (zone[3] - zone[1]) * dh;
+    k = 1;
+    z = { sx: zone[0] * iw, sy: zone[1] * ih, sw: (zone[2] - zone[0]) * iw, sh: (zone[3] - zone[1]) * ih, cw: Math.max(1, Math.round(w * k)), ch: Math.max(1, Math.round(h * k)) };
+    cv.width = z.cw; cv.height = z.ch;
+    cv.style.cssText = `left:${x0.toFixed(1)}px;top:${y0.toFixed(1)}px;width:${w.toFixed(1)}px;height:${h.toFixed(1)}px`;
+    foyer.x = (x0 + w * 0.42) / W; foyer.y = (y0 + h * 0.6) / H; foyer.l = Math.min(0.22, (w / W) * 0.6);
+    fig.style.setProperty('--foyer-x', `${(foyer.x * 100).toFixed(1)}%`); fig.style.setProperty('--foyer-y', `${(((y0 + h * 0.45) / H) * 100).toFixed(1)}%`);
+  };
+  if (img.complete) mesurer(); else img.addEventListener('load', mesurer, { once: true });
+  new ResizeObserver(mesurer).observe(fig);
+  img.addEventListener('load', mesurer);
+  /* Vacillement : sinus de périodes sans rapport entre elles (jamais deux fois le même battement). */
+  const vacille = (t) => 0.6 + 0.18 * Math.sin(t * 6.1) * Math.sin(t * 1.7 + 1.3) + 0.12 * Math.sin(t * 11.3 + 0.4) + 0.1 * Math.sin(t * 2.9 + 2.2);
+  let dernier = 0;
+  boucle(fig.closest('section'), (t) => {
+    if (!z || t - dernier < 42) return; dernier = t;
+    const s2 = t / 1000, v = vacille(s2);
+    lueur.style.opacity = v.toFixed(3);
+    const { cw, ch, sx, sy, sw, sh } = z, bande = 4;
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.globalCompositeOperation = 'source-over';
+    for (let y = 0; y < ch; y += bande) {
+      const f = y / ch, haut = Math.pow(1 - f, 1.3);
+      const dx = (Math.sin(y * 0.05 + s2 * 7.2) * 7 + Math.sin(y * 0.13 + s2 * 12.5) * 2.5) * haut * k;
+      const dy = Math.sin(y * 0.03 + s2 * 5) * 2.2 * haut * k;
+      ctx.drawImage(img, sx, sy + (y / ch) * sh, sw, (bande / ch) * sh + 0.5, dx, y + dy, cw, bande + 0.6);
+    }
+    /* Bords fondus : la bande d'image redessinée se perd dans la photo d'origine. */
+    ctx.globalCompositeOperation = 'destination-in';
+    const g = ctx.createRadialGradient(cw * 0.52, ch * 0.52, Math.min(cw, ch) * 0.2, cw * 0.52, ch * 0.52, Math.max(cw, ch) * 0.62);
+    g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, cw, ch);
+    /* Le feu respire : un souffle de lumière chaude sur les flammes. */
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalAlpha = Math.max(0, (v - 0.45) * 0.35);
+    ctx.fillStyle = '#ff8a3c'; ctx.fillRect(0, 0, cw, ch);
+    ctx.globalAlpha = 1;
+  });
+}
+
+/* 12 h 30 : les petites assiettes ; un clic fait passer la sienne en grand, et la vapeur suit (module plat-fumant). */
+function assiettes() {
+  const scene = $('[data-plat-scene]'), boutons = $$('.vraie[data-plat]');
+  if (!scene || !boutons.length) return;
+  const img = $('img', scene), source = $('source', scene);
+  const SRC = (nom, ws) => ws.map((w) => `/assets/images/${nom}-${w}.webp ${w}w`).join(', ');
+  for (const b of boutons) {
+    b.addEventListener('click', () => {
+      if (b.getAttribute('aria-pressed') === 'true') return;
+      for (const x of boutons) x.setAttribute('aria-pressed', String(x === b));
+      const vignette = $('img', b);
+      const set = vignette.getAttribute('srcset') || '', srcGrand = set.split(',').map((p) => p.trim().split(' ')[0]).pop() || vignette.src;
+      scene.classList.add('fumant--change');
+      setTimeout(() => {
+        const fini = () => {
+          scene.style.setProperty('--cadrage', b.dataset.cadrage || '50% 50%');
+          apis['plat-fumant']?.sources?.(b.dataset.vapeur);
+          scene.classList.remove('fumant--change');
+        };
+        img.addEventListener('load', fini, { once: true });
+        if (source) source.srcset = set || srcGrand;
+        img.srcset = set; img.src = srcGrand; img.alt = b.dataset.alt || '';
+        if (img.complete) fini();
+      }, etat.calme ? 0 : 260);
+    });
+  }
+}
+
 function braises() {
   const cv = $('[data-braises]'); if (!cv) return;
   const ctx = cv.getContext('2d'); const sec = cv.closest('section');
@@ -544,7 +633,7 @@ function braises() {
   const taille = () => { const r = cv.getBoundingClientRect(); dpr = Math.min(devicePixelRatio || 1, 1.5); w = Math.max(1, r.width); h = Math.max(1, r.height); cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
   taille(); new ResizeObserver(taille).observe(cv);
   const N = telephone() ? 26 : 46;
-  const naitre = (b, haut = false) => { b.x = w * (0.5 + (Math.random() - 0.5) * 0.22); b.y = haut ? Math.random() * h : h * (0.62 + Math.random() * 0.1); b.vx = (Math.random() - 0.5) * 14; b.vy = -(22 + Math.random() * 40); b.r = 0.8 + Math.random() * 2.2; b.vie = 0; b.max = 2.5 + Math.random() * 3; return b; };
+  const naitre = (b, haut = false) => { b.x = w * (foyer.x + (Math.random() - 0.5) * foyer.l); b.y = haut ? Math.random() * h : h * (foyer.y + Math.random() * 0.1); b.vx = (Math.random() - 0.5) * 14; b.vy = -(22 + Math.random() * 40); b.r = 0.8 + Math.random() * 2.2; b.vie = 0; b.max = 2.5 + Math.random() * 3; return b; };
   const p = Array.from({ length: N }, () => naitre({}, true));
   const souris = { x: -999, y: -999, f: 0 };
   sec.addEventListener('pointermove', (e) => { const r = cv.getBoundingClientRect(); souris.x = e.clientX - r.left; souris.y = e.clientY - r.top; souris.f = 1; }, { passive: true });
@@ -612,7 +701,8 @@ function ScrollTriggerSimple(el, f) { window.ScrollTrigger.create({ trigger: el,
 /* ---------- Heures de section : les chiffres roulent jusqu'à leur place à l'arrivée ---------- */
 function heuresSection() {
   if (!gsap || !window.ScrollTrigger || etat.calme) return;
-  for (const el of $$('.heure-section span')) gsap.fromTo(el, { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+  /* Pas dans un cadre collant (le coin du feu, la terrasse) : sa position change avec le défilement, et la scène l'anime déjà. */
+  for (const el of $$('.heure-section span').filter((x) => !x.closest('[data-collant], [data-fx-apres]'))) gsap.fromTo(el, { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
 }
 
 
@@ -990,7 +1080,9 @@ demarrer({
     panorama();
     soleil();
     miniResa();
+    feuVivant();
     braises();
+    assiettes();
     decomptes();
     carteApercu();
     heuresSection();

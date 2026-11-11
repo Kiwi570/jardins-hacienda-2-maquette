@@ -122,8 +122,12 @@
       "lien": "Toute la carte",
       "saison": "Le midi : mercredi, jeudi, vendredi et dimanche ; l’hiver, près des baies vitrées",
       "alt": "La salle au soleil de midi : tables rondes en verre sur pied de bois, fauteuils crème et baies vitrées",
-      "photos": "Assiettes du restaurant",
-      "altHiver": "La salle et son mur de pierre, les tables dressées pour le déjeuner"
+      "photos": "Assiettes du restaurant : touchez-en une pour la voir en grand",
+      "altHiver": "La salle et son mur de pierre, les tables dressées pour le déjeuner",
+      "assiette1": "L'assiette de légumes de saison devant la cheminée",
+      "assiette2": "Une assiette du chef : pièce rôtie, cèpes et purée",
+      "assiette3": "Une assiette du chef sur céramique turquoise",
+      "assiette4": "Une assiette du chef : saumon en rose et petites fleurs"
     },
     "apresmidi": {
       "heure": "14:30",
@@ -170,7 +174,8 @@
       "indice": "Touchez une ampoule",
       "alt1": "La longue table de réception dressée sous la pergola, au coucher du soleil",
       "alt2": "La même table après le coucher du soleil, les guirlandes allumées",
-      "alt3": "La même table la nuit, sous les guirlandes et à la lueur des bougies"
+      "alt3": "La même table la nuit, sous les guirlandes et à la lueur des bougies",
+      "surtitreHiver": "L'été, la terrasse s'allume"
     },
     "diner": {
       "heure": "21:00",
@@ -187,7 +192,8 @@
       "alt": "Une assiette de légumes de saison sur une table de bois, devant la cheminée allumée",
       "carton": "Table pour",
       "indice": "Passez la main dans la vapeur",
-      "indiceTactile": "Touchez la vapeur"
+      "indiceTactile": "Touchez la vapeur",
+      "altSalle": "La salle le soir, son mur de pierre, ses lampes d'osier allumées et les tables dressées"
     },
     "feu": {
       "heure": "23:00",
@@ -212,7 +218,8 @@
       "coupeAlt": "Une coupe de dessert devant la cheminée allumée",
       "sous": "Au creux de la cheminée",
       "soirees": "Et des soirées à thème tout l’hiver.",
-      "dates": "Toutes les dates"
+      "dates": "Toutes les dates",
+      "altVraie": "Le feu dans la cheminée de la salle, deux verres de vin et un dessert sur la table de bois, un plaid de fourrure"
     },
     "minuit": {
       "heure": "00:00",

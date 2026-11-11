@@ -128,11 +128,12 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <canvas class="midi__canvas" data-eau aria-hidden="true" data-audit-ignorer></canvas>
   </div>
   <div class="midi__eau midi__hiver" data-saison-seul="hiver" data-grille="manipuler" data-effet="soleil" data-souris>
-    <figure class="media midi__photo" style="--cadrage:62% 50%;--cadrage-mobile:40% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-baies-mobile-640.webp 640w, /assets/images/vraie/salle-baies-mobile-1080.webp 1080w" sizes="100vw">
-    <img src="/assets/images/vraie/salle-baies-1280.webp" srcset="/assets/images/vraie/salle-baies-640.webp 640w, /assets/images/vraie/salle-baies-1280.webp 1280w, /assets/images/vraie/salle-baies-1920.webp 1920w" sizes="100vw" alt="La salle à midi : le soleil d&#39;hiver entre par les baies vitrées sur les tables rondes en verre" width="1280" height="853" loading="lazy" decoding="async">
+    <figure class="media midi__photo" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-midi-mobile-640.webp 640w, /assets/images/vraie/salle-midi-mobile-1080.webp 1080w" sizes="100vw">
+    <img src="/assets/images/vraie/salle-midi-1280.webp" srcset="/assets/images/vraie/salle-midi-640.webp 640w, /assets/images/vraie/salle-midi-1280.webp 1280w, /assets/images/vraie/salle-midi-1920.webp 1920w" sizes="100vw" alt="La salle à midi : le soleil d&#39;hiver entre par les baies vitrées sur les tables rondes en verre" width="1280" height="854" loading="lazy" decoding="async">
   </picture>
 </figure>
+    <span class="midi__rayons" aria-hidden="true"></span>
     <span class="midi__soleil" aria-hidden="true"></span>
   </div>
   <div class="midi__texte conteneur">
@@ -164,30 +165,30 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <p class="dejeuner__actions"><a href="/la-carte" class="bouton bouton--contour" data-libelle="La carte">Toute la carte</a> <span class="saison-tag saison-tag--clair">Le midi : mercredi, jeudi, vendredi et dimanche ; l’hiver, près des baies vitrées</span></p>
     </div>
     <div class="dejeuner__visuel">
-      <figure class="media dejeuner__assiette" data-fx="parallaxe" data-fx-force="8" data-saison-seul="ete" style="--cadrage:46% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soleil-mobile-640.webp 640w, /assets/images/vraie/salle-soleil-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 42vw">
-    <img src="/assets/images/vraie/salle-soleil-1280.webp" srcset="/assets/images/vraie/salle-soleil-640.webp 640w, /assets/images/vraie/salle-soleil-1280.webp 1280w, /assets/images/vraie/salle-soleil-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 42vw" alt="La salle au soleil de midi : tables rondes en verre sur pied de bois, fauteuils crème et baies vitrées" width="1280" height="853" loading="lazy" decoding="async">
+      <figure class="media dejeuner__assiette fumant" data-module="plat-fumant" data-vapeur=".46 .7 .42" data-plat-scene style="--cadrage:50% 70%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/plat-cheminee-mobile-640.webp 640w, /assets/images/vraie/plat-cheminee-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 42vw">
+    <img src="/assets/images/vraie/plat-cheminee-1280.webp" srcset="/assets/images/vraie/plat-cheminee-640.webp 640w, /assets/images/vraie/plat-cheminee-1280.webp 1280w, /assets/images/vraie/plat-cheminee-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 42vw" alt="Une assiette de légumes de saison sur une table de bois, devant la cheminée allumée" width="1280" height="853" loading="lazy" decoding="async">
   </picture>
 </figure>
-      <figure class="media dejeuner__assiette" data-fx="parallaxe" data-fx-force="8" data-saison-seul="hiver" style="--cadrage:40% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-pierre-mobile-640.webp 640w, /assets/images/vraie/salle-pierre-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 42vw">
-    <img src="/assets/images/vraie/salle-pierre-1280.webp" srcset="/assets/images/vraie/salle-pierre-640.webp 640w, /assets/images/vraie/salle-pierre-1280.webp 1280w, /assets/images/vraie/salle-pierre-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 42vw" alt="La salle et son mur de pierre, les tables dressées pour le déjeuner" width="1280" height="853" loading="lazy" decoding="async">
+      <p class="indice dejeuner__indice" aria-hidden="true"><span class="indice--souris">Passez la main dans la vapeur</span><span class="indice--doigt">Touchez la vapeur</span></p>
+      <div class="dejeuner__vraies" data-effet="vraies" aria-label="Assiettes du restaurant : touchez-en une pour la voir en grand" role="group">
+        <button type="button" class="vraie vraie--1" data-plat="vraie/plat-cheminee" data-vapeur=".46 .7 .42" data-cadrage="50% 70%" data-alt="L&#39;assiette de légumes de saison devant la cheminée" aria-pressed="true" aria-label="L&#39;assiette de légumes de saison devant la cheminée"><figure class="media vraie__photo" style="--cadrage:50% 70%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/plat-cheminee-mobile-640.webp 640w, /assets/images/vraie/plat-cheminee-mobile-1080.webp 1080w" sizes="160px">
+    <img src="/assets/images/vraie/plat-cheminee-1280.webp" srcset="/assets/images/vraie/plat-cheminee-640.webp 640w, /assets/images/vraie/plat-cheminee-1280.webp 1280w, /assets/images/vraie/plat-cheminee-1920.webp 1920w" sizes="160px" alt="" width="1280" height="853" loading="lazy" decoding="async">
   </picture>
-</figure>
-      <div class="dejeuner__vraies" data-effet="vraies" aria-label="Assiettes du restaurant" role="group">
-        <figure class="media vraie vraie--1" style="--cadrage:50% 50%">
+</figure></button><button type="button" class="vraie vraie--2" data-plat="assiette-cepes" data-vapeur=".5 .52 .52" data-cadrage="50% 50%" data-alt="Une assiette du chef : pièce rôtie, cèpes et purée" aria-pressed="false" aria-label="Une assiette du chef : pièce rôtie, cèpes et purée"><figure class="media vraie__photo" style="--cadrage:50% 50%">
   <picture>
     <img src="/assets/images/assiette-cepes-960.webp" srcset="/assets/images/assiette-cepes-480.webp 480w, /assets/images/assiette-cepes-640.webp 640w, /assets/images/assiette-cepes-960.webp 960w" sizes="160px" alt="" width="960" height="960" loading="lazy" decoding="async">
   </picture>
-</figure><figure class="media vraie vraie--2" style="--cadrage:50% 50%">
+</figure></button><button type="button" class="vraie vraie--3" data-plat="assiette-turquoise" data-vapeur=".56 .52 .34" data-cadrage="50% 50%" data-alt="Une assiette du chef sur céramique turquoise" aria-pressed="false" aria-label="Une assiette du chef sur céramique turquoise"><figure class="media vraie__photo" style="--cadrage:50% 50%">
   <picture>
     <img src="/assets/images/assiette-turquoise-960.webp" srcset="/assets/images/assiette-turquoise-480.webp 480w, /assets/images/assiette-turquoise-640.webp 640w, /assets/images/assiette-turquoise-960.webp 960w" sizes="160px" alt="" width="960" height="960" loading="lazy" decoding="async">
   </picture>
-</figure><figure class="media vraie vraie--3" style="--cadrage:50% 50%">
+</figure></button><button type="button" class="vraie vraie--4" data-plat="assiette-saumon" data-vapeur=".47 .45 .4" data-cadrage="50% 50%" data-alt="Une assiette du chef : saumon en rose et petites fleurs" aria-pressed="false" aria-label="Une assiette du chef : saumon en rose et petites fleurs"><figure class="media vraie__photo" style="--cadrage:50% 50%">
   <picture>
     <img src="/assets/images/assiette-saumon-960.webp" srcset="/assets/images/assiette-saumon-480.webp 480w, /assets/images/assiette-saumon-640.webp 640w, /assets/images/assiette-saumon-960.webp 960w" sizes="160px" alt="" width="960" height="960" loading="lazy" decoding="async">
   </picture>
-</figure>
+</figure></button>
       </div>
     </div>
   </div>
@@ -239,7 +240,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     </div>
     <div class="terrasse__texte conteneur">
       <p class="heure-section heure-section--nuit" data-effet="heure-section"><span>19:00</span></p>
-      <p class="surtitre">La terrasse s&#39;allume</p>
+      <p class="surtitre" data-texte-hiver="L&#39;été, la terrasse s&#39;allume">La terrasse s&#39;allume</p>
       <h2 id="terrasse-titre">Recevoir, le soir venu</h2>
       <ol class="terrasse__etapes">
         <li data-etape="1"><b>19:00</b> Le soleil passe derrière les palmiers.</li>
@@ -258,12 +259,11 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <section class="diner" id="diner" data-heure="21:00" data-lumiere="diner" aria-labelledby="diner-titre">
   <div class="conteneur diner__grille">
     <div class="diner__visuel">
-      <figure class="media diner__assiette fumant" data-module="plat-fumant" data-vapeur=".46 .7 .42" data-anime="rideau" style="--cadrage:50% 70%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/plat-cheminee-mobile-640.webp 640w, /assets/images/vraie/plat-cheminee-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 40vw">
-    <img src="/assets/images/vraie/plat-cheminee-1280.webp" srcset="/assets/images/vraie/plat-cheminee-640.webp 640w, /assets/images/vraie/plat-cheminee-1280.webp 1280w, /assets/images/vraie/plat-cheminee-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 40vw" alt="Une assiette de légumes de saison sur une table de bois, devant la cheminée allumée" width="1280" height="853" loading="lazy" decoding="async">
+      <figure class="media diner__assiette" data-anime="rideau" style="--cadrage:30% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soir-mobile-640.webp 640w, /assets/images/vraie/salle-soir-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 40vw">
+    <img src="/assets/images/vraie/salle-soir-1280.webp" srcset="/assets/images/vraie/salle-soir-640.webp 640w, /assets/images/vraie/salle-soir-1280.webp 1280w, /assets/images/vraie/salle-soir-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 40vw" alt="La salle le soir, son mur de pierre, ses lampes d&#39;osier allumées et les tables dressées" width="1280" height="854" loading="lazy" decoding="async">
   </picture>
 </figure>
-      <p class="indice diner__indice" aria-hidden="true"><span class="indice--souris">Passez la main dans la vapeur</span><span class="indice--doigt">Touchez la vapeur</span></p>
     </div>
     <div class="diner__texte">
       <p class="heure-section heure-section--nuit" data-effet="heure-section"><span>21:00</span></p>
@@ -296,13 +296,13 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 </section>
 <section class="feu" id="feu" data-heure="23:00" data-lumiere="feu" data-fx="plein-ecran" data-fx-depart="inset(16% 22% 16% 22% round 18px)" style="--fx-longueur:190svh" aria-labelledby="feu-titre">
   <div class="feu__cadre" data-collant>
-    <figure class="media feu__photo" data-grok style="--cadrage:50% 55%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/salle-feu-mobile-640.webp 640w" sizes="100vw">
-    <img src="/assets/images/grok/salle-feu-1280.webp" srcset="/assets/images/grok/salle-feu-640.webp 640w, /assets/images/grok/salle-feu-1280.webp 1280w" sizes="100vw" alt="La salle le soir, la cheminée allumée et deux tables dressées près du feu" width="1280" height="720" loading="lazy" decoding="async">
-  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
+    <figure class="media feu__photo" data-foyer=".7 .06 1 .8" data-foyer-mobile=".62 .03 1 .47" style="--cadrage:62% 40%;--cadrage-mobile:60% 30%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/feu-salle-mobile-640.webp 640w, /assets/images/vraie/feu-salle-mobile-1040.webp 1040w" sizes="100vw">
+    <img src="/assets/images/vraie/feu-salle-1280.webp" srcset="/assets/images/vraie/feu-salle-640.webp 640w, /assets/images/vraie/feu-salle-1280.webp 1280w" sizes="100vw" alt="Le feu dans la cheminée de la salle, deux verres de vin et un dessert sur la table de bois, un plaid de fourrure" width="1280" height="729" loading="lazy" decoding="async">
+  </picture>
 </figure>
     <canvas class="feu__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
-    <p class="heure-section heure-section--nuit feu__heure" data-fx-apres aria-hidden="true"><span>23:00</span></p>
+    <p class="heure-section heure-section--nuit feu__heure" data-fx-apres aria-hidden="true"><span data-texte-hiver="19:00">23:00</span></p>
     <p class="feu__sous" data-fx-apres>Au creux de la cheminée</p>
     <h2 class="feu__titre" id="feu-titre"><span data-fx-ecarte="g">Au coin</span> <span data-fx-ecarte="d">du feu</span></h2>
     <p class="feu__legende" data-fx-apres>L&#39;hiver, la salle se resserre autour de la cheminée. C&#39;est là que l&#39;on fête la fin de l&#39;année. <span class="saison-tag saison-tag--nuit">Cet hiver</span></p>
@@ -360,11 +360,15 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     </div>
   </div>
 </section>
+<script>/* L'hiver : le coin du feu ouvre la soirée à 19 h (à la place de la terrasse), la terrasse d'été passe tout en bas, en clin d'œil. */
+(function(){var d=document.documentElement;if(d.getAttribute('data-saison')==='ete')return;var t=document.getElementById('terrasse'),m=document.getElementById('minuit'),f=document.getElementById('feu'),di=document.getElementById('diner');if(!t||!m||!f||!di)return;
+di.parentNode.insertBefore(f,di);f.setAttribute('data-heure','19:00');m.parentNode.insertBefore(t,m.nextSibling);t.setAttribute('data-heure','24:00');t.classList.add('terrasse--clin');
+var l=document.querySelectorAll('#terrasse [data-texte-hiver], #feu [data-texte-hiver]');for(var i=0;i<l.length;i++)l[i].textContent=l[i].getAttribute('data-texte-hiver');})();</script>
 </main>
 <footer class="pied" id="pied">
   <div class="conteneur pied-grille">
     <div class="pied-maison">
-      <p class="pied-minuit" aria-hidden="true">00:00</p>
+      <img class="pied-logo" src="/assets/images/logo-clair.png" alt="" width="56" height="56" loading="lazy" decoding="async">
       <p><strong>Les Jardins de l&#39;Hacienda</strong></p>
       <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
       <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener" aria-label="Facebook (nouvel onglet)">Facebook <span aria-hidden="true">↗</span></a> <a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener" aria-label="Instagram (nouvel onglet)">Instagram <span aria-hidden="true">↗</span></a></p>

@@ -19,6 +19,14 @@ const guirlandes = (a) => {
   return `<svg class="guirlandes" data-effet="guirlandes" viewBox="0 0 ${W} ${H}" data-vue="0 0 ${W} ${H}" data-vue-telephone="${m}" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-audit-ignorer><defs><radialGradient id="halo-ampoule"><stop offset="0" stop-color="#fff0c2" stop-opacity=".95"/><stop offset=".28" stop-color="#ffc766" stop-opacity=".5"/><stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/></radialGradient></defs>${bulbes}</svg>`;
 };
 /* L'après-midi : les lieux sur la photo de la piscine (positions en % de l'image), et le moment du parcours où chacun s'allume. */
+/* 12 h 30 : l'assiette devant la cheminée, puis trois vraies assiettes du chef ; chacune remplace la grande et fume à son tour
+   (sources de vapeur en fractions de l'image : x, y, largeur). */
+const ASSIETTES = [
+  { nom: 'vraie/plat-cheminee', vapeur: '.46 .7 .42', cadrage: '50% 70%', alt: 'assiette1' },
+  { nom: 'assiette-cepes', vapeur: '.5 .52 .52', cadrage: '50% 50%', alt: 'assiette2' },
+  { nom: 'assiette-turquoise', vapeur: '.56 .52 .34', cadrage: '50% 50%', alt: 'assiette3' },
+  { nom: 'assiette-saumon', vapeur: '.47 .45 .4', cadrage: '50% 50%', alt: 'assiette4' },
+];
 const LIEUX = [
   { id: 'journees-festives', cle: 'festives', x: 22, y: 34, p: 0.12 },
   { id: 'bar', cle: 'bar', x: 47, y: 30, p: 0.38 },
@@ -43,7 +51,8 @@ export default (c) => {
     <canvas class="midi__canvas" data-eau aria-hidden="true" data-audit-ignorer></canvas>
   </div>
   <div class="midi__eau midi__hiver" data-saison-seul="hiver" data-grille="manipuler" data-effet="soleil" data-souris>
-    ${c.media({ nom: 'vraie/salle-baies', alt: c.s('accueil.midi.altHiver'), cadrage: '62% 50%', cadrageMobile: '40% 50%', classe: 'midi__photo', sizes: '100vw' })}
+    ${c.media({ nom: 'vraie/salle-midi', alt: c.s('accueil.midi.altHiver'), cadrage: '50% 55%', classe: 'midi__photo', sizes: '100vw' })}
+    <span class="midi__rayons" aria-hidden="true"></span>
     <span class="midi__soleil" aria-hidden="true"></span>
   </div>
   <div class="midi__texte conteneur">
@@ -76,10 +85,10 @@ export default (c) => {
       <p class="dejeuner__actions">${c.lien('la-carte', { classe: 'bouton bouton--contour', texte: c.t('accueil.dejeuner.lien') })} <span class="saison-tag saison-tag--clair">${c.t('accueil.dejeuner.saison')}</span></p>
     </div>
     <div class="dejeuner__visuel">
-      ${c.media({ nom: 'vraie/salle-soleil', alt: c.s('accueil.dejeuner.alt'), cadrage: '46% 50%', classe: 'dejeuner__assiette', sizes: '(max-width: 760px) 92vw, 42vw', attrs: 'data-fx="parallaxe" data-fx-force="8" data-saison-seul="ete"' })}
-      ${c.media({ nom: 'vraie/salle-pierre', alt: c.s('accueil.dejeuner.altHiver'), cadrage: '40% 50%', classe: 'dejeuner__assiette', sizes: '(max-width: 760px) 92vw, 42vw', attrs: 'data-fx="parallaxe" data-fx-force="8" data-saison-seul="hiver"' })}
+      ${c.media({ nom: 'vraie/plat-cheminee', alt: c.s('accueil.diner.alt'), cadrage: '50% 70%', classe: 'dejeuner__assiette fumant', sizes: '(max-width: 760px) 92vw, 42vw', attrs: 'data-module="plat-fumant" data-vapeur=".46 .7 .42" data-plat-scene' })}
+      <p class="indice dejeuner__indice" aria-hidden="true"><span class="indice--souris">${c.t('accueil.diner.indice')}</span><span class="indice--doigt">${c.t('accueil.diner.indiceTactile')}</span></p>
       <div class="dejeuner__vraies" data-effet="vraies" aria-label="${c.s('accueil.dejeuner.photos')}" role="group">
-        ${['assiette-cepes', 'assiette-turquoise', 'assiette-saumon'].map((n, i) => c.media({ nom: n, alt: '', classe: `vraie vraie--${i + 1}`, sizes: '160px' }))}
+        ${ASSIETTES.map((a, i) => html`<button type="button" class="vraie vraie--${i + 1}" data-plat="${a.nom}" data-vapeur="${a.vapeur}" data-cadrage="${a.cadrage}" data-alt="${c.s(`accueil.dejeuner.${a.alt}`)}" aria-pressed="${i === 0 ? 'true' : 'false'}" aria-label="${c.s(`accueil.dejeuner.${a.alt}`)}">${c.media({ nom: a.nom, alt: '', cadrage: a.cadrage, classe: 'vraie__photo', sizes: '160px' })}</button>`)}
       </div>
     </div>
   </div>
@@ -117,7 +126,7 @@ export default (c) => {
     </div>
     <div class="terrasse__texte conteneur">
       ${heure(c.s('accueil.terrasse.heure'), 'heure-section--nuit')}
-      <p class="surtitre">${c.t('accueil.terrasse.surtitre')}</p>
+      <p class="surtitre" data-texte-hiver="${c.s('accueil.terrasse.surtitreHiver')}">${c.t('accueil.terrasse.surtitre')}</p>
       <h2 id="terrasse-titre">${c.t('accueil.terrasse.titre')}</h2>
       <ol class="terrasse__etapes">
         <li data-etape="1"><b>${c.t('accueil.terrasse.e1H')}</b> ${c.t('accueil.terrasse.e1')}</li>
@@ -137,8 +146,7 @@ export default (c) => {
 <section class="diner" id="diner" data-heure="21:00" data-lumiere="diner" aria-labelledby="diner-titre">
   <div class="conteneur diner__grille">
     <div class="diner__visuel">
-      ${c.media({ nom: 'vraie/plat-cheminee', alt: c.s('accueil.diner.alt'), cadrage: '50% 70%', classe: 'diner__assiette fumant', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-module="plat-fumant" data-vapeur=".46 .7 .42" data-anime="rideau"' })}
-      <p class="indice diner__indice" aria-hidden="true"><span class="indice--souris">${c.t('accueil.diner.indice')}</span><span class="indice--doigt">${c.t('accueil.diner.indiceTactile')}</span></p>
+      ${c.media({ nom: 'vraie/salle-soir', alt: c.s('accueil.diner.altSalle'), cadrage: '30% 55%', classe: 'diner__assiette', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-anime="rideau"' })}
     </div>
     <div class="diner__texte">
       ${heure(c.s('accueil.diner.heure'), 'heure-section--nuit')}
@@ -172,9 +180,9 @@ export default (c) => {
 
 <section class="feu" id="feu" data-heure="23:00" data-lumiere="feu" data-fx="plein-ecran" data-fx-depart="inset(16% 22% 16% 22% round 18px)" style="--fx-longueur:190svh" aria-labelledby="feu-titre">
   <div class="feu__cadre" data-collant>
-    ${c.media({ nom: 'grok/salle-feu', alt: c.s('accueil.feu.alt'), cadrage: '50% 55%', classe: 'feu__photo', sizes: '100vw' })}
+    ${c.media({ nom: 'vraie/feu-salle', alt: c.s('accueil.feu.altVraie'), cadrage: '62% 40%', cadrageMobile: '60% 30%', classe: 'feu__photo', sizes: '100vw', attrs: 'data-foyer=".7 .06 1 .8" data-foyer-mobile=".62 .03 1 .47"' })}
     <canvas class="feu__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
-    <p class="heure-section heure-section--nuit feu__heure" data-fx-apres aria-hidden="true"><span>${c.s('accueil.feu.heure')}</span></p>
+    <p class="heure-section heure-section--nuit feu__heure" data-fx-apres aria-hidden="true"><span data-texte-hiver="19:00">${c.s('accueil.feu.heure')}</span></p>
     <p class="feu__sous" data-fx-apres>${c.t('accueil.feu.sous')}</p>
     <h2 class="feu__titre" id="feu-titre"><span data-fx-ecarte="g">${c.t('accueil.feu.motG')}</span> <span data-fx-ecarte="d">${c.t('accueil.feu.motD')}</span></h2>
     <p class="feu__legende" data-fx-apres>${c.t('accueil.feu.texte')} <span class="saison-tag saison-tag--nuit">${c.t('accueil.feu.saison')}</span></p>
@@ -230,5 +238,9 @@ export default (c) => {
     </div>
   </div>
 </section>
+<script>/* L'hiver : le coin du feu ouvre la soirée à 19 h (à la place de la terrasse), la terrasse d'été passe tout en bas, en clin d'œil. */
+(function(){var d=document.documentElement;if(d.getAttribute('data-saison')==='ete')return;var t=document.getElementById('terrasse'),m=document.getElementById('minuit'),f=document.getElementById('feu'),di=document.getElementById('diner');if(!t||!m||!f||!di)return;
+di.parentNode.insertBefore(f,di);f.setAttribute('data-heure','19:00');m.parentNode.insertBefore(t,m.nextSibling);t.setAttribute('data-heure','24:00');t.classList.add('terrasse--clin');
+var l=document.querySelectorAll('#terrasse [data-texte-hiver], #feu [data-texte-hiver]');for(var i=0;i<l.length;i++)l[i].textContent=l[i].getAttribute('data-texte-hiver');})();</script>
 `;
 };

@@ -50,6 +50,13 @@ Comparaison de l'archive v6 (commit 0cc7532) et de la v7, fichier par fichier : 
 - L'hiver, le panorama de la piscine (14 h 30) disparaît de l'accueil ; 12 h 30 montre la salle et son mur de pierre ; Infos pratiques montre la salle au soleil au lieu de la piscine.
 - 21 h : la vapeur de l'assiette devant la cheminée est nettement visible (plus dense, plus haute).
 
+**Retours du client, suite (v7.2 : l'accueil d'hiver réordonné)**
+- Ouverture d'hiver plus vive : la salle aux baies vitrées étalonnée (plus chaude, plus contrastée), voile crème limité à la colonne de texte (quelle que soit la largeur de l'écran), rayons de soleil qui entrent par les baies, halo plus visible.
+- 12 h 30 : l'assiette devant la cheminée fume à la place de la photo de salle ; les petites assiettes sont des boutons : celle qu'on touche passe en grand et fume à son tour.
+- 21 h : la salle au mur de pierre, étalonnée en lumière du soir ; fond vert nuit à la place du violet.
+- L'hiver, « Au coin du feu » ouvre la soirée à 19 h (à la place de la terrasse) sur la vraie cheminée de la salle : les flammes ondulent, la lueur vacille sur la salle, les braises partent du foyer. La terrasse d'été passe tout en bas, en clin d'œil (« L'été, la terrasse s'allume »).
+- Pied de page : le logo remplace la grande heure « 00:00 » ; une seule grande heure par ouverture de page.
+
 ## v6 — « De midi à minuit », refonte de A à Z
 
 Comparaison de l'archive v5 (commit 9b8e0a0) et de la v6, fichier par fichier : 112 fichiers retirés (les images de la v5 refaites ou abandonnées, dont 9 illustrations générées : nappe de lin, eau de la piscine, braises, bougies, ouvertures de Réserver et d'Offrir… ; les polices Bodoni Moda, Caveat et Figtree ; 6 modules qui ne servent plus : ardoise à la craie, assiette qui se dresse, carrousel 3D, fil conducteur, objet à faire tourner, plat fumant ; `donnees/ardoise.json` et le fragment de l'assiette) ; 44 fichiers ajoutés (une page Réceptions, 10 nouvelles illustrations générées en 29 fichiers, 2 boucles vidéo, les polices Bricolage Grotesque et Instrument Serif avec leurs licences, les positions des ampoules de la terrasse, 2 images de partage) ; sources modifiées : toutes les pages, le gabarit commun, le socle (repris de la skill v10.9.2), `site.css` et `site.js` réécrits, `fr.json`, `site.json`, `carte.json`, `images.json`, `plan-images.json`. Gardés tels quels dans leur logique : la réservation et sa carte de placement, le plan de salle, la carte cadeau qui s'écrit et son enveloppe, la carte, les fêtes, les horaires, les accords de la Saint-Sylvestre, la transition en assiette, le statut ouvert ou fermé.

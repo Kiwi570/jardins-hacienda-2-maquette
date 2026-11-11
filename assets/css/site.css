@@ -193,7 +193,7 @@ html.calme .horloge__sep { animation: none; }
 @media (max-height: 500px) and (min-width: 761px) { .terrasse__etapes { display: none; } .terrasse .heure-section { font-size: 2.6rem; } .terrasse__texte h2 { font-size: 1.8rem; } }
 
 /* ===== 21 h · Le dîner (réserver dans la page) ===== */
-.diner { --avant: #2a2140; background: #1e1830; color: var(--cendre); padding-block: clamp(80px, 12vh, 140px); }
+.diner { --avant: #2a2140; background: #11201b; color: var(--cendre); padding-block: clamp(80px, 12vh, 140px); }
 .diner__grille { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 6vw, 96px); align-items: center; }
 .diner__assiette { aspect-ratio: 4 / 5; border-radius: 6px 6px 999px 999px; overflow: hidden; }
 .diner h2 { color: var(--cendre); }
@@ -260,7 +260,7 @@ html.calme .horloge__sep { animation: none; }
 
 /* ===== Pied de page de nuit ===== */
 .pied { background: #0b0806; color: var(--cendre); padding-top: 56px; --texte: #f6efe2; --fond: #0b0806; --texte-doux: #cfc4b6; }
-.pied-minuit { margin: 0 0 8px; font-size: clamp(3rem, 8vw, 6rem); font-weight: 200; line-height: 1; letter-spacing: -.05em; font-variant-numeric: tabular-nums; color: #8d8073; }
+.pied-logo { display: block; width: 56px; height: 56px; margin: 0 0 16px; opacity: .9; }
 .pied-reseaux { display: flex; gap: 16px; flex-wrap: wrap; }
 .pied-reseaux a { display: inline-flex; min-height: 44px; align-items: center; }
 .pied-bas { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: .85rem; color: #cfc4b6; }
@@ -1182,12 +1182,63 @@ html .ouv-infos .ouv-infos__heure { color: var(--ced-texte); }
 @media (max-height: 520px) { .ouv-infos .ouv-infos__distances, .ouv-infos .surtitre, .ouv-infos .ouv-infos__actions .lien-fleche { display: none; } .ouv-infos .ouv-infos__heure { font-size: 2.8rem; } .ouv-infos h1 { font-size: 1.4rem; margin: 0 0 .3em; } .ouv-infos .ced__cadre { padding-top: calc(var(--entete-h) + 6px); } }
 @media (max-height: 600px) and (min-width: 761px) { .ouv-offrir h1 { font-size: clamp(2rem, 6.4vh, 2.8rem); } .ouv-offrir__texte > p:not(.ouv-offrir__actions):not(.heure-geante):not(.surtitre) { display: none; } .ouv-fetes__texte { display: none; } .ouv-fetes h1 { font-size: clamp(1.9rem, 6.4vh, 2.6rem); } }
 
-/* v7.1 · L'hiver, l'ouverture de l'accueil est la salle aux baies vitrées (la piscine reste à l'été) :
-   un halo de soleil chaud suit la main (fusion douce), au repos il se pose du côté des baies. */
+/* v7.1 · L'hiver, l'ouverture de l'accueil est la salle aux baies vitrées (la piscine reste à l'été).
+   Photo étalonnée (contraste, or des tons moyens, bords droits assombris), voile crème resserré sur le texte,
+   rayons de soleil qui entrent par les baies et respirent, halo chaud qui suit la main, léger recul de l'image à l'arrivée. */
 html[data-saison="hiver"] .midi { background: #efe6d6; }
-.midi__hiver .midi__photo img { filter: saturate(1.04) brightness(1.03); }
-.midi__soleil { position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0; transition: opacity 1.2s ease;
-  background: radial-gradient(circle at var(--sx, 72%) var(--sy, 36%), rgba(255, 226, 168, .62) 0, rgba(255, 214, 150, .26) 16%, rgba(255, 214, 150, 0) 38%);
-  mix-blend-mode: soft-light; }
+html:not([data-saison="ete"]) .midi { --bord: max(var(--gouttiere), (100% - var(--largeur)) / 2); --t: calc(clamp(2.6rem, min(5.6vw, 9vh), 6rem) * 7.8); }
+html:not([data-saison="ete"]) .midi::after { background:
+  linear-gradient(90deg, rgba(246, 241, 231, .92) 0, rgba(246, 241, 231, .8) calc(var(--bord) + var(--t) * .6), rgba(246, 241, 231, .3) calc(var(--bord) + var(--t) * 1.05), rgba(246, 241, 231, 0) calc(var(--bord) + var(--t) * 1.45)),
+  linear-gradient(0deg, rgba(246, 241, 231, .55), rgba(246, 241, 231, 0) 22%); }
+.midi__hiver { overflow: hidden; }
+.midi__hiver .midi__photo img { animation: midi-recul 2.6s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes midi-recul { from { transform: scale(1.07); } to { transform: none; } }
+.midi__rayons { position: absolute; inset: -10% -5%; pointer-events: none; z-index: 1; mix-blend-mode: screen; opacity: .85;
+  background:
+    linear-gradient(118deg, rgba(255, 228, 170, 0) 18%, rgba(255, 228, 170, .42) 23%, rgba(255, 228, 170, 0) 29%),
+    linear-gradient(118deg, rgba(255, 228, 170, 0) 31%, rgba(255, 222, 160, .32) 37%, rgba(255, 222, 160, 0) 44%),
+    linear-gradient(118deg, rgba(255, 228, 170, 0) 47%, rgba(255, 228, 170, .2) 52%, rgba(255, 228, 170, 0) 58%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, .7) 45%, transparent 85%); mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, .7) 45%, transparent 85%);
+  filter: blur(6px); animation: midi-rayons 9s ease-in-out infinite alternate; }
+@keyframes midi-rayons { from { transform: translateX(-2%); opacity: .6; } to { transform: translateX(2.5%); opacity: 1; } }
+.midi__soleil { position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0; transition: opacity 1.2s ease; mix-blend-mode: screen;
+  background: radial-gradient(circle at var(--sx, 72%) var(--sy, 36%), rgba(255, 214, 140, .5) 0, rgba(255, 200, 120, .2) 14%, rgba(255, 200, 120, 0) 32%); }
 .soleil--actif .midi__soleil { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .midi__soleil { display: none; } }
+@media (max-width: 760px) { .midi__rayons { inset: -10% -20%; } }
+@media (prefers-reduced-motion: reduce) { .midi__soleil { display: none; } .midi__rayons, .midi__hiver .midi__photo img { animation: none; } }
+html.calme .midi__rayons, html.calme .midi__hiver .midi__photo img { animation: none; }
+/* Lisibilité sur la photo plus vive : bouton contour plein, statut sur un halo crème. */
+html:not([data-saison="ete"]) .midi .midi__actions .bouton--contour { background: rgba(246, 241, 231, .88); }
+html:not([data-saison="ete"]) .midi__statut { text-shadow: 0 0 10px rgba(246, 241, 231, .95), 0 0 2px rgba(246, 241, 231, .9); }
+
+/* v7.2 · 12 h 30 : l'assiette qui fume ; les petites assiettes sont des boutons qui la remplacent. */
+.dejeuner__assiette.fumant { background: #1a120d; }
+.dejeuner__assiette.fumant img { transition: opacity .26s ease, transform .5s ease; }
+.dejeuner__assiette.fumant--change img { opacity: 0; transform: scale(1.03); }
+.dejeuner__assiette.fumant--change .fumant__vapeur { opacity: 0; transition: opacity .2s; }
+.dejeuner__indice { position: absolute; z-index: 3; top: 16%; left: 50%; transform: translateX(-50%); margin: 0; white-space: nowrap; color: var(--cendre); background: rgba(18, 12, 9, .62); border-radius: 999px; padding: .5em .95em; }
+button.vraie { padding: 0; background: var(--creme); cursor: pointer; display: block; flex: none; transition: box-shadow .25s ease, border-color .25s ease; }
+.vraie .media, .vraie picture { display: block; width: 100%; height: 100%; }
+.vraie .media img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.vraie[aria-pressed="true"] { border-color: var(--braise, #c2491f); box-shadow: 0 0 0 3px rgba(194, 73, 31, .35), 0 10px 30px rgba(28, 23, 18, .25); }
+.vraie:hover, .vraie:focus-visible { border-color: var(--braise, #c2491f); }
+.vraie:focus-visible { outline: 3px solid var(--encre); outline-offset: 3px; }
+@media (max-width: 760px) { .vraie { width: 72px; } .dejeuner__indice { top: 10%; } }
+
+/* 21 h : la salle et son mur de pierre, le soir ; vert nuit (le violet est parti). L'hiver, le dîner suit le coin du feu. */
+html:not([data-saison="ete"]) .diner { --avant: #120c09; }
+html:not([data-saison="ete"]) .fetes-hiver { --avant: #11201b; }
+.diner .bouton--contour { border-color: rgba(246, 239, 226, .5); }
+
+/* Le coin du feu, sur la vraie cheminée : flammes qui ondulent (canvas posé sur le foyer), lueur qui vacille. */
+.feu__flammes { position: absolute; z-index: 1; pointer-events: none; }
+.feu__lueur { position: absolute; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: screen; opacity: .6;
+  background: radial-gradient(ellipse 60% 70% at var(--foyer-x, 80%) var(--foyer-y, 40%), rgba(255, 140, 60, .32), rgba(255, 120, 40, .1) 38%, rgba(255, 120, 40, 0) 70%); }
+.feu__photo::after { z-index: 2; background: radial-gradient(ellipse 60% 42% at 50% 46%, rgba(18, 12, 9, .42), rgba(18, 12, 9, 0) 75%), linear-gradient(0deg, rgba(18, 12, 9, .85) 0%, rgba(18, 12, 9, 0) 34%); }
+
+/* L'hiver, la terrasse d'été ferme la page, en clin d'œil. */
+.terrasse--clin { margin-top: 0; }
+@media (max-width: 760px) { .feu__indice { display: none; } }
+/* Les petites assiettes ne se chevauchent plus (chacune se touche en son centre). */
+.dejeuner__vraies { z-index: 3; gap: 8px; }
+.dejeuner__vraies .vraie { margin-left: 0; }

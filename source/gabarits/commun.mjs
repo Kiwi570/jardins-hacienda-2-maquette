@@ -116,7 +116,7 @@ function pied(c) {
   return html`<footer class="pied" id="pied">
   <div class="conteneur pied-grille">
     <div class="pied-maison">
-      <p class="pied-minuit" aria-hidden="true">00:00</p>
+      <img class="pied-logo" src="/assets/images/logo-clair.png" alt="" width="56" height="56" loading="lazy" decoding="async">
       <p><strong>${c.site.nom}</strong></p>
       <p>${c.site.contact.adresse}<br><a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
       <p class="pied-reseaux"><a href="${c.site.contact.facebook}" target="_blank" rel="noopener" aria-label="${c.s('commun.facebook')}">Facebook <span aria-hidden="true">↗</span></a> <a href="${c.site.contact.instagram}" target="_blank" rel="noopener" aria-label="${c.s('commun.instagram')}">Instagram <span aria-hidden="true">↗</span></a></p>

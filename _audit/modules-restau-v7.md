@@ -10,7 +10,7 @@ Règle suivie : un module par endroit, accroché à l'heure ou au geste de la pa
 | ardoise-a-la-craie | La carte, ouverture | L'ardoise de la semaine, à la craie (Caveat) ; « Passer au dîner » l'efface au chiffon et écrit celle du soir. `donnees/ardoise.json` |
 | carte-du-restaurant | La carte | Toute la carte, filtres, recherche (v6) |
 | assiette-qui-se-dresse | La carte, « Sur la passe » | Une vraie assiette du chef se dresse au défilement : la photo du site découpée en couches (purée, pièce rôtie, girolles, légumes, herbes) posées nettes sur la même assiette floue ; étapes sans cadres |
-| plat-fumant | Accueil, 21 h | La vapeur monte de la vraie assiette devant la cheminée et s'écarte sous la main (remplace la boucle vidéo) |
+| plat-fumant | Accueil, 12 h 30 | La vapeur monte de la vraie assiette devant la cheminée et s'écarte sous la main ; les petites assiettes la remplacent au toucher et fument à leur tour (v7.2) |
 | givre-webgl | Les fêtes, ouverture (hiver) | Le décompte de la Saint-Sylvestre derrière une vitre givrée qui fond sous la main ; installé seulement l'hiver |
 | agenda-des-dates | Les fêtes, « Les prochaines dates » | Soirées des affiches du site, brunch, Noël, Saint-Sylvestre ; ajout à l'agenda, « Réserver » au bon jour, dates passées. `donnees/agenda.json` |
 | accords-mets-et-vins | Les fêtes, Saint-Sylvestre | Le verre change de forme et de couleur (v6) |
