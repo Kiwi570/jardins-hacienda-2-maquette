@@ -40,3 +40,16 @@ html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { ove
    (dès la première image) ; assets/js/socle/gouttiere.js suit ensuite leur mouvement. */
 html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); }
 html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); }
+
+/* ===== Jardins de l'Hacienda v6 : intro « 00:00 → l'heure de la page », voile à l'heure d'arrivée, moment réel. ===== */
+.ouverture-panneau { gap: 10px; color: var(--ouverture-texte, #1c1712); }
+.ouverture-heure { margin: 0; display: flex; align-items: flex-start; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(5rem, min(22vw, 30vh), 15rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.ouverture-rouleau { display: block; height: 1em; overflow: hidden; }
+.ouverture-rouleau > span { display: block; height: 1em; }
+.ouverture-sep { display: block; padding-inline: .02em; }
+.ouverture-nom { margin: 0; font-family: 'Instrument Serif', 'Instrument Fallback', Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.1; }
+.ouverture-ligne { margin: 0; font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; opacity: .72; }
+.voile-contenu { display: grid; justify-items: center; gap: 6px; color: #f6efe2; }
+.voile-heure { margin: 0; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(4rem, 16vw, 11rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+html:not([data-moment="soir"]) [data-moment-seul="soir"], html[data-moment="soir"] [data-moment-seul="jour"] { display: none !important; }
+html:not([data-saison="ete"]) [data-saison-seul="ete"], html[data-saison="ete"] [data-saison-seul="hiver"] { display: none !important; }

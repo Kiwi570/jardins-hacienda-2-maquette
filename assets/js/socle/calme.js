@@ -1,7 +1,7 @@
 /* Mode calme : actif tout seul quand l'appareil demande de réduire les animations,
    ou choisi avec un bouton [data-calme-bascule] (pied de page et menu, ou en-tête pour les spectacles).
    Après le rechargement, la page revient à la section où l'on était. */
-import { html, etat, stockage } from './etat.js?v=5';
+import { html, etat, stockage } from './etat.js?v=6';
 
 let sectionCourante = null;
 
@@ -27,7 +27,12 @@ export function initCalme() {
       lib.textContent = b.dataset.libelleSysteme || 'Animations réduites par le réglage de votre appareil';
     }
     b.addEventListener('click', () => {
-      const id = window.scrollY > 10 ? sectionCourante : null;
+      /* La section sous le milieu de l'écran, mesurée au moment du clic : l'observateur peut garder une section
+         périmée (après un rechargement, ses premiers rapports arrivent dans le désordre). */
+      const milieu = innerHeight / 2;
+      /* La plus intérieure (une rubrique dans sa section) : la dernière dans l'ordre du document. */
+      const sous = [...document.querySelectorAll('main section[id], main [data-section][id], footer[id]')].filter((x) => { const r = x.getBoundingClientRect(); return r.top <= milieu && r.bottom > milieu; }).pop();
+      const id = window.scrollY > 10 ? ((sous && sous.id) || sectionCourante) : null;
       try {
         if (id) stockage().setItem('socle:calme-retour', id);
         ls.setItem('socle:calme', etat.calme ? 'non' : 'oui');

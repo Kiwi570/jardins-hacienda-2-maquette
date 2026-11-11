@@ -1,0 +1,142 @@
+{
+  "client": "Les Jardins de l'Hacienda",
+  "activite": "hébergement",
+  "direction": "De midi à minuit",
+  "date": "2026-11-10T19:55:44.408Z",
+  "images": [
+    {
+      "nom": "midi-piscine",
+      "fichier": "midi-piscine.jpg",
+      "page": "Accueil",
+      "emplacement": "12 h · ouverture plein écran (eau qui bouge sous le doigt) (ordinateur)",
+      "role": "ouverture",
+      "format": "16:9",
+      "grok": "1168×784",
+      "priorite": "Indispensable",
+      "gabarit": "ouverture",
+      "pieges": [],
+      "consigne": "High noon in midsummer. Wide eye-level view across a rectangular swimming pool, crystal-clear turquoise water with bright caustic light patterns dancing on the pool floor, a row of tall palm trees and round thatched palm-leaf parasols along the far edge, white cushioned sun loungers, a low lime-washed white building with terracotta roof tiles in the background, cloudless deep blue sky, hard midday sun with short crisp shadows, the water surface takes up the lower half of the frame, still and empty, nobody in the scene. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, generous empty space on the left third of the frame for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    },
+    {
+      "nom": "midi-piscine",
+      "fichier": "midi-piscine-mobile.jpg",
+      "page": "Accueil",
+      "emplacement": "12 h · ouverture plein écran (eau qui bouge sous le doigt) (téléphone)",
+      "role": "ouverture",
+      "format": "9:16",
+      "grok": "784×1168",
+      "priorite": "Indispensable",
+      "gabarit": "ouverture",
+      "pieges": [],
+      "consigne": "High noon in midsummer. Wide eye-level view across a rectangular swimming pool, crystal-clear turquoise water with bright caustic light patterns dancing on the pool floor, a row of tall palm trees and round thatched palm-leaf parasols along the far edge, white cushioned sun loungers, a low lime-washed white building with terracotta roof tiles in the background, cloudless deep blue sky, hard midday sun with short crisp shadows, the water surface takes up the lower half of the frame, still and empty, nobody in the scene. Vertical composition, aspect ratio 9:16, highest resolution available, at least 1080 pixels wide, main subject well inside the central area with generous margins on every side, so the image can be cropped, main subject in the lower half, quiet uncluttered area in the upper half for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    },
+    {
+      "nom": "terrasse-or",
+      "fichier": "terrasse-or.jpg",
+      "page": "Accueil",
+      "emplacement": "19 h · la terrasse s'allume, état 1 (coucher du soleil)",
+      "role": "ouverture",
+      "format": "16:9",
+      "grok": "1168×784",
+      "priorite": "Indispensable",
+      "gabarit": "ouverture",
+      "pieges": [],
+      "consigne": "Golden hour on a summer evening, about 7 pm. A long reception table dressed with white linen, simple white plates, clear wine glasses and small low bouquets of white flowers, seen from one end so that it recedes straight toward the centre of the frame, on a terracotta-tiled terrace under a light wooden pergola, loose garlands of round unlit bulb lights hanging above the table, palm trees and a glimpse of a turquoise pool beyond, low warm sun from the side, long amber shadows, glowing rim light on the glasses, the table and its vanishing point stay within the central third of the frame, nobody at the table. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, quiet uncluttered area in the upper half for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    },
+    {
+      "nom": "terrasse-bleue",
+      "fichier": "terrasse-bleue.jpg",
+      "page": "Accueil",
+      "emplacement": "19 h 45 · la terrasse s'allume, état 2 (heure bleue) — à faire en modifiant terrasse-or",
+      "role": "ouverture",
+      "format": "16:9",
+      "grok": "1168×784",
+      "priorite": "Indispensable",
+      "gabarit": "ouverture",
+      "pieges": [],
+      "consigne": "Edit of the previous image terrasse-or: keep exactly the same composition, camera position, table, pergola, palm trees and pool. Change only the time: twenty minutes after sunset, blue hour, deep blue and soft violet sky with a last orange glow on the horizon, the garlands of round bulb lights are now switched on and glow warm, small candles lit on the table, soft ambient light, nobody at the table. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, quiet uncluttered area in the upper half for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    },
+    {
+      "nom": "terrasse-nuit",
+      "fichier": "terrasse-nuit.jpg",
+      "page": "Accueil",
+      "emplacement": "21 h · la terrasse s'allume, état 3 (nuit) — à faire en modifiant terrasse-or",
+      "role": "ouverture",
+      "format": "16:9",
+      "grok": "1168×784",
+      "priorite": "Indispensable",
+      "gabarit": "ouverture",
+      "pieges": [],
+      "consigne": "Edit of the previous image terrasse-or: keep exactly the same composition, camera position, table, pergola, palm trees and pool. Change only the time: night, the sky almost black with a few stars, the garlands of bulb lights and the candles are the main light, warm pools of light on the white linen, the pool glows turquoise from its underwater lights in the background, well exposed, details visible, nobody at the table. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, quiet uncluttered area in the upper half for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    },
+    {
+      "nom": "salle-feu",
+      "fichier": "salle-feu.jpg",
+      "page": "Accueil",
+      "emplacement": "23 h · au coin du feu (vignette qui s'ouvre en plein écran)",
+      "role": "ouverture",
+      "format": "16:9",
+      "grok": "1168×784",
+      "priorite": "Indispensable",
+      "gabarit": "ouverture",
+      "pieges": [
+        "paysage qui dérive"
+      ],
+      "consigne": "Winter evening, about 11 pm. Interior of a cosy countryside dining room, a large stone fireplace with a lively wood fire exactly in the centre of the frame, two small tables for two dressed with white linen and lit candles close to the fire, exposed wooden ceiling beams, lime-washed walls, a few green plants, warm firelight as the main light, bright warm exposure with details visible in the shadows, nobody in the room. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, quiet uncluttered area in the upper half for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. A countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace landscape only, described by its real features: no tea plantation, no rice terraces, no high mountains, no tropical vegetation, no power lines, no pylons, no modern buildings. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    },
+    {
+      "nom": "assiette-midi",
+      "fichier": "assiette-midi.jpg",
+      "page": "Accueil et La carte",
+      "emplacement": "12 h 30 · le déjeuner (assiette du jour, lumière de midi)",
+      "role": "galerie",
+      "format": "4:5",
+      "grok": "784×1168",
+      "priorite": "Indispensable",
+      "gabarit": "scene-metier",
+      "pieges": [],
+      "consigne": "Lunch at 12.30 in summer. Top-down view of a single wide white plate on a sunlit white linen table under a thatched palm-leaf parasol, the plate holds a colourful seasonal vegetable dish with fresh herbs and a few edible flowers, dappled midday light filtering through the thatch, a glass of water with ice and a folded linen napkin beside it, crisp, fresh and appetising. Vertical composition, aspect ratio 4:5, main subject well inside the central area with generous margins on every side, so the image can be cropped. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    },
+    {
+      "nom": "assiette-soir",
+      "fichier": "assiette-soir.jpg",
+      "page": "Accueil et La carte",
+      "emplacement": "21 h · le dîner (assiette du soir, lumière des bougies)",
+      "role": "galerie",
+      "format": "4:5",
+      "grok": "784×1168",
+      "priorite": "Indispensable",
+      "gabarit": "scene-metier",
+      "pieges": [],
+      "consigne": "Dinner at 9 pm in autumn. Close three-quarter view of a single plate on a white tablecloth by candlelight, an autumn dish with wild mushrooms, a glossy sauce and fresh herbs, warm candle glow, a red wine glass softly out of focus, the warm blur of a fireplace in the background, appetising and well exposed. Vertical composition, aspect ratio 4:5, main subject well inside the central area with generous margins on every side, so the image can be cropped. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    },
+    {
+      "nom": "mains-chef",
+      "fichier": "mains-chef.jpg",
+      "page": "La carte",
+      "emplacement": "ouverture de La carte (la passe, la vapeur monte)",
+      "role": "section-fond",
+      "format": "3:2",
+      "grok": "1168×784",
+      "priorite": "Indispensable",
+      "gabarit": "section-fond",
+      "pieges": [
+        "mains en trop"
+      ],
+      "consigne": "Close-up of generic anonymous hands of a chef in a white jacket finishing a plate with fine tweezers at the kitchen pass, a few fresh herbs, a light wisp of steam rising from the plate, warm overhead heat-lamp light against a dark brushed-steel background, only hands and forearms visible, the plate in the right half of the frame. Landscape composition, aspect ratio 3:2, generous empty space on the left third of the frame for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. Only two hands, both belonging to one single person and clearly attached to the same forearms, no other hand anywhere in the frame. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    },
+    {
+      "nom": "bar-apres-midi",
+      "fichier": "bar-apres-midi.jpg",
+      "page": "Accueil et Les fêtes",
+      "emplacement": "15 h 30 · le bar des journées festives",
+      "role": "galerie",
+      "format": "3:4",
+      "grok": "784×1168",
+      "priorite": "Indispensable",
+      "gabarit": "scene-metier",
+      "pieges": [],
+      "consigne": "Mid-afternoon in summer, about 3.30 pm. Vertical view of three iced summer cocktails with citrus slices and fresh mint on a rustic wooden bar counter under a thatched palm-leaf roof, the turquoise pool and palm trees softly out of focus behind, warm afternoon sun just starting to turn golden, condensation on the glasses. Vertical composition, aspect ratio 3:4, main subject well inside the central area with generous margins on every side, so the image can be cropped. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    }
+  ]
+}

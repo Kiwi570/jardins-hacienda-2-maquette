@@ -1,0 +1,17 @@
+{
+ "id": "20261110-213238-rapide-cible-partiel",
+ "date": "2026-11-10T21:37:01.278Z",
+ "niveau": "rapide",
+ "pages": "/,/receptions,/reserver",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "parcours"
+ ],
+ "version": "6",
+ "echecs": 8,
+ "aRegarder": 3,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "échecs"
+}

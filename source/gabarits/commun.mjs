@@ -1,18 +1,32 @@
-/* Gabarit commun : head, en-tête, menu, pied de page, barre fixe du téléphone, voile.
-   Les conventions data-* sont celles que lisent le socle JavaScript et l'audit (voir le README). */
+/* Gabarit commun des Jardins de l'Hacienda v6 « De midi à minuit » : head, en-tête avec l'horloge de la page (le fil),
+   menu, pied de page de nuit, barre fixe du téléphone, voile « cloche » (la transition en assiette gardée de la v5,
+   habillée de la couleur et des chiffres de l'heure d'arrivée), panneau d'intro « 00:00 → 12:00 ».
+   Les conventions data-* sont celles que lisent le socle JavaScript et l'audit (voir le README du socle). */
 import { html, brut } from '../../outils/gabarit.mjs';
 
 const navigation = (c) => c.site.navigation.filter((cle) => c.pages[cle] && (c.pages[cle].langues || c.langues).includes(c.l));
-/* v5 : les réceptions ont leur entrée (la section « Combien serez-vous ? » de l'accueil), juste après « Les fêtes ». */
-const lienReceptions = (c, classe = '') => html`<a href="${c.url('accueil', 'recevoir')}"${classe ? brut(` class="${classe}"`) : ''} data-libelle="${c.s('commun.receptions')}">${c.t('commun.receptions')}</a>`;
-const avecReceptions = (c, cles, rendre, classe = '') => cles.flatMap((k, i) => k === 'les-fetes' ? [rendre(k, i), html`<li${classe}>${lienReceptions(c, classe ? 'menu-lien' : '')}</li>`] : [rendre(k, i)]);
+
+/* Heure et couleur de chaque page : l'horloge de l'en-tête, la couleur du voile et ses chiffres. */
+export const HEURES = {
+  accueil: { h: '12', m: '00', voile: '#0c6f7b' },
+  'la-carte': { h: '12', m: '30', voile: '#9c4a22' },
+  receptions: { h: '19', m: '00', voile: '#3b2c56' },
+  reserver: { h: '21', m: '00', voile: '#1f1a35' },
+  'les-fetes': { h: '23', m: '30', voile: '#2a120a' },
+  offrir: { h: '00', m: '00', voile: '#120c09' },
+  'infos-pratiques': { h: '--', m: '--', voile: '#1c1712', reelle: true },
+  404: { h: '00', m: '00', voile: '#120c09' },
+};
+
+/* Avant le premier affichage (après le script critique du socle) : moment réel à Moineville (jour, soir) et saison,
+   pour les pages qui en dépendent (photos et textes). Sans JavaScript, la page garde son état par défaut. */
+const MOMENT = `(function(){try{var d=document.documentElement,p={};new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit',month:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});var h=+p.hour,m=+p.month;var mo=h>=5&&h<17?'jour':'soir';try{var q=new URLSearchParams(location.search).get('moment');if(q==='jour'||q==='soir')mo=q;}catch(e){}d.setAttribute('data-moment',mo);if(d.hasAttribute('data-theme-auto')){d.setAttribute('data-theme',mo==='soir'?'nuit':'jour');if(mo==='soir'){d.style.setProperty('--ouverture-fond','#120c09');d.style.setProperty('--ouverture-texte','#f6efe2');}}var sa=m>=5&&m<=9?'ete':'hiver';try{var qs=new URLSearchParams(location.search).get('saison');if(qs==='ete'||qs==='hiver')sa=qs;}catch(e){}d.setAttribute('data-saison',sa);d.style.setProperty('--heure-reelle',"'"+p.hour+':'+p.minute+"'");}catch(e){}})();`;
 
 function tete(c) {
   const p = c.page, cle = p.cle;
   const titre = c.s(`pages.${cle}.titre`), description = c.s(`pages.${cle}.description`);
   const ici = c.abs(c.url(cle));
   const imagePartage = c.abs(`/assets/partage/${p.partage === false ? 'accueil' : cle}-${c.l}.jpg`);
-  const autres = c.alternatives(cle);
   const structure = c.donnees.structure ? JSON.stringify(c.donnees.structure).replace(/</g, '\\u003c') : '';
   return html`<head>
 <meta charset="utf-8">
@@ -21,9 +35,9 @@ function tete(c) {
 <meta name="description" content="${description}">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="${ici}">
-${autres.length > 1 ? autres.map((a) => html`<link rel="alternate" hreflang="${a.l}" href="${c.abs(a.url)}">\n`) : ''}${autres.length > 1 ? html`<link rel="alternate" hreflang="x-default" href="${c.abs(c.alternatives(cle)[0].url)}">` : ''}
 <style>${brut(c.critique.css)}</style>
 <script>${brut(c.critique.js)}</script>
+<script>${brut(MOMENT)}</script>
 ${(c.site.polices || []).map((f) => html`<link rel="preload" href="${f}" as="font" type="font/woff2" crossorigin>\n`)}<link rel="stylesheet" href="${c.asset('css/socle.css')}">
 ${(c.page.modules || []).map((m) => html`<link rel="stylesheet" href="${c.asset('js/modules/' + m + '/module.css')}">\n`)}<link rel="stylesheet" href="${c.asset('css/site.css')}">
 <link rel="modulepreload" href="${c.asset('js/site.js')}">
@@ -37,7 +51,7 @@ ${(c.page.modules || []).map((m) => html`<link rel="stylesheet" href="${c.asset(
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${c.site.nom}">
-<meta property="og:locale" content="${c.l === 'fr' ? 'fr_FR' : c.l === 'en' ? 'en_GB' : c.l}">
+<meta property="og:locale" content="fr_FR">
 <meta property="og:title" content="${titre}">
 <meta property="og:description" content="${description}">
 <meta property="og:url" content="${ici}">
@@ -50,20 +64,25 @@ ${structure ? html`<script type="application/ld+json">${brut(structure)}</script
 </head>`;
 }
 
+/* L'horloge de la page : le fil qui relie les sections (l'accueil la fait rouler de 12:00 à 00:00 au défilement)
+   et les pages (chacune a son heure). Décor : l'heure dite aux lecteurs d'écran est dans chaque section. */
+function horloge(c) {
+  const H = HEURES[c.page.cle] || HEURES.accueil;
+  return html`<p class="horloge" data-horloge data-grille="fil" data-effet="heure" aria-hidden="true"${H.reelle ? brut(' data-horloge-reelle') : ''}><span class="horloge__h" data-horloge-h>${H.h}</span><span class="horloge__sep">:</span><span class="horloge__m" data-horloge-m>${H.m}</span></p>`;
+}
+
 function entete(c) {
-  const autreLangue = c.alternatives(c.page.cle).filter((a) => a.l !== c.l);
   return html`<header data-entete>
   <div class="entete-rangee">
-    <a class="entete-logo" href="${c.url('accueil')}" data-libelle="${c.libelle('accueil')}"${c.page.cle === 'accueil' ? brut(' aria-current="page"') : ''}>
-      <img src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>${c.site.nom}</span>
+    <a class="entete-logo" href="${c.url('accueil')}" aria-label="${c.s('commun.accueilLogo')}" data-libelle="${c.libelle('accueil')}"${c.page.cle === 'accueil' ? brut(' aria-current="page"') : ''}>
+      <img class="entete-logo__jour" src="/assets/images/logo-240.webp" alt="" width="40" height="37"><img class="entete-logo__nuit" src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>${c.site.nom}</span>
     </a>
+    ${horloge(c)}
     <nav data-nav aria-label="${c.s('commun.navigation')}">
-      <ul>${avecReceptions(c, navigation(c).filter((k) => k !== 'accueil'), (k) => html`<li>${c.lien(k)}</li>`)}</ul>
+      <ul>${navigation(c).filter((k) => k !== 'accueil').map((k) => html`<li>${c.lien(k)}</li>`)}</ul>
     </nav>
     <div class="entete-actions">
-      <button type="button" class="saison-mini" data-saison-bascule aria-pressed="false" aria-label="Passer à l’été"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="saison-mini__flamme" d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-3 2-5 3-7 0 2 1 3 2 3 0-2 0-4 0-6z"/><g class="saison-mini__soleil"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg></button>
-      ${autreLangue.map((a) => html`<a class="entete-langue" href="${a.url}" hreflang="${a.l}" lang="${a.l}" data-langue="${a.l}" aria-label="${c.s('commun.langueAutre')}">${a.l}</a>`)}
-      ${c.site.actionEntete ? html`<a class="bouton" href="${c.url(c.site.actionEntete.page, c.site.actionEntete.ancre || '')}" data-libelle="${c.libelle(c.site.actionEntete.page)}">${c.t('commun.actionEntete')}</a>` : ''}
+      <a class="bouton bouton--entete" href="${c.url(c.site.actionEntete.page, c.site.actionEntete.ancre || '')}" data-libelle="${c.libelle(c.site.actionEntete.page)}" data-resa-cible>${c.t('commun.actionEntete')}</a>
       <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="${c.s('commun.menu')}" data-libelle-fermer="${c.s('commun.fermer')}"><span data-libelle-bouton>${c.t('commun.menu')}</span></button>
       <a class="menu-sansjs" href="#menu" data-menu-lien>${c.t('commun.menu')}</a>
     </div>
@@ -87,9 +106,8 @@ function entete(c) {
 <span id="menu-ferme" aria-hidden="true"></span>
 <div id="menu" data-menu role="dialog" aria-modal="true" aria-label="${c.s('commun.menu')}">
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">${c.t('commun.fermer')}</a></p>
-  <ul>${navigation(c).flatMap((k, i) => k === 'les-fetes' ? [html`<li style="--i:${i}">${c.lien(k, { classe: 'menu-lien' })}</li>`, html`<li style="--i:${i}">${lienReceptions(c, 'menu-lien')}</li>`] : [html`<li style="--i:${i}">${c.lien(k, { classe: 'menu-lien' })}</li>`])}</ul>
-  <p class="menu-actions">${c.site.actionEntete ? html`<a class="bouton" href="${c.url(c.site.actionEntete.page, c.site.actionEntete.ancre || '')}" data-libelle="${c.libelle(c.site.actionEntete.page)}">${c.t('commun.actionMenu')}</a>` : ''}<a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
-  ${autreLangue.map((a) => html`<p><a class="entete-langue" href="${a.url}" hreflang="${a.l}" lang="${a.l}" data-langue="${a.l}">${c.s('commun.langueAutre')}</a></p>`)}
+  <ul>${navigation(c).map((k, i) => html`<li style="--i:${i}"><span class="menu-heure" aria-hidden="true">${(HEURES[k] || {}).reelle ? c.s('commun.maintenant') : `${HEURES[k].h}:${HEURES[k].m}`}</span>${c.lien(k, { classe: 'menu-lien' })}</li>`)}</ul>
+  <p class="menu-actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('commun.actionMenu') })} <a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="${c.s('commun.calmeReduire')}" data-libelle-retablir="${c.s('commun.calmeRetablir')}" data-libelle-systeme="${c.s('commun.calmeSysteme')}"><span data-libelle-bouton>${c.t('commun.calmeReduire')}</span></button></p>
 </div>`;
 }
@@ -97,14 +115,15 @@ function entete(c) {
 function pied(c) {
   return html`<footer class="pied" id="pied">
   <div class="conteneur pied-grille">
-    <div>
+    <div class="pied-maison">
+      <p class="pied-minuit" aria-hidden="true">00:00</p>
       <p><strong>${c.site.nom}</strong></p>
-      <p>${c.site.contact.adresse}<br><a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a>${c.site.contact.email ? html`<br><a href="mailto:${c.site.contact.email}">${c.site.contact.email}</a>` : ''}</p>
-      <p class="pied-reseaux"><a href="${c.site.contact.facebook}" target="_blank" rel="noopener">${brut(c.s('commun.facebook').replace(' (nouvel onglet)', '<span class="visuellement-cache"> (nouvel onglet)</span>'))}</a><br><a href="${c.site.contact.instagram}" target="_blank" rel="noopener">${brut(c.s('commun.instagram').replace(' (nouvel onglet)', '<span class="visuellement-cache"> (nouvel onglet)</span>'))}</a></p>
+      <p>${c.site.contact.adresse}<br><a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
+      <p class="pied-reseaux"><a href="${c.site.contact.facebook}" target="_blank" rel="noopener" aria-label="${c.s('commun.facebook')}">Facebook <span aria-hidden="true">↗</span></a> <a href="${c.site.contact.instagram}" target="_blank" rel="noopener" aria-label="${c.s('commun.instagram')}">Instagram <span aria-hidden="true">↗</span></a></p>
     </div>
     <nav aria-label="${c.s('commun.sommaire')}">
       <p><strong>${c.t('commun.sommaire')}</strong></p>
-      <ul>${avecReceptions(c, navigation(c), (k) => html`<li>${c.lien(k)}</li>`)}${c.site.actionEntete ? html`<li>${c.lien(c.site.actionEntete.page)}</li>` : ''}</ul>
+      <ul>${navigation(c).map((k) => html`<li>${c.lien(k)}</li>`)}<li>${c.lien('reserver', { ancre: 'formulaire' })}</li></ul>
     </nav>
     <div>
       <p><strong>${c.t('commun.confort')}</strong></p>
@@ -122,36 +141,32 @@ function barre(c) {
   const a = c.site.actionEntete;
   return html`<div data-barre-fixe>
   <a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')}</a>
-  ${a ? html`<a class="bouton" href="${c.url(a.page, a.ancre || '')}" data-libelle="${c.libelle(a.page)}">${c.t('commun.actionEntete')}</a>` : ''}
+  <a class="bouton" href="${c.url(a.page, a.ancre || '')}" data-libelle="${c.libelle(a.page)}">${c.t('commun.actionEntete')}</a>
 </div>`;
 }
 
-/* Voile : sa forme (glisse, iris, vague, rideau) vient de donnees/site.json (formeVoile) ; voir assets/js/socle/voile.js. */
+/* Voile « cloche » (assiette de la v5) : le dôme monte du clic à la couleur de l'heure d'arrivée, avec ses chiffres. */
 const FORMES_VOILE = ['glisse', 'iris', 'vague', 'rideau', 'cloche'];
 function voile(c) {
   const forme = FORMES_VOILE.includes(c.site.formeVoile) ? c.site.formeVoile : 'glisse';
-  const vagues = forme === 'vague'
-    ? html`<svg class="voile-vague voile-vague--haut" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 120 C 240 20 480 20 720 70 S 1200 130 1440 40 V 120 H 0 Z"/></svg><svg class="voile-vague voile-vague--bas" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0 C 240 100 480 100 720 50 S 1200 -10 1440 80 V 0 H 0 Z"/></svg>`
-    : '';
-  return html`<div data-voile data-forme="${forme}" aria-hidden="true">${vagues}<div class="voile-contenu"><svg class="voile-cloche" viewBox="0 0 120 80" aria-hidden="true"><path d="M60 8a5 5 0 1 1 0 .1M14 66a46 46 0 0 1 92 0Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M6 70h108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><span data-voile-libelle>${c.libelle(c.page.cle)}</span></div></div>`;
+  const H = HEURES[c.page.cle] || HEURES.accueil;
+  return html`<script type="application/json" data-reservation-globale>${brut(JSON.stringify(c.donnees.reservation).replace(/<\//g, '<\\/'))}</script>
+<div data-voile data-forme="${forme}" aria-hidden="true"><div class="voile-contenu"><p class="voile-heure" data-voile-heure>${H.reelle ? '' : `${H.h}:${H.m}`}</p><span data-voile-libelle>${c.libelle(c.page.cle)}</span></div></div>${c.page.cle === 'la-carte' ? brut(`<script>(function(){var e=document.querySelector('[data-voile-heure]');if(e&&document.documentElement.getAttribute('data-moment')==='soir')e.textContent='20:30';})();</script>`) : ''}`;
 }
 
-/* Saison écrite à la génération (affichage sans JavaScript) : mai à septembre, l'été ; sinon l'hiver. */
-const saisonDuLieu = () => { const m = +new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', month: 'numeric' }).format(new Date()); return m >= 5 && m <= 9 ? 'ete' : 'hiver'; };
+/* Chiffres de l'intro : de 00 à l'heure de la page (l'heure réelle pour Infos pratiques, posée par site.js). */
+const rouleau = (h) => (h === '--' ? ['00', '06', '12', '18', '--'] : h === '00' ? ['00', '06', '12', '18', '00'] : ['00', String(Math.round(+h / 3)).padStart(2, '0'), String(Math.round(+h * 2 / 3)).padStart(2, '0'), String(+h - 1).padStart(2, '0'), h]);
+
 export function page(c, contenu) {
+  const H = HEURES[c.page.cle] || HEURES.accueil;
   return html`<!doctype html>
-<html lang="${c.l}" data-v="${c.v}" data-saison="${saisonDuLieu()}"${c.site.curseur ? brut(' data-curseur') : ''}>
+<html lang="${c.l}" data-v="${c.v}" data-page="${c.page.cle}" data-theme="${c.page.theme || 'jour'}"${c.page.themeAuto ? brut(' data-theme-auto') : ''} style="--voile-page:${H.voile}${c.page.theme === 'nuit' ? ';--ouverture-fond:#120c09;--ouverture-texte:#f6efe2' : ''}">
 ${tete(c)}
 <body id="haut">
 ${voile(c)}
 <div class="ouverture-panneau" data-ouverture aria-hidden="true">
-  <div class="ouverture-cloche" data-ouverture-objet>
-    <svg class="ouverture-dome" viewBox="0 0 200 150" aria-hidden="true"><defs><linearGradient id="g-laiton" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2c48c"/><stop offset=".45" stop-color="#b8925a"/><stop offset="1" stop-color="#6e5228"/></linearGradient></defs><circle cx="100" cy="14" r="9" fill="url(#g-laiton)"/><path d="M18 128a82 82 0 0 1 164 0Z" fill="url(#g-laiton)"/><path d="M40 112a62 62 0 0 1 34-48" fill="none" stroke="#f6e6c4" stroke-width="5" stroke-linecap="round" opacity=".55"/><rect x="6" y="128" width="188" height="10" rx="5" fill="#8a6a36"/></svg>
-    <img class="ouverture-logo" src="/assets/images/logo-clair.png" alt="" width="64" height="64">
-  </div>
-  <span class="ouverture-vapeur" aria-hidden="true"></span>
+  <p class="ouverture-heure" data-ouverture-objet><span class="ouverture-rouleau" data-rouleau="h">${rouleau(H.h).map((x) => html`<span>${x}</span>`)}</span><span class="ouverture-sep">:</span><span class="ouverture-rouleau" data-rouleau="m">${['00', '15', '30', '45', H.m === '--' ? '00' : H.m].map((x) => html`<span>${x}</span>`)}</span></p>
   <p class="ouverture-nom">${c.site.nom}</p>
-  <span class="ouverture-trait"></span>
   <p class="ouverture-ligne">${c.t('commun.introLigne')}</p>
 </div>
 <a class="evitement" href="#contenu">${c.t('commun.evitement')}</a>

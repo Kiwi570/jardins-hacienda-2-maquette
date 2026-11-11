@@ -1,0 +1,17 @@
+{
+ "id": "20261111-015529-standard-cible-partiel",
+ "date": "2026-11-11T02:00:58.958Z",
+ "niveau": "standard",
+ "pages": "/,/la-carte,/reserver",
+ "etapes": [
+  "fichiers",
+  "films",
+  "parcours"
+ ],
+ "version": "6",
+ "echecs": 1,
+ "aRegarder": 5,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "échecs"
+}

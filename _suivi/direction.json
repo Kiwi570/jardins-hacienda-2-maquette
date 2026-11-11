@@ -1,10 +1,11 @@
 {
-  "nom": "Deux saisons, une maison",
-  "ambiance": "warm, generous, sunny or cosy depending on the season, gourmet",
-  "palette": "smoky near-black, ember orange, aged brass, cream linen, pool turquoise, palm green",
-  "lumiere": "firelight in winter, bright Mediterranean sun in summer",
-  "matieres": "cream linen, aged brass, glowing embers, clear pool water, palm leaves",
-  "saison": "winter evening or summer afternoon",
-  "lieu": "a countryside restaurant with a fireplace, a pool and palm trees",
-  "sujet": "glowing embers in a hearth"
+  "nom": "De midi à minuit",
+  "client": "Les Jardins de l'Hacienda",
+  "ambiance": "luminous, unhurried, joyful, warm countryside hospitality",
+  "palette": "lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night",
+  "lumiere": "natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows",
+  "matieres": "lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers",
+  "saison": "the time of day and the season described at the start of this prompt",
+  "lieu": "a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace",
+  "sujet": "a calm corner of the terrace"
 }

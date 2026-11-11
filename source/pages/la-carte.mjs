@@ -1,57 +1,38 @@
-/* La carte : ouverture claire (la nappe), l'ardoise de saison à la craie, puis toute la carte.
-   Modules : ardoise-a-la-craie, carte-du-restaurant (rendue ici depuis donnees/carte.json par le rendu du module). */
+/* La carte · « la carte se met à l'heure » : la page s'ouvre au déjeuner ou au dîner selon l'heure réelle à Moineville
+   (html[data-moment], posé avant le premier affichage) ; la bascule rallume toute la page (photo, texte, lumière).
+   Ouverture en écran partagé (photo du service à gauche, heure géante dessus), la carte complète en grand index
+   (module carte-du-restaurant, rendu ici depuis donnees/carte.json), la passe (les mains du chef, la vapeur), la fin. */
 import { html, brut, fragment } from '../../outils/gabarit.mjs';
+import { avecVideo } from '../gabarits/video.mjs';
 import { rendreCarte } from '../../assets/js/modules/carte-du-restaurant/carte-rendu.js';
 
-export const page = { cle: 'la-carte', fichier: 'la-carte', imagePartage: 'carte-ouverture-1280.webp', modules: ['ardoise-a-la-craie', 'carte-du-restaurant'] };
+export const page = { cle: 'la-carte', fichier: 'la-carte', theme: 'jour', themeAuto: true, imagePartage: 'grok/assiette-midi-640.webp', modules: ['carte-du-restaurant'] };
 
 export default (c) => {
-  const a = c.donnees.ardoise;
-  /* Rendu du module, tel quel ; seules les photos de rubrique reçoivent l'effet « vitesse » de la bibliothèque. */
   const carte = rendreCarte(c.donnees.carte).replace(/<figure class="carte-resto__photo">/g, '<figure class="carte-resto__photo" data-fx="vitesse" data-fx-force="3">');
   return html`
-<section class="ouv-carte clair" data-lueur id="debut" data-fil="gauche" data-grille="fil">
-  <div class="conteneur ouv-carte__tete">
-    <p class="surtitre" data-anime>${c.t('carte.surtitre')}</p>
-    <h1 class="ouv-carte__titre" data-anime="lettres">${c.t('carte.titre')}</h1>
-    <div class="ouv-carte__ligne">
-      <p class="ouv-carte__texte masque-ecran-tres-bas">${c.t('carte.texte')}</p>
-      <p class="ouv-carte__actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('carte.action'), attrs: 'data-action-principale' })}</p>
-      <p class="ouv-carte__info" data-info-cle data-prix>${c.t('carte.info')}</p>
-    </div>
+<section class="ouv-carte" id="debut" data-effet="moment">
+  <div class="ouv-carte__photo">
+    ${c.media({ nom: 'grok/assiette-midi', alt: c.s('carte.altJour'), cadrage: '50% 50%', priorite: true, classe: 'ouv-carte__img ouv-carte__img--jour', sizes: '(max-width: 760px) 100vw, 50vw' })}
+    ${avecVideo(c.media({ nom: 'grok/assiette-soir', alt: c.s('carte.altSoir'), cadrage: '50% 50%', classe: 'ouv-carte__img ouv-carte__img--soir', sizes: '(max-width: 760px) 100vw, 50vw', }), 'boucle-vapeur', { masque: 'vapeur' })}
+    <p class="heure-geante ouv-carte__heure" data-iris-centre data-grille="typo" data-effet="axes" aria-hidden="true"><span data-moment-seul="jour">${c.s('carte.heureJour')}</span><span data-moment-seul="soir">${c.s('carte.heureSoir')}</span></p>
   </div>
-  <div class="ouv-carte__duo">
-  ${c.media({ nom: 'carte-ouverture', alt: c.s('carte.alt'), cadrage: '54% 45%', priorite: true, classe: 'ouv-carte__bandeau', sizes: '100vw', attrs: 'data-anime="rideau" data-iris-centre data-saison-photo="hiver"' })}
-  ${c.media({ nom: 'carte-ouverture-ete', alt: c.s('carte.altEte'), cadrage: '50% 55%', classe: 'ouv-carte__bandeau', sizes: '100vw', attrs: 'data-saison-photo="ete"' })}
-  </div>
-</section>
-
-<section class="ardoise-section ardoise-carte" data-lueur id="ardoise" data-module="ardoise-a-la-craie" data-fil="droite" aria-labelledby="ardoise-titre">
-  <div class="ardoise-section__grille socle-cadre">
-    <div class="ardoise" data-grille="typo" data-effet="ardoise" data-visuel>
-      <div class="ardoise__surface">
-        <p class="ardoise__date" data-ardoise-date="${a.date}"><span>${a.date}</span></p>
-        <p class="ardoise__titre"><span>${a.titre}</span></p>
-        ${brut('<svg class="ardoise__trait" viewBox="0 0 400 24" preserveAspectRatio="none" aria-hidden="true"><path d="M4 16 C 90 6, 200 22, 396 10" pathLength="1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>')}
-        <ul class="ardoise__liste">
-          ${a.lignes.map((l) => html`<li><span class="ardoise__plat">${l.plat}</span><span class="ardoise__prix" data-prix>${l.prix}</span></li>`)}
-        </ul>
-        <p class="ardoise__mot"><span>${a.mot}</span></p>
-      </div>
-    </div>
-    <div class="ardoise-section__texte">
-      <p class="socle-surtitre">${c.t('carte.ardoiseSurtitre')}</p>
-      <h2 id="ardoise-titre" data-anime="lignes">${c.t('carte.ardoiseTitre')}</h2>
-      <p>${c.t('carte.ardoiseTexte')}</p>
-      <p><a class="bouton bouton--contour" href="#toute-la-carte" data-filtre-lien="vegetarien" data-sans-transition>${c.t('carte.ardoiseVege')}</a></p>
-    </div>
+  <div class="ouv-carte__texte">
+    <p class="surtitre"><span data-moment-seul="jour">${c.t('carte.surJour')}</span><span data-moment-seul="soir">${c.t('carte.surSoir')}</span></p>
+    <h1 data-anime="lettres">${c.t('carte.titre')}</h1>
+    <p class="masque-ecran-tres-bas"><span data-moment-seul="jour">${c.t('carte.texteJour')}</span><span data-moment-seul="soir">${c.t('carte.texteSoir')}</span></p>
+    <p class="ouv-carte__info" data-info-cle data-prix>${c.t('carte.info')}</p>
+    <p class="ouv-carte__actions">
+      <a class="bouton" href="${c.url('reserver', 'formulaire', 'service=midi')}" data-libelle="${c.libelle('reserver')}" data-action-principale data-moment-seul="jour">${c.t('carte.reserverJour')}</a>
+      <a class="bouton" href="${c.url('reserver', 'formulaire', 'service=soir')}" data-libelle="${c.libelle('reserver')}" data-action-principale data-moment-seul="soir">${c.t('carte.reserverSoir')}</a>
+      <button type="button" class="bouton bouton--contour bascule-moment" data-bascule-moment><span data-moment-seul="jour">${c.t('carte.basculeSoir')}</span><span data-moment-seul="soir">${c.t('carte.basculeJour')}</span></button>
+    </p>
   </div>
 </section>
 
-
-<section class="carte-resto clair" data-lueur id="toute-la-carte" data-module="carte-du-restaurant" data-fil="gauche" aria-labelledby="carte-titre">
+<section class="carte-resto" id="toute-la-carte" data-module="carte-du-restaurant" aria-labelledby="carte-titre">
   <header class="carte-resto__tete socle-cadre">
-    <p class="socle-surtitre">${c.t('carte.carteSurtitre')}</p>
+    <p class="socle-surtitre">${c.t('carte.carteSur')}</p>
     <h2 id="carte-titre" data-anime="lignes">${c.t('carte.carteTitre')}</h2>
     <p>${c.t('carte.carteTexte')}</p>
   </header>
@@ -60,14 +41,28 @@ ${fragment(carte)}
   </div>
 </section>
 
-<section class="fin-carte" data-lueur id="fin" aria-labelledby="fin-titre">
-  ${c.media({ nom: 'table-deux', alt: c.s('carte.finAlt'), classe: 'fin-carte__fond', sizes: '100vw', attrs: 'data-fx="parallaxe" data-fx-force="10"' })}
-  <div class="conteneur fin-carte__contenu">
-    <h2 id="fin-titre" data-anime="lignes">${c.t('carte.finTitre')}</h2>
-    <p class="fin-carte__statut" data-info-cle><a href="/infos-pratiques#horaires" data-statut-accueil>${c.t('v4.horaires')}</a></p>
-    <script type="application/json" data-horaires-accueil>${brut(JSON.stringify(c.donnees.horaires).replace(/<\//g, '<\\/'))}</script>
-    <p>${c.t('carte.finTexte')}</p>
-    <p class="fin-carte__actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('carte.action'), attrs: 'data-action-principale' })} <a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
+<section class="passe-chef" id="passe" aria-labelledby="passe-titre">
+  ${c.media({ nom: 'grok/mains-chef', alt: c.s('carte.passeAlt'), cadrage: '62% 50%', classe: 'passe-chef__photo', sizes: '100vw', attrs: 'data-fx="parallaxe" data-fx-force="10"' })}
+  <div class="conteneur passe-chef__texte">
+    <p class="surtitre">${c.t('carte.passeSur')}</p>
+    <h2 id="passe-titre" data-anime="lignes">${c.t('carte.passeTitre')}</h2>
+    <p data-anime>${c.t('carte.passeTexte')}</p>
+  </div>
+</section>
+
+<section class="fin-carte" id="fin" aria-labelledby="fin-titre">
+  <div class="conteneur fin-carte__grille">
+    <div>
+      <h2 id="fin-titre" data-anime="lignes">${c.t('carte.finTitre')}</h2>
+      <p data-anime>${c.t('carte.finTexte')}</p>
+      <p class="statut"><span class="statut__point" aria-hidden="true"></span><a href="${c.url('infos-pratiques', 'horaires')}" data-libelle="${c.libelle('infos-pratiques')}" data-statut-accueil>${c.t('carte.horaires')}</a></p>
+      <script type="application/json" data-reservation-accueil>${brut(JSON.stringify(c.donnees.reservation).replace(/<\//g, '<\\/'))}</script>
+      <script type="application/json" data-horaires-accueil>${brut(JSON.stringify(c.donnees.horaires).replace(/<\//g, '<\\/'))}</script>
+      <p class="fin-carte__actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('carte.reserverSoir') })} <a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
+    </div>
+    <div class="fin-carte__vraies" data-anime="cascade">
+      ${['carte-entrees', 'carte-plats', 'carte-desserts'].map((n) => c.media({ nom: n, alt: '', classe: 'fin-carte__vraie', sizes: '200px' }))}
+    </div>
   </div>
 </section>
 `;

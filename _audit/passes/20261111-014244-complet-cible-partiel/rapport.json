@@ -1,0 +1,38 @@
+{
+  "echecs": [],
+  "aRegarder": [
+    {
+      "niveau": "regarder",
+      "controle": "clearProps « all »",
+      "detail": "assets/js/modules/carte-cadeau-qui-se-compose/module.js : efface aussi les variables CSS posées dans le HTML ; nommer les propriétés (clearProps: 'transform,opacity')",
+      "etape": "fichiers",
+      "lieux": [
+        ""
+      ]
+    }
+  ],
+  "nonLances": [],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "mesures": 312,
+    "balayage": 5,
+    "tient dans l’écran": 8,
+    "films des épinglages": 1
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=6",
+    "Journal v6 : 8 étape(s) notée(s), 184 min de travail pour 160 min de budget, 195 min d’attente de l’utilisateur.",
+    "Journal : « construction : contact et page de catégorie » 14 min pour 10 prévues.",
+    "Journal : « audit rapide et corrections (images provisoires) » 76 min pour 35 prévues.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.",
+    "Tient dans l'écran /infos-pratiques : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /la-carte : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /les-fetes : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /receptions : aucune section épinglée ou plein écran."
+  ],
+  "grille": []
+}

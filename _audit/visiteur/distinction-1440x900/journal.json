@@ -1,0 +1,1573 @@
+{
+ "mission": "distinction",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.1,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11287,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 4,
+   "adresse": "/",
+   "y": 765,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 La carte de la semaine"
+   ],
+   "actions": [
+    "Réserver une table",
+    "Demander une réception"
+   ],
+   "prixVus": [
+    "21 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 5,
+   "adresse": "/",
+   "y": 765,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 La carte de la semaine"
+   ],
+   "actions": [
+    "Réserver une table",
+    "Demander une réception"
+   ],
+   "prixVus": [
+    "21 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 5,
+   "adresse": "/",
+   "y": 765,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 La carte de la semaine"
+   ],
+   "actions": [
+    "Réserver une table",
+    "Demander une réception"
+   ],
+   "prixVus": [
+    "21 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-3.png"
+  },
+  {
+   "k": 4,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 5.9,
+   "adresse": "/",
+   "y": 1528,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 L'été, la maison vit dehors"
+   ],
+   "actions": [
+    "Toute la carte",
+    "L'été aux Jardins"
+   ],
+   "prixVus": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 6.9,
+   "adresse": "/",
+   "y": 1530,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 L'été, la maison vit dehors"
+   ],
+   "actions": [
+    "Toute la carte",
+    "L'été aux Jardins"
+   ],
+   "prixVus": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 6.9,
+   "adresse": "/",
+   "y": 1530,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 L'été, la maison vit dehors"
+   ],
+   "actions": [
+    "Toute la carte",
+    "L'été aux Jardins"
+   ],
+   "prixVus": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-6.png"
+  },
+  {
+   "k": 7,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 7.6,
+   "adresse": "/",
+   "y": 2295,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 L'été, la maison vit dehors",
+    "h3 La piscine, le dimanche",
+    "h3 Le bar",
+    "h3 Les journées festives",
+    "h3 Les pool parties"
+   ],
+   "actions": [
+    "L'été aux Jardins"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 8,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 8.6,
+   "adresse": "/",
+   "y": 2295,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 L'été, la maison vit dehors",
+    "h3 La piscine, le dimanche",
+    "h3 Le bar",
+    "h3 Les journées festives",
+    "h3 Les pool parties"
+   ],
+   "actions": [
+    "L'été aux Jardins"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 9,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 8.6,
+   "adresse": "/",
+   "y": 2295,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 L'été, la maison vit dehors",
+    "h3 La piscine, le dimanche",
+    "h3 Le bar",
+    "h3 Les journées festives",
+    "h3 Les pool parties"
+   ],
+   "actions": [
+    "L'été aux Jardins"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-9.png"
+  },
+  {
+   "k": 10,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 9.3,
+   "adresse": "/",
+   "y": 3060,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 L'été, la maison vit dehors",
+    "h3 Le bar",
+    "h3 Les journées festives",
+    "h3 Les pool parties",
+    "h3 Le soleil descend : la terrasse va s'allumer."
+   ],
+   "actions": [
+    "L'été aux Jardins"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 11,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 10.3,
+   "adresse": "/",
+   "y": 3060,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 L'été, la maison vit dehors",
+    "h3 Le bar",
+    "h3 Les journées festives",
+    "h3 Les pool parties",
+    "h3 Le soleil descend : la terrasse va s'allumer."
+   ],
+   "actions": [
+    "L'été aux Jardins"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 12,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 10.3,
+   "adresse": "/",
+   "y": 3060,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 L'été, la maison vit dehors",
+    "h3 Le bar",
+    "h3 Les journées festives",
+    "h3 Les pool parties",
+    "h3 Le soleil descend : la terrasse va s'allumer."
+   ],
+   "actions": [
+    "L'été aux Jardins"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-12.png"
+  },
+  {
+   "k": 13,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 11.1,
+   "adresse": "/",
+   "y": 3825,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 14,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 12.1,
+   "adresse": "/",
+   "y": 3825,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 15,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 12.1,
+   "adresse": "/",
+   "y": 3825,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-15.png"
+  },
+  {
+   "k": 16,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 12.8,
+   "adresse": "/",
+   "y": 4590,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 17,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 13.8,
+   "adresse": "/",
+   "y": 4590,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 18,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 13.8,
+   "adresse": "/",
+   "y": 4590,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-18.png"
+  },
+  {
+   "k": 19,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 7,
+   "secondes": 14.5,
+   "adresse": "/",
+   "y": 5353,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 20,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 7,
+   "secondes": 15.5,
+   "adresse": "/",
+   "y": 5355,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 21,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 7,
+   "secondes": 15.5,
+   "adresse": "/",
+   "y": 5355,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-21.png"
+  },
+  {
+   "k": 22,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 8,
+   "secondes": 16.3,
+   "adresse": "/",
+   "y": 6120,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 23,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 8,
+   "secondes": 17.3,
+   "adresse": "/",
+   "y": 6120,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 24,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 8,
+   "secondes": 17.3,
+   "adresse": "/",
+   "y": 6120,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Recevoir, le soir venu"
+   ],
+   "actions": [
+    "Demander une réception",
+    "Voir les espaces"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-24.png"
+  },
+  {
+   "k": 25,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 9,
+   "secondes": 18,
+   "adresse": "/",
+   "y": 6885,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Votre table pour le prochain service"
+   ],
+   "actions": [
+    "❙❙",
+    "−",
+    "+",
+    "Réserver cette table",
+    "Plus de 10 personnes ? Demandez une réception."
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 26,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 9,
+   "secondes": 19,
+   "adresse": "/",
+   "y": 6885,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Votre table pour le prochain service"
+   ],
+   "actions": [
+    "❙❙",
+    "−",
+    "+",
+    "Réserver cette table",
+    "Plus de 10 personnes ? Demandez une réception."
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 27,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 9,
+   "secondes": 19,
+   "adresse": "/",
+   "y": 6885,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Votre table pour le prochain service"
+   ],
+   "actions": [
+    "❙❙",
+    "−",
+    "+",
+    "Réserver cette table",
+    "Plus de 10 personnes ? Demandez une réception."
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-27.png"
+  },
+  {
+   "k": 28,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 10,
+   "secondes": 19.7,
+   "adresse": "/",
+   "y": 7650,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Au coin du feu"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 29,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 10,
+   "secondes": 20.7,
+   "adresse": "/",
+   "y": 7650,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Au coin du feu"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 30,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 10,
+   "secondes": 20.7,
+   "adresse": "/",
+   "y": 7650,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Au coin du feu"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-30.png"
+  },
+  {
+   "k": 31,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 11,
+   "secondes": 21.5,
+   "adresse": "/",
+   "y": 8415,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Au coin du feu"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 32,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 11,
+   "secondes": 22.5,
+   "adresse": "/",
+   "y": 8415,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Au coin du feu"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 33,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 11,
+   "secondes": 22.5,
+   "adresse": "/",
+   "y": 8415,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Au coin du feu"
+   ],
+   "actions": [],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-33.png"
+  },
+  {
+   "k": 34,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 12,
+   "secondes": 23.2,
+   "adresse": "/",
+   "y": 9180,
+   "hauteurPage": 11287,
+   "titres": [
+    "h3 La Saint-Sylvestre",
+    "h3 Le menu de Noël"
+   ],
+   "actions": [
+    "La Saint-Sylvestre",
+    "Le menu de Noël"
+   ],
+   "prixVus": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 35,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 12,
+   "secondes": 24.2,
+   "adresse": "/",
+   "y": 9180,
+   "hauteurPage": 11287,
+   "titres": [
+    "h3 La Saint-Sylvestre",
+    "h3 Le menu de Noël"
+   ],
+   "actions": [
+    "La Saint-Sylvestre",
+    "Le menu de Noël"
+   ],
+   "prixVus": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 36,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 12,
+   "secondes": 24.2,
+   "adresse": "/",
+   "y": 9180,
+   "hauteurPage": 11287,
+   "titres": [
+    "h3 La Saint-Sylvestre",
+    "h3 Le menu de Noël"
+   ],
+   "actions": [
+    "La Saint-Sylvestre",
+    "Le menu de Noël"
+   ],
+   "prixVus": [
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-36.png"
+  },
+  {
+   "k": 37,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 13,
+   "secondes": 25,
+   "adresse": "/",
+   "y": 9945,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Offrir une soirée",
+    "h3 Venir"
+   ],
+   "actions": [
+    "La Saint-Sylvestre",
+    "Le menu de Noël",
+    "Composer une carte cadeau",
+    "Horaires et accès"
+   ],
+   "prixVus": [
+    "120 €",
+    "170 €",
+    "79 €",
+    "200 €",
+    "100 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 38,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 13,
+   "secondes": 26,
+   "adresse": "/",
+   "y": 9945,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Offrir une soirée",
+    "h3 Venir"
+   ],
+   "actions": [
+    "La Saint-Sylvestre",
+    "Le menu de Noël",
+    "Composer une carte cadeau",
+    "Horaires et accès"
+   ],
+   "prixVus": [
+    "120 €",
+    "170 €",
+    "79 €",
+    "200 €",
+    "100 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 39,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 13,
+   "secondes": 26,
+   "adresse": "/",
+   "y": 9945,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Offrir une soirée",
+    "h3 Venir"
+   ],
+   "actions": [
+    "La Saint-Sylvestre",
+    "Le menu de Noël",
+    "Composer une carte cadeau",
+    "Horaires et accès"
+   ],
+   "prixVus": [
+    "120 €",
+    "170 €",
+    "79 €",
+    "200 €",
+    "100 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-39.png"
+  },
+  {
+   "k": 40,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 14,
+   "secondes": 26.7,
+   "adresse": "/",
+   "y": 10387,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Offrir une soirée"
+   ],
+   "actions": [
+    "Composer une carte cadeau",
+    "Horaires et accès",
+    "06 18 21 28 10",
+    "Facebook ↗",
+    "Instagram ↗",
+    "Accueil",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [
+    "200 €",
+    "100 €"
+   ],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 41,
+   "geste": "attendre 1000",
+   "resultat": "ok",
+   "gestes": 14,
+   "secondes": 27.7,
+   "adresse": "/",
+   "y": 10387,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Offrir une soirée"
+   ],
+   "actions": [
+    "Composer une carte cadeau",
+    "Horaires et accès",
+    "06 18 21 28 10",
+    "Facebook ↗",
+    "Instagram ↗",
+    "Accueil",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [
+    "200 €",
+    "100 €"
+   ],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 42,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 14,
+   "secondes": 27.7,
+   "adresse": "/",
+   "y": 10387,
+   "hauteurPage": 11287,
+   "titres": [
+    "h2 Offrir une soirée"
+   ],
+   "actions": [
+    "Composer une carte cadeau",
+    "Horaires et accès",
+    "06 18 21 28 10",
+    "Facebook ↗",
+    "Instagram ↗",
+    "Accueil",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réduire les animations",
+    "Retour en haut"
+   ],
+   "prixVus": [
+    "200 €",
+    "100 €"
+   ],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-42.png"
+  }
+ ]
+}

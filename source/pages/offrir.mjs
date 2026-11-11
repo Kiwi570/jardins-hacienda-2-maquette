@@ -1,30 +1,40 @@
-/* Offrir : ouverture centrée sur le kraft et la cire (Grok), la carte cadeau qui flotte ; puis la carte se compose
-   (module carte-cadeau-qui-se-compose, montants du site actuel, sans montant libre) et part dans son enveloppe. */
+/* Offrir · « minuit, au coin du feu » : la carte cadeau s'écrit à la lueur du feu. Ouverture : la salle de nuit, les
+   braises qu'on attise, la carte dorée qui se redresse ; le texte change avec la saison. Puis la carte se compose
+   (module carte-cadeau-qui-se-compose, montants du site actuel) et part dans son enveloppe (code gardé de la v5). */
 import { html } from '../../outils/gabarit.mjs';
 
-export const page = { cle: 'offrir', fichier: 'offrir', imagePartage: 'grok/offrir-ouverture-1280.webp', modules: ['carte-cadeau-qui-se-compose'] };
+export const page = { cle: 'offrir', fichier: 'offrir', theme: 'nuit', imagePartage: 'grok/salle-feu-1280.webp', modules: ['carte-cadeau-qui-se-compose'] };
 
 const MONTANTS = [25, 50, 100, 150, 200];
 
 export default (c) => html`
-<section class="ouv-offrir" data-lueur id="debut" data-fil="gauche" data-grille="fil">
-  ${c.media({ nom: 'grok/offrir-ouverture', alt: c.s('offrir.alt'), cadrage: '62% 50%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw', attrs: 'data-saison-photo="hiver" data-fx="parallaxe" data-fx-force="8"' })}
-  ${c.media({ nom: 'offrir-ete', alt: c.s('offrir.altEte'), cadrage: '50% 50%', classe: 'ouv-offrir__fond', sizes: '100vw', attrs: 'data-saison-photo="ete"' })}
-  <div class="conteneur ouv-offrir__centre">
-    <p class="surtitre" data-anime>${c.t('offrir.surtitre')}</p>
-    <h1 data-anime="lettres">${c.t('offrir.titre')}</h1>
-    <p class="masque-ecran-tres-bas" data-anime>${c.t('offrir.texte')}</p>
-    <div class="ouv-offrir__carte" data-iris-centre aria-hidden="true" data-fx="vitesse" data-fx-force="5" data-visuel>
-      <img src="/assets/images/logo-clair.png" alt="" width="44" height="44"><span class="ouv-offrir__type">${c.t('accueil.offrir.carte')}</span><span class="ouv-offrir__montant">50 €</span>
+<section class="ouv-offrir" id="debut">
+  ${c.media({ nom: 'grok/salle-feu', alt: c.s('offrir.alt'), cadrage: '50% 60%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw' })}
+  <canvas class="ouv-offrir__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
+  <div class="conteneur ouv-offrir__grille">
+    <div class="ouv-offrir__texte">
+      <p class="heure-geante heure-geante--nuit" data-effet="axes" aria-hidden="true">00:00</p>
+      <p class="surtitre">${c.t('offrir.sur')}</p>
+      <h1 data-anime="lettres">${c.t('offrir.titre')}</h1>
+      <p class="masque-ecran-tres-bas"><span data-saison-seul="hiver">${c.t('offrir.texteHiver')}</span><span data-saison-seul="ete">${c.t('offrir.texteEte')}</span></p>
+      <p class="ouv-offrir__actions"><a class="bouton" href="#composer" data-action-principale data-sans-transition>${c.t('offrir.action')}</a> <span class="ouv-offrir__info" data-info-cle data-prix>${c.t('offrir.info')}</span></p>
     </div>
-    <p class="ouv-offrir__actions"><a class="bouton" href="#composer" data-action-principale data-sans-transition>${c.t('offrir.action')}</a> <span class="ouv-offrir__info" data-info-cle data-prix>${c.t('offrir.info')}</span></p>
+    <div class="carte-cadeau-apercu ouv-offrir__carte" data-effet="carte-apercu" data-iris-centre data-grille="typo" aria-hidden="true">
+      <div class="cca__face">
+        <img src="/assets/images/logo-clair.png" alt="" width="56" height="56">
+        <p class="cca__nom">${c.t('offrir.carte')}</p>
+        <p class="cca__montant" data-montant-tournant>100 €</p>
+        <p class="cca__pour">${c.site.nom}</p>
+      </div>
+    </div>
   </div>
+  <p class="indice ouv-offrir__indice" aria-hidden="true">${c.t('offrir.indice')}</p>
 </section>
 
-<section class="ccq offrir-composer" data-lueur id="composer" data-module="carte-cadeau-qui-se-compose" data-cachet="JH" data-fil="droite" data-grille="retour" aria-labelledby="ccq-titre">
+<section class="ccq offrir-composer" id="composer" data-module="carte-cadeau-qui-se-compose" data-cachet="JH" data-grille="retour" aria-labelledby="ccq-titre">
   <div class="ccq__grille socle-cadre">
     <div class="ccq__tete">
-      <p class="socle-surtitre">${c.t('offrir.composerSurtitre')}</p>
+      <p class="socle-surtitre">${c.t('offrir.composerSur')}</p>
       <h2 id="ccq-titre" data-anime="lignes">${c.t('offrir.composerTitre')}</h2>
       <p>${c.t('offrir.composerTexte')}</p>
     </div>
@@ -33,7 +43,7 @@ export default (c) => html`
         <svg class="ccq__cadre" viewBox="0 0 160 100" preserveAspectRatio="none"><rect x="3.2" y="3.2" width="153.6" height="93.6" rx="5" ry="5" pathLength="1"/></svg>
         <div class="ccq__carte-haut">
           <span class="ccq__logo"><img src="/assets/images/logo-clair.png" alt="" width="48" height="48"></span>
-          <span class="ccq__noms"><span class="ccq__type">${c.t('accueil.offrir.carte')}</span><span class="ccq__maison">${c.site.nom}</span></span>
+          <span class="ccq__noms"><span class="ccq__type">${c.t('offrir.carte')}</span><span class="ccq__maison">${c.site.nom}</span></span>
           <span class="ccq__quantite" data-ccq-quantite hidden>× 1</span>
         </div>
         <div class="ccq__carte-bas">

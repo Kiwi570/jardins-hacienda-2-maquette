@@ -2,6 +2,57 @@
 
 Chaque version ajoute sa partie en tête de ce fichier, construite en comparant l'archive précédente et la nouvelle, jamais de mémoire.
 
+## v6 — « De midi à minuit », refonte de A à Z
+
+Comparaison de l'archive v5 (commit 9b8e0a0) et de la v6, fichier par fichier : 112 fichiers retirés (les images de la v5 refaites ou abandonnées, dont 9 illustrations générées : nappe de lin, eau de la piscine, braises, bougies, ouvertures de Réserver et d'Offrir… ; les polices Bodoni Moda, Caveat et Figtree ; 6 modules qui ne servent plus : ardoise à la craie, assiette qui se dresse, carrousel 3D, fil conducteur, objet à faire tourner, plat fumant ; `donnees/ardoise.json` et le fragment de l'assiette) ; 44 fichiers ajoutés (une page Réceptions, 10 nouvelles illustrations générées en 29 fichiers, 2 boucles vidéo, les polices Bricolage Grotesque et Instrument Serif avec leurs licences, les positions des ampoules de la terrasse, 2 images de partage) ; sources modifiées : toutes les pages, le gabarit commun, le socle (repris de la skill v10.9.2), `site.css` et `site.js` réécrits, `fr.json`, `site.json`, `carte.json`, `images.json`, `plan-images.json`. Gardés tels quels dans leur logique : la réservation et sa carte de placement, le plan de salle, la carte cadeau qui s'écrit et son enveloppe, la carte, les fêtes, les horaires, les accords de la Saint-Sylvestre, la transition en assiette, le statut ouvert ou fermé.
+
+**Une nouvelle idée : une journée à l'Hacienda**
+- L'accueil suit les vraies heures de la maison : 12 h la piscine (l'eau bouge sous le doigt), 12 h 30 le déjeuner (cinq plats de la carte avec leurs prix), 14 h 30 l'après-midi d'été (piscine, bar, journées festives, pool parties, de côté), 19 h la terrasse s'allume, 21 h le dîner (réserver dans la page), 23 h au coin du feu, 23 h 30 la Saint-Sylvestre et Noël avec leur compte à rebours, minuit offrir et venir.
+- L'horloge de l'en-tête suit le défilement, et la lumière de la page passe du blanc de midi à la braise de minuit (couleur de l'en-tête, épaisseur des lettres).
+- Chaque moment dit sa saison réelle : « Piscine et terrasse de juin à septembre », « Cet hiver ». Plus de cadran des deux saisons.
+- 19 h, la terrasse s'allume : au défilement, le soleil se couche sur la grande table (trois états de la même image), puis les guirlandes s'allument ampoule après ampoule, sur les vraies ampoules de l'image ; on peut aussi les allumer du doigt.
+- 23 h : la fenêtre de la salle s'ouvre jusqu'au plein écran ; les braises suivent la main.
+- 21 h : choisir le prochain service ouvert et le nombre de couverts ; le carton s'envole vers la réservation, déjà remplie.
+
+**Chaque page à son heure**
+- La carte s'ouvre au déjeuner ou au dîner selon l'heure réelle à Moineville ; un bouton rallume la page à l'autre service (photo, texte, bouton « Réserver »).
+- Les fêtes : l'hiver, un compte à rebours géant de la Saint-Sylvestre sur la salle au feu, le menu en accords mets et vins, Noël plat par plat sous sa cloche ; l'été, la journée d'été heure par heure.
+- Réceptions, nouvelle page : le mot de l'occasion change dans le titre (mariage, baptême, anniversaire, pot de départ), trois espaces en volets (la salle d'abord l'hiver, la terrasse d'abord l'été), les vraies photos des fêtes, la demande en trois étapes et un carton d'invitation tamponné « Demande reçue ».
+- Réserver prend la lumière du service choisi (claire au déjeuner, de nuit au dîner) ; Offrir s'ouvre à minuit au coin du feu ; Infos pratiques affiche l'heure réelle à Moineville et la photo de ce moment ; la page introuvable « a fermé à minuit ».
+- Entre les pages, la transition en assiette prend la couleur et les chiffres de l'heure de la page d'arrivée.
+
+**Images**
+- Dix illustrations générées, toutes marquées « Illustration générée » : la piscine à midi, la terrasse au coucher du soleil, à l'heure bleue et la nuit (même cadrage), la salle et sa cheminée, deux assiettes, les mains du chef, le bar.
+- Deux boucles vidéo : l'eau de la piscine et la vapeur du dîner (seule la fumée bouge, l'assiette reste nette). Pas de vidéo sur téléphone en portrait, en mode calme ou en économie de données.
+- Les vraies photos du restaurant restent, en petit : les assiettes de la carte, les fêtes, la Saint-Sylvestre, les réceptions.
+
+**Après le test « vrai visiteur » (une cliente de Thionville, sur téléphone puis sur ordinateur)**
+- Arrivée : le nom et le lieu sont écrits dès le premier écran du téléphone ; le statut dit l'heure réelle (« Il est 0 h 58 : fermé · ouvre à 12 h »), la grande « 12:00 » restant l'heure de la journée racontée ; sur ordinateur, les deux boutons tiennent dans le premier écran.
+- Le menu suit l'ordre des heures : La carte 12:30, Réceptions 19:00, Les fêtes 23:00, Offrir 00:00.
+- Réceptions : une date, ou à défaut une période (« Au printemps 2027 », « Date à fixer ensemble »), dans une liste au style des autres champs ; aucune occasion cochée d'avance ; le carton dit « Un baptême » et l'année ; le merci reste à l'écran sur téléphone ; « Capacité de chaque espace et menus de groupe : sur demande, au 06 18 21 28 10 » ; la vraie photo du baptême.
+- Réserver : le message d'erreur sous son champ, sans étirer le champ voisin ; une fois la table réservée, les choix restent lisibles (plus barrés comme un service fermé) ; la référence sur une ligne ; le plan dit « Choisir cette table ».
+- La carte : la barre des rubriques monte tout en haut quand l'en-tête se cache ; les plats arrivent plus tôt sur téléphone ; « À partager » n'est plus aussi un filtre ; le bouton dit « Passer au dîner ».
+- Les fêtes : chaque prix est nommé (« Saint-Sylvestre : 120 € le menu · Noël : 79 € par personne ») ; le compte à rebours compte les jours du calendrier (J-50, comme l'accueil) ; le menu de Noël reste lisible sous les cloches.
+- Infos pratiques : sur téléphone, les horaires de la semaine avant le cadran.
+- Finitions : l'eau de midi suit le cadrage de la photo du téléphone (plus de bande décalée à l'ouverture) ; « 14 h 30 » sur une ligne ; la terrasse épinglée moins longue ; les pool parties avec la vraie photo de la bouée licorne ; le pied de page sombre jusqu'en bas sur téléphone ; moins de vide au-dessus de « 12 h 30 » ; l'en-tête sur une seule rangée vers 1000 px.
+
+**Après le regard neuf (un directeur artistique qui n'a pas vu la construction)**
+- Une seule heure par page, partout : le voile, l'intro, l'horloge de l'en-tête et l'ouverture disent la même (La carte 20:30 le soir, 12:30 le jour ; Réserver, l'heure du service demandé ou du prochain service ouvert) ; l'horloge de l'intro arrive à la taille exacte de la grande heure (elle ne rétrécit plus pour regrossir).
+- Une seule notation des heures sur l'accueil (12:00, 12:30, 14:30, 19:00, 21:00, 23:00, 23:30, 00:00) ; « 23:00 » sur la scène du coin du feu ; Les fêtes à 23:30 partout (accueil, menu, page).
+- 21:00 : le prochain soir est coché d'avance sous « Le dîner » ; la pastille « Toute l'année » est retirée.
+- 23:00 : « Au coin du feu » se lit sur le mur clair ; la légende passe en bas à gauche, hors du foyer.
+- 23:30 : Noël (25 décembre) avant la Saint-Sylvestre, les deux colonnes alignées.
+- 19:00 sur téléphone : l'heure et les étapes à venir se lisent sur le ciel du couchant.
+- Les fêtes : la photo d'ouverture retrouve son feu (l'ombre seulement sous le texte) ; les soirées passées ne sont plus barrées et s'alignent à côté de leur photo ; « 120 € le menu » ne laisse plus de point seul en fin de ligne.
+- Ouvertures qui ne se répètent plus : Infos pratiques le soir sur la terrasse à l'heure bleue, Offrir serré sur le feu de la cheminée, la page fermée serrée sur la grande table vide.
+- Réserver : « Une table pour vous », les vrais jours et services en introduction (la mention « simulée » en fin de phrase) ; la photo de la salle recadrée sur les tables dressées.
+- Réceptions : le carton est pré-écrit en gris (« Votre fête », « La date · vos invités · l'espace ») et se remplit au fil des choix ; « la maison dresse la table pour vous ».
+- Le bouton « Réduire les animations » (et « Rétablir ») ramène toujours à la section où l'on était, même sur téléphone (correction du socle) ; la boucle de vapeur ne refait pas son fondu au retour arrière.
+- Le numéro de téléphone ne se coupe plus en fin de ligne ; la recherche de la carte dit « Chercher un plat » ; le cadran d'Infos pratiques reste à côté des horaires.
+
+**Faits**
+- Retiré : « le repas pour 120 sous la pergola » (aucun chiffre de capacité sur le site actuel).
+
 ## v5 — les améliorations de l'audit UX et design
 
 Comparaison de la v4 livrée et de la v5, fichier par fichier : aucun fichier retiré ; 13 fichiers d'images ajoutés (versions d'été des ouvertures de La carte, de Réserver et d'Offrir, lumière de l'eau de la piscine) ; sources modifiées : les 6 pages (`source/pages/`), le gabarit commun, `site.css`, `site.js`, `fr.json`, `site.json`, `plan-images.json`, pages régénérées. Les copies des modules et l'adaptateur du socle n'ont pas changé (seul le numéro `?v=5` de leurs imports).

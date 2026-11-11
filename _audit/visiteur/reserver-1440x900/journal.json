@@ -12,34 +12,29 @@
    "secondes": 3.2,
    "adresse": "/",
    "y": 0,
-   "hauteurPage": 6288,
+   "hauteurPage": 11287,
    "titres": [
-    "h1 Au coin du feu l'hiver, au bord de la piscine l'été"
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
    ],
    "actions": [
     "Les Jardins de l'Hacienda",
     "La carte",
     "Les fêtes",
+    "Réceptions",
     "Offrir",
     "Infos pratiques",
-    "Passer à l’été",
-    "Réserver",
-    "Hiver",
-    "Été",
-    "Réserver au coin du feu",
-    "Voir la carte",
-    "Fermé · ouvre demain à 12 h"
+    "Réserver"
    ],
    "prixVus": [],
    "telephonesVus": [],
    "prixDansLaPage": [
     "21 €",
-    "26 €",
     "24 €",
-    "45 €",
-    "12 €",
-    "11 €",
-    "10 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
     "79 €"
    ],
    "telephones": [
@@ -50,66 +45,32 @@
   },
   {
    "k": 1,
-   "geste": "cliquer Réserver au coin du feu",
+   "geste": "cliquer Réserver",
    "resultat": "ok",
    "gestes": 1,
-   "secondes": 6.2,
-   "adresse": "/reserver",
-   "y": 0,
-   "hauteurPage": 5105,
+   "secondes": 6.8,
+   "adresse": "/reserver#formulaire",
+   "y": 603,
+   "hauteurPage": 4530,
    "titres": [
-    "h1 Votre table",
-    "h3 À compléter"
+    "h2 Le jour, l'heure, les couverts",
+    "h3 Choisissez le jour et l’heure"
    ],
    "actions": [
     "Les Jardins de l'Hacienda",
     "La carte",
     "Les fêtes",
+    "Réceptions",
     "Offrir",
     "Infos pratiques",
-    "Passer à l’été",
     "Réserver",
-    "Choisir le jour",
-    "Choisir ma table",
-    "06 18 21 28 10"
-   ],
-   "prixVus": [],
-   "telephonesVus": [
-    "06 18 21 28 10"
-   ],
-   "prixDansLaPage": [],
-   "telephones": [
-    "06 18 21 28 10"
-   ],
-   "menuOuvert": false
-  },
-  {
-   "k": 2,
-   "geste": "cliquer Choisir le jour",
-   "resultat": "ok",
-   "gestes": 2,
-   "secondes": 8.4,
-   "adresse": "/reserver#formulaire",
-   "y": 625,
-   "hauteurPage": 5105,
-   "titres": [
-    "h2 Le jour, l'heure, les couverts",
-    "h3 À compléter"
-   ],
-   "actions": [
-    "Aujourd'hui 10 nov. fermé",
-    "Demain 11 nov.",
-    "Jeu 12 nov.",
+    "Aujourd'hui 11 nov.",
+    "Demain 12 nov.",
     "Ven 13 nov.",
     "Sam 14 nov.",
     "Dim 15 nov.",
     "Lun 16 nov. fermé",
-    "Modifier : date",
-    "Modifier : service",
-    "Modifier : heure",
-    "Modifier : couverts",
-    "Modifier : installation",
-    "Modifier : au nom de"
+    "Mar 17 nov. fermé"
    ],
    "prixVus": [],
    "telephonesVus": [],
@@ -120,32 +81,71 @@
    "menuOuvert": false
   },
   {
-   "k": 3,
-   "geste": "cliquer Sam",
+   "k": 2,
+   "geste": "capture",
    "resultat": "ok",
-   "gestes": 3,
-   "secondes": 10.6,
+   "gestes": 1,
+   "secondes": 6.8,
    "adresse": "/reserver#formulaire",
-   "y": 625,
-   "hauteurPage": 5105,
+   "y": 603,
+   "hauteurPage": 4530,
    "titres": [
     "h2 Le jour, l'heure, les couverts",
-    "h3 À compléter"
+    "h3 Choisissez le jour et l’heure"
    ],
    "actions": [
-    "Aujourd'hui 10 nov. fermé",
-    "Demain 11 nov.",
-    "Jeu 12 nov.",
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Aujourd'hui 11 nov.",
+    "Demain 12 nov.",
     "Ven 13 nov.",
     "Sam 14 nov.",
     "Dim 15 nov.",
     "Lun 16 nov. fermé",
-    "Modifier : date",
-    "Modifier : service",
-    "Modifier : heure",
-    "Modifier : couverts",
-    "Modifier : installation",
-    "Modifier : au nom de"
+    "Mar 17 nov. fermé"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-2.png"
+  },
+  {
+   "k": 3,
+   "geste": "cliquer Sam",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 9.1,
+   "adresse": "/reserver#formulaire",
+   "y": 603,
+   "hauteurPage": 4530,
+   "titres": [
+    "h2 Le jour, l'heure, les couverts",
+    "h3 Choisissez le jour et l’heure"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Aujourd'hui 11 nov.",
+    "Demain 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé",
+    "Mar 17 nov. fermé"
    ],
    "prixVus": [],
    "telephonesVus": [],
@@ -157,24 +157,25 @@
   },
   {
    "k": 4,
-   "geste": "defiler",
+   "geste": "cliquer Soir",
    "resultat": "ok",
-   "gestes": 4,
-   "secondes": 11.3,
+   "gestes": 3,
+   "secondes": 11.2,
    "adresse": "/reserver#formulaire",
-   "y": 1390,
-   "hauteurPage": 5105,
+   "y": 645,
+   "hauteurPage": 4530,
    "titres": [
-    "h3 À compléter"
+    "h2 Le jour, l'heure, les couverts",
+    "h3 Choisissez le jour et l’heure"
    ],
    "actions": [
-    "Aujourd'hui 10 nov. fermé",
-    "Demain 11 nov.",
-    "Jeu 12 nov.",
+    "Aujourd'hui 11 nov.",
+    "Demain 12 nov.",
     "Ven 13 nov.",
     "Sam 14 nov.",
     "Dim 15 nov.",
     "Lun 16 nov. fermé",
+    "Mar 17 nov. fermé",
     "−",
     "+",
     "Modifier : date",
@@ -193,24 +194,25 @@
   },
   {
    "k": 5,
-   "geste": "cliquer 20 h",
+   "geste": "capture",
    "resultat": "ok",
-   "gestes": 5,
-   "secondes": 13.5,
+   "gestes": 3,
+   "secondes": 11.2,
    "adresse": "/reserver#formulaire",
-   "y": 1390,
-   "hauteurPage": 5105,
+   "y": 645,
+   "hauteurPage": 4530,
    "titres": [
-    "h3 Samedi 14 novembre, 20 h"
+    "h2 Le jour, l'heure, les couverts",
+    "h3 Choisissez le jour et l’heure"
    ],
    "actions": [
-    "Aujourd'hui 10 nov. fermé",
-    "Demain 11 nov.",
-    "Jeu 12 nov.",
+    "Aujourd'hui 11 nov.",
+    "Demain 12 nov.",
     "Ven 13 nov.",
     "Sam 14 nov.",
     "Dim 15 nov.",
     "Lun 16 nov. fermé",
+    "Mar 17 nov. fermé",
     "−",
     "+",
     "Modifier : date",
@@ -225,35 +227,31 @@
    "telephones": [
     "06 18 21 28 10"
    ],
-   "menuOuvert": false
+   "menuOuvert": false,
+   "capture": "etape-5.png"
   },
   {
    "k": 6,
-   "geste": "cliquer +",
+   "geste": "defiler 1",
    "resultat": "ok",
-   "gestes": 6,
-   "secondes": 15.7,
+   "gestes": 4,
+   "secondes": 12,
    "adresse": "/reserver#formulaire",
-   "y": 1390,
-   "hauteurPage": 5128,
+   "y": 1410,
+   "hauteurPage": 4530,
    "titres": [
-    "h3 Samedi 14 novembre, 20 h"
+    "h3 Choisissez le jour et l’heure"
    ],
    "actions": [
-    "Aujourd'hui 10 nov. fermé",
-    "Demain 11 nov.",
-    "Jeu 12 nov.",
-    "Ven 13 nov.",
-    "Sam 14 nov.",
-    "Dim 15 nov.",
-    "Lun 16 nov. fermé",
     "−",
     "+",
+    "Vérifier ma réservation",
     "Modifier : date",
     "Modifier : service",
     "Modifier : heure",
     "Modifier : couverts",
-    "Modifier : installation"
+    "Modifier : installation",
+    "Modifier : au nom de"
    ],
    "prixVus": [],
    "telephonesVus": [],
@@ -265,31 +263,26 @@
   },
   {
    "k": 7,
-   "geste": "cliquer +",
+   "geste": "cliquer 20",
    "resultat": "ok",
-   "gestes": 7,
-   "secondes": 17.9,
+   "gestes": 5,
+   "secondes": 14.1,
    "adresse": "/reserver#formulaire",
-   "y": 1390,
-   "hauteurPage": 5128,
+   "y": 1410,
+   "hauteurPage": 4530,
    "titres": [
     "h3 Samedi 14 novembre, 20 h"
    ],
    "actions": [
-    "Aujourd'hui 10 nov. fermé",
-    "Demain 11 nov.",
-    "Jeu 12 nov.",
-    "Ven 13 nov.",
-    "Sam 14 nov.",
-    "Dim 15 nov.",
-    "Lun 16 nov. fermé",
     "−",
     "+",
+    "Vérifier ma réservation",
     "Modifier : date",
     "Modifier : service",
     "Modifier : heure",
     "Modifier : couverts",
-    "Modifier : installation"
+    "Modifier : installation",
+    "Modifier : au nom de"
    ],
    "prixVus": [],
    "telephonesVus": [],
@@ -301,17 +294,19 @@
   },
   {
    "k": 8,
-   "geste": "defiler",
+   "geste": "remplir Prénom=Claire",
    "resultat": "ok",
-   "gestes": 8,
-   "secondes": 18.6,
+   "gestes": 6,
+   "secondes": 14.1,
    "adresse": "/reserver#formulaire",
-   "y": 2155,
-   "hauteurPage": 5128,
+   "y": 1410,
+   "hauteurPage": 4530,
    "titres": [
     "h3 Samedi 14 novembre, 20 h"
    ],
    "actions": [
+    "−",
+    "+",
     "Vérifier ma réservation",
     "Modifier : date",
     "Modifier : service",
@@ -330,17 +325,19 @@
   },
   {
    "k": 9,
-   "geste": "remplir Prénom=Julie",
+   "geste": "remplir ^Nom$=Testeuse",
    "resultat": "ok",
-   "gestes": 9,
-   "secondes": 18.7,
+   "gestes": 7,
+   "secondes": 14.2,
    "adresse": "/reserver#formulaire",
-   "y": 2155,
-   "hauteurPage": 5128,
+   "y": 1410,
+   "hauteurPage": 4530,
    "titres": [
     "h3 Samedi 14 novembre, 20 h"
    ],
    "actions": [
+    "−",
+    "+",
     "Vérifier ma réservation",
     "Modifier : date",
     "Modifier : service",
@@ -359,17 +356,19 @@
   },
   {
    "k": 10,
-   "geste": "remplir ^Nom=Weber",
+   "geste": "remplir Téléphone=06 12 34 56 78",
    "resultat": "ok",
-   "gestes": 10,
-   "secondes": 18.7,
+   "gestes": 8,
+   "secondes": 14.2,
    "adresse": "/reserver#formulaire",
-   "y": 2155,
-   "hauteurPage": 5128,
+   "y": 1410,
+   "hauteurPage": 4530,
    "titres": [
     "h3 Samedi 14 novembre, 20 h"
    ],
    "actions": [
+    "−",
+    "+",
     "Vérifier ma réservation",
     "Modifier : date",
     "Modifier : service",
@@ -379,26 +378,31 @@
     "Modifier : au nom de"
    ],
    "prixVus": [],
-   "telephonesVus": [],
+   "telephonesVus": [
+    "06 12 34 56 78"
+   ],
    "prixDansLaPage": [],
    "telephones": [
-    "06 18 21 28 10"
+    "06 18 21 28 10",
+    "06 12 34 56 78"
    ],
    "menuOuvert": false
   },
   {
    "k": 11,
-   "geste": "remplir Téléphone=06 12 34 56 78",
+   "geste": "remplir E-mail=claire.test@example.com",
    "resultat": "ok",
-   "gestes": 11,
-   "secondes": 18.7,
+   "gestes": 9,
+   "secondes": 14.2,
    "adresse": "/reserver#formulaire",
-   "y": 2155,
-   "hauteurPage": 5128,
+   "y": 1410,
+   "hauteurPage": 4530,
    "titres": [
     "h3 Samedi 14 novembre, 20 h"
    ],
    "actions": [
+    "−",
+    "+",
     "Vérifier ma réservation",
     "Modifier : date",
     "Modifier : service",
@@ -420,17 +424,54 @@
   },
   {
    "k": 12,
-   "geste": "cliquer Vérifier ma réservation",
+   "geste": "capture",
    "resultat": "ok",
-   "gestes": 12,
-   "secondes": 20.9,
+   "gestes": 9,
+   "secondes": 14.2,
    "adresse": "/reserver#formulaire",
-   "y": 2150,
-   "hauteurPage": 5128,
+   "y": 1410,
+   "hauteurPage": 4530,
    "titres": [
     "h3 Samedi 14 novembre, 20 h"
    ],
    "actions": [
+    "−",
+    "+",
+    "Vérifier ma réservation",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation",
+    "Modifier : au nom de"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 12 34 56 78"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10",
+    "06 12 34 56 78"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-12.png"
+  },
+  {
+   "k": 13,
+   "geste": "cliquer Vérifier ma réservation",
+   "resultat": "ok",
+   "gestes": 10,
+   "secondes": 16.4,
+   "adresse": "/reserver#formulaire",
+   "y": 1462,
+   "hauteurPage": 4530,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "−",
+    "+",
     "Vérifier ma réservation",
     "Modifier : date",
     "Modifier : service",
@@ -452,20 +493,68 @@
    "menuOuvert": false
   },
   {
-   "k": 13,
+   "k": 14,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 10,
+   "secondes": 16.4,
+   "adresse": "/reserver#formulaire",
+   "y": 1462,
+   "hauteurPage": 4530,
+   "titres": [
+    "h3 Samedi 14 novembre, 20 h"
+   ],
+   "actions": [
+    "−",
+    "+",
+    "Vérifier ma réservation",
+    "Modifier : date",
+    "Modifier : service",
+    "Modifier : heure",
+    "Modifier : couverts",
+    "Modifier : installation",
+    "Modifier : au nom de",
+    "Confirmer la réservation"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 12 34 56 78"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10",
+    "06 12 34 56 78"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-14.png"
+  },
+  {
+   "k": 15,
    "geste": "cliquer Confirmer la réservation",
    "resultat": "ok",
-   "gestes": 13,
-   "secondes": 23.1,
+   "gestes": 11,
+   "secondes": 18.5,
    "adresse": "/reserver#formulaire",
-   "y": 2158,
-   "hauteurPage": 5128,
+   "y": 1315,
+   "hauteurPage": 4530,
    "titres": [
     "h3 À samedi 14 novembre, 20 h"
    ],
    "actions": [
-    "Vérifier ma réservation",
-    "Faire une autre réservation"
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Aujourd'hui 11 nov.",
+    "Demain 12 nov.",
+    "Ven 13 nov.",
+    "Sam 14 nov.",
+    "Dim 15 nov.",
+    "Lun 16 nov. fermé",
+    "Mar 17 nov. fermé"
    ],
    "prixVus": [],
    "telephonesVus": [],
@@ -474,7 +563,7 @@
     "06 18 21 28 10"
    ],
    "menuOuvert": false,
-   "capture": "etape-13.png"
+   "capture": "etape-15.png"
   }
  ]
 }

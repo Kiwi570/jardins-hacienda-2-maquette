@@ -1,19 +1,34 @@
 {
-  "date": "2026-11-10T12:05:15.826Z",
-  "plan": "/home/claude/jardins-hacienda-2-maquette/plan-images.json",
-  "attendus": 7,
-  "recus": 7,
+  "date": "2026-11-10T23:11:25.148Z",
+  "plan": "/home/claude/v6/jardins-hacienda-2-maquette/plan-images.json",
+  "attendus": 10,
+  "recus": 10,
   "planches": [
     "planche.jpg"
   ],
   "inconnus": [],
   "manquants": [],
-  "a_regenerer": [],
+  "a_regenerer": [
+    {
+      "fichier": "terrasse-bleue.jpg",
+      "problemes": [
+        "ratio 1.78 au lieu de 1168×784"
+      ],
+      "consigne_corrigee": "Edit of the previous image terrasse-or: keep exactly the same composition, camera position, table, pergola, palm trees and pool. Change only the time: twenty minutes after sunset, blue hour, deep blue and soft violet sky with a last orange glow on the horizon, the garlands of round bulb lights are now switched on and glow warm, small candles lit on the table, soft ambient light, nobody at the table. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, quiet uncluttered area in the upper half for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark. Generate in landscape format, 1168×784 pixels. only two hands, both belonging to one single person and clearly attached to the same forearms, no other hand anywhere in the frame"
+    },
+    {
+      "fichier": "terrasse-nuit.jpg",
+      "problemes": [
+        "ratio 1.78 au lieu de 1168×784"
+      ],
+      "consigne_corrigee": "Edit of the previous image terrasse-or: keep exactly the same composition, camera position, table, pergola, palm trees and pool. Change only the time: night, the sky almost black with a few stars, the garlands of bulb lights and the candles are the main light, warm pools of light on the white linen, the pool glows turquoise from its underwater lights in the background, well exposed, details visible, nobody at the table. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, quiet uncluttered area in the upper half for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark. Generate in landscape format, 1168×784 pixels. only two hands, both belonging to one single person and clearly attached to the same forearms, no other hand anywhere in the frame"
+    }
+  ],
   "images": [
     {
-      "nom": "reserver-ouverture",
-      "attendu": "table-nuit.jpg",
-      "fichier": "table-nuit.jpg",
+      "nom": "grok/midi-piscine",
+      "attendu": "midi-piscine.jpg",
+      "fichier": "midi-piscine.jpg",
       "priorite": "Indispensable",
       "problemes": [],
       "indications": [
@@ -29,10 +44,10 @@
       }
     },
     {
-      "nom": "reserver-ouverture",
+      "nom": "grok/midi-piscine",
       "mobile": true,
-      "attendu": "table-nuit-mobile.jpg",
-      "fichier": "table-nuit-mobile.jpg",
+      "attendu": "midi-piscine-mobile.jpg",
+      "fichier": "midi-piscine-mobile.jpg",
       "priorite": "Indispensable",
       "problemes": [],
       "indications": [
@@ -48,9 +63,9 @@
       }
     },
     {
-      "nom": "offrir-ouverture",
-      "attendu": "kraft-cire.jpg",
-      "fichier": "kraft-cire.jpg",
+      "nom": "grok/terrasse-or",
+      "attendu": "terrasse-or.jpg",
+      "fichier": "terrasse-or.jpg",
       "priorite": "Indispensable",
       "problemes": [],
       "indications": [
@@ -66,10 +81,69 @@
       }
     },
     {
-      "nom": "offrir-ouverture",
-      "mobile": true,
-      "attendu": "kraft-cire-mobile.jpg",
-      "fichier": "kraft-cire-mobile.jpg",
+      "nom": "grok/terrasse-bleue",
+      "attendu": "terrasse-bleue.jpg",
+      "fichier": "terrasse-bleue.jpg",
+      "priorite": "Indispensable",
+      "problemes": [
+        "ratio 1.78 au lieu de 1168×784"
+      ],
+      "indications": [
+        "mains : 0, doigts reconnus - (indicatif, à regarder)"
+      ],
+      "largeur": 1792,
+      "hauteur": 1008,
+      "boites": [],
+      "mains": {
+        "annoncees": true,
+        "vues": 0,
+        "doigts": []
+      },
+      "consigne_corrigee": "Edit of the previous image terrasse-or: keep exactly the same composition, camera position, table, pergola, palm trees and pool. Change only the time: twenty minutes after sunset, blue hour, deep blue and soft violet sky with a last orange glow on the horizon, the garlands of round bulb lights are now switched on and glow warm, small candles lit on the table, soft ambient light, nobody at the table. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, quiet uncluttered area in the upper half for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark. Generate in landscape format, 1168×784 pixels. only two hands, both belonging to one single person and clearly attached to the same forearms, no other hand anywhere in the frame"
+    },
+    {
+      "nom": "grok/terrasse-nuit",
+      "attendu": "terrasse-nuit.jpg",
+      "fichier": "terrasse-nuit.jpg",
+      "priorite": "Indispensable",
+      "problemes": [
+        "ratio 1.78 au lieu de 1168×784"
+      ],
+      "indications": [
+        "mains : 0, doigts reconnus - (indicatif, à regarder)"
+      ],
+      "largeur": 1792,
+      "hauteur": 1008,
+      "boites": [],
+      "mains": {
+        "annoncees": true,
+        "vues": 0,
+        "doigts": []
+      },
+      "consigne_corrigee": "Edit of the previous image terrasse-or: keep exactly the same composition, camera position, table, pergola, palm trees and pool. Change only the time: night, the sky almost black with a few stars, the garlands of bulb lights and the candles are the main light, warm pools of light on the white linen, the pool glows turquoise from its underwater lights in the background, well exposed, details visible, nobody at the table. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, quiet uncluttered area in the upper half for a title. Contemporary editorial hospitality photography, quiet and slow, luminous, unhurried, joyful, warm countryside hospitality mood, palette of lime-washed white, sun-bleached sand, pool turquoise, palm green and terracotta by day, amber and violet at dusk, ember orange and warm black at night, natural light true to the time of day named in the scene, bright and well exposed, soft film-like highlights, details always visible in the shadows, tactile lime-washed walls, thatched palm-leaf parasols, white linen, terracotta tiles, weathered teak, clear water, glowing embers, set in a countryside restaurant in north-eastern France with a swimming pool, palm trees and thatched parasols, a terrace with a pergola, and a dining room with a stone fireplace on the time of day and the season described at the start of this prompt, medium-format look, subtle 35mm film grain, generous negative space, realistic, high detail. No guests, no staff, no bed with someone in it, no famous landmark, no postcard cliché, no room presented as the real establishment, no signage. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark. Generate in landscape format, 1168×784 pixels. only two hands, both belonging to one single person and clearly attached to the same forearms, no other hand anywhere in the frame"
+    },
+    {
+      "nom": "grok/salle-feu",
+      "attendu": "salle-feu.jpg",
+      "fichier": "salle-feu.jpg",
+      "priorite": "Indispensable",
+      "problemes": [],
+      "indications": [
+        "mains : 0, doigts reconnus - (indicatif, à regarder)"
+      ],
+      "largeur": 1168,
+      "hauteur": 784,
+      "boites": [],
+      "mains": {
+        "annoncees": true,
+        "vues": 0,
+        "doigts": []
+      }
+    },
+    {
+      "nom": "grok/assiette-midi",
+      "attendu": "assiette-midi.jpg",
+      "fichier": "assiette-midi.jpg",
       "priorite": "Indispensable",
       "problemes": [],
       "indications": [
@@ -85,10 +159,28 @@
       }
     },
     {
-      "nom": "fetes-braises",
-      "attendu": "braises.jpg",
-      "fichier": "braises.jpg",
-      "priorite": "Conseillée",
+      "nom": "grok/assiette-soir",
+      "attendu": "assiette-soir.jpg",
+      "fichier": "assiette-soir.jpg",
+      "priorite": "Indispensable",
+      "problemes": [],
+      "indications": [
+        "mains : 0, doigts reconnus - (indicatif, à regarder)"
+      ],
+      "largeur": 784,
+      "hauteur": 1168,
+      "boites": [],
+      "mains": {
+        "annoncees": true,
+        "vues": 0,
+        "doigts": []
+      }
+    },
+    {
+      "nom": "grok/mains-chef",
+      "attendu": "mains-chef.jpg",
+      "fichier": "mains-chef.jpg",
+      "priorite": "Indispensable",
       "problemes": [],
       "indications": [
         "mains : 0, doigts reconnus - (indicatif, à regarder)"
@@ -103,27 +195,16 @@
       }
     },
     {
-      "nom": "fetes-bougies",
-      "attendu": "bougies.jpg",
-      "fichier": "bougies.jpg",
-      "priorite": "Conseillée",
-      "problemes": [],
-      "indications": [],
-      "largeur": 1168,
-      "hauteur": 784,
-      "boites": []
-    },
-    {
-      "nom": "introuvable",
-      "attendu": "introuvable.jpg",
-      "fichier": "introuvable.jpg",
-      "priorite": "Conseillée",
+      "nom": "grok/bar-apres-midi",
+      "attendu": "bar-apres-midi.jpg",
+      "fichier": "bar-apres-midi.jpg",
+      "priorite": "Indispensable",
       "problemes": [],
       "indications": [
         "mains : 0, doigts reconnus - (indicatif, à regarder)"
       ],
-      "largeur": 1168,
-      "hauteur": 784,
+      "largeur": 784,
+      "hauteur": 1168,
       "boites": [],
       "mains": {
         "annoncees": true,

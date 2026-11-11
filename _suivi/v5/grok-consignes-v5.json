@@ -1,0 +1,34 @@
+{
+  "client": "Les Jardins de l'Hacienda",
+  "activite": "restauration",
+  "direction": "Deux saisons, une maison",
+  "date": "2026-11-10T15:32:07.300Z",
+  "images": [
+    {
+      "nom": "grok/eau-reflets",
+      "fichier": "eau-reflets.jpg",
+      "page": "Accueil",
+      "emplacement": "Plongée de l'été (on entre dans l'eau de la piscine pour passer à la carte) et lueur d'été",
+      "role": "section-fond",
+      "format": "16:9",
+      "grok": "1168×784",
+      "priorite": "Indispensable",
+      "gabarit": "section-fond",
+      "pieges": [],
+      "consigne": "Close-up of the turquoise water surface of an outdoor swimming pool at midday, bright sun caustics and rippling light patterns on the pale pool floor, seen from just above the water, no people, no pool edge, no objects, no text. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, quiet uncluttered area in the upper half for a title. Cinematic low-key food-mood photography, warm, generous, sunny or cosy depending on the season, gourmet mood, palette of smoky near-black, ember orange, aged brass, cream linen, pool turquoise, palm green, firelight in winter, bright Mediterranean sun in summer, tactile cream linen, aged brass, glowing embers, clear pool water, palm leaves, set in a countryside restaurant with a fireplace, a pool and palm trees on winter evening or summer afternoon, shallow depth of field, subtle film grain, modern editorial look, photorealistic, high detail. No finished dish, no plated food, no menu, no packaging, no labelled bottle, no glass being drunk, no oven or cooking equipment presented as the restaurant's own, no jewelry, no tattoo. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    },
+    {
+      "nom": "grok/nappe-lin",
+      "fichier": "nappe-lin.jpg",
+      "page": "Accueil",
+      "emplacement": "Fond de la scène « la table se dresse » : la nappe vue de dessus, où se posent les vraies assiettes",
+      "role": "section-fond",
+      "format": "16:9",
+      "grok": "1168×784",
+      "priorite": "Indispensable",
+      "gabarit": "section-fond",
+      "pieges": [],
+      "consigne": "Overhead flat view of a heavy cream linen tablecloth on a restaurant table, soft natural folds, warm light from one side, completely empty: no plate, no cutlery, no glass, no flowers, no text. Wide horizontal composition, aspect ratio 16:9, main subject well inside the central area with generous margins on every side, so the image can be cropped, quiet uncluttered area in the upper half for a title. Cinematic low-key food-mood photography, warm, generous, sunny or cosy depending on the season, gourmet mood, palette of smoky near-black, ember orange, aged brass, cream linen, pool turquoise, palm green, firelight in winter, bright Mediterranean sun in summer, tactile cream linen, aged brass, glowing embers, clear pool water, palm leaves, set in a countryside restaurant with a fireplace, a pool and palm trees on winter evening or summer afternoon, shallow depth of field, subtle film grain, modern editorial look, photorealistic, high detail. No finished dish, no plated food, no menu, no packaging, no labelled bottle, no glass being drunk, no oven or cooking equipment presented as the restaurant's own, no jewelry, no tattoo. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark, no signature, no recognizable person, no visible face, no real or famous people, not a specific real building or landmark."
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+ "mission": "reception-v2-liste",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.2,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 10591,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver une table",
+    "Demander une réception"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Réceptions",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 6.5,
+   "adresse": "/receptions",
+   "y": 0,
+   "hauteurPage": 4083,
+   "titres": [
+    "h1 Recevoir pour un mariage"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Demander une réception",
+    "Voir les espaces",
+    "Appeler 06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Demander une réception",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 8.7,
+   "adresse": "/receptions#demande",
+   "y": 2629,
+   "hauteurPage": 4083,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "cliquer Baptêmes",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 10.9,
+   "adresse": "/receptions#demande",
+   "y": 2629,
+   "hauteurPage": 4083,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "cliquer Continuer",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 13,
+   "adresse": "/receptions#demande",
+   "y": 2629,
+   "hauteurPage": 4083,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Réceptions",
+    "Les fêtes",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Revenir",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-4.png"
+  }
+ ]
+}

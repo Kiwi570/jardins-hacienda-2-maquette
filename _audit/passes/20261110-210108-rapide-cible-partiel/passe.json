@@ -1,0 +1,18 @@
+{
+ "id": "20261110-210108-rapide-cible-partiel",
+ "date": "2026-11-10T21:16:04.821Z",
+ "niveau": "rapide",
+ "pages": "/,/la-carte,/les-fetes,/receptions,/reserver,/offrir,/infos-pratiques",
+ "etapes": [
+  "mesures",
+  "films",
+  "parcours",
+  "fluidite"
+ ],
+ "version": "6",
+ "echecs": 25,
+ "aRegarder": 8,
+ "nonLances": 1,
+ "manquants": 1,
+ "statut": "échecs"
+}

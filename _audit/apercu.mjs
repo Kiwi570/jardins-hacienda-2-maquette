@@ -3,16 +3,19 @@
    Une capture ne montre ni l'intro, ni le voile, ni une scène qui se construit au défilement : un aperçu en captures
    était validé, puis jugé « trop sage » une fois en ligne (Agence AE, lydiacourtois : une v2 entière chacun).
    Ce script filme la page comme un visiteur qui arrive et la parcourt, sur ordinateur et sur téléphone, et fait une
-   planche de captures, avec en option la planche du palmarès des ouvertures de la bibliothèque à côté.
+   planche de captures, avec en tête la vitrine du projet (ou le palmarès des ouvertures de la bibliothèque).
 
-   node _audit/apercu.mjs [--page /] [--palmares ../bibliotheque-maquettes/palmares/planches/ouverture.jpg] [--duree 24]
+   node _audit/apercu.mjs [--page /] [--vitrine _suivi/vitrine.jpg] [--duree 24]
      --page      page filmée (l'accueil par défaut)
-     --palmares  planche à mettre en tête de la planche de captures (la barre à dépasser)
+     --vitrine   vitrine du projet (node _biblio/outils/vitrine.mjs), mise en tête de la planche : à dépasser, pas à imiter.
+                 Elle remplace le palmarès des ouvertures, qui montrait les six mêmes débuts de site à chaque projet.
+     --palmares  ancienne option, encore lue : une planche quelconque mise en tête (la barre à dépasser)
      --duree     durée visée du défilement, en secondes (20 par défaut ; l'intro et les pauses s'ajoutent : 30 à 40 s en tout)
      --racine    racine du site (par défaut le dossier parent de _audit)
      --sortie    dossier de sortie (par défaut _audit/apercu)
    Résultat : accueil-ordinateur.mp4 (1440×900), accueil-telephone.mp4 (390×844, tactile), planche.jpg.
-   Les films commencent à l'arrivée sur le site : l'intro y est jouée comme pour un vrai visiteur. */
+   Les films commencent à l'arrivée sur le site : l'intro y est jouée comme pour un vrai visiteur. Ils finissent par un
+   passage de page par le menu (le voile, puis l'arrivée sur la page suivante), capturé sur la planche. */
 import { createRequire } from 'node:module';
 import { mkdirSync, rmSync, readFileSync, existsSync, readdirSync, renameSync, statSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
@@ -26,7 +29,9 @@ const ici = dirname(fileURLToPath(import.meta.url));
 const argv = process.argv.slice(2);
 const opt = (n, d) => { const i = argv.indexOf('--' + n); return i < 0 ? d : argv[i + 1]; };
 const page0 = opt('page', '/');
-const palmares = opt('palmares', '');
+const vitrine = opt('vitrine', '');
+const palmares = vitrine || opt('palmares', '');
+const titreTete = vitrine ? 'Vitrine de ce projet (le niveau à dépasser, jamais l’idée ni la mise en page à reprendre)' : 'Palmarès des ouvertures de la bibliothèque : la barre à dépasser';
 const duree = Math.max(8, parseFloat(opt('duree', '20')) || 20);
 const racine = resolve(opt('racine', join(ici, '..')));
 const sortie = resolve(opt('sortie', join(ici, 'apercu')));
@@ -55,7 +60,9 @@ async function filmer({ nom, w, h, tactile }) {
   await pret(page);
   const intro = (Date.now() - t0) / 1000;
   await attendre(1400);
-  const prendre = async (etiquette) => { const f = join(sortie, `${nom}-${captures.length}.jpg`); await page.screenshot({ path: f, type: 'jpeg', quality: 82 }); captures.push({ f, etiquette: `${nom === 'ordinateur' ? 'Ordinateur 1440×900' : 'Téléphone 390×844'} · ${etiquette}`, nom }); };
+  /* Capture pendant un changement de page : Playwright peut attendre 30 s le nouveau document (le film gardait alors
+     30 s d'image fixe et perdait le passage). Délai court, un second essai, sinon la capture est sautée. */
+  const prendre = async (etiquette) => { const f = join(sortie, `${nom}-${captures.length}.jpg`); for (let essai = 0; ; essai++) { try { await page.screenshot({ path: f, type: 'jpeg', quality: 82, timeout: 2500 }); break; } catch (e) { if (essai) return; await attendre(250); } } captures.push({ f, etiquette: `${nom === 'ordinateur' ? 'Ordinateur 1440×900' : 'Téléphone 390×844'} · ${etiquette}`, nom }); };
   await prendre('arrivée');
   /* Défilement régulier jusqu'en bas, comme un visiteur qui lit vite : molette sur ordinateur, glissé sur téléphone.
      Les sections épinglées consomment du défilement : elles se jouent pendant le film. */
@@ -71,6 +78,24 @@ async function filmer({ nom, w, h, tactile }) {
     if (k < reperes.length && i / n >= reperes[k]) { await attendre(500); await prendre(`${Math.round(reperes[k] * 100)} % de la page`); k++; }
   }
   await attendre(1500);
+  /* Fin du film : un passage de page par le menu, pour montrer le voile et l'arrivée sur la page suivante (audit externe du
+     10 novembre 2026 : le film s'arrêtait avant toute navigation, le voile n'y figurait jamais). */
+  let passage = null;
+  try {
+    await page.evaluate(() => scrollTo(0, 0)); await attendre(1000);
+    if (tactile) { const b = page.locator('[data-menu-bouton]').first(); if ((await b.count()) && (await b.isVisible())) { await b.click({ timeout: 3000 }); await attendre(800); } }
+    const lien = await page.evaluateHandle(() => [...document.querySelectorAll('header a[href], nav a[href], [data-menu] a[href]')].find((a) => {
+      const r = a.getBoundingClientRect(), u = new URL(a.href, location.href);
+      return r.width > 2 && r.height > 2 && r.top >= 0 && r.bottom <= innerHeight && u.origin === location.origin && u.pathname !== location.pathname && !a.target;
+    }) || null);
+    if (await lien.evaluate((x) => !!x)) {
+      const cible = await lien.evaluate((x) => new URL(x.href).pathname);
+      await lien.asElement().click({ timeout: 3000 });
+      await attendre(700); await prendre(`voile vers ${cible}`);
+      await attendre(2200); await prendre(`arrivée sur ${cible}`);
+      passage = cible;
+    }
+  } catch { /* pas de lien de menu visible : le film s'arrête sur l'accueil */ }
   const video = page.video();
   await ctx.close();
   const brut = await video.path();
@@ -78,7 +103,7 @@ async function filmer({ nom, w, h, tactile }) {
   try {
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', brut, '-vf', `scale=${Math.min(w, 1280)}:-2`, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '28', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', mp4]);
   } catch { renameSync(brut, mp4.replace(/\.mp4$/, '.webm')); }
-  return { nom, intro: Math.round(intro * 10) / 10, defilement: Math.round((n * delai) / 100) / 10, erreurs, fichier: existsSync(mp4) ? mp4 : mp4.replace(/\.mp4$/, '.webm') };
+  return { nom, intro: Math.round(intro * 10) / 10, defilement: Math.round((n * delai) / 100) / 10, passage, erreurs, fichier: existsSync(mp4) ? mp4 : mp4.replace(/\.mp4$/, '.webm') };
 }
 
 const films = [];
@@ -95,7 +120,7 @@ try {
     .r{display:flex;gap:14px;align-items:flex-start} figure{margin:0} figcaption{color:#aaa;font-size:13px;margin-top:6px}
     .o img{width:${Math.floor((1744 - 14 * (ord.length - 1)) / ord.length)}px;display:block;border-radius:6px}
     .t img{height:520px;display:block;border-radius:6px} .p img{width:1744px;display:block;border-radius:6px}</style>
-    ${palmares && existsSync(palmares) ? `<section class="p"><h2>Palmarès des ouvertures de la bibliothèque : la barre à dépasser</h2><img src="${img(palmares)}"></section>` : ''}
+    ${palmares && existsSync(palmares) ? `<section class="p"><h2>${titreTete}</h2><img src="${img(palmares)}"></section>` : ''}
     <section class="o"><h2>Accueil sur ordinateur</h2><div class="r">${ord.map((c) => `<figure><img src="${img(c.f)}"><figcaption>${c.etiquette}</figcaption></figure>`).join('')}</div></section>
     <section class="t"><h2>Accueil sur téléphone</h2><div class="r">${tel.map((c) => `<figure><img src="${img(c.f)}"><figcaption>${c.etiquette}</figcaption></figure>`).join('')}</div></section>`;
   const ctx = await nav.newContext({ viewport: { width: 1800, height: 900 }, deviceScaleFactor: 1 });
@@ -110,7 +135,8 @@ try {
 rmSync(join(sortie, 'brut'), { recursive: true, force: true });
 for (const f of readdirSync(sortie)) if (/^(ordinateur|telephone)-\d+\.jpg$/.test(f)) rmSync(join(sortie, f));
 console.log(`Aperçu de ${page0} · dossier ${sortie}`);
-for (const f of films) console.log(`  ${f.nom} : intro ${f.intro} s, défilement ${f.defilement} s · ${f.fichier.split('/').pop()} (${Math.round(statSync(f.fichier).size / 1024)} Ko)${f.erreurs.length ? ` · erreurs : ${f.erreurs.join(' | ')}` : ''}`);
-console.log(`  planche.jpg${palmares ? (existsSync(palmares) ? ' (avec le palmarès des ouvertures)' : ` (palmarès introuvable : ${palmares})`) : ''}`);
-console.log('  À regarder soi-même avant de l’envoyer : l’accueil fait-il au moins aussi fort que le palmarès ?');
+for (const f of films) console.log(`  ${f.nom} : intro ${f.intro} s, défilement ${f.defilement} s, ${f.passage ? `voile vers ${f.passage}` : 'aucun passage de page (pas de lien de menu visible)'} · ${f.fichier.split('/').pop()} (${Math.round(statSync(f.fichier).size / 1024)} Ko)${f.erreurs.length ? ` · erreurs : ${f.erreurs.join(' | ')}` : ''}`);
+const nomTete = vitrine ? 'vitrine' : 'palmarès', laTete = vitrine ? 'la vitrine' : 'le palmarès';
+console.log(`  planche.jpg${palmares ? (existsSync(palmares) ? ` (avec ${laTete} en tête)` : ` (${nomTete} introuvable : ${palmares})`) : ''}`);
+console.log(`  À regarder soi-même avant de l’envoyer : l’accueil fait-il au moins aussi fort que ${laTete}, sans lui ressembler ?`);
 process.exit(0);

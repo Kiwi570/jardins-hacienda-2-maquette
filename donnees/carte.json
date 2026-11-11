@@ -1,10 +1,9 @@
 {
  "devise": "EUR",
  "filtres": [
-  "vegetarien",
-  "a-partager"
+  "vegetarien"
  ],
- "recherche_exemple": "Chercher : girolles, Saint-Jacques, figues…",
+ "recherche_exemple": "Chercher un plat",
  "mention_allergenes": "Informations sur les allergènes disponibles sur demande : signalez toute allergie à l'équipe avant de commander. Plats végétariens indiqués d'après leur composition.",
  "mentions": "Carte de saison du chef Régis Clauss, renouvelée chaque semaine : les plats peuvent changer. Prix en euros.",
  "legende_complete": false,
@@ -91,7 +90,7 @@
    ]
   },
   {
-   "id": "a-partager",
+   "id": "partager",
    "titre": "À partager",
    "partager": true,
    "note": "Planches pour 4 personnes. Supplément de 10 € par personne en plus. Pour deux : 25 €.",

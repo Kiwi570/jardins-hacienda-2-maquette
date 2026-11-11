@@ -1,419 +1,135 @@
 [
- {
-  "source": "recu/grok/table-nuit.jpg",
-  "source_mobile": "recu/grok/table-nuit-mobile.jpg",
-  "nom": "grok/reserver-ouverture",
-  "role": "ouverture",
-  "page": "Réserver",
-  "emplacement": "Ouverture compacte de la page Réserver, derrière le titre et le carton de table",
-  "priorite": "Indispensable",
-  "zone_texte": "gauche",
-  "mobile": "9:16",
-  "alt": "Coin de table dressée le soir : nappe crème, serviette sombre, verre et bougie",
-  "gabarit": "ouverture",
-  "consigne_scene": "Detail of the corner of a dressed restaurant table at night: heavy cream linen tablecloth, a folded dark napkin, an empty stemmed wine glass and a small brass candle holder with a lit candle, warm light from one side, the left half of the frame falls into soft deep shadow, no food, no plate with food, no bottle, no menu, no people."
- },
- {
-  "source": "recu/grok/kraft-cire.jpg",
-  "source_mobile": "recu/grok/kraft-cire-mobile.jpg",
-  "nom": "grok/offrir-ouverture",
-  "role": "ouverture",
-  "page": "Offrir",
-  "emplacement": "Ouverture de la page Offrir, fond de la carte cadeau",
-  "priorite": "Indispensable",
-  "zone_texte": "gauche",
-  "mobile": "9:16",
-  "alt": "Enveloppe en papier kraft nouée de ficelle, cire rouge et cachet en laiton",
-  "gabarit": "ouverture",
-  "consigne_scene": "Overhead still life on dark oak: a blank kraft paper envelope tied with natural twine, a stick of deep red sealing wax and a blank brass wax seal stamp, a few dried eucalyptus leaves, warm low side light, the left half of the frame is calm dark wood, no writing, no letters, no logo, no food, no hands."
- },
- {
-  "source": "recu/grok/braises.jpg",
-  "nom": "grok/fetes-braises",
-  "role": "section-fond",
-  "page": "Accueil",
-  "emplacement": "Fond de la section « Les fêtes » de l'accueil, sous les deux dates",
-  "priorite": "Conseillée",
-  "zone_texte": "gauche",
-  "alt": "Braises rougeoyantes et cendres au fond d'un foyer",
-  "gabarit": "section-fond",
-  "consigne_scene": "Abstract macro of glowing embers and soft grey ash at the bottom of a hearth, a few sparks rising, deep black shadows above, shallow depth of field, nothing recognizable, no logs shaped like objects, no fireplace frame, no food, no hands."
- },
- {
-  "source": "recu/grok/bougies.jpg",
-  "nom": "grok/fetes-bougies",
-  "role": "section-fond",
-  "page": "Les fêtes",
-  "emplacement": "Fond sombre de la section du menu de la Saint-Sylvestre (accords mets et vins)",
-  "priorite": "Conseillée",
-  "zone_texte": "gauche",
-  "alt": "Lumière dorée de bougies dans la pénombre",
-  "gabarit": "section-fond",
-  "consigne_scene": "Out-of-focus warm golden candlelight bokeh over deep wine-red and black velvet darkness, a few tiny gold glints, very soft, nothing in sharp focus, no glasses, no bottles, no table, no people, no text."
- },
- {
-  "source": "recu/grok/introuvable.jpg",
-  "nom": "grok/introuvable",
-  "role": "404",
-  "page": "404",
-  "emplacement": "Image en tête de la page « Table introuvable »",
-  "priorite": "Conseillée",
-  "zone_texte": "gauche",
-  "alt": "Planche de service vide, serviette pliée et cloche couchée",
-  "gabarit": "404",
-  "consigne_scene": "An empty dark oak serving board on a dark counter with only a few crumbs, a folded cream linen napkin and an empty brass cloche lid lying on its side, soft warm side light, a gentle touch of humour, the left half of the frame in calm shadow, no food."
- },
- {
-  "source": "recu/restaurant-plat-deguster.png",
-  "nom": "ouverture-plat",
-  "role": "ouverture",
-  "alt": "Assiette de légumes de saison dressée sur une table en bois, devant la cheminée allumée",
-  "mobile": "4:5",
-  "cadrage": [
-   51,
-   70
-  ],
-  "zone_texte": "gauche"
- },
- {
-  "source": "recu/restaurant-29.jpg",
-  "nom": "cheminee",
-  "role": "ouverture",
-  "alt": "La salle du restaurant décorée pour Noël, la cheminée, le sapin et les tables dressées",
-  "mobile": "9:16"
- },
- {
-  "source": "recu/restaurant-25.jpg",
-  "nom": "fetes-ouverture",
-  "role": "ouverture",
-  "alt": "La cheminée de la salle, son sapin décoré et une table dressée",
-  "ratio": "3:4",
-  "mobile": "3:4"
- },
- {
-  "source": "recu/restaurant-14.jpg",
-  "nom": "carte-ouverture",
-  "role": "ouverture",
-  "alt": "Tartelette aux fruits vue de dessus, rondelles de citron et coulis, sur une table en bois",
-  "mobile": "9:16",
-  "cadrage": [
-   54,
-   45
-  ]
- },
- {
-  "source": "recu/restaurant-26.jpg",
-  "nom": "carte-entrees",
-  "role": "carte-service",
-  "alt": "Foie gras et sa briochette, verre de vin blanc",
-  "ratio": "4:5"
- },
- {
-  "source": "recu/restaurant-20.jpg",
-  "nom": "carte-plats",
-  "role": "carte-service",
-  "alt": "Volaille rôtie, pommes de terre grenaille et pousses fraîches",
-  "ratio": "4:5"
- },
- {
-  "source": "recu/menus-side-image-7077f229.jpg",
-  "nom": "carte-partager",
-  "role": "carte-service",
-  "alt": "Assiette de houmous, pain grillé et salade, vue de dessus",
-  "ratio": "4:5"
- },
- {
-  "source": "recu/restaurant-27.jpg",
-  "nom": "carte-desserts",
-  "role": "carte-service",
-  "alt": "Dessert en coupe sur une table en bois, devant le feu",
-  "ratio": "4:5"
- },
- {
-  "source": "recu/restaurant-jardins-hacienda-2.jpg",
-  "nom": "plateau-entree",
-  "role": "vignette",
-  "alt": "Salade de saison vue de dessus",
-  "ratio": "1:1"
- },
- {
-  "source": "recu/restaurant-jardins-hacienda-6.jpg",
-  "nom": "plateau-plat",
-  "role": "vignette",
-  "alt": "Pièce de viande tranchée et sa garniture, vue de dessus",
-  "ratio": "1:1"
- },
- {
-  "source": "recu/menus-side-image-7077f229.jpg",
-  "nom": "plateau-partager",
-  "role": "vignette",
-  "alt": "Houmous et pain grillé, vue de dessus",
-  "ratio": "1:1"
- },
- {
-  "source": "recu/restaurant-jardins-hacienda-8.jpg",
-  "nom": "plateau-dessert",
-  "role": "vignette",
-  "alt": "Dessert au chocolat et framboises, vu de dessus",
-  "ratio": "1:1"
- },
- {
-  "source": "recu/mariages-jardins-hacienda.png",
-  "nom": "recevoir-mariages",
-  "role": "galerie",
-  "alt": "Longue table de mariage fleurie sous la pergola",
-  "ratio": "3:4"
- },
- {
-  "source": "recu/parents-enfant-jpeg.png",
-  "nom": "recevoir-baptemes",
-  "role": "galerie",
-  "alt": "Des parents et leur bébé en plein air",
-  "ratio": "3:4"
- },
- {
-  "source": "recu/mariages-4.png",
-  "nom": "recevoir-anniversaires",
-  "role": "galerie",
-  "alt": "Verres et bouquet de roses rouges sur une table de fête",
-  "ratio": "3:4"
- },
- {
-  "source": "recu/mariages-10.jpg",
-  "nom": "recevoir-depart",
-  "role": "galerie",
-  "alt": "Invités au cocktail dans le jardin, sous les palmiers",
-  "ratio": "3:4"
- },
- {
-  "source": "recu/terrasse-13.jpg",
-  "nom": "recevoir-terrasse",
-  "role": "galerie",
-  "alt": "La terrasse et la piscine sous les palmiers",
-  "ratio": "3:4"
- },
- {
-  "source": "recu/terrasse-7.jpg",
-  "nom": "recevoir-piscine",
-  "role": "galerie",
-  "alt": "La piscine bordée de transats et de paillotes",
-  "ratio": "3:4"
- },
- {
-  "source": "recu/diner-intime.jpg",
-  "nom": "offrir-soiree",
-  "role": "section-fond",
-  "alt": "Dîner aux chandelles, le vin servi à table",
-  "ratio": "3:2"
- },
- {
-  "source": "recu/terrasse-3.jpg",
-  "nom": "infos-ouverture",
-  "role": "ouverture",
-  "alt": "L'enseigne des Jardins de l'Hacienda à l'entrée, sous le ciel de Moineville",
-  "mobile": false
- },
- {
-  "source": "recu/logo-sombre.png",
-  "nom": "logo",
-  "role": "logo",
-  "alt": "Les Jardins de l'Hacienda"
- },
- {
-  "source": "recu/restaurant-3.jpg",
-  "nom": "recevoir-salle",
-  "role": "galerie",
-  "alt": "La salle du restaurant, ses tables rondes et ses fauteuils clairs",
-  "ratio": "3:4"
- },
- {
-  "source": "recu/restaurant-19.jpg",
-  "nom": "recevoir-cheminee",
-  "role": "galerie",
-  "alt": "La cheminée décorée pour Noël et des fauteuils couverts de peaux",
-  "ratio": "3:4"
- },
- {
-  "source": "recu/restaurant-33.jpg",
-  "nom": "carte-plein",
-  "role": "ouverture",
-  "alt": "Une assiette du chef : purée, champignons poêlés et viande tranchée, sur une assiette sombre",
-  "ratio": "16:9",
-  "largeurs": [
-   640,
-   1280,
-   1920
-  ]
- },
- {
-  "source": "recu/grok/braises.jpg",
-  "nom": "grok/braises",
-  "role": "section-fond",
-  "page": "Accueil",
-  "emplacement": "Plongée de l'hiver (on entre dans le feu pour passer à la carte) et lueur d'hiver",
-  "priorite": "Indispensable",
-  "ratio": "16:9",
-  "gabarit": "section-fond",
-  "consigne_scene": "Extreme close-up of glowing embers and small low flames in a fireplace at night, deep orange and black, a few drifting sparks, shallow depth of field, no logs dominating the frame, no people, no text."
- },
- {
-  "source": "recu/terrasse-13.jpg",
-  "source_mobile": "recu/terrasse-6.jpg",
-  "nom": "ete-ouverture",
-  "role": "ouverture",
-  "mobile": "9:16",
-  "alt": "La piscine des Jardins de l'Hacienda, ses palmiers et ses paillotes sous le soleil"
- },
- {
-  "source": "recu/restaurant-2.jpg",
-  "nom": "assiette-saumon",
-  "role": "galerie",
-  "ratio": "1:1",
-  "cadrage": [
-   34,
-   74
-  ],
-  "alt": "Une assiette du chef vue de dessus : rose de saumon et petites fleurs"
- },
- {
-  "source": "recu/restaurant-33.jpg",
-  "nom": "assiette-cepes",
-  "role": "galerie",
-  "ratio": "1:1",
-  "alt": "Une assiette du chef vue de dessus : purée, cèpes poêlés et viande tranchée"
- },
- {
-  "source": "recu/terrasse-jardins-hacienda-6.jpg",
-  "nom": "assiette-turquoise",
-  "role": "galerie",
-  "ratio": "1:1",
-  "alt": "Une assiette du chef dressée sur une assiette bleu-vert"
- },
- {
-  "source": "recu/piscine-6.webp",
-  "nom": "ete-festives",
-  "role": "galerie",
-  "ratio": "4:3",
-  "alt": "La piscine en journée festive, transats et parasols blancs"
- },
- {
-  "source": "recu/terrasse-26.jpg",
-  "nom": "ete-bar",
-  "role": "galerie",
-  "ratio": "4:3",
-  "alt": "Cocktails frais servis au bar, au bord de la piscine"
- },
- {
-  "source": "recu/piscine-2.webp",
-  "nom": "ete-soir",
-  "role": "galerie",
-  "ratio": "4:3",
-  "alt": "La piscine illuminée un soir de fête d'été"
- },
- {
-  "source": "recu/restaurant-5.jpg",
-  "nom": "table-deux",
-  "role": "galerie",
-  "ratio": "4:3",
-  "alt": "Une table dressée dans la salle, un fauteuil garni de peau de mouton"
- },
- {
-  "source": "recu/restaurant-31.jpg",
-  "nom": "table-douze",
-  "role": "galerie",
-  "ratio": "4:3",
-  "alt": "Les grandes tables de la salle, dressées pour un groupe"
- },
- {
-  "source": "recu/terrasse-jardins-hacienda-2.jpg",
-  "nom": "table-quarante",
-  "role": "galerie",
-  "ratio": "4:3",
-  "alt": "Des tables blanches dressées dans les jardins pour une réception"
- },
- {
-  "source": "recu/terrasse-27.jpg",
-  "nom": "table-cent-vingt",
-  "role": "galerie",
-  "ratio": "4:3",
-  "alt": "De longues tables de réception sous la pergola"
- },
- {
-  "source": "recu/pool-party-11.jpg",
-  "nom": "ete-poolparty",
-  "role": "galerie",
-  "ratio": "4:3",
-  "alt": "Un brasero allumé au bord de la piscine, un soir de pool party"
- },
- {
-  "source": "recu/restaurant-16.jpg",
-  "nom": "sylvestre-coupe",
-  "role": "galerie",
-  "ratio": "3:4",
-  "alt": "Un cocktail servi devant la cheminée allumée"
- },
- {
-  "source": "recu/grok/nappe-lin-douce.jpg",
-  "nom": "grok/nappe-lin",
-  "role": "section-fond",
-  "page": "Accueil",
-  "emplacement": "Fond de la scène « La table se dresse » : la nappe vue de dessus",
-  "alt": "Nappe de lin crème vue de dessus",
-  "gabarit": "section-fond",
-  "note": "nappe-lin.jpg éclaircie et adoucie (luminosité 1,32, contraste 0,82, voile crème 25 %)"
- },
- {
-  "source": "recu/grok/eau-reflets-sombre.jpg",
-  "nom": "grok/eau-reflets",
-  "role": "section-fond",
-  "page": "Accueil",
-  "emplacement": "Fond des rendez-vous de l'été",
-  "alt": "Reflets du soleil sur l'eau d'une piscine",
-  "gabarit": "section-fond",
-  "note": "eau-reflets.jpg assombrie (luminosité 0,34) pour le texte clair"
- },
- {
-  "source": "recu/piscine-5.webp",
-  "nom": "ete-plongee",
-  "role": "galerie",
-  "ratio": "1:1",
-  "alt": "La piscine en plein soleil, une bouée flamant rose sur l'eau"
- },
- {
-  "source": "recu/restaurant-9.jpg",
-  "nom": "noel-carte",
-  "role": "galerie",
-  "ratio": "4:5",
-  "alt": "Une table de la salle décorée pour Noël, près du sapin"
- },
- {
-  "source": "recu/terrasse-jardins-hacienda-3.jpg",
-  "nom": "carte-ouverture-ete",
-  "role": "ouverture",
-  "ratio": "16:7",
-  "alt": "Une assiette de saison servie sur la terrasse, au soleil"
- },
- {
-  "source": "recu/terrasse-26.jpg",
-  "nom": "offrir-ete",
-  "role": "ouverture",
-  "ratio": "16:9",
-  "mobile": "9:16",
-  "alt": "Cocktails servis au bar de la terrasse"
- },
- {
-  "source": "recu/terrasse-jardins-hacienda-2.jpg",
-  "nom": "reserver-ete",
-  "role": "ouverture",
-  "ratio": "16:9",
-  "mobile": "9:16",
-  "alt": "Une table dressée en terrasse, fleurs et verres au soleil"
- },
- {
-  "source": "recu/grok/eau-reflets.jpg",
-  "nom": "grok/eau-lumiere",
-  "role": "section-fond",
-  "alt": "",
-  "note": "calque de lumière sur l'eau de la piscine (ouverture d'été)"
- }
+  {
+    "source": "recu/grok/midi-piscine.jpg",
+    "source_mobile": "recu/grok/midi-piscine-mobile.jpg",
+    "nom": "grok/midi-piscine",
+    "role": "ouverture",
+    "mobile": "9:16",
+    "zone_texte": "gauche",
+    "page": "Accueil",
+    "emplacement": "12 h · ouverture plein écran (eau qui bouge sous le doigt)",
+    "priorite": "Indispensable",
+    "alt": "La piscine à midi, l'eau turquoise, les palmiers et les parasols de paille",
+    "consigne_scene": "High noon in midsummer. Wide eye-level view across a rectangular swimming pool, crystal-clear turquoise water with bright caustic light patterns dancing on the pool floor, a row of tall palm trees and round thatched palm-leaf parasols along the far edge, white cushioned sun loungers, a low lime-washed white building with terracotta roof tiles in the background, cloudless deep blue sky, hard midday sun with short crisp shadows, the water surface takes up the lower half of the frame, still and empty, nobody in the scene"
+  },
+  {
+    "source": "recu/grok/terrasse-or.jpg",
+    "nom": "grok/terrasse-or",
+    "role": "ouverture",
+    "mobile": "9:16",
+    "zone_texte": "haut",
+    "page": "Accueil",
+    "emplacement": "19 h · la terrasse s'allume, état 1 (coucher du soleil)",
+    "priorite": "Indispensable",
+    "alt": "La longue table de réception dressée sous la pergola, au coucher du soleil",
+    "consigne_scene": "Golden hour on a summer evening, about 7 pm. A long reception table dressed with white linen, simple white plates, clear wine glasses and small low bouquets of white flowers, seen from one end so that it recedes straight toward the centre of the frame, on a terracotta-tiled terrace under a light wooden pergola, loose garlands of round unlit bulb lights hanging above the table, palm trees and a glimpse of a turquoise pool beyond, low warm sun from the side, long amber shadows, glowing rim light on the glasses, the table and its vanishing point stay within the central third of the frame, nobody at the table",
+    "cadrage": [
+      50,
+      50
+    ],
+    "source_mobile": "recu/grok/terrasse-or-mobile.jpg",
+    "cadrage_mobile": [
+      50,
+      50
+    ]
+  },
+  {
+    "source": "recu/grok/terrasse-bleue.jpg",
+    "nom": "grok/terrasse-bleue",
+    "role": "ouverture",
+    "mobile": "9:16",
+    "zone_texte": "haut",
+    "page": "Accueil",
+    "emplacement": "19 h 45 · la terrasse s'allume, état 2 (heure bleue) — à faire en modifiant terrasse-or",
+    "priorite": "Indispensable",
+    "alt": "La même table après le coucher du soleil, les guirlandes allumées",
+    "consigne_scene": "Edit of the previous image terrasse-or: keep exactly the same composition, camera position, table, pergola, palm trees and pool. Change only the time: twenty minutes after sunset, blue hour, deep blue and soft violet sky with a last orange glow on the horizon, the garlands of round bulb lights are now switched on and glow warm, small candles lit on the table, soft ambient light, nobody at the table",
+    "cadrage": [
+      50,
+      50
+    ],
+    "source_mobile": "recu/grok/terrasse-bleue-mobile.jpg",
+    "cadrage_mobile": [
+      50,
+      50
+    ]
+  },
+  {
+    "source": "recu/grok/terrasse-nuit.jpg",
+    "nom": "grok/terrasse-nuit",
+    "role": "ouverture",
+    "mobile": "9:16",
+    "zone_texte": "haut",
+    "page": "Accueil",
+    "emplacement": "21 h · la terrasse s'allume, état 3 (nuit) — à faire en modifiant terrasse-or",
+    "priorite": "Indispensable",
+    "alt": "La même table la nuit, sous les guirlandes et à la lueur des bougies",
+    "consigne_scene": "Edit of the previous image terrasse-or: keep exactly the same composition, camera position, table, pergola, palm trees and pool. Change only the time: night, the sky almost black with a few stars, the garlands of bulb lights and the candles are the main light, warm pools of light on the white linen, the pool glows turquoise from its underwater lights in the background, well exposed, details visible, nobody at the table",
+    "cadrage": [
+      50,
+      50
+    ],
+    "source_mobile": "recu/grok/terrasse-nuit-mobile.jpg",
+    "cadrage_mobile": [
+      50,
+      50
+    ]
+  },
+  {
+    "source": "recu/grok/salle-feu.jpg",
+    "nom": "grok/salle-feu",
+    "role": "ouverture",
+    "mobile": "9:16",
+    "zone_texte": "haut",
+    "page": "Accueil",
+    "emplacement": "23 h · au coin du feu (vignette qui s'ouvre en plein écran)",
+    "priorite": "Indispensable",
+    "alt": "La salle le soir, la cheminée allumée et deux tables dressées près du feu",
+    "consigne_scene": "Winter evening, about 11 pm. Interior of a cosy countryside dining room, a large stone fireplace with a lively wood fire exactly in the centre of the frame, two small tables for two dressed with white linen and lit candles close to the fire, exposed wooden ceiling beams, lime-washed walls, a few green plants, warm firelight as the main light, bright warm exposure with details visible in the shadows, nobody in the room"
+  },
+  {
+    "source": "recu/grok/assiette-midi.jpg",
+    "nom": "grok/assiette-midi",
+    "role": "galerie",
+    "ratio": "4:5",
+    "page": "Accueil et La carte",
+    "emplacement": "12 h 30 · le déjeuner (assiette du jour, lumière de midi)",
+    "priorite": "Indispensable",
+    "alt": "Une assiette de saison sur une nappe blanche, à l'ombre d'un parasol de paille",
+    "consigne_scene": "Lunch at 12.30 in summer. Top-down view of a single wide white plate on a sunlit white linen table under a thatched palm-leaf parasol, the plate holds a colourful seasonal vegetable dish with fresh herbs and a few edible flowers, dappled midday light filtering through the thatch, a glass of water with ice and a folded linen napkin beside it, crisp, fresh and appetising"
+  },
+  {
+    "source": "recu/grok/assiette-soir.jpg",
+    "nom": "grok/assiette-soir",
+    "role": "galerie",
+    "ratio": "4:5",
+    "page": "Accueil et La carte",
+    "emplacement": "21 h · le dîner (assiette du soir, lumière des bougies)",
+    "priorite": "Indispensable",
+    "alt": "Une assiette d'automne aux champignons, à la lueur des bougies",
+    "consigne_scene": "Dinner at 9 pm in autumn. Close three-quarter view of a single plate on a white tablecloth by candlelight, an autumn dish with wild mushrooms, a glossy sauce and fresh herbs, warm candle glow, a red wine glass softly out of focus, the warm blur of a fireplace in the background, appetising and well exposed"
+  },
+  {
+    "source": "recu/grok/mains-chef.jpg",
+    "nom": "grok/mains-chef",
+    "role": "section-fond",
+    "ratio": "3:2",
+    "zone_texte": "gauche",
+    "page": "La carte",
+    "emplacement": "ouverture de La carte (la passe, la vapeur monte)",
+    "priorite": "Indispensable",
+    "alt": "Les mains du chef dressent une assiette sur la passe",
+    "consigne_scene": "Close-up of generic anonymous hands of a chef in a white jacket finishing a plate with fine tweezers at the kitchen pass, a few fresh herbs, a light wisp of steam rising from the plate, warm overhead heat-lamp light against a dark brushed-steel background, only hands and forearms visible, the plate in the right half of the frame"
+  },
+  {
+    "source": "recu/grok/bar-apres-midi.jpg",
+    "nom": "grok/bar-apres-midi",
+    "role": "galerie",
+    "ratio": "3:4",
+    "page": "Accueil et Les fêtes",
+    "emplacement": "15 h 30 · le bar des journées festives",
+    "priorite": "Indispensable",
+    "alt": "Trois cocktails glacés sur le comptoir du bar, la piscine derrière",
+    "consigne_scene": "Mid-afternoon in summer, about 3.30 pm. Vertical view of three iced summer cocktails with citrus slices and fresh mint on a rustic wooden bar counter under a thatched palm-leaf roof, the turquoise pool and palm trees softly out of focus behind, warm afternoon sun just starting to turn golden, condensation on the glasses"
+  }
 ]

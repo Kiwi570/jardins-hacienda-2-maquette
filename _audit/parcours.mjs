@@ -45,24 +45,51 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     }));
     for (const x of jours) if (String(x.attendu) !== String(x.affiche).trim()) R.regarder('decompte', `affiché ${x.affiche}, attendu ${x.attendu}`, { page: '/les-fetes', taille: '390×844' });
 
-    /* v4 : la saison bascule (bouton Été), reste choisie d'une page à l'autre, et le bouton principal change de libellé. */
+    /* v6 : réserver depuis l'accueil (21 h) : le service et les couverts arrivent dans la réservation. */
     await page.goto(BASE + '/', { waitUntil: 'load' });
     await attendrePret(page);
-    await page.locator('[data-saison-choix="ete"]').click();
-    await attendre(400);
-    const ete = await page.evaluate(() => ({ s: document.documentElement.dataset.saison, bouton: document.querySelector('[data-action-principale]')?.innerText.trim() }));
-    if (ete.s !== 'ete' || !/terrasse/i.test(ete.bouton || '')) R.echec('saison', `bascule vers l'été : saison ${ete.s}, bouton « ${ete.bouton} »`, { page: '/', taille: '390×844' });
+    const choisi = await page.evaluate(() => { const r = document.querySelector('[data-mini-resa] [name="service"]:checked'); return r ? { d: r.dataset.date, s: r.value } : null; });
+    await page.locator('[data-mini-resa] [data-plus]').click();
+    await page.locator('[data-mini-resa] [type="submit"]').click();
+    await page.waitForURL(/\/reserver/, { timeout: 8000 }).catch(() => {});
+    await attendrePret(page); await attendre(800);
+    const arrivee = await page.evaluate(() => ({ url: location.search, couverts: document.querySelector('[data-resa-form] [name="couverts"]')?.value, date: document.querySelector('[data-resa-form] [name="date"]')?.value }));
+    if (!/couverts=3/.test(arrivee.url) || arrivee.couverts !== '3') R.echec('mini-resa', `accueil → réserver : ${arrivee.url}, couverts ${arrivee.couverts}`, { page: '/', taille: '390×844' });
+    if (choisi && arrivee.date !== choisi.d) R.echec('mini-resa', `date ${arrivee.date} au lieu de ${choisi.d}`, { page: '/', taille: '390×844' });
+
+    /* v6 : la carte se met à l'heure : la bascule change le moment et la photo. */
     await page.goto(BASE + '/la-carte', { waitUntil: 'load' });
     await attendrePret(page);
-    const garde = await page.evaluate(() => document.documentElement.dataset.saison);
-    if (garde !== 'ete') R.echec('saison', `saison non gardée d'une page à l'autre (${garde})`, { page: '/la-carte', taille: '390×844' });
-    await page.evaluate(() => { try { localStorage.removeItem('jh-saison'); } catch {} });
-    /* v4 : la table qui s'agrandit (120 invités : les jardins et la pergola, lien prérempli). */
-    await page.goto(BASE + '/', { waitUntil: 'load' });
+    const m0 = await page.evaluate(() => document.documentElement.dataset.moment);
+    await page.locator('[data-bascule-moment]').click(); await attendre(300);
+    const m1 = await page.evaluate(() => document.documentElement.dataset.moment);
+    if (!m0 || m0 === m1) R.echec('moment', `bascule déjeuner/dîner : ${m0} → ${m1}`, { page: '/la-carte', taille: '390×844' });
+
+    /* v6 : les fêtes, la saison décide (bouton Cet été). */
+    await page.goto(BASE + '/les-fetes', { waitUntil: 'load' });
     await attendrePret(page);
-    await page.locator('[data-palier="3"]').click();
-    await attendre(300);
-    const rec = await page.evaluate(() => ({ espace: [...document.querySelectorAll('[data-espace]')].find((e) => !e.hidden)?.textContent, lien: document.querySelector('[data-lien-reception]')?.getAttribute('href') }));
-    if (!/pergola/i.test(rec.espace || '') || !/invites=120/.test(rec.lien || '')) R.echec('recevoir', `120 invités : « ${rec.espace} », lien ${rec.lien}`, { page: '/', taille: '390×844' });
-  } finally { await ctx.close(); }
+    await page.locator('[data-saison-choix="ete"]').click(); await attendre(300);
+    const ete = await page.evaluate(() => ({ s: document.documentElement.dataset.saison, vu: !!document.querySelector('#ete')?.offsetParent }));
+    if (ete.s !== 'ete' || !ete.vu) R.echec('saison', `bascule vers l'été : saison ${ete.s}, section été visible ${ete.vu}`, { page: '/les-fetes', taille: '390×844' });
+
+    /* v6 : demande de réception en trois étapes, carton tamponné à l'envoi, pas de double envoi. */
+    await page.goto(BASE + '/receptions#demande', { waitUntil: 'load' });
+    await attendrePret(page);
+    const f = page.locator('[data-demande]');
+    /* Aucune occasion cochée d'avance : « Continuer » doit bloquer, puis passer une fois le baptême choisi. */
+    await f.locator('[data-etape="1"] [data-suivant]').click(); await attendre(200);
+    const bloqueSansOccasion = await page.evaluate(() => document.querySelector('[data-demande] [data-etape="1"]').classList.contains('est-courante'));
+    if (!bloqueSansOccasion) R.echec('demande', 'demande de réception : on passe à l’étape 2 sans avoir choisi l’occasion', { page: '/receptions', taille: '390×844' });
+    await f.locator('[name="occasion"][data-un="Un baptême"]').check({ force: true }); await attendre(100);
+    await f.locator('[data-etape="1"] [data-suivant]').click(); await attendre(200);
+    /* Une période suffit quand la date n'est pas fixée. */
+    await f.locator('[name="periode"]').selectOption({ index: 2 }); await f.locator('[name="invites"]').fill('40');
+    await f.locator('[data-etape="2"] [data-suivant]').click(); await attendre(200);
+    await f.locator('[name="prenom"]').fill('Claire'); await f.locator('[name="nom"]').fill('Martin'); await f.locator('[name="telephone"]').fill('06 12 34 56 78');
+    await f.locator('[type="submit"]').click(); await attendre(700);
+    const dem = await page.evaluate(() => ({ tampon: document.querySelector('[data-invitation]')?.classList.contains('est-tamponnee'), detail: document.querySelector('[data-inv-detail]')?.textContent, msg: !document.querySelector('[data-demande-message]')?.hidden, bloque: document.querySelector('[data-demande] [type="submit"]')?.disabled }));
+    if (!dem.tampon || !dem.msg || !/40 invités/.test(dem.detail || '') || !/printemps 2027/i.test(dem.detail || '') || !dem.bloque) R.echec('demande', `demande de réception : tampon ${dem.tampon}, message ${dem.msg}, détail « ${dem.detail} », bouton bloqué ${dem.bloque}`, { page: '/receptions', taille: '390×844' });
+  } finally {
+    await ctx.close();
+  }
 }

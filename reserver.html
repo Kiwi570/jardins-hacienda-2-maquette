@@ -1,21 +1,17 @@
 <!doctype html>
-<html lang="fr" data-v="5" data-saison="hiver" data-curseur>
+<html lang="fr" data-v="6" data-page="reserver" data-theme="nuit" style="--voile-page:#1f1a35;--ouverture-fond:#120c09;--ouverture-texte:#f6efe2">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Réserver une table : Les Jardins de l&#39;Hacienda</title>
-<meta name="description" content="Choisissez votre table sur le plan de la salle, puis le jour, le service et le nombre de couverts. Réservation simulée dans cette maquette.">
+<meta name="description" content="Le jour, le service, les couverts, puis la table sur le plan de la salle si vous le souhaitez. Réservation simulée dans cette maquette.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://jardins-hacienda-2-maquette.vercel.app/reserver">
-<style>:root{--fond:#15100c;--texte:#f3e7d3;--voile-fond:#1d1611;--ouverture-fond:#15100c;--menu-fond:#1d1611}:root { --entete-h: 72px; --barres-h: 0px; } html { background: var(--fond); color: var(--texte); scrollbar-gutter: stable; } body { margin: 0; background: var(--fond); } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime] { opacity: 0; } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime].vu { opacity: 1; } [data-voile] { position: fixed; inset: 0; z-index: 900; background: var(--voile-fond); transform: translateY(100%); visibility: hidden; pointer-events: none; } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) [data-voile] { transform: none; visibility: visible; } html.calme [data-voile], html.secours [data-voile] { visibility: hidden !important; } .ouverture-panneau { position: fixed; inset: 0; z-index: 850; display: none; place-content: center; justify-items: center; background: var(--ouverture-fond, var(--voile-fond)); color: var(--fond); text-align: center; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) .ouverture-panneau { display: grid; } html.defilement-bloque, html.defilement-bloque body, html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie), html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) body, html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours), html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { overflow: hidden; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); }</style>
+<style>:root{--fond:#f6f1e7;--texte:#1c1712;--voile-fond:#1a0f0b;--ouverture-fond:#f6f1e7;--menu-fond:#16100c}:root { --entete-h: 72px; --barres-h: 0px; } html { background: var(--fond); color: var(--texte); scrollbar-gutter: stable; } body { margin: 0; background: var(--fond); } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime] { opacity: 0; } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime].vu { opacity: 1; } [data-voile] { position: fixed; inset: 0; z-index: 900; background: var(--voile-fond); transform: translateY(100%); visibility: hidden; pointer-events: none; } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) [data-voile] { transform: none; visibility: visible; } html.calme [data-voile], html.secours [data-voile] { visibility: hidden !important; } .ouverture-panneau { position: fixed; inset: 0; z-index: 850; display: none; place-content: center; justify-items: center; background: var(--ouverture-fond, var(--voile-fond)); color: var(--fond); text-align: center; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) .ouverture-panneau { display: grid; } html.defilement-bloque, html.defilement-bloque body, html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie), html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) body, html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours), html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { overflow: hidden; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); } .ouverture-panneau { gap: 10px; color: var(--ouverture-texte, #1c1712); } .ouverture-heure { margin: 0; display: flex; align-items: flex-start; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(5rem, min(22vw, 30vh), 15rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } .ouverture-rouleau { display: block; height: 1em; overflow: hidden; } .ouverture-rouleau > span { display: block; height: 1em; } .ouverture-sep { display: block; padding-inline: .02em; } .ouverture-nom { margin: 0; font-family: 'Instrument Serif', 'Instrument Fallback', Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.1; } .ouverture-ligne { margin: 0; font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; opacity: .72; } .voile-contenu { display: grid; justify-items: center; gap: 6px; color: #f6efe2; } .voile-heure { margin: 0; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(4rem, 16vw, 11rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } html:not([data-moment="soir"]) [data-moment-seul="soir"], html[data-moment="soir"] [data-moment-seul="jour"] { display: none !important; } html:not([data-saison="ete"]) [data-saison-seul="ete"], html[data-saison="ete"] [data-saison-seul="hiver"] { display: none !important; }</style>
 <script>(function () {
 var d = document.documentElement, ss = null, ls = null;
 try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
 d.classList.add('js');
-var saison = 'hiver';
-try { var mois = +new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', month: 'numeric' }).format(new Date()); saison = mois >= 5 && mois <= 9 ? 'ete' : 'hiver'; } catch (e) {}
-try { var choix = ls && ls.getItem('jh-saison'); if (choix === 'hiver' || choix === 'ete') saison = choix; } catch (e) {}
-d.setAttribute('data-saison', saison);
 var calme = false;
 try { calme = !!ls && ls.getItem('socle:calme') === 'oui'; } catch (e) {}
 if (!calme && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) calme = true;
@@ -43,27 +39,28 @@ if (alt) location.replace(new URL(alt.href).pathname + location.search + locatio
 } catch (e) {}
 setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('secours'); }, 2000);
 })();</script>
-<link rel="preload" href="/assets/fonts/bodoni-moda.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/socle.css?v=5">
-<link rel="stylesheet" href="/assets/js/modules/plan-de-salle/module.css?v=5">
-<link rel="stylesheet" href="/assets/js/modules/reservation-de-table/module.css?v=5">
-<link rel="stylesheet" href="/assets/js/modules/envol-vers-le-panier/module.css?v=5">
-<link rel="stylesheet" href="/assets/css/site.css?v=5">
-<link rel="modulepreload" href="/assets/js/site.js?v=5">
-<link rel="modulepreload" href="/assets/js/socle/index.js?v=5">
+<script>(function(){try{var d=document.documentElement,p={};new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit',month:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});var h=+p.hour,m=+p.month;var mo=h>=5&&h<17?'jour':'soir';try{var q=new URLSearchParams(location.search).get('moment');if(q==='jour'||q==='soir')mo=q;}catch(e){}d.setAttribute('data-moment',mo);if(d.hasAttribute('data-theme-auto')){d.setAttribute('data-theme',mo==='soir'?'nuit':'jour');if(mo==='soir'){d.style.setProperty('--ouverture-fond','#120c09');d.style.setProperty('--ouverture-texte','#f6efe2');}}var sa=m>=5&&m<=9?'ete':'hiver';try{var qs=new URLSearchParams(location.search).get('saison');if(qs==='ete'||qs==='hiver')sa=qs;}catch(e){}d.setAttribute('data-saison',sa);d.style.setProperty('--heure-reelle',"'"+p.hour+':'+p.minute+"'");}catch(e){}})();</script>
+<link rel="preload" href="/assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/socle.css?v=6">
+<link rel="stylesheet" href="/assets/js/modules/plan-de-salle/module.css?v=6">
+<link rel="stylesheet" href="/assets/js/modules/reservation-de-table/module.css?v=6">
+<link rel="stylesheet" href="/assets/js/modules/envol-vers-le-panier/module.css?v=6">
+<link rel="stylesheet" href="/assets/css/site.css?v=6">
+<link rel="modulepreload" href="/assets/js/site.js?v=6">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=6">
 <script src="/assets/vendor/gsap.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/vendor/SplitText.min.js" defer></script>
-<script type="module" src="/assets/js/site.js?v=5"></script>
-<meta name="theme-color" content="#15100c">
+<script type="module" src="/assets/js/site.js?v=6"></script>
+<meta name="theme-color" content="#f6f1e7">
 <link rel="icon" href="/assets/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Les Jardins de l&#39;Hacienda">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:title" content="Réserver une table : Les Jardins de l&#39;Hacienda">
-<meta property="og:description" content="Choisissez votre table sur le plan de la salle, puis le jour, le service et le nombre de couverts. Réservation simulée dans cette maquette.">
+<meta property="og:description" content="Le jour, le service, les couverts, puis la table sur le plan de la salle si vous le souhaitez. Réservation simulée dans cette maquette.">
 <meta property="og:url" content="https://jardins-hacienda-2-maquette.vercel.app/reserver">
 <meta property="og:image" content="https://jardins-hacienda-2-maquette.vercel.app/assets/partage/reserver-fr.jpg">
 <meta property="og:image:width" content="1200">
@@ -73,29 +70,25 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":"Les Jardins de l'Hacienda","url":"https://jardins-hacienda-2-maquette.vercel.app/","telephone":"+33 6 18 21 28 10","servesCuisine":"Cuisine traditionnelle de saison","address":{"@type":"PostalAddress","streetAddress":"6 Vathier Haye","postalCode":"54580","addressLocality":"Moineville","addressCountry":"FR"},"sameAs":["https://www.facebook.com/lesjardinsdelhacienda54","https://www.instagram.com/lesjardinsdel.hacienda/"],"acceptsReservations":true}</script>
 </head>
 <body id="haut">
-<div data-voile data-forme="cloche" aria-hidden="true"><div class="voile-contenu"><svg class="voile-cloche" viewBox="0 0 120 80" aria-hidden="true"><path d="M60 8a5 5 0 1 1 0 .1M14 66a46 46 0 0 1 92 0Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M6 70h108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><span data-voile-libelle>Réserver</span></div></div>
+<script type="application/json" data-reservation-globale>{"fuseau":"Europe/Paris","delai_minutes":60,"jours_a_l_avance":60,"couverts_max":10,"telephone":"06 18 21 28 10","services":{"midi":{"libelle":"Midi","debut":"12:00","fin":"13:30","pas":15},"soir":{"libelle":"Soir","debut":"19:00","fin":"21:30","pas":15}},"fermetures":{"jours":["lundi","mardi"],"services":{"mercredi":["soir"],"jeudi":["soir"],"samedi":["midi"],"dimanche":["soir"]},"dates":[]},"espaces":[{"id":"salle","libelle":"En salle"},{"id":"terrasse","libelle":"En terrasse","mois":[6,7,8,9],"note":"selon la météo","hors_saison":"de juin à septembre"}],"complets":{},"complets_simules":true,"message_simule":"Réservation simulée : rien n'est envoyé dans cette maquette.","ouvertures_exceptionnelles":[{"date":"2026-12-31","service":"soir","note":"Saint-Sylvestre"}]}</script>
+<div data-voile data-forme="cloche" aria-hidden="true"><div class="voile-contenu"><p class="voile-heure" data-voile-heure>21:00</p><span data-voile-libelle>Réserver</span></div></div>
 <div class="ouverture-panneau" data-ouverture aria-hidden="true">
-  <div class="ouverture-cloche" data-ouverture-objet>
-    <svg class="ouverture-dome" viewBox="0 0 200 150" aria-hidden="true"><defs><linearGradient id="g-laiton" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2c48c"/><stop offset=".45" stop-color="#b8925a"/><stop offset="1" stop-color="#6e5228"/></linearGradient></defs><circle cx="100" cy="14" r="9" fill="url(#g-laiton)"/><path d="M18 128a82 82 0 0 1 164 0Z" fill="url(#g-laiton)"/><path d="M40 112a62 62 0 0 1 34-48" fill="none" stroke="#f6e6c4" stroke-width="5" stroke-linecap="round" opacity=".55"/><rect x="6" y="128" width="188" height="10" rx="5" fill="#8a6a36"/></svg>
-    <img class="ouverture-logo" src="/assets/images/logo-clair.png" alt="" width="64" height="64">
-  </div>
-  <span class="ouverture-vapeur" aria-hidden="true"></span>
+  <p class="ouverture-heure" data-ouverture-objet><span class="ouverture-rouleau" data-rouleau="h"><span>00</span><span>07</span><span>14</span><span>20</span><span>21</span></span><span class="ouverture-sep">:</span><span class="ouverture-rouleau" data-rouleau="m"><span>00</span><span>15</span><span>30</span><span>45</span><span>00</span></span></p>
   <p class="ouverture-nom">Les Jardins de l&#39;Hacienda</p>
-  <span class="ouverture-trait"></span>
   <p class="ouverture-ligne">Restaurant et réceptions · Moineville</p>
 </div>
 <a class="evitement" href="#contenu">Aller au contenu</a>
 <header data-entete>
   <div class="entete-rangee">
-    <a class="entete-logo" href="/" data-libelle="Accueil">
-      <img src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>Les Jardins de l&#39;Hacienda</span>
+    <a class="entete-logo" href="/" aria-label="Les Jardins de l&#39;Hacienda, accueil" data-libelle="Accueil">
+      <img class="entete-logo__jour" src="/assets/images/logo-240.webp" alt="" width="40" height="37"><img class="entete-logo__nuit" src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>Les Jardins de l&#39;Hacienda</span>
     </a>
+    <p class="horloge" data-horloge data-grille="fil" data-effet="heure" aria-hidden="true"><span class="horloge__h" data-horloge-h>21</span><span class="horloge__sep">:</span><span class="horloge__m" data-horloge-m>00</span></p>
     <nav data-nav aria-label="Navigation principale">
-      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/#recevoir" data-libelle="Réceptions">Réceptions</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
     </nav>
     <div class="entete-actions">
-      <button type="button" class="saison-mini" data-saison-bascule aria-pressed="false" aria-label="Passer à l’été"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="saison-mini__flamme" d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-3 2-5 3-7 0 2 1 3 2 3 0-2 0-4 0-6z"/><g class="saison-mini__soleil"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg></button>
-      <a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver</a>
+      <a class="bouton bouton--entete" href="/reserver#formulaire" data-libelle="Réserver" data-resa-cible>Réserver</a>
       <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="Menu" data-libelle-fermer="Fermer"><span data-libelle-bouton>Menu</span></button>
       <a class="menu-sansjs" href="#menu" data-menu-lien>Menu</a>
     </div>
@@ -119,88 +112,84 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <span id="menu-ferme" aria-hidden="true"></span>
 <div id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu">
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
-  <ul><li style="--i:0"><a href="/" class="menu-lien" data-libelle="Accueil">Accueil</a></li><li style="--i:1"><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:2"><a href="/#recevoir" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:4"><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
-  <p class="menu-actions"><a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver une table</a><a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
+  <ul><li style="--i:0"><span class="menu-heure" aria-hidden="true">12:00</span><a href="/" class="menu-lien" data-libelle="Accueil">Accueil</a></li><li style="--i:1"><span class="menu-heure" aria-hidden="true">12:30</span><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><span class="menu-heure" aria-hidden="true">19:00</span><a href="/receptions" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><span class="menu-heure" aria-hidden="true">23:30</span><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:4"><span class="menu-heure" aria-hidden="true">00:00</span><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:5"><span class="menu-heure" aria-hidden="true">Maintenant</span><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+  <p class="menu-actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une table</a> <a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
 <main id="contenu" tabindex="-1">
-<section class="ouv-resa" data-lueur id="debut" data-fil="gauche" data-grille="fil">
-  <figure class="media ouv-resa__fond" data-grok data-saison-photo="hiver" style="--cadrage:70% 56%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/reserver-ouverture-mobile-640.webp 640w" sizes="100vw">
-    <img src="/assets/images/grok/reserver-ouverture-1280.webp" srcset="/assets/images/grok/reserver-ouverture-640.webp 640w, /assets/images/grok/reserver-ouverture-1280.webp 1280w" sizes="100vw" alt="Coin de table dressée le soir : nappe crème, serviette sombre, verre et bougie" width="1280" height="720" fetchpriority="high" loading="eager" decoding="async">
+<section class="ouv-resa" id="debut" data-effet="service">
+  <div class="ouv-resa__photo">
+    <figure class="media ouv-resa__img ouv-resa__img--midi" data-grok style="--cadrage:50% 50%">
+  <picture>
+    <img src="/assets/images/grok/assiette-midi-960.webp" srcset="/assets/images/grok/assiette-midi-480.webp 480w, /assets/images/grok/assiette-midi-640.webp 640w, /assets/images/grok/assiette-midi-960.webp 960w" sizes="(max-width: 760px) 40vw, 30vw" alt="Une assiette de saison à l&#39;ombre d&#39;un parasol de paille" width="960" height="1200" loading="lazy" decoding="async">
   </picture><figcaption class="mention-ia">Illustration générée</figcaption>
 </figure>
-  <figure class="media ouv-resa__fond" data-saison-photo="ete" style="--cadrage:50% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/reserver-ete-mobile-640.webp 640w" sizes="100vw">
-    <img src="/assets/images/reserver-ete-1280.webp" srcset="/assets/images/reserver-ete-640.webp 640w, /assets/images/reserver-ete-1280.webp 1280w" sizes="100vw" alt="Une table dressée en terrasse, fleurs et verres au soleil" width="1280" height="721" loading="lazy" decoding="async">
-  </picture>
+    <figure class="media ouv-resa__img ouv-resa__img--soir" data-grok style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/terrasse-nuit-mobile-640.webp 640w" sizes="(max-width: 760px) 40vw, 30vw">
+    <img src="/assets/images/grok/terrasse-nuit-1280.webp" srcset="/assets/images/grok/terrasse-nuit-640.webp 640w, /assets/images/grok/terrasse-nuit-1280.webp 1280w, /assets/images/grok/terrasse-nuit-1920.webp 1920w" sizes="(max-width: 760px) 40vw, 30vw" alt="La table de réception sous les guirlandes, la nuit" width="1280" height="720" fetchpriority="high" loading="eager" decoding="async">
+  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
 </figure>
-  <div class="conteneur ouv-resa__grille">
-    <div class="ouv-resa__texte">
-      <p class="surtitre" data-anime>Réservation</p>
-      <h1 data-anime="lignes">Votre table</h1>
-      <p class="masque-ecran-tres-bas" data-anime>Le jour, l&#39;heure et le nombre de couverts d&#39;abord ; la table sur le plan ensuite, si vous le souhaitez. Une question, un groupe ? Appelez-nous.<span data-saison-seul="ete"> La terrasse et la piscine vous accueillent de juin à septembre ; le reste de l’année, la salle et sa cheminée.</span></p>
-      <p class="ouv-resa__actions"><a class="bouton" href="#formulaire" data-action-principale data-sans-transition>Choisir le jour</a> <a class="bouton bouton--contour" href="#plan" data-sans-transition>Choisir ma table</a> <a class="ouv-resa__tel" href="tel:+33618212810" data-info-cle>06 18 21 28 10</a></p>
-    </div>
-    <div class="carton" data-iris-centre aria-hidden="true">
-      <span class="carton__pli"></span>
-      <p class="carton__ecrit" data-effet="carton" data-grille="typo" data-texte="Votre table">Votre table</p>
-      <p class="carton__detail"><span data-saison-seul="hiver">au coin du feu</span><span data-saison-seul="ete">en terrasse, l’été</span></p>
-    </div>
+  </div>
+  <div class="ouv-resa__texte">
+    <p class="heure-geante ouv-resa__heure" data-iris-centre data-grille="typo" data-effet="axes" aria-hidden="true"><span class="ouv-resa__h-midi">12:30</span><span class="ouv-resa__h-soir">20:00</span></p>
+    <p class="surtitre"><span class="ouv-resa__h-midi">Au déjeuner</span><span class="ouv-resa__h-soir">Au dîner</span></p>
+    <h1>Votre table</h1>
+    <p class="masque-ecran-bas masque-petit">Le jour, le service, les couverts d&#39;abord ; la table sur le plan ensuite, si vous le souhaitez. Plus de 10 personnes ? Demandez une réception.</p>
+    <p class="ouv-resa__actions"><a class="bouton" href="#formulaire" data-action-principale data-sans-transition>Choisir le jour</a> <a class="bouton bouton--contour" href="#plan" data-sans-transition>Choisir ma table</a> <a class="ouv-resa__tel" href="tel:+33618212810" data-info-cle>06 18 21 28 10</a></p>
   </div>
 </section>
-<section class="resa clair" data-lueur id="formulaire" data-module="reservation-de-table" data-fil="gauche" data-grille="retour" aria-labelledby="resa-titre">
-  <script type="application/json" data-reservation>{"fuseau":"Europe/Paris","delai_minutes":60,"jours_a_l_avance":60,"couverts_max":10,"telephone":"06 18 21 28 10","services":{"midi":{"libelle":"Midi","debut":"12:00","fin":"13:30","pas":15},"soir":{"libelle":"Soir","debut":"19:00","fin":"21:30","pas":15}},"fermetures":{"jours":["lundi","mardi"],"services":{"mercredi":["soir"],"jeudi":["soir"],"samedi":["midi"],"dimanche":["soir"]},"dates":[]},"espaces":[{"id":"salle","libelle":"En salle"},{"id":"terrasse","libelle":"En terrasse","mois":[6,7,8,9],"note":"selon la météo","hors_saison":"de juin à septembre"}],"complets":{},"complets_simules":true,"message_simule":"Réservation simulée : rien n'est envoyé dans cette maquette.","ouvertures_exceptionnelles":[{"date":"2026-12-31","service":"soir","note":"Saint-Sylvestre"}]}</script>
+<section class="resa" id="formulaire" data-module="reservation-de-table" data-grille="retour" aria-labelledby="resa-titre">
+  <script type="application/json" data-reservation>{"fuseau":"Europe/Paris","delai_minutes":60,"jours_a_l_avance":60,"couverts_max":10,"telephone":"06 18 21 28 10","services":{"midi":{"libelle":"Midi","debut":"12:00","fin":"13:30","pas":15},"soir":{"libelle":"Soir","debut":"19:00","fin":"21:30","pas":15}},"fermetures":{"jours":["lundi","mardi"],"services":{"mercredi":["soir"],"jeudi":["soir"],"samedi":["midi"],"dimanche":["soir"]},"dates":[]},"espaces":[{"id":"salle","libelle":"En salle"},{"id":"terrasse","libelle":"En terrasse","mois":[6,7,8,9],"note":"selon la météo","hors_saison":"de juin à septembre"}],"complets":{},"complets_simules":true,"message_simule":"Réservation simulée : rien n'est envoyé dans cette maquette.","ouvertures_exceptionnelles":[{"date":"2026-12-31","service":"soir","note":"Saint-Sylvestre"}]}</script>
   <noscript><style>.resa__jours{display:none}.resa__creneaux{min-height:0}.resa__compteur button{display:none}</style></noscript>
   <div class="resa__grille socle-cadre">
     <form class="resa__form" data-resa-form action="#" novalidate aria-labelledby="resa-titre">
       <header class="resa__tete">
-        <figure class="media resa__bandeau resa__bandeau--bougies" data-grok style="--cadrage:50% 50%">
+        <figure class="media resa__bandeau" style="--cadrage:50% 34%">
   <picture>
-    <img src="/assets/images/grok/fetes-bougies-1280.webp" srcset="/assets/images/grok/fetes-bougies-640.webp 640w, /assets/images/grok/fetes-bougies-1280.webp 1280w" sizes="(max-width: 760px) 100vw, 55vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
-  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
+    <img src="/assets/images/recevoir-salle-960.webp" srcset="/assets/images/recevoir-salle-480.webp 480w, /assets/images/recevoir-salle-640.webp 640w, /assets/images/recevoir-salle-960.webp 960w" sizes="(max-width: 760px) 92vw, 50vw" alt="La salle et ses tables rondes en verre, près des baies vitrées" width="960" height="1279" loading="lazy" decoding="async">
+  </picture>
 </figure>
-        <p class="socle-surtitre">Votre réservation</p>
+        <p class="socle-surtitre">Une table pour vous</p>
         <h2 id="resa-titre" data-anime="lignes">Le jour, l&#39;heure, les couverts</h2>
-        <p>Réservation simulée : rien n&#39;est envoyé dans cette maquette.</p>
+        <p>Le midi du mercredi au dimanche (sauf le samedi), le soir le vendredi et le samedi. Réservation simulée dans cette maquette.</p>
       </header>
       <fieldset class="resa__champ" data-champ="date">
-        <legend>Quel jour&nbsp;?</legend>
+        <legend>Quel jour&#8239;?</legend>
         <div class="resa__jours" data-resa-jours aria-label="Les sept prochains jours"></div>
         <label class="resa__date"><span>Ou une autre date</span><input type="date" id="resa-date" name="date" required></label>
       </fieldset>
       <fieldset class="resa__champ" data-champ="service">
-        <legend>Quel service&nbsp;?</legend>
+        <legend>Quel service&#8239;?</legend>
         <div class="resa__puces">
           <label class="resa__puce"><input type="radio" name="service" value="midi"><span>Midi</span><small data-note></small></label>
           <label class="resa__puce"><input type="radio" name="service" value="soir" checked><span>Soir</span><small data-note></small></label>
         </div>
       </fieldset>
       <div class="resa__champ" data-champ="couverts">
-        <label class="resa__libelle" for="resa-couverts">Combien de personnes&nbsp;?</label>
+        <label class="resa__libelle" for="resa-couverts">Combien de personnes&#8239;?</label>
         <div class="resa__compteur">
           <button type="button" data-moins aria-label="Une personne de moins">−</button>
           <input type="number" id="resa-couverts" name="couverts" min="1" max="10" value="2" inputmode="numeric">
           <button type="button" data-plus aria-label="Une personne de plus">+</button>
         </div>
-        <p class="resa__aide" data-resa-groupe hidden>Au-delà de 10 personnes, appelez-nous au <a href="tel:+33618212810">06 18 21 28 10</a> : nous préparons la salle.</p>
+        <p class="resa__aide" data-resa-groupe hidden>Au-delà de 10 personnes, <a href="/receptions#demande" data-libelle="Réceptions">demandez une réception</a> ou appelez-nous au <a href="tel:+33618212810">06 18 21 28 10</a>.</p>
       </div>
       <fieldset class="resa__champ" data-champ="heure">
-        <legend>À quelle heure&nbsp;?</legend>
+        <legend>À quelle heure&#8239;?</legend>
         <div class="resa__creneaux" data-resa-creneaux>
           <label class="resa__date"><span>Heure d'arrivée</span><select name="heure" id="resa-heure"><option value="">Choisir</option><optgroup label="Midi"><option value="12:00">12 h</option><option value="12:15">12 h 15</option><option value="12:30">12 h 30</option><option value="12:45">12 h 45</option><option value="13:00">13 h</option><option value="13:15">13 h 15</option><option value="13:30">13 h 30</option></optgroup><optgroup label="Soir"><option value="19:00">19 h</option><option value="19:15">19 h 15</option><option value="19:30">19 h 30</option><option value="19:45">19 h 45</option><option value="20:00">20 h</option><option value="20:15">20 h 15</option><option value="20:30">20 h 30</option><option value="20:45">20 h 45</option><option value="21:00">21 h</option><option value="21:15">21 h 15</option><option value="21:30">21 h 30</option></optgroup></select></label>
         </div>
         <p class="resa__aide" data-resa-creneaux-aide aria-live="polite"></p>
       </fieldset>
       <fieldset class="resa__champ" data-champ="espace">
-        <legend>Où souhaitez-vous vous installer&nbsp;?</legend>
+        <legend>Où souhaitez-vous vous installer&#8239;?</legend>
         <div class="resa__puces">
           <label class="resa__puce"><input type="radio" name="espace" value="salle" checked><span>En salle</span><small data-note></small></label>
           <label class="resa__puce"><input type="radio" name="espace" value="terrasse"><span>En terrasse</span><small data-note></small></label>
         </div>
       </fieldset>
       <details class="resa__plus">
-      <summary>Une demande particulière&nbsp;? <span class="resa__facultatif">(facultatif)</span></summary>
+      <summary>Une demande particulière&#8239;? <span class="resa__facultatif">(facultatif)</span></summary>
       <fieldset class="resa__champ" data-champ="demande">
         <legend class="sr-only">Une demande particulière</legend>
         <div class="resa__puces resa__puces--demandes">
@@ -214,10 +203,10 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <fieldset class="resa__champ" data-champ="contact">
         <legend>Vos coordonnées</legend>
         <div class="resa__contact">
-          <label><span>Prénom</span><input type="text" id="resa-prenom" name="prenom" autocomplete="given-name" required></label>
-          <label><span>Nom</span><input type="text" id="resa-nom" name="nom" autocomplete="family-name" required></label>
-          <label><span>Téléphone</span><input type="tel" id="resa-telephone" name="telephone" autocomplete="tel" required></label>
-          <label><span>E-mail <span class="resa__facultatif">(facultatif)</span></span><input type="email" id="resa-email" name="email" autocomplete="email"></label>
+          <label class="resa__champ"><span>Prénom</span><input type="text" id="resa-prenom" name="prenom" autocomplete="given-name" required></label>
+          <label class="resa__champ"><span>Nom</span><input type="text" id="resa-nom" name="nom" autocomplete="family-name" required></label>
+          <label class="resa__champ"><span>Téléphone</span><input type="tel" id="resa-telephone" name="telephone" autocomplete="tel" required></label>
+          <label class="resa__champ"><span>E-mail <span class="resa__facultatif">(facultatif)</span></span><input type="email" id="resa-email" name="email" autocomplete="email"></label>
         </div>
       </fieldset>
       <p class="resa__mention">Vos coordonnées servent seulement à confirmer la réservation. Disponibilités simulées pour la maquette.</p>
@@ -226,7 +215,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <aside class="resa__recap" data-resa-recap aria-label="Récapitulatif de la réservation"></aside>
   </div>
 </section>
-<section class="pds" data-lueur id="plan" data-module="plan-de-salle" data-reservation="/reserver#formulaire" data-fil="droite" data-effet="plan-3d" aria-labelledby="pds-titre">
+<section class="pds" id="plan" data-module="plan-de-salle" data-reservation="/reserver#formulaire" data-effet="plan-3d" aria-labelledby="pds-titre">
   <div class="pds__grille socle-cadre">
     <div class="pds__tete">
       <p class="socle-surtitre">Plan de la salle</p>
@@ -287,7 +276,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       </ul>
       <div class="pds__action">
         <p class="pds__choix" aria-live="polite" data-pds-choix>Choisissez une table libre sur le plan ou dans la liste.</p>
-        <a class="socle-bouton socle-bouton--plein pds__reserver" href="/reserver#formulaire" data-pds-reserver aria-disabled="true">Réserver cette table</a>
+        <a class="socle-bouton socle-bouton--plein pds__reserver" href="/reserver#formulaire" data-pds-reserver aria-disabled="true">Choisir cette table</a>
       </div>
     </div>
   </div>
@@ -295,14 +284,15 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 </main>
 <footer class="pied" id="pied">
   <div class="conteneur pied-grille">
-    <div>
+    <div class="pied-maison">
+      <p class="pied-minuit" aria-hidden="true">00:00</p>
       <p><strong>Les Jardins de l&#39;Hacienda</strong></p>
-      <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
-      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener">Facebook<span class="visuellement-cache"> (nouvel onglet)</span></a><br><a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener">Instagram<span class="visuellement-cache"> (nouvel onglet)</span></a></p>
+      <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
+      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener" aria-label="Facebook (nouvel onglet)">Facebook <span aria-hidden="true">↗</span></a> <a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener" aria-label="Instagram (nouvel onglet)">Instagram <span aria-hidden="true">↗</span></a></p>
     </div>
     <nav aria-label="Sommaire">
       <p><strong>Sommaire</strong></p>
-      <ul><li><a href="/" data-libelle="Accueil">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/#recevoir" data-libelle="Réceptions">Réceptions</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver" data-libelle="Réserver" aria-current="page">Réserver</a></li></ul>
+      <ul><li><a href="/" data-libelle="Accueil">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li></ul>
     </nav>
     <div>
       <p><strong>Confort de lecture</strong></p>

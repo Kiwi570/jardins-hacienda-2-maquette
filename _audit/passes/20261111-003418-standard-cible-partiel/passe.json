@@ -1,0 +1,17 @@
+{
+ "id": "20261111-003418-standard-cible-partiel",
+ "date": "2026-11-11T00:39:43.881Z",
+ "niveau": "standard",
+ "pages": "/,/404,/les-fetes,/receptions",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "parcours"
+ ],
+ "version": "6",
+ "echecs": 3,
+ "aRegarder": 1,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "échecs"
+}

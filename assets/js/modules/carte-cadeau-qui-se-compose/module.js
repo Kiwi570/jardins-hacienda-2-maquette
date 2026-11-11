@@ -4,7 +4,7 @@
 // s'écrit sur l'enveloppe (achat simulé, ou envoyer() du site). Tiré de jardins-hacienda-maquette/carte-cadeau-composer
 // (carte en direct et total) et beat-haechler-maquette/bons-cadeaux-hero (enveloppe, rabat en 3D, inclinaison sous la souris).
 // Mode calme, « réduire les animations » : mêmes états, sans mouvement. Sans JavaScript : un formulaire ordinaire.
-import { pret } from '../../socle/socle.js?v=5';
+import { pret } from '../../socle/socle.js?v=6';
 
 const TEXTES = {
   pour: 'Pour {pour}', de: 'De la part de {de}', quantite: '× {n}',
@@ -277,7 +277,7 @@ export async function init(root, options = {}) {
     ouvrir,
     detruire() {
       tl?.kill(); tCompte?.kill(); clearTimeout(tAnnonce); nettoyages.forEach((f) => f());
-      [...env, pile].forEach((n) => n.remove()); gsap.set([plateau, paquet, carte], { clearProps: 'all' });
+      [...env, pile].forEach((n) => n.remove()); gsap.set([plateau, paquet, carte], { clearProps: 'transform,opacity,filter,visibility,zIndex' }); gsap.set(plateau, { transformPerspective: 1200 });
       root.classList.remove('est-actif', 'est-scelle');
     },
   };

@@ -1,18 +1,55 @@
 {
-  "avertissements": [],
+  "avertissements": [
+    "logo pris dans assets/images (logo-480.webp) : aucun logo dans donnees/images.json, vérifier que ce n'est pas celui du socle"
+  ],
   "cartes": [
+    {
+      "page": "404",
+      "langue": "fr",
+      "fichier": "assets/partage/404-fr.jpg",
+      "gabarit": "droite",
+      "image": "grok/terrasse-nuit-1280.webp",
+      "poids": 67231,
+      "sujet": {
+        "x": 600,
+        "y": 175,
+        "l": 600,
+        "h": 315
+      },
+      "textes": [
+        {
+          "x": 64,
+          "y": 56,
+          "l": 280,
+          "h": 64
+        },
+        {
+          "x": 64,
+          "y": 267,
+          "l": 480,
+          "h": 129
+        },
+        {
+          "x": 64,
+          "y": 543,
+          "l": 480,
+          "h": 35
+        }
+      ],
+      "recouvrement": 0
+    },
     {
       "page": "accueil",
       "langue": "fr",
       "fichier": "assets/partage/accueil-fr.jpg",
       "gabarit": "droite",
-      "image": "ouverture-plat-1280.webp",
-      "poids": 77789,
+      "image": "grok/midi-piscine-1280.webp",
+      "poids": 90153,
       "sujet": {
         "x": 600,
-        "y": 0,
+        "y": 30,
         "l": 600,
-        "h": 590
+        "h": 444
       },
       "textes": [
         {
@@ -41,13 +78,13 @@
       "langue": "fr",
       "fichier": "assets/partage/infos-pratiques-fr.jpg",
       "gabarit": "droite",
-      "image": "infos-ouverture-1280.webp",
-      "poids": 52757,
+      "image": "grok/midi-piscine-1280.webp",
+      "poids": 82766,
       "sujet": {
         "x": 600,
-        "y": 188,
+        "y": 30,
         "l": 600,
-        "h": 407
+        "h": 444
       },
       "textes": [
         {
@@ -58,9 +95,9 @@
         },
         {
           "x": 64,
-          "y": 267,
+          "y": 299,
           "l": 480,
-          "h": 129
+          "h": 64
         },
         {
           "x": 64,
@@ -76,13 +113,13 @@
       "langue": "fr",
       "fichier": "assets/partage/la-carte-fr.jpg",
       "gabarit": "droite",
-      "image": "carte-ouverture-1280.webp",
-      "poids": 82712,
+      "image": "grok/assiette-midi-960.webp",
+      "poids": 86971,
       "sujet": {
         "x": 600,
-        "y": 13,
-        "l": 600,
-        "h": 617
+        "y": 0,
+        "l": 573,
+        "h": 630
       },
       "textes": [
         {
@@ -93,9 +130,9 @@
         },
         {
           "x": 64,
-          "y": 267,
+          "y": 299,
           "l": 480,
-          "h": 129
+          "h": 64
         },
         {
           "x": 64,
@@ -111,13 +148,13 @@
       "langue": "fr",
       "fichier": "assets/partage/les-fetes-fr.jpg",
       "gabarit": "droite",
-      "image": "fetes-ouverture-1280.webp",
-      "poids": 93684,
+      "image": "grok/salle-feu-1280.webp",
+      "poids": 65001,
       "sujet": {
         "x": 600,
-        "y": 0,
-        "l": 573,
-        "h": 630
+        "y": 83,
+        "l": 600,
+        "h": 547
       },
       "textes": [
         {
@@ -146,13 +183,48 @@
       "langue": "fr",
       "fichier": "assets/partage/offrir-fr.jpg",
       "gabarit": "droite",
-      "image": "grok/offrir-ouverture-1280.webp",
-      "poids": 61649,
+      "image": "grok/salle-feu-1280.webp",
+      "poids": 60983,
       "sujet": {
-        "x": 605,
-        "y": 126,
-        "l": 595,
-        "h": 478
+        "x": 600,
+        "y": 83,
+        "l": 600,
+        "h": 547
+      },
+      "textes": [
+        {
+          "x": 64,
+          "y": 56,
+          "l": 280,
+          "h": 64
+        },
+        {
+          "x": 64,
+          "y": 299,
+          "l": 480,
+          "h": 64
+        },
+        {
+          "x": 64,
+          "y": 543,
+          "l": 480,
+          "h": 35
+        }
+      ],
+      "recouvrement": 0
+    },
+    {
+      "page": "receptions",
+      "langue": "fr",
+      "fichier": "assets/partage/receptions-fr.jpg",
+      "gabarit": "droite",
+      "image": "grok/terrasse-nuit-1280.webp",
+      "poids": 65524,
+      "sujet": {
+        "x": 600,
+        "y": 175,
+        "l": 600,
+        "h": 315
       },
       "textes": [
         {
@@ -181,13 +253,13 @@
       "langue": "fr",
       "fichier": "assets/partage/reserver-fr.jpg",
       "gabarit": "droite",
-      "image": "grok/reserver-ouverture-1280.webp",
-      "poids": 54767,
+      "image": "grok/terrasse-nuit-1280.webp",
+      "poids": 62264,
       "sujet": {
         "x": 600,
-        "y": 49,
+        "y": 175,
         "l": 600,
-        "h": 513
+        "h": 315
       },
       "textes": [
         {
@@ -198,9 +270,9 @@
         },
         {
           "x": 64,
-          "y": 267,
+          "y": 299,
           "l": 480,
-          "h": 129
+          "h": 64
         },
         {
           "x": 64,

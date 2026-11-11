@@ -1,0 +1,442 @@
+{
+ "mission": "reception",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.2,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11287,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Réceptions",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 6,
+   "adresse": "/receptions",
+   "y": 0,
+   "hauteurPage": 4030,
+   "titres": [
+    "h1 Recevoir pour un mariage"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Demander une réception",
+    "Voir les espaces",
+    "Appeler 06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Demander une réception",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 8.2,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 8.2,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-3.png"
+  },
+  {
+   "k": 4,
+   "geste": "cliquer Baptêmes",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 10.3,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "cliquer Continuer",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 12.5,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 12.5,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-6.png"
+  },
+  {
+   "k": 7,
+   "geste": "remplir Date souhaitée=2027-04-18",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 12.5,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 8,
+   "geste": "remplir Nombre d=40",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 12.5,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 9,
+   "geste": "remplir Un mot=Baptême de notre fille, repas assis le midi, une dizaine d'enfants.",
+   "resultat": "ok",
+   "gestes": 7,
+   "secondes": 12.5,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 10,
+   "geste": "cliquer Continuer",
+   "resultat": "ok",
+   "gestes": 8,
+   "secondes": 14.6,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 11,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 8,
+   "secondes": 14.6,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-11.png"
+  },
+  {
+   "k": 12,
+   "geste": "remplir Prénom=Claire",
+   "resultat": "ok",
+   "gestes": 9,
+   "secondes": 14.6,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 13,
+   "geste": "remplir ^Nom$=Testeuse",
+   "resultat": "ok",
+   "gestes": 10,
+   "secondes": 14.7,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 14,
+   "geste": "remplir Téléphone=06 12 34 56 78",
+   "resultat": "ok",
+   "gestes": 11,
+   "secondes": 14.7,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 15,
+   "geste": "remplir E-mail=claire.test@example.com",
+   "resultat": "ok",
+   "gestes": 12,
+   "secondes": 14.7,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 16,
+   "geste": "cliquer Envoyer ma demande",
+   "resultat": "ok",
+   "gestes": 13,
+   "secondes": 16.9,
+   "adresse": "/receptions#demande",
+   "y": 2576,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-16.png"
+  }
+ ]
+}

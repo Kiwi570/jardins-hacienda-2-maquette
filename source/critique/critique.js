@@ -9,12 +9,6 @@
   try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
   d.classList.add('js');
 
-  /* Saison du site (v4 « Deux saisons, une maison ») : celle du lieu (Moineville, heure de Paris), ou le choix du visiteur. */
-  var saison = 'hiver';
-  try { var mois = +new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', month: 'numeric' }).format(new Date()); saison = mois >= 5 && mois <= 9 ? 'ete' : 'hiver'; } catch (e) {}
-  try { var choix = ls && ls.getItem('jh-saison'); if (choix === 'hiver' || choix === 'ete') saison = choix; } catch (e) {}
-  d.setAttribute('data-saison', saison);
-
   var calme = false;
   try { calme = !!ls && ls.getItem('socle:calme') === 'oui'; } catch (e) {}
   if (!calme && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) calme = true;

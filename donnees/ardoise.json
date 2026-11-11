@@ -1,8 +1,0 @@
-{ "date": "Cette semaine", "titre": "De saison à la carte",
-  "lignes": [
-    { "plat": "Saint-Jacques, riz noir, butternut", "prix": "21 €" },
-    { "plat": "Suprême de pintade et girolles", "prix": "24 €" },
-    { "plat": "L'os à moelle, persillade", "prix": "9 €" },
-    { "plat": "Figues rôties au miel", "prix": "10 €" }
-  ],
-  "mot": "Et les suggestions du chef, de vive voix" }

@@ -1,0 +1,242 @@
+{
+ "mission": "arrivee-attente",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.1,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11538,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver une table",
+    "Demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "attendre 4000",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 7.1,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11538,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver une table",
+    "Demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 7.1,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11538,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver une table",
+    "Demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-2.png"
+  },
+  {
+   "k": 3,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 8.3,
+   "adresse": "/",
+   "y": 717,
+   "hauteurPage": 11538,
+   "titres": [
+    "h2 La carte de la semaine"
+   ],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "attendre 2500",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 10.8,
+   "adresse": "/",
+   "y": 717,
+   "hauteurPage": 11538,
+   "titres": [
+    "h2 La carte de la semaine"
+   ],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 10.8,
+   "adresse": "/",
+   "y": 717,
+   "hauteurPage": 11538,
+   "titres": [
+    "h2 La carte de la semaine"
+   ],
+   "actions": [
+    "Toute la carte",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-5.png"
+  }
+ ]
+}

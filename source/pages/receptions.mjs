@@ -1,0 +1,113 @@
+/* Réceptions · « la grande table » (nouvelle page v6) : la terrasse de nuit en panorama, le mot de l'occasion qui
+   change dans le titre (mariage, baptême, anniversaire, pot de départ), trois espaces en volets qui s'ouvrent
+   (la salle d'abord l'hiver, la terrasse d'abord l'été), ce que l'on fête ici (vraies photos), puis la demande
+   en trois étapes ; à l'envoi, un carton d'invitation reçoit le tampon « Demande reçue ». */
+import { html } from '../../outils/gabarit.mjs';
+import { avecVideo } from '../gabarits/video.mjs';
+
+export const page = { cle: 'receptions', fichier: 'receptions', theme: 'nuit', imagePartage: 'grok/terrasse-nuit-1280.webp' };
+
+const ESPACES = [
+  { cle: 'salle', image: 'grok/salle-feu', cadrage: '50% 55%', saison: 'hiver' },
+  { cle: 'terrasse', image: 'grok/terrasse-or', cadrage: '50% 55%', saison: 'ete' },
+  { cle: 'piscine', image: 'grok/midi-piscine', cadrage: '45% 65%', saison: 'ete' },
+];
+const OCCASIONS = ['mariages', 'baptemes', 'anniversaires', 'depart'];
+
+export default (c) => {
+  const mots = c.s('receptions.mots').split('|');
+  return html`
+<section class="ouv-recep" id="debut">
+  ${c.media({ nom: 'grok/terrasse-nuit', alt: c.s('receptions.alt'), cadrage: '50% 52%', priorite: true, classe: 'ouv-recep__fond', sizes: '100vw', attrs: 'data-fx="zoom" data-fx-force="10"' })}
+  <div class="conteneur ouv-recep__contenu">
+    <p class="heure-geante heure-geante--nuit ouv-recep__heure" data-iris-centre data-effet="axes" aria-hidden="true">19:00</p>
+    <p class="surtitre">${c.t('receptions.sur')}</p>
+    <h1 class="ouv-recep__titre">${c.t('receptions.titreAvant')} <span class="mot-tournant" data-grille="typo" data-effet="mot" data-mots="${mots.join('|')}"><span class="mot-tournant__mot">${mots[0]}</span></span></h1>
+    <p class="masque-ecran-bas masque-telephone">${c.t('receptions.texte')}</p>
+    <p class="ouv-recep__actions"><a class="bouton" href="#demande" data-action-principale data-sans-transition>${c.t('receptions.action')}</a> <a class="bouton bouton--contour bouton--clair" href="#espaces" data-sans-transition>${c.t('receptions.espacesLien')}</a></p>
+    <p class="ouv-recep__info" data-info-cle><a href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
+  </div>
+</section>
+
+<section class="espaces" id="espaces" aria-labelledby="espaces-titre">
+  <div class="conteneur espaces__tete">
+    <p class="surtitre">${c.t('receptions.espacesSur')}</p>
+    <h2 id="espaces-titre" data-anime="lignes">${c.t('receptions.espacesTitre')}</h2>
+    <p class="espaces__info" data-info>${c.t('receptions.espacesInfo')}</p>
+  </div>
+  <div class="volets" data-effet="volets">
+    ${ESPACES.map((e, i) => html`<article class="volet${i === 0 ? ' est-ouvert' : ''}" data-volet data-saison-ordre="${e.saison}" id="espace-${e.cle}">
+      ${((m) => e.video ? avecVideo(m, e.video) : m)(c.media({ nom: e.image, alt: c.s(`receptions.alt${e.cle[0].toUpperCase()}${e.cle.slice(1)}`), cadrage: e.cadrage, classe: 'volet__photo', sizes: '(max-width: 760px) 100vw, 60vw' }))}
+      <button type="button" class="volet__tete" aria-expanded="${i === 0 ? 'true' : 'false'}" aria-controls="volet-${e.cle}"><span class="volet__num">0${i + 1}</span><span class="volet__nom">${c.t(`receptions.${e.cle}T`)}</span></button>
+      <div class="volet__texte" id="volet-${e.cle}"><p class="saison-tag saison-tag--nuit">${c.t(`receptions.${e.cle}S`)}</p><p>${c.t(`receptions.${e.cle}X`)}</p></div>
+    </article>`)}
+  </div>
+</section>
+
+<section class="occasions" id="occasions" aria-labelledby="occasions-titre">
+  <div class="conteneur">
+    <h2 id="occasions-titre" data-anime="lignes">${c.t('receptions.occasionsTitre')}</h2>
+    <ul class="occasions__liste" data-effet="occasions">
+      <li>${c.media({ nom: 'recevoir-mariages', alt: c.s('receptions.altMariages'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.mariages')}</span></li>
+      <li>${c.media({ nom: 'recevoir-anniversaires', alt: c.s('receptions.altAnniversaires'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.anniversaires')}</span></li>
+      <li>${c.media({ nom: 'recevoir-depart', alt: c.s('receptions.altDepart'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.depart')}</span></li>
+      <li>${c.media({ nom: 'recevoir-baptemes', alt: c.s('receptions.altBaptemes'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.baptemes')}</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="demande" aria-labelledby="demande-titre">
+  <div class="conteneur demande__grille" id="demande">
+    <div class="demande__tete">
+      <p class="surtitre">${c.t('receptions.demandeSur')}</p>
+      <h2 id="demande-titre" data-anime="lignes">${c.t('receptions.demandeTitre')}</h2>
+      <p>${c.t('receptions.demandeTexte')}</p>
+      <ol class="demande__etapes" aria-hidden="true"><li data-etape-num="1">${c.t('receptions.etape1')}</li><li data-etape-num="2">${c.t('receptions.etape2')}</li><li data-etape-num="3">${c.t('receptions.etape3')}</li></ol>
+      <div class="invitation" data-invitation aria-hidden="true" data-effet="invitation" data-visuel>
+        <p class="invitation__sur">${c.site.nom}</p>
+        <p class="invitation__occasion est-vide" data-inv-occasion data-vide="${c.s('receptions.recap')}">${c.t('receptions.recap')}</p>
+        <p class="invitation__detail est-vide" data-inv-detail data-vide="${c.s('receptions.recapDetail')}">${c.t('receptions.recapDetail')}</p>
+        <p class="invitation__tampon">${c.t('receptions.recu')}</p>
+      </div>
+    </div>
+    <form class="demande__form" data-demande action="#demande" novalidate data-occasion-manque="${c.s('receptions.occasionManque')}" data-date-ou-periode="${c.s('receptions.dateOuPeriode')}">
+      <fieldset class="demande__etape" data-etape="1">
+        <legend>${c.t('receptions.occasion')}</legend>
+        <div class="demande__puces">
+          ${['mariages', 'baptemes', 'anniversaires', 'depart'].map((o) => html`<label class="puce"><input type="radio" name="occasion" value="${c.s(`receptions.${o}`)}" data-un="${c.s(`receptions.${o}Un`)}"><span>${c.t(`receptions.${o}`)}</span></label>`)}
+          <label class="puce"><input type="radio" name="occasion" value="${c.s('receptions.autre')}" data-un="${c.s('receptions.autreUn')}"><span>${c.t('receptions.autre')}</span></label>
+        </div>
+        <p class="demande__legende">${c.t('receptions.espace')}</p>
+        <div class="demande__puces">
+          ${['salle', 'terrasse', 'piscine'].map((o) => html`<label class="puce"><input type="radio" name="espace" value="${c.s(`receptions.${o}T`)}"><span>${c.t(`receptions.${o}T`)}</span></label>`)}
+          <label class="puce"><input type="radio" name="espace" value="${c.s('receptions.indifferent')}" checked><span>${c.t('receptions.indifferent')}</span></label>
+        </div>
+        <p class="demande__nav"><button type="button" class="bouton" data-suivant>${c.t('receptions.suivant')}</button></p>
+      </fieldset>
+      <fieldset class="demande__etape" data-etape="2">
+        <legend>${c.t('receptions.etape2')}</legend>
+        <div class="demande__deux">
+          <label><span>${c.t('receptions.date')}</span><input type="date" name="date" data-date-ou-periode></label>
+          <label><span>${c.t('receptions.periode')}</span><select name="periode"><option value="">${c.t('receptions.periodeVide')}</option>${c.s('receptions.periodes').split('|').map((x) => html`<option>${x}</option>`)}</select></label>
+          <label><span>${c.t('receptions.invites')}</span><input type="number" name="invites" min="2" max="400" inputmode="numeric" required></label>
+        </div>
+        <label><span>${c.t('receptions.message')}</span><textarea name="message" rows="3" placeholder="${c.s('receptions.messageIndice')}"></textarea></label>
+        <p class="demande__nav"><button type="button" class="bouton bouton--contour" data-precedent>${c.t('receptions.precedent')}</button> <button type="button" class="bouton" data-suivant>${c.t('receptions.suivant')}</button></p>
+      </fieldset>
+      <fieldset class="demande__etape" data-etape="3">
+        <legend>${c.t('receptions.etape3')}</legend>
+        <div class="demande__deux">
+          <label><span>${c.t('receptions.prenom')}</span><input type="text" name="prenom" autocomplete="given-name" required></label>
+          <label><span>${c.t('receptions.nom')}</span><input type="text" name="nom" autocomplete="family-name" required></label>
+          <label><span>${c.t('receptions.telephone')}</span><input type="tel" name="telephone" autocomplete="tel" required></label>
+          <label><span>${c.t('receptions.email')}</span><input type="email" name="email" autocomplete="email"></label>
+        </div>
+        <p class="demande__rgpd">${c.t('receptions.rgpd')} ${c.t('commun.confidentialiteForm')}</p>
+        <p class="demande__nav"><button type="button" class="bouton bouton--contour" data-precedent>${c.t('receptions.precedent')}</button> <button type="submit" class="bouton" data-grille="retour">${c.t('receptions.envoyer')}</button></p>
+      </fieldset>
+      <p class="demande__message" data-demande-message role="status" tabindex="-1" hidden>${c.t('receptions.merci')}</p>
+    </form>
+  </div>
+</section>
+`;
+};

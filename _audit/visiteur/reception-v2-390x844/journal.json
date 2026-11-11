@@ -1,0 +1,475 @@
+{
+ "mission": "reception-v2",
+ "taille": "390x844",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.2,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11161,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Réserver une table",
+    "Demander une réception",
+    "Appeler",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Demander une réception",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 5.6,
+   "adresse": "/receptions#demande",
+   "y": 2595,
+   "hauteurPage": 4803,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "cliquer Baptêmes",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 7.7,
+   "adresse": "/receptions#demande",
+   "y": 2595,
+   "hauteurPage": 4803,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 3,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 8.9,
+   "adresse": "/receptions#demande",
+   "y": 3312,
+   "hauteurPage": 4803,
+   "titres": [],
+   "actions": [
+    "Continuer",
+    "06 18 21 28 10",
+    "Facebook ↗",
+    "Instagram ↗"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "cliquer Continuer",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 11.1,
+   "adresse": "/receptions#demande",
+   "y": 3312,
+   "hauteurPage": 4876,
+   "titres": [],
+   "actions": [
+    "Revenir",
+    "Continuer",
+    "06 18 21 28 10",
+    "Facebook ↗",
+    "Instagram ↗"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 5,
+   "geste": "choisir date n'est pas fixée=Au printemps 2027",
+   "resultat": "ok",
+   "gestes": 5,
+   "secondes": 11.1,
+   "adresse": "/receptions#demande",
+   "y": 3312,
+   "hauteurPage": 4876,
+   "titres": [],
+   "actions": [
+    "Revenir",
+    "Continuer",
+    "06 18 21 28 10",
+    "Facebook ↗",
+    "Instagram ↗"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "remplir Nombre d=40",
+   "resultat": "ok",
+   "gestes": 6,
+   "secondes": 11.1,
+   "adresse": "/receptions#demande",
+   "y": 3312,
+   "hauteurPage": 4876,
+   "titres": [],
+   "actions": [
+    "Revenir",
+    "Continuer",
+    "06 18 21 28 10",
+    "Facebook ↗",
+    "Instagram ↗"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 7,
+   "geste": "remplir Un mot=Baptême de notre fille, une quarantaine d'invités dont une dizaine d'enfants, plutôt un dimanche midi.",
+   "resultat": "ok",
+   "gestes": 7,
+   "secondes": 11.1,
+   "adresse": "/receptions#demande",
+   "y": 3312,
+   "hauteurPage": 4876,
+   "titres": [],
+   "actions": [
+    "Revenir",
+    "Continuer",
+    "06 18 21 28 10",
+    "Facebook ↗",
+    "Instagram ↗"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 8,
+   "geste": "cliquer Continuer",
+   "resultat": "ok",
+   "gestes": 8,
+   "secondes": 13.3,
+   "adresse": "/receptions#demande",
+   "y": 3312,
+   "hauteurPage": 4956,
+   "titres": [],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande",
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 9,
+   "geste": "remplir Prénom=Claire",
+   "resultat": "ok",
+   "gestes": 9,
+   "secondes": 13.3,
+   "adresse": "/receptions#demande",
+   "y": 3312,
+   "hauteurPage": 4956,
+   "titres": [],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande",
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 10,
+   "geste": "remplir ^Nom$=Testeuse",
+   "resultat": "ok",
+   "gestes": 10,
+   "secondes": 13.3,
+   "adresse": "/receptions#demande",
+   "y": 3312,
+   "hauteurPage": 4956,
+   "titres": [],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande",
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 11,
+   "geste": "remplir Téléphone=06 12 34 56 78",
+   "resultat": "ok",
+   "gestes": 11,
+   "secondes": 13.3,
+   "adresse": "/receptions#demande",
+   "y": 3312,
+   "hauteurPage": 4956,
+   "titres": [],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande",
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 12,
+   "geste": "remplir E-mail=claire.test@example.com",
+   "resultat": "ok",
+   "gestes": 12,
+   "secondes": 13.3,
+   "adresse": "/receptions#demande",
+   "y": 3312,
+   "hauteurPage": 4956,
+   "titres": [],
+   "actions": [
+    "Revenir",
+    "Envoyer ma demande",
+    "06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 13,
+   "geste": "cliquer Envoyer ma demande",
+   "resultat": "ok",
+   "gestes": 13,
+   "secondes": 15.5,
+   "adresse": "/receptions#demande",
+   "y": 3234,
+   "hauteurPage": 5093,
+   "titres": [],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Revenir",
+    "Envoyer ma demande"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 14,
+   "geste": "attendre 1500",
+   "resultat": "ok",
+   "gestes": 13,
+   "secondes": 17,
+   "adresse": "/receptions#demande",
+   "y": 3234,
+   "hauteurPage": 5093,
+   "titres": [],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Revenir",
+    "Envoyer ma demande"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 15,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 13,
+   "secondes": 17,
+   "adresse": "/receptions#demande",
+   "y": 3234,
+   "hauteurPage": 5093,
+   "titres": [],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu",
+    "Revenir",
+    "Envoyer ma demande"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-15.png"
+  },
+  {
+   "k": 16,
+   "geste": "remonter 1",
+   "resultat": "ok",
+   "gestes": 14,
+   "secondes": 18.2,
+   "adresse": "/receptions#demande",
+   "y": 2517,
+   "hauteurPage": 5093,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 17,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 14,
+   "secondes": 18.2,
+   "adresse": "/receptions#demande",
+   "y": 2517,
+   "hauteurPage": 5093,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda, accueil",
+    "Menu"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-17.png"
+  }
+ ]
+}

@@ -1,64 +1,98 @@
 {
-  "client": "Les Jardins de l'Hacienda · v4",
+  "client": "Les Jardins de l'Hacienda · v6",
   "depot": "jardins-hacienda-2-maquette",
   "site_actuel": "https://www.lesjardinsdelhacienda54.com",
-  "activite": "restaurant traditionnel de saison et lieu de réception, piscine et journées festives l'été",
-  "constat": "Le lieu a deux visages, la salle au coin du feu l'hiver et la terrasse, la piscine et les palmiers l'été, mais le site actuel les disperse sur des pages Wix sans réservation lisible ni horaires en texte. La v3 montrait surtout l'hiver, sur un récit linéaire de 10 sections et des effets déjà vus (carrousel 3D, mots géants, ficelle).",
+  "activite": "restaurant traditionnel de saison et lieu de réception, piscine, bar et pool parties l'été, cheminée l'hiver",
+  "constat": "La maison a des heures très lisibles (12 h le déjeuner, 14 h 30 la piscine, 15 h 30 le bar, 19 h le dîner, minuit la fermeture) et deux visages, l'eau et le feu, mais le site actuel les disperse sur des pages Wix. La v5 réduisait cette double vie à un petit cadran, avec des photos sombres, une nappe vide et des sections en cadres sur fonds crème et brun alternés.",
   "recentes": [
-    { "nom": "Lo Componaïro", "plan": "recit-lineaire", "familles": ["carrousel", "typo-geante", "3d"], "modules": ["carrousel-3d"] },
-    { "nom": "Red-Act", "plan": "recit-lineaire", "familles": ["carrousel", "typo-geante"], "modules": ["carrousel-3d"] }
+    {
+      "nom": "Jardins de l'Hacienda v5 (même client, à remplacer)",
+      "plan": "journee",
+      "familles": ["ambiance-qui-change", "plongee", "recomposition", "particules"],
+      "voile": "propre",
+      "modules": ["plat-fumant", "objet-a-faire-tourner", "assiette-qui-se-dresse"]
+    }
   ],
   "directions": [
     {
-      "nom": "Deux saisons, une maison",
-      "idee": "Le vrai slogan du lieu devient le moteur du site : « au coin du feu l'hiver, au bord de la piscine l'été ». Un cadran braise et soleil, en laiton, se fait glisser du doigt : toute la maison bascule (lumière, couleurs, photos, accroche, rendez-vous mis en avant, libellé du bouton « Réserver au coin du feu » ou « Réserver en terrasse »). Par défaut la saison réelle du lieu (novembre : l'hiver), le choix du visiteur est gardé. L'accueil suit une soirée ou une journée de la saison, en 6 sections et 7 écrans au plus.",
+      "nom": "A · De midi à minuit",
+      "idee": "L'accueil est une journée à l'Hacienda, réglée sur les vraies heures de la maison. On arrive à 12 h au bord de la piscine, l'eau bouge sous le doigt ; en descendant, le soleil se couche sur la même terrasse, les guirlandes s'allument, et l'on finit à minuit dans la salle, au coin du feu, où le doigt attise les braises. La lumière de toute la page passe du blanc de midi à l'or, au bleu du soir puis à la braise : chaque section est une heure (12 h, 12 h 30, 14 h 30, 19 h, 21 h, 23 h, minuit) et dit ce qu'on y fait : déjeuner, se baigner, recevoir, dîner, fêter, offrir. Chaque moment porte sa saison réelle (piscine de juin à septembre, cheminée l'hiver).",
       "plan": "journee",
-      "palette": ["#15100c", "#d8622a", "#b8925a", "#f3e7d3", "#2c7f8f", "#f6efe2", "#3f5a3a"],
-      "polices": ["Bodoni Moda", "Figtree", "Caveat"],
+      "palette": ["#f6f1e7", "#1aa3b0", "#0b4f5c", "#e9a23b", "#5a3d63", "#1a0f0b", "#e8642c"],
+      "polices": ["Instrument Serif", "Bricolage Grotesque"],
       "grille": {
-        "objet": "cadran braise et soleil en demi-lune à faire glisser (au doigt : glissement horizontal), qui fait basculer la saison de tout le site ; le plateau du chef qu'on lance reste dans la carte de la semaine",
-        "fil": "la lumière de la saison dans la marge : lueur de braise qui descend en hiver, reflet d'eau qui ondule en été, un repère par moment (apéritif, table, desserts, nuit)",
-        "voile": "la cloche de service qui se pose et se relève (gardée de la v3)",
-        "forme_voile": "propre",
-        "familles": ["ambiance-qui-change", "plongee", "recomposition", "particules"],
+        "objet": "l'eau de la piscine qu'on touche (ondes et reflets sous le doigt) qui devient, à minuit, le feu qu'on attise (braises qui s'envolent)",
+        "fil": "la lumière de la page et l'heure géante : les chiffres roulent de 12 h à minuit d'une section à l'autre, et chaque page intérieure a son heure",
+        "voile": "une vague de lumière à la couleur de l'heure (eau le jour, braise le soir) qui emporte les chiffres de l'heure suivante",
+        "forme_voile": "vague",
+        "familles": ["ambiance-qui-change", "video-pilotee", "particules", "defilement-horizontal", "webgl"],
         "signature": "ambiance-qui-change",
-        "modernes": ["toute la maison change de saison sous le doigt (lumière, photos, accroche, rendez-vous)", "plongée dans l'assiette jusqu'à la carte, ou dans la piscine en été", "la table qui s'agrandit de 2 à 120 couverts et l'espace qui convient s'affiche", "vapeur du plat et braises l'hiver, reflets sur l'eau l'été"]
+        "modernes": [
+          "la journée qui passe dans toute la page : lumière, couleurs et photos de 12 h à minuit",
+          "le coucher de soleil sur la terrasse piloté par le défilement (vidéo image par image), guirlandes qui s'allument",
+          "l'après-midi à la piscine qui avance de côté (14 h 30 piscine, 15 h 30 bar, pool parties)",
+          "chiffres de l'heure géants dont la graisse et la largeur suivent la lumière",
+          "braises qui montent du feu et s'écartent sous le doigt"
+        ]
       },
-      "modules": ["plat-fumant", "objet-a-faire-tourner", "assiette-qui-se-dresse", "carte-du-restaurant", "ardoise-a-la-craie", "accords-mets-et-vins", "horaires-ouvert-maintenant", "plan-de-salle", "reservation-de-table", "carte-cadeau-qui-se-compose", "envol-vers-le-panier"],
-      "deja_vu_voulu": "Demande de l'utilisateur : le plateau qu'on lance (objet-a-faire-tourner) et les modules de service sont gardés de la v3 du même client, habillés autrement ; ils ne portent pas l'effet signature.",
+      "modules": ["reservation-de-table", "plan-de-salle", "carte-cadeau-qui-se-compose", "horaires-ouvert-maintenant", "carte-du-restaurant", "envol-vers-le-panier", "lumiere-au-pointeur"],
+      "deja_vu_voulu": "Demande de l'utilisateur : « une journée à l'Hacienda », du midi à la piscine au soir au coin du feu. Même client : la v5 réduisait l'été et l'hiver à un petit cadran ; la v6 fait vivre le clair et le sombre dans toute la page, sans cadran, sans plateau, sans assiette dessinée.",
       "sections": [
-        { "role": "ouverture", "reprend": "icc-maquette/hero", "plus": "Titre géant sur la moitié de l'écran ; le cadran braise et soleil sous la main ; l'hiver montre le plat fumant devant la cheminée, l'été la piscine aux palmiers avec une lumière qui joue sur l'eau ; sous les boutons, « ouvert maintenant » et le prochain service." },
-        { "role": "outil-interactif", "reprend": "meteofr-maquette/heures", "plus": "La bascule des saisons comme une journée en accéléré : la lumière de la page passe de la braise au soleil, les rendez-vous changent (Noël et Saint-Sylvestre, ou journées festives, piscine et bar)." },
-        { "role": "carte", "reprend": "jardins-hacienda-maquette/debut", "plus": "Plongée : on entre dans l'assiette fumante (ou dans l'eau de la piscine en été) et l'on ressort sur la carte de la semaine, le plateau du chef à lancer avec les vrais plats." },
-        { "role": "offre", "reprend": "chateau-haut-piquat-maquette/vins-cave", "plus": "Recevoir : « Combien serez-vous ? », la table passe de 2 à 12 puis 120 couverts et la grille de photos se recompose (salle, terrasse, jardins, pergola) ; lien qui préremplit la demande de réception." },
-        { "role": "appel", "reprend": "myrtille-et-compagnie-maquette/fin", "plus": "Offrir et venir en un écran : la carte cadeau en aperçu, l'accès (6 Vathier Haye, Moineville, entre Metz, Thionville et le Luxembourg), le prochain service ouvert." }
+        { "role": "ouverture", "reprend": "hanamizuki-maquette/hero", "plus": "12 h : la piscine à midi en plein écran, l'eau qui ondule sous le doigt, « 12 h » en chiffres géants, statut ouvert réel et les deux actions (réserver, demander une réception)" },
+        { "role": "galerie", "reprend": "pierre-becq-lanterne-maquette/coups-de-coeur", "plus": "14 h 30 · 15 h 30 : l'après-midi d'été avance de côté (piscine le dimanche, bar des journées festives, pool parties), la lumière dore à chaque pas" },
+        { "role": "outil-interactif", "reprend": "meteofr-maquette/heures", "plus": "19 h, la terrasse s'allume : le soleil se couche sur la même terrasse au défilement, les guirlandes s'allument une à une sur la table de réception dressée ; mariages, baptêmes, anniversaires" },
+        { "role": "contact", "reprend": "jardins-hacienda-maquette/reserver-formulaire", "plus": "21 h, le dîner : jour, service et couverts choisis dans la page ; la carte de placement s'envole vers la réservation" },
+        { "role": "offre", "reprend": "jardins-hacienda-maquette/carte-cadeau-composer", "plus": "23 h · minuit : la salle et sa cheminée, la Saint-Sylvestre, puis la carte cadeau qui s'écrit à la lueur du feu" }
       ],
-      "invente": ["cadran braise et soleil", "bascule des saisons sur tout le site", "plongée dans l'assiette ou dans l'eau", "table qui s'agrandit", "lueur de saison dans la marge", "dressage du suprême en vraies photos détourées"]
+      "invente": ["l'eau qu'on touche à midi", "l'heure géante qui roule", "la terrasse qui s'allume", "les braises qu'on attise à minuit", "la vague de lumière entre les pages", "les pages réglées sur l'heure réelle de Moineville"]
     },
     {
-      "nom": "Le domaine vu du dessus",
-      "idee": "Le domaine dessiné d'en haut (salle et cheminée, grande table, terrasse, piscine, jardins, parking), plan indicatif d'après les photos et dit comme tel, sert de sommaire. On plonge de la route jusqu'à la table, puis jusqu'à la réservation ; chaque lieu du plan ouvre sa section (la carte à table, la piscine, les réceptions sous la pergola).",
-      "plan": "territoire",
-      "palette": ["#f4ecdc", "#2b241c", "#c8643a", "#6f8a5b", "#2c7f8f"],
-      "polices": ["Bodoni Moda", "Figtree", "Caveat"],
+      "nom": "B · Une table pour…",
+      "idee": "L'accueil commence par la question que se pose chaque visiteur, posée en une phrase géante à compléter du doigt : « Nous serons deux, vendredi soir, au coin du feu ». Chaque mot se touche : deux, en famille, pour un baptême, pour un mariage ; ce soir, dimanche midi, cet été ; au coin du feu, en terrasse, au bord de la piscine, sous la pergola. Vue de dessus, la table change de forme (ronde pour deux, longue tablée pour un mariage), la photo suit, et le bouton devient « Réserver cette table » ou « Demander cette réception ». La suite répond à la phrase : la carte posée sur cette table, l'été, les fêtes, puis « Je voudrais offrir 100 € à Claire ».",
+      "plan": "outil-d-abord",
+      "palette": ["#efe6d6", "#24311f", "#b4572e", "#d9b26a", "#11150f"],
+      "polices": ["Cormorant Garamond", "Manrope"],
       "grille": {
-        "objet": "la cloche-loupe qu'on promène sur le plan du domaine : elle soulève la cloche sur chaque lieu et montre sa photo",
-        "fil": "le chemin du domaine, de la route à la table, tracé sur le plan ; un point par section",
-        "voile": "la cloche de service qui se pose et se relève (gardée de la v3)",
-        "forme_voile": "propre",
-        "familles": ["plongee", "profondeur", "morphing", "recomposition"],
-        "signature": "plongee",
-        "modernes": ["plongée de la route jusqu'à la table", "plans découpés du domaine en profondeur", "le lieu du plan se change en photo", "les réceptions qui se recomposent selon le nombre d'invités"]
+        "objet": "la phrase géante dont on fait tourner chaque mot, et la table vue de dessus qui s'allonge ou s'arrondit",
+        "fil": "la nappe : une bande de lin qui court sous les sections, chaque section y pose un couvert",
+        "voile": "la nappe qu'on tire d'un coup sec : elle découvre la page suivante",
+        "forme_voile": "rideau",
+        "familles": ["morphing", "profondeur", "typo-geante"],
+        "signature": "morphing",
+        "modernes": ["la table qui change de forme selon la phrase", "photos en plans découpés qui se recomposent en profondeur", "phrase géante lettre à lettre"]
       },
-      "modules": ["plat-fumant", "objet-a-faire-tourner", "carte-du-restaurant", "ardoise-a-la-craie", "accords-mets-et-vins", "horaires-ouvert-maintenant", "plan-de-salle", "reservation-de-table", "carte-cadeau-qui-se-compose", "envol-vers-le-panier"],
-      "deja_vu_voulu": "Demande de l'utilisateur : le plateau qu'on lance et les modules de service sont gardés de la v3 du même client, habillés autrement.",
+      "modules": ["reservation-de-table", "plan-de-salle", "carte-cadeau-qui-se-compose", "horaires-ouvert-maintenant", "carte-du-restaurant"],
       "sections": [
-        { "role": "ouverture", "reprend": "les-plus-hautes-eaux-maquette/haut", "plus": "Le domaine vu du ciel, la route et le portail ; on plonge jusqu'à la terrasse en un geste." },
-        { "role": "carte", "reprend": "winsbike-maquette/top", "plus": "La plongée continue jusqu'à la table et à l'assiette fumante : la carte de la semaine s'ouvre." },
-        { "role": "offre", "reprend": "vizrok-maquette/collections", "plus": "Les espaces de réception se recomposent selon le nombre d'invités, sur le plan." },
-        { "role": "appel", "reprend": "h-renovation-maquette/appel", "plus": "La table choisie sur le plan préremplit la réservation." }
+        { "role": "ouverture", "reprend": "pausephoto65-maquette/ouverture", "plus": "la phrase géante à compléter du doigt, la table vue de dessus qui change de forme, la photo qui suit" },
+        { "role": "calculateur", "reprend": "tiki-cassis-maquette/formules-composeur", "plus": "composer sa réception (baptême, anniversaire, mariage, pot de départ ; salle, terrasse, jardins) et l'envoyer préremplie" },
+        { "role": "offre", "reprend": "willowcamp-maquette/facons", "plus": "la carte de la semaine posée sur la table choisie, en tiroirs par rubrique, prix visibles" },
+        { "role": "offre", "reprend": "jardins-hacienda-maquette/carte-cadeau-composer", "plus": "« Je voudrais offrir 100 € à Claire » : la même phrase écrit la carte cadeau" }
       ],
-      "invente": ["plan du domaine indicatif", "cloche-loupe", "chemin de la route à la table", "plans découpés du domaine"]
+      "invente": ["la phrase de la table", "la table qui change de forme", "la nappe qui court sous la page", "la nappe tirée entre les pages"]
+    },
+    {
+      "nom": "C · Les affiches de la maison",
+      "idee": "L'Hacienda vit de rendez-vous : pool parties, journées festives, Saint-Sylvestre avec DJ Laurent Geymet, menu de Noël, soirée libanaise. L'accueil est le mur d'affiches de la maison, imprimées en deux couleurs avec les feuillages et le toucan du logo. À l'arrivée, l'affiche de l'été se décolle d'elle-même et découvre celle de la saison (la Saint-Sylvestre en novembre) ; on la décolle ou la recolle du doigt. Dessous, une gazette éditoriale : la carte de la semaine en colonnes, les affiches empilées des rendez-vous (à venir, puis « a eu lieu »), les réceptions, et une dernière affiche à tamponner : « Votre table, ce soir ».",
+      "plan": "magazine",
+      "palette": ["#f3ead8", "#e5452f", "#127a6e", "#f2b632", "#1d1a17"],
+      "polices": ["Archivo", "DM Serif Display"],
+      "grille": {
+        "objet": "l'affiche qu'on décolle d'un coin et qu'on recolle",
+        "fil": "les bandes de scotch et le folio de la gazette : chaque section est une page numérotée",
+        "voile": "une affiche qui se déroule de haut en bas comme un store",
+        "forme_voile": "rideau",
+        "familles": ["empilement", "curseur-vivant", "masque"],
+        "signature": "empilement",
+        "modernes": ["les affiches empilées des rendez-vous, qu'on fait défiler", "le pinceau de colle qui suit le pointeur", "l'affiche qui découvre la photo à travers ses lettres"]
+      },
+      "modules": ["reservation-de-table", "plan-de-salle", "carte-cadeau-qui-se-compose", "horaires-ouvert-maintenant", "carte-du-restaurant"],
+      "sections": [
+        { "role": "ouverture", "reprend": "pizzalyght-maquette/hero", "plus": "le mur d'affiches : l'été se décolle et découvre la saison, à recoller au doigt" },
+        { "role": "agenda", "reprend": "les-plus-hautes-eaux-maquette/agenda-t-venir", "plus": "les rendez-vous en affiches empilées, à venir puis « a eu lieu »" },
+        { "role": "articles", "reprend": "castelactu-maquette/fil", "plus": "la gazette de la semaine : plats et prix de la carte en colonnes" },
+        { "role": "appel", "reprend": "myrtille-et-compagnie-maquette/fin", "plus": "la dernière affiche « Votre table, ce soir » qui se tamponne à la réservation" }
+      ],
+      "invente": ["l'affiche qui se décolle", "le pinceau de colle", "la gazette de la carte", "le tampon de réservation"]
     }
   ]
 }

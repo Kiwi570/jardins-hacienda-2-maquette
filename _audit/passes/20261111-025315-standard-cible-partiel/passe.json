@@ -1,0 +1,17 @@
+{
+ "id": "20261111-025315-standard-cible-partiel",
+ "date": "2026-11-11T02:56:00.833Z",
+ "niveau": "standard",
+ "pages": "/la-carte",
+ "etapes": [
+  "fichiers",
+  "films",
+  "parcours"
+ ],
+ "version": "6",
+ "echecs": 1,
+ "aRegarder": 2,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "échecs"
+}

@@ -1,0 +1,325 @@
+{
+ "mission": "fetes",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.1,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11287,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Les fêtes",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 5.8,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 0,
+   "hauteurPage": 4446,
+   "titres": [
+    "h1 Les fêtes au coin du feu"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver la Saint-Sylvestre",
+    "Cet hiver",
+    "Cet été"
+   ],
+   "prixVus": [
+    "120 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "170 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 5.8,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 0,
+   "hauteurPage": 4446,
+   "titres": [
+    "h1 Les fêtes au coin du feu"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Réserver la Saint-Sylvestre",
+    "Cet hiver",
+    "Cet été"
+   ],
+   "prixVus": [
+    "120 €",
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "170 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-2.png"
+  },
+  {
+   "k": 3,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 6.6,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 765,
+   "hauteurPage": 4446,
+   "titres": [
+    "h2 Le menu de la Saint-Sylvestre",
+    "h3 Amuse-bouche",
+    "h3 Velours de foie gras",
+    "h3 Esturgeon délicatement poché",
+    "h3 Chablis premier cru"
+   ],
+   "actions": [
+    "Réserver la Saint-Sylvestre",
+    "Cet hiver",
+    "Cet été"
+   ],
+   "prixVus": [
+    "120 €",
+    "79 €",
+    "170 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "170 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 6.6,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 765,
+   "hauteurPage": 4446,
+   "titres": [
+    "h2 Le menu de la Saint-Sylvestre",
+    "h3 Amuse-bouche",
+    "h3 Velours de foie gras",
+    "h3 Esturgeon délicatement poché",
+    "h3 Chablis premier cru"
+   ],
+   "actions": [
+    "Réserver la Saint-Sylvestre",
+    "Cet hiver",
+    "Cet été"
+   ],
+   "prixVus": [
+    "120 €",
+    "79 €",
+    "170 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "170 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-4.png"
+  },
+  {
+   "k": 5,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 7.3,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 1530,
+   "hauteurPage": 4446,
+   "titres": [
+    "h3 Velours de foie gras",
+    "h3 Esturgeon délicatement poché",
+    "h3 Filet de bœuf d'exception",
+    "h3 Sablé breton au yuzu",
+    "h3 Chablis premier cru",
+    "h2 Le menu de Noël"
+   ],
+   "actions": [
+    "Réserver la Saint-Sylvestre"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "170 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 7.3,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 1530,
+   "hauteurPage": 4446,
+   "titres": [
+    "h3 Velours de foie gras",
+    "h3 Esturgeon délicatement poché",
+    "h3 Filet de bœuf d'exception",
+    "h3 Sablé breton au yuzu",
+    "h3 Chablis premier cru",
+    "h2 Le menu de Noël"
+   ],
+   "actions": [
+    "Réserver la Saint-Sylvestre"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "170 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-6.png"
+  },
+  {
+   "k": 7,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 8.1,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 2295,
+   "hauteurPage": 4446,
+   "titres": [
+    "h2 Le menu de Noël"
+   ],
+   "actions": [
+    "Réserver le déjeuner de Noël"
+   ],
+   "prixVus": [
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "170 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 8,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 8.1,
+   "adresse": "/les-fetes?saison=hiver",
+   "y": 2295,
+   "hauteurPage": 4446,
+   "titres": [
+    "h2 Le menu de Noël"
+   ],
+   "actions": [
+    "Réserver le déjeuner de Noël"
+   ],
+   "prixVus": [
+    "79 €"
+   ],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "120 €",
+    "79 €",
+    "170 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-8.png"
+  }
+ ]
+}

@@ -4,8 +4,8 @@
 // filtres, recherche) et de jardins-hacienda-maquette/la-carte-la-carte (rubriques, prix en pointillés).
 // Le contenu vient d'un JSON : generer-carte.mjs l'écrit dans la page (carte lisible sans JavaScript) ; data-source peut
 // aussi le relire dans le navigateur. Sans JavaScript : la carte, les ancres et la légende ; filtres et recherche masqués.
-import { pret } from '../../socle/socle.js?v=5';
-import { rendreCarte, normer } from './carte-rendu.js?v=5';
+import { pret } from '../../socle/socle.js?v=6';
+import { rendreCarte, normer } from './carte-rendu.js?v=6';
 
 /**
  * @param {HTMLElement} root  section[data-module="carte-du-restaurant"] contenant [data-carte] (HTML écrit par generer-carte.mjs)

@@ -1,21 +1,17 @@
 <!doctype html>
-<html lang="fr" data-v="5" data-saison="hiver" data-curseur>
+<html lang="fr" data-v="6" data-page="accueil" data-theme="jour" style="--voile-page:#0c6f7b">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Les Jardins de l&#39;Hacienda : restaurant au coin du feu à Moineville</title>
-<meta name="description" content="La cuisine de saison du chef Régis Clauss, au coin du feu, à Moineville entre Metz et Thionville. Carte renouvelée chaque semaine, fêtes de fin d&#39;année, réceptions.">
+<title>Les Jardins de l&#39;Hacienda : restaurant, piscine et réceptions à Moineville</title>
+<meta name="description" content="De midi à minuit : la cuisine de saison du chef Régis Clauss, la piscine sous les palmiers l&#39;été, la cheminée l&#39;hiver, les réceptions et les fêtes, à Moineville entre Metz, Thionville et le Luxembourg.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://jardins-hacienda-2-maquette.vercel.app/">
-<style>:root{--fond:#15100c;--texte:#f3e7d3;--voile-fond:#1d1611;--ouverture-fond:#15100c;--menu-fond:#1d1611}:root { --entete-h: 72px; --barres-h: 0px; } html { background: var(--fond); color: var(--texte); scrollbar-gutter: stable; } body { margin: 0; background: var(--fond); } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime] { opacity: 0; } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime].vu { opacity: 1; } [data-voile] { position: fixed; inset: 0; z-index: 900; background: var(--voile-fond); transform: translateY(100%); visibility: hidden; pointer-events: none; } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) [data-voile] { transform: none; visibility: visible; } html.calme [data-voile], html.secours [data-voile] { visibility: hidden !important; } .ouverture-panneau { position: fixed; inset: 0; z-index: 850; display: none; place-content: center; justify-items: center; background: var(--ouverture-fond, var(--voile-fond)); color: var(--fond); text-align: center; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) .ouverture-panneau { display: grid; } html.defilement-bloque, html.defilement-bloque body, html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie), html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) body, html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours), html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { overflow: hidden; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); }</style>
+<style>:root{--fond:#f6f1e7;--texte:#1c1712;--voile-fond:#1a0f0b;--ouverture-fond:#f6f1e7;--menu-fond:#16100c}:root { --entete-h: 72px; --barres-h: 0px; } html { background: var(--fond); color: var(--texte); scrollbar-gutter: stable; } body { margin: 0; background: var(--fond); } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime] { opacity: 0; } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime].vu { opacity: 1; } [data-voile] { position: fixed; inset: 0; z-index: 900; background: var(--voile-fond); transform: translateY(100%); visibility: hidden; pointer-events: none; } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) [data-voile] { transform: none; visibility: visible; } html.calme [data-voile], html.secours [data-voile] { visibility: hidden !important; } .ouverture-panneau { position: fixed; inset: 0; z-index: 850; display: none; place-content: center; justify-items: center; background: var(--ouverture-fond, var(--voile-fond)); color: var(--fond); text-align: center; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) .ouverture-panneau { display: grid; } html.defilement-bloque, html.defilement-bloque body, html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie), html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) body, html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours), html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { overflow: hidden; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); } .ouverture-panneau { gap: 10px; color: var(--ouverture-texte, #1c1712); } .ouverture-heure { margin: 0; display: flex; align-items: flex-start; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(5rem, min(22vw, 30vh), 15rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } .ouverture-rouleau { display: block; height: 1em; overflow: hidden; } .ouverture-rouleau > span { display: block; height: 1em; } .ouverture-sep { display: block; padding-inline: .02em; } .ouverture-nom { margin: 0; font-family: 'Instrument Serif', 'Instrument Fallback', Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.1; } .ouverture-ligne { margin: 0; font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; opacity: .72; } .voile-contenu { display: grid; justify-items: center; gap: 6px; color: #f6efe2; } .voile-heure { margin: 0; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(4rem, 16vw, 11rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } html:not([data-moment="soir"]) [data-moment-seul="soir"], html[data-moment="soir"] [data-moment-seul="jour"] { display: none !important; } html:not([data-saison="ete"]) [data-saison-seul="ete"], html[data-saison="ete"] [data-saison-seul="hiver"] { display: none !important; }</style>
 <script>(function () {
 var d = document.documentElement, ss = null, ls = null;
 try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
 d.classList.add('js');
-var saison = 'hiver';
-try { var mois = +new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', month: 'numeric' }).format(new Date()); saison = mois >= 5 && mois <= 9 ? 'ete' : 'hiver'; } catch (e) {}
-try { var choix = ls && ls.getItem('jh-saison'); if (choix === 'hiver' || choix === 'ete') saison = choix; } catch (e) {}
-d.setAttribute('data-saison', saison);
 var calme = false;
 try { calme = !!ls && ls.getItem('socle:calme') === 'oui'; } catch (e) {}
 if (!calme && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) calme = true;
@@ -43,59 +39,53 @@ if (alt) location.replace(new URL(alt.href).pathname + location.search + locatio
 } catch (e) {}
 setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('secours'); }, 2000);
 })();</script>
-<link rel="preload" href="/assets/fonts/bodoni-moda.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/socle.css?v=5">
-<link rel="stylesheet" href="/assets/js/modules/plat-fumant/module.css?v=5">
-<link rel="stylesheet" href="/assets/js/modules/objet-a-faire-tourner/module.css?v=5">
-<link rel="stylesheet" href="/assets/js/modules/assiette-qui-se-dresse/module.css?v=5">
-<link rel="stylesheet" href="/assets/css/site.css?v=5">
-<link rel="modulepreload" href="/assets/js/site.js?v=5">
-<link rel="modulepreload" href="/assets/js/socle/index.js?v=5">
+<script>(function(){try{var d=document.documentElement,p={};new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit',month:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});var h=+p.hour,m=+p.month;var mo=h>=5&&h<17?'jour':'soir';try{var q=new URLSearchParams(location.search).get('moment');if(q==='jour'||q==='soir')mo=q;}catch(e){}d.setAttribute('data-moment',mo);if(d.hasAttribute('data-theme-auto')){d.setAttribute('data-theme',mo==='soir'?'nuit':'jour');if(mo==='soir'){d.style.setProperty('--ouverture-fond','#120c09');d.style.setProperty('--ouverture-texte','#f6efe2');}}var sa=m>=5&&m<=9?'ete':'hiver';try{var qs=new URLSearchParams(location.search).get('saison');if(qs==='ete'||qs==='hiver')sa=qs;}catch(e){}d.setAttribute('data-saison',sa);d.style.setProperty('--heure-reelle',"'"+p.hour+':'+p.minute+"'");}catch(e){}})();</script>
+<link rel="preload" href="/assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/socle.css?v=6">
+<link rel="stylesheet" href="/assets/css/site.css?v=6">
+<link rel="modulepreload" href="/assets/js/site.js?v=6">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=6">
 <script src="/assets/vendor/gsap.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/vendor/SplitText.min.js" defer></script>
-<script type="module" src="/assets/js/site.js?v=5"></script>
-<meta name="theme-color" content="#15100c">
+<script type="module" src="/assets/js/site.js?v=6"></script>
+<meta name="theme-color" content="#f6f1e7">
 <link rel="icon" href="/assets/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Les Jardins de l&#39;Hacienda">
 <meta property="og:locale" content="fr_FR">
-<meta property="og:title" content="Les Jardins de l&#39;Hacienda : restaurant au coin du feu à Moineville">
-<meta property="og:description" content="La cuisine de saison du chef Régis Clauss, au coin du feu, à Moineville entre Metz et Thionville. Carte renouvelée chaque semaine, fêtes de fin d&#39;année, réceptions.">
+<meta property="og:title" content="Les Jardins de l&#39;Hacienda : restaurant, piscine et réceptions à Moineville">
+<meta property="og:description" content="De midi à minuit : la cuisine de saison du chef Régis Clauss, la piscine sous les palmiers l&#39;été, la cheminée l&#39;hiver, les réceptions et les fêtes, à Moineville entre Metz, Thionville et le Luxembourg.">
 <meta property="og:url" content="https://jardins-hacienda-2-maquette.vercel.app/">
 <meta property="og:image" content="https://jardins-hacienda-2-maquette.vercel.app/assets/partage/accueil-fr.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Les Jardins de l&#39;Hacienda : un plat du chef devant la cheminée">
+<meta property="og:image:alt" content="La piscine des Jardins de l&#39;Hacienda à midi, sous les palmiers">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":"Les Jardins de l'Hacienda","url":"https://jardins-hacienda-2-maquette.vercel.app/","telephone":"+33 6 18 21 28 10","servesCuisine":"Cuisine traditionnelle de saison","address":{"@type":"PostalAddress","streetAddress":"6 Vathier Haye","postalCode":"54580","addressLocality":"Moineville","addressCountry":"FR"},"sameAs":["https://www.facebook.com/lesjardinsdelhacienda54","https://www.instagram.com/lesjardinsdel.hacienda/"],"acceptsReservations":true}</script>
 </head>
 <body id="haut">
-<div data-voile data-forme="cloche" aria-hidden="true"><div class="voile-contenu"><svg class="voile-cloche" viewBox="0 0 120 80" aria-hidden="true"><path d="M60 8a5 5 0 1 1 0 .1M14 66a46 46 0 0 1 92 0Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M6 70h108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><span data-voile-libelle>Accueil</span></div></div>
+<script type="application/json" data-reservation-globale>{"fuseau":"Europe/Paris","delai_minutes":60,"jours_a_l_avance":60,"couverts_max":10,"telephone":"06 18 21 28 10","services":{"midi":{"libelle":"Midi","debut":"12:00","fin":"13:30","pas":15},"soir":{"libelle":"Soir","debut":"19:00","fin":"21:30","pas":15}},"fermetures":{"jours":["lundi","mardi"],"services":{"mercredi":["soir"],"jeudi":["soir"],"samedi":["midi"],"dimanche":["soir"]},"dates":[]},"espaces":[{"id":"salle","libelle":"En salle"},{"id":"terrasse","libelle":"En terrasse","mois":[6,7,8,9],"note":"selon la météo","hors_saison":"de juin à septembre"}],"complets":{},"complets_simules":true,"message_simule":"Réservation simulée : rien n'est envoyé dans cette maquette.","ouvertures_exceptionnelles":[{"date":"2026-12-31","service":"soir","note":"Saint-Sylvestre"}]}</script>
+<div data-voile data-forme="cloche" aria-hidden="true"><div class="voile-contenu"><p class="voile-heure" data-voile-heure>12:00</p><span data-voile-libelle>Accueil</span></div></div>
 <div class="ouverture-panneau" data-ouverture aria-hidden="true">
-  <div class="ouverture-cloche" data-ouverture-objet>
-    <svg class="ouverture-dome" viewBox="0 0 200 150" aria-hidden="true"><defs><linearGradient id="g-laiton" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2c48c"/><stop offset=".45" stop-color="#b8925a"/><stop offset="1" stop-color="#6e5228"/></linearGradient></defs><circle cx="100" cy="14" r="9" fill="url(#g-laiton)"/><path d="M18 128a82 82 0 0 1 164 0Z" fill="url(#g-laiton)"/><path d="M40 112a62 62 0 0 1 34-48" fill="none" stroke="#f6e6c4" stroke-width="5" stroke-linecap="round" opacity=".55"/><rect x="6" y="128" width="188" height="10" rx="5" fill="#8a6a36"/></svg>
-    <img class="ouverture-logo" src="/assets/images/logo-clair.png" alt="" width="64" height="64">
-  </div>
-  <span class="ouverture-vapeur" aria-hidden="true"></span>
+  <p class="ouverture-heure" data-ouverture-objet><span class="ouverture-rouleau" data-rouleau="h"><span>00</span><span>04</span><span>08</span><span>11</span><span>12</span></span><span class="ouverture-sep">:</span><span class="ouverture-rouleau" data-rouleau="m"><span>00</span><span>15</span><span>30</span><span>45</span><span>00</span></span></p>
   <p class="ouverture-nom">Les Jardins de l&#39;Hacienda</p>
-  <span class="ouverture-trait"></span>
   <p class="ouverture-ligne">Restaurant et réceptions · Moineville</p>
 </div>
 <a class="evitement" href="#contenu">Aller au contenu</a>
 <header data-entete>
   <div class="entete-rangee">
-    <a class="entete-logo" href="/" data-libelle="Accueil" aria-current="page">
-      <img src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>Les Jardins de l&#39;Hacienda</span>
+    <a class="entete-logo" href="/" aria-label="Les Jardins de l&#39;Hacienda, accueil" data-libelle="Accueil" aria-current="page">
+      <img class="entete-logo__jour" src="/assets/images/logo-240.webp" alt="" width="40" height="37"><img class="entete-logo__nuit" src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>Les Jardins de l&#39;Hacienda</span>
     </a>
+    <p class="horloge" data-horloge data-grille="fil" data-effet="heure" aria-hidden="true"><span class="horloge__h" data-horloge-h>12</span><span class="horloge__sep">:</span><span class="horloge__m" data-horloge-m>00</span></p>
     <nav data-nav aria-label="Navigation principale">
-      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/#recevoir" data-libelle="Réceptions">Réceptions</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
     </nav>
     <div class="entete-actions">
-      <button type="button" class="saison-mini" data-saison-bascule aria-pressed="false" aria-label="Passer à l’été"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="saison-mini__flamme" d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-3 2-5 3-7 0 2 1 3 2 3 0-2 0-4 0-6z"/><g class="saison-mini__soleil"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg></button>
-      <a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver</a>
+      <a class="bouton bouton--entete" href="/reserver#formulaire" data-libelle="Réserver" data-resa-cible>Réserver</a>
       <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="Menu" data-libelle-fermer="Fermer"><span data-libelle-bouton>Menu</span></button>
       <a class="menu-sansjs" href="#menu" data-menu-lien>Menu</a>
     </div>
@@ -119,296 +109,288 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <span id="menu-ferme" aria-hidden="true"></span>
 <div id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu">
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
-  <ul><li style="--i:0"><a href="/" class="menu-lien" data-libelle="Accueil" aria-current="page">Accueil</a></li><li style="--i:1"><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:2"><a href="/#recevoir" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:4"><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
-  <p class="menu-actions"><a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver une table</a><a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
+  <ul><li style="--i:0"><span class="menu-heure" aria-hidden="true">12:00</span><a href="/" class="menu-lien" data-libelle="Accueil" aria-current="page">Accueil</a></li><li style="--i:1"><span class="menu-heure" aria-hidden="true">12:30</span><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><span class="menu-heure" aria-hidden="true">19:00</span><a href="/receptions" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><span class="menu-heure" aria-hidden="true">23:30</span><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:4"><span class="menu-heure" aria-hidden="true">00:00</span><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:5"><span class="menu-heure" aria-hidden="true">Maintenant</span><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+  <p class="menu-actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une table</a> <a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
 <main id="contenu" tabindex="-1">
-<section class="ouv-saisons" id="debut" data-lueur>
-  <div class="ouv-saisons__photos" data-iris-centre>
-    <div class="ouv-saisons__photo-saison" data-saison-photo="hiver">
-      <figure class="media fumant ouv-saisons__photo" data-module="plat-fumant" data-vapeur=".5 .66 .42" data-effet="vapeur" data-souris style="--cadrage:51% 64%;--cadrage-mobile:50% 70%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/ouverture-plat-mobile-640.webp 640w, /assets/images/ouverture-plat-mobile-1080.webp 1080w" sizes="100vw">
-    <img src="/assets/images/ouverture-plat-1280.webp" srcset="/assets/images/ouverture-plat-640.webp 640w, /assets/images/ouverture-plat-1280.webp 1280w, /assets/images/ouverture-plat-1920.webp 1920w" sizes="100vw" alt="Un plat de légumes de saison dressé sur une table en bois, devant la cheminée allumée" width="1280" height="720" fetchpriority="high" loading="eager" decoding="async">
-  </picture>
-</figure>
-    </div>
-    <div class="ouv-saisons__photo-saison" data-saison-photo="ete">
-      <figure class="media ouv-saisons__photo" style="--cadrage:50% 60%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/ete-ouverture-mobile-640.webp 640w, /assets/images/ete-ouverture-mobile-1080.webp 1080w" sizes="100vw">
-    <img src="/assets/images/ete-ouverture-1280.webp" srcset="/assets/images/ete-ouverture-640.webp 640w, /assets/images/ete-ouverture-1280.webp 1280w, /assets/images/ete-ouverture-1920.webp 1920w" sizes="100vw" alt="La piscine des Jardins de l&#39;Hacienda, ses palmiers et ses paillotes sous le soleil" width="1280" height="720" loading="lazy" decoding="async">
-  </picture>
-</figure>
-      <span class="reflets" data-effet="reflets" aria-hidden="true"><img src="/assets/images/grok/eau-lumiere-1280.webp" alt="" width="1280" height="854" loading="lazy" decoding="async"></span>
-    </div>
-  </div>
-  <div class="ouv-saisons__texte">
-    <p class="surtitre">Restaurant et réceptions · Moineville</p>
-    <h1 class="ouv-saisons__titre" data-grille="typo"><span class="ouv-saisons__ligne" data-ligne="hiver">Au coin du feu l&#39;hiver,</span> <span class="ouv-saisons__ligne" data-ligne="ete">au bord de la piscine l&#39;été</span></h1>
-    <p class="ouv-saisons__intro masque-ecran-tres-bas"><span data-saison-seul="hiver">La cuisine traditionnelle et de saison du chef Régis Clauss, servie près de la cheminée, entre Metz, Thionville et le Luxembourg.</span><span data-saison-seul="ete">La cuisine de saison du chef Régis Clauss, servie en terrasse, au bord de la piscine et sous les palmiers, entre Metz, Thionville et le Luxembourg.</span></p>
-    <div class="cadran-saison" data-effet="saison" data-grille="manipuler" role="group" aria-label="Choisir la saison">
-      <svg class="cadran-saison__arc" viewBox="0 0 240 132" aria-hidden="true" focusable="false">
-        <defs><linearGradient id="cadran-degrade" x1="0" x2="1"><stop offset="0" stop-color="#d8622a"/><stop offset=".5" stop-color="#b8925a"/><stop offset="1" stop-color="#f2b33d"/></linearGradient></defs>
-        <path d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="url(#cadran-degrade)" stroke-width="10" stroke-linecap="round"/>
-        <path d="M20 120 A100 100 0 0 1 220 120" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1" stroke-dasharray="2 9"/>
-        <g class="cadran-saison__braise" transform="translate(20 120)"><path d="M0 -14 C 8 -6, 7 2, 0 6 C -7 2, -8 -6, 0 -14 Z" fill="#d8622a"/></g>
-        <g class="cadran-saison__soleil" transform="translate(220 120)"><circle r="7" fill="#f2b33d"/><g stroke="#f2b33d" stroke-width="2" stroke-linecap="round"><path d="M0 -13v-4M0 13v4M-13 0h-4M13 0h4M9 -9l3 -3M-9 9l-3 3M9 9l3 3M-9 -9l-3 -3"/></g></g>
-        <g class="cadran-saison__curseur" data-cadran-curseur><circle r="17" fill="#f3e7d3" stroke="#b8925a" stroke-width="3"/><circle class="cadran-saison__coeur" r="8"/></g>
-      </svg>
-      <p class="cadran-saison__boutons">
-        <button type="button" data-saison-choix="hiver" aria-pressed="false">Hiver</button>
-        <span class="cadran-saison__indice" aria-hidden="true">Faites glisser : braise ou soleil</span>
-        <button type="button" data-saison-choix="ete" aria-pressed="false">Été</button>
-      </p>
-    </div>
-    <p class="ouv-saisons__actions">
-      <a href="/reserver#formulaire" class="bouton" data-libelle="Réserver" data-action-principale data-survol="magnetique"><span data-saison-seul="hiver">Réserver au coin du feu</span><span data-saison-seul="ete">Réserver en terrasse</span></a>
-      <a href="/la-carte" class="bouton bouton--contour" data-libelle="La carte">Voir la carte</a>
-    </p>
-    <p class="ouv-saisons__note" data-saison-seul="ete">Terrasse et piscine de juin à septembre ; d’ici là, la salle et sa cheminée.</p>
-    <p class="ouv-saisons__info" data-info-cle><a href="/infos-pratiques#horaires" class="ouv-saisons__statut" data-statut-accueil>Horaires et accès</a></p>
-    <script type="application/json" data-horaires-accueil>{"fuseau":"Europe/Paris","seuil_ferme_bientot":30,"regle_feries":"ouvert","feries":[{"date":"2026-11-11","nom":"Armistice"},{"date":"2026-12-25","nom":"Noël"},{"date":"2027-01-01","nom":"Jour de l'an"}],"adresses":[{"id":"restaurant","nom":"Le restaurant","adresse":"6 Vathier Haye, 54580 Moineville","telephone":"06 18 21 28 10","semaine":{"lundi":[],"mardi":[],"mercredi":["12:00-14:30"],"jeudi":["12:00-14:30"],"vendredi":["12:00-14:30","19:00-00:00"],"samedi":["19:00-00:00"],"dimanche":["12:00-16:00"]},"exceptions":[]}]}</script>
-  </div>
-</section>
-<section class="plateau clair" id="plateau" data-lueur data-grille="fil">
-  <div class="conteneur plateau__grille">
-    <div class="plateau__texte">
-      <p class="surtitre">La carte de la semaine</p>
-      <h2 data-anime="lignes">Lancez le plateau du chef</h2>
-      <p data-anime>Cette semaine, Régis Clauss cuisine le risotto de Saint-Jacques au riz noir, le suprême de pintade et les figues rôties au miel. La carte change chaque semaine, au fil des produits de saison.</p>
-      <ol class="plateau__rubriques" data-anime="cascade">
-        <li class="plateau__rubrique" data-quart="0">
-          <p class="plateau__rubrique-tete"><span class="plateau__rubrique-nom">Nos entrées</span><span class="plateau__fourchette" data-prix>9 à 21 €</span></p>
-          <ul><li><span>Risotto de Saint-Jacques au riz noir</span> <span class="plateau__prix" data-prix>21 €</span></li><li><span>Foie gras de canard maison</span> <span class="plateau__prix" data-prix>21 €</span></li></ul>
-        </li><li class="plateau__rubrique" data-quart="1">
-          <p class="plateau__rubrique-tete"><span class="plateau__rubrique-nom">Nos plats</span><span class="plateau__fourchette" data-prix>21 à 26 €</span></p>
-          <ul><li><span>Suprême de pintade</span> <span class="plateau__prix" data-prix>24 €</span></li><li><span>Dhal aux trois lentilles</span> <span class="plateau__vege">végétarien</span> <span class="plateau__prix" data-prix>21 €</span></li></ul>
-        </li><li class="plateau__rubrique" data-quart="2">
-          <p class="plateau__rubrique-tete"><span class="plateau__rubrique-nom">À partager</span><span class="plateau__fourchette" data-prix>12 à 45 €</span></p>
-          <ul><li><span>La Libanaise</span> <span class="plateau__prix" data-prix>45 €</span></li><li><span>Houmous</span> <span class="plateau__vege">végétarien</span> <span class="plateau__prix" data-prix>12 €</span></li></ul>
-        </li><li class="plateau__rubrique" data-quart="3">
-          <p class="plateau__rubrique-tete"><span class="plateau__rubrique-nom">Nos desserts</span><span class="plateau__fourchette" data-prix>9 à 11 €</span></p>
-          <ul><li><span>Figues rôties au miel</span> <span class="plateau__prix" data-prix>10 €</span></li><li><span>Le Gourmand</span> <span class="plateau__prix" data-prix>11 €</span></li></ul>
-        </li>
-      </ol>
-    </div>
-    <div class="oat plateau__objet" data-module="objet-a-faire-tourner" role="img" aria-label="Plateau du chef : quatre rubriques de la carte, à faire tourner" data-effet="plateau" data-souris>
-      <div class="oat__objet"><div class="plateau__disque">
-        <div class="plateau__part" style="--q:0"><figure class="media plateau__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/plateau-entree-800.webp" srcset="/assets/images/plateau-entree-480.webp 480w, /assets/images/plateau-entree-640.webp 640w, /assets/images/plateau-entree-800.webp 800w" sizes="(max-width: 760px) 40vw, 18vw" alt="" width="800" height="800" loading="lazy" decoding="async">
-  </picture>
-</figure><span class="plateau__etiquette">Nos entrées</span></div><div class="plateau__part" style="--q:1"><figure class="media plateau__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/plateau-plat-800.webp" srcset="/assets/images/plateau-plat-480.webp 480w, /assets/images/plateau-plat-640.webp 640w, /assets/images/plateau-plat-800.webp 800w" sizes="(max-width: 760px) 40vw, 18vw" alt="" width="800" height="800" loading="lazy" decoding="async">
-  </picture>
-</figure><span class="plateau__etiquette">Nos plats</span></div><div class="plateau__part" style="--q:2"><figure class="media plateau__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/plateau-partager-800.webp" srcset="/assets/images/plateau-partager-480.webp 480w, /assets/images/plateau-partager-640.webp 640w, /assets/images/plateau-partager-800.webp 800w" sizes="(max-width: 760px) 40vw, 18vw" alt="" width="800" height="800" loading="lazy" decoding="async">
-  </picture>
-</figure><span class="plateau__etiquette">À partager</span></div><div class="plateau__part" style="--q:3"><figure class="media plateau__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/plateau-dessert-800.webp" srcset="/assets/images/plateau-dessert-480.webp 480w, /assets/images/plateau-dessert-640.webp 640w, /assets/images/plateau-dessert-800.webp 800w" sizes="(max-width: 760px) 40vw, 18vw" alt="" width="800" height="800" loading="lazy" decoding="async">
-  </picture>
-</figure><span class="plateau__etiquette">Nos desserts</span></div>
-        <span class="plateau__centre" aria-hidden="true"><img src="/assets/images/logo-clair.png" alt="" width="64" height="64"></span>
-      </div></div>
-      <span class="oat__reflet" aria-hidden="true"></span>
-      <p class="oat__indice" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M20 12a8 8 0 1 1-2.34-5.66" /><path d="M20 4v4h-4" /></svg>Attrapez le plateau et lancez-le</p>
-    </div>
-  </div>
-</section>
-<section class="table-dressee" id="table" data-lueur>
-  <div class="assiette table" data-module="assiette-qui-se-dresse" data-epingle data-scene data-grille="scene" data-effet="table" aria-labelledby="table-titre">
-    <div class="assiette__cadre socle-cadre">
-      <div class="assiette__texte" data-tient>
-        <p class="socle-surtitre">En cuisine</p>
-        <h2 class="assiette__titre" id="table-titre">La table se dresse</h2>
-        <p class="assiette__intro masque-ecran-bas">Trois assiettes du restaurant, dressées en cuisine et servies chaudes, à côté de la cheminée ou sur la terrasse.</p>
-      </div>
-      <div class="table__lieu" data-tient>
-        <div class="assiette__scene table__nappe" role="img" aria-label="Vue de dessus d&#39;une table dressée : couverts, verres et trois assiettes du chef">
-          <figure class="media table__lin" data-grok style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/grok/nappe-lin-1280.webp" srcset="/assets/images/grok/nappe-lin-640.webp 640w, /assets/images/grok/nappe-lin-1280.webp 1280w" sizes="(max-width: 899px) 100vw, 50vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
+<script type="application/json" data-horaires-accueil>{"fuseau":"Europe/Paris","seuil_ferme_bientot":30,"regle_feries":"ouvert","feries":[{"date":"2026-11-11","nom":"Armistice"},{"date":"2026-12-25","nom":"Noël"},{"date":"2027-01-01","nom":"Jour de l'an"}],"adresses":[{"id":"restaurant","nom":"Le restaurant","adresse":"6 Vathier Haye, 54580 Moineville","telephone":"06 18 21 28 10","semaine":{"lundi":[],"mardi":[],"mercredi":["12:00-14:30"],"jeudi":["12:00-14:30"],"vendredi":["12:00-14:30","19:00-00:00"],"samedi":["19:00-00:00"],"dimanche":["12:00-16:00"]},"exceptions":[]}]}</script>
+<script type="application/json" data-reservation-accueil>{"fuseau":"Europe/Paris","delai_minutes":60,"jours_a_l_avance":60,"couverts_max":10,"telephone":"06 18 21 28 10","services":{"midi":{"libelle":"Midi","debut":"12:00","fin":"13:30","pas":15},"soir":{"libelle":"Soir","debut":"19:00","fin":"21:30","pas":15}},"fermetures":{"jours":["lundi","mardi"],"services":{"mercredi":["soir"],"jeudi":["soir"],"samedi":["midi"],"dimanche":["soir"]},"dates":[]},"espaces":[{"id":"salle","libelle":"En salle"},{"id":"terrasse","libelle":"En terrasse","mois":[6,7,8,9],"note":"selon la météo","hors_saison":"de juin à septembre"}],"complets":{},"complets_simules":true,"message_simule":"Réservation simulée : rien n'est envoyé dans cette maquette.","ouvertures_exceptionnelles":[{"date":"2026-12-31","service":"soir","note":"Saint-Sylvestre"}]}</script>
+<section class="midi ecran" id="midi" data-heure="12:00" data-lumiere="midi" data-plein-ecran>
+  <div class="midi__eau" data-grille="manipuler" data-effet="eau" data-souris>
+    <figure class="media midi__photo" data-grok style="--cadrage:50% 50%;--cadrage-mobile:50% 60%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/midi-piscine-mobile-640.webp 640w" sizes="100vw">
+    <img src="/assets/images/grok/midi-piscine-1280.webp" srcset="/assets/images/grok/midi-piscine-640.webp 640w, /assets/images/grok/midi-piscine-1280.webp 1280w" sizes="100vw" alt="La piscine à midi, l&#39;eau turquoise, les palmiers et les parasols de paille" width="1280" height="720" fetchpriority="high" loading="eager" decoding="async">
   </picture><figcaption class="mention-ia">Illustration générée</figcaption>
 </figure>
-          <div class="assiette__element" data-de="-.12" data-a="0" style="--hauteur:.4"><svg viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><g fill="#b8925a"><rect x="318" y="430" width="10" height="300" rx="5"/><rect x="306" y="430" width="34" height="70" rx="8" opacity=".9"/><rect x="806" y="440" width="12" height="320" rx="6"/><path d="M806 440 q24 30 12 120 h-12z" opacity=".85"/></g></svg></div>
-    <div class="assiette__element" data-de="0" data-a=".14" style="--hauteur:.5;--ox:52%;--oy:17%"><svg viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><circle cx="470" cy="190" r="52" fill="rgba(255,255,255,.35)" stroke="#e8dcc4" stroke-width="4"/><circle cx="455" cy="175" r="14" fill="rgba(255,255,255,.75)"/><circle cx="580" cy="150" r="44" fill="rgba(216,98,42,.18)" stroke="#e8dcc4" stroke-width="4"/><circle cx="568" cy="138" r="11" fill="rgba(255,255,255,.7)"/></svg></div>
-    <div class="assiette__element" data-de="0.16" data-a="0.32" style="--ox:27%;--oy:30%"><svg viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><defs><clipPath id="clip-assiette-saumon"><circle cx="270" cy="300" r="150"/></clipPath></defs><circle cx="270" cy="300" r="166" fill="#f7f1e6"/><circle cx="270" cy="300" r="166" fill="none" stroke="#d9cbb3" stroke-width="2"/><image href="/assets/images/assiette-saumon-640.webp" x="120" y="150" width="300" height="300" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-assiette-saumon)"/></svg></div><div class="assiette__element" data-de="0.3" data-a="0.48" style="--ox:56%;--oy:56%"><svg viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><defs><clipPath id="clip-assiette-cepes"><circle cx="560" cy="560" r="205"/></clipPath></defs><circle cx="560" cy="560" r="221" fill="#f7f1e6"/><circle cx="560" cy="560" r="221" fill="none" stroke="#d9cbb3" stroke-width="2"/><image href="/assets/images/assiette-cepes-640.webp" x="355" y="355" width="410" height="410" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-assiette-cepes)"/></svg></div><div class="assiette__element" data-de="0.46" data-a="0.62" style="--ox:77%;--oy:25%"><svg viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><defs><clipPath id="clip-assiette-turquoise"><circle cx="770" cy="250" r="135"/></clipPath></defs><circle cx="770" cy="250" r="151" fill="#f7f1e6"/><circle cx="770" cy="250" r="151" fill="none" stroke="#d9cbb3" stroke-width="2"/><image href="/assets/images/assiette-turquoise-640.webp" x="635" y="115" width="270" height="270" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-assiette-turquoise)"/></svg></div>
-        </div>
-        <div class="assiette__element table__plongee" data-de=".7" data-a="1" data-effet="plongee" style="--hauteur:0">
-          <div class="table__plongee-photo" data-saison-photo="hiver"><figure class="media table__plongee-image" style="--cadrage:50% 50%">
+    <canvas class="midi__canvas" data-eau aria-hidden="true" data-audit-ignorer></canvas>
+  </div>
+  <div class="midi__texte conteneur">
+    <p class="heure-geante" data-iris-centre data-grille="typo" data-effet="axes" aria-hidden="true"><span class="hg__h">12</span><span class="hg__sep">:</span><span class="hg__m">00</span></p>
+    <p class="surtitre midi__surtitre"><strong class="midi__nom">Les Jardins de l&#39;Hacienda</strong> · restaurant et réceptions à Moineville<span class="midi__lieu-long">, entre Metz, Thionville et le Luxembourg</span></p>
+    <h1 class="midi__titre" data-anime="lignes">Midi au bord de l&#39;eau, <em>minuit au coin du feu.</em></h1>
+    <p class="statut midi__statut" data-anime="gsap"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil data-statut-heure="Il est" data-info-cle>Le midi du mercredi au dimanche (sauf le samedi), le soir le vendredi et le samedi</span></p>
+    <p class="midi__intro masque-ecran-bas" data-anime="gsap">La cuisine de saison du chef Régis Clauss, une carte renouvelée chaque semaine, la piscine sous les palmiers l&#39;été et la cheminée l&#39;hiver.</p>
+    <p class="midi__actions" data-anime="gsap">
+      <a href="/reserver#formulaire" class="bouton" data-libelle="Réserver" data-action-principale data-survol="magnetique">Réserver une table</a>
+      <a href="/receptions#demande" class="bouton bouton--contour" data-libelle="Réceptions" data-survol="magnetique">Demander une réception</a>
+    </p>
+  </div>
+  <p class="saison-tag midi__saison">Piscine et terrasse de juin à septembre</p>
+  <p class="indice midi__indice" aria-hidden="true"><span class="indice--souris">Passez la main sur l&#39;eau</span><span class="indice--doigt">Touchez l&#39;eau</span></p>
+</section>
+<section class="dejeuner" id="dejeuner" data-heure="12:30" data-lumiere="dejeuner" aria-labelledby="dejeuner-titre">
+  <div class="conteneur dejeuner__grille">
+    <div class="dejeuner__texte">
+      <p class="heure-section " data-effet="heure-section"><span>12:30</span></p>
+      <p class="surtitre">Le déjeuner</p>
+      <h2 id="dejeuner-titre" data-anime="lignes">La carte de la semaine</h2>
+      <p data-anime>Le chef Régis Clauss suit le marché et renouvelle sa carte chaque semaine. Les suggestions s&#39;annoncent de vive voix.</p>
+      <ol class="passe" data-effet="passe">
+        <li class="passe__plat" style="--i:0"><span class="passe__nom">Risotto de Saint-Jacques au riz noir</span><span class="passe__points" aria-hidden="true"></span><span class="passe__prix" data-prix>21 €</span></li><li class="passe__plat" style="--i:1"><span class="passe__nom">Foie gras de canard maison</span><span class="passe__points" aria-hidden="true"></span><span class="passe__prix" data-prix>21 €</span></li><li class="passe__plat" style="--i:2"><span class="passe__nom">Suprême de pintade</span><span class="passe__points" aria-hidden="true"></span><span class="passe__prix" data-prix>24 €</span></li><li class="passe__plat" style="--i:3"><span class="passe__nom">Dhal aux trois lentilles</span><span class="passe__points" aria-hidden="true"></span><span class="passe__prix" data-prix>21 €</span></li><li class="passe__plat" style="--i:4"><span class="passe__nom">L&#39;os à moelle</span><span class="passe__points" aria-hidden="true"></span><span class="passe__prix" data-prix>9 €</span></li>
+      </ol>
+      <p class="dejeuner__info" data-info>Entrées de 9 à 21 € · plats de 21 à 26 € · menu enfant 16 €</p>
+      <p class="dejeuner__actions"><a href="/la-carte" class="bouton bouton--contour" data-libelle="La carte">Toute la carte</a> <span class="saison-tag saison-tag--clair">Le midi : mercredi, jeudi, vendredi et dimanche</span></p>
+    </div>
+    <div class="dejeuner__visuel">
+      <figure class="media dejeuner__assiette" data-grok data-fx="parallaxe" data-fx-force="8" style="--cadrage:50% 50%">
   <picture>
-    <img src="/assets/images/assiette-cepes-960.webp" srcset="/assets/images/assiette-cepes-480.webp 480w, /assets/images/assiette-cepes-640.webp 640w, /assets/images/assiette-cepes-960.webp 960w" sizes="(max-width: 899px) 100vw, 56vw" alt="" width="960" height="960" loading="lazy" decoding="async">
-  </picture>
-</figure></div>
-          <div class="table__plongee-photo" data-saison-photo="ete"><figure class="media table__plongee-image" style="--cadrage:50% 50%">
+    <img src="/assets/images/grok/assiette-midi-960.webp" srcset="/assets/images/grok/assiette-midi-480.webp 480w, /assets/images/grok/assiette-midi-640.webp 640w, /assets/images/grok/assiette-midi-960.webp 960w" sizes="(max-width: 760px) 92vw, 42vw" alt="Une assiette de saison sur une nappe blanche, à l&#39;ombre d&#39;un parasol de paille" width="960" height="1200" loading="lazy" decoding="async">
+  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
+</figure>
+      <div class="dejeuner__vraies" data-effet="vraies" aria-label="Assiettes du restaurant" role="group">
+        <figure class="media vraie vraie--1" style="--cadrage:50% 50%">
   <picture>
-    <img src="/assets/images/ete-plongee-960.webp" srcset="/assets/images/ete-plongee-480.webp 480w, /assets/images/ete-plongee-640.webp 640w, /assets/images/ete-plongee-960.webp 960w" sizes="(max-width: 899px) 100vw, 56vw" alt="" width="960" height="960" loading="lazy" decoding="async">
+    <img src="/assets/images/assiette-cepes-960.webp" srcset="/assets/images/assiette-cepes-480.webp 480w, /assets/images/assiette-cepes-640.webp 640w, /assets/images/assiette-cepes-960.webp 960w" sizes="160px" alt="" width="960" height="960" loading="lazy" decoding="async">
   </picture>
-</figure></div>
-          <div class="table__plongee-texte">
-            <h3 id="plongee-titre"><span data-saison-seul="hiver">Entrez dans la carte de la semaine</span><span data-saison-seul="ete">Plongez dans la carte de la semaine</span></h3>
-            <p data-prix>Entrées dès 9 €, plats de 21 à 26 €, menu enfant 16 €, planches à partager.</p>
-            <p><a href="/la-carte" class="bouton" data-libelle="La carte">Ouvrir la carte</a></p>
+</figure><figure class="media vraie vraie--2" style="--cadrage:50% 50%">
+  <picture>
+    <img src="/assets/images/assiette-turquoise-960.webp" srcset="/assets/images/assiette-turquoise-480.webp 480w, /assets/images/assiette-turquoise-640.webp 640w, /assets/images/assiette-turquoise-960.webp 960w" sizes="160px" alt="" width="960" height="960" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media vraie vraie--3" style="--cadrage:50% 50%">
+  <picture>
+    <img src="/assets/images/assiette-saumon-960.webp" srcset="/assets/images/assiette-saumon-480.webp 480w, /assets/images/assiette-saumon-640.webp 640w, /assets/images/assiette-saumon-960.webp 960w" sizes="160px" alt="" width="960" height="960" loading="lazy" decoding="async">
+  </picture>
+</figure>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="apresmidi ecran epingle" id="apres-midi" data-heure="14:30" data-lumiere="apresmidi" data-fx="galerie" aria-labelledby="apresmidi-titre">
+  <div class="conteneur apresmidi__tete">
+    <p class="heure-section " data-effet="heure-section"><span>14:30</span></p>
+    <div>
+      <h2 id="apresmidi-titre" data-anime="lignes">L&#39;été, la maison vit dehors</h2>
+      <p><span class="masque-ecran-bas">De juin à septembre : la piscine, le bar sous la paillote, les journées festives et les pool parties.</span> <span class="saison-tag saison-tag--clair">De juin à septembre</span> <a href="/les-fetes?saison=ete#ete" class="lien-fleche" data-libelle="Les fêtes">L&#39;été aux Jardins</a></p>
+    </div>
+  </div>
+  <div class="piste apresmidi__piste" data-galerie tabindex="0" role="region" aria-label="L&#39;après-midi d&#39;été, de 14 h 30 à 19 h" data-effet="apres-midi">
+    <article class="moment moment--grand" id="piscine">
+      <figure class="media moment__photo" data-grok style="--cadrage:40% 70%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/midi-piscine-mobile-640.webp 640w" sizes="(max-width: 760px) 80vw, 34vw">
+    <img src="/assets/images/grok/midi-piscine-1280.webp" srcset="/assets/images/grok/midi-piscine-640.webp 640w, /assets/images/grok/midi-piscine-1280.webp 1280w" sizes="(max-width: 760px) 80vw, 34vw" alt="" width="1280" height="720" loading="lazy" decoding="async">
+  </picture><video class="media-video" data-src="/assets/videos/boucle-eau.mp4" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video><button type="button" class="video-pause" data-video-pause data-pause-pour="" aria-pressed="false" data-libelle-pause="Mettre la vidéo en pause" data-libelle-lecture="Relancer la vidéo" aria-label="Mettre la vidéo en pause"><span aria-hidden="true">❙❙</span></button><figcaption class="mention-ia">Illustration générée</figcaption>
+</figure>
+      <p class="moment__heure">14 h 30</p>
+      <h3>La piscine, le dimanche</h3><p>Dès 14 h 30 le dimanche, de juin à septembre.</p>
+    </article>
+    <article class="moment" id="bar">
+      <figure class="media moment__photo" data-grok style="--cadrage:50% 55%">
+  <picture>
+    <img src="/assets/images/grok/bar-apres-midi-960.webp" srcset="/assets/images/grok/bar-apres-midi-480.webp 480w, /assets/images/grok/bar-apres-midi-640.webp 640w, /assets/images/grok/bar-apres-midi-960.webp 960w" sizes="(max-width: 760px) 70vw, 26vw" alt="Trois cocktails glacés sur le comptoir du bar, la piscine derrière" width="960" height="1280" loading="lazy" decoding="async">
+  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
+</figure>
+      <p class="moment__heure">15 h 30</p>
+      <h3>Le bar</h3><p>Dès 15 h 30 les journées festives, avec droit d&#39;entrée.</p>
+    </article>
+    <article class="moment" id="journees-festives">
+      <figure class="media moment__photo moment__photo--vraie" style="--cadrage:50% 60%">
+  <picture>
+    <img src="/assets/images/ete-festives-960.webp" srcset="/assets/images/ete-festives-480.webp 480w, /assets/images/ete-festives-640.webp 640w, /assets/images/ete-festives-960.webp 960w" sizes="(max-width: 760px) 70vw, 26vw" alt="Une journée festive au bord de la piscine" width="960" height="720" loading="lazy" decoding="async">
+  </picture>
+</figure>
+      <p class="moment__heure">12 h – 19 h</p>
+      <h3>Les journées festives</h3><p>Du mardi au jeudi, de 12 h à 19 h, de juin à septembre.</p>
+    </article>
+    <article class="moment" id="pool-parties">
+      <figure class="media moment__photo moment__photo--vraie" style="--cadrage:50% 55%">
+  <picture>
+    <img src="/assets/images/ete-plongee-960.webp" srcset="/assets/images/ete-plongee-480.webp 480w, /assets/images/ete-plongee-640.webp 640w, /assets/images/ete-plongee-960.webp 960w" sizes="(max-width: 760px) 70vw, 26vw" alt="Une bouée licorne sur la piscine, devant la paillote" width="960" height="960" loading="lazy" decoding="async">
+  </picture>
+</figure>
+      <p class="moment__heure">Le soir</p>
+      <h3>Les pool parties</h3><p>Les dates sont annoncées sur Instagram.</p>
+    </article>
+    <article class="moment moment--suite" id="vers-le-soir">
+      <p class="moment__heure moment__heure--grande">19:00</p>
+      <h3>Le soleil descend : la terrasse va s&#39;allumer.</h3>
+    </article>
+  </div>
+  <div class="galerie-progres apresmidi__progres" aria-hidden="true"><span></span></div>
+</section>
+<section class="terrasse" id="terrasse" data-heure="19:00" data-lumiere="terrasse" data-scene data-entete-cache data-grille="scene" aria-labelledby="terrasse-titre">
+  <div class="terrasse__cadre" data-collant>
+    <div class="terrasse__images" data-effet="terrasse">
+      <figure class="media terrasse__img terrasse__img--1" data-grok style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/terrasse-or-mobile-640.webp 640w" sizes="100vw">
+    <img src="/assets/images/grok/terrasse-or-1280.webp" srcset="/assets/images/grok/terrasse-or-640.webp 640w, /assets/images/grok/terrasse-or-1280.webp 1280w, /assets/images/grok/terrasse-or-1920.webp 1920w" sizes="100vw" alt="La longue table de réception dressée sous la pergola, au coucher du soleil" width="1280" height="720" loading="lazy" decoding="async">
+  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
+</figure>
+      <figure class="media terrasse__img terrasse__img--2" data-grok style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/terrasse-bleue-mobile-640.webp 640w" sizes="100vw">
+    <img src="/assets/images/grok/terrasse-bleue-1280.webp" srcset="/assets/images/grok/terrasse-bleue-640.webp 640w, /assets/images/grok/terrasse-bleue-1280.webp 1280w, /assets/images/grok/terrasse-bleue-1920.webp 1920w" sizes="100vw" alt="La même table après le coucher du soleil, les guirlandes allumées" width="1280" height="720" loading="lazy" decoding="async">
+  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
+</figure>
+      <figure class="media terrasse__img terrasse__img--3" data-grok style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/terrasse-nuit-mobile-640.webp 640w" sizes="100vw">
+    <img src="/assets/images/grok/terrasse-nuit-1280.webp" srcset="/assets/images/grok/terrasse-nuit-640.webp 640w, /assets/images/grok/terrasse-nuit-1280.webp 1280w, /assets/images/grok/terrasse-nuit-1920.webp 1920w" sizes="100vw" alt="La même table la nuit, sous les guirlandes et à la lueur des bougies" width="1280" height="720" loading="lazy" decoding="async">
+  </picture><figcaption class="mention-ia">Illustration générée</figcaption>
+</figure>
+      <svg class="guirlandes" data-effet="guirlandes" viewBox="0 0 1792 1008" data-vue="0 0 1792 1008" data-vue-telephone="729 0 567 1008" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-audit-ignorer><defs><radialGradient id="halo-ampoule"><stop offset="0" stop-color="#fff0c2" stop-opacity=".95"/><stop offset=".28" stop-color="#ffc766" stop-opacity=".5"/><stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/></radialGradient></defs><g class="ampoule" style="--i:0"><circle class="halo" cx="603" cy="334" r="30"/><circle class="coeur" cx="603" cy="334" r="5.5"/><circle class="cible" cx="603" cy="334" r="18"/></g><g class="ampoule" style="--i:1"><circle class="halo" cx="627" cy="343" r="30"/><circle class="coeur" cx="627" cy="343" r="5.5"/><circle class="cible" cx="627" cy="343" r="18"/></g><g class="ampoule" style="--i:2"><circle class="halo" cx="635" cy="293" r="30"/><circle class="coeur" cx="635" cy="293" r="5.5"/><circle class="cible" cx="635" cy="293" r="18"/></g><g class="ampoule" style="--i:3"><circle class="halo" cx="656" cy="349" r="30"/><circle class="coeur" cx="656" cy="349" r="5.5"/><circle class="cible" cx="656" cy="349" r="18"/></g><g class="ampoule" style="--i:4"><circle class="halo" cx="671" cy="357" r="30"/><circle class="coeur" cx="671" cy="357" r="5.5"/><circle class="cible" cx="671" cy="357" r="18"/></g><g class="ampoule" style="--i:5"><circle class="halo" cx="692" cy="304" r="30"/><circle class="coeur" cx="692" cy="304" r="5.5"/><circle class="cible" cx="692" cy="304" r="18"/></g><g class="ampoule" style="--i:6"><circle class="halo" cx="697" cy="360" r="30"/><circle class="coeur" cx="697" cy="360" r="5.5"/><circle class="cible" cx="697" cy="360" r="18"/></g><g class="ampoule" style="--i:7"><circle class="halo" cx="710" cy="349" r="30"/><circle class="coeur" cx="710" cy="349" r="5.5"/><circle class="cible" cx="710" cy="349" r="18"/></g><g class="ampoule" style="--i:8"><circle class="halo" cx="719" cy="383" r="30"/><circle class="coeur" cx="719" cy="383" r="5.5"/><circle class="cible" cx="719" cy="383" r="18"/></g><g class="ampoule" style="--i:9"><circle class="halo" cx="748" cy="391" r="30"/><circle class="coeur" cx="748" cy="391" r="5.5"/><circle class="cible" cx="748" cy="391" r="18"/></g><g class="ampoule" style="--i:10"><circle class="halo" cx="753" cy="344" r="30"/><circle class="coeur" cx="753" cy="344" r="5.5"/><circle class="cible" cx="753" cy="344" r="18"/></g><g class="ampoule" style="--i:11"><circle class="halo" cx="762" cy="310" r="30"/><circle class="coeur" cx="762" cy="310" r="5.5"/><circle class="cible" cx="762" cy="310" r="18"/></g><g class="ampoule" style="--i:12"><circle class="halo" cx="766" cy="361" r="30"/><circle class="coeur" cx="766" cy="361" r="5.5"/><circle class="cible" cx="766" cy="361" r="18"/></g><g class="ampoule" style="--i:13"><circle class="halo" cx="793" cy="410" r="30"/><circle class="coeur" cx="793" cy="410" r="5.5"/><circle class="cible" cx="793" cy="410" r="18"/></g><g class="ampoule" style="--i:14"><circle class="halo" cx="809" cy="354" r="30"/><circle class="coeur" cx="809" cy="354" r="5.5"/><circle class="cible" cx="809" cy="354" r="18"/></g><g class="ampoule" style="--i:15"><circle class="halo" cx="810" cy="389" r="30"/><circle class="coeur" cx="810" cy="389" r="5.5"/><circle class="cible" cx="810" cy="389" r="18"/></g><g class="ampoule" style="--i:16"><circle class="halo" cx="815" cy="309" r="30"/><circle class="coeur" cx="815" cy="309" r="5.5"/><circle class="cible" cx="815" cy="309" r="18"/></g><g class="ampoule" style="--i:17"><circle class="halo" cx="818" cy="410" r="30"/><circle class="coeur" cx="818" cy="410" r="5.5"/><circle class="cible" cx="818" cy="410" r="18"/></g><g class="ampoule" style="--i:18"><circle class="halo" cx="843" cy="394" r="30"/><circle class="coeur" cx="843" cy="394" r="5.5"/><circle class="cible" cx="843" cy="394" r="18"/></g><g class="ampoule" style="--i:19"><circle class="halo" cx="860" cy="393" r="30"/><circle class="coeur" cx="860" cy="393" r="5.5"/><circle class="cible" cx="860" cy="393" r="18"/></g><g class="ampoule" style="--i:20"><circle class="halo" cx="865" cy="359" r="30"/><circle class="coeur" cx="865" cy="359" r="5.5"/><circle class="cible" cx="865" cy="359" r="18"/></g><g class="ampoule" style="--i:21"><circle class="halo" cx="871" cy="418" r="30"/><circle class="coeur" cx="871" cy="418" r="5.5"/><circle class="cible" cx="871" cy="418" r="18"/></g><g class="ampoule" style="--i:22"><circle class="halo" cx="887" cy="385" r="30"/><circle class="coeur" cx="887" cy="385" r="5.5"/><circle class="cible" cx="887" cy="385" r="18"/></g><g class="ampoule" style="--i:23"><circle class="halo" cx="909" cy="389" r="30"/><circle class="coeur" cx="909" cy="389" r="5.5"/><circle class="cible" cx="909" cy="389" r="18"/></g><g class="ampoule" style="--i:24"><circle class="halo" cx="911" cy="301" r="30"/><circle class="coeur" cx="911" cy="301" r="5.5"/><circle class="cible" cx="911" cy="301" r="18"/></g><g class="ampoule" style="--i:25"><circle class="halo" cx="936" cy="422" r="30"/><circle class="coeur" cx="936" cy="422" r="5.5"/><circle class="cible" cx="936" cy="422" r="18"/></g><g class="ampoule" style="--i:26"><circle class="halo" cx="938" cy="339" r="30"/><circle class="coeur" cx="938" cy="339" r="5.5"/><circle class="cible" cx="938" cy="339" r="18"/></g><g class="ampoule" style="--i:27"><circle class="halo" cx="941" cy="384" r="30"/><circle class="coeur" cx="941" cy="384" r="5.5"/><circle class="cible" cx="941" cy="384" r="18"/></g><g class="ampoule" style="--i:28"><circle class="halo" cx="968" cy="419" r="30"/><circle class="coeur" cx="968" cy="419" r="5.5"/><circle class="cible" cx="968" cy="419" r="18"/></g><g class="ampoule" style="--i:29"><circle class="halo" cx="981" cy="384" r="30"/><circle class="coeur" cx="981" cy="384" r="5.5"/><circle class="cible" cx="981" cy="384" r="18"/></g><g class="ampoule" style="--i:30"><circle class="halo" cx="983" cy="315" r="30"/><circle class="coeur" cx="983" cy="315" r="5.5"/><circle class="cible" cx="983" cy="315" r="18"/></g><g class="ampoule" style="--i:31"><circle class="halo" cx="989" cy="280" r="30"/><circle class="coeur" cx="989" cy="280" r="5.5"/><circle class="cible" cx="989" cy="280" r="18"/></g><g class="ampoule" style="--i:32"><circle class="halo" cx="1008" cy="407" r="30"/><circle class="coeur" cx="1008" cy="407" r="5.5"/><circle class="cible" cx="1008" cy="407" r="18"/></g><g class="ampoule" style="--i:33"><circle class="halo" cx="1013" cy="343" r="30"/><circle class="coeur" cx="1013" cy="343" r="5.5"/><circle class="cible" cx="1013" cy="343" r="18"/></g><g class="ampoule" style="--i:34"><circle class="halo" cx="1024" cy="382" r="30"/><circle class="coeur" cx="1024" cy="382" r="5.5"/><circle class="cible" cx="1024" cy="382" r="18"/></g><g class="ampoule" style="--i:35"><circle class="halo" cx="1026" cy="353" r="30"/><circle class="coeur" cx="1026" cy="353" r="5.5"/><circle class="cible" cx="1026" cy="353" r="18"/></g><g class="ampoule" style="--i:36"><circle class="halo" cx="1042" cy="414" r="30"/><circle class="coeur" cx="1042" cy="414" r="5.5"/><circle class="cible" cx="1042" cy="414" r="18"/></g><g class="ampoule" style="--i:37"><circle class="halo" cx="1045" cy="343" r="30"/><circle class="coeur" cx="1045" cy="343" r="5.5"/><circle class="cible" cx="1045" cy="343" r="18"/></g><g class="ampoule" style="--i:38"><circle class="halo" cx="1053" cy="355" r="30"/><circle class="coeur" cx="1053" cy="355" r="5.5"/><circle class="cible" cx="1053" cy="355" r="18"/></g><g class="ampoule" style="--i:39"><circle class="halo" cx="1055" cy="252" r="30"/><circle class="coeur" cx="1055" cy="252" r="5.5"/><circle class="cible" cx="1055" cy="252" r="18"/></g><g class="ampoule" style="--i:40"><circle class="halo" cx="1060" cy="305" r="30"/><circle class="coeur" cx="1060" cy="305" r="5.5"/><circle class="cible" cx="1060" cy="305" r="18"/></g><g class="ampoule" style="--i:41"><circle class="halo" cx="1070" cy="421" r="30"/><circle class="coeur" cx="1070" cy="421" r="5.5"/><circle class="cible" cx="1070" cy="421" r="18"/></g><g class="ampoule" style="--i:42"><circle class="halo" cx="1076" cy="336" r="30"/><circle class="coeur" cx="1076" cy="336" r="5.5"/><circle class="cible" cx="1076" cy="336" r="18"/></g><g class="ampoule" style="--i:43"><circle class="halo" cx="1082" cy="393" r="30"/><circle class="coeur" cx="1082" cy="393" r="5.5"/><circle class="cible" cx="1082" cy="393" r="18"/></g><g class="ampoule" style="--i:44"><circle class="halo" cx="1096" cy="422" r="30"/><circle class="coeur" cx="1096" cy="422" r="5.5"/><circle class="cible" cx="1096" cy="422" r="18"/></g><g class="ampoule" style="--i:45"><circle class="halo" cx="1118" cy="375" r="30"/><circle class="coeur" cx="1118" cy="375" r="5.5"/><circle class="cible" cx="1118" cy="375" r="18"/></g><g class="ampoule" style="--i:46"><circle class="halo" cx="1125" cy="356" r="30"/><circle class="coeur" cx="1125" cy="356" r="5.5"/><circle class="cible" cx="1125" cy="356" r="18"/></g><g class="ampoule" style="--i:47"><circle class="halo" cx="1126" cy="420" r="30"/><circle class="coeur" cx="1126" cy="420" r="5.5"/><circle class="cible" cx="1126" cy="420" r="18"/></g><g class="ampoule" style="--i:48"><circle class="halo" cx="1136" cy="389" r="30"/><circle class="coeur" cx="1136" cy="389" r="5.5"/><circle class="cible" cx="1136" cy="389" r="18"/></g><g class="ampoule" style="--i:49"><circle class="halo" cx="1164" cy="296" r="30"/><circle class="coeur" cx="1164" cy="296" r="5.5"/><circle class="cible" cx="1164" cy="296" r="18"/></g><g class="ampoule" style="--i:50"><circle class="halo" cx="1171" cy="397" r="30"/><circle class="coeur" cx="1171" cy="397" r="5.5"/><circle class="cible" cx="1171" cy="397" r="18"/></g><g class="ampoule" style="--i:51"><circle class="halo" cx="1175" cy="372" r="30"/><circle class="coeur" cx="1175" cy="372" r="5.5"/><circle class="cible" cx="1175" cy="372" r="18"/></g><g class="ampoule" style="--i:52"><circle class="halo" cx="1184" cy="338" r="30"/><circle class="coeur" cx="1184" cy="338" r="5.5"/><circle class="cible" cx="1184" cy="338" r="18"/></g><g class="ampoule" style="--i:53"><circle class="halo" cx="1201" cy="390" r="30"/><circle class="coeur" cx="1201" cy="390" r="5.5"/><circle class="cible" cx="1201" cy="390" r="18"/></g><g class="ampoule" style="--i:54"><circle class="halo" cx="1221" cy="382" r="30"/><circle class="coeur" cx="1221" cy="382" r="5.5"/><circle class="cible" cx="1221" cy="382" r="18"/></g><g class="ampoule" style="--i:55"><circle class="halo" cx="1224" cy="409" r="30"/><circle class="coeur" cx="1224" cy="409" r="5.5"/><circle class="cible" cx="1224" cy="409" r="18"/></g><g class="ampoule" style="--i:56"><circle class="halo" cx="1233" cy="357" r="30"/><circle class="coeur" cx="1233" cy="357" r="5.5"/><circle class="cible" cx="1233" cy="357" r="18"/></g><g class="ampoule" style="--i:57"><circle class="halo" cx="1246" cy="289" r="30"/><circle class="coeur" cx="1246" cy="289" r="5.5"/><circle class="cible" cx="1246" cy="289" r="18"/></g><g class="ampoule" style="--i:58"><circle class="halo" cx="1248" cy="377" r="30"/><circle class="coeur" cx="1248" cy="377" r="5.5"/><circle class="cible" cx="1248" cy="377" r="18"/></g><g class="ampoule" style="--i:59"><circle class="halo" cx="1273" cy="334" r="30"/><circle class="coeur" cx="1273" cy="334" r="5.5"/><circle class="cible" cx="1273" cy="334" r="18"/></g><g class="ampoule" style="--i:60"><circle class="halo" cx="1299" cy="364" r="30"/><circle class="coeur" cx="1299" cy="364" r="5.5"/><circle class="cible" cx="1299" cy="364" r="18"/></g><g class="ampoule" style="--i:61"><circle class="halo" cx="1303" cy="404" r="30"/><circle class="coeur" cx="1303" cy="404" r="5.5"/><circle class="cible" cx="1303" cy="404" r="18"/></g><g class="ampoule" style="--i:62"><circle class="halo" cx="1326" cy="367" r="30"/><circle class="coeur" cx="1326" cy="367" r="5.5"/><circle class="cible" cx="1326" cy="367" r="18"/></g><g class="ampoule" style="--i:63"><circle class="halo" cx="1338" cy="297" r="30"/><circle class="coeur" cx="1338" cy="297" r="5.5"/><circle class="cible" cx="1338" cy="297" r="18"/></g><g class="ampoule" style="--i:64"><circle class="halo" cx="1338" cy="350" r="30"/><circle class="coeur" cx="1338" cy="350" r="5.5"/><circle class="cible" cx="1338" cy="350" r="18"/></g><g class="ampoule" style="--i:65"><circle class="halo" cx="1373" cy="299" r="30"/><circle class="coeur" cx="1373" cy="299" r="5.5"/><circle class="cible" cx="1373" cy="299" r="18"/></g><g class="ampoule" style="--i:66"><circle class="halo" cx="1439" cy="311" r="30"/><circle class="coeur" cx="1439" cy="311" r="5.5"/><circle class="cible" cx="1439" cy="311" r="18"/></g><g class="ampoule" style="--i:67"><circle class="halo" cx="1470" cy="338" r="30"/><circle class="coeur" cx="1470" cy="338" r="5.5"/><circle class="cible" cx="1470" cy="338" r="18"/></g><g class="ampoule" style="--i:68"><circle class="halo" cx="1504" cy="306" r="30"/><circle class="coeur" cx="1504" cy="306" r="5.5"/><circle class="cible" cx="1504" cy="306" r="18"/></g><g class="ampoule" style="--i:69"><circle class="halo" cx="1558" cy="314" r="30"/><circle class="coeur" cx="1558" cy="314" r="5.5"/><circle class="cible" cx="1558" cy="314" r="18"/></g></svg>
+    </div>
+    <div class="terrasse__texte conteneur">
+      <p class="heure-section heure-section--nuit" data-effet="heure-section"><span>19:00</span></p>
+      <p class="surtitre">La terrasse s&#39;allume</p>
+      <h2 id="terrasse-titre">Recevoir, le soir venu</h2>
+      <ol class="terrasse__etapes">
+        <li data-etape="1"><b>19:00</b> Le soleil passe derrière les palmiers.</li>
+        <li data-etape="2"><b>19:45</b> Les guirlandes s&#39;allument au-dessus de la grande table.</li>
+        <li data-etape="3"><b>21:00</b> Mariage, baptême, anniversaire, pot de départ : la fête commence.</li>
+      </ol>
+      <p class="terrasse__fin">
+        <a href="/receptions#demande" class="bouton" data-libelle="Réceptions">Demander une réception</a>
+        <a href="/receptions#espaces" class="bouton bouton--contour bouton--clair" data-libelle="Réceptions">Voir les espaces</a>
+      </p>
+      <p class="saison-tag saison-tag--nuit">La terrasse l&#39;été, la salle et sa cheminée l&#39;hiver</p>
+    </div>
+    <p class="indice terrasse__indice" aria-hidden="true">Touchez une ampoule</p>
+  </div>
+</section>
+<section class="diner" id="diner" data-heure="21:00" data-lumiere="diner" aria-labelledby="diner-titre">
+  <div class="conteneur diner__grille">
+    <div class="diner__visuel">
+      <figure class="media diner__assiette" data-grok data-anime="rideau" style="--cadrage:50% 50%">
+  <picture>
+    <img src="/assets/images/grok/assiette-soir-960.webp" srcset="/assets/images/grok/assiette-soir-480.webp 480w, /assets/images/grok/assiette-soir-640.webp 640w, /assets/images/grok/assiette-soir-960.webp 960w" sizes="(max-width: 760px) 92vw, 40vw" alt="Une assiette d&#39;automne aux champignons, à la lueur des bougies" width="960" height="1200" loading="lazy" decoding="async">
+  </picture><video class="media-video media-video--vapeur" data-src="/assets/videos/boucle-vapeur.mp4" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video><button type="button" class="video-pause" data-video-pause data-pause-pour="" aria-pressed="false" data-libelle-pause="Mettre la vidéo en pause" data-libelle-lecture="Relancer la vidéo" aria-label="Mettre la vidéo en pause"><span aria-hidden="true">❙❙</span></button><figcaption class="mention-ia">Illustration générée</figcaption>
+</figure>
+    </div>
+    <div class="diner__texte">
+      <p class="heure-section heure-section--nuit" data-effet="heure-section"><span>21:00</span></p>
+      <p class="surtitre">Le dîner</p>
+      <h2 id="diner-titre" data-anime="lignes">Votre table pour le prochain service</h2>
+      <p data-anime>Le soir, le vendredi et le samedi, de 19 h à minuit ; le midi, du mercredi au dimanche, sauf le samedi. Choisissez, la réservation s&#39;ouvre déjà remplie.</p>
+      <form class="mini-resa" data-mini-resa action="/reserver#formulaire" method="get">
+        <fieldset class="mini-resa__services">
+          <legend>Quel service ?</legend>
+          <div class="mini-resa__puces" data-services data-anime="cascade">
+            <label class="puce"><input type="radio" name="service" value="soir" checked><span>Vendredi soir</span></label>
+            <label class="puce"><input type="radio" name="service" value="soir"><span>Samedi soir</span></label>
+            <label class="puce"><input type="radio" name="service" value="midi"><span>Dimanche midi</span></label>
+          </div>
+          <input type="hidden" name="date" value="">
+        </fieldset>
+        <div class="mini-resa__couverts">
+          <span class="mini-resa__libelle" id="mini-couverts">Combien serez-vous ?</span>
+          <div class="compteur" role="group" aria-labelledby="mini-couverts">
+            <button type="button" data-moins aria-label="Une personne de moins">−</button>
+            <input type="number" name="couverts" min="1" max="10" value="2" inputmode="numeric" aria-labelledby="mini-couverts">
+            <button type="button" data-plus aria-label="Une personne de plus">+</button>
           </div>
         </div>
-      </div>
-      <div class="assiette__suite" data-tient>
-        <ol class="assiette__etapes">
-          <li data-de="0"><div><strong>La nappe et les couverts</strong><span>La table est mise avant le service.</span></div></li>
-          <li data-de=".16"><div><strong>Les produits de saison</strong><span>Le chef les choisit chaque semaine.</span></div></li>
-          <li data-de=".3"><div><strong>Le plat</strong><span>Dressé en cuisine, servi chaud.</span></div></li>
-          <li data-de=".46"><div><strong>Les suggestions</strong><span>Elles s&#39;annoncent de vive voix, à table.</span></div></li>
-        </ol>
-        <p class="table__mention">Photos d’assiettes du restaurant ; la nappe est une illustration générée.</p>
-      </div>
+        <p class="mini-resa__envoi"><button type="submit" class="bouton" data-grille="retour" data-effet="carton">Réserver cette table</button></p>
+        <p class="mini-resa__groupe"><a href="/receptions#demande" data-libelle="Réceptions">Plus de 10 personnes ? Demandez une réception.</a></p>
+      </form>
     </div>
   </div>
 </section>
-<section class="rdv" id="rendez-vous" data-lueur aria-labelledby="rdv-titre">
-  <div class="rdv__eau" data-saison-photo="ete"><figure class="media rdv__eau-image" data-grok style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/grok/eau-reflets-1280.webp" srcset="/assets/images/grok/eau-reflets-640.webp 640w, /assets/images/grok/eau-reflets-1280.webp 1280w" sizes="100vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
+<section class="feu" id="feu" data-heure="23:00" data-lumiere="feu" data-fx="plein-ecran" data-fx-depart="inset(16% 22% 16% 22% round 18px)" style="--fx-longueur:190svh" aria-labelledby="feu-titre">
+  <div class="feu__cadre" data-collant>
+    <figure class="media feu__photo" data-grok style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/salle-feu-mobile-640.webp 640w" sizes="100vw">
+    <img src="/assets/images/grok/salle-feu-1280.webp" srcset="/assets/images/grok/salle-feu-640.webp 640w, /assets/images/grok/salle-feu-1280.webp 1280w" sizes="100vw" alt="La salle le soir, la cheminée allumée et deux tables dressées près du feu" width="1280" height="720" loading="lazy" decoding="async">
   </picture><figcaption class="mention-ia">Illustration générée</figcaption>
-</figure></div>
-  <canvas class="rdv__braises" width="480" height="320" aria-hidden="true" data-effet="braises" data-audit-ignorer></canvas>
-  <div class="conteneur rdv__contenu">
-    <p class="surtitre"><span data-saison-seul="hiver">Les rendez-vous de l&#39;hiver</span><span data-saison-seul="ete">Les rendez-vous de l&#39;été</span></p>
-    <h2 id="rdv-titre" data-anime="lignes"><span data-saison-seul="hiver">Les fêtes au coin du feu</span><span data-saison-seul="ete">Les journées au bord de l&#39;eau</span></h2>
-    <div class="rdv__cartes" data-saison-seul="hiver">
-      <article class="fete-carte" data-date="2026-12-25T12:00:00+01:00">
-        <figure class="media fete-carte__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/noel-carte-960.webp" srcset="/assets/images/noel-carte-480.webp 480w, /assets/images/noel-carte-640.webp 640w, /assets/images/noel-carte-960.webp 960w" sizes="(max-width: 760px) 100vw, 22vw" alt="" width="960" height="1200" loading="lazy" decoding="async">
-  </picture>
 </figure>
-        <p class="fete-carte__quand">Vendredi 25 décembre, au déjeuner</p>
-        <h3>Menu de Noël</h3>
-        <p class="fete-carte__decompte" data-effet="decompte" data-cible="2026-12-25">Dans <strong data-jours>—</strong> jours</p>
-        <p class="fete-carte__prix" data-prix>79 € par personne, hors boissons</p>
-        <a href="/reserver?date=2026-12-25&amp;service=midi#formulaire" class="bouton bouton--contour" data-libelle="Réserver">Réserver</a>
-      </article>
-      <article class="fete-carte fete-carte--sylvestre" data-date="2026-12-31T19:00:00+01:00">
-        <figure class="media fete-carte__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/sylvestre-coupe-960.webp" srcset="/assets/images/sylvestre-coupe-480.webp 480w, /assets/images/sylvestre-coupe-640.webp 640w, /assets/images/sylvestre-coupe-960.webp 960w" sizes="(max-width: 760px) 100vw, 22vw" alt="" width="960" height="1280" loading="lazy" decoding="async">
-  </picture>
-</figure>
-        <p class="fete-carte__quand">Jeudi 31 décembre, le soir</p>
-        <h3>Saint-Sylvestre</h3>
-        <p class="fete-carte__decompte" data-effet="decompte" data-cible="2026-12-31">Dans <strong data-jours>—</strong> jours</p>
-        <p class="fete-carte__prix" data-prix>120 € le menu · 170 € avec l&#39;accord mets et vins</p>
-        <a href="/reserver?date=2026-12-31&amp;service=soir#formulaire" class="bouton bouton--contour" data-libelle="Réserver">Réserver</a>
-      </article>
-    </div>
-    <div class="rdv__cartes rdv__cartes--ete" data-saison-seul="ete">
-      <article class="ete-carte"><figure class="media ete-carte__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/ete-festives-960.webp" srcset="/assets/images/ete-festives-480.webp 480w, /assets/images/ete-festives-640.webp 640w, /assets/images/ete-festives-960.webp 960w" sizes="(max-width: 760px) 100vw, 30vw" alt="Les journées festives" width="960" height="720" loading="lazy" decoding="async">
-  </picture>
-</figure><h3>Les journées festives</h3><p class="ete-carte__quand">De juin à septembre · mardi, mercredi et jeudi · 12 h à 19 h</p><p>La terrasse et ses palmiers, de midi à 19 h.</p></article>
-      <article class="ete-carte"><figure class="media ete-carte__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/recevoir-piscine-960.webp" srcset="/assets/images/recevoir-piscine-480.webp 480w, /assets/images/recevoir-piscine-640.webp 640w, /assets/images/recevoir-piscine-960.webp 960w" sizes="(max-width: 760px) 100vw, 30vw" alt="La piscine" width="960" height="1280" loading="lazy" decoding="async">
-  </picture>
-</figure><h3>La piscine</h3><p class="ete-carte__quand">Le dimanche, dès 14 h 30</p><p>Transats et paillotes au bord de l’eau.</p></article>
-      <article class="ete-carte"><figure class="media ete-carte__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/ete-bar-960.webp" srcset="/assets/images/ete-bar-480.webp 480w, /assets/images/ete-bar-640.webp 640w, /assets/images/ete-bar-960.webp 960w" sizes="(max-width: 760px) 100vw, 30vw" alt="Le bar" width="960" height="720" loading="lazy" decoding="async">
-  </picture>
-</figure><h3>Le bar</h3><p class="ete-carte__quand">Les journées festives, dès 15 h 30, avec droit d&#39;entrée</p><p>Cocktails et boissons fraîches, en terrasse.</p></article>
-      <article class="ete-carte"><figure class="media ete-carte__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/ete-poolparty-960.webp" srcset="/assets/images/ete-poolparty-480.webp 480w, /assets/images/ete-poolparty-640.webp 640w, /assets/images/ete-poolparty-960.webp 960w" sizes="(max-width: 760px) 100vw, 30vw" alt="Les pool parties" width="960" height="720" loading="lazy" decoding="async">
-  </picture>
-</figure><h3>Les pool parties</h3><p class="ete-carte__quand">L&#39;été, aux Jardins</p><p>Les dates de l’été 2027 seront annoncées ici.</p></article>
-    </div>
-    <p class="rdv__actions"><span data-saison-seul="hiver"><a href="/les-fetes" class="bouton" data-libelle="Les fêtes">Les menus des fêtes</a></span><span data-saison-seul="ete"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une journée</a></span></p>
+    <canvas class="feu__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
+    <p class="heure-section heure-section--nuit feu__heure" data-fx-apres aria-hidden="true"><span>23:00</span></p>
+    <h2 class="feu__titre" id="feu-titre"><span data-fx-ecarte="g">Au coin</span> <span data-fx-ecarte="d">du feu</span></h2>
+    <p class="feu__legende" data-fx-apres>L&#39;hiver, la salle se resserre autour de la cheminée. C&#39;est là que l&#39;on fête la fin de l&#39;année. <span class="saison-tag saison-tag--nuit">Cet hiver</span></p>
+    <p class="indice feu__indice" aria-hidden="true">Passez la main sur les braises</p>
   </div>
 </section>
-<section class="recevoir clair" id="recevoir" data-lueur aria-labelledby="recevoir-titre">
-  <div class="conteneur recevoir__grille" data-effet="table-agrandit">
-    <div class="recevoir__texte">
-      <p class="surtitre">Recevoir</p>
-      <h2 id="recevoir-titre" data-anime="lignes">Combien serez-vous ?</h2>
-      <p>Mariage, baptême, anniversaire, pot de départ : de la table pour deux au repas pour 120 sous la pergola.</p>
-      <label class="recevoir__curseur"><span class="recevoir__nombre"><output data-invites>40</output> invités</span>
-        <input type="range" min="0" max="3" step="1" value="2" data-paliers="2,12,40,120" aria-label="Nombre d&#39;invités" aria-valuetext="40 invités"></label>
-      <p class="recevoir__paliers"><button type="button" data-palier="0" aria-pressed="false">2</button><button type="button" data-palier="1" aria-pressed="false">12</button><button type="button" data-palier="2" aria-pressed="true">40</button><button type="button" data-palier="3" aria-pressed="false">120</button></p>
-      <p class="recevoir__espace" aria-live="polite"><span data-espace="0" hidden>En salle, au coin du feu ou près des baies vitrées</span><span data-espace="1" hidden>La grande table, en salle ou sous la paillote</span><span data-espace="2">La terrasse et les jardins</span><span data-espace="3" hidden>Les jardins et la pergola</span></p>
-      <p class="recevoir__note">Le restaurant confirme avec vous la capacité de chaque espace.</p>
-      <p><a class="bouton" href="/infos-pratiques?sujet=reception&amp;invites=40#ecrire" data-lien-reception>Demander pour une réception</a></p>
-    </div>
-    <div class="recevoir__scene">
-      <svg class="recevoir__table" viewBox="0 0 600 220" aria-hidden="true" focusable="false"><rect class="recevoir__plateau" x="60" y="80" width="480" height="60" rx="30"/><g class="recevoir__chaises" data-chaises></g></svg>
-      <ul class="recevoir__photos" data-galerie>
-        <li data-photo="0"><figure class="media recevoir__photo" style="--cadrage:50% 50%">
+<section class="fetes-hiver" id="fetes" data-heure="23:30" data-lumiere="fetes" aria-labelledby="fetes-titre">
+  <div class="conteneur">
+    <p class="heure-section heure-section--nuit" data-effet="heure-section"><span>23:30</span></p>
+    <h2 id="fetes-titre" class="visuellement-cache">Les menus des fêtes</h2>
+    <div class="fetes-hiver__grille" data-anime="cascade">
+      <figure class="media fete__photo" style="--cadrage:50% 50%">
   <picture>
-    <img src="/assets/images/table-deux-960.webp" srcset="/assets/images/table-deux-480.webp 480w, /assets/images/table-deux-640.webp 640w, /assets/images/table-deux-960.webp 960w" sizes="(max-width: 760px) 50vw, 30vw" alt="En salle, au coin du feu ou près des baies vitrées" width="960" height="720" loading="lazy" decoding="async">
+    <img src="/assets/images/sylvestre-coupe-960.webp" srcset="/assets/images/sylvestre-coupe-480.webp 480w, /assets/images/sylvestre-coupe-640.webp 640w, /assets/images/sylvestre-coupe-960.webp 960w" sizes="(max-width: 760px) 60vw, 22vw" alt="Une coupe de dessert devant la cheminée allumée" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
-</figure></li><li data-photo="1"><figure class="media recevoir__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/table-douze-960.webp" srcset="/assets/images/table-douze-480.webp 480w, /assets/images/table-douze-640.webp 640w, /assets/images/table-douze-960.webp 960w" sizes="(max-width: 760px) 50vw, 30vw" alt="La grande table, en salle ou sous la paillote" width="960" height="720" loading="lazy" decoding="async">
-  </picture>
-</figure></li><li data-photo="2" class="est-choisie"><figure class="media recevoir__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/table-quarante-960.webp" srcset="/assets/images/table-quarante-480.webp 480w, /assets/images/table-quarante-640.webp 640w, /assets/images/table-quarante-960.webp 960w" sizes="(max-width: 760px) 50vw, 30vw" alt="La terrasse et les jardins" width="960" height="720" loading="lazy" decoding="async">
-  </picture>
-</figure></li><li data-photo="3"><figure class="media recevoir__photo" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/table-cent-vingt-960.webp" srcset="/assets/images/table-cent-vingt-480.webp 480w, /assets/images/table-cent-vingt-640.webp 640w, /assets/images/table-cent-vingt-960.webp 960w" sizes="(max-width: 760px) 50vw, 30vw" alt="Les jardins et la pergola" width="960" height="720" loading="lazy" decoding="async">
-  </picture>
-</figure></li>
-      </ul>
+</figure>
+      <article class="fete">
+        <p class="fete__sur">Vendredi 25 décembre, au déjeuner</p>
+        <h3>Le menu de Noël</h3>
+        <p class="fete__decompte" data-effet="decompte" data-cible="2026-12-25" data-passe="A eu lieu" data-aujourdhui="Aujourd&#39;hui">Dans <span class="fete__jours" data-jours>—</span> jours</p>
+        <p class="fete__prix" data-prix>79 € par personne, hors boissons</p>
+        <a href="/les-fetes#noel" class="lien-fleche" data-libelle="Les fêtes">Le menu de Noël</a>
+      </article>
+      <article class="fete">
+        <p class="fete__sur">Jeudi 31 décembre, le soir</p>
+        <h3>La Saint-Sylvestre</h3>
+        <p class="fete__decompte" data-effet="decompte" data-cible="2026-12-31" data-passe="A eu lieu" data-aujourdhui="Aujourd&#39;hui">Dans <span class="fete__jours" data-jours>—</span> jours</p>
+        <p class="fete__prix" data-prix>120 € le menu · 170 € avec l&#39;accord mets et vins · DJ Laurent Geymet</p>
+        <a href="/les-fetes#saint-sylvestre" class="lien-fleche" data-libelle="Les fêtes">La Saint-Sylvestre</a>
+      </article>
     </div>
   </div>
 </section>
-<section class="offrir-venir" id="offrir" data-lueur aria-labelledby="offrir-titre">
-  <div class="offrir-venir__fond" data-saison-photo="hiver"><figure class="media offrir-venir__image" style="--cadrage:40% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/cheminee-mobile-640.webp 640w, /assets/images/cheminee-mobile-1080.webp 1080w" sizes="100vw">
-    <img src="/assets/images/cheminee-1280.webp" srcset="/assets/images/cheminee-640.webp 640w, /assets/images/cheminee-1280.webp 1280w, /assets/images/cheminee-1920.webp 1920w" sizes="100vw" alt="" width="1280" height="720" loading="lazy" decoding="async">
-  </picture>
-</figure></div>
-  <div class="offrir-venir__fond" data-saison-photo="ete"><figure class="media offrir-venir__image" style="--cadrage:50% 50%">
-  <picture>
-    <img src="/assets/images/ete-soir-960.webp" srcset="/assets/images/ete-soir-480.webp 480w, /assets/images/ete-soir-640.webp 640w, /assets/images/ete-soir-960.webp 960w" sizes="100vw" alt="" width="960" height="720" loading="lazy" decoding="async">
-  </picture>
-</figure></div>
-  <div class="conteneur offrir-venir__grille">
-    <div class="offrir-venir__offrir">
-      <p class="surtitre">Offrir</p>
-      <h2 id="offrir-titre" data-anime="lignes">La carte cadeau</h2>
-      <div class="mini-carte" aria-hidden="true" data-survol="incline" data-visuel><span class="mini-carte__mono"><img src="/assets/images/logo-clair.png" alt="" width="40" height="40"></span><span class="mini-carte__type">Carte cadeau</span><span class="mini-carte__montant">50 €</span></div>
-      <p data-prix>Une carte cadeau de 25 à 200 €, valable 6 mois sur toute la carte du chef.</p>
-      <p><a href="/offrir" class="bouton" data-libelle="Offrir">Composer une carte</a></p>
+<section class="minuit" id="minuit" data-heure="24:00" data-lumiere="minuit" aria-labelledby="minuit-titre">
+  <div class="conteneur minuit__grille">
+    <div class="minuit__offrir">
+      <p class="heure-section heure-section--nuit" data-effet="heure-section"><span>00:00</span></p>
+      <h2 id="minuit-titre" data-anime="lignes">Offrir une soirée</h2>
+      <p data-anime>Une carte cadeau de 25 à 200 €, valable 6 mois sur toute la carte proposée par le chef, à présenter à l&#39;arrivée.</p>
+      <p><a href="/offrir" class="bouton" data-libelle="Offrir">Composer une carte cadeau</a></p>
     </div>
-    <div class="offrir-venir__venir" id="venir">
-      <p class="surtitre">Venir</p>
-      <h2 data-anime="lignes">À Moineville</h2>
-      <p>Entre Metz, Thionville et le Luxembourg.</p>
-      <svg class="venir__carte" viewBox="0 0 420 320" role="img" aria-label="Carte : Moineville entre Metz, Thionville et le Luxembourg" data-fx="trace" data-visuel>
-        <path data-fx-trait d="M131 238 Q 215 110 299 42" fill="none" stroke="currentColor" stroke-width="2" opacity=".55"/><path data-fx-trait d="M131 238 Q 231 171 331 164" fill="none" stroke="currentColor" stroke-width="2" opacity=".55"/><path data-fx-trait d="M131 238 Q 234.5 228 338 278" fill="none" stroke="currentColor" stroke-width="2" opacity=".55"/>
-        <g class="venir__ville"><circle cx="299" cy="42" r="5"/><text x="289" y="47" text-anchor="end">Luxembourg</text></g><g class="venir__ville"><circle cx="331" cy="164" r="5"/><text x="321" y="169" text-anchor="end">Thionville</text></g><g class="venir__ville"><circle cx="338" cy="278" r="5"/><text x="328" y="283" text-anchor="end">Metz</text></g>
-        <g class="venir__ici" data-repere><circle cx="131" cy="238" r="14"/><circle cx="131" cy="238" r="5"/><text x="111" y="278">Moineville</text></g>
+    <div class="carte-cadeau-apercu" data-effet="carte-apercu" aria-hidden="true">
+      <div class="cca__face">
+        <img src="/assets/images/logo-clair.png" alt="" width="56" height="56">
+        <p class="cca__nom">Carte cadeau</p>
+        <p class="cca__montant">100 €</p>
+        <p class="cca__pour">Pour une soirée aux Jardins</p>
+      </div>
+    </div>
+    <div class="minuit__venir">
+      <h3>Venir</h3>
+      <p>6 Vathier Haye, 54580 Moineville, entre Metz, Thionville et le Luxembourg.</p>
+      <svg class="minuit__carte" viewBox="0 0 360 230" role="img" aria-label="Plan schématique : Moineville, à l&#39;ouest de Metz, au sud de Thionville et du Luxembourg" data-fx="trace">
+        <path class="carte__route" d="M150 150 C 190 130 220 108 252 84" fill="none"/>
+        <path class="carte__route" d="M150 150 C 190 160 230 172 270 188" fill="none"/>
+        <path class="carte__route carte__route--fine" d="M252 84 C 252 60 250 40 246 18" fill="none"/>
+        <circle cx="246" cy="18" r="4"/><text x="258" y="22">Luxembourg</text>
+        <circle cx="252" cy="84" r="4"/><text x="264" y="88">Thionville</text>
+        <circle cx="270" cy="188" r="4"/><text x="282" y="192">Metz</text>
+        <circle class="carte__ici" cx="150" cy="150" r="7"/><text class="carte__ici-nom" x="138" y="146" text-anchor="end">Moineville</text>
+        <text class="carte__note" x="12" y="222">Plan schématique</text>
       </svg>
-      <p class="venir__adresse">6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
-      <p class="venir__actions"><a href="/infos-pratiques" class="bouton bouton--contour" data-libelle="Infos pratiques">Horaires et accès</a> <a class="bouton bouton--contour" href="https://www.google.com/maps/search/?api=1&amp;query=6+Vathier+Haye+54580+Moineville" target="_blank" rel="noopener">Itinéraire<span class="visuellement-cache"> (nouvel onglet)</span></a></p>
+      <p class="statut statut--nuit"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil-bis>On ferme à minuit le vendredi et le samedi.</span></p>
+      <p><a href="/infos-pratiques" class="lien-fleche" data-libelle="Infos pratiques">Horaires et accès</a></p>
     </div>
   </div>
 </section>
 </main>
 <footer class="pied" id="pied">
   <div class="conteneur pied-grille">
-    <div>
+    <div class="pied-maison">
+      <p class="pied-minuit" aria-hidden="true">00:00</p>
       <p><strong>Les Jardins de l&#39;Hacienda</strong></p>
-      <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
-      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener">Facebook<span class="visuellement-cache"> (nouvel onglet)</span></a><br><a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener">Instagram<span class="visuellement-cache"> (nouvel onglet)</span></a></p>
+      <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
+      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener" aria-label="Facebook (nouvel onglet)">Facebook <span aria-hidden="true">↗</span></a> <a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener" aria-label="Instagram (nouvel onglet)">Instagram <span aria-hidden="true">↗</span></a></p>
     </div>
     <nav aria-label="Sommaire">
       <p><strong>Sommaire</strong></p>
-      <ul><li><a href="/" data-libelle="Accueil" aria-current="page">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/#recevoir" data-libelle="Réceptions">Réceptions</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver" data-libelle="Réserver">Réserver</a></li></ul>
+      <ul><li><a href="/" data-libelle="Accueil" aria-current="page">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li></ul>
     </nav>
     <div>
       <p><strong>Confort de lecture</strong></p>

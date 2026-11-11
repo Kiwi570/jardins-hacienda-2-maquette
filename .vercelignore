@@ -1,4 +1,5 @@
 _audit
+_suivi
 _biblio
 _partage
 assemblages
@@ -6,9 +7,8 @@ source
 outils
 donnees
 recu
+plan-images.json
+grok-consignes.json
 README.md
 CHANGELOG.md
 *.zip
-_suivi
-plan-images.json
-grok-consignes.json

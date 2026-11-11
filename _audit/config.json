@@ -1,32 +1,6 @@
 {
   "siteActuel": "lesjardinsdelhacienda54.com",
-  "pagesTypes": [
-    "/",
-    "/la-carte",
-    "/les-fetes",
-    "/reserver",
-    "/offrir",
-    "/infos-pratiques"
-  ],
-  "effets": [
-    "saison",
-    "vapeur",
-    "reflets",
-    "plateau",
-    "table",
-    "plongee",
-    "braises",
-    "decompte",
-    "table-agrandit",
-    "ardoise",
-    "cloches",
-    "plume",
-    "plan-3d",
-    "carton",
-    "numero",
-    "cadran"
-  ],
-  "grille": {
-    "dispenses": {}
-  }
+  "pagesTypes": ["/", "/la-carte", "/les-fetes", "/receptions", "/reserver", "/offrir", "/infos-pratiques"],
+  "effets": ["heure", "axes", "heure-section", "eau", "passe", "vraies", "apres-midi", "terrasse", "guirlandes", "carton", "braises", "decompte", "carte-apercu", "moment", "saison", "mot", "volets", "occasions", "invitation", "service", "heure-reelle", "cadran", "cloches", "ete-heure", "plan-3d"],
+  "grille": { "dispenses": {} }
 }

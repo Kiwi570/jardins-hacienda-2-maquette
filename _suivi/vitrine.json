@@ -1,0 +1,217 @@
+{
+ "explication": "Vitrine du projet : des ouvertures de la bibliothèque à dépasser, jamais à imiter (ni leur idée, ni leur mise en page).",
+ "activite": [
+  "restauration"
+ ],
+ "metier": "restaurant piscine réception",
+ "besoin": [
+  "réserver"
+ ],
+ "ton": [
+  "chaleureux"
+ ],
+ "univers": [],
+ "ambiance": [],
+ "concept": [],
+ "depot": "jardins-hacienda-2-maquette",
+ "ecartees": [],
+ "ouvertures": [
+  {
+   "rang": 1,
+   "id": "jardins-hacienda-maquette/debut",
+   "maquette": "jardins-hacienda-maquette",
+   "client": "restaurant et lieu de réception avec piscine à Moineville, près de Metz (carte, à emporter, agenda, mariages, fêtes privées)",
+   "metier": "restaurant et lieu de réception",
+   "activite": [
+    "restauration",
+    "tourisme"
+   ],
+   "pourquoi": [
+    "même métier",
+    "besoin réserver",
+    "ambiance chaleureux",
+    "clair et sombre alternés (40 % sombre)",
+    "webgl"
+   ],
+   "lumiere": "mixte",
+   "part_sombre": 40,
+   "note_section": 5,
+   "note_maquette": 85,
+   "titre": "Les Jardins de l’Hacienda",
+   "description": "Salle au coin du feu (ou terrasse en été) sous une surface d'eau ou de braise en WebGL qui réagit au pointeur ; bascule « Voir l'été », prochain rendez-vous",
+   "familles": [
+    "webgl"
+   ],
+   "plan": null,
+   "module": null,
+   "fiche": "sections/jardins-hacienda-maquette/debut.json",
+   "capture": "medias/jardins-hacienda-maquette/debut-p1440.jpg",
+   "video": "medias/jardins-hacienda-maquette/debut-p720.mp4",
+   "en_ligne": "https://jardins-hacienda-maquette.vercel.app"
+  },
+  {
+   "rang": 2,
+   "id": "pizzalyght-maquette/hero",
+   "maquette": "pizzalyght-maquette",
+   "client": "pizzeria artisanale à trois adresses en Guyane (Cayenne, Kourou, Saint-Laurent), à emporter et en livraison",
+   "metier": "pizzeria",
+   "activite": [
+    "restauration"
+   ],
+   "pourquoi": [
+    "même activité",
+    "besoin réserver",
+    "ambiance chaleureux",
+    "style sombre (100 % sombre)",
+    "webgl",
+    "particules"
+   ],
+   "lumiere": "sombre",
+   "part_sombre": 100,
+   "note_section": 5,
+   "note_maquette": 87,
+   "titre": "Pizza qui cuit sur les braises",
+   "description": "Titre condensé à trois lignes, vraie photo de pizza qui tourne dans un anneau de texte et passe de crue à dorée en WebGL (OGL) avec l'air chaud qui ondule, braises en canvas 2D ; heure de Guyane et statut ouvert ou fermé des trois adresses en bas. Cuisson en CSS sur tactile et sans WebGL.",
+   "familles": [
+    "webgl",
+    "particules"
+   ],
+   "plan": null,
+   "module": null,
+   "fiche": "sections/pizzalyght-maquette/hero.json",
+   "capture": "medias/pizzalyght-maquette/hero-p1440.jpg",
+   "video": "medias/pizzalyght-maquette/hero-p720.mp4",
+   "en_ligne": "https://pizzalyght-maquette.vercel.app"
+  },
+  {
+   "rang": 3,
+   "id": "hanamizuki-maquette/hero",
+   "maquette": "hanamizuki-maquette",
+   "client": "maison d'hôtes (minshuku) sur une petite île japonaise au large de Saiki, demi-pension autour du poisson local",
+   "metier": "maison d'hôtes",
+   "activite": [
+    "hébergement",
+    "tourisme"
+   ],
+   "pourquoi": [
+    "activité proche",
+    "besoin réserver",
+    "ambiance chaleureux",
+    "clair et sombre alternés (70 % sombre)",
+    "webgl"
+   ],
+   "lumiere": "mixte",
+   "part_sombre": 70,
+   "note_section": 5,
+   "note_maquette": 88,
+   "titre": "Mer et ciel en direct",
+   "description": "Héros sur une mer WebGL dont le ciel, la lumière et la lune suivent la vraie position du soleil sur place (calcul astronomique) ; carte « ciel en direct » avec horloge réglable pour voir l'île à une autre heure, photo cadrée en arche, titre en italique corail. Repli CSS sans WebGL.",
+   "familles": [
+    "webgl"
+   ],
+   "plan": null,
+   "module": "ciel-en-direct",
+   "fiche": "sections/hanamizuki-maquette/hero.json",
+   "capture": "medias/hanamizuki-maquette/hero-p1440.jpg",
+   "video": "medias/hanamizuki-maquette/hero-p720.mp4",
+   "en_ligne": "https://hanamizuki-maquette.vercel.app"
+  },
+  {
+   "rang": 4,
+   "id": "pausephoto65-maquette/ouverture",
+   "maquette": "pausephoto65-maquette",
+   "client": "photographe portraitiste et d'événements à Tarbes (Hautes-Pyrénées) : séances, saisons, mariages, baptêmes",
+   "metier": "photographe",
+   "activite": [
+    "culture",
+    "commerce"
+   ],
+   "pourquoi": [
+    "activité proche",
+    "besoin réserver",
+    "ambiance chaleureux",
+    "style clair (10 % sombre)",
+    "objet-manipulable"
+   ],
+   "lumiere": "clair",
+   "part_sombre": 10,
+   "note_section": 5,
+   "note_maquette": 84,
+   "titre": "Faites unepause.",
+   "description": "« Faites une pause. » : pluie de tirages photo qui tombent autour du titre, à attraper",
+   "familles": [
+    "objet-manipulable"
+   ],
+   "plan": null,
+   "module": null,
+   "fiche": "sections/pausephoto65-maquette/ouverture.json",
+   "capture": "medias/pausephoto65-maquette/ouverture-p1440.jpg",
+   "video": "medias/pausephoto65-maquette/ouverture-p720.mp4",
+   "en_ligne": "https://pausephoto65-maquette.vercel.app"
+  },
+  {
+   "rang": 5,
+   "id": "winsbike-atelier/hero",
+   "maquette": "winsbike-atelier",
+   "client": "distributeur de pièces, outils et protections vélo avec magasin et atelier de réparation",
+   "metier": "pièces et atelier vélo",
+   "activite": [
+    "commerce",
+    "auto-moto"
+   ],
+   "pourquoi": [
+    "activité proche",
+    "besoin réserver",
+    "style sombre (91 % sombre)",
+    "3d",
+    "lumiere-pointeur",
+    "webgl"
+   ],
+   "lumiere": "sombre",
+   "part_sombre": 91,
+   "note_section": 5,
+   "note_maquette": 87,
+   "titre": "Cadre irisé sur métal liquide",
+   "description": "Fond de métal liquide anodisé en WebGL (OGL) derrière un cadre de vélo détouré qui entre en rotation 3D et suit le pointeur ; pastilles de teintes qui recolorent le métal et annoncent le nombre de produits de cette couleur avec un lien filtré vers la boutique. Titre en lettres montantes (SplitText), parallaxe au défilement, dégradé CSS sans WebGL.",
+   "familles": [
+    "3d",
+    "lumiere-pointeur",
+    "webgl"
+   ],
+   "plan": null,
+   "module": null,
+   "fiche": "sections/winsbike-atelier/hero.json",
+   "capture": "medias/winsbike-atelier/hero-p1440.jpg",
+   "video": "medias/winsbike-atelier/hero-p720.mp4",
+   "en_ligne": "https://winsbike-atelier.vercel.app"
+  },
+  {
+   "rang": 6,
+   "id": "tiki-cassis-maquette/hero",
+   "maquette": "tiki-cassis-maquette",
+   "client": "balades et privatisations en bateau traditionnel dans les calanques, au départ du port de Cassis",
+   "metier": "balades en bateau",
+   "activite": [
+    "tourisme"
+   ],
+   "pourquoi": [
+    "activité proche",
+    "ambiance chaleureux",
+    "clair et sombre alternés (42 % sombre)"
+   ],
+   "lumiere": "mixte",
+   "part_sombre": 42,
+   "note_section": 5,
+   "note_maquette": 87,
+   "titre": "Héros vidéo des calanques",
+   "description": "Vidéo du bateau dans les calanques en plein écran, titre en serif, heure réelle du prochain coucher ou lever du soleil à Cassis, profondeur au pointeur (vidéo et titre glissent en sens opposé) et vague qui avance au défilement.",
+   "familles": [],
+   "plan": null,
+   "module": null,
+   "fiche": "sections/tiki-cassis-maquette/hero.json",
+   "capture": "medias/tiki-cassis-maquette/hero-p1440.jpg",
+   "video": "medias/tiki-cassis-maquette/hero-p720.mp4",
+   "en_ligne": "https://tiki-cassis-maquette.vercel.app"
+  }
+ ]
+}

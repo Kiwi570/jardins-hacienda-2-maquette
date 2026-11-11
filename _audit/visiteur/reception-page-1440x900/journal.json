@@ -1,0 +1,267 @@
+{
+ "mission": "reception-page",
+ "taille": "1440x900",
+ "depart": "/",
+ "erreurs": [],
+ "etapes": [
+  {
+   "k": 0,
+   "geste": "arrivée",
+   "resultat": "ok",
+   "gestes": 0,
+   "secondes": 3.2,
+   "adresse": "/",
+   "y": 0,
+   "hauteurPage": 11287,
+   "titres": [
+    "h1 Midi au bord de l'eau, minuit au coin du feu."
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [
+    "21 €",
+    "24 €",
+    "9 €",
+    "26 €",
+    "16 €",
+    "120 €",
+    "170 €",
+    "79 €"
+   ],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-0.png"
+  },
+  {
+   "k": 1,
+   "geste": "cliquer Réceptions",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 6.4,
+   "adresse": "/receptions",
+   "y": 0,
+   "hauteurPage": 4030,
+   "titres": [
+    "h1 Recevoir pour un mariage"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Demander une réception",
+    "Voir les espaces",
+    "Appeler 06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 2,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 1,
+   "secondes": 6.4,
+   "adresse": "/receptions",
+   "y": 0,
+   "hauteurPage": 4030,
+   "titres": [
+    "h1 Recevoir pour un mariage"
+   ],
+   "actions": [
+    "Les Jardins de l'Hacienda",
+    "La carte",
+    "Les fêtes",
+    "Réceptions",
+    "Offrir",
+    "Infos pratiques",
+    "Réserver",
+    "Demander une réception",
+    "Voir les espaces",
+    "Appeler 06 18 21 28 10"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-2.png"
+  },
+  {
+   "k": 3,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 7.2,
+   "adresse": "/receptions",
+   "y": 765,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Trois lieux, deux saisons"
+   ],
+   "actions": [
+    "Appeler 06 18 21 28 10",
+    "01 La salle et sa cheminée"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 4,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 2,
+   "secondes": 7.2,
+   "adresse": "/receptions",
+   "y": 765,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Trois lieux, deux saisons"
+   ],
+   "actions": [
+    "Appeler 06 18 21 28 10",
+    "01 La salle et sa cheminée"
+   ],
+   "prixVus": [],
+   "telephonesVus": [
+    "06 18 21 28 10"
+   ],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-4.png"
+  },
+  {
+   "k": 5,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 7.9,
+   "adresse": "/receptions",
+   "y": 1530,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Ce que l'on fête ici"
+   ],
+   "actions": [
+    "01 La salle et sa cheminée",
+    "02 La terrasse et la pergola",
+    "03 La piscine et les jardins"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 6,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 3,
+   "secondes": 7.9,
+   "adresse": "/receptions",
+   "y": 1530,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Ce que l'on fête ici"
+   ],
+   "actions": [
+    "01 La salle et sa cheminée",
+    "02 La terrasse et la pergola",
+    "03 La piscine et les jardins"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-6.png"
+  },
+  {
+   "k": 7,
+   "geste": "defiler 1",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 8.6,
+   "adresse": "/receptions",
+   "y": 2295,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false
+  },
+  {
+   "k": 8,
+   "geste": "capture",
+   "resultat": "ok",
+   "gestes": 4,
+   "secondes": 8.6,
+   "adresse": "/receptions",
+   "y": 2295,
+   "hauteurPage": 4030,
+   "titres": [
+    "h2 Demander une réception"
+   ],
+   "actions": [
+    "Continuer"
+   ],
+   "prixVus": [],
+   "telephonesVus": [],
+   "prixDansLaPage": [],
+   "telephones": [
+    "06 18 21 28 10"
+   ],
+   "menuOuvert": false,
+   "capture": "etape-8.png"
+  }
+ ]
+}
