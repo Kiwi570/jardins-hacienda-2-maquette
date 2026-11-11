@@ -38,14 +38,18 @@ export default (c) => {
 <script type="application/json" data-reservation-accueil>${brut(resa)}</script>
 
 <section class="midi ecran" id="midi" data-heure="12:00" data-lumiere="midi" data-plein-ecran>
-  <div class="midi__eau" data-grille="manipuler" data-effet="eau" data-souris>
-    ${c.media({ nom: 'grok/midi-piscine', alt: c.s('accueil.midi.alt'), cadrage: '50% 50%', cadrageMobile: '50% 60%', priorite: true, classe: 'midi__photo', sizes: '100vw' })}
+  <div class="midi__eau" data-saison-seul="ete" data-grille="manipuler" data-effet="eau" data-souris>
+    ${c.media({ nom: 'grok/midi-piscine', alt: c.s('accueil.midi.alt'), cadrage: '50% 50%', cadrageMobile: '50% 60%', classe: 'midi__photo', sizes: '100vw' })}
     <canvas class="midi__canvas" data-eau aria-hidden="true" data-audit-ignorer></canvas>
+  </div>
+  <div class="midi__eau midi__hiver" data-saison-seul="hiver" data-grille="manipuler" data-effet="soleil" data-souris>
+    ${c.media({ nom: 'vraie/salle-baies', alt: c.s('accueil.midi.altHiver'), cadrage: '62% 50%', cadrageMobile: '40% 50%', classe: 'midi__photo', sizes: '100vw' })}
+    <span class="midi__soleil" aria-hidden="true"></span>
   </div>
   <div class="midi__texte conteneur">
     <p class="heure-geante" data-iris-centre data-grille="typo" data-effet="axes" aria-hidden="true"><span class="hg__h">12</span><span class="hg__sep">:</span><span class="hg__m">00</span></p>
     <p class="surtitre midi__surtitre"><strong class="midi__nom">${c.site.nom}</strong> · ${c.t('accueil.midi.surtitreCourt')}<span class="midi__lieu-long">${c.t('accueil.midi.surtitreLong')}</span></p>
-    <h1 class="midi__titre" data-anime="lignes">${c.t('accueil.midi.titre1')} <em>${c.t('accueil.midi.titre2')}</em></h1>
+    <h1 class="midi__titre" data-anime="lignes"><span data-texte-ete="${c.s('accueil.midi.titre1')}">${c.t('accueil.midi.titre1Hiver')}</span> <em>${c.t('accueil.midi.titre2')}</em></h1>
     <p class="statut midi__statut" data-anime="gsap"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil data-statut-heure="${c.s('accueil.midi.ilEst')}" data-info-cle>${c.t('accueil.midi.statutSansJs')}</span></p>
     <p class="midi__intro masque-ecran-bas" data-anime="gsap">${c.t('accueil.midi.texte')}</p>
     <p class="midi__actions" data-anime="gsap">
@@ -53,8 +57,9 @@ export default (c) => {
       ${c.lien('receptions', { ancre: 'demande', classe: 'bouton bouton--contour', texte: c.t('accueil.midi.reception'), attrs: 'data-survol="magnetique"' })}
     </p>
   </div>
-  <p class="saison-tag midi__saison">${c.t('accueil.midi.saison')}</p>
-  <p class="indice midi__indice" aria-hidden="true"><span class="indice--souris">${c.t('accueil.midi.indice')}</span><span class="indice--doigt">${c.t('accueil.midi.indiceTactile')}</span></p>
+  <p class="saison-tag midi__saison" data-texte-ete="${c.s('accueil.midi.saison')}">${c.t('accueil.midi.saisonHiver')}</p>
+  <p class="indice midi__indice" aria-hidden="true"><span class="indice--souris" data-texte-ete="${c.s('accueil.midi.indice')}">${c.t('accueil.midi.indiceHiver')}</span><span class="indice--doigt" data-texte-ete="${c.s('accueil.midi.indiceTactile')}">${c.t('accueil.midi.indiceTactileHiver')}</span></p>
+  <script>(function(){if(document.documentElement.getAttribute('data-saison')!=='ete')return;var l=document.querySelectorAll('#midi [data-texte-ete]');for(var i=0;i<l.length;i++)l[i].textContent=l[i].getAttribute('data-texte-ete');})();</script>
 </section>
 
 <section class="dejeuner" id="dejeuner" data-heure="12:30" data-lumiere="dejeuner" aria-labelledby="dejeuner-titre">
@@ -71,7 +76,8 @@ export default (c) => {
       <p class="dejeuner__actions">${c.lien('la-carte', { classe: 'bouton bouton--contour', texte: c.t('accueil.dejeuner.lien') })} <span class="saison-tag saison-tag--clair">${c.t('accueil.dejeuner.saison')}</span></p>
     </div>
     <div class="dejeuner__visuel">
-      ${c.media({ nom: 'vraie/salle-soleil', alt: c.s('accueil.dejeuner.alt'), cadrage: '46% 50%', classe: 'dejeuner__assiette', sizes: '(max-width: 760px) 92vw, 42vw', attrs: 'data-fx="parallaxe" data-fx-force="8"' })}
+      ${c.media({ nom: 'vraie/salle-soleil', alt: c.s('accueil.dejeuner.alt'), cadrage: '46% 50%', classe: 'dejeuner__assiette', sizes: '(max-width: 760px) 92vw, 42vw', attrs: 'data-fx="parallaxe" data-fx-force="8" data-saison-seul="ete"' })}
+      ${c.media({ nom: 'vraie/salle-pierre', alt: c.s('accueil.dejeuner.altHiver'), cadrage: '40% 50%', classe: 'dejeuner__assiette', sizes: '(max-width: 760px) 92vw, 42vw', attrs: 'data-fx="parallaxe" data-fx-force="8" data-saison-seul="hiver"' })}
       <div class="dejeuner__vraies" data-effet="vraies" aria-label="${c.s('accueil.dejeuner.photos')}" role="group">
         ${['assiette-cepes', 'assiette-turquoise', 'assiette-saumon'].map((n, i) => c.media({ nom: n, alt: '', classe: `vraie vraie--${i + 1}`, sizes: '160px' }))}
       </div>
@@ -79,7 +85,7 @@ export default (c) => {
   </div>
 </section>
 
-<section class="apresmidi panorama" id="apres-midi" data-heure="14:30" data-lumiere="apresmidi" data-effet="panorama" aria-labelledby="apresmidi-titre">
+<section class="apresmidi panorama" id="apres-midi" data-heure="14:30" data-lumiere="apresmidi" data-effet="panorama" data-saison-seul="ete" data-sans-visuel aria-labelledby="apresmidi-titre">
   <div class="panorama__cadre">
     <div class="panorama__piste" data-panorama-piste>
       ${c.media({ nom: 'vraie/piscine-pergola', alt: c.s('accueil.apresmidi.altPanorama'), cadrage: '50% 50%', classe: 'panorama__photo', sizes: '(max-width: 760px) 300vw, 160vw' })}
@@ -131,7 +137,7 @@ export default (c) => {
 <section class="diner" id="diner" data-heure="21:00" data-lumiere="diner" aria-labelledby="diner-titre">
   <div class="conteneur diner__grille">
     <div class="diner__visuel">
-      ${c.media({ nom: 'vraie/plat-cheminee', alt: c.s('accueil.diner.alt'), cadrage: '50% 70%', classe: 'diner__assiette fumant', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-module="plat-fumant" data-vapeur=".5 .74 .34" data-anime="rideau"' })}
+      ${c.media({ nom: 'vraie/plat-cheminee', alt: c.s('accueil.diner.alt'), cadrage: '50% 70%', classe: 'diner__assiette fumant', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-module="plat-fumant" data-vapeur=".46 .7 .42" data-anime="rideau"' })}
       <p class="indice diner__indice" aria-hidden="true"><span class="indice--souris">${c.t('accueil.diner.indice')}</span><span class="indice--doigt">${c.t('accueil.diner.indiceTactile')}</span></p>
     </div>
     <div class="diner__texte">

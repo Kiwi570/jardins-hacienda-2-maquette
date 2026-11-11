@@ -106,7 +106,12 @@
       "indice": "Passez la main sur l'eau",
       "indiceTactile": "Touchez l'eau",
       "statutSansJs": "Le midi du mercredi au dimanche (sauf le samedi), le soir le vendredi et le samedi",
-      "alt": "La piscine à midi, l'eau turquoise, les palmiers et les parasols de paille"
+      "alt": "La piscine à midi, l'eau turquoise, les palmiers et les parasols de paille",
+      "titre1Hiver": "Midi près des baies vitrées,",
+      "saisonHiver": "L'hiver, près des baies vitrées",
+      "indiceHiver": "Passez la main dans le soleil",
+      "indiceTactileHiver": "Touchez le soleil",
+      "altHiver": "La salle à midi : le soleil d'hiver entre par les baies vitrées sur les tables rondes en verre"
     },
     "dejeuner": {
       "heure": "12:30",
@@ -117,7 +122,8 @@
       "lien": "Toute la carte",
       "saison": "Le midi : mercredi, jeudi, vendredi et dimanche ; l’hiver, près des baies vitrées",
       "alt": "La salle au soleil de midi : tables rondes en verre sur pied de bois, fauteuils crème et baies vitrées",
-      "photos": "Assiettes du restaurant"
+      "photos": "Assiettes du restaurant",
+      "altHiver": "La salle et son mur de pierre, les tables dressées pour le déjeuner"
     },
     "apresmidi": {
       "heure": "14:30",
@@ -530,6 +536,7 @@
     "nouvelle": "Poser une autre question",
     "distances": "À 24 km de Thionville, 19 km de Metz, 47 km de Luxembourg (à vol d’oiseau)",
     "questionLien": "Une question ?",
-    "accesLien": "Venir"
+    "accesLien": "Venir",
+    "horairesPhotoAltHiver": "La salle au soleil de midi, les tables dressées près des baies vitrées"
   }
 }

@@ -45,6 +45,11 @@ Comparaison de l'archive v6 (commit 0cc7532) et de la v7, fichier par fichier : 
 - La vitre givrée ne se redessine que quand elle change, jamais pendant le défilement, et ne s'installe qu'au repos en haut de page : Les fêtes défilent sans à-coup sur un ordinateur lent.
 - Les fêtes : Noël avant la Saint-Sylvestre ; le titre de la Saint-Sylvestre ne chevauche plus son texte ; les scènes épinglées tiennent sur les écrans bas.
 
+**Après le retour du client (v7.1 : la saison décide aussi de l'accueil)**
+- L'hiver (d'octobre à avril), l'ouverture de l'accueil est la vraie salle aux baies vitrées : « Midi près des baies vitrées, minuit au coin du feu. » ; un halo de soleil suit la main. La piscine et son eau à toucher restent l'ouverture de l'été (mai à septembre, ou `?saison=ete`).
+- L'hiver, le panorama de la piscine (14 h 30) disparaît de l'accueil ; 12 h 30 montre la salle et son mur de pierre ; Infos pratiques montre la salle au soleil au lieu de la piscine.
+- 21 h : la vapeur de l'assiette devant la cheminée est nettement visible (plus dense, plus haute).
+
 ## v6 — « De midi à minuit », refonte de A à Z
 
 Comparaison de l'archive v5 (commit 9b8e0a0) et de la v6, fichier par fichier : 112 fichiers retirés (les images de la v5 refaites ou abandonnées, dont 9 illustrations générées : nappe de lin, eau de la piscine, braises, bougies, ouvertures de Réserver et d'Offrir… ; les polices Bodoni Moda, Caveat et Figtree ; 6 modules qui ne servent plus : ardoise à la craie, assiette qui se dresse, carrousel 3D, fil conducteur, objet à faire tourner, plat fumant ; `donnees/ardoise.json` et le fragment de l'assiette) ; 44 fichiers ajoutés (une page Réceptions, 10 nouvelles illustrations générées en 29 fichiers, 2 boucles vidéo, les polices Bricolage Grotesque et Instrument Serif avec leurs licences, les positions des ampoules de la terrasse, 2 images de partage) ; sources modifiées : toutes les pages, le gabarit commun, le socle (repris de la skill v10.9.2), `site.css` et `site.js` réécrits, `fr.json`, `site.json`, `carte.json`, `images.json`, `plan-images.json`. Gardés tels quels dans leur logique : la réservation et sa carte de placement, le plan de salle, la carte cadeau qui s'écrit et son enveloppe, la carte, les fêtes, les horaires, les accords de la Saint-Sylvestre, la transition en assiette, le statut ouvert ou fermé.

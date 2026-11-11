@@ -16,6 +16,9 @@ qu'on attise), 23 h 30 Noël, la Saint-Sylvestre et la prochaine soirée à thè
 La nuit et le matin (avant 11 h), l'intro s'arrête d'abord sur l'heure réelle (« 01:26 · la maison dort ») avant de rouler jusqu'à midi.
 La lumière de la page passe du blanc de midi à la braise de minuit ; l'horloge de l'en-tête suit le défilement. Chaque moment dit sa saison réelle
 (« Piscine et terrasse de juin à septembre », « Cet hiver »).
+La saison décide aussi de l'accueil : d'octobre à avril, l'ouverture de 12 h est la salle aux baies vitrées (un halo de soleil suit la main),
+le panorama de la piscine disparaît et 12 h 30 montre la salle de pierre ; de mai à septembre, la piscine et son eau à toucher. `?saison=ete` ou
+`?saison=hiver` force l'une ou l'autre pour la présentation.
 
 ## Les pages, chacune à son heure
 

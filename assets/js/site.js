@@ -113,7 +113,7 @@ const OPTIONS = {
   'lumiere-au-pointeur': { source: 'bougie', focus: [0.68, 0.46], repos: 'promenade', relief: 2.2 },
   'ciel-en-direct': { timeZone: 'Europe/Paris', lat: 49.204, lon: 5.946, mer: false, etoiles: 1.1 },
   'rideau-en-lanieres': { effet: 'ecarte', forme: 'feuille', nombre: 7, nombreTelephone: 5, coeur: 0, delai: 0.05, duree: 0.75, decalage: 0.05, unique: false },
-  'plat-fumant': { densite: 0.9, hauteur: 0.55, vitesse: 0.85, intensite: 0.95, qualite: 0.35 },
+  'plat-fumant': { densite: 1.3, hauteur: 0.85, vitesse: 0.9, intensite: 1.8, qualite: 0.45 },
   'accords-mets-et-vins': { textes: { avec: 'Avec', signature: "Le vin de l'accord", groupe: 'Les plats du menu' } },
   'plan-de-salle': { reservation: '/reserver#formulaire', couverts: 2, textes: { choix: '{nom} · {zone} · {places} places. ', prise: 'Indisponible (simulation)' } },
   'carte-cadeau-qui-se-compose': { cachet: 'JH', min: 25, max: 200, textes: {
@@ -303,9 +303,30 @@ d+=vec2(a*.0018,a*.0026)*eau;
 vec4 c=texture2D(img,iu+d*eau);
 float caust=pow(max(0.,a),6.)*.12*eau;
 gl_FragColor=vec4(c.rgb+vec3(lum*eau)+vec3(caust*.9,caust,caust),1.);}`;
+/* L'hiver, l'ouverture est la salle aux baies vitrées : le soleil de midi suit la main (halo doux, sans WebGL),
+   revient vers les baies quand la main quitte l'ouverture et s'arrête dès qu'il a rejoint sa cible. */
+function soleil() {
+  const zone = $('[data-effet="soleil"]');
+  if (!zone || html.dataset.saison === 'ete' || etat.calme) return;
+  const sec = zone.closest('section') || zone;
+  const REPOS = [0.72, 0.36];
+  let cx = REPOS[0], cy = REPOS[1], tx = cx, ty = cy, raf = 0;
+  const pas = () => {
+    cx += (tx - cx) * 0.1; cy += (ty - cy) * 0.1;
+    zone.style.setProperty('--sx', `${(cx * 100).toFixed(2)}%`); zone.style.setProperty('--sy', `${(cy * 100).toFixed(2)}%`);
+    raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.002 ? requestAnimationFrame(pas) : 0;
+  };
+  const viser = (x, y) => { tx = x; ty = y; if (!raf) raf = requestAnimationFrame(pas); };
+  const suivre = (e) => { const r = zone.getBoundingClientRect(); if (!r.width || !r.height) return; viser(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))); };
+  sec.addEventListener('pointermove', suivre, { passive: true });
+  sec.addEventListener('pointerdown', suivre, { passive: true });
+  sec.addEventListener('pointerleave', () => viser(REPOS[0], REPOS[1]));
+  zone.classList.add('soleil--actif');
+}
+
 function eau() {
   const zone = $('[data-effet="eau"]'), cv = zone && $('[data-eau]', zone), img = zone && $('img', zone);
-  if (!cv || !img || etat.calme) return null;
+  if (!cv || !img || etat.calme || html.dataset.saison !== 'ete') return null;
   const gl = cv.getContext('webgl', { premultipliedAlpha: false, antialias: false, alpha: false });
   if (!gl) return null;
   const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
@@ -412,6 +433,8 @@ function terrasse() {
 /* ---------- 14 h 30 · le panorama : la caméra parcourt la piscine, l'heure avance jusqu'à 19 h, la lumière dore ---------- */
 function panorama() {
   const sec = $('.panorama'); if (!sec) return;
+  /* L'après-midi au bord de l'eau : l'été seulement (masquée l'hiver, elle est dispensée du contrôle « un visuel par section »). */
+  if (html.dataset.saison !== 'ete') return; sec.removeAttribute('data-sans-visuel');
   const h = $('[data-panorama-heure] span', sec), lieux = $$('[data-lieu]', sec);
   const fmt = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
   const piste = $('[data-panorama-piste]', sec), legende = $('.panorama__legende', sec);
@@ -965,6 +988,7 @@ demarrer({
     pisteTelephone();
     terrasse();
     panorama();
+    soleil();
     miniResa();
     braises();
     decomptes();

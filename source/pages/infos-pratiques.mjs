@@ -91,7 +91,8 @@ export default (c) => {
       <script type="application/json" data-horaires>${brut(json)}</script>
       <div class="horaires__texte-adresse" data-horaires-texte>${fragment(d.adresses.map((a) => rendreBloc(a, false)).join(''))}</div>
       <p class="horaires__note">${c.t('infos.horairesNote')}</p>
-      ${c.media({ nom: 'vraie/piscine-paillotes', alt: c.s('infos.horairesPhotoAlt'), classe: 'horaires__photo', sizes: '(max-width: 760px) 92vw, 40vw' })}
+      ${c.media({ nom: 'vraie/piscine-paillotes', alt: c.s('infos.horairesPhotoAlt'), classe: 'horaires__photo', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-saison-seul="ete"' })}
+      ${c.media({ nom: 'vraie/salle-soleil', alt: c.s('infos.horairesPhotoAltHiver'), cadrage: '46% 50%', classe: 'horaires__photo', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-saison-seul="hiver"' })}
     </div>
   </div>
 </section>

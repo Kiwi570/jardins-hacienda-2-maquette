@@ -541,7 +541,14 @@
         {
           "etape": "livraison : commit, archive, bibliothèque (fiche, leçons)",
           "budget": 30,
-          "debut": "2026-11-11T17:55:00+01:00"
+          "debut": "2026-11-11T17:55:00+01:00",
+          "fin": "2026-11-11T18:12:00+01:00"
+        },
+        {
+          "etape": "retour du client : accueil d'hiver sans piscine (ouverture, panorama, Infos), vapeur visible, contre-audit",
+          "budget": 30,
+          "debut": "2026-11-11T18:16:00+01:00",
+          "fin": "2026-11-11T18:31:00+01:00"
         }
       ]
     }

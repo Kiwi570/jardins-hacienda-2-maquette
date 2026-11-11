@@ -119,18 +119,26 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <script type="application/json" data-horaires-accueil>{"fuseau":"Europe/Paris","seuil_ferme_bientot":30,"regle_feries":"ouvert","feries":[{"date":"2026-11-11","nom":"Armistice"},{"date":"2026-12-25","nom":"Noël"},{"date":"2027-01-01","nom":"Jour de l'an"}],"adresses":[{"id":"restaurant","nom":"Le restaurant","adresse":"6 Vathier Haye, 54580 Moineville","telephone":"06 18 21 28 10","semaine":{"lundi":[],"mardi":[],"mercredi":["12:00-14:30"],"jeudi":["12:00-14:30"],"vendredi":["12:00-14:30","19:00-00:00"],"samedi":["19:00-00:00"],"dimanche":["12:00-16:00"]},"exceptions":[]}]}</script>
 <script type="application/json" data-reservation-accueil>{"fuseau":"Europe/Paris","delai_minutes":60,"jours_a_l_avance":60,"couverts_max":10,"telephone":"06 18 21 28 10","services":{"midi":{"libelle":"Midi","debut":"12:00","fin":"13:30","pas":15},"soir":{"libelle":"Soir","debut":"19:00","fin":"21:30","pas":15}},"fermetures":{"jours":["lundi","mardi"],"services":{"mercredi":["soir"],"jeudi":["soir"],"samedi":["midi"],"dimanche":["soir"]},"dates":[]},"espaces":[{"id":"salle","libelle":"En salle"},{"id":"terrasse","libelle":"En terrasse","mois":[6,7,8,9],"note":"selon la météo","hors_saison":"de juin à septembre"}],"complets":{},"complets_simules":true,"message_simule":"Réservation simulée : rien n'est envoyé dans cette maquette.","ouvertures_exceptionnelles":[{"date":"2026-12-31","service":"soir","note":"Saint-Sylvestre"}]}</script>
 <section class="midi ecran" id="midi" data-heure="12:00" data-lumiere="midi" data-plein-ecran>
-  <div class="midi__eau" data-grille="manipuler" data-effet="eau" data-souris>
+  <div class="midi__eau" data-saison-seul="ete" data-grille="manipuler" data-effet="eau" data-souris>
     <figure class="media midi__photo" data-grok style="--cadrage:50% 50%;--cadrage-mobile:50% 60%">
   <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/grok/midi-piscine-mobile-640.webp 640w" sizes="100vw">
-    <img src="/assets/images/grok/midi-piscine-1280.webp" srcset="/assets/images/grok/midi-piscine-640.webp 640w, /assets/images/grok/midi-piscine-1280.webp 1280w" sizes="100vw" alt="La piscine à midi, l&#39;eau turquoise, les palmiers et les parasols de paille" width="1280" height="720" fetchpriority="high" loading="eager" decoding="async">
+    <img src="/assets/images/grok/midi-piscine-1280.webp" srcset="/assets/images/grok/midi-piscine-640.webp 640w, /assets/images/grok/midi-piscine-1280.webp 1280w" sizes="100vw" alt="La piscine à midi, l&#39;eau turquoise, les palmiers et les parasols de paille" width="1280" height="720" loading="lazy" decoding="async">
   </picture><figcaption class="mention-ia">Illustration générée</figcaption>
 </figure>
     <canvas class="midi__canvas" data-eau aria-hidden="true" data-audit-ignorer></canvas>
   </div>
+  <div class="midi__eau midi__hiver" data-saison-seul="hiver" data-grille="manipuler" data-effet="soleil" data-souris>
+    <figure class="media midi__photo" style="--cadrage:62% 50%;--cadrage-mobile:40% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-baies-mobile-640.webp 640w, /assets/images/vraie/salle-baies-mobile-1080.webp 1080w" sizes="100vw">
+    <img src="/assets/images/vraie/salle-baies-1280.webp" srcset="/assets/images/vraie/salle-baies-640.webp 640w, /assets/images/vraie/salle-baies-1280.webp 1280w, /assets/images/vraie/salle-baies-1920.webp 1920w" sizes="100vw" alt="La salle à midi : le soleil d&#39;hiver entre par les baies vitrées sur les tables rondes en verre" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure>
+    <span class="midi__soleil" aria-hidden="true"></span>
+  </div>
   <div class="midi__texte conteneur">
     <p class="heure-geante" data-iris-centre data-grille="typo" data-effet="axes" aria-hidden="true"><span class="hg__h">12</span><span class="hg__sep">:</span><span class="hg__m">00</span></p>
     <p class="surtitre midi__surtitre"><strong class="midi__nom">Les Jardins de l&#39;Hacienda</strong> · restaurant et réceptions à Moineville<span class="midi__lieu-long">, entre Metz, Thionville et le Luxembourg</span></p>
-    <h1 class="midi__titre" data-anime="lignes">Midi au bord de l&#39;eau, <em>minuit au coin du feu.</em></h1>
+    <h1 class="midi__titre" data-anime="lignes"><span data-texte-ete="Midi au bord de l&#39;eau,">Midi près des baies vitrées,</span> <em>minuit au coin du feu.</em></h1>
     <p class="statut midi__statut" data-anime="gsap"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil data-statut-heure="Il est" data-info-cle>Le midi du mercredi au dimanche (sauf le samedi), le soir le vendredi et le samedi</span></p>
     <p class="midi__intro masque-ecran-bas" data-anime="gsap">La cuisine de saison du chef Régis Clauss, une carte renouvelée chaque semaine, la piscine sous les palmiers l&#39;été et la cheminée l&#39;hiver.</p>
     <p class="midi__actions" data-anime="gsap">
@@ -138,8 +146,9 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <a href="/receptions#demande" class="bouton bouton--contour" data-libelle="Réceptions" data-survol="magnetique">Demander une réception</a>
     </p>
   </div>
-  <p class="saison-tag midi__saison">Piscine et terrasse de juin à septembre</p>
-  <p class="indice midi__indice" aria-hidden="true"><span class="indice--souris">Passez la main sur l&#39;eau</span><span class="indice--doigt">Touchez l&#39;eau</span></p>
+  <p class="saison-tag midi__saison" data-texte-ete="Piscine et terrasse de juin à septembre">L&#39;hiver, près des baies vitrées</p>
+  <p class="indice midi__indice" aria-hidden="true"><span class="indice--souris" data-texte-ete="Passez la main sur l&#39;eau">Passez la main dans le soleil</span><span class="indice--doigt" data-texte-ete="Touchez l&#39;eau">Touchez le soleil</span></p>
+  <script>(function(){if(document.documentElement.getAttribute('data-saison')!=='ete')return;var l=document.querySelectorAll('#midi [data-texte-ete]');for(var i=0;i<l.length;i++)l[i].textContent=l[i].getAttribute('data-texte-ete');})();</script>
 </section>
 <section class="dejeuner" id="dejeuner" data-heure="12:30" data-lumiere="dejeuner" aria-labelledby="dejeuner-titre">
   <div class="conteneur dejeuner__grille">
@@ -155,9 +164,14 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <p class="dejeuner__actions"><a href="/la-carte" class="bouton bouton--contour" data-libelle="La carte">Toute la carte</a> <span class="saison-tag saison-tag--clair">Le midi : mercredi, jeudi, vendredi et dimanche ; l’hiver, près des baies vitrées</span></p>
     </div>
     <div class="dejeuner__visuel">
-      <figure class="media dejeuner__assiette" data-fx="parallaxe" data-fx-force="8" style="--cadrage:46% 50%">
+      <figure class="media dejeuner__assiette" data-fx="parallaxe" data-fx-force="8" data-saison-seul="ete" style="--cadrage:46% 50%">
   <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soleil-mobile-640.webp 640w, /assets/images/vraie/salle-soleil-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 42vw">
     <img src="/assets/images/vraie/salle-soleil-1280.webp" srcset="/assets/images/vraie/salle-soleil-640.webp 640w, /assets/images/vraie/salle-soleil-1280.webp 1280w, /assets/images/vraie/salle-soleil-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 42vw" alt="La salle au soleil de midi : tables rondes en verre sur pied de bois, fauteuils crème et baies vitrées" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure>
+      <figure class="media dejeuner__assiette" data-fx="parallaxe" data-fx-force="8" data-saison-seul="hiver" style="--cadrage:40% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-pierre-mobile-640.webp 640w, /assets/images/vraie/salle-pierre-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 42vw">
+    <img src="/assets/images/vraie/salle-pierre-1280.webp" srcset="/assets/images/vraie/salle-pierre-640.webp 640w, /assets/images/vraie/salle-pierre-1280.webp 1280w, /assets/images/vraie/salle-pierre-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 42vw" alt="La salle et son mur de pierre, les tables dressées pour le déjeuner" width="1280" height="853" loading="lazy" decoding="async">
   </picture>
 </figure>
       <div class="dejeuner__vraies" data-effet="vraies" aria-label="Assiettes du restaurant" role="group">
@@ -178,7 +192,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     </div>
   </div>
 </section>
-<section class="apresmidi panorama" id="apres-midi" data-heure="14:30" data-lumiere="apresmidi" data-effet="panorama" aria-labelledby="apresmidi-titre">
+<section class="apresmidi panorama" id="apres-midi" data-heure="14:30" data-lumiere="apresmidi" data-effet="panorama" data-saison-seul="ete" data-sans-visuel aria-labelledby="apresmidi-titre">
   <div class="panorama__cadre">
     <div class="panorama__piste" data-panorama-piste>
       <figure class="media panorama__photo" style="--cadrage:50% 50%">
@@ -244,7 +258,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <section class="diner" id="diner" data-heure="21:00" data-lumiere="diner" aria-labelledby="diner-titre">
   <div class="conteneur diner__grille">
     <div class="diner__visuel">
-      <figure class="media diner__assiette fumant" data-module="plat-fumant" data-vapeur=".5 .74 .34" data-anime="rideau" style="--cadrage:50% 70%">
+      <figure class="media diner__assiette fumant" data-module="plat-fumant" data-vapeur=".46 .7 .42" data-anime="rideau" style="--cadrage:50% 70%">
   <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/plat-cheminee-mobile-640.webp 640w, /assets/images/vraie/plat-cheminee-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 40vw">
     <img src="/assets/images/vraie/plat-cheminee-1280.webp" srcset="/assets/images/vraie/plat-cheminee-640.webp 640w, /assets/images/vraie/plat-cheminee-1280.webp 1280w, /assets/images/vraie/plat-cheminee-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 40vw" alt="Une assiette de légumes de saison sur une table de bois, devant la cheminée allumée" width="1280" height="853" loading="lazy" decoding="async">
   </picture>

@@ -1181,3 +1181,13 @@ html .ouv-infos .ouv-infos__heure { color: var(--ced-texte); }
 /* Écrans bas (téléphone à l'horizontale, petits portables) : l'essentiel d'abord. */
 @media (max-height: 520px) { .ouv-infos .ouv-infos__distances, .ouv-infos .surtitre, .ouv-infos .ouv-infos__actions .lien-fleche { display: none; } .ouv-infos .ouv-infos__heure { font-size: 2.8rem; } .ouv-infos h1 { font-size: 1.4rem; margin: 0 0 .3em; } .ouv-infos .ced__cadre { padding-top: calc(var(--entete-h) + 6px); } }
 @media (max-height: 600px) and (min-width: 761px) { .ouv-offrir h1 { font-size: clamp(2rem, 6.4vh, 2.8rem); } .ouv-offrir__texte > p:not(.ouv-offrir__actions):not(.heure-geante):not(.surtitre) { display: none; } .ouv-fetes__texte { display: none; } .ouv-fetes h1 { font-size: clamp(1.9rem, 6.4vh, 2.6rem); } }
+
+/* v7.1 · L'hiver, l'ouverture de l'accueil est la salle aux baies vitrées (la piscine reste à l'été) :
+   un halo de soleil chaud suit la main (fusion douce), au repos il se pose du côté des baies. */
+html[data-saison="hiver"] .midi { background: #efe6d6; }
+.midi__hiver .midi__photo img { filter: saturate(1.04) brightness(1.03); }
+.midi__soleil { position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0; transition: opacity 1.2s ease;
+  background: radial-gradient(circle at var(--sx, 72%) var(--sy, 36%), rgba(255, 226, 168, .62) 0, rgba(255, 214, 150, .26) 16%, rgba(255, 214, 150, 0) 38%);
+  mix-blend-mode: soft-light; }
+.soleil--actif .midi__soleil { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .midi__soleil { display: none; } }

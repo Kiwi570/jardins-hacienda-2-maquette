@@ -1,10 +1,11 @@
 {
- "id": "20261111-170737-standard-partiel",
- "date": "2026-11-11T17:07:37.504Z",
+ "id": "20261111-173013-standard-cible-partiel",
+ "date": "2026-11-11T17:30:44.144Z",
  "niveau": "standard",
- "pages": "toutes",
+ "pages": "/",
  "etapes": [
-  "fichiers"
+  "fichiers",
+  "mesures"
  ],
  "version": "7",
  "echecs": 0,
