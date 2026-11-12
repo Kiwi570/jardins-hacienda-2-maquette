@@ -93,6 +93,7 @@ Comparaison de l'archive v6 (commit 0cc7532) et de la v7, fichier par fichier : 
 - Infos pratiques, horaires : la semaine d'un coup d'œil. Une piste par jour de 0 h à 24 h, les créneaux à leur place (midi en or, soir en terre cuite), le moment présent qui bat sur la piste du jour ; un curseur d'heure parcourt la semaine, allume les créneaux ouverts et le dit en toutes lettres (« À 20 h : ouvert vendredi et samedi »).
 - Le dos du polaroïd du chef est l'ardoise de la semaine à la craie, dans son cadre de bois ; les étiquettes s'effacent quand on la lit.
 - Contre-audit sur ordinateur (7 tailles, de 1000 × 560 à 2560 × 1440 ; le téléphone et les petits formats sont repris à l'audit de fin, à la demande du client) : l'ouverture de l'accueil tient dans un écran bas (rendez-vous sur une ligne) ; textes du plan de « Venir » et de la carte de visite à 12 px ; commande des incontournables par téléphone (plus de lien vers l'ancien site) ; échelle des horaires plus contrastée ; prix des fêtes dans le premier écran sans JavaScript ; voile des transitions en papier plus chaud, ombré sur les bords (il ne fait plus l'effet d'un écran blanc entre deux pages sombres) ; 404 alignée sur la colonne du site sur très grand écran ; rubrique courante de La carte sans fondu.
+- La carte, le soir : les noms, prix et descriptions des plats restaient crème sur les cartes sable (le thème du soir éclaircit le texte de la page) ; le texte des cartes reste désormais foncé, matin comme soir, les titres de rubrique en terre cuite.
 
 ## v6 — « De midi à minuit », refonte de A à Z
 

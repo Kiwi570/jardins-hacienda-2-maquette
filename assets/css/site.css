@@ -2032,3 +2032,12 @@ html:not(.js) .ouv-fetes__grille { align-items: start; padding-top: clamp(12px, 
 .introuvable .lum__cadre { margin-left: max(0px, (100% - var(--largeur)) / 2 - var(--gouttiere)); }
 /* La carte : la rubrique courante change d'un coup (pendant le fondu, le texte clair passait un instant sur un fond encore clair). */
 .carte-resto__lien { transition: none; }
+/* La carte, le soir (thème sombre) : les cartes restent sable, leur texte reste donc foncé quel que soit le thème de la page. */
+@media (min-width: 860px) {
+  .carte-resto__rubrique :is(.carte-resto__rubrique-titre, .carte-resto__rubrique-note, .carte-resto__plats) { --couleur-fond: #ebe1cf; --couleur-texte: #1c1712; --couleur-accent: var(--rouge); --couleur-texte-doux: color-mix(in oklab, var(--couleur-texte) 76%, var(--couleur-fond)); --couleur-ligne: color-mix(in oklab, var(--couleur-texte) 22%, var(--couleur-fond)); --couleur-surface: color-mix(in oklab, var(--couleur-texte) 7%, var(--couleur-fond)); }
+  .carte-resto__rubrique :is(.carte-resto__rubrique-note, .carte-resto__plats) { color: var(--couleur-texte); }
+  .carte-resto__rubrique .carte-resto__rubrique-titre { color: var(--rouge); }
+}
+@media (max-width: 859px) {
+  .carte-resto__plats { --couleur-fond: #ebe1cf; --couleur-texte: #1c1712; --couleur-accent: var(--rouge); --couleur-texte-doux: color-mix(in oklab, var(--couleur-texte) 76%, var(--couleur-fond)); --couleur-ligne: color-mix(in oklab, var(--couleur-texte) 22%, var(--couleur-fond)); --couleur-surface: color-mix(in oklab, var(--couleur-texte) 7%, var(--couleur-fond)); color: var(--couleur-texte); }
+}
