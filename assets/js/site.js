@@ -824,6 +824,36 @@ function volets() {
   if (etat.calme || !window.ScrollTrigger) return;
   window.ScrollTrigger.create({ trigger: zone, start: 'top 70%', end: 'bottom 40%', onUpdate: (st) => { if (touche) return; const o = ordre(); ouvrir(o[Math.min(o.length - 1, Math.floor(st.progress * o.length))]); } });
 }
+/* v7.5 · Réceptions, « Ce que l'on fête ici » : le défilement par paliers de la maquette de référence (une occasion par palier). */
+function fetesDefile() {
+  const sec = $('[data-fetes-defile]'); if (!sec) return;
+  const fetes = $$('.occ', sec), points = $$('[data-fete-aller]', sec), collant = $('.fetes-defile__collant', sec);
+  /* Un lien « Organiser un mariage » coche l'occasion dans la demande. */
+  for (const a of $$('[data-occasion-choisir]', sec)) a.addEventListener('click', () => {
+    const r = $$('[name="occasion"]').find((x) => x.value === a.dataset.occasionChoisir);
+    if (r && !r.checked) { r.checked = true; r.dispatchEvent(new Event('change', { bubbles: true })); }
+  });
+  let idx = -1;
+  const activer = (i) => {
+    if (i === idx) return; idx = i;
+    fetes.forEach((f, k) => { f.classList.toggle('est-active', k === i); if (!etat.calme) f.setAttribute('aria-hidden', String(k !== i)); });
+    points.forEach((p, k) => p.setAttribute('aria-current', String(k === i)));
+    collant.style.setProperty('--fete-fond-actif', getComputedStyle(fetes[i]).getPropertyValue('--fete-fond').trim());
+  };
+  if (etat.calme) { fetes.forEach((f) => f.classList.add('est-active')); return; }
+  let attente = false;
+  const course = () => Math.max(1, sec.offsetHeight - innerHeight);
+  const maj = () => {
+    attente = false;
+    const p = Math.min(1, Math.max(0, -sec.getBoundingClientRect().top / course()));
+    sec.style.setProperty('--fetes-p', p.toFixed(4));
+    activer(Math.min(fetes.length - 1, Math.floor(p * fetes.length)));
+  };
+  addEventListener('scroll', () => { if (!attente) { attente = true; requestAnimationFrame(maj); } }, { passive: true });
+  addEventListener('resize', maj);
+  maj();
+  points.forEach((b, k) => b.addEventListener('click', () => aller(sec.getBoundingClientRect().top + scrollY + course() * ((k + 0.5) / fetes.length))));
+}
 function occasions() {
   if (!gsap || !window.ScrollTrigger || etat.calme) return;
   const l = $('.occasions__liste'); if (!l) return;
@@ -1342,6 +1372,7 @@ demarrer({
     liensService();
     volets();
     occasions();
+    fetesDefile();
     demande();
     lumiereService();
     libellesReservation();

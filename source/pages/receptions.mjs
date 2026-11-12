@@ -16,6 +16,15 @@ const ESPACES = [
 const OCCASIONS = ['mariages', 'baptemes', 'anniversaires', 'depart'];
 /* v7.5 · L'ouverture fait défiler les occasions de « Ce que l'on fête ici » : le mot du titre et la photo de l'arche changent ensemble
    (mêmes photos que la section, dans le même ordre). */
+/* v7.5 · « Ce que l'on fête ici » reprend le défilement de la « journée à l'Hacienda » de la maquette de référence du client :
+   la section reste à l'écran, chaque palier de défilement amène une occasion (le nom en grand qui se resserre, la photo qui s'ouvre,
+   le fond qui change de teinte), un anneau se remplit, les noms en bas à droite mènent à chaque occasion. */
+const FETES = [
+  { cle: 'mariages', image: 'vraie/table-piscine', alt: 'receptions.altMariages', cadrage: '50% 55%', fond: '#f4ede1' },
+  { cle: 'anniversaires', image: 'vraie/gateaux', alt: 'receptions.altAnniversaires', cadrage: '50% 45%', fond: '#efdfc6' },
+  { cle: 'depart', image: 'recevoir-depart', alt: 'receptions.altDepart', cadrage: '55% 40%', fond: '#dde4d1' },
+  { cle: 'baptemes', image: 'recevoir-baptemes', alt: 'receptions.altBaptemes', cadrage: '55% 45%', fond: '#f1e0d6' },
+];
 const DIAPOS = [
   { cle: 'mariages', image: 'vraie/table-piscine', alt: 'receptions.altMariages', cadrage: '50% 55%' },
   { cle: 'anniversaires', image: 'vraie/gateaux', alt: 'receptions.altAnniversaires', cadrage: '50% 45%' },
@@ -66,15 +75,27 @@ export default (c) => {
   </div>
 </section>
 
-<section class="occasions" id="occasions" aria-labelledby="occasions-titre">
-  <div class="conteneur">
-    <h2 id="occasions-titre" data-anime="lignes">${c.t('receptions.occasionsTitre')}</h2>
-    <ul class="occasions__liste" data-effet="occasions">
-      <li>${c.media({ nom: 'vraie/table-piscine', alt: c.s('receptions.altMariages'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.mariages')}</span></li>
-      <li>${c.media({ nom: 'vraie/gateaux', alt: c.s('receptions.altAnniversaires'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.anniversaires')}</span></li>
-      <li>${c.media({ nom: 'recevoir-depart', alt: c.s('receptions.altDepart'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.depart')}</span></li>
-      <li>${c.media({ nom: 'recevoir-baptemes', alt: c.s('receptions.altBaptemes'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.baptemes')}</span></li>
-    </ul>
+<section class="fetes-defile" id="occasions" data-fetes-defile aria-labelledby="occasions-titre">
+  <div class="fetes-defile__collant">
+    <div class="fetes-defile__tete conteneur">
+      <h2 id="occasions-titre" class="fetes-defile__titre">${c.t('receptions.occasionsTitre')}</h2>
+      <svg class="fetes-defile__anneau" viewBox="0 0 100 100" aria-hidden="true"><circle class="fetes-defile__anneau-fond" cx="50" cy="50" r="42"/><circle class="fetes-defile__anneau-trace" cx="50" cy="50" r="42" pathLength="1"/>${brut([0, 1, 2, 3].map((k) => `<circle class="fetes-defile__anneau-cran" cx="${50 + 42 * Math.sin(k * Math.PI / 2)}" cy="${50 - 42 * Math.cos(k * Math.PI / 2)}" r="5"/>`).join(''))}</svg>
+    </div>
+    <ol class="fetes-defile__liste" data-effet="fetes">
+      ${FETES.map((f, i) => html`<li class="occ${i === 0 ? ' est-active' : ''}" data-occ="${f.cle}" style="--fete-fond:${f.fond}">
+        <div class="occ__cadre conteneur">
+          <h3 class="occ__mot">${c.t(`receptions.${f.cle}`)}</h3>
+          ${c.media({ nom: f.image, alt: c.s(f.alt), cadrage: f.cadrage, classe: 'occ__image', sizes: '(max-width: 860px) 70vw, 34vw' })}
+          <div class="occ__texte">
+            <p class="occ__accroche">${c.t(`receptions.fetes.${f.cle}.accroche`)}</p>
+            <p class="occ__desc">${c.t(`receptions.fetes.${f.cle}.texte`)}</p>
+            <p class="occ__info">${c.t(`receptions.fetes.${f.cle}.info`)}</p>
+            <a class="lien-fleche occ__lien" href="#demande" data-sans-transition data-occasion-choisir="${c.s(`receptions.${f.cle}`)}">${c.t(`receptions.fetes.${f.cle}.lien`)}</a>
+          </div>
+        </div>
+      </li>`)}
+    </ol>
+    <nav class="fetes-defile__points" aria-label="${c.s('receptions.fetesNav')}"><ol>${FETES.map((f, i) => html`<li><button type="button" data-fete-aller="${i}" aria-current="${i === 0 ? 'true' : 'false'}">${c.t(`receptions.${f.cle}`)}</button></li>`)}</ol></nav>
   </div>
 </section>
 

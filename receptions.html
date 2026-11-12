@@ -166,31 +166,76 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     </div>
   </div>
 </section>
-<section class="occasions" id="occasions" aria-labelledby="occasions-titre">
-  <div class="conteneur">
-    <h2 id="occasions-titre" data-anime="lignes">Ce que l&#39;on fête ici</h2>
-    <ul class="occasions__liste" data-effet="occasions">
-      <li><figure class="media occasion__photo" style="--cadrage:50% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="(max-width: 760px) 44vw, 22vw">
-    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="(max-width: 760px) 44vw, 22vw" alt="Une longue table de bois fleurie de blanc, sous la pergola, au bord de la piscine" width="960" height="1280" loading="lazy" decoding="async">
+<section class="fetes-defile" id="occasions" data-fetes-defile aria-labelledby="occasions-titre">
+  <div class="fetes-defile__collant">
+    <div class="fetes-defile__tete conteneur">
+      <h2 id="occasions-titre" class="fetes-defile__titre">Ce que l&#39;on fête ici</h2>
+      <svg class="fetes-defile__anneau" viewBox="0 0 100 100" aria-hidden="true"><circle class="fetes-defile__anneau-fond" cx="50" cy="50" r="42"/><circle class="fetes-defile__anneau-trace" cx="50" cy="50" r="42" pathLength="1"/><circle class="fetes-defile__anneau-cran" cx="50" cy="8" r="5"/><circle class="fetes-defile__anneau-cran" cx="92" cy="50" r="5"/><circle class="fetes-defile__anneau-cran" cx="50.00000000000001" cy="92" r="5"/><circle class="fetes-defile__anneau-cran" cx="8" cy="50.00000000000001" r="5"/></svg>
+    </div>
+    <ol class="fetes-defile__liste" data-effet="fetes">
+      <li class="occ est-active" data-occ="mariages" style="--fete-fond:#f4ede1">
+        <div class="occ__cadre conteneur">
+          <h3 class="occ__mot">Mariages</h3>
+          <figure class="media occ__image" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="(max-width: 860px) 70vw, 34vw">
+    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="(max-width: 860px) 70vw, 34vw" alt="Une longue table de bois fleurie de blanc, sous la pergola, au bord de la piscine" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
-</figure><span>Mariages</span></li>
-      <li><figure class="media occasion__photo" style="--cadrage:50% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="(max-width: 760px) 44vw, 22vw">
-    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="(max-width: 760px) 44vw, 22vw" alt="Une table de gâteaux et de pièces montées, entre ballons dorés et fleurs blanches" width="960" height="1280" loading="lazy" decoding="async">
+</figure>
+          <div class="occ__texte">
+            <p class="occ__accroche">La grande table sous la pergola</p>
+            <p class="occ__desc">La longue table fleurie sous les guirlandes de la pergola, au bord de la piscine et sous les palmiers ; l&#39;hiver, la salle et sa cheminée. Du vin d&#39;honneur au dessert, la cuisine de saison de Régis Clauss.</p>
+            <p class="occ__info">Terrasse et pergola de juin à septembre, la salle toute l&#39;année.</p>
+            <a class="lien-fleche occ__lien" href="#demande" data-sans-transition data-occasion-choisir="Mariages">Organiser un mariage</a>
+          </div>
+        </div>
+      </li><li class="occ" data-occ="anniversaires" style="--fete-fond:#efdfc6">
+        <div class="occ__cadre conteneur">
+          <h3 class="occ__mot">Anniversaires</h3>
+          <figure class="media occ__image" style="--cadrage:50% 45%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="(max-width: 860px) 70vw, 34vw">
+    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="(max-width: 860px) 70vw, 34vw" alt="Une table de gâteaux et de pièces montées, entre ballons dorés et fleurs blanches" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
-</figure><span>Anniversaires</span></li>
-      <li><figure class="media occasion__photo" style="--cadrage:50% 50%">
+</figure>
+          <div class="occ__texte">
+            <p class="occ__accroche">Souffler les bougies</p>
+            <p class="occ__desc">Au chaud près de la cheminée ou sur la terrasse aux beaux jours : la table dressée pour la famille et les amis, et les plats du chef, qui renouvelle sa carte chaque semaine.</p>
+            <p class="occ__info">La salle toute l&#39;année, la terrasse de juin à septembre.</p>
+            <a class="lien-fleche occ__lien" href="#demande" data-sans-transition data-occasion-choisir="Anniversaires">Organiser un anniversaire</a>
+          </div>
+        </div>
+      </li><li class="occ" data-occ="depart" style="--fete-fond:#dde4d1">
+        <div class="occ__cadre conteneur">
+          <h3 class="occ__mot">Pots de départ</h3>
+          <figure class="media occ__image" style="--cadrage:55% 40%">
   <picture>
-    <img src="/assets/images/recevoir-depart-960.webp" srcset="/assets/images/recevoir-depart-480.webp 480w, /assets/images/recevoir-depart-640.webp 640w, /assets/images/recevoir-depart-960.webp 960w" sizes="(max-width: 760px) 44vw, 22vw" alt="Des invités au cocktail dans le jardin, sous les palmiers" width="960" height="1279" loading="lazy" decoding="async">
+    <img src="/assets/images/recevoir-depart-960.webp" srcset="/assets/images/recevoir-depart-480.webp 480w, /assets/images/recevoir-depart-640.webp 640w, /assets/images/recevoir-depart-960.webp 960w" sizes="(max-width: 860px) 70vw, 34vw" alt="Des invités au cocktail dans le jardin, sous les palmiers" width="960" height="1279" loading="lazy" decoding="async">
   </picture>
-</figure><span>Pots de départ</span></li>
-      <li><figure class="media occasion__photo" style="--cadrage:50% 50%">
+</figure>
+          <div class="occ__texte">
+            <p class="occ__accroche">Le cocktail sous les palmiers</p>
+            <p class="occ__desc">Pour fêter un départ entre collègues : le cocktail au bord de l&#39;eau, entre les palmiers et les paillotes, ou au chaud dans la salle quand vient l&#39;hiver.</p>
+            <p class="occ__info">Piscine et jardins de juin à septembre.</p>
+            <a class="lien-fleche occ__lien" href="#demande" data-sans-transition data-occasion-choisir="Pots de départ">Organiser un pot de départ</a>
+          </div>
+        </div>
+      </li><li class="occ" data-occ="baptemes" style="--fete-fond:#f1e0d6">
+        <div class="occ__cadre conteneur">
+          <h3 class="occ__mot">Baptêmes</h3>
+          <figure class="media occ__image" style="--cadrage:55% 45%">
   <picture>
-    <img src="/assets/images/recevoir-baptemes-960.webp" srcset="/assets/images/recevoir-baptemes-480.webp 480w, /assets/images/recevoir-baptemes-640.webp 640w, /assets/images/recevoir-baptemes-960.webp 960w" sizes="(max-width: 760px) 44vw, 22vw" alt="Un bébé qui rit dans les bras de ses parents, au jardin" width="960" height="1280" loading="lazy" decoding="async">
+    <img src="/assets/images/recevoir-baptemes-960.webp" srcset="/assets/images/recevoir-baptemes-480.webp 480w, /assets/images/recevoir-baptemes-640.webp 640w, /assets/images/recevoir-baptemes-960.webp 960w" sizes="(max-width: 860px) 70vw, 34vw" alt="Un bébé qui rit dans les bras de ses parents, au jardin" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
-</figure><span>Baptêmes</span></li>
-    </ul>
+</figure>
+          <div class="occ__texte">
+            <p class="occ__accroche">Toute la famille à table</p>
+            <p class="occ__desc">Les baptêmes d&#39;hiver au chaud près de la cheminée, ceux d&#39;été dans les jardins : la maison dresse la table, vous profitez de la famille.</p>
+            <p class="occ__info">Capacité et menus de groupe : sur demande, au 06 18 21 28 10.</p>
+            <a class="lien-fleche occ__lien" href="#demande" data-sans-transition data-occasion-choisir="Baptêmes">Organiser un baptême</a>
+          </div>
+        </div>
+      </li>
+    </ol>
+    <nav class="fetes-defile__points" aria-label="Aller à une occasion"><ol><li><button type="button" data-fete-aller="0" aria-current="true">Mariages</button></li><li><button type="button" data-fete-aller="1" aria-current="false">Anniversaires</button></li><li><button type="button" data-fete-aller="2" aria-current="false">Pots de départ</button></li><li><button type="button" data-fete-aller="3" aria-current="false">Baptêmes</button></li></ol></nav>
   </div>
 </section>
 <section class="terrasse" id="terrasse" data-scene data-entete-cache data-grille="scene" aria-labelledby="terrasse-titre">
