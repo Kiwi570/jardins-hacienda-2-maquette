@@ -762,17 +762,45 @@ function saisonFetes() {
 /* Réceptions : le mot de l'occasion (un tour à l'arrivée, puis au toucher), les volets des espaces, la demande. */
 function motTournant() {
   const zone = $('.mot-tournant[data-mots]'); if (!zone) return;
-  const el = $('.mot-tournant__mot', zone), mots = zone.dataset.mots.split('|'); let i = 0;
-  const montrer = (k) => {
+  const el = $('.mot-tournant__mot', zone), mots = zone.dataset.mots.split('|');
+  const sec = zone.closest('section'), diapos = $$('[data-diapo]', sec), puces = $$('[data-diapo-aller]', sec), pause = $('[data-diapo-pause]', sec);
+  /* v7.5 · Le mot et la photo de l'arche défilent ensemble, sur les quatre occasions ; fil de progression, choix et pause. */
+  const DUREE = 4200;
+  let i = 0, minuteur = 0, enPause = false, visible = true;
+  sec.style.setProperty('--recep-duree', `${DUREE}ms`);
+  const montrer = (k, anime = true) => {
     i = (k + mots.length) % mots.length;
-    if (etat.calme || !gsap) { el.textContent = mots[i]; return; }
-    gsap.to(el, { yPercent: -14, opacity: 0, duration: 0.22, ease: 'power2.in', onComplete: () => { el.textContent = mots[i]; gsap.fromTo(el, { yPercent: 14, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.32, ease: 'power3.out' }); } });
+    diapos.forEach((d, n) => d.classList.toggle('est-active', n === i));
+    puces.forEach((p, n) => {
+      p.classList.toggle('est-active', n === i); p.classList.toggle('est-vue', n < i);
+      p.setAttribute('aria-pressed', n === i ? 'true' : 'false');
+      if (n === i) { const b = p.firstElementChild; b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; }
+    });
+    if (!anime || etat.calme || !gsap) { el.textContent = mots[i]; return; }
+    gsap.killTweensOf(el);
+    gsap.to(el, { yPercent: -18, opacity: 0, duration: 0.24, ease: 'power2.in', onComplete: () => { el.textContent = mots[i]; gsap.fromTo(el, { yPercent: 18, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out' }); } });
   };
-  if (etat.calme) return;
-  /* Un tour des occasions à l'arrivée (moins de 4 s, puis le mot s'arrête sur « un mariage »), puis au toucher. */
-  quand('pret', () => mots.forEach((_, k) => setTimeout(() => montrer(k + 1), 700 + 800 * k)));
+  const arreter = () => { clearTimeout(minuteur); minuteur = 0; };
+  const planifier = () => {
+    arreter();
+    const auto = !enPause && visible && !etat.calme && !document.hidden;
+    sec.dataset.defile = auto ? 'on' : 'pause';
+    if (auto) minuteur = setTimeout(() => { montrer(i + 1); planifier(); }, DUREE);
+  };
+  puces.forEach((p, n) => p.addEventListener('click', () => { montrer(n); planifier(); }));
   zone.style.cursor = 'pointer';
-  zone.addEventListener('click', () => montrer(i + 1));
+  zone.addEventListener('click', () => { montrer(i + 1); planifier(); });
+  if (pause) pause.addEventListener('click', () => {
+    enPause = !enPause;
+    pause.setAttribute('aria-pressed', enPause ? 'true' : 'false');
+    pause.setAttribute('aria-label', enPause ? pause.dataset.reprendre : pause.dataset.pause);
+    if (!enPause) montrer(i + 1);
+    planifier();
+  });
+  if (etat.calme) { sec.dataset.defile = 'pause'; return; }
+  new IntersectionObserver(([e]) => { const avant = visible; visible = e.isIntersecting; if (visible && !avant) montrer(i, false); planifier(); }, { threshold: 0.25 }).observe(sec);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) montrer(i, false); planifier(); });
+  quand('pret', () => { montrer(0, false); planifier(); });
 }
 
 /* Liens « Réserver un déjeuner / un dîner » : la date du prochain service de ce type, pour que le service choisi tienne. */

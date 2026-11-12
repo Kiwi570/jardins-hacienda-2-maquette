@@ -14,6 +14,14 @@ const ESPACES = [
   { cle: 'piscine', image: 'vraie/piscine-palmiers', cadrage: '55% 62%', saison: 'ete' },
 ];
 const OCCASIONS = ['mariages', 'baptemes', 'anniversaires', 'depart'];
+/* v7.5 · L'ouverture fait défiler les occasions de « Ce que l'on fête ici » : le mot du titre et la photo de l'arche changent ensemble
+   (mêmes photos que la section, dans le même ordre). */
+const DIAPOS = [
+  { cle: 'mariages', image: 'vraie/table-piscine', alt: 'receptions.altMariages', cadrage: '50% 55%' },
+  { cle: 'anniversaires', image: 'vraie/gateaux', alt: 'receptions.altAnniversaires', cadrage: '50% 45%' },
+  { cle: 'depart', image: 'recevoir-depart', alt: 'receptions.altDepart', cadrage: '55% 40%' },
+  { cle: 'baptemes', image: 'recevoir-baptemes', alt: 'receptions.altBaptemes', cadrage: '55% 45%' },
+];
 
 /* v7.4 · « Recevoir, le soir venu » (venue de l'accueil) : la terrasse passe de la lumière d'or à l'heure bleue puis à la nuit
    au défilement, les guirlandes s'allument une à une. Un halo posé sur chaque vraie ampoule de l'image (positions relevées
@@ -42,8 +50,14 @@ export default (c) => {
       <p class="ouv-recep__info" data-info-cle><a href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
     </div>
     <div class="ouv-recep__visuel">
-      ${c.media({ nom: 'vraie/pergola-banquet', alt: c.s('receptions.alt'), cadrage: '50% 52%', priorite: true, classe: 'ouv-recep__arche', sizes: '(max-width: 760px) 80vw, 40vw', attrs: 'data-fx="parallaxe" data-fx-force="5"' })}
-      ${c.media({ nom: 'vraie/table-piscine', alt: c.s('receptions.altMariages'), cadrage: '50% 50%', classe: 'ouv-recep__rond', sizes: '(max-width: 760px) 34vw, 16vw' })}
+      <div class="ouv-recep__arche" data-recep-diapos data-fx="parallaxe" data-fx-force="5">
+        ${DIAPOS.map((d, i) => c.media({ nom: d.image, alt: c.s(d.alt), cadrage: d.cadrage, priorite: i === 0, classe: `ouv-recep__diapo${i === 0 ? ' est-active' : ''}`, sizes: '(max-width: 760px) 80vw, 40vw', attrs: `data-diapo="${i}"` }))}
+      </div>
+      ${c.media({ nom: 'vraie/pergola-banquet', alt: c.s('receptions.altPergola'), cadrage: '50% 50%', classe: 'ouv-recep__rond', sizes: '(max-width: 760px) 34vw, 16vw' })}
+      <div class="ouv-recep__fil" role="group" aria-label="${c.s('receptions.diapoGroupe')}">
+        ${DIAPOS.map((d, i) => html`<button type="button" class="ouv-recep__puce${i === 0 ? ' est-active' : ''}" data-diapo-aller="${i}" aria-pressed="${i === 0 ? 'true' : 'false'}" aria-label="${c.s('receptions.' + d.cle)}"><span></span></button>`)}
+        <button type="button" class="ouv-recep__pause" data-diapo-pause aria-pressed="false" aria-label="${c.s('receptions.diapoPause')}" data-pause="${c.s('receptions.diapoPause')}" data-reprendre="${c.s('receptions.diapoReprendre')}"><span class="heros__pause-icone" aria-hidden="true"></span></button>
+      </div>
       <div class="sceau" aria-hidden="true">
         <svg class="sceau__texte" viewBox="0 0 200 200"><defs><path id="sceau-cercle" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sceau-cercle" textLength="470">${c.s('receptions.sceau')}</textPath></text></svg>
         <span class="sceau__logo"></span>

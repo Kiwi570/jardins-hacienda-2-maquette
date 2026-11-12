@@ -125,22 +125,40 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <div class="conteneur ouv-recep__grille">
     <div class="ouv-recep__contenu">
       <p class="surtitre">Réceptions</p>
-      <h1 class="ouv-recep__titre" data-iris-centre>Recevoir pour <span class="mot-tournant" data-grille="typo" data-effet="mot" data-mots="un mariage|un baptême|un anniversaire|un pot de départ"><span class="mot-tournant__mot">un mariage</span></span></h1>
+      <h1 class="ouv-recep__titre" data-iris-centre>Recevoir pour <span class="mot-tournant" data-grille="typo" data-effet="mot" data-mots="un mariage|un anniversaire|un pot de départ|un baptême"><span class="mot-tournant__mot">un mariage</span></span></h1>
       <p class="ouv-recep__texte">La salle et sa cheminée, la terrasse et sa pergola, la piscine et les jardins : la maison dresse la table pour vous, l&#39;hiver comme l&#39;été.</p>
       <p class="ouv-recep__actions"><a class="bouton" href="#demande" data-action-principale data-sans-transition>Demander une réception</a> <a class="bouton bouton--contour bouton--clair" href="#espaces" data-sans-transition>Voir les espaces</a></p>
       <p class="ouv-recep__info" data-info-cle><a href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
     </div>
     <div class="ouv-recep__visuel">
-      <figure class="media ouv-recep__arche" data-fx="parallaxe" data-fx-force="5" style="--cadrage:50% 52%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/pergola-banquet-mobile-640.webp 640w, /assets/images/vraie/pergola-banquet-mobile-1080.webp 1080w" sizes="(max-width: 760px) 80vw, 40vw">
-    <img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w, /assets/images/vraie/pergola-banquet-1920.webp 1920w" sizes="(max-width: 760px) 80vw, 40vw" alt="Sous la pergola, les tables d’un mariage dressées de blanc et de fleurs séchées, les guirlandes au-dessus" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async">
+      <div class="ouv-recep__arche" data-recep-diapos data-fx="parallaxe" data-fx-force="5">
+        <figure class="media ouv-recep__diapo est-active" data-diapo="0" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="(max-width: 760px) 80vw, 40vw">
+    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="(max-width: 760px) 80vw, 40vw" alt="Une longue table de bois fleurie de blanc, sous la pergola, au bord de la piscine" width="960" height="1280" fetchpriority="high" loading="eager" decoding="async">
+  </picture>
+</figure><figure class="media ouv-recep__diapo" data-diapo="1" style="--cadrage:50% 45%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="(max-width: 760px) 80vw, 40vw">
+    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="(max-width: 760px) 80vw, 40vw" alt="Une table de gâteaux et de pièces montées, entre ballons dorés et fleurs blanches" width="960" height="1280" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media ouv-recep__diapo" data-diapo="2" style="--cadrage:55% 40%">
+  <picture>
+    <img src="/assets/images/recevoir-depart-960.webp" srcset="/assets/images/recevoir-depart-480.webp 480w, /assets/images/recevoir-depart-640.webp 640w, /assets/images/recevoir-depart-960.webp 960w" sizes="(max-width: 760px) 80vw, 40vw" alt="Des invités au cocktail dans le jardin, sous les palmiers" width="960" height="1279" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media ouv-recep__diapo" data-diapo="3" style="--cadrage:55% 45%">
+  <picture>
+    <img src="/assets/images/recevoir-baptemes-960.webp" srcset="/assets/images/recevoir-baptemes-480.webp 480w, /assets/images/recevoir-baptemes-640.webp 640w, /assets/images/recevoir-baptemes-960.webp 960w" sizes="(max-width: 760px) 80vw, 40vw" alt="Un bébé qui rit dans les bras de ses parents, au jardin" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
 </figure>
+      </div>
       <figure class="media ouv-recep__rond" style="--cadrage:50% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="(max-width: 760px) 34vw, 16vw">
-    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="(max-width: 760px) 34vw, 16vw" alt="Une longue table de bois fleurie de blanc, sous la pergola, au bord de la piscine" width="960" height="1280" loading="lazy" decoding="async">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/pergola-banquet-mobile-640.webp 640w, /assets/images/vraie/pergola-banquet-mobile-1080.webp 1080w" sizes="(max-width: 760px) 34vw, 16vw">
+    <img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w, /assets/images/vraie/pergola-banquet-1920.webp 1920w" sizes="(max-width: 760px) 34vw, 16vw" alt="Sous la pergola, les tables d’un mariage dressées de blanc et de fleurs séchées, les guirlandes au-dessus" width="1280" height="853" loading="lazy" decoding="async">
   </picture>
 </figure>
+      <div class="ouv-recep__fil" role="group" aria-label="Choisir une occasion">
+        <button type="button" class="ouv-recep__puce est-active" data-diapo-aller="0" aria-pressed="true" aria-label="Mariages"><span></span></button><button type="button" class="ouv-recep__puce" data-diapo-aller="1" aria-pressed="false" aria-label="Anniversaires"><span></span></button><button type="button" class="ouv-recep__puce" data-diapo-aller="2" aria-pressed="false" aria-label="Pots de départ"><span></span></button><button type="button" class="ouv-recep__puce" data-diapo-aller="3" aria-pressed="false" aria-label="Baptêmes"><span></span></button>
+        <button type="button" class="ouv-recep__pause" data-diapo-pause aria-pressed="false" aria-label="Mettre en pause le défilement des occasions" data-pause="Mettre en pause le défilement des occasions" data-reprendre="Reprendre le défilement des occasions"><span class="heros__pause-icone" aria-hidden="true"></span></button>
+      </div>
       <div class="sceau" aria-hidden="true">
         <svg class="sceau__texte" viewBox="0 0 200 200"><defs><path id="sceau-cercle" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sceau-cercle" textLength="470">Mariages · Baptêmes · Anniversaires · Pots de départ · </textPath></text></svg>
         <span class="sceau__logo"></span>
@@ -169,7 +187,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 </figure><span>Pots de départ</span></li>
       <li><figure class="media occasion__photo" style="--cadrage:50% 50%">
   <picture>
-    <img src="/assets/images/recevoir-baptemes-640.webp" srcset="/assets/images/recevoir-baptemes-480.webp 480w, /assets/images/recevoir-baptemes-640.webp 640w" sizes="(max-width: 760px) 44vw, 22vw" alt="Un bébé qui rit dans les bras de ses parents, au jardin" width="640" height="853" loading="lazy" decoding="async">
+    <img src="/assets/images/recevoir-baptemes-960.webp" srcset="/assets/images/recevoir-baptemes-480.webp 480w, /assets/images/recevoir-baptemes-640.webp 640w, /assets/images/recevoir-baptemes-960.webp 960w" sizes="(max-width: 760px) 44vw, 22vw" alt="Un bébé qui rit dans les bras de ses parents, au jardin" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
 </figure><span>Baptêmes</span></li>
     </ul>

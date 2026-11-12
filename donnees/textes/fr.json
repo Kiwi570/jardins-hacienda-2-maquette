@@ -499,7 +499,7 @@
     "heure": "19:00",
     "sur": "Réceptions",
     "titreAvant": "Recevoir pour",
-    "mots": "un mariage|un baptême|un anniversaire|un pot de départ",
+    "mots": "un mariage|un anniversaire|un pot de départ|un baptême",
     "texte": "La salle et sa cheminée, la terrasse et sa pergola, la piscine et les jardins : la maison dresse la table pour vous, l'hiver comme l'été.",
     "action": "Demander une réception",
     "espacesLien": "Voir les espaces",
@@ -568,7 +568,11 @@
     "altBaptemes": "Un bébé qui rit dans les bras de ses parents, au jardin",
     "altTerrasseVraie": "La terrasse et la piscine sous les palmiers, en plein jour",
     "passerOuverture": "Passer l’ouverture",
-    "sceau": "Mariages · Baptêmes · Anniversaires · Pots de départ · "
+    "sceau": "Mariages · Baptêmes · Anniversaires · Pots de départ · ",
+    "diapoGroupe": "Choisir une occasion",
+    "diapoPause": "Mettre en pause le défilement des occasions",
+    "diapoReprendre": "Reprendre le défilement des occasions",
+    "altPergola": "Sous la pergola, les tables d’un mariage dressées de blanc et de fleurs séchées, les guirlandes au-dessus"
   },
   "reserver": {
     "heureMidi": "12:30",
