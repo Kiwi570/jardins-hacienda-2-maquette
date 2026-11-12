@@ -920,6 +920,41 @@ function oui() {
   album.addEventListener('close', () => { if (retour) retour.focus(); });
 }
 
+/* v7.5 · Accueil, « Carte de la semaine » : cinq paliers de défilement pendant que la carte reste à l'écran ; l'état (data-dej-etape)
+   pilote la nappe, les rubriques posées et les assiettes ; en sortie de la scène, la table se lève. */
+function carteSemaine() {
+  const sec = $('#dejeuner'), scene = sec && $('[data-dej-scene]', sec); if (!scene) return;
+  const carte = $('.dej-semaine', scene), cats = $$('[data-dej-cat]', scene), plats = $$('.dej-plat', sec);
+  const actif = () => !etat.calme && matchMedia('(min-width: 861px)').matches;
+  const SEUILS = [0.05, 0.2, 0.38, 0.56, 0.74];
+  let etape = '';
+  /* e : palier de la table (0 à 5) ; apres : la scène est passée (la table se lève, les rubriques restent posées sur la carte). */
+  const poser = (e, apres = false) => {
+    const cle = `${e}${apres ? '+' : ''}`; if (cle === etape) return; etape = cle;
+    sec.dataset.dejEtape = String(e);
+    sec.classList.toggle('est-nappe', e >= 1); sec.classList.toggle('est-dresse', apres);
+    cats.forEach((c, k) => { c.classList.toggle('est-pose', apres || e >= k + 2); c.classList.toggle('est-actif', !apres && e === k + 2); });
+    plats.forEach((p, k) => p.classList.toggle('est-pose', e >= k + 2));
+  };
+  const mesurer = () => scene.style.setProperty('--dej-carte-h', `${carte.offsetHeight}px`);
+  const haut = () => (parseFloat(getComputedStyle(html).getPropertyValue('--entete-h')) || 0) + 24;
+  const course = () => Math.max(1, scene.offsetHeight - carte.offsetHeight);
+  const maj = () => {
+    if (!actif()) { delete sec.dataset.dejEtape; sec.classList.remove('est-nappe'); cats.forEach((c) => c.classList.add('est-pose', 'est-actif')); etape = ''; return; }
+    const r = scene.getBoundingClientRect(), p = (haut() - r.top) / course();
+    if (p > 1.02) poser(0, true); else poser(p < 0 ? 0 : SEUILS.filter((s) => p >= s).length);
+  };
+  let attente = false;
+  addEventListener('scroll', () => { if (!attente) { attente = true; requestAnimationFrame(() => { attente = false; maj(); }); } }, { passive: true });
+  addEventListener('resize', () => { mesurer(); etape = ''; maj(); });
+  for (const b of $$('[data-dej-aller]', scene)) b.addEventListener('click', () => {
+    if (!actif()) return;
+    const k = +b.dataset.dejAller, y = scene.getBoundingClientRect().top + scrollY - haut() + course() * ((SEUILS[k + 1] + (SEUILS[k + 2] || 0.9)) / 2);
+    aller(y);
+  });
+  mesurer(); maj();
+}
+
 /* v7.5 · À emporter : panier (un seul état, gardé dans le navigateur s'il le permet), jour et moment de retrait selon les horaires,
    pastille flottante, envol vers la commande à l'ajout, commande simulée avec récapitulatif. */
 function emporter() {
@@ -1407,7 +1442,7 @@ function chef() {
 
 /* 12 h 30 : les cartes de la carte arrivent l'une après l'autre au défilement, leurs pointillés se tracent. */
 function rubriques() {
-  const cartes = $$('.rubrique-carte'); if (!cartes.length || !gsap || !window.ScrollTrigger || etat.calme) return;
+  const cartes = $$('.rubrique-carte:not(.dej-semaine)'); if (!cartes.length || !gsap || !window.ScrollTrigger || etat.calme) return;
   /* Le déclencheur est la colonne (jamais déplacée), décalée de la position de la carte (offsetTop ignore la translation) :
      au recalcul, la carte encore décalée de 90 px ne change pas sa position de départ. */
   const col = cartes[0].parentElement;
@@ -1574,6 +1609,7 @@ demarrer({
     domaine();
     planDomaine();
     devise();
+    carteSemaine();
     oui();
     demande();
     lumiereService();

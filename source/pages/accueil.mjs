@@ -15,6 +15,15 @@ const EXEMPLES = {
   plats: ['Suprême de pintade', 'Dhal aux trois lentilles', 'Porc et ail confit'],
   desserts: ["Crème brûlée à la vanille de l'île Maurice", 'Brioche perdue', 'Figues rôties au miel'],
 };
+/* v7.5 · « Carte de la semaine » (avant « Nos entrées ») : la carte reste à l'écran pendant cinq paliers de défilement ; une nappe
+   de lin se déroule sur l'image de droite, puis chaque rubrique arrive sur la carte pendant que son assiette se pose sur la nappe.
+   Fourchettes de prix et nombres calculés depuis donnees/carte.json. */
+const SEMAINE = [
+  { cle: 'entrees', rubrique: 'entrees', image: 'assiette-saumon', cadrage: '50% 50%', r: -6 },
+  { cle: 'plats', rubrique: 'plats', image: 'assiette-cepes', cadrage: '50% 50%', r: 5 },
+  { cle: 'partager', rubrique: 'partager', image: 'vraie/foie-gras-maison', cadrage: '55% 50%', r: 4 },
+  { cle: 'desserts', rubrique: 'desserts', image: 'assiette-turquoise', cadrage: '50% 50%', r: -4 },
+];
 /* 12 h 30 : l'assiette devant la cheminée, puis trois vraies assiettes du chef ; chacune remplace la grande et fume à son tour
    (sources de vapeur en fractions de l'image : x, y, largeur). */
 const ASSIETTES = [
@@ -90,6 +99,12 @@ const CONFETTIS = Array.from({ length: 28 }, (_, i) => {
 
 export default (c) => {
   const plats = c.donnees.carte.rubriques.flatMap((r) => r.plats);
+  const semaine = SEMAINE.map((x) => {
+    const r = c.donnees.carte.rubriques.find((y) => y.id === x.rubrique);
+    const prix = r.plats.map((p) => p.prix).filter((p) => typeof p === 'number');
+    const n = r.plats.length;
+    return { ...x, fourchette: c.s('accueil.dejeuner.semaine.fourchette', { min: Math.min(...prix), max: Math.max(...prix) }), nombre: c.s(x.cle === 'partager' ? 'accueil.dejeuner.semaine.planches' : 'accueil.dejeuner.semaine.propositions', { n }) };
+  });
   const exemples = Object.entries(EXEMPLES).map(([cle, noms]) => ({ cle, plats: noms.map((n) => plats.find((p) => p.nom.startsWith(n))).filter(Boolean) }));
   const horaires = JSON.stringify(c.donnees.horaires).replace(/<\//g, '<\\/');
   const resa = JSON.stringify(c.donnees.reservation).replace(/<\//g, '<\\/');
@@ -195,12 +210,30 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
     </div>
     <div class="dejeuner__visuel">
       ${c.media({ nom: 'vraie/plat-cheminee', alt: c.s('accueil.diner.alt'), cadrage: '50% 70%', classe: 'dejeuner__assiette fumant', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-module="plat-fumant" data-vapeur=".46 .7 .42" data-plat-scene' })}
+      <div class="dej-nappe" data-dej-nappe aria-hidden="true">
+        ${semaine.map((x, i) => html`<div class="dej-plat dej-plat--${i + 1}" style="--r:${x.r}deg">${c.media({ nom: x.image, alt: '', cadrage: x.cadrage, classe: 'dej-plat__photo', sizes: '(max-width: 760px) 40vw, 18vw' })}</div>`)}
+      </div>
       <p class="indice dejeuner__indice" aria-hidden="true"><span class="indice--souris">${c.t('accueil.diner.indice')}</span><span class="indice--doigt">${c.t('accueil.diner.indiceTactile')}</span></p>
       <div class="dejeuner__vraies" data-effet="vraies" aria-label="${c.s('accueil.dejeuner.photos')}" role="group">
         ${ASSIETTES.map((a, i) => html`<button type="button" class="vraie vraie--${i + 1}" data-plat="${a.nom}" data-vapeur="${a.vapeur}" data-cadrage="${a.cadrage}" data-alt="${c.s(`accueil.dejeuner.${a.alt}`)}" aria-pressed="${i === 0 ? 'true' : 'false'}" aria-label="${c.s(`accueil.dejeuner.${a.alt}`)}">${c.media({ nom: a.nom, alt: '', cadrage: a.cadrage, classe: 'vraie__photo', sizes: '160px' })}</button>`)}
       </div>
     </div>
     <div class="dejeuner__cartes" data-effet="rubriques">
+      <div class="dej-scene" data-dej-scene>
+        <article class="rubrique-carte dej-semaine" aria-labelledby="dej-semaine-titre">
+          <h3 id="dej-semaine-titre">${c.t('accueil.dejeuner.semaine.titre')}</h3>
+          <p class="dej-semaine__texte">${c.t('accueil.dejeuner.semaine.texte')}</p>
+          <ol class="dej-cats" data-effet="dej-semaine" aria-label="${c.s('accueil.dejeuner.semaine.categories')}">
+            ${semaine.map((x, i) => html`<li class="dej-cat" style="--i:${i}" data-dej-cat="${i}">
+              <button type="button" class="dej-cat__bouton" data-dej-aller="${i}" aria-label="${c.s('accueil.dejeuner.semaine.aller', { nom: c.s(`accueil.dejeuner.semaine.${x.cle}`) })}">
+                <span class="dej-cat__num" aria-hidden="true">0${i + 1}</span>
+                <span class="dej-cat__corps"><span class="dej-cat__nom">${c.t(`accueil.dejeuner.semaine.${x.cle}`)}</span><span class="dej-cat__detail"><span><strong>${x.fourchette}</strong> · ${x.nombre}</span></span></span>
+              </button>
+            </li>`)}
+          </ol>
+          <p class="dej-semaine__indice" aria-hidden="true">${c.t('accueil.dejeuner.semaine.indice')}</p>
+        </article>
+      </div>
       ${exemples.map((r) => html`<article class="rubrique-carte" aria-labelledby="rubrique-${r.cle}">
         <h3 id="rubrique-${r.cle}">${c.t(`accueil.dejeuner.${r.cle}`)}</h3>
         <ul class="rubrique-carte__plats">

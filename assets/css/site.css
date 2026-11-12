@@ -2422,3 +2422,53 @@ html.js:not(.calme) .oui.est-vu .oui__oui path { stroke-dashoffset: 0; }
 html.js:not(.calme) .oui__album.est-fete .oui__album-confettis span { animation: oui-confetti 1.4s cubic-bezier(.2, .7, .4, 1) var(--d) 1 forwards; }
 @keyframes oui-confetti { 0% { opacity: 0; transform: translateY(0) rotate(var(--r)) scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(-46vh) rotate(calc(var(--r) + 420deg)) scale(1); } }
 @media (max-width: 760px) { .oui__photo { width: 62vw; } .oui__album-btn--prec { left: 6px; } .oui__album-btn--suiv { right: 6px; } .oui__album-fermer { right: 6px; top: 6px; } }
+/* v7.5 · Accueil, « Carte de la semaine » : la carte reste à l'écran (cinq paliers de défilement) pendant que la table se dresse à
+   droite. Palier 1 : une nappe de lin rayée se déroule sur l'assiette fumante. Paliers 2 à 5 : chaque rubrique glisse sur la carte et
+   se pose, son assiette tombe sur la nappe ; la rubrique en cours s'éclaire et donne ses prix. En sortie, la table se lève et
+   l'assiette fumante revient. Animations réduites, téléphone ou sans JavaScript : les quatre rubriques d'un coup, sans nappe. */
+.dej-semaine h3 { margin-bottom: .25em; }
+.dej-semaine__texte { margin: 0 0 18px; color: rgba(246, 239, 226, .8); }
+.dej-cats { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.dej-cat__bouton { width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 14px; padding: 14px 18px; border: 1px solid rgba(246, 239, 226, .16); border-radius: 12px; background: rgba(246, 239, 226, .04); color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background .4s, border-color .4s, box-shadow .4s; }
+.dej-cat__bouton:hover { border-color: rgba(255, 207, 158, .45); }
+.dej-cat__bouton:focus-visible { outline: 2px solid var(--braise-claire); outline-offset: 2px; }
+.dej-cat__num { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: .9rem; font-weight: 700; color: rgba(246, 239, 226, .6); }
+.dej-cat__nom { display: block; font-family: var(--police-titres); font-weight: 600; font-size: clamp(1.3rem, 1.1rem + .6vw, 1.7rem); line-height: 1.15; color: #fbf4e6; }
+.dej-cat__detail { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .5s cubic-bezier(.2, .7, .2, 1); }
+.dej-cat__detail > span { overflow: hidden; display: block; padding-top: 4px; color: rgba(246, 239, 226, .8); }
+.dej-cat__detail strong { color: #ffcf9e; }
+.dej-semaine__indice { display: none; margin: 16px 0 0; font-size: .9rem; font-weight: 600; color: var(--or); }
+.dej-nappe { display: none; }
+@media (min-width: 861px) {
+  html.js:not(.calme) .dej-scene { height: calc(var(--dej-carte-h, 420px) + 5 * 36svh); }
+  html.js:not(.calme) .dej-semaine { position: sticky; top: calc(var(--entete-h) + 24px); }
+  html.js:not(.calme) .dej-semaine__indice { display: block; transition: opacity .4s; }
+  html.js:not(.calme) .dejeuner[data-dej-etape]:not([data-dej-etape="0"]):not([data-dej-etape="1"]) .dej-semaine__indice { opacity: 0; }
+  html.js:not(.calme) .dejeuner.est-dresse .dej-semaine__indice { opacity: 0; }
+  html.js:not(.calme) .dej-cat { min-height: 58px; border-radius: 12px; background: repeating-linear-gradient(90deg, rgba(246, 239, 226, .18) 0 8px, transparent 8px 14px) top / 100% 1.5px no-repeat, repeating-linear-gradient(90deg, rgba(246, 239, 226, .18) 0 8px, transparent 8px 14px) bottom / 100% 1.5px no-repeat, repeating-linear-gradient(0deg, rgba(246, 239, 226, .18) 0 8px, transparent 8px 14px) left / 1.5px 100% no-repeat, repeating-linear-gradient(0deg, rgba(246, 239, 226, .18) 0 8px, transparent 8px 14px) right / 1.5px 100% no-repeat; transition: background-color .4s; }
+  html.js:not(.calme) .dej-cat.est-pose { background: none; }
+  html.js:not(.calme) .dej-cat .dej-cat__bouton { opacity: 0; transform: translate(70px, -18px) rotate(4deg) scale(.94); transition: opacity .4s ease, transform .75s cubic-bezier(.3, 1.5, .5, 1), background .4s, border-color .4s, box-shadow .4s; }
+  html.js:not(.calme) .dej-cat.est-pose .dej-cat__bouton { opacity: 1; transform: none; }
+  html.js:not(.calme) .dej-cat:not(.est-actif) .dej-cat__detail { grid-template-rows: 0fr; }
+  html.js:not(.calme) .dej-cat:not(.est-actif) .dej-cat__detail > span { visibility: hidden; transition: visibility 0s linear .5s; }
+  html.js:not(.calme) .dej-cat.est-actif .dej-cat__bouton { border-color: #ffcf9e; background: rgba(246, 239, 226, .1); box-shadow: 0 18px 34px -24px rgba(0, 0, 0, .8); }
+  html.js:not(.calme) .dej-cat.est-actif .dej-cat__num { color: #ffcf9e; }
+  html.js:not(.calme) .dej-nappe { display: block; position: absolute; z-index: 4; top: 0; left: 0; width: 100%; aspect-ratio: 4 / 5; border-radius: 22px; pointer-events: none;
+    background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 60%), repeating-linear-gradient(115deg, #f4efe4 0 26px, #fbf8f1 26px 52px), #f6f1e7;
+    box-shadow: 0 34px 60px -30px rgba(0, 0, 0, .75), inset 0 0 0 1px rgba(28, 23, 18, .06);
+    clip-path: inset(0 0 100% 0 round 22px); transform: translateY(-14px); transition: clip-path .95s cubic-bezier(.65, 0, .25, 1), transform .95s cubic-bezier(.3, 1.3, .5, 1); }
+  html.js:not(.calme) .dej-nappe::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: repeating-linear-gradient(0deg, rgba(28, 23, 18, .025) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(28, 23, 18, .025) 0 1px, transparent 1px 3px); }
+  html.js:not(.calme) .dejeuner.est-nappe .dej-nappe { clip-path: inset(0 0 0 0 round 22px); transform: none; }
+  html.js:not(.calme) .dejeuner.est-nappe .dejeuner__indice { opacity: 0; transition: opacity .3s; }
+  html.js:not(.calme) .dejeuner.est-nappe .dejeuner__vraies { opacity: .25; pointer-events: none; transition: opacity .5s; }
+  .dej-plat { position: absolute; width: 50%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; border: 7px solid #fbf8f1; background: #fbf8f1;
+    box-shadow: 0 6px 10px -6px rgba(0, 0, 0, .3); opacity: 0; transform: translate(-16px, -54px) scale(1.32) rotate(calc(var(--r) - 16deg));
+    transition: opacity .3s ease, transform .75s cubic-bezier(.3, 1.35, .5, 1), box-shadow .75s ease; }
+  .dej-plat--1 { left: 5%; top: 9%; }
+  .dej-plat--2 { right: 3%; top: 6%; }
+  .dej-plat--3 { left: 6%; top: 47%; }
+  .dej-plat--4 { right: 5%; top: 50%; }
+  .dej-plat.est-pose { opacity: 1; transform: rotate(var(--r)); box-shadow: 0 26px 40px -18px rgba(0, 0, 0, .55), 0 2px 0 rgba(28, 23, 18, .06); }
+  .dej-plat__photo { margin: 0; width: 100%; height: 100%; }
+  .dej-plat__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+}

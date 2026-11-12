@@ -146,7 +146,26 @@
       "assiette4": "Une assiette du chef : saumon en rose et petites fleurs",
       "entrees": "Nos entrées",
       "plats": "Nos plats",
-      "desserts": "Nos desserts"
+      "desserts": "Nos desserts",
+      "semaine": {
+        "titre": "Carte de la semaine",
+        "texte": "Quatre façons de passer à table, renouvelées chaque semaine par le chef.",
+        "indice": "Faites défiler : la table se dresse.",
+        "categories": "Les rubriques de la carte",
+        "aller": "Voir {nom}",
+        "entrees": "Entrées",
+        "plats": "Plats",
+        "partager": "À partager",
+        "desserts": "Desserts",
+        "propositions": "{n} propositions",
+        "planches": "{n} planches pour 4 personnes",
+        "fourchette": "de {min} à {max} €",
+        "nappe": "Une nappe de lin rayée, dressée d'assiettes du chef",
+        "altEntrees": "Une entrée du chef : saumon roulé en rose et petites fleurs",
+        "altPlats": "Un plat du chef : pièce rôtie, cèpes et purée",
+        "altPartager": "Le foie gras maison sur une planche de bois",
+        "altDesserts": "Une assiette du chef sur céramique turquoise"
+      }
     },
     "apresmidi": {
       "heure": "14:30",

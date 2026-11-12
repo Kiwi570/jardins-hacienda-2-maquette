@@ -37,7 +37,8 @@
     "domaine",
     "plan-domaine",
     "devise",
-    "oui"
+    "oui",
+    "dej-semaine"
   ],
   "grille": {
     "dispenses": {}
