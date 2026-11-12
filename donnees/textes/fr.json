@@ -88,6 +88,13 @@
       "nav": "Infos pratiques",
       "partageAlt": "Horaires et accès des Jardins de l'Hacienda",
       "accroche": "Horaires, accès, contact"
+    },
+    "a-emporter": {
+      "titre": "À emporter : les incontournables des fêtes, Les Jardins de l'Hacienda",
+      "description": "Escargots à la crème d'ail, tourtes, pâté lorrain, foie gras et gravlax maison, tatakis : les spécialités des fêtes du chef Régis Clauss, à commander et à retirer au restaurant du 5 au 31 décembre.",
+      "nav": "À emporter",
+      "partageAlt": "Une assiette du chef devant la cheminée des Jardins de l'Hacienda",
+      "accroche": "Les incontournables des fêtes"
     }
   },
   "accueil": {
@@ -343,10 +350,10 @@
       "titre": "Pour les fêtes, ou pour faire plaisir",
       "sceau": "Fait maison",
       "emporterT": "Les incontournables des fêtes",
-      "emporterX": "Les spécialités de la maison, à commander auprès du restaurant :",
+      "emporterX": "Les spécialités de la maison, à commander pour les fêtes et à retirer au restaurant du 5 au 31 décembre :",
       "emporterListe": "Les incontournables des fêtes",
       "incontournables": "Escargots à la crème d'ail|Tourte aux escargots|Tourte aux grenouilles|Pâté lorrain|Foie gras de canard maison|Gravlax de saumon maison",
-      "commander": "Commander au",
+      "commander": "Commander à emporter",
       "nouvelOnglet": "(s'ouvre dans un nouvel onglet)",
       "altFoie": "Le foie gras de canard maison et sa briochette, sur une assiette du restaurant",
       "cadeauT": "La carte cadeau",
@@ -365,6 +372,24 @@
       "note": "Distances à vol d'oiseau · tracés simplifiés",
       "reserver": "Réserver",
       "itineraire": "Itinéraire"
+    },
+    "devise": {
+      "alt": "La pancarte rouge du bar, accrochée à une poutre : « Ici on aime rire, s'embrasser, faire la fête, manger, boire, vivre quoi ! »",
+      "citation": "Ici on aime rire, s'embrasser, faire la fête, manger, boire, vivre quoi !",
+      "source": "La pancarte du bar",
+      "titre": "Ce que nos clients retiennent",
+      "note": "4,5",
+      "sur": "sur 5 sur Google",
+      "avis": "plus de 1 600 avis",
+      "releve": "Note et nombre d'avis relevés sur RankEat (fiche du 1er novembre 2026).",
+      "etoiles": "4,5 étoiles sur 5",
+      "cadreT": "Le cadre",
+      "cadreHiver": "Bois blond, mur de pierre et feu de bois : l'hiver, toute la maison se resserre autour de la cheminée.",
+      "cadreEte": "Palmiers, paillotes et piscine : un air de bord de mer en Lorraine.",
+      "assietteT": "L'assiette",
+      "assietteX": "Des produits frais, des assiettes généreuses et une carte qui change chaque semaine.",
+      "accueilT": "L'accueil",
+      "accueilX": "Une équipe souriante, qui sait aussi bien servir un déjeuner qu'animer une soirée."
     }
   },
   "p404": {
@@ -599,6 +624,170 @@
         "info": "Capacité et menus de groupe : sur demande, au 06 18 21 28 10.",
         "lien": "Organiser un baptême"
       }
+    },
+    "domaineTitre": "Cinq espaces, un seul domaine",
+    "domaineInfo": "Capacités indiquées par l'établissement ; menus de groupe sur demande, au 06 18 21 28 10.",
+    "domainePrec": "Espace précédent",
+    "domaineSuiv": "Espace suivant",
+    "domaineListe": "Les espaces du domaine, à faire défiler",
+    "capacite": "Capacité",
+    "saison": "Saison",
+    "ambiance": "Ambiance",
+    "fermeHiver": "Fermé l'hiver, rouvre en juin",
+    "domaine": {
+      "bar": {
+        "nom": "Le coin bar",
+        "capacite": "Sur demande",
+        "saison": "De juin à septembre",
+        "ambiance": "Le bar-paillote : toit de paille, comptoir de bois et plantes vertes, pour l'apéritif et le cocktail.",
+        "alt": "Le bar-paillote, son toit de paille, son comptoir de bois et ses plantes vertes"
+      },
+      "reception": {
+        "nom": "La salle de réception",
+        "capacite": "Jusqu'à 220 invités, 140 en cocktail",
+        "saison": "Toute l'année",
+        "ambiance": "Grande salle de réception, piste de danse et sonorisation.",
+        "alt": "Une grande réception dressée de blanc et de fleurs, sous la pergola"
+      },
+      "restaurant": {
+        "nom": "La salle du restaurant",
+        "capacite": "Jusqu'à 100 convives assis",
+        "saison": "Toute l'année",
+        "ambiance": "Bois blond, tables de verre sur racines de teck et grandes baies vitrées.",
+        "alt": "La salle du restaurant en plein jour, ses tables de verre sur pied de bois et ses baies vitrées"
+      },
+      "terrasse": {
+        "nom": "La terrasse",
+        "capacite": "Plus de 300 m²",
+        "saison": "De juin à septembre",
+        "ambiance": "Le brasero, la grande pergola de paille et les paillotes, sous les palmiers.",
+        "alt": "Le brasero allumé devant la grande pergola de paille"
+      },
+      "piscine": {
+        "nom": "La piscine",
+        "capacite": "Sur demande",
+        "saison": "De juin à septembre",
+        "ambiance": "Le bassin sous les palmiers, les paillotes et les matelas blancs : le cocktail au bord de l'eau.",
+        "alt": "La piscine sous les palmiers, les paillotes et les matelas blancs"
+      }
+    },
+    "planTitre": "Le plan du domaine",
+    "planConsigne": "Touchez un lieu pour le découvrir.",
+    "planNote": "Plan schématique, à valider avec le restaurant.",
+    "planLieux": "Les lieux du domaine",
+    "plan": {
+      "restaurant": {
+        "nom": "La salle du restaurant",
+        "court": "Restaurant",
+        "capacite": "Jusqu'à 100 convives assis",
+        "saison": "Toute l'année",
+        "ambiance": "Bois blond, tables de verre sur racines de teck et grandes baies vitrées.",
+        "alt": "La salle du restaurant en plein jour, ses tables de verre et ses baies vitrées"
+      },
+      "salon": {
+        "nom": "Le salon",
+        "court": "Salon",
+        "capacite": "Jusqu'à 50 personnes",
+        "saison": "Toute l'année",
+        "ambiance": "Le mur de pierre, les bûches et le feu de bois, les fauteuils crème.",
+        "alt": "Le salon, son mur de pierre et ses bûches, les tables dressées"
+      },
+      "reception": {
+        "nom": "La salle de réception",
+        "court": "Salle de réception",
+        "capacite": "Jusqu'à 220 invités, 140 en cocktail",
+        "saison": "Toute l'année",
+        "ambiance": "Grande salle de réception, piste de danse et sonorisation.",
+        "alt": "Une grande réception dressée de blanc et de fleurs"
+      },
+      "terrasse": {
+        "nom": "La terrasse",
+        "court": "Terrasse",
+        "capacite": "Plus de 300 m²",
+        "saison": "De juin à septembre",
+        "ambiance": "Le brasero, la grande pergola de paille et les paillotes, sous les palmiers.",
+        "alt": "Le brasero allumé devant la grande pergola de paille"
+      },
+      "piscine": {
+        "nom": "La piscine",
+        "court": "Piscine",
+        "capacite": "Sur demande",
+        "saison": "De juin à septembre",
+        "ambiance": "Le bassin sous les palmiers, les paillotes et les matelas blancs.",
+        "alt": "La piscine sous les palmiers et les paillotes"
+      },
+      "bar": {
+        "nom": "Le coin bar",
+        "court": "Bar",
+        "capacite": "Sur demande",
+        "saison": "De juin à septembre",
+        "ambiance": "Le bar-paillote : toit de paille et comptoir de bois ; ouvert dès 15 h 30 les journées festives.",
+        "alt": "Le bar-paillote, son toit de paille et son comptoir de bois"
+      },
+      "parking": {
+        "nom": "Le parking",
+        "court": "Parking",
+        "capacite": "À confirmer",
+        "saison": "Toute l'année",
+        "ambiance": "À l'entrée du domaine, au bord de la route de Moineville.",
+        "alt": "L'enseigne des Jardins de l'Hacienda au bord de la route"
+      }
+    },
+    "oui": {
+      "sur": "Mariages aux Jardins",
+      "titreAvant": "Ils ont dit",
+      "mot": "oui",
+      "titreApres": "aux Jardins",
+      "consigne": "Faites défiler : l'album passe sur le fil. Touchez une photo pour l'ouvrir en grand.",
+      "liste": "Photos de mariages aux Jardins de l'Hacienda",
+      "ouvrir": "Ouvrir la photo : {legende}",
+      "album": "Album des mariages",
+      "fermer": "Fermer l'album",
+      "prec": "Photo précédente",
+      "suiv": "Photo suivante",
+      "compte": "{n} sur {total}",
+      "photos": {
+        "lanternes": {
+          "legende": "Le lâcher de lanternes",
+          "alt": "Des lanternes lumineuses s'envolent au-dessus de la piscine, un soir de mariage"
+        },
+        "ceremonie": {
+          "legende": "Oui, sous les palmiers",
+          "alt": "Une cérémonie en plein air sous les palmiers, les invités de dos devant une arche de rotin"
+        },
+        "danse": {
+          "legende": "La première danse",
+          "alt": "Les mariés dansent enlacés sous la paillote, les guirlandes allumées"
+        },
+        "piece-montee": {
+          "legende": "La pièce montée",
+          "alt": "Un grand gâteau blanc et des pièces montées de macarons, entre ballons dorés et fleurs blanches"
+        },
+        "table-verte": {
+          "legende": "La grande tablée",
+          "alt": "Une longue table dressée de serviettes vertes, de fleurs blanches et de bougies"
+        },
+        "nid": {
+          "legende": "Un nid pour deux",
+          "alt": "Un nid de rotin géant posé au bord de la piscine"
+        },
+        "table-piscine": {
+          "legende": "Le repas au bord de l'eau",
+          "alt": "Une longue table fleurie de blanc au bord de la piscine"
+        },
+        "salle": {
+          "legende": "La salle dressée",
+          "alt": "La salle dressée pour un repas de réception, nappes blanches et fleurs"
+        },
+        "buffet": {
+          "legende": "Le buffet",
+          "alt": "Un buffet de réception servi dans des plats en terre cuite"
+        },
+        "table-fleurie": {
+          "legende": "Fleurs et verres en cristal",
+          "alt": "Une table fleurie de roses blanches sous la pergola, la piscine derrière"
+        }
+      }
     }
   },
   "reserver": {
@@ -720,5 +909,60 @@
     "altEnseigneJour": "L'enseigne « les jardins de l'hacienda » entre deux cyprès, au bord de la route, sous le ciel bleu",
     "semaineCurseur": "Choisir une heure de la journée",
     "semaineConsigne": "Glissez le curseur : la semaine s'allume à l'heure choisie."
+  },
+  "emporter": {
+    "sur": "À emporter",
+    "titre": "Les incontournables",
+    "titre2": "des fêtes",
+    "texte": "Les spécialités du chef Régis Clauss pour vos tables de fête : choisissez vos produits, puis le jour et le moment du retrait au restaurant, du 5 au 31 décembre.",
+    "action": "Composer ma commande",
+    "info": "Retrait du 5 au 31 décembre · 6 Vathier Haye, Moineville",
+    "sceau": "Fait maison · À emporter · Fêtes de fin d'année · ",
+    "alt": "Une assiette du chef sur une table de bois, devant la cheminée allumée",
+    "produitsSur": "La carte des fêtes",
+    "produitsTitre": "Nos produits à emporter",
+    "allergenes": "Allergènes : renseignez-vous auprès du restaurant, au 06 18 21 28 10.",
+    "parKg": "le kg",
+    "ajouter": "Ajouter",
+    "ajoute": "Ajouté",
+    "ajouterA": "Ajouter {nom} à la commande",
+    "poidsDe": "Poids de {nom}",
+    "photoFoie": "Le foie gras maison du chef, ici servi au restaurant avec sa briochette.",
+    "commandeSur": "Votre commande",
+    "retraitTitre": "Le retrait",
+    "retraitTexte": "Au restaurant, 6 Vathier Haye à Moineville, pendant les horaires d'ouverture : le midi le mercredi, le jeudi, le vendredi et le dimanche, le soir le vendredi et le samedi. Heures exactes à confirmer.",
+    "jour": "Jour de retrait",
+    "mois": "décembre 2026",
+    "joursSemaine": "lun. mar. mer. jeu. ven. sam. dim.",
+    "ferme": "fermé",
+    "moment": "Moment du retrait",
+    "midi": "Midi",
+    "soir": "Soir",
+    "coordonnees": "Vos coordonnées",
+    "prenom": "Prénom",
+    "nom": "Nom",
+    "telephone": "Téléphone",
+    "email": "E-mail (facultatif)",
+    "donnees": "Vos coordonnées servent uniquement à préparer votre commande.",
+    "paiement": "Paiement au retrait : à confirmer avec le restaurant.",
+    "valider": "Valider ma commande",
+    "simule": "Commande simulée : rien n'est envoyé ni payé dans cette maquette. Sur le vrai site, le restaurant recevrait votre commande.",
+    "recap": "{produits} · {total} · retrait {retrait}.",
+    "choisirProduit": "Ajoutez au moins un produit.",
+    "choisirJour": "Choisissez un jour de retrait.",
+    "choisirMoment": "Choisissez le midi ou le soir.",
+    "aCompleter": "À compléter",
+    "panierTitre": "Ma commande",
+    "panierVide": "Votre commande est vide : ajoutez un produit.",
+    "total": "Total",
+    "moins": "Retirer un {nom}",
+    "plus": "Ajouter un {nom}",
+    "articles": "{n} article(s)",
+    "pastille": "Voir ma commande",
+    "annonce": "{nom} ajouté à la commande. Total : {total}.",
+    "retraitResume": "le {jour}, {moment}",
+    "retraitAChoisir": "Jour et moment du retrait à choisir.",
+    "altRetrait": "Le foie gras maison, prêt à partir pour les fêtes",
+    "retraitPanier": "Retrait {retrait}."
   }
 }

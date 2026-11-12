@@ -71,6 +71,23 @@ function carteVenir(c) {
 
 const dateLongue = (iso) => new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${iso.slice(0, 10)}T12:00:00Z`));
 
+/* v7.5 · « Ici on aime rire… » (référence du client, en plus vivant) : la devise de la pancarte du bar, mot à mot, les verbes
+   surlignés au feutre ; la note Google qui compte jusqu'à 4,5 et ses étoiles qui se remplissent ; trois cartes inclinées ;
+   une pluie de confettis aux couleurs de la maison quand la section arrive. */
+const DEVISE = (() => {
+  const morceaux = [['Ici on aime', 0], ['rire,', 1], ["s'embrasser,", 2], ['faire la fête,', 3], ['manger,', 1], ['boire,', 2], ['vivre quoi\u00a0!', 3]];
+  let n = 0;
+  return morceaux.map(([m, f]) => {
+    const mots = m.split(' ').map((w) => `<span class="devise__mot" style="--n:${n++}">${w.replace("'", '’')}</span>`).join(' ');
+    return f ? `<mark class="devise__feutre devise__feutre--${f}" style="--n:${n}">${mots}</mark>` : mots;
+  }).join(' ');
+})();
+const ETOILES = [0, 1, 2, 3, 4].map((i) => `<span class="devise__etoile" style="--i:${i};--rempli:${i < 4 ? 1 : 0.5}"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></span>`).join('');
+const CONFETTIS = Array.from({ length: 28 }, (_, i) => {
+  const x = (i * 37) % 100, d = (i * 53) % 17 / 10, r = (i * 71) % 360, c = ['#b8322c', '#e9cf8e', '#7f9a74', '#f2b8a0', '#c98a3c'][i % 5], f = i % 3 === 0 ? 'rond' : 'long';
+  return `<span class="devise__confetti devise__confetti--${f}" style="--x:${x}%;--d:${d}s;--r:${r}deg;--c:${c};--t:${(2.6 + ((i * 29) % 13) / 10).toFixed(1)}s"></span>`;
+}).join('');
+
 export default (c) => {
   const plats = c.donnees.carte.rubriques.flatMap((r) => r.plats);
   const exemples = Object.entries(EXEMPLES).map(([cle, noms]) => ({ cle, plats: noms.map((n) => plats.find((p) => p.nom.startsWith(n))).filter(Boolean) }));
@@ -327,6 +344,36 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
   </div>
 </section>
 
+<section class="devise" id="devise" data-heure="21:30" data-lumiere="moment" data-devise aria-labelledby="devise-titre">
+  <div class="devise__confettis" aria-hidden="true" data-superpose>${brut(CONFETTIS)}</div>
+  <div class="conteneur devise__grille">
+    <div class="devise__visuel">
+      <span class="devise__scotch devise__scotch--g" aria-hidden="true"></span><span class="devise__scotch devise__scotch--d" aria-hidden="true"></span>
+      ${c.media({ nom: 'vraie/pancarte-bar', alt: c.s('accueil.devise.alt'), cadrage: '42% 50%', classe: 'devise__photo', sizes: '(max-width: 860px) 92vw, 44vw' })}
+    </div>
+    <div class="devise__texte">
+      <figure class="devise__citation">
+        <blockquote><p data-devise-mots>${brut(DEVISE)}</p></blockquote>
+        <figcaption><svg class="devise__fleche" viewBox="0 0 60 30" aria-hidden="true"><path d="M58 6 C40 2 22 8 8 22" pathLength="1"/><path d="M8 22 L10 10 M8 22 L19 21" pathLength="1"/></svg>${c.t('accueil.devise.source')}</figcaption>
+      </figure>
+      <h2 id="devise-titre" class="devise__titre">${c.t('accueil.devise.titre')}</h2>
+      <div class="devise__note">
+        <p class="devise__chiffre" data-devise-chiffre="4.5">${c.t('accueil.devise.note')}</p>
+        <div>
+          <p class="devise__etoiles" role="img" aria-label="${c.s('accueil.devise.etoiles')}">${brut(ETOILES)}</p>
+          <p class="devise__sur">${c.t('accueil.devise.sur')}, <strong>${c.t('accueil.devise.avis')}</strong></p>
+        </div>
+      </div>
+      <ul class="devise__themes" data-effet="devise">
+        <li style="--r:-1.6deg"><svg class="devise__icone" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 34c-7 0-11-5-11-10 0-6 6-9 6-15 3 3 4 6 4 9 2-2 3-4 3-7 5 4 9 8 9 13 0 6-4 10-11 10z"/></svg><h3>${c.t('accueil.devise.cadreT')}</h3><p><span data-saison-seul="hiver">${c.t('accueil.devise.cadreHiver')}</span><span data-saison-seul="ete">${c.t('accueil.devise.cadreEte')}</span></p></li>
+        <li style="--r:1.2deg"><svg class="devise__icone" viewBox="0 0 40 40" aria-hidden="true"><circle cx="21" cy="21" r="12"/><circle cx="21" cy="21" r="7"/><path d="M5 8v10M3 8v5c0 2 1 3 2 3s2-1 2-3V8M5 18v15"/></svg><h3>${c.t('accueil.devise.assietteT')}</h3><p>${c.t('accueil.devise.assietteX')}</p></li>
+        <li style="--r:-.9deg"><svg class="devise__icone" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14"/><path d="M13 23c2 4 12 4 14 0"/><path d="M15 16h.01M25 16h.01"/></svg><h3>${c.t('accueil.devise.accueilT')}</h3><p>${c.t('accueil.devise.accueilX')}</p></li>
+      </ul>
+      <p class="devise__releve">${c.t('accueil.devise.releve')}</p>
+    </div>
+  </div>
+</section>
+
 <section class="offrir-emporter" id="offrir-emporter" data-heure="22:00" data-lumiere="moment" aria-labelledby="oe-titre">
   <div class="conteneur">
     <p class="surtitre">${c.t('accueil.oe.surtitre')}</p>
@@ -342,7 +389,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
         <ul class="oe-carte__liste" aria-label="${c.s('accueil.oe.emporterListe')}">
           ${c.s('accueil.oe.incontournables').split('|').map((x) => html`<li>${x}</li>`)}
         </ul>
-        <p class="oe-carte__actions"><a class="bouton" href="tel:${c.site.contact.telephoneLien}">${c.t('accueil.oe.commander')} ${c.site.contact.telephone}</a></p>
+        <p class="oe-carte__actions">${c.lien('a-emporter', { classe: 'bouton', texte: c.t('accueil.oe.commander') })}</p>
       </article>
       <article class="oe-carte">
         <div class="oe-carte__visuel oe-carte__visuel--cadeau" data-carte-luxe>

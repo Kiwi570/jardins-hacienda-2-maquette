@@ -6,6 +6,7 @@
     "/les-fetes",
     "/receptions",
     "/reserver",
+    "/a-emporter",
     "/offrir",
     "/infos-pratiques"
   ],
@@ -21,7 +22,6 @@
     "moment",
     "saison",
     "mot",
-    "volets",
     "fetes",
     "invitation",
     "service",
@@ -32,7 +32,12 @@
     "rubriques",
     "lieu",
     "noel",
-    "semaine"
+    "semaine",
+    "emporter",
+    "domaine",
+    "plan-domaine",
+    "devise",
+    "oui"
   ],
   "grille": {
     "dispenses": {}

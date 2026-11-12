@@ -824,6 +824,203 @@ function volets() {
   if (etat.calme || !window.ScrollTrigger) return;
   window.ScrollTrigger.create({ trigger: zone, start: 'top 70%', end: 'bottom 40%', onUpdate: (st) => { if (touche) return; const o = ordre(); ouvrir(o[Math.min(o.length - 1, Math.floor(st.progress * o.length))]); } });
 }
+/* v7.5 · Réceptions, « Cinq espaces, un seul domaine » : flèches carte par carte, glisser à la souris, molette verticale qui fait
+   défiler la rangée tant qu'elle n'est pas au bout, fil de progression, cartes qui arrivent en cascade. */
+function domaine() {
+  const sec = $('.domaine'), l = sec && $('[data-domaine]', sec); if (!l) return;
+  const prec = $('[data-domaine-prec]', sec), suiv = $('[data-domaine-suiv]', sec), fil = $('[data-domaine-fil]', sec);
+  const pas = () => { const c = l.querySelector('.domaine__carte'); return c ? c.getBoundingClientRect().width + parseFloat(getComputedStyle(l).columnGap || 0) : l.clientWidth * 0.8; };
+  const maj = () => {
+    const max = l.scrollWidth - l.clientWidth;
+    prec.disabled = l.scrollLeft <= 2; suiv.disabled = l.scrollLeft >= max - 2;
+    fil.parentElement.style.setProperty('--domaine-vu', String(Math.min(1, (l.clientWidth + l.scrollLeft) / l.scrollWidth)));
+  };
+  const comportement = () => (etat.calme ? 'auto' : 'smooth');
+  prec.addEventListener('click', () => l.scrollBy({ left: -pas(), behavior: comportement() }));
+  suiv.addEventListener('click', () => l.scrollBy({ left: pas(), behavior: comportement() }));
+  l.addEventListener('scroll', () => requestAnimationFrame(maj), { passive: true });
+  addEventListener('resize', maj);
+  l.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); suiv.click(); } if (e.key === 'ArrowLeft') { e.preventDefault(); prec.click(); } });
+  /* Glisser à la souris (le tactile défile déjà tout seul). */
+  let x0 = 0, s0 = 0, saisi = false, bouge = false;
+  l.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse' || e.button !== 0) return; saisi = true; bouge = false; x0 = e.clientX; s0 = l.scrollLeft; });
+  addEventListener('pointermove', (e) => { if (!saisi) return; const dx = e.clientX - x0; if (Math.abs(dx) > 4) { bouge = true; l.classList.add('est-saisi'); } if (bouge) l.scrollLeft = s0 - dx; });
+  addEventListener('pointerup', () => { if (!saisi) return; saisi = false; l.classList.remove('est-saisi'); if (bouge) { const p = pas(); l.scrollTo({ left: Math.round(l.scrollLeft / p) * p, behavior: comportement() }); } });
+  l.addEventListener('click', (e) => { if (bouge) { e.preventDefault(); e.stopPropagation(); bouge = false; } }, true);
+  l.addEventListener('dragstart', (e) => e.preventDefault());
+  new IntersectionObserver(([e], o) => { if (e.isIntersecting) { sec.classList.add('est-vu'); o.disconnect(); } }, { threshold: 0.2 }).observe(sec);
+  maj();
+}
+
+/* v7.5 · Réceptions, « Le plan du domaine » : un point touché montre la fiche du lieu (une seule fiche visible). */
+function planDomaine() {
+  const z = $('[data-plan-domaine]'); if (!z) return;
+  const points = $$('[data-plan-point]', z), fiches = $$('[data-plan-fiche]', z);
+  const montrer = (cle) => {
+    points.forEach((p) => p.setAttribute('aria-pressed', String(p.dataset.planPoint === cle)));
+    fiches.forEach((f) => { const ok = f.dataset.planFiche === cle; f.hidden = !ok; f.classList.toggle('est-active', ok); });
+  };
+  points.forEach((p) => p.addEventListener('click', () => montrer(p.dataset.planPoint)));
+}
+
+/* v7.5 · Accueil, « Ici on aime rire… » : la section s'anime une fois à son arrivée ; la note compte de 0 à 4,5. */
+function devise() {
+  const sec = $('[data-devise]'); if (!sec) return;
+  const chiffre = $('[data-devise-chiffre]', sec), cible = +chiffre.dataset.deviseChiffre, texte = chiffre.textContent;
+  if (etat.calme) { sec.classList.add('est-vu'); return; }
+  new IntersectionObserver(([e], o) => {
+    if (!e.isIntersecting) return;
+    o.disconnect(); sec.classList.add('est-vu');
+    const t0 = performance.now(), duree = 1300;
+    const pas = (t) => { const k = Math.min(1, (t - t0) / duree), v = cible * (1 - Math.pow(1 - k, 3)); chiffre.textContent = k < 1 ? v.toFixed(1).replace('.', ',') : texte; if (k < 1) requestAnimationFrame(pas); };
+    requestAnimationFrame(pas);
+  }, { threshold: 0.3 }).observe(sec);
+}
+
+/* v7.5 · Réceptions, « Ils ont dit oui » : le fil défile au défilement (section collée à l'écran), les photos se balancent avec la
+   vitesse ; l'album s'ouvre sur la photo touchée (flèches, clavier, Échap), avec une pluie de confettis à chaque ouverture. */
+function oui() {
+  const sec = $('[data-oui]'); if (!sec) return;
+  const piste = $('[data-oui-piste]', sec), progres = $('[data-oui-progres]', sec), album = $('[data-oui-album]', sec);
+  let photos = [], T = {}; try { photos = JSON.parse($('[data-oui-donnees]', sec).textContent); T = JSON.parse($('[data-oui-textes]', sec).textContent); } catch {}
+  new IntersectionObserver(([e], o) => { if (e.isIntersecting) { sec.classList.add('est-vu'); o.disconnect(); } }, { threshold: 0.25 }).observe(sec);
+  /* Le fil qui défile. */
+  if (!gsap || !window.ScrollTrigger || etat.calme) sec.classList.add('oui--libre');
+  else {
+    const distance = () => Math.max(0, piste.scrollWidth - document.documentElement.clientWidth);
+    const hauteur = () => { sec.style.height = `calc(100svh + ${Math.round(distance() * 1.1)}px)`; };
+    hauteur();
+    window.ScrollTrigger.addEventListener('refreshInit', hauteur);
+    let calme = 0;
+    gsap.to(piste, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.6, invalidateOnRefresh: true,
+      onUpdate: (st) => {
+        progres.style.setProperty('--p', (0.1 + 0.9 * st.progress).toFixed(3));
+        const v = Math.max(-1, Math.min(1, st.getVelocity() / 2400));
+        piste.style.setProperty('--vent', `${(v * 7).toFixed(2)}deg`);
+        clearTimeout(calme); calme = setTimeout(() => piste.style.setProperty('--vent', '0deg'), 140);
+      } } });
+  }
+  /* L'album. */
+  if (!album || !album.showModal || !photos.length) return;
+  const img = $('[data-oui-img]', album), leg = $('[data-oui-legende]', album), compte = $('[data-oui-compte]', album);
+  let i = 0;
+  const montrer = (k) => {
+    i = (k + photos.length) % photos.length;
+    img.src = photos[i].src; img.alt = photos[i].alt; leg.textContent = photos[i].legende;
+    compte.textContent = (T.compte || '{n} / {total}').replace('{n}', i + 1).replace('{total}', photos.length);
+  };
+  const fete = () => { album.classList.remove('est-fete'); void album.offsetWidth; album.classList.add('est-fete'); };
+  let retour = null;
+  for (const b of $$('[data-oui-ouvrir]', sec)) b.addEventListener('click', () => { retour = b; montrer(+b.dataset.ouiOuvrir); album.showModal(); fete(); });
+  $('[data-oui-prec]', album).addEventListener('click', () => montrer(i - 1));
+  $('[data-oui-suiv]', album).addEventListener('click', () => montrer(i + 1));
+  $('[data-oui-fermer]', album).addEventListener('click', () => album.close());
+  album.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') montrer(i + 1); if (e.key === 'ArrowLeft') montrer(i - 1); });
+  album.addEventListener('click', (e) => { if (e.target === album) album.close(); });
+  album.addEventListener('close', () => { if (retour) retour.focus(); });
+}
+
+/* v7.5 · À emporter : panier (un seul état, gardé dans le navigateur s'il le permet), jour et moment de retrait selon les horaires,
+   pastille flottante, envol vers la commande à l'ajout, commande simulée avec récapitulatif. */
+function emporter() {
+  const src = $('[data-emp-textes]'); if (!src) return;
+  let T; try { T = JSON.parse(src.textContent); } catch { return; }
+  const CLE = 'hacienda-emporter';
+  const form = $('[data-emp-form]'), lignesEl = $('[data-panier-lignes]'), vide = $('[data-panier-vide]'), totalEl = $('[data-panier-total]'), retraitEl = $('[data-panier-retrait]');
+  const pastille = $('[data-emp-pastille]'), nbEl = $('[data-pastille-nombre]'), ptEl = $('[data-pastille-total]'), annonce = $('[data-emp-annonce]'), merci = $('[data-emp-merci]');
+  const euros = (n) => `${(Math.round(n * 100) / 100).toLocaleString('fr-FR', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })} €`;
+  const fmt = (t, v) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? '');
+  let lignes = [];
+  try { lignes = JSON.parse(localStorage.getItem(CLE) || '[]').filter((l) => T.produits[l.id] && l.qte > 0); } catch { lignes = []; }
+  const garder = () => { try { localStorage.setItem(CLE, JSON.stringify(lignes)); } catch {} };
+  const prixLigne = (l) => T.produits[l.id].prix * (l.poids || 1) * l.qte;
+  const nomLigne = (l) => T.produits[l.id].nom + (l.poids ? ` · ${String(l.poids).replace('.', ',')} kg` : '');
+  const total = () => lignes.reduce((s, l) => s + prixLigne(l), 0);
+  const nombre = () => lignes.reduce((s, l) => s + l.qte, 0);
+  let commandeVue = false;
+  const rendre = () => {
+    lignesEl.replaceChildren(...lignes.map((l, k) => {
+      const li = document.createElement('li'); li.className = 'emp-ligne';
+      const nom = nomLigne(l);
+      li.innerHTML = `<span class="emp-ligne__nom"></span><span class="emp-ligne__qte"><button type="button" data-moins></button><span></span><button type="button" data-plus></button></span><span class="emp-ligne__prix"></span>`;
+      li.querySelector('.emp-ligne__nom').textContent = nom;
+      const [m, p] = li.querySelectorAll('button');
+      m.textContent = '−'; p.textContent = '+';
+      m.setAttribute('aria-label', fmt(T.moins, { nom })); p.setAttribute('aria-label', fmt(T.plus, { nom }));
+      li.querySelector('.emp-ligne__qte span').textContent = l.qte;
+      li.querySelector('.emp-ligne__prix').textContent = euros(prixLigne(l));
+      m.addEventListener('click', () => { l.qte--; if (l.qte <= 0) lignes.splice(k, 1); garder(); rendre(); });
+      p.addEventListener('click', () => { l.qte++; garder(); rendre(); });
+      return li;
+    }));
+    vide.hidden = lignes.length > 0;
+    totalEl.textContent = euros(total());
+    nbEl.textContent = nombre(); ptEl.textContent = euros(total());
+    pastille.hidden = !lignes.length || commandeVue;
+  };
+  const toucher = () => { if (etat.calme) return; pastille.classList.remove('est-touchee'); void pastille.offsetWidth; pastille.classList.add('est-touchee'); setTimeout(() => pastille.classList.remove('est-touchee'), 320); };
+  const envol = (depuis) => {
+    if (etat.calme || !depuis.animate) return toucher();
+    const vers = (!pastille.hidden && pastille.getBoundingClientRect().width) ? pastille : $('.emp-panier__titre');
+    const a = depuis.getBoundingClientRect(), b = vers.getBoundingClientRect();
+    const x0 = a.left + a.width / 2, y0 = a.top + a.height / 2, x1 = b.left + 26, y1 = b.top + b.height / 2;
+    const v = document.createElement('span'); v.className = 'emp-vol'; v.setAttribute('aria-hidden', 'true'); document.body.append(v);
+    const mx = (x0 + x1) / 2, my = Math.min(y0, y1) - 140;
+    v.animate([{ transform: `translate(${x0}px, ${y0}px) scale(1)` }, { transform: `translate(${mx}px, ${my}px) scale(1.25)`, offset: 0.5 }, { transform: `translate(${x1}px, ${y1}px) scale(.5)`, opacity: 0.6 }], { duration: 720, easing: 'cubic-bezier(.4, 0, .2, 1)' }).finished.then(() => { v.remove(); toucher(); }, () => v.remove());
+  };
+  for (const b of $$('[data-ajouter]')) b.addEventListener('click', () => {
+    const id = b.dataset.ajouter, carte = b.closest('[data-produit]');
+    const poids = T.produits[id].unite === 'kg' ? +($('[data-poids]', carte)?.value || 1) : 0;
+    const l = lignes.find((x) => x.id === id && (x.poids || 0) === poids);
+    if (l) l.qte++; else lignes.push(poids ? { id, poids, qte: 1 } : { id, qte: 1 });
+    garder(); rendre(); envol(b);
+    const txt = $('[data-ajouter-texte]', b); b.classList.add('est-ajoute'); txt.textContent = T.ajoute;
+    clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('est-ajoute'); txt.textContent = T.ajouter; }, 1400);
+    annonce.textContent = fmt(T.annonce, { nom: nomLigne({ id, poids }), total: euros(total()) });
+    $('[data-erreur="panier"]', form).hidden = true;
+  });
+  addEventListener('storage', (e) => { if (e.key !== CLE) return; try { lignes = JSON.parse(e.newValue || '[]'); } catch { lignes = []; } rendre(); });
+  new IntersectionObserver(([e]) => { commandeVue = e.isIntersecting; rendre(); }, { threshold: 0.12 }).observe($('#commande'));
+  /* Jour et moment : jours passés grisés à la date réelle, midi ou soir selon les horaires du jour choisi. */
+  const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date());
+  const jours = $$('[name="jour"]', form), moments = $$('[name="moment"]', form);
+  for (const j of jours) if (j.value < auj) { j.disabled = true; j.closest('label').classList.add('est-passe'); }
+  const retrait = () => {
+    const j = $('[name="jour"]:checked', form), m = $('[name="moment"]:checked', form);
+    retraitEl.textContent = j && m ? fmt(T.retraitPanier, { retrait: fmt(T.retrait, { jour: j.dataset.libelle, moment: T[m.value] }) }) : T.retraitAChoisir;
+  };
+  form.addEventListener('change', (e) => {
+    if (e.target.name === 'jour') {
+      const j = e.target;
+      for (const m of moments) { m.disabled = j.dataset[m.value] !== '1'; if (m.disabled) m.checked = false; }
+      const ouverts = moments.filter((m) => !m.disabled); if (ouverts.length === 1) ouverts[0].checked = true;
+      $('[data-erreur="jour"]', form).hidden = true;
+    }
+    if (e.target.name === 'moment') $('[data-erreur="moment"]', form).hidden = true;
+    retrait();
+  });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const manques = [];
+    const err = (n, ok) => { $(`[data-erreur="${n}"]`, form).hidden = ok; if (!ok) manques.push(n); };
+    err('panier', lignes.length > 0); err('jour', !!$('[name="jour"]:checked', form)); err('moment', !!$('[name="moment"]:checked', form));
+    let premierChamp = null;
+    for (const i of $$('input[required]', form)) { const ok = !!i.value.trim(); i.setAttribute('aria-invalid', ok ? 'false' : 'true'); if (!ok && !premierChamp) premierChamp = i; }
+    if (manques.length || premierChamp) {
+      const cible = manques.includes('panier') ? $('#produits') : manques.length ? $(`[data-erreur="${manques[0]}"]`, form) : premierChamp;
+      if (cible === premierChamp) premierChamp.focus(); else amenerDansEcran(cible, true);
+      return;
+    }
+    const j = $('[name="jour"]:checked', form), m = $('[name="moment"]:checked', form);
+    const produits = lignes.map((l) => `${l.qte} × ${nomLigne(l)}`).join(', ');
+    merci.innerHTML = '<p><strong></strong></p><p></p>';
+    merci.querySelector('strong').textContent = fmt(T.recap, { produits, total: euros(total()), retrait: fmt(T.retrait, { jour: j.dataset.libelle, moment: T[m.value] }) });
+    merci.querySelector('p + p').textContent = T.simule;
+    merci.hidden = false; merci.focus();
+  });
+  rendre(); retrait();
+}
+
 /* v7.5 · Réceptions, « Ce que l'on fête ici » : le défilement par paliers de la maquette de référence (une occasion par palier). */
 function fetesDefile() {
   const sec = $('[data-fetes-defile]'); if (!sec) return;
@@ -1373,6 +1570,11 @@ demarrer({
     volets();
     occasions();
     fetesDefile();
+    emporter();
+    domaine();
+    planDomaine();
+    devise();
+    oui();
     demande();
     lumiereService();
     libellesReservation();

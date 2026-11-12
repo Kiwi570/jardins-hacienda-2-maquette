@@ -3,9 +3,22 @@
   "adresse": "https://jardins-hacienda-2-maquette.vercel.app",
   "siteActuel": "lesjardinsdelhacienda54.com",
   "version": 7,
-  "langues": ["fr"],
-  "navigation": ["accueil", "la-carte", "receptions", "les-fetes", "offrir", "infos-pratiques"],
-  "actionEntete": { "page": "reserver", "ancre": "formulaire" },
+  "langues": [
+    "fr"
+  ],
+  "navigation": [
+    "accueil",
+    "la-carte",
+    "receptions",
+    "les-fetes",
+    "a-emporter",
+    "offrir",
+    "infos-pratiques"
+  ],
+  "actionEntete": {
+    "page": "reserver",
+    "ancre": "formulaire"
+  },
   "couleurs": {
     "fond": "#f6f1e7",
     "texte": "#1c1712",

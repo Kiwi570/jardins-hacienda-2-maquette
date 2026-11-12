@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="fr" data-v="7" data-page="a-emporter" data-theme="jour" style="--voile-page:#f6f1e7">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>À emporter : les incontournables des fêtes, Les Jardins de l&#39;Hacienda</title>
+<meta name="description" content="Escargots à la crème d&#39;ail, tourtes, pâté lorrain, foie gras et gravlax maison, tatakis : les spécialités des fêtes du chef Régis Clauss, à commander et à retirer au restaurant du 5 au 31 décembre.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://jardins-hacienda-2-maquette.vercel.app/a-emporter">
+<style>:root{--fond:#f6f1e7;--texte:#1c1712;--voile-fond:#1a0f0b;--ouverture-fond:#f6f1e7;--menu-fond:#16100c}:root { --entete-h: 72px; --barres-h: 0px; } html { background: var(--fond); color: var(--texte); scrollbar-gutter: stable; } body { margin: 0; background: var(--fond); } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime] { opacity: 0; } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime].vu { opacity: 1; } [data-voile] { position: fixed; inset: 0; z-index: 900; background: var(--voile-fond); background: radial-gradient(75% 68% at 50% 46%, #fcf6eb 0%, #f2e9da 48%, #e3d4bc 100%); transform: translateY(100%); visibility: hidden; pointer-events: none; } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) [data-voile] { transform: none; visibility: visible; } html.calme [data-voile], html.secours [data-voile] { visibility: hidden !important; } .ouverture-panneau { position: fixed; inset: 0; z-index: 850; display: none; place-content: center; justify-items: center; background: var(--ouverture-fond, var(--voile-fond)); color: var(--fond); text-align: center; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) .ouverture-panneau { display: grid; } html.defilement-bloque, html.defilement-bloque body, html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie), html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) body, html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours), html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { overflow: hidden; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); } .ouverture-objet { margin: 0 0 6px; } .ouverture-logo { display: block; width: clamp(88px, 12vw, 132px); aspect-ratio: 480 / 448; background: currentColor; -webkit-mask: url(/assets/images/logo-480.webp) center / contain no-repeat; mask: url(/assets/images/logo-480.webp) center / contain no-repeat; } .voile-heure, .horloge, .menu-heure { display: none !important; } .ouverture-panneau { gap: 10px; color: var(--ouverture-texte, #1c1712); } .ouverture-heure { margin: 0; display: flex; align-items: flex-start; font-family: 'Manrope', 'Manrope Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(5rem, min(22vw, 30vh), 15rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } .ouverture-rouleau { display: block; height: 1em; overflow: hidden; } .ouverture-rouleau > span { display: block; height: 1em; } .ouverture-sep { display: block; padding-inline: .02em; } .ouverture-nom { margin: 0; font-family: 'Fraunces', 'Fraunces Fallback', Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.1; } .ouverture-ligne { margin: 0; font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; opacity: .72; } .voile-contenu { display: grid; justify-items: center; gap: 10px; color: #1c1712; } .voile-logo { display: block; width: clamp(64px, 8vw, 96px); aspect-ratio: 480 / 448; background: #b8322c; -webkit-mask: url(/assets/images/logo-480.webp) center / contain no-repeat; mask: url(/assets/images/logo-480.webp) center / contain no-repeat; } .voile-trait { display: block; width: 120px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, #c99d52, transparent); } html.voile-depart:not(.calme) .voile-logo { animation: voile-logo .55s cubic-bezier(.2, .8, .2, 1) .12s both; } html.voile-depart:not(.calme) [data-voile-libelle] { animation: voile-mot .5s cubic-bezier(.2, .8, .2, 1) .2s both; } html.voile-depart:not(.calme) .voile-trait { animation: voile-trait .6s cubic-bezier(.2, .8, .2, 1) .26s both; } @keyframes voile-logo { from { opacity: 0; transform: scale(.82) rotate(-8deg); } } @keyframes voile-mot { from { opacity: 0; transform: translateY(12px); } } @keyframes voile-trait { from { transform: scaleX(0); } } .voile-heure { margin: 0; font-family: 'Manrope', 'Manrope Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(4rem, 16vw, 11rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } html:not([data-moment="soir"]) [data-moment-seul="soir"], html[data-moment="soir"] [data-moment-seul="jour"] { display: none !important; } html:not([data-saison="ete"]) [data-saison-seul="ete"], html[data-saison="ete"] [data-saison-seul="hiver"] { display: none !important; }</style>
+<script>(function () {
+var d = document.documentElement, ss = null, ls = null;
+try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
+d.classList.add('js');
+var calme = false;
+try { calme = !!ls && ls.getItem('socle:calme') === 'oui'; } catch (e) {}
+if (!calme && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) calme = true;
+if (calme) d.classList.add('calme');
+var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+var type = nav ? nav.type : 'navigate';
+var depart = null;
+try { depart = JSON.parse(ss.getItem('socle:depart') || 'null'); ss.removeItem('socle:depart'); } catch (e) {}
+if (depart && !(Date.now() - depart.t < 15000)) depart = null;
+var retourSection = false;
+try { retourSection = !!ss.getItem('socle:calme-retour'); } catch (e) {}
+var mode = type === 'back_forward' || retourSection ? 'retour' : type === 'reload' ? 'intro' : depart ? 'voile' : 'intro';
+d.setAttribute('data-arrivee', mode);
+if (mode === 'voile' && depart.couleur) d.style.setProperty('--voile-fond', depart.couleur);
+if (mode === 'voile' && depart.avant) d.style.setProperty('--voile-avant', depart.avant);
+if (type === 'reload' && 'scrollRestoration' in history) {
+if (!retourSection) history.scrollRestoration = 'manual';
+}
+try {
+var choisie = ls && ls.getItem('socle:langue');
+var langue = (d.lang || '').slice(0, 2);
+if (choisie && choisie !== langue && type === 'navigate' && !depart) {
+var alt = document.querySelector('link[rel="alternate"][hreflang="' + choisie + '"]');
+if (alt) location.replace(new URL(alt.href).pathname + location.search + location.hash);
+}
+} catch (e) {}
+setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('secours'); }, 2000);
+})();</script>
+<script>(function(){try{var d=document.documentElement,p={};new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit',month:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});var h=+p.hour,m=+p.month;var mo=h>=5&&h<17?'jour':'soir';try{var q=new URLSearchParams(location.search).get('moment');if(q==='jour'||q==='soir')mo=q;}catch(e){}d.setAttribute('data-moment',mo);if(d.hasAttribute('data-theme-auto')){d.setAttribute('data-theme',mo==='soir'?'nuit':'jour');if(mo==='soir'){d.style.setProperty('--ouverture-fond','#120c09');d.style.setProperty('--ouverture-texte','#f6efe2');}}var sa=m>=5&&m<=9?'ete':'hiver';try{var qs=new URLSearchParams(location.search).get('saison');if(qs==='ete'||qs==='hiver')sa=qs;}catch(e){}d.setAttribute('data-saison',sa);d.style.setProperty('--heure-reelle',"'"+p.hour+':'+p.minute+"'");}catch(e){}})();</script>
+<link rel="preload" href="/assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/socle.css?v=7">
+<link rel="stylesheet" href="/assets/css/site.css?v=7">
+<link rel="modulepreload" href="/assets/js/site.js?v=7">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=7">
+<script src="/assets/vendor/gsap.min.js" defer></script>
+<script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/assets/vendor/SplitText.min.js" defer></script>
+<script type="module" src="/assets/js/site.js?v=7"></script>
+<meta name="theme-color" content="#f6f1e7">
+<link rel="icon" href="/assets/images/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Les Jardins de l&#39;Hacienda">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="À emporter : les incontournables des fêtes, Les Jardins de l&#39;Hacienda">
+<meta property="og:description" content="Escargots à la crème d&#39;ail, tourtes, pâté lorrain, foie gras et gravlax maison, tatakis : les spécialités des fêtes du chef Régis Clauss, à commander et à retirer au restaurant du 5 au 31 décembre.">
+<meta property="og:url" content="https://jardins-hacienda-2-maquette.vercel.app/a-emporter">
+<meta property="og:image" content="https://jardins-hacienda-2-maquette.vercel.app/assets/partage/a-emporter-fr.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Une assiette du chef devant la cheminée des Jardins de l&#39;Hacienda">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":"Les Jardins de l'Hacienda","url":"https://jardins-hacienda-2-maquette.vercel.app/","telephone":"+33 6 18 21 28 10","servesCuisine":"Cuisine traditionnelle de saison","address":{"@type":"PostalAddress","streetAddress":"6 Vathier Haye","postalCode":"54580","addressLocality":"Moineville","addressCountry":"FR"},"sameAs":["https://www.facebook.com/lesjardinsdelhacienda54","https://www.instagram.com/lesjardinsdel.hacienda/"],"acceptsReservations":true}</script>
+</head>
+<body id="haut">
+<script type="application/json" data-reservation-globale>{"fuseau":"Europe/Paris","delai_minutes":60,"jours_a_l_avance":60,"couverts_max":10,"telephone":"06 18 21 28 10","services":{"midi":{"libelle":"Midi","debut":"12:00","fin":"13:30","pas":15},"soir":{"libelle":"Soir","debut":"19:00","fin":"21:30","pas":15}},"fermetures":{"jours":["lundi","mardi"],"services":{"mercredi":["soir"],"jeudi":["soir"],"samedi":["midi"],"dimanche":["soir"]},"dates":[]},"espaces":[{"id":"salle","libelle":"En salle"},{"id":"terrasse","libelle":"En terrasse","mois":[6,7,8,9],"note":"selon la météo","hors_saison":"de juin à septembre"}],"complets":{},"complets_simules":true,"message_simule":"Réservation simulée : rien n'est envoyé dans cette maquette.","ouvertures_exceptionnelles":[{"date":"2026-12-31","service":"soir","note":"Saint-Sylvestre"}]}</script>
+<div data-voile data-forme="cloche" aria-hidden="true"><div class="voile-contenu"><span class="voile-logo" aria-hidden="true"></span><p class="voile-heure" data-voile-heure>18:00</p><span data-voile-libelle>À emporter</span><span class="voile-trait" aria-hidden="true"></span></div></div>
+<div class="ouverture-panneau" data-ouverture aria-hidden="true">
+  <p class="ouverture-objet" data-ouverture-objet><span class="ouverture-logo"></span></p>
+  <p class="ouverture-nom">Les Jardins de l&#39;Hacienda</p>
+  <p class="ouverture-ligne">Restaurant et réceptions · Moineville</p>
+</div>
+<a class="evitement" href="#contenu">Aller au contenu</a>
+<header data-entete>
+  <div class="entete-rangee">
+    <a class="entete-logo" href="/" aria-label="Les Jardins de l&#39;Hacienda, accueil" data-libelle="Accueil">
+      <img class="entete-logo__jour" src="/assets/images/logo-240.webp" alt="" width="40" height="37"><img class="entete-logo__nuit" src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>Les Jardins de l&#39;Hacienda</span>
+    </a>
+    <p class="horloge" data-horloge data-grille="fil" data-effet="heure" aria-hidden="true"><span class="horloge__h" data-horloge-h>18</span><span class="horloge__sep">:</span><span class="horloge__m" data-horloge-m>00</span></p>
+    <nav data-nav aria-label="Navigation principale">
+      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/a-emporter" data-libelle="À emporter" aria-current="page">À emporter</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+    </nav>
+    <div class="entete-actions">
+      <a class="bouton bouton--entete" href="/reserver#formulaire" data-libelle="Réserver" data-resa-cible>Réserver</a>
+      <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="Menu" data-libelle-fermer="Fermer"><span data-libelle-bouton>Menu</span></button>
+      <a class="menu-sansjs" href="#menu" data-menu-lien>Menu</a>
+    </div>
+  </div>
+</header>
+<script>/* Avant le premier affichage : rangées de la navigation (même règle que ajusterNav dans assets/js/socle/entete.js)
+   et hauteur réelle de l'en-tête, pour que rien ne saute quand le JavaScript du site prend la main. */
+(function () {
+  var h = document.documentElement, u = document.querySelector('[data-nav] ul'), e = document.querySelector('[data-entete]');
+  if (u) {
+    var deborde = function () { return u.scrollWidth > u.clientWidth + 1; }, c = deborde();
+    if (c && window.matchMedia('(min-width: 900px)').matches) {
+      h.classList.add('nav-deux-rangees'); c = deborde();
+      if (c) { h.classList.add('nav-deux-lignes'); var a = u.querySelector('a'); c = !a || u.getBoundingClientRect().height > a.getBoundingClientRect().height * 2.5; }
+      if (c) h.classList.remove('nav-deux-rangees', 'nav-deux-lignes');
+    }
+    if (c) h.classList.add('nav-compacte');
+  }
+  if (e) h.style.setProperty('--entete-h', Math.round(e.getBoundingClientRect().height) + 'px');
+})();</script>
+<span id="menu-ferme" aria-hidden="true"></span>
+<div id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu">
+  <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
+  <ul><li style="--i:0"><span class="menu-heure" aria-hidden="true">12:00</span><a href="/" class="menu-lien" data-libelle="Accueil">Accueil</a></li><li style="--i:1"><span class="menu-heure" aria-hidden="true">12:30</span><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><span class="menu-heure" aria-hidden="true">19:00</span><a href="/receptions" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><span class="menu-heure" aria-hidden="true">23:30</span><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:4"><span class="menu-heure" aria-hidden="true">18:00</span><a href="/a-emporter" class="menu-lien" data-libelle="À emporter" aria-current="page">À emporter</a></li><li style="--i:5"><span class="menu-heure" aria-hidden="true">00:00</span><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:6"><span class="menu-heure" aria-hidden="true">Maintenant</span><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+  <p class="menu-actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une table</a> <a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
+  <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
+</div>
+<main id="contenu" tabindex="-1">
+<section class="ouv-emp" id="debut">
+  <div class="conteneur ouv-emp__grille">
+    <div class="ouv-emp__contenu">
+      <p class="surtitre">À emporter</p>
+      <h1 class="ouv-emp__titre" data-iris-centre>Les incontournables <em>des fêtes</em></h1>
+      <p class="ouv-emp__texte">Les spécialités du chef Régis Clauss pour vos tables de fête : choisissez vos produits, puis le jour et le moment du retrait au restaurant, du 5 au 31 décembre.</p>
+      <p class="ouv-emp__actions"><a class="bouton" href="#produits" data-action-principale data-sans-transition>Composer ma commande</a></p>
+      <p class="ouv-emp__info" data-info-cle>Retrait du 5 au 31 décembre · 6 Vathier Haye, Moineville</p>
+    </div>
+    <div class="ouv-emp__visuel">
+      <figure class="media ouv-emp__arche" data-fx="parallaxe" data-fx-force="5" style="--cadrage:36% 62%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/plat-cheminee-mobile-640.webp 640w, /assets/images/vraie/plat-cheminee-mobile-1080.webp 1080w" sizes="(max-width: 760px) 80vw, 34vw">
+    <img src="/assets/images/vraie/plat-cheminee-1280.webp" srcset="/assets/images/vraie/plat-cheminee-640.webp 640w, /assets/images/vraie/plat-cheminee-1280.webp 1280w, /assets/images/vraie/plat-cheminee-1920.webp 1920w" sizes="(max-width: 760px) 80vw, 34vw" alt="Une assiette du chef sur une table de bois, devant la cheminée allumée" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async">
+  </picture>
+</figure>
+      <div class="sceau sceau--emp" aria-hidden="true">
+        <svg class="sceau__texte" viewBox="0 0 200 200"><defs><path id="sceau-emp" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sceau-emp" textLength="470">Fait maison · À emporter · Fêtes de fin d&#39;année · </textPath></text></svg>
+        <span class="sceau__logo"></span>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="emp-produits" id="produits" aria-labelledby="produits-titre">
+  <div class="conteneur">
+    <div class="emp-produits__tete">
+      <div>
+        <p class="surtitre">La carte des fêtes</p>
+        <h2 id="produits-titre" data-anime="lignes">Nos produits à emporter</h2>
+      </div>
+      <p class="emp-produits__note">Allergènes : renseignez-vous auprès du restaurant, au 06 18 21 28 10.</p>
+    </div>
+    <ul class="emp-produits__grille" data-anime="cascade" data-effet="emporter">
+      <li class="emp-produit" data-produit="escargots">
+        <div class="emp-produit__corps">
+          <p class="emp-produit__ligne"><span class="emp-produit__nom">Escargots à la crème d&#39;ail</span><span class="emp-produit__points" aria-hidden="true"></span><span class="emp-produit__prix">18 €</span></p>
+          <p class="emp-produit__texte">Escargots préparés dans une crème d&#39;ail onctueuse et parfumée.</p>
+          <p class="emp-produit__bas">
+            <button type="button" class="bouton emp-produit__ajouter" data-ajouter="escargots" aria-label="Ajouter Escargots à la crème d&#39;ail à la commande"><span data-ajouter-texte>Ajouter</span></button>
+          </p>
+        </div>
+      </li><li class="emp-produit" data-produit="tourte-escargots">
+        <div class="emp-produit__corps">
+          <p class="emp-produit__ligne"><span class="emp-produit__nom">Tourte aux escargots</span><span class="emp-produit__points" aria-hidden="true"></span><span class="emp-produit__prix">32 €</span></p>
+          <p class="emp-produit__texte">Tourte artisanale garnie d&#39;escargots, dans une farce généreuse et savoureuse.</p>
+          <p class="emp-produit__bas">
+            <button type="button" class="bouton emp-produit__ajouter" data-ajouter="tourte-escargots" aria-label="Ajouter Tourte aux escargots à la commande"><span data-ajouter-texte>Ajouter</span></button>
+          </p>
+        </div>
+      </li><li class="emp-produit" data-produit="tourte-grenouilles">
+        <div class="emp-produit__corps">
+          <p class="emp-produit__ligne"><span class="emp-produit__nom">Tourte aux grenouilles</span><span class="emp-produit__points" aria-hidden="true"></span><span class="emp-produit__prix">32 €</span></p>
+          <p class="emp-produit__texte">Tourte maison aux cuisses de grenouilles, délicatement persillées et parfumées à l&#39;ail.</p>
+          <p class="emp-produit__bas">
+            <button type="button" class="bouton emp-produit__ajouter" data-ajouter="tourte-grenouilles" aria-label="Ajouter Tourte aux grenouilles à la commande"><span data-ajouter-texte>Ajouter</span></button>
+          </p>
+        </div>
+      </li><li class="emp-produit" data-produit="pate-lorrain">
+        <div class="emp-produit__corps">
+          <p class="emp-produit__ligne"><span class="emp-produit__nom">Pâté lorrain</span><span class="emp-produit__points" aria-hidden="true"></span><span class="emp-produit__prix">28 € <small>le kg</small></span></p>
+          <p class="emp-produit__texte">Spécialité lorraine en pâte feuilletée, garnie de viande marinée et délicatement assaisonnée.</p>
+          <p class="emp-produit__bas">
+            <label class="emp-produit__poids"><span class="visuellement-cache">Poids de Pâté lorrain</span><select data-poids><option value="0.5">0,5 kg</option><option value="1" selected>1 kg</option><option value="1.5">1,5 kg</option><option value="2">2 kg</option></select></label>
+            <button type="button" class="bouton emp-produit__ajouter" data-ajouter="pate-lorrain" aria-label="Ajouter Pâté lorrain à la commande"><span data-ajouter-texte>Ajouter</span></button>
+          </p>
+        </div>
+      </li><li class="emp-produit emp-produit--photo" data-produit="foie-gras">
+        <figure class="media emp-produit__photo" style="--cadrage:50% 60%">
+  <picture>
+    <img src="/assets/images/vraie/foie-gras-maison-810.webp" srcset="/assets/images/vraie/foie-gras-maison-480.webp 480w, /assets/images/vraie/foie-gras-maison-640.webp 640w, /assets/images/vraie/foie-gras-maison-810.webp 810w" sizes="(max-width: 760px) 92vw, 30vw" alt="Le foie gras maison du chef, ici servi au restaurant avec sa briochette." width="810" height="540" loading="lazy" decoding="async">
+  </picture>
+</figure>
+        <div class="emp-produit__corps">
+          <p class="emp-produit__ligne"><span class="emp-produit__nom">Foie gras de canard maison</span><span class="emp-produit__points" aria-hidden="true"></span><span class="emp-produit__prix">36 €</span></p>
+          <p class="emp-produit__texte">Le chef vous propose pour les fêtes son foie gras de canard maison.</p>
+          <p class="emp-produit__bas">
+            <button type="button" class="bouton emp-produit__ajouter" data-ajouter="foie-gras" aria-label="Ajouter Foie gras de canard maison à la commande"><span data-ajouter-texte>Ajouter</span></button>
+          </p>
+        </div>
+      </li><li class="emp-produit" data-produit="gravlax">
+        <div class="emp-produit__corps">
+          <p class="emp-produit__ligne"><span class="emp-produit__nom">Gravlax de saumon maison</span><span class="emp-produit__points" aria-hidden="true"></span><span class="emp-produit__prix">22 €</span></p>
+          <p class="emp-produit__texte">Saumon mariné maison, fondant et parfumé, parfait pour vos apéros et entrées de fête.</p>
+          <p class="emp-produit__bas">
+            <button type="button" class="bouton emp-produit__ajouter" data-ajouter="gravlax" aria-label="Ajouter Gravlax de saumon maison à la commande"><span data-ajouter-texte>Ajouter</span></button>
+          </p>
+        </div>
+      </li><li class="emp-produit" data-produit="tataki-boeuf">
+        <div class="emp-produit__corps">
+          <p class="emp-produit__ligne"><span class="emp-produit__nom">Tataki de bœuf</span><span class="emp-produit__points" aria-hidden="true"></span><span class="emp-produit__prix">25 €</span></p>
+          <p class="emp-produit__texte">Tataki de bœuf à la japonaise mariné par nos soins.</p>
+          <p class="emp-produit__bas">
+            <button type="button" class="bouton emp-produit__ajouter" data-ajouter="tataki-boeuf" aria-label="Ajouter Tataki de bœuf à la commande"><span data-ajouter-texte>Ajouter</span></button>
+          </p>
+        </div>
+      </li><li class="emp-produit" data-produit="tataki-thon">
+        <div class="emp-produit__corps">
+          <p class="emp-produit__ligne"><span class="emp-produit__nom">Tataki de thon</span><span class="emp-produit__points" aria-hidden="true"></span><span class="emp-produit__prix">25 €</span></p>
+          <p class="emp-produit__texte">Thon snacké à cœur cru, mariné façon japonaise et préparé par nos soins.</p>
+          <p class="emp-produit__bas">
+            <button type="button" class="bouton emp-produit__ajouter" data-ajouter="tataki-thon" aria-label="Ajouter Tataki de thon à la commande"><span data-ajouter-texte>Ajouter</span></button>
+          </p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+<section class="emp-commande" id="commande" aria-labelledby="commande-titre">
+  <div class="conteneur emp-commande__grille">
+    <form class="emp-form" data-emp-form action="#commande" novalidate>
+      <p class="surtitre">Votre commande</p>
+      <h2 id="commande-titre" data-anime="lignes">Le retrait</h2>
+      <p class="emp-form__texte">Au restaurant, 6 Vathier Haye à Moineville, pendant les horaires d&#39;ouverture : le midi le mercredi, le jeudi, le vendredi et le dimanche, le soir le vendredi et le samedi. Heures exactes à confirmer.</p>
+      <fieldset class="emp-calendrier" data-emp-calendrier data-visuel>
+    <legend>Jour de retrait <span class="emp-calendrier__mois">décembre 2026</span></legend>
+    <div class="emp-calendrier__tete" aria-hidden="true"><span>lun.</span><span>mar.</span><span>mer.</span><span>jeu.</span><span>ven.</span><span>sam.</span><span>dim.</span></div>
+    <div class="emp-calendrier__jours"><span class="emp-jour emp-jour--vide" aria-hidden="true"></span><span class="emp-jour emp-jour--hors" aria-hidden="true"><span>1</span></span><span class="emp-jour emp-jour--hors" aria-hidden="true"><span>2</span></span><span class="emp-jour emp-jour--hors" aria-hidden="true"><span>3</span></span><span class="emp-jour emp-jour--hors" aria-hidden="true"><span>4</span></span><label class="emp-jour"><input type="radio" name="jour" value="2026-12-05" data-libelle="samedi 5 décembre" data-midi="0" data-soir="1"><span>5</span><span class="visuellement-cache">samedi 5 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-06" data-libelle="dimanche 6 décembre" data-midi="1" data-soir="0"><span>6</span><span class="visuellement-cache">dimanche 6 décembre</span></label><span class="emp-jour emp-jour--ferme" aria-hidden="true" title="fermé"><span>7</span></span><span class="emp-jour emp-jour--ferme" aria-hidden="true" title="fermé"><span>8</span></span><label class="emp-jour"><input type="radio" name="jour" value="2026-12-09" data-libelle="mercredi 9 décembre" data-midi="1" data-soir="0"><span>9</span><span class="visuellement-cache">mercredi 9 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-10" data-libelle="jeudi 10 décembre" data-midi="1" data-soir="0"><span>10</span><span class="visuellement-cache">jeudi 10 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-11" data-libelle="vendredi 11 décembre" data-midi="1" data-soir="1"><span>11</span><span class="visuellement-cache">vendredi 11 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-12" data-libelle="samedi 12 décembre" data-midi="0" data-soir="1"><span>12</span><span class="visuellement-cache">samedi 12 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-13" data-libelle="dimanche 13 décembre" data-midi="1" data-soir="0"><span>13</span><span class="visuellement-cache">dimanche 13 décembre</span></label><span class="emp-jour emp-jour--ferme" aria-hidden="true" title="fermé"><span>14</span></span><span class="emp-jour emp-jour--ferme" aria-hidden="true" title="fermé"><span>15</span></span><label class="emp-jour"><input type="radio" name="jour" value="2026-12-16" data-libelle="mercredi 16 décembre" data-midi="1" data-soir="0"><span>16</span><span class="visuellement-cache">mercredi 16 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-17" data-libelle="jeudi 17 décembre" data-midi="1" data-soir="0"><span>17</span><span class="visuellement-cache">jeudi 17 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-18" data-libelle="vendredi 18 décembre" data-midi="1" data-soir="1"><span>18</span><span class="visuellement-cache">vendredi 18 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-19" data-libelle="samedi 19 décembre" data-midi="0" data-soir="1"><span>19</span><span class="visuellement-cache">samedi 19 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-20" data-libelle="dimanche 20 décembre" data-midi="1" data-soir="0"><span>20</span><span class="visuellement-cache">dimanche 20 décembre</span></label><span class="emp-jour emp-jour--ferme" aria-hidden="true" title="fermé"><span>21</span></span><span class="emp-jour emp-jour--ferme" aria-hidden="true" title="fermé"><span>22</span></span><label class="emp-jour"><input type="radio" name="jour" value="2026-12-23" data-libelle="mercredi 23 décembre" data-midi="1" data-soir="0"><span>23</span><span class="visuellement-cache">mercredi 23 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-24" data-libelle="jeudi 24 décembre" data-midi="1" data-soir="0"><span>24</span><span class="visuellement-cache">jeudi 24 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-25" data-libelle="vendredi 25 décembre" data-midi="1" data-soir="1"><span>25</span><span class="visuellement-cache">vendredi 25 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-26" data-libelle="samedi 26 décembre" data-midi="0" data-soir="1"><span>26</span><span class="visuellement-cache">samedi 26 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-27" data-libelle="dimanche 27 décembre" data-midi="1" data-soir="0"><span>27</span><span class="visuellement-cache">dimanche 27 décembre</span></label><span class="emp-jour emp-jour--ferme" aria-hidden="true" title="fermé"><span>28</span></span><span class="emp-jour emp-jour--ferme" aria-hidden="true" title="fermé"><span>29</span></span><label class="emp-jour"><input type="radio" name="jour" value="2026-12-30" data-libelle="mercredi 30 décembre" data-midi="1" data-soir="0"><span>30</span><span class="visuellement-cache">mercredi 30 décembre</span></label><label class="emp-jour"><input type="radio" name="jour" value="2026-12-31" data-libelle="jeudi 31 décembre" data-midi="1" data-soir="0"><span>31</span><span class="visuellement-cache">jeudi 31 décembre</span></label></div>
+  </fieldset>
+      <p class="emp-form__erreur" data-erreur="jour" hidden>Choisissez un jour de retrait.</p>
+      <fieldset class="emp-form__moment" data-emp-moment>
+        <legend>Moment du retrait</legend>
+        <label class="puce"><input type="radio" name="moment" value="midi" disabled><span>Midi</span></label>
+        <label class="puce"><input type="radio" name="moment" value="soir" disabled><span>Soir</span></label>
+      </fieldset>
+      <p class="emp-form__erreur" data-erreur="moment" hidden>Choisissez le midi ou le soir.</p>
+      <fieldset class="emp-form__coord">
+        <legend>Vos coordonnées</legend>
+        <label><span>Prénom</span><input name="prenom" autocomplete="given-name" required></label>
+        <label><span>Nom</span><input name="nom" autocomplete="family-name" required></label>
+        <label><span>Téléphone</span><input name="tel" type="tel" autocomplete="tel" required></label>
+        <label><span>E-mail (facultatif)</span><input name="email" type="email" autocomplete="email"></label>
+      </fieldset>
+      <p class="emp-form__note">Vos coordonnées servent uniquement à préparer votre commande. Paiement au retrait : à confirmer avec le restaurant.</p>
+      <p class="emp-form__erreur" data-erreur="panier" hidden>Ajoutez au moins un produit.</p>
+      <button type="submit" class="bouton">Valider ma commande</button>
+      <div class="emp-form__merci" data-emp-merci role="status" tabindex="-1" hidden></div>
+    </form>
+    <aside class="emp-panier" data-emp-panier aria-labelledby="panier-titre">
+      <h2 id="panier-titre" class="emp-panier__titre">Ma commande</h2>
+      <p class="emp-panier__vide" data-panier-vide>Votre commande est vide : ajoutez un produit.</p>
+      <ul class="emp-panier__lignes" data-panier-lignes></ul>
+      <p class="emp-panier__total"><span>Total</span><strong data-panier-total>0 €</strong></p>
+      <p class="emp-panier__retrait" data-panier-retrait>Jour et moment du retrait à choisir.</p>
+    </aside>
+  </div>
+</section>
+<a class="emp-pastille" href="#commande" data-emp-pastille data-sans-transition hidden aria-label="Voir ma commande"><span class="emp-pastille__nombre" data-pastille-nombre>0</span><span data-pastille-total>0 €</span></a>
+<p class="visuellement-cache" aria-live="polite" data-emp-annonce></p>
+<script type="application/json" data-emp-textes>{"articles":"{n} article(s)","annonce":"{nom} ajouté à la commande. Total : {total}.","moins":"Retirer un {nom}","plus":"Ajouter un {nom}","retrait":"le {jour}, {moment}","retraitPanier":"Retrait {retrait}.","retraitAChoisir":"Jour et moment du retrait à choisir.","midi":"midi","soir":"soir","recap":"{produits} · {total} · retrait {retrait}.","simule":"Commande simulée : rien n'est envoyé ni payé dans cette maquette. Sur le vrai site, le restaurant recevrait votre commande.","ajoute":"Ajouté","ajouter":"Ajouter","produits":{"escargots":{"nom":"Escargots à la crème d'ail","prix":18,"unite":"piece"},"tourte-escargots":{"nom":"Tourte aux escargots","prix":32,"unite":"piece"},"tourte-grenouilles":{"nom":"Tourte aux grenouilles","prix":32,"unite":"piece"},"pate-lorrain":{"nom":"Pâté lorrain","prix":28,"unite":"kg"},"foie-gras":{"nom":"Foie gras de canard maison","prix":36,"unite":"piece"},"gravlax":{"nom":"Gravlax de saumon maison","prix":22,"unite":"piece"},"tataki-boeuf":{"nom":"Tataki de bœuf","prix":25,"unite":"piece"},"tataki-thon":{"nom":"Tataki de thon","prix":25,"unite":"piece"}}}</script>
+</main>
+<footer class="pied" id="pied">
+  <div class="conteneur pied-grille">
+    <div class="pied-maison">
+      <img class="pied-logo" src="/assets/images/logo-clair.png" alt="" width="56" height="56" loading="lazy" decoding="async">
+      <p><strong>Les Jardins de l&#39;Hacienda</strong></p>
+      <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
+      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener" aria-label="Facebook (nouvel onglet)">Facebook <span aria-hidden="true">↗</span></a> <a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener" aria-label="Instagram (nouvel onglet)">Instagram <span aria-hidden="true">↗</span></a></p>
+    </div>
+    <div class="pied-venir">
+      <p><strong>Venir</strong></p>
+      <p>À 19 km de Metz, 24 km de Thionville, 47 km de Luxembourg (à vol d’oiseau).</p>
+      <p><a href="/infos-pratiques#acces" class="lien-fleche" data-libelle="Infos pratiques">Horaires et accès</a></p>
+    </div>
+    <nav aria-label="Sommaire">
+      <p><strong>Sommaire</strong></p>
+      <ul><li><a href="/" data-libelle="Accueil">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/a-emporter" data-libelle="À emporter" aria-current="page">À emporter</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li></ul>
+    </nav>
+    <div>
+      <p><strong>Confort de lecture</strong></p>
+      <ul>
+        <li><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></li>
+        <li><a href="#haut" data-sans-transition>Retour en haut</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="conteneur pied-bas"><p>Maquette : réservations, cartes cadeaux et demandes sont simulées, rien n&#39;est envoyé.</p><p>Les images marquées « Illustration générée » sont créées par IA ; toutes les autres sont des photos de la maison.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
+</footer>
+<div data-barre-fixe>
+  <a class="bouton bouton--contour" href="tel:+33618212810">Appeler</a>
+  <a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver</a>
+</div>
+</body>
+</html>

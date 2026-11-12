@@ -13,6 +13,7 @@ export const HEURES = {
   receptions: { h: '19', m: '00', voile: '#f6f1e7' },
   reserver: { h: '21', m: '00', voile: '#f6f1e7' },
   'les-fetes': { h: '23', m: '30', voile: '#f6f1e7' },
+  'a-emporter': { h: '18', m: '00', voile: '#f6f1e7' },
   offrir: { h: '00', m: '00', voile: '#f6f1e7' },
   'infos-pratiques': { h: '--', m: '--', voile: '#f6f1e7', reelle: true },
   404: { h: '00', m: '00', voile: '#f6f1e7' },

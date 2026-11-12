@@ -84,7 +84,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     </a>
     <p class="horloge" data-horloge data-grille="fil" data-effet="heure" aria-hidden="true"><span class="horloge__h" data-horloge-h>12</span><span class="horloge__sep">:</span><span class="horloge__m" data-horloge-m>00</span></p>
     <nav data-nav aria-label="Navigation principale">
-      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/a-emporter" data-libelle="À emporter">À emporter</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
     </nav>
     <div class="entete-actions">
       <a class="bouton bouton--entete" href="/reserver#formulaire" data-libelle="Réserver" data-resa-cible>Réserver</a>
@@ -111,7 +111,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <span id="menu-ferme" aria-hidden="true"></span>
 <div id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu">
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
-  <ul><li style="--i:0"><span class="menu-heure" aria-hidden="true">12:00</span><a href="/" class="menu-lien" data-libelle="Accueil" aria-current="page">Accueil</a></li><li style="--i:1"><span class="menu-heure" aria-hidden="true">12:30</span><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><span class="menu-heure" aria-hidden="true">19:00</span><a href="/receptions" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><span class="menu-heure" aria-hidden="true">23:30</span><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:4"><span class="menu-heure" aria-hidden="true">00:00</span><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:5"><span class="menu-heure" aria-hidden="true">Maintenant</span><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+  <ul><li style="--i:0"><span class="menu-heure" aria-hidden="true">12:00</span><a href="/" class="menu-lien" data-libelle="Accueil" aria-current="page">Accueil</a></li><li style="--i:1"><span class="menu-heure" aria-hidden="true">12:30</span><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><span class="menu-heure" aria-hidden="true">19:00</span><a href="/receptions" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><span class="menu-heure" aria-hidden="true">23:30</span><a href="/les-fetes" class="menu-lien" data-libelle="Les fêtes">Les fêtes</a></li><li style="--i:4"><span class="menu-heure" aria-hidden="true">18:00</span><a href="/a-emporter" class="menu-lien" data-libelle="À emporter">À emporter</a></li><li style="--i:5"><span class="menu-heure" aria-hidden="true">00:00</span><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:6"><span class="menu-heure" aria-hidden="true">Maintenant</span><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
   <p class="menu-actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une table</a> <a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
@@ -483,6 +483,39 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
     </p>
   </div>
 </section>
+<section class="devise" id="devise" data-heure="21:30" data-lumiere="moment" data-devise aria-labelledby="devise-titre">
+  <div class="devise__confettis" aria-hidden="true" data-superpose><span class="devise__confetti devise__confetti--rond" style="--x:0%;--d:0s;--r:0deg;--c:#b8322c;--t:2.6s"></span><span class="devise__confetti devise__confetti--long" style="--x:37%;--d:0.2s;--r:71deg;--c:#e9cf8e;--t:2.9s"></span><span class="devise__confetti devise__confetti--long" style="--x:74%;--d:0.4s;--r:142deg;--c:#7f9a74;--t:3.2s"></span><span class="devise__confetti devise__confetti--rond" style="--x:11%;--d:0.6s;--r:213deg;--c:#f2b8a0;--t:3.5s"></span><span class="devise__confetti devise__confetti--long" style="--x:48%;--d:0.8s;--r:284deg;--c:#c98a3c;--t:3.8s"></span><span class="devise__confetti devise__confetti--long" style="--x:85%;--d:1s;--r:355deg;--c:#b8322c;--t:2.8s"></span><span class="devise__confetti devise__confetti--rond" style="--x:22%;--d:1.2s;--r:66deg;--c:#e9cf8e;--t:3.1s"></span><span class="devise__confetti devise__confetti--long" style="--x:59%;--d:1.4s;--r:137deg;--c:#7f9a74;--t:3.4s"></span><span class="devise__confetti devise__confetti--long" style="--x:96%;--d:1.6s;--r:208deg;--c:#f2b8a0;--t:3.7s"></span><span class="devise__confetti devise__confetti--rond" style="--x:33%;--d:0.1s;--r:279deg;--c:#c98a3c;--t:2.7s"></span><span class="devise__confetti devise__confetti--long" style="--x:70%;--d:0.3s;--r:350deg;--c:#b8322c;--t:3.0s"></span><span class="devise__confetti devise__confetti--long" style="--x:7%;--d:0.5s;--r:61deg;--c:#e9cf8e;--t:3.3s"></span><span class="devise__confetti devise__confetti--rond" style="--x:44%;--d:0.7s;--r:132deg;--c:#7f9a74;--t:3.6s"></span><span class="devise__confetti devise__confetti--long" style="--x:81%;--d:0.9s;--r:203deg;--c:#f2b8a0;--t:2.6s"></span><span class="devise__confetti devise__confetti--long" style="--x:18%;--d:1.1s;--r:274deg;--c:#c98a3c;--t:2.9s"></span><span class="devise__confetti devise__confetti--rond" style="--x:55%;--d:1.3s;--r:345deg;--c:#b8322c;--t:3.2s"></span><span class="devise__confetti devise__confetti--long" style="--x:92%;--d:1.5s;--r:56deg;--c:#e9cf8e;--t:3.5s"></span><span class="devise__confetti devise__confetti--long" style="--x:29%;--d:0s;--r:127deg;--c:#7f9a74;--t:3.8s"></span><span class="devise__confetti devise__confetti--rond" style="--x:66%;--d:0.2s;--r:198deg;--c:#f2b8a0;--t:2.8s"></span><span class="devise__confetti devise__confetti--long" style="--x:3%;--d:0.4s;--r:269deg;--c:#c98a3c;--t:3.1s"></span><span class="devise__confetti devise__confetti--long" style="--x:40%;--d:0.6s;--r:340deg;--c:#b8322c;--t:3.4s"></span><span class="devise__confetti devise__confetti--rond" style="--x:77%;--d:0.8s;--r:51deg;--c:#e9cf8e;--t:3.7s"></span><span class="devise__confetti devise__confetti--long" style="--x:14%;--d:1s;--r:122deg;--c:#7f9a74;--t:2.7s"></span><span class="devise__confetti devise__confetti--long" style="--x:51%;--d:1.2s;--r:193deg;--c:#f2b8a0;--t:3.0s"></span><span class="devise__confetti devise__confetti--rond" style="--x:88%;--d:1.4s;--r:264deg;--c:#c98a3c;--t:3.3s"></span><span class="devise__confetti devise__confetti--long" style="--x:25%;--d:1.6s;--r:335deg;--c:#b8322c;--t:3.6s"></span><span class="devise__confetti devise__confetti--long" style="--x:62%;--d:0.1s;--r:46deg;--c:#e9cf8e;--t:2.6s"></span><span class="devise__confetti devise__confetti--rond" style="--x:99%;--d:0.3s;--r:117deg;--c:#7f9a74;--t:2.9s"></span></div>
+  <div class="conteneur devise__grille">
+    <div class="devise__visuel">
+      <span class="devise__scotch devise__scotch--g" aria-hidden="true"></span><span class="devise__scotch devise__scotch--d" aria-hidden="true"></span>
+      <figure class="media devise__photo" style="--cadrage:42% 50%">
+  <picture>
+    <img src="/assets/images/vraie/pancarte-bar-1600.webp" srcset="/assets/images/vraie/pancarte-bar-640.webp 640w, /assets/images/vraie/pancarte-bar-960.webp 960w, /assets/images/vraie/pancarte-bar-1600.webp 1600w" sizes="(max-width: 860px) 92vw, 44vw" alt="La pancarte rouge du bar, accrochée à une poutre : « Ici on aime rire, s&#39;embrasser, faire la fête, manger, boire, vivre quoi ! »" width="1600" height="1067" loading="lazy" decoding="async">
+  </picture>
+</figure>
+    </div>
+    <div class="devise__texte">
+      <figure class="devise__citation">
+        <blockquote><p data-devise-mots><span class="devise__mot" style="--n:0">Ici</span> <span class="devise__mot" style="--n:1">on</span> <span class="devise__mot" style="--n:2">aime</span> <mark class="devise__feutre devise__feutre--1" style="--n:4"><span class="devise__mot" style="--n:3">rire,</span></mark> <mark class="devise__feutre devise__feutre--2" style="--n:5"><span class="devise__mot" style="--n:4">s’embrasser,</span></mark> <mark class="devise__feutre devise__feutre--3" style="--n:8"><span class="devise__mot" style="--n:5">faire</span> <span class="devise__mot" style="--n:6">la</span> <span class="devise__mot" style="--n:7">fête,</span></mark> <mark class="devise__feutre devise__feutre--1" style="--n:9"><span class="devise__mot" style="--n:8">manger,</span></mark> <mark class="devise__feutre devise__feutre--2" style="--n:10"><span class="devise__mot" style="--n:9">boire,</span></mark> <mark class="devise__feutre devise__feutre--3" style="--n:12"><span class="devise__mot" style="--n:10">vivre</span> <span class="devise__mot" style="--n:11">quoi !</span></mark></p></blockquote>
+        <figcaption><svg class="devise__fleche" viewBox="0 0 60 30" aria-hidden="true"><path d="M58 6 C40 2 22 8 8 22" pathLength="1"/><path d="M8 22 L10 10 M8 22 L19 21" pathLength="1"/></svg>La pancarte du bar</figcaption>
+      </figure>
+      <h2 id="devise-titre" class="devise__titre">Ce que nos clients retiennent</h2>
+      <div class="devise__note">
+        <p class="devise__chiffre" data-devise-chiffre="4.5">4,5</p>
+        <div>
+          <p class="devise__etoiles" role="img" aria-label="4,5 étoiles sur 5"><span class="devise__etoile" style="--i:0;--rempli:1"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></span><span class="devise__etoile" style="--i:1;--rempli:1"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></span><span class="devise__etoile" style="--i:2;--rempli:1"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></span><span class="devise__etoile" style="--i:3;--rempli:1"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></span><span class="devise__etoile" style="--i:4;--rempli:0.5"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></span></p>
+          <p class="devise__sur">sur 5 sur Google, <strong>plus de 1 600 avis</strong></p>
+        </div>
+      </div>
+      <ul class="devise__themes" data-effet="devise">
+        <li style="--r:-1.6deg"><svg class="devise__icone" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 34c-7 0-11-5-11-10 0-6 6-9 6-15 3 3 4 6 4 9 2-2 3-4 3-7 5 4 9 8 9 13 0 6-4 10-11 10z"/></svg><h3>Le cadre</h3><p><span data-saison-seul="hiver">Bois blond, mur de pierre et feu de bois : l&#39;hiver, toute la maison se resserre autour de la cheminée.</span><span data-saison-seul="ete">Palmiers, paillotes et piscine : un air de bord de mer en Lorraine.</span></p></li>
+        <li style="--r:1.2deg"><svg class="devise__icone" viewBox="0 0 40 40" aria-hidden="true"><circle cx="21" cy="21" r="12"/><circle cx="21" cy="21" r="7"/><path d="M5 8v10M3 8v5c0 2 1 3 2 3s2-1 2-3V8M5 18v15"/></svg><h3>L&#39;assiette</h3><p>Des produits frais, des assiettes généreuses et une carte qui change chaque semaine.</p></li>
+        <li style="--r:-.9deg"><svg class="devise__icone" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14"/><path d="M13 23c2 4 12 4 14 0"/><path d="M15 16h.01M25 16h.01"/></svg><h3>L&#39;accueil</h3><p>Une équipe souriante, qui sait aussi bien servir un déjeuner qu&#39;animer une soirée.</p></li>
+      </ul>
+      <p class="devise__releve">Note et nombre d&#39;avis relevés sur RankEat (fiche du 1er novembre 2026).</p>
+    </div>
+  </div>
+</section>
 <section class="offrir-emporter" id="offrir-emporter" data-heure="22:00" data-lumiere="moment" aria-labelledby="oe-titre">
   <div class="conteneur">
     <p class="surtitre">Offrir &amp; emporter</p>
@@ -498,11 +531,11 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
           <span class="oe-carte__sceau" aria-hidden="true">Fait maison</span>
         </div>
         <h3>Les incontournables des fêtes</h3>
-        <p class="oe-carte__texte">Les spécialités de la maison, à commander auprès du restaurant :</p>
+        <p class="oe-carte__texte">Les spécialités de la maison, à commander pour les fêtes et à retirer au restaurant du 5 au 31 décembre :</p>
         <ul class="oe-carte__liste" aria-label="Les incontournables des fêtes">
           <li>Escargots à la crème d&#39;ail</li><li>Tourte aux escargots</li><li>Tourte aux grenouilles</li><li>Pâté lorrain</li><li>Foie gras de canard maison</li><li>Gravlax de saumon maison</li>
         </ul>
-        <p class="oe-carte__actions"><a class="bouton" href="tel:+33618212810">Commander au 06 18 21 28 10</a></p>
+        <p class="oe-carte__actions"><a href="/a-emporter" class="bouton" data-libelle="À emporter">Commander à emporter</a></p>
       </article>
       <article class="oe-carte">
         <div class="oe-carte__visuel oe-carte__visuel--cadeau" data-carte-luxe>
@@ -570,7 +603,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
     </div>
     <nav aria-label="Sommaire">
       <p><strong>Sommaire</strong></p>
-      <ul><li><a href="/" data-libelle="Accueil" aria-current="page">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li></ul>
+      <ul><li><a href="/" data-libelle="Accueil" aria-current="page">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Les fêtes">Les fêtes</a></li><li><a href="/a-emporter" data-libelle="À emporter">À emporter</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li></ul>
     </nav>
     <div>
       <p><strong>Confort de lecture</strong></p>
