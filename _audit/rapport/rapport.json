@@ -9,7 +9,11 @@
     "numéro de version": 1,
     "langues": 1,
     "mesures": 32,
-    "balayage": 1
+    "balayage": 1,
+    "tient dans l’écran": 8,
+    "mouvement": 2,
+    "effets du plan": 28,
+    "souris immobile": 3
   },
   "infos": [
     "Numéro de version des fichiers : ?v=7",

@@ -15,14 +15,15 @@ const EXEMPLES = {
   plats: ['Suprême de pintade', 'Dhal aux trois lentilles', 'Porc et ail confit'],
   desserts: ["Crème brûlée à la vanille de l'île Maurice", 'Brioche perdue', 'Figues rôties au miel'],
 };
-/* v7.5 · « Carte de la semaine » (avant « Nos entrées ») : la carte reste à l'écran pendant cinq paliers de défilement ; une nappe
-   de lin se déroule sur l'image de droite, puis chaque rubrique arrive sur la carte pendant que son assiette se pose sur la nappe.
+/* v7.5 · « Carte de la semaine » (avant « Nos entrées ») : le titre et la carte restent à l'écran pendant cinq paliers ; une table
+   cosy (bois, nappe de lin, bougie) se pose sur l'image de droite, puis chaque rubrique arrive sur la carte pendant que sa petite
+   assiette du dessous s'envole et se pose sur la nappe (vraie : rang de la vignette dans ASSIETTES).
    Fourchettes de prix et nombres calculés depuis donnees/carte.json. */
 const SEMAINE = [
-  { cle: 'entrees', rubrique: 'entrees', image: 'assiette-saumon', cadrage: '50% 50%', r: -6 },
-  { cle: 'plats', rubrique: 'plats', image: 'assiette-cepes', cadrage: '50% 50%', r: 5 },
-  { cle: 'partager', rubrique: 'partager', image: 'vraie/foie-gras-maison', cadrage: '55% 50%', r: 4 },
-  { cle: 'desserts', rubrique: 'desserts', image: 'assiette-turquoise', cadrage: '50% 50%', r: -4 },
+  { cle: 'entrees', rubrique: 'entrees', vraie: 3, r: -6 },
+  { cle: 'plats', rubrique: 'plats', vraie: 1, r: 5 },
+  { cle: 'partager', rubrique: 'partager', vraie: 0, r: 4 },
+  { cle: 'desserts', rubrique: 'desserts', vraie: 2, r: -4 },
 ];
 /* 12 h 30 : l'assiette devant la cheminée, puis trois vraies assiettes du chef ; chacune remplace la grande et fume à son tour
    (sources de vapeur en fractions de l'image : x, y, largeur). */
@@ -203,23 +204,14 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
 
 <section class="dejeuner" id="dejeuner" data-heure="12:30" data-lumiere="dejeuner" aria-labelledby="dejeuner-titre">
   <div class="conteneur dejeuner__grille">
-    <div class="dejeuner__tete">
-      <p class="surtitre">${c.t('accueil.dejeuner.surtitre')}</p>
-      <h2 id="dejeuner-titre" data-anime="lignes">${c.t('accueil.dejeuner.titre')}</h2>
-      <p data-anime>${c.t('accueil.dejeuner.texte')}</p>
-    </div>
-    <div class="dejeuner__visuel">
-      ${c.media({ nom: 'vraie/plat-cheminee', alt: c.s('accueil.diner.alt'), cadrage: '50% 70%', classe: 'dejeuner__assiette fumant', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-module="plat-fumant" data-vapeur=".46 .7 .42" data-plat-scene' })}
-      <div class="dej-nappe" data-dej-nappe aria-hidden="true">
-        ${semaine.map((x, i) => html`<div class="dej-plat dej-plat--${i + 1}" style="--r:${x.r}deg">${c.media({ nom: x.image, alt: '', cadrage: x.cadrage, classe: 'dej-plat__photo', sizes: '(max-width: 760px) 40vw, 18vw' })}</div>`)}
-      </div>
-      <p class="indice dejeuner__indice" aria-hidden="true"><span class="indice--souris">${c.t('accueil.diner.indice')}</span><span class="indice--doigt">${c.t('accueil.diner.indiceTactile')}</span></p>
-      <div class="dejeuner__vraies" data-effet="vraies" aria-label="${c.s('accueil.dejeuner.photos')}" role="group">
-        ${ASSIETTES.map((a, i) => html`<button type="button" class="vraie vraie--${i + 1}" data-plat="${a.nom}" data-vapeur="${a.vapeur}" data-cadrage="${a.cadrage}" data-alt="${c.s(`accueil.dejeuner.${a.alt}`)}" aria-pressed="${i === 0 ? 'true' : 'false'}" aria-label="${c.s(`accueil.dejeuner.${a.alt}`)}">${c.media({ nom: a.nom, alt: '', cadrage: a.cadrage, classe: 'vraie__photo', sizes: '160px' })}</button>`)}
-      </div>
-    </div>
     <div class="dejeuner__cartes" data-effet="rubriques">
       <div class="dej-scene" data-dej-scene>
+        <div class="dej-scene__collant" data-dej-collant>
+          <div class="dejeuner__tete">
+          <p class="surtitre">${c.t('accueil.dejeuner.surtitre')}</p>
+          <h2 id="dejeuner-titre" data-anime="lignes">${c.t('accueil.dejeuner.titre')}</h2>
+          <p data-anime>${c.t('accueil.dejeuner.texte')}</p>
+        </div>
         <article class="rubrique-carte dej-semaine" aria-labelledby="dej-semaine-titre">
           <h3 id="dej-semaine-titre">${c.t('accueil.dejeuner.semaine.titre')}</h3>
           <p class="dej-semaine__texte">${c.t('accueil.dejeuner.semaine.texte')}</p>
@@ -233,6 +225,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
           </ol>
           <p class="dej-semaine__indice" aria-hidden="true">${c.t('accueil.dejeuner.semaine.indice')}</p>
         </article>
+        </div>
       </div>
       ${exemples.map((r) => html`<article class="rubrique-carte" aria-labelledby="rubrique-${r.cle}">
         <h3 id="rubrique-${r.cle}">${c.t(`accueil.dejeuner.${r.cle}`)}</h3>
@@ -245,6 +238,17 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
       </article>`)}
       <p class="dejeuner__info" data-info>${c.t('accueil.dejeuner.info')}</p>
       <p class="dejeuner__actions">${c.lien('la-carte', { classe: 'bouton bouton--contour', texte: c.t('accueil.dejeuner.lien') })} <span class="saison-tag saison-tag--clair">${c.t('accueil.dejeuner.saison')}</span></p>
+    </div>
+    <div class="dejeuner__visuel">
+      ${c.media({ nom: 'vraie/plat-cheminee', alt: c.s('accueil.diner.alt'), cadrage: '50% 70%', classe: 'dejeuner__assiette fumant', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-module="plat-fumant" data-vapeur=".46 .7 .42" data-plat-scene' })}
+      <div class="dej-nappe" data-dej-nappe aria-hidden="true"><span class="dej-nappe__lin"></span><span class="dej-nappe__bougie"><span class="dej-nappe__flamme"></span></span></div>
+      <div class="dej-plats" aria-hidden="true">
+        ${semaine.map((x, i) => html`<div class="dej-plat dej-plat--${i + 1}" style="--r:${x.r}deg" data-dej-vraie="${x.vraie}">${c.media({ nom: ASSIETTES[x.vraie].nom, alt: '', cadrage: ASSIETTES[x.vraie].cadrage, classe: 'dej-plat__photo', sizes: '(max-width: 760px) 40vw, 18vw' })}</div>`)}
+      </div>
+      <p class="indice dejeuner__indice" aria-hidden="true"><span class="indice--souris">${c.t('accueil.diner.indice')}</span><span class="indice--doigt">${c.t('accueil.diner.indiceTactile')}</span></p>
+      <div class="dejeuner__vraies" data-effet="vraies" aria-label="${c.s('accueil.dejeuner.photos')}" role="group">
+        ${ASSIETTES.map((a, i) => html`<button type="button" class="vraie vraie--${i + 1}" data-plat="${a.nom}" data-vapeur="${a.vapeur}" data-cadrage="${a.cadrage}" data-alt="${c.s(`accueil.dejeuner.${a.alt}`)}" aria-pressed="${i === 0 ? 'true' : 'false'}" aria-label="${c.s(`accueil.dejeuner.${a.alt}`)}">${c.media({ nom: a.nom, alt: '', cadrage: a.cadrage, classe: 'vraie__photo', sizes: '160px' })}</button>`)}
+      </div>
     </div>
   </div>
 </section>

@@ -2453,22 +2453,61 @@ html.js:not(.calme) .oui__album.est-fete .oui__album-confettis span { animation:
   html.js:not(.calme) .dej-cat:not(.est-actif) .dej-cat__detail > span { visibility: hidden; transition: visibility 0s linear .5s; }
   html.js:not(.calme) .dej-cat.est-actif .dej-cat__bouton { border-color: #ffcf9e; background: rgba(246, 239, 226, .1); box-shadow: 0 18px 34px -24px rgba(0, 0, 0, .8); }
   html.js:not(.calme) .dej-cat.est-actif .dej-cat__num { color: #ffcf9e; }
-  html.js:not(.calme) .dej-nappe { display: block; position: absolute; z-index: 4; top: 0; left: 0; width: 100%; aspect-ratio: 4 / 5; border-radius: 22px; pointer-events: none;
-    background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 60%), repeating-linear-gradient(115deg, #f4efe4 0 26px, #fbf8f1 26px 52px), #f6f1e7;
-    box-shadow: 0 34px 60px -30px rgba(0, 0, 0, .75), inset 0 0 0 1px rgba(28, 23, 18, .06);
+  /* La table cosy : plateau de bois chaud, nappe de lin écru posée de biais (plis, ourlet cousu), lueur et flamme d'une bougie. */
+  html.js:not(.calme) .dej-nappe { display: block; position: absolute; z-index: 4; top: 0; left: 0; width: 100%; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 22px; pointer-events: none;
+    background: radial-gradient(70% 45% at 82% 92%, rgba(255, 170, 80, .35), rgba(255, 170, 80, 0) 70%), repeating-linear-gradient(90deg, rgba(0, 0, 0, .14) 0 2px, transparent 2px 92px), repeating-linear-gradient(90deg, rgba(255, 220, 170, .05) 0 1px, transparent 1px 7px), linear-gradient(180deg, #6b4128, #4a2c1b);
+    box-shadow: 0 34px 60px -30px rgba(0, 0, 0, .75), inset 0 0 60px rgba(0, 0, 0, .45);
     clip-path: inset(0 0 100% 0 round 22px); transform: translateY(-14px); transition: clip-path .95s cubic-bezier(.65, 0, .25, 1), transform .95s cubic-bezier(.3, 1.3, .5, 1); }
-  html.js:not(.calme) .dej-nappe::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: repeating-linear-gradient(0deg, rgba(28, 23, 18, .025) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(28, 23, 18, .025) 0 1px, transparent 1px 3px); }
+  .dej-nappe__lin { position: absolute; inset: 5% 4% 7%; border-radius: 6px; transform: rotate(-2.2deg);
+    background: radial-gradient(90% 70% at 70% 85%, rgba(255, 190, 110, .28), rgba(255, 190, 110, 0) 60%), linear-gradient(100deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, .35) 34%, rgba(255, 255, 255, 0) 38%), linear-gradient(100deg, rgba(120, 90, 60, 0) 62%, rgba(120, 90, 60, .12) 66%, rgba(120, 90, 60, 0) 70%), repeating-linear-gradient(0deg, rgba(110, 80, 50, .07) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(110, 80, 50, .07) 0 1px, transparent 1px 3px), #efe3cf;
+    box-shadow: 0 18px 30px -16px rgba(0, 0, 0, .6), inset 0 0 0 9px rgba(239, 227, 207, 1), inset 0 0 0 10px rgba(150, 110, 70, .28); }
+  .dej-nappe__lin::after { content: ''; position: absolute; inset: 14px; border-radius: 3px; border: 1.5px dashed rgba(150, 110, 70, .4); }
+  .dej-nappe__bougie { position: absolute; z-index: 1; right: 12%; bottom: 7%; width: 22px; height: 46px; border-radius: 4px 4px 3px 3px; background: linear-gradient(90deg, #efe2c8, #fff7e6 45%, #e3d2b2); box-shadow: 0 0 0 4px rgba(120, 85, 50, .35), 0 6px 10px rgba(0, 0, 0, .35); }
+  .dej-nappe__flamme { position: absolute; left: 50%; bottom: 100%; width: 12px; height: 22px; margin-left: -6px; border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%; background: radial-gradient(circle at 50% 75%, #fff6c8 0 25%, #ffc35a 50%, rgba(255, 120, 40, .0) 75%); filter: drop-shadow(0 0 10px rgba(255, 170, 60, .95)); transform-origin: 50% 100%; }
+  html.js:not(.calme) .dejeuner.est-nappe .dej-nappe__flamme { animation: dej-flamme 1.6s ease-in-out infinite alternate; }
+  @keyframes dej-flamme { 0% { transform: scale(1, 1) rotate(-2deg); } 35% { transform: scale(.94, 1.08) rotate(2deg); } 70% { transform: scale(1.04, .95) rotate(-1deg); } 100% { transform: scale(.97, 1.04) rotate(1.5deg); } }
   html.js:not(.calme) .dejeuner.est-nappe .dej-nappe { clip-path: inset(0 0 0 0 round 22px); transform: none; }
   html.js:not(.calme) .dejeuner.est-nappe .dejeuner__indice { opacity: 0; transition: opacity .3s; }
-  html.js:not(.calme) .dejeuner.est-nappe .dejeuner__vraies { opacity: .25; pointer-events: none; transition: opacity .5s; }
-  .dej-plat { position: absolute; width: 50%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; border: 7px solid #fbf8f1; background: #fbf8f1;
-    box-shadow: 0 6px 10px -6px rgba(0, 0, 0, .3); opacity: 0; transform: translate(-16px, -54px) scale(1.32) rotate(calc(var(--r) - 16deg));
-    transition: opacity .3s ease, transform .75s cubic-bezier(.3, 1.35, .5, 1), box-shadow .75s ease; }
-  .dej-plat--1 { left: 5%; top: 9%; }
-  .dej-plat--2 { right: 3%; top: 6%; }
-  .dej-plat--3 { left: 6%; top: 47%; }
-  .dej-plat--4 { right: 5%; top: 50%; }
-  .dej-plat.est-pose { opacity: 1; transform: rotate(var(--r)); box-shadow: 0 26px 40px -18px rgba(0, 0, 0, .55), 0 2px 0 rgba(28, 23, 18, .06); }
+  /* Les assiettes : les vignettes du dessous, qui s'envolent et se posent (calque au-dessus de la nappe, sans découpe). */
+  html.js:not(.calme) .dej-plats { position: absolute; z-index: 6; top: 0; left: 0; width: 100%; aspect-ratio: 4 / 5; pointer-events: none; }
+  .dej-plats { display: none; }
+  html.js:not(.calme) .dej-plats { display: block; }
+  .dej-plat { position: absolute; width: 44%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; border: 6px solid #fbf8f1; background: #fbf8f1; opacity: 0; transform: rotate(var(--r)); box-shadow: 0 24px 38px -18px rgba(0, 0, 0, .6), 0 2px 0 rgba(28, 23, 18, .06); }
+  .dej-plat--1 { left: 9%; top: 8%; }
+  .dej-plat--2 { right: 7%; top: 5%; }
+  .dej-plat--3 { left: 10%; top: 43%; }
+  .dej-plat--4 { right: 9%; top: 46%; }
+  .dej-plat.est-pose { opacity: 1; }
   .dej-plat__photo { margin: 0; width: 100%; height: 100%; }
   .dej-plat__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+  .dejeuner .dejeuner__vraies { position: relative; z-index: 7; }
+  .dejeuner .vraie.est-envolee { visibility: hidden; }
+  /* L'image, la nappe et les vignettes tiennent ensemble dans l'écran, à côté du bloc fixé. */
+  .dejeuner .dejeuner__visuel { width: min(100%, calc((100svh - 2 * var(--dej-haut, 40px) - 120px) * .8)); justify-self: center; }
+}
+/* v7.5 · Le déjeuner : le titre de la section rejoint la colonne de gauche ; pendant la scène de la « Carte de la semaine »,
+   le bloc entier (surtitre, titre, texte et carte) reste à l'écran, centré, et l'image de droite se cale à la même hauteur.
+   Écran bas : le bloc se resserre (texte de la carte masqué) pour que tout tienne. Téléphone : titre, image, puis cartes. */
+.dejeuner__grille { grid-template-areas: "cartes visuel"; }
+.dej-scene__collant { display: grid; gap: clamp(20px, 3vh, 32px); }
+.dej-scene__collant > .dejeuner__tete, .dej-scene__collant > .dej-semaine { grid-area: auto; }
+.dejeuner__tete h2 { margin-bottom: .3em; }
+@media (min-width: 861px) {
+  html.js:not(.calme) .dej-scene { height: calc(var(--dej-bloc-h, 760px) + 5 * 36svh); }
+  html.js:not(.calme) .dej-scene__collant { position: sticky; top: var(--dej-haut, calc(var(--entete-h) + 24px)); }
+  html.js:not(.calme) .dej-semaine { position: static; }
+  .dejeuner .dejeuner__visuel { top: var(--dej-haut, calc(var(--entete-h) + 24px)); }
+  html.js:not(.calme) .dejeuner.est-serre .dej-semaine__texte { display: none; }
+  html.js:not(.calme) .dejeuner.est-serre .dej-semaine { padding-block: 22px; }
+  html.js:not(.calme) .dejeuner.est-serre .dej-cat { min-height: 52px; }
+  html.js:not(.calme) .dejeuner.est-serre .dej-cat__bouton { padding-block: 11px; }
+  html.js:not(.calme) .dejeuner.est-tres-serre .dejeuner__tete p:not(.surtitre) { display: none; }
+  html.js:not(.calme) .dejeuner.est-tres-serre .dej-semaine__indice { margin-top: 10px; }
+}
+@media (max-width: 860px) {
+  .dejeuner__grille { display: flex; flex-direction: column; gap: clamp(20px, 3vh, 32px); }
+  .dejeuner__cartes, .dej-scene, .dej-scene__collant { display: contents; }
+  .dejeuner__tete { order: 0; }
+  .dejeuner__visuel { order: 1; }
+  .dej-semaine, .dejeuner__cartes > * { order: 2; }
 }

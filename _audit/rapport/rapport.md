@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 12/11/2026 20:01:43 · 1 min · 1 page(s) · audit complet ciblé sur / (étapes : fichiers, mesures)
+Projet : `jardins-hacienda-2-maquette` · 12/11/2026 20:45:03 · 3 min · 1 page(s) · audit complet ciblé sur / (étapes : fichiers, mesures, ecran, mouvement)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261112-190040-complet-cible-partiel` · version ?v=7
+- Passe : `20261112-194221-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
 - À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (32), balayage (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (32), balayage (1), tient dans l’écran (8), mouvement (2), effets du plan (28), souris immobile (3)
 
 ## Passes de cette version (?v=7)
 
@@ -55,7 +55,8 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261112-182807-complet-cible-partiel | complet | /,/receptions | fichiers, mesures, ecran, mouvement | 1 | 2 | 0 | échecs |
 | 20261112-183220-complet-cible-partiel | complet | /receptions | fichiers, mesures | 0 | 0 | 0 | complet |
 | 20261112-185751-complet-cible-partiel | complet | / | fichiers, mesures, ecran, mouvement | 8 | 0 | 0 | échecs |
-| **20261112-190040-complet-cible-partiel** (celle-ci) | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
+| 20261112-190040-complet-cible-partiel | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
+| **20261112-194221-complet-cible-partiel** (celle-ci) | complet | / | fichiers, mesures, ecran, mouvement | 0 | 0 | 0 | complet |
 
 ## Échecs
 

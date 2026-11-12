@@ -924,23 +924,56 @@ function oui() {
    pilote la nappe, les rubriques posées et les assiettes ; en sortie de la scène, la table se lève. */
 function carteSemaine() {
   const sec = $('#dejeuner'), scene = sec && $('[data-dej-scene]', sec); if (!scene) return;
-  const carte = $('.dej-semaine', scene), cats = $$('[data-dej-cat]', scene), plats = $$('.dej-plat', sec);
+  const carte = $('.dej-semaine', scene), collant = $('[data-dej-collant]', scene) || carte, cats = $$('[data-dej-cat]', scene), plats = $$('.dej-plat', sec);
   const actif = () => !etat.calme && matchMedia('(min-width: 861px)').matches;
   const SEUILS = [0.05, 0.2, 0.38, 0.56, 0.74];
   let etape = '';
+  /* Chaque assiette posée sur la nappe est une vignette du dessous : elle part de sa place, monte en arc en grandissant et se pose ;
+     au retour, elle redescend à sa place et la vignette réapparaît. */
+  const vraies = $$('.vraie', sec);
+  const voler = (p, aller) => {
+    if (!!p._voulu === aller) return; p._voulu = aller;
+    const v = vraies[+p.dataset.dejVraie]; if (!v) { p.classList.toggle('est-pose', aller); return; }
+    const parent = p.offsetParent || p.parentElement, rp = parent.getBoundingClientRect(), rv = v.getBoundingClientRect();
+    const pw = p.offsetWidth, pcx = rp.left + p.offsetLeft + pw / 2, pcy = rp.top + p.offsetTop + pw / 2;
+    const dx = rv.left + rv.width / 2 - pcx, dy = rv.top + rv.height / 2 - pcy, sc = rv.width / pw, r = parseFloat(getComputedStyle(p).getPropertyValue('--r')) || 0;
+    const depuis = { transform: `translate(${dx}px, ${dy}px) scale(${sc}) rotate(0deg)`, boxShadow: '0 6px 12px -6px rgba(0, 0, 0, .4)' };
+    const milieu = { transform: `translate(${dx * 0.42}px, ${dy * 0.42 - 80}px) scale(${((sc + 1) / 2) * 1.12}) rotate(${r / 2}deg)`, boxShadow: '0 46px 60px -24px rgba(0, 0, 0, .6)' };
+    const pose = { transform: `rotate(${r}deg)`, boxShadow: '0 24px 38px -18px rgba(0, 0, 0, .6)' };
+    p.getAnimations().forEach((x) => x.cancel());
+    if (aller) {
+      v.classList.add('est-envolee'); p.classList.add('est-pose');
+      p.animate([depuis, { ...milieu, offset: 0.55 }, pose], { duration: 850, easing: 'cubic-bezier(.3, .6, .3, 1)' });
+    } else {
+      p.animate([pose, { ...milieu, offset: 0.45 }, depuis], { duration: 700, easing: 'cubic-bezier(.5, 0, .5, 1)' }).finished
+        .then(() => { if (!p._voulu) { p.classList.remove('est-pose'); v.classList.remove('est-envolee'); } }, () => {});
+    }
+  };
   /* e : palier de la table (0 à 5) ; apres : la scène est passée (la table se lève, les rubriques restent posées sur la carte). */
   const poser = (e, apres = false) => {
     const cle = `${e}${apres ? '+' : ''}`; if (cle === etape) return; etape = cle;
     sec.dataset.dejEtape = String(e);
     sec.classList.toggle('est-nappe', e >= 1); sec.classList.toggle('est-dresse', apres);
     cats.forEach((c, k) => { c.classList.toggle('est-pose', apres || e >= k + 2); c.classList.toggle('est-actif', !apres && e === k + 2); });
-    plats.forEach((p, k) => p.classList.toggle('est-pose', e >= k + 2));
+    plats.forEach((p, k) => voler(p, e >= k + 2));
   };
-  const mesurer = () => scene.style.setProperty('--dej-carte-h', `${carte.offsetHeight}px`);
-  const haut = () => (parseFloat(getComputedStyle(html).getPropertyValue('--entete-h')) || 0) + 24;
-  const course = () => Math.max(1, scene.offsetHeight - carte.offsetHeight);
+  /* Le bloc fixé (titre et carte) se centre dans l'écran ; s'il est trop haut, il se resserre. Réserve : la ligne de prix
+     de la rubrique en cours. */
+  let hautBloc = 0;
+  const mesurer = () => {
+    sec.classList.remove('est-serre', 'est-tres-serre');
+    const dispo = innerHeight - 24, reserve = 30;
+    let h = collant.offsetHeight + reserve;
+    if (h > dispo) { sec.classList.add('est-serre'); h = collant.offsetHeight + reserve; }
+    if (h > dispo) { sec.classList.add('est-tres-serre'); h = collant.offsetHeight + reserve; }
+    hautBloc = Math.round(Math.max(12, (innerHeight - h) / 2));
+    sec.style.setProperty('--dej-haut', `${hautBloc}px`);
+    scene.style.setProperty('--dej-bloc-h', `${collant.offsetHeight}px`);
+  };
+  const haut = () => hautBloc || (parseFloat(getComputedStyle(html).getPropertyValue('--entete-h')) || 0) + 24;
+  const course = () => Math.max(1, scene.offsetHeight - collant.offsetHeight);
   const maj = () => {
-    if (!actif()) { delete sec.dataset.dejEtape; sec.classList.remove('est-nappe'); cats.forEach((c) => c.classList.add('est-pose', 'est-actif')); etape = ''; return; }
+    if (!actif()) { delete sec.dataset.dejEtape; sec.classList.remove('est-nappe', 'est-serre', 'est-tres-serre'); sec.style.removeProperty('--dej-haut'); cats.forEach((c) => c.classList.add('est-pose', 'est-actif')); etape = ''; return; }
     const r = scene.getBoundingClientRect(), p = (haut() - r.top) / course();
     if (p > 1.02) poser(0, true); else poser(p < 0 ? 0 : SEUILS.filter((s) => p >= s).length);
   };
@@ -1445,9 +1478,9 @@ function rubriques() {
   const cartes = $$('.rubrique-carte:not(.dej-semaine)'); if (!cartes.length || !gsap || !window.ScrollTrigger || etat.calme) return;
   /* Le déclencheur est la colonne (jamais déplacée), décalée de la position de la carte (offsetTop ignore la translation) :
      au recalcul, la carte encore décalée de 90 px ne change pas sa position de départ. */
-  const col = cartes[0].parentElement;
+  const col = cartes[0].parentElement, sansBoite = getComputedStyle(col).display === 'contents';
   for (const c of cartes) {
-    gsap.timeline({ scrollTrigger: { trigger: col, start: () => `top+=${c.offsetTop - col.offsetTop} 92%`, once: true, invalidateOnRefresh: true } })
+    gsap.timeline({ scrollTrigger: sansBoite ? { trigger: c, start: 'top 92%', once: true } : { trigger: col, start: () => `top+=${c.offsetTop - col.offsetTop} 92%`, once: true, invalidateOnRefresh: true } })
       .fromTo(c, { y: 90, opacity: 0, rotate: 1.2 }, { y: 0, opacity: 1, rotate: 0, duration: 0.9, ease: 'power3.out' })
       .fromTo($$('.plat-ligne__points', c), { scaleX: 0 }, { scaleX: 1, duration: 0.8, stagger: 0.14, ease: 'power2.out' }, 0.3);
   }

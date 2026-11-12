@@ -1,11 +1,13 @@
 {
- "id": "20261112-190040-complet-cible-partiel",
- "date": "2026-11-12T19:01:43.621Z",
+ "id": "20261112-194221-complet-cible-partiel",
+ "date": "2026-11-12T19:45:03.495Z",
  "niveau": "complet",
  "pages": "/",
  "etapes": [
   "fichiers",
-  "mesures"
+  "mesures",
+  "ecran",
+  "mouvement"
  ],
  "version": "7",
  "echecs": 0,
