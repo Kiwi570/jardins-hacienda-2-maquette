@@ -8,14 +8,14 @@ const navigation = (c) => c.site.navigation.filter((cle) => c.pages[cle] && (c.p
 
 /* Heure et couleur de chaque page : l'horloge de l'en-tête, la couleur du voile et ses chiffres. */
 export const HEURES = {
-  accueil: { h: '12', m: '00', voile: '#0c6f7b' },
-  'la-carte': { h: '12', m: '30', voile: '#9c4a22' },
-  receptions: { h: '19', m: '00', voile: '#24453e' },
-  reserver: { h: '21', m: '00', voile: '#11201b' },
-  'les-fetes': { h: '23', m: '30', voile: '#2a120a' },
-  offrir: { h: '00', m: '00', voile: '#120c09' },
-  'infos-pratiques': { h: '--', m: '--', voile: '#1c1712', reelle: true },
-  404: { h: '00', m: '00', voile: '#120c09' },
+  accueil: { h: '12', m: '00', voile: '#f6f1e7' },
+  'la-carte': { h: '12', m: '30', voile: '#f6f1e7' },
+  receptions: { h: '19', m: '00', voile: '#f6f1e7' },
+  reserver: { h: '21', m: '00', voile: '#f6f1e7' },
+  'les-fetes': { h: '23', m: '30', voile: '#f6f1e7' },
+  offrir: { h: '00', m: '00', voile: '#f6f1e7' },
+  'infos-pratiques': { h: '--', m: '--', voile: '#f6f1e7', reelle: true },
+  404: { h: '00', m: '00', voile: '#f6f1e7' },
 };
 
 /* Avant le premier affichage (après le script critique du socle) : moment réel à Moineville (jour, soir) et saison,
@@ -156,7 +156,7 @@ function voile(c) {
   const forme = FORMES_VOILE.includes(c.site.formeVoile) ? c.site.formeVoile : 'glisse';
   const H = HEURES[c.page.cle] || HEURES.accueil;
   return html`<script type="application/json" data-reservation-globale>${brut(JSON.stringify(c.donnees.reservation).replace(/<\//g, '<\\/'))}</script>
-<div data-voile data-forme="${forme}" aria-hidden="true"><div class="voile-contenu"><p class="voile-heure" data-voile-heure>${H.reelle ? '' : `${H.h}:${H.m}`}</p><span data-voile-libelle>${c.libelle(c.page.cle)}</span></div></div>${c.page.cle === 'la-carte' ? brut(`<script>(function(){var e=document.querySelector('[data-voile-heure]');if(e&&document.documentElement.getAttribute('data-moment')==='soir')e.textContent='20:30';})();</script>`) : ''}`;
+<div data-voile data-forme="${forme}" aria-hidden="true"><div class="voile-contenu"><span class="voile-logo" aria-hidden="true"></span><p class="voile-heure" data-voile-heure>${H.reelle ? '' : `${H.h}:${H.m}`}</p><span data-voile-libelle>${c.libelle(c.page.cle)}</span><span class="voile-trait" aria-hidden="true"></span></div></div>${c.page.cle === 'la-carte' ? brut(`<script>(function(){var e=document.querySelector('[data-voile-heure]');if(e&&document.documentElement.getAttribute('data-moment')==='soir')e.textContent='20:30';})();</script>`) : ''}`;
 }
 
 /* Chiffres de l'intro : de 00 à l'heure de la page (l'heure réelle pour Infos pratiques, posée par site.js). */

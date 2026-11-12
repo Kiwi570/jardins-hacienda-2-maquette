@@ -12,7 +12,7 @@ html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime].vu {
 /* Voile de transition : couvre l'écran dès la première image à l'arrivée par un lien interne. */
 [data-voile] {
   position: fixed; inset: 0; z-index: 900; background: var(--voile-fond);
-  background: linear-gradient(0deg, var(--voile-avant, var(--voile-fond)) 0%, var(--voile-fond) 78%);
+  background: radial-gradient(75% 68% at 50% 46%, #fcf6eb 0%, #f2e9da 48%, #e3d4bc 100%);
   transform: translateY(100%); visibility: hidden; pointer-events: none;
 }
 html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) [data-voile] {
@@ -48,13 +48,21 @@ html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { backgrou
   -webkit-mask: url(/assets/images/logo-480.webp) center / contain no-repeat; mask: url(/assets/images/logo-480.webp) center / contain no-repeat; }
 .voile-heure, .horloge, .menu-heure { display: none !important; }
 .ouverture-panneau { gap: 10px; color: var(--ouverture-texte, #1c1712); }
-.ouverture-heure { margin: 0; display: flex; align-items: flex-start; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(5rem, min(22vw, 30vh), 15rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.ouverture-heure { margin: 0; display: flex; align-items: flex-start; font-family: 'Manrope', 'Manrope Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(5rem, min(22vw, 30vh), 15rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .ouverture-rouleau { display: block; height: 1em; overflow: hidden; }
 .ouverture-rouleau > span { display: block; height: 1em; }
 .ouverture-sep { display: block; padding-inline: .02em; }
-.ouverture-nom { margin: 0; font-family: 'Instrument Serif', 'Instrument Fallback', Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.1; }
+.ouverture-nom { margin: 0; font-family: 'Fraunces', 'Fraunces Fallback', Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.1; }
 .ouverture-ligne { margin: 0; font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; opacity: .72; }
-.voile-contenu { display: grid; justify-items: center; gap: 6px; color: #f6efe2; }
-.voile-heure { margin: 0; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(4rem, 16vw, 11rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.voile-contenu { display: grid; justify-items: center; gap: 10px; color: #1c1712; }
+.voile-logo { display: block; width: clamp(64px, 8vw, 96px); aspect-ratio: 480 / 448; background: #b8322c; -webkit-mask: url(/assets/images/logo-480.webp) center / contain no-repeat; mask: url(/assets/images/logo-480.webp) center / contain no-repeat; }
+.voile-trait { display: block; width: 120px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, #c99d52, transparent); }
+html.voile-depart:not(.calme) .voile-logo { animation: voile-logo .55s cubic-bezier(.2, .8, .2, 1) .12s both; }
+html.voile-depart:not(.calme) [data-voile-libelle] { animation: voile-mot .5s cubic-bezier(.2, .8, .2, 1) .2s both; }
+html.voile-depart:not(.calme) .voile-trait { animation: voile-trait .6s cubic-bezier(.2, .8, .2, 1) .26s both; }
+@keyframes voile-logo { from { opacity: 0; transform: scale(.82) rotate(-8deg); } }
+@keyframes voile-mot { from { opacity: 0; transform: translateY(12px); } }
+@keyframes voile-trait { from { transform: scaleX(0); } }
+.voile-heure { margin: 0; font-family: 'Manrope', 'Manrope Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(4rem, 16vw, 11rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 html:not([data-moment="soir"]) [data-moment-seul="soir"], html[data-moment="soir"] [data-moment-seul="jour"] { display: none !important; }
 html:not([data-saison="ete"]) [data-saison-seul="ete"], html[data-saison="ete"] [data-saison-seul="hiver"] { display: none !important; }

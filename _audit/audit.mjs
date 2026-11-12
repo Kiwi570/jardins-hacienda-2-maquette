@@ -98,11 +98,15 @@ const T = (nom) => TAILLES.find((t) => t.nom === nom);
 const NIVEAU = args.complet ? 'complet' : args.rapide ? 'rapide' : 'standard';
 const RAPIDE = NIVEAU === 'rapide';
 const COMPLET = NIVEAU === 'complet';
-const TAILLES_NORMAL = COMPLET ? TAILLES : (RAPIDE ? ['390×844', '844×390', '1366×768'] : ['320×568', '390×844', '844×390', '768×1024', '1366×768', '1920×1080']).map(T);
-const TAILLES_AUTRES = COMPLET ? TAILLES : (RAPIDE ? ['390×844'] : ['390×844', '1366×768']).map(T);
+/* --ordinateur : seulement les tailles d'ordinateur (largeur ≥ 1000 px), pour les passes de travail où le client
+   teste sur ordinateur ; le téléphone et les petits formats sont repris à l'audit de fin. */
+const ORDI = !!args.ordinateur;
+const ordi = (l) => (ORDI ? l.filter((t) => t && t.w >= 1000) : l);
+const TAILLES_NORMAL = ordi(COMPLET ? TAILLES : (RAPIDE ? ['390×844', '844×390', '1366×768'] : ['320×568', '390×844', '844×390', '768×1024', '1366×768', '1920×1080']).map(T));
+const TAILLES_AUTRES = ordi(COMPLET ? TAILLES : (RAPIDE ? ['390×844'] : ['390×844', '1366×768']).map(T));
 /* En plus, hors audit complet : les cas qui faisaient échouer les audits complets de fin de projet
    (en-tête sans JavaScript sur petit téléphone, scènes trop hautes en mode calme à l'horizontale). */
-const CAS_EN_PLUS = COMPLET ? [] : (RAPIDE ? [['320×568', 'sansJs']] : [['320×568', 'sansJs'], ['844×390', 'calme']]).map(([n, m]) => [T(n), m]);
+const CAS_EN_PLUS = (COMPLET || ORDI) ? [] : (RAPIDE ? [['320×568', 'sansJs']] : [['320×568', 'sansJs'], ['844×390', 'calme']]).map(([n, m]) => [T(n), m]);
 const TAILLES_EPINGLE = (COMPLET ? ['1000×560', '1024×640', '1280×720', '1366×768', '1440×900', '1728×1000', '1920×1080', '2560×1440']
   : RAPIDE ? ['1000×560', '1366×768'] : ['1000×560', '1280×720', '1366×768', '1440×900', '1920×1080'])
   .map((n) => T(n) || { nom: n, w: +n.split('×')[0], h: +n.split('×')[1], tactile: false });

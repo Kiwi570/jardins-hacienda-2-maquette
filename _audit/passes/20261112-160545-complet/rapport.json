@@ -1,0 +1,1725 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "lien vers le site actuel",
+      "detail": "https://www.lesjardinsdelhacienda54.com/online-ordering",
+      "etape": "fichiers",
+      "page": "index.html",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "9.0 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.venir__grille > div.venir__plan.est-vu:nth-of-type(2) > svg.venir__carte > text.venir__pays:nth-of-type(1)",
+      "lieux": [
+        "1024×768 normal",
+        "1366×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1440×900 normal",
+        "1920×1080 normal",
+        "1728×1000 normal",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1024×768 sansWebgl",
+        "1000×560 calme",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "9.0 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.venir__grille > div.venir__plan.est-vu:nth-of-type(2) > svg.venir__carte > text.venir__pays:nth-of-type(2)",
+      "lieux": [
+        "1024×768 normal",
+        "1366×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1440×900 normal",
+        "1920×1080 normal",
+        "1728×1000 normal",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1024×768 sansWebgl",
+        "1000×560 calme",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "9.5 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.venir__grille > div.venir__plan.est-vu:nth-of-type(2) > svg.venir__carte > text.venir__note:nth-of-type(4)",
+      "lieux": [
+        "1024×768 normal",
+        "1366×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1440×900 normal",
+        "1920×1080 normal",
+        "1728×1000 normal",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1024×768 sansWebgl",
+        "1000×560 calme",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "9.0 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "1024×768",
+      "mode": "sansJs",
+      "selecteur": "div.conteneur.venir__grille > div.venir__plan:nth-of-type(2) > svg.venir__carte > text.venir__pays:nth-of-type(1)",
+      "lieux": [
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1366×768 sansJs",
+        "1440×900 sansJs",
+        "1728×1000 sansJs",
+        "1920×1080 sansJs",
+        "2560×1440 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "9.0 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "1024×768",
+      "mode": "sansJs",
+      "selecteur": "div.conteneur.venir__grille > div.venir__plan:nth-of-type(2) > svg.venir__carte > text.venir__pays:nth-of-type(2)",
+      "lieux": [
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1366×768 sansJs",
+        "1440×900 sansJs",
+        "1728×1000 sansJs",
+        "1920×1080 sansJs",
+        "2560×1440 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "9.5 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "1024×768",
+      "mode": "sansJs",
+      "selecteur": "div.conteneur.venir__grille > div.venir__plan:nth-of-type(2) > svg.venir__carte > text.venir__note:nth-of-type(4)",
+      "lieux": [
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1366×768 sansJs",
+        "1440×900 sansJs",
+        "1728×1000 sansJs",
+        "1920×1080 sansJs",
+        "2560×1440 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "premier écran : titre h1 invisible",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/404",
+      "taille": "2560×1440",
+      "mode": "normal",
+      "selecteur": "h1#lum-titre « Cette page a fermé à minuit. »",
+      "lieux": [
+        "2560×1440 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "9.3 px",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-infos2__grille > div.ouv-infos2__visuel:nth-of-type(2) > div.carte-visite > span.carte-visite__ligne:nth-of-type(3) « 6 Vathier Haye, 54580 Moineville »",
+      "lieux": [
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1024×768 sansJs",
+        "1024×768 calme",
+        "1000×560 calme",
+        "1024×768 sansWebgl",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "9.3 px",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-infos2__grille > div.ouv-infos2__visuel:nth-of-type(2) > div.carte-visite > span.carte-visite__ligne.carte-visite__tel:nth-of-type(4) « 06 18 21 28 10 »",
+      "lieux": [
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1024×768 sansJs",
+        "1024×768 calme",
+        "1000×560 calme",
+        "1024×768 sansWebgl",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1366×768 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "8.5 px",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.ouv-infos2__visuel:nth-of-type(2) > div.carte-visite > span.carte-visite__statut:nth-of-type(5) > span:nth-of-type(2) « Fermé · ouvre demain à 12 h »",
+      "lieux": [
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1920×1080 normal",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1000×560 calme",
+        "1024×768 sansWebgl",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec div.conteneur.ouv-infos2__grille > div.ouv-infos2__visuel:nth-of-type(2) > div.carte-visite > span.carte-visite__ligne:nth-of-type(3) « 6 Vathier Haye, 54580 Moineville »",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-infos2__grille > div.ouv-infos2__visuel:nth-of-type(2) > div.carte-visite > span.carte-visite__nom:nth-of-type(2) « Les Jardins de l'Hacienda »",
+      "lieux": [
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1920×1080 normal",
+        "1024×768 sansJs",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1000×560 calme",
+        "1024×768 sansWebgl",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec div.conteneur.ouv-infos2__grille > div.ouv-infos2__visuel:nth-of-type(2) > div.carte-visite > span.carte-visite__ligne.carte-visite__tel:nth-of-type(4) « 06 18 21 28 10 »",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-infos2__grille > div.ouv-infos2__visuel:nth-of-type(2) > div.carte-visite > span.carte-visite__ligne:nth-of-type(3) « 6 Vathier Haye, 54580 Moineville »",
+      "lieux": [
+        "1024×768 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1920×1080 normal",
+        "1024×768 sansJs",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1024×768 sansWebgl",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "4.23:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur > div.semaine__tableau:nth-of-type(2) > div.semaine__echelle:nth-of-type(1) > span:nth-of-type(1) « 0 h »",
+      "lieux": [
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1920×1080 normal",
+        "1024×768 sansJs",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1000×560 calme",
+        "1024×768 sansWebgl",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "4.23:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur > div.semaine__tableau:nth-of-type(2) > div.semaine__echelle:nth-of-type(1) > span:nth-of-type(2) « 6 h »",
+      "lieux": [
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1920×1080 normal",
+        "1024×768 sansJs",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1000×560 calme",
+        "1024×768 sansWebgl",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "4.23:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur > div.semaine__tableau:nth-of-type(2) > div.semaine__echelle:nth-of-type(1) > span:nth-of-type(3) « 12 h »",
+      "lieux": [
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1920×1080 normal",
+        "1024×768 sansJs",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1000×560 calme",
+        "1024×768 sansWebgl",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "4.23:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur > div.semaine__tableau:nth-of-type(2) > div.semaine__echelle:nth-of-type(1) > span:nth-of-type(4) « 18 h »",
+      "lieux": [
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1920×1080 normal",
+        "1024×768 sansJs",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1000×560 calme",
+        "1024×768 sansWebgl",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "4.23:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur > div.semaine__tableau:nth-of-type(2) > div.semaine__echelle:nth-of-type(1) > span:nth-of-type(5) « 24 h »",
+      "lieux": [
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1920×1080 normal",
+        "1024×768 sansJs",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1000×560 calme",
+        "1024×768 sansWebgl",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "section sans visuel",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "section#horaires « HORAIRES Ouvert maintenant ? Fermé · ouvre demain  »",
+      "lieux": [
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1920×1080 normal",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1000×560 calme",
+        "1024×768 sansWebgl",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "8.5 px",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "sansJs",
+      "selecteur": "div.ouv-infos2__visuel:nth-of-type(2) > div.carte-visite > span.carte-visite__statut:nth-of-type(5) > span:nth-of-type(2) « Horaires »",
+      "lieux": [
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1366×768 sansJs",
+        "1440×900 sansJs",
+        "1728×1000 sansJs",
+        "1920×1080 sansJs",
+        "2560×1440 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "section sans visuel",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1024×768",
+      "mode": "sansJs",
+      "selecteur": "section#horaires « HORAIRES Ouvert maintenant ? Horaires 0 h 6 h 12 h »",
+      "lieux": [
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1366×768 sansJs",
+        "1440×900 sansJs",
+        "1728×1000 sansJs",
+        "1920×1080 sansJs",
+        "2560×1440 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "accessibilité (axe) : color-contrast",
+      "detail": "Elements must meet minimum color contrast ratio thresholds",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "1366×768",
+      "mode": "calme",
+      "selecteur": ".semaine__echelle > span:nth-child(1) ; .semaine__echelle > span:nth-child(2) ; .semaine__echelle > span:nth-child(3)",
+      "lieux": [
+        "1366×768 calme"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "2.83:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/la-carte",
+      "taille": "1728×1000",
+      "mode": "normal",
+      "selecteur": "div.carte-resto__carte.socle-cadre > div.carte-resto__barre:nth-of-type(1) > nav.carte-resto__rubriques > a.carte-resto__lien:nth-of-type(4) « Nos desserts 5 »",
+      "lieux": [
+        "1728×1000 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste insuffisant",
+      "detail": "2.83:1 (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/la-carte",
+      "taille": "1728×1000",
+      "mode": "normal",
+      "selecteur": "div.carte-resto__barre:nth-of-type(1) > nav.carte-resto__rubriques > a.carte-resto__lien:nth-of-type(4) > small « 5 »",
+      "lieux": [
+        "1728×1000 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "premier écran : information clé hors de l’écran",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "1000×560",
+      "mode": "sansJs",
+      "selecteur": "section#debut > div.conteneur.ouv-fetes__grille > div.ouv-fetes__contenu:nth-of-type(1) > p.ouv-fetes__info:nth-of-type(5) « Saint-Sylvestre : 120 € le menu · Noël : 79 € par  »",
+      "lieux": [
+        "1000×560 sansJs",
+        "1280×720 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 367 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 379 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 393 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 409 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 426 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 443 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 460 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 476 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 495 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 518 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 684 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 693 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 715 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 738 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 780 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 804 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 814 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 825 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 841 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 876 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 891 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 908 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 927 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 948 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 971 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 1003 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 1018 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 1034 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 1050 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 1069 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "lien vers une ancre : image blanche",
+      "detail": "à 1079 ms (films/ancre-receptions-1366.png)",
+      "etape": "parcours",
+      "page": "/receptions → /reserver#formulaire",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "bouton du mode calme",
+      "detail": "pas de retour à la section #apres-midi après le rechargement",
+      "etape": "parcours",
+      "page": "/",
+      "taille": "390×844",
+      "mode": "bouton réduire",
+      "lieux": [
+        "390×844 bouton réduire",
+        "390×844 bouton rétablir"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "bouton du mode calme",
+      "detail": "l’intro (ou son panneau) apparaît au rechargement dû au bouton",
+      "etape": "parcours",
+      "page": "/",
+      "taille": "390×844",
+      "mode": "bouton rétablir",
+      "lieux": [
+        "390×844 bouton rétablir"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 14 px (à 4 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1024×640",
+      "mode": "épinglé",
+      "selecteur": "section#midi > div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) « Prochain rendez-vous : Soirée côte de bœuf, samedi »",
+      "lieux": [
+        "1024×640 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 14 px (à 4 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1024×640",
+      "mode": "épinglé",
+      "selecteur": "div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) > a « Soirée côte de bœuf, samedi 21 novembre 2026 »",
+      "lieux": [
+        "1024×640 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 4 px (à 4 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1024×640",
+      "mode": "épinglé",
+      "selecteur": "section#midi > div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > a.heros__bascule « Voir l'été »",
+      "lieux": [
+        "1024×640 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 14 px (à 50 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1024×640",
+      "mode": "épinglé",
+      "selecteur": "section#midi > div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) « Prochain rendez-vous : Soirée côte de bœuf, samedi »",
+      "lieux": [
+        "1024×640 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 14 px (à 50 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1024×640",
+      "mode": "épinglé",
+      "selecteur": "div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) > a « Soirée côte de bœuf, samedi 21 novembre 2026 »",
+      "lieux": [
+        "1024×640 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 4 px (à 50 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1024×640",
+      "mode": "épinglé",
+      "selecteur": "section#midi > div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > a.heros__bascule « Voir l'été »",
+      "lieux": [
+        "1024×640 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 14 px (à 96 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1024×640",
+      "mode": "épinglé",
+      "selecteur": "section#midi > div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) « Prochain rendez-vous : Soirée côte de bœuf, samedi »",
+      "lieux": [
+        "1024×640 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 14 px (à 96 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1024×640",
+      "mode": "épinglé",
+      "selecteur": "div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) > a « Soirée côte de bœuf, samedi 21 novembre 2026 »",
+      "lieux": [
+        "1024×640 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 4 px (à 96 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1024×640",
+      "mode": "épinglé",
+      "selecteur": "section#midi > div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > a.heros__bascule « Voir l'été »",
+      "lieux": [
+        "1024×640 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 8 px (à 4 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1366×768",
+      "mode": "épinglé",
+      "selecteur": "section#midi > div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) « Prochain rendez-vous : Soirée côte de bœuf, samedi »",
+      "lieux": [
+        "1366×768 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 8 px (à 4 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1366×768",
+      "mode": "épinglé",
+      "selecteur": "div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) > a « Soirée côte de bœuf, samedi 21 novembre 2026 »",
+      "lieux": [
+        "1366×768 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 8 px (à 50 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1366×768",
+      "mode": "épinglé",
+      "selecteur": "section#midi > div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) « Prochain rendez-vous : Soirée côte de bœuf, samedi »",
+      "lieux": [
+        "1366×768 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 8 px (à 50 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1366×768",
+      "mode": "épinglé",
+      "selecteur": "div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) > a « Soirée côte de bœuf, samedi 21 novembre 2026 »",
+      "lieux": [
+        "1366×768 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 8 px (à 96 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1366×768",
+      "mode": "épinglé",
+      "selecteur": "section#midi > div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) « Prochain rendez-vous : Soirée côte de bœuf, samedi »",
+      "lieux": [
+        "1366×768 épinglé"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "ne tient pas dans l’écran",
+      "detail": "coupé en bas de 8 px (à 96 % de la scène)",
+      "etape": "ecran",
+      "page": "/",
+      "taille": "1366×768",
+      "mode": "épinglé",
+      "selecteur": "div.heros__texte.conteneur:nth-of-type(2) > div.heros__barre > p.heros__rdv:nth-of-type(2) > a « Soirée côte de bœuf, samedi 21 novembre 2026 »",
+      "lieux": [
+        "1366×768 épinglé"
+      ]
+    }
+  ],
+  "aRegarder": [
+    {
+      "niveau": "regarder",
+      "controle": "grille : aucun titre ne fait l’événement (point 5)",
+      "detail": "absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille=\"typo\"",
+      "etape": "grille",
+      "page": "/",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : aucun titre ne fait l’événement (point 5)",
+      "detail": "absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille=\"typo\"",
+      "etape": "grille",
+      "page": "/infos-pratiques",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : aucun titre ne fait l’événement (point 5)",
+      "detail": "absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille=\"typo\"",
+      "etape": "grille",
+      "page": "/les-fetes",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : aucun titre ne fait l’événement (point 5)",
+      "detail": "absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille=\"typo\"",
+      "etape": "grille",
+      "page": "/reserver",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : objet d’ouverture hors du premier écran",
+      "detail": "335 × 40 px visibles : l’intro et le voile s’ouvrent depuis le centre de l’écran à cette taille",
+      "etape": "grille",
+      "page": "/la-carte",
+      "taille": "390×844",
+      "lieux": [
+        "390×844"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : objet d’ouverture hors du premier écran",
+      "detail": "358 × 40 px visibles : l’intro et le voile s’ouvrent depuis le centre de l’écran à cette taille",
+      "etape": "grille",
+      "page": "/les-fetes",
+      "taille": "390×844",
+      "lieux": [
+        "390×844"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : objet d’ouverture hors du premier écran",
+      "detail": "358 × 52 px visibles : l’intro et le voile s’ouvrent depuis le centre de l’écran à cette taille",
+      "etape": "grille",
+      "page": "/reserver",
+      "taille": "390×844",
+      "lieux": [
+        "390×844"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1461 ms (différence 30 %) (films/transition-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/ → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "retour arrière : changement brusque",
+      "detail": "à 385 ms (différence 28 %) (films/retour-arrière-1366.png)",
+      "etape": "films",
+      "page": "/",
+      "taille": "1366×768",
+      "mode": "retour arrière",
+      "lieux": [
+        "1366×768 retour arrière"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1422 ms (différence 30 %) (films/transition-infos-pratiques-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/infos-pratiques → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1495 ms (différence 23 %) (films/transition-infos-pratiques-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/infos-pratiques → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1437 ms (différence 36 %) (films/transition-les-fetes-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/les-fetes → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1490 ms (différence 23 %) (films/transition-les-fetes-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/les-fetes → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1439 ms (différence 36 %) (films/transition-offrir-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/offrir → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1381 ms (différence 37 %) (films/transition-receptions-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/receptions → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1447 ms (différence 30 %) (films/transition-receptions-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/receptions → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1539 ms (différence 30 %) (films/transition-reserver-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/reserver → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1625 ms (différence 29 %) (films/transition-reserver-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/reserver → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "rechargement au milieu de la page",
+      "detail": "écran différent à la même position après rechargement (6.2 %), voir comparaisons/rechargement-infos-pratiques-*.png",
+      "etape": "parcours",
+      "page": "/infos-pratiques",
+      "taille": "1366×768",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "rechargement au milieu de la page",
+      "detail": "écran différent à la même position après rechargement (46.6 %), voir comparaisons/rechargement-la-carte-*.png",
+      "etape": "parcours",
+      "page": "/la-carte",
+      "taille": "1366×768",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "rechargement au milieu de la page",
+      "detail": "écran différent à la même position après rechargement (69.9 %), voir comparaisons/rechargement-reserver-*.png",
+      "etape": "parcours",
+      "page": "/reserver",
+      "taille": "1366×768",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "fluidité",
+      "detail": "4 % d'images de plus de 50 ms",
+      "etape": "fluidite",
+      "page": "/receptions",
+      "taille": "1366×768",
+      "mode": "défilement à la molette, processeur ralenti 4 fois",
+      "lieux": [
+        "1366×768 défilement à la molette, processeur ralenti 4 fois"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "effet qui ne bouge pas au défilement",
+      "detail": "invitation : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section",
+      "etape": "mouvement",
+      "page": "/receptions",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.invitation",
+      "lieux": [
+        "1366×768 normal",
+        "390×844 normal"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "effet qui ne bouge pas au défilement",
+      "detail": "service : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section",
+      "etape": "mouvement",
+      "page": "/reserver",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "section#debut.ouv-resa",
+      "lieux": [
+        "1366×768 normal",
+        "390×844 normal"
+      ]
+    }
+  ],
+  "nonLances": [
+    {
+      "controle": "Safari (WebKit)",
+      "raison": "WebKit ne peut pas s’installer ici : vérification à faire dans Safari sur le Mac (liste dans le rapport)",
+      "etape": "safari"
+    }
+  ],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "grille wouahou": 6,
+    "mesures": 256,
+    "balayage": 7,
+    "films d’ouverture": 14,
+    "films de transition": 14,
+    "bords de l’écran": 8,
+    "intro accélérable et passable": 7,
+    "menu": 1,
+    "clavier": 8,
+    "liens et boutons": 8,
+    "liens profonds": 16,
+    "liens vers la page en cours": 7,
+    "changements de hauteur": 7,
+    "mode calme": 14,
+    "bouton du mode calme": 2,
+    "parcours du projet": 1,
+    "tient dans l’écran": 8,
+    "fluidité": 14,
+    "défilement selon l’appareil": 5,
+    "mouvement": 14,
+    "effets du plan": 23,
+    "souris immobile": 4,
+    "vitesse": 7,
+    "captures": 1
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=7",
+    "Journal v7 : 13 étape(s) notée(s), 532 min de travail pour 515 min de budget, 0 min d’attente de l’utilisateur.",
+    "Journal : « audit standard (deux passages) et corrections » 79 min pour 35 prévues.",
+    "Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.",
+    "Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.",
+    "Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.",
+    "Ouverture / (1366×768) : 2597 ms depuis le premier octet",
+    "Ouverture /infos-pratiques (1366×768) : 2498 ms depuis le premier octet",
+    "Ouverture /la-carte (1366×768) : 2389 ms depuis le premier octet",
+    "Ouverture /les-fetes (1366×768) : 2496 ms depuis le premier octet",
+    "Ouverture /offrir (1366×768) : 2464 ms depuis le premier octet",
+    "Ouverture /receptions (1366×768) : 2542 ms depuis le premier octet",
+    "Ouverture /reserver (1366×768) : 2429 ms depuis le premier octet",
+    "Ouverture / (390×844) : 2542 ms depuis le premier octet",
+    "Ouverture /infos-pratiques (390×844) : 2459 ms depuis le premier octet",
+    "Ouverture /la-carte (390×844) : 2440 ms depuis le premier octet",
+    "Ouverture /les-fetes (390×844) : 2485 ms depuis le premier octet",
+    "Ouverture /offrir (390×844) : 2442 ms depuis le premier octet",
+    "Ouverture /receptions (390×844) : 2471 ms depuis le premier octet",
+    "Ouverture /reserver (390×844) : 2457 ms depuis le premier octet",
+    "bords de l’écran /receptions 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)",
+    "Bords de l’écran : 551 images d’intro, 20 de voile et 209 de menu jugées (panneau immobile couvrant tout l’écran), barre de défilement classique de 15 px.",
+    "Tient dans l'écran /infos-pratiques : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /la-carte : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /les-fetes : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /offrir : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /receptions : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /reserver : aucune section épinglée ou plein écran.",
+    "Fluidité / 1366×768 (molette) : 2 % d'images lentes sur 464, tâche la plus longue 76 ms",
+    "Fluidité /infos-pratiques 1366×768 (molette) : 0 % d'images lentes sur 223, tâche la plus longue 0 ms",
+    "Fluidité /la-carte 1366×768 (molette) : 1 % d'images lentes sur 372, tâche la plus longue 0 ms",
+    "Fluidité /les-fetes 1366×768 (molette) : 0 % d'images lentes sur 336, tâche la plus longue 0 ms",
+    "Fluidité /offrir 1366×768 (molette) : 0 % d'images lentes sur 132, tâche la plus longue 0 ms",
+    "Fluidité /reserver 1366×768 (molette) : 0 % d'images lentes sur 212, tâche la plus longue 0 ms",
+    "Fluidité / 390×844 (doigt) : 0 % d'images lentes sur 1417, tâche la plus longue 0 ms",
+    "Fluidité /infos-pratiques 390×844 (doigt) : 0 % d'images lentes sur 1348, tâche la plus longue 0 ms",
+    "Fluidité /la-carte 390×844 (doigt) : 0 % d'images lentes sur 1339, tâche la plus longue 0 ms",
+    "Fluidité /les-fetes 390×844 (doigt) : 0 % d'images lentes sur 1422, tâche la plus longue 0 ms",
+    "Fluidité /offrir 390×844 (doigt) : 0 % d'images lentes sur 1422, tâche la plus longue 0 ms",
+    "Fluidité /receptions 390×844 (doigt) : 0 % d'images lentes sur 1422, tâche la plus longue 0 ms",
+    "Fluidité /reserver 390×844 (doigt) : 0 % d'images lentes sur 1342, tâche la plus longue 0 ms",
+    "Vitesse / : 0.74 s de calcul au chargement (téléphone ralenti).",
+    "Vitesse /infos-pratiques : 0.27 s de calcul au chargement (téléphone ralenti).",
+    "Vitesse /la-carte : 0.47 s de calcul au chargement (téléphone ralenti).",
+    "Vitesse /les-fetes : 0.50 s de calcul au chargement (téléphone ralenti).",
+    "Vitesse /offrir : 0.32 s de calcul au chargement (téléphone ralenti).",
+    "Vitesse /receptions : 0.52 s de calcul au chargement (téléphone ralenti).",
+    "Vitesse /reserver : 0.42 s de calcul au chargement (téléphone ralenti)."
+  ],
+  "grille": [
+    {
+      "cle": "manipuler",
+      "nom": "1. L’effet signature se manipule",
+      "statut": "présent",
+      "detail": "accueil"
+    },
+    {
+      "cle": "intro",
+      "nom": "2. L’intro devient la page",
+      "statut": "présent",
+      "detail": "objet d’ouverture sur 7 page(s), versObjet dans l’intro"
+    },
+    {
+      "cle": "voile",
+      "nom": "3. La transition reprend le motif",
+      "statut": "présent",
+      "detail": "voile en cloche"
+    },
+    {
+      "cle": "fil",
+      "nom": "4. Quelque chose relie les sections et les pages",
+      "statut": "présent",
+      "detail": "sur les 7 page(s)"
+    },
+    {
+      "cle": "typo",
+      "nom": "5. Un titre fait l’événement sur chaque page",
+      "statut": "à regarder",
+      "detail": "présent sur /la-carte, /offrir, /receptions ; absent sur /, /infos-pratiques, /les-fetes, /reserver"
+    },
+    {
+      "cle": "scene",
+      "nom": "6. La scène est un geste du métier",
+      "statut": "présent",
+      "detail": "geste du métier sur /la-carte, /receptions"
+    },
+    {
+      "cle": "retour",
+      "nom": "7. L’action principale a un retour physique",
+      "statut": "présent",
+      "detail": "sur /, /les-fetes, /offrir, /receptions, /reserver"
+    }
+  ]
+}

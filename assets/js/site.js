@@ -48,7 +48,9 @@ function preparerVoile(url) {
   /* Le voile est un ciel : la couleur de l'heure de départ en bas, celle de l'heure d'arrivée en haut. */
   const ici = heurePage(new URL(location.href));
   if (ici && ici[1]) html.style.setProperty('--voile-avant', ici[1]);
-  html.style.setProperty('--voile-fond', h[1]);
+  html.style.setProperty('--voile-fond', '#f6f1e7');
+  /* Le monogramme, le nom de la page et le filet d'or se posent pendant que le voile couvre l'écran. */
+  html.classList.remove('voile-depart'); void html.offsetWidth; html.classList.add('voile-depart');
   const el = $('[data-voile-heure]'); if (el) el.textContent = h[0] || heureParis();
 }
 /* Page d'arrivée : l'intro roule jusqu'à la même heure, l'horloge de l'en-tête l'affiche. */
@@ -237,8 +239,8 @@ async function statuts() {
 }
 
 /* ---------- La lumière de la journée (signature) : horloge de l'en-tête, couleur de l'en-tête, chiffres variables ---------- */
-const TEINTES = { midi: [246, 241, 231], chef: [27, 19, 16], lieu: [239, 229, 211], moment: [244, 236, 224], dejeuner: [243, 234, 217], apresmidi: [242, 222, 178], terrasse: [19, 36, 31], diner: [17, 32, 27], feu: [18, 12, 9], fetes: [26, 15, 11], minuit: [14, 10, 8] };
-const NUIT = new Set(['chef', 'terrasse', 'diner', 'feu', 'fetes', 'minuit']);
+const TEINTES = { midi: [246, 241, 231], chef: [248, 243, 234], lieu: [239, 229, 211], moment: [244, 236, 224], venir: [244, 236, 224], dejeuner: [27, 19, 16], apresmidi: [242, 222, 178], terrasse: [19, 36, 31], diner: [17, 32, 27], feu: [18, 12, 9], fetes: [26, 15, 11], minuit: [14, 10, 8] };
+const NUIT = new Set(['dejeuner', 'terrasse', 'diner', 'feu', 'fetes', 'minuit']);
 const enMinutes = (h) => { const [a, b] = h.split(':').map(Number); return a * 60 + b; };
 function axes(el, f) {
   /* f : 0 à midi, 1 à minuit. Large et fin le jour, serré et gras la nuit. */
@@ -277,7 +279,7 @@ function lumiere() {
       html.style.setProperty('--entete-fond', `rgb(${TEINTES[a.l].join(',')})`);
       html.style.setProperty('--entete-texte', NUIT.has(a.l) ? '#f6efe2' : '#1c1712');
       html.dataset.enteteTheme = NUIT.has(a.l) ? 'nuit' : 'jour';
-      html.style.setProperty('--voile-fond', NUIT.has(a.l) ? '#1a0f0b' : '#0c6f7b');
+      html.style.setProperty('--voile-fond', '#f6f1e7');
     }
     const f = Math.round(Math.max(0, Math.min(1, (m - 720) / 720)) * 50) / 50;
     if (f !== dernierF) { dernierF = f; chiffres.forEach((el) => axes(el, f)); }
@@ -1203,6 +1205,81 @@ function feuResa() {
   if (sec.fxTimeline) brancher(sec.fxTimeline); else sec.addEventListener('fx:pret', () => brancher(sec.fxTimeline), { once: true });
 }
 
+/* Offrir & emporter : la carte cadeau s'incline vers la main, son reflet suit ; les montants changent la carte.
+   Venir : les traits du plan se dessinent à l'arrivée. */
+function offrirEmporter() {
+  const zone = $('[data-carte-luxe]'), carte = zone && $('.carte-luxe', zone);
+  if (carte && matchMedia('(hover: hover)').matches && !etat.calme) {
+    zone.addEventListener('pointermove', (e) => {
+      const r = zone.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      carte.style.setProperty('--ry', `${((x - 0.5) * 18).toFixed(1)}deg`); carte.style.setProperty('--rx', `${(-(y - 0.5) * 12).toFixed(1)}deg`);
+      carte.style.setProperty('--lx', `${Math.round(x * 100)}%`);
+    });
+    zone.addEventListener('pointerleave', () => { carte.style.removeProperty('--rx'); carte.style.removeProperty('--ry'); carte.style.setProperty('--lx', '30%'); });
+  }
+  const montant = $('[data-carte-montant]');
+  for (const b of $$('.oe-montant')) b.addEventListener('click', () => {
+    for (const x of $$('.oe-montant')) x.setAttribute('aria-pressed', String(x === b));
+    if (!montant) return;
+    montant.classList.add('est-change');
+    setTimeout(() => { montant.textContent = `${b.dataset.montant} €`; montant.classList.remove('est-change'); }, etat.calme ? 0 : 200);
+  });
+  const plan = $('[data-venir]');
+  if (plan) {
+    if (etat.calme || !('IntersectionObserver' in window)) plan.classList.add('est-vu');
+    else { const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { plan.classList.add('est-vu'); io.disconnect(); } }, { threshold: 0.35 }); io.observe(plan); }
+  }
+}
+
+/* Les fêtes : la carte de Noël s'ouvre au défilement (cadre collant ; --p de 0 à 1 lu par le CSS). */
+function noelScene() {
+  const sec = $('[data-effet="noel"]'); if (!sec) return;
+  if (etat.calme || !gsap || !window.ScrollTrigger) { sec.style.setProperty('--p', '1'); return; }
+  const indice = $('.noel-scene__indice', sec);
+  window.ScrollTrigger.create({ trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.4, invalidateOnRefresh: true,
+    onUpdate: (st) => { sec.style.setProperty('--p', st.progress.toFixed(3)); if (indice) indice.style.opacity = String(Math.max(0, 1 - st.progress * 5)); } });
+}
+
+/* La Saint-Sylvestre : la lueur de la salle prend la couleur du vin du plat choisi. */
+function sylvestreLueur() {
+  const sec = $('[data-sylvestre]'); if (!sec) return;
+  const maj = () => { const li = $('.ame__plat.est-choisi', sec) || $('.ame__plat', sec); const c = li && getComputedStyle(li).getPropertyValue('--c').trim(); if (c) sec.style.setProperty('--vin', c); };
+  sec.addEventListener('change', () => requestAnimationFrame(maj));
+  sec.addEventListener('click', () => setTimeout(maj, 60));
+  setTimeout(maj, 1200);
+}
+
+/* Infos pratiques : la carte de visite s'incline vers la main ; la semaine d'un coup d'œil (aujourd'hui, maintenant,
+   curseur d'heure qui allume les créneaux ouverts et le dit en toutes lettres). */
+function infosSemaine() {
+  const zone = $('[data-carte-visite]'), cv = zone && $('.carte-visite', zone);
+  if (cv && matchMedia('(hover: hover)').matches && !etat.calme) {
+    zone.addEventListener('pointermove', (e) => { const r = zone.getBoundingClientRect(); cv.style.setProperty('--ry', `${(((e.clientX - r.left) / r.width) - 0.5) * 16}deg`); cv.style.setProperty('--rx', `${-(((e.clientY - r.top) / r.height) - 0.5) * 10}deg`); });
+    zone.addEventListener('pointerleave', () => { cv.style.setProperty('--rx', '0deg'); cv.style.setProperty('--ry', '0deg'); });
+  }
+  const t = $('[data-semaine]'); if (!t) return;
+  const range = $('[data-semaine-range]', t), bulle = $('[data-semaine-bulle]', t), lecture = $('[data-semaine-lecture]', t), curseur = $('.semaine__curseur', t), jours = $$('.semaine__jour', t);
+  const NOMS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).map((x) => [x.type, x.value]));
+  const auj = NOMS[new Date(`${p.year}-${p.month}-${p.day}T12:00:00Z`).getUTCDay()], mnt = +p.hour * 60 + +p.minute;
+  for (const j of jours) if (j.dataset.jour === auj) { j.classList.add('est-aujourdhui'); j.style.setProperty('--m', (mnt / 1440).toFixed(4)); $('.semaine__maintenant', j)?.style.setProperty('left', `${(mnt / 1440) * 100}%`); }
+  const lisible = (m) => { const h = Math.floor(m / 60), mm = m % 60; return `${h} h${mm ? ' ' + String(mm).padStart(2, '0') : ''}`; };
+  const hauteur = () => { const l = $('.semaine__jours', t); if (l) curseur.style.setProperty('--hauteur-jours', `${l.offsetHeight}px`); };
+  const maj = (m) => {
+    curseur.style.setProperty('--c', (m / 1440).toFixed(4)); bulle.textContent = lisible(m);
+    const ouverts = [];
+    for (const j of jours) {
+      let ouvert = false;
+      for (const c of $$('.semaine__creneau', j)) { const on = m >= +c.dataset.a && m < +c.dataset.b; c.classList.toggle('est-allume', on); ouvert ||= on; }
+      j.classList.toggle('est-ouvert', ouvert); if (ouvert) ouverts.push(j.dataset.jour);
+    }
+    lecture.textContent = ouverts.length ? `À ${lisible(m)} : ouvert ${ouverts.length > 1 ? ouverts.slice(0, -1).join(', ') + ' et ' + ouverts.at(-1) : ouverts[0]}.` : `À ${lisible(m)} : fermé toute la semaine.`;
+  };
+  const depart = Math.round(mnt / 15) * 15; range.value = String(Math.min(1425, depart));
+  hauteur(); addEventListener('resize', hauteur); maj(+range.value);
+  range.addEventListener('input', () => maj(+range.value));
+}
+
 demarrer({
   preparer() {
     heureDArrivee();
@@ -1220,6 +1297,10 @@ demarrer({
     lieuDefile();
     miniResa();
     feuResa();
+    offrirEmporter();
+    noelScene();
+    sylvestreLueur();
+    infosSemaine();
     feuVivant();
     braises();
     assiettes();

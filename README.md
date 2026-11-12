@@ -16,8 +16,10 @@ les guirlandes, l'hiver à midi la vraie salle aux baies vitrées, l'hiver le so
 `?saison=ete|hiver` et `?moment=jour|soir` forcent l'un ou l'autre pour la présentation.
 Ensuite : le chef (polaroïd de Régis Clauss qui se retourne, étiquettes à déplacer), le déjeuner (la carte en cartes qui
 défilent, l'assiette qui fume collée à côté), le lieu (cinq cartes qui filent au défilement), l'été le panorama de la
-piscine, le coin du feu (la vraie cheminée animée ; la réservation arrive après l'ouverture du titre) et « En ce moment »
-(vraies affiches de Noël et de la Saint-Sylvestre, carte cadeau). La terrasse du soir est sur la page Réceptions.
+piscine, le coin du feu (la vraie cheminée animée ; la réservation arrive après l'ouverture du titre), « En ce moment »
+(vraies affiches de Noël et de la Saint-Sylvestre, soirées à thème), « Offrir & emporter » (incontournables des fêtes,
+carte cadeau) et « Venir » (plan des distances). La terrasse du soir est sur la page Réceptions.
+Polices (v7.5, référence du client) : Fraunces pour les titres, Manrope pour le texte.
 L'intro montre le monogramme de la maison, puis l'écran s'ouvre en cercle.
 
 ## Les pages, chacune à son heure
@@ -26,14 +28,14 @@ L'intro montre le monogramme de la maison, puis l'écran s'ouvre en cercle.
 |---|---|---|---|
 | Accueil | `/` | La journée à l'Hacienda (ci-dessus) | plat-fumant |
 | La carte | `/la-carte` | « La carte se met à l'heure » : déjeuner ou dîner selon l'heure réelle à Moineville ; la bascule rallume toute la page ; la carte en grand index, filtres, recherche | carte-du-restaurant |
-| Les fêtes | `/les-fetes` | « La saison décide » : l'hiver, le décompte géant de la Saint-Sylvestre, le menu en accords mets et vins, Noël plat par plat sous sa cloche, les soirées passées ; l'été (`?saison=ete`), la journée d'été heure par heure | accords-mets-et-vins |
+| Les fêtes | `/les-fetes` | « La saison décide » : l'hiver, les vraies affiches de Noël et de la Saint-Sylvestre en ouverture, les dates, la carte de Noël qui s'ouvre au défilement, la Saint-Sylvestre en accords mets et vins dans une nuit dorée ; l'été (`?saison=ete`), la journée d'été | agenda-des-dates, accords-mets-et-vins |
 | Réceptions | `/receptions` | Nouvelle page : le mot de l'occasion qui change dans le titre, la terrasse qui s'allume au défilement (v7.4), trois espaces en volets (la salle d'abord l'hiver, la terrasse d'abord l'été), demande en trois étapes et carton d'invitation tamponné | — |
 | Réserver | `/reserver` | « La lumière du service » : claire pour un déjeuner, de nuit pour un dîner ; plan de la salle facultatif ; carte de placement sous la cloche | reservation-de-table, plan-de-salle, envol-vers-le-panier |
 | Offrir | `/offrir` | « Minuit, au coin du feu » : la carte cadeau s'écrit à la lueur du feu, puis part dans son enveloppe | carte-cadeau-qui-se-compose |
-| Infos pratiques | `/infos-pratiques` | « Il est 21 h 04 à Moineville » : l'heure réelle en grand, la photo de ce moment, le statut, le cadran des horaires à faire tourner, l'accès, l'été | horaires-ouvert-maintenant |
+| Infos pratiques | `/infos-pratiques` | L'enseigne en arche et la carte de visite de la maison (statut en direct), la semaine des horaires d'un coup d'œil avec son curseur d'heure, l'accès, une question | formulaire-par-etapes |
 | Page fermée | `/404` | « Cette page a fermé à minuit » | — |
 
-Transition entre les pages : la transition en assiette de la v5 (voile « cloche »), plus courte en v7 ; le voile est un ciel, de la couleur de l'heure de départ (en bas) à celle de l'heure d'arrivée (en haut), avec les chiffres de l'heure d'arrivée.
+Transition entre les pages (v7.5) : un papier crème qui monte en cloche depuis le clic, le monogramme en terre cuite, le nom de la page et un filet d'or, puis la cloche se soulève.
 
 ## Mettre à jour le contenu
 
@@ -52,6 +54,8 @@ Transition entre les pages : la transition en assiette de la v5 (voile « cloche
 - **Adresse e-mail** de contact ; stationnement ; **dates des pool parties** de l'été 2027.
 - **Incohérences du site actuel à trancher** : le logo porte le numéro +33 609 386 764 (le site donne 06 18 21 28 10) ; la carte cadeau indique « 6 rue du Benelux · Chemin Valtier » (le site : 6 Vathier Haye) ; « Saison d'été jusqu'au 30/09/2024 » ; code postal 54000 dans une page.
 - **Vidéos en meilleure définition** (facultatif) : Grok a livré les boucles en 672 × 448 px. La flamme (salle et cheminée) et le crépuscule sur la terrasse, trop flous en grand, ne sont pas utilisés (originaux dans `recu/videos/`) ; en 1280 px ou plus, la flamme pourrait animer l'ouverture d'Offrir et la scène « Au coin du feu ».
+- **Incontournables des fêtes** (v7.5) : la liste vient de la page « Commandes en ligne » du site actuel. La maquette ne renvoie pas vers l'ancien site : le bouton propose de commander par téléphone, et le module de commande en ligne est à rebrancher sur le nouveau site à la mise en ligne. Dates de retrait et prix à confirmer (non repris).
+- **Distance de Nancy** (v7.5) : 60 km à vol d'oiseau, calculée comme les autres (Metz, Thionville, Luxembourg).
 - **Textes de la carte à confirmer** : le menu de la Saint-Sylvestre est confirmé par l'affiche du site (v7). Restent à vérifier sur le site actuel ou avec le chef : « Supplément de 10 € par personne… Pour deux : 25 € » (À partager), « Jusqu'à 10 ans : un plat et un dessert » (menu enfant), « Assortiment de charcuteries italiennes ».
 - **Ardoise de la semaine** : les huit plats des ardoises du midi et du soir sont des plats de la carte, choisis pour la maquette ; au restaurant de dire ce qu'il veut y écrire chaque semaine (`donnees/ardoise.json`).
 - **Dates des soirées** (`donnees/agenda.json`) : relevées sur les affiches du site le 11 novembre 2026 ; heures de début non indiquées sur les affiches.

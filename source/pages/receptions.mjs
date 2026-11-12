@@ -33,13 +33,34 @@ export default (c) => {
   <button type="button" class="rdl__passer socle-bouton">${c.t('receptions.passerOuverture')}</button>
 </div>
 <section class="ouv-recep" id="debut">
-  ${c.media({ nom: 'vraie/pergola-banquet', alt: c.s('receptions.alt'), cadrage: '50% 52%', priorite: true, classe: 'ouv-recep__fond', sizes: '100vw', attrs: 'data-fx="zoom" data-fx-force="10"' })}
-  <div class="conteneur ouv-recep__contenu">
-    <p class="surtitre">${c.t('receptions.sur')}</p>
-    <h1 class="ouv-recep__titre" data-iris-centre>${c.t('receptions.titreAvant')} <span class="mot-tournant" data-grille="typo" data-effet="mot" data-mots="${mots.join('|')}"><span class="mot-tournant__mot">${mots[0]}</span></span></h1>
-    <p class="masque-ecran-bas masque-telephone">${c.t('receptions.texte')}</p>
-    <p class="ouv-recep__actions"><a class="bouton" href="#demande" data-action-principale data-sans-transition>${c.t('receptions.action')}</a> <a class="bouton bouton--contour bouton--clair" href="#espaces" data-sans-transition>${c.t('receptions.espacesLien')}</a></p>
-    <p class="ouv-recep__info" data-info-cle><a href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
+  <div class="conteneur ouv-recep__grille">
+    <div class="ouv-recep__contenu">
+      <p class="surtitre">${c.t('receptions.sur')}</p>
+      <h1 class="ouv-recep__titre" data-iris-centre>${c.t('receptions.titreAvant')} <span class="mot-tournant" data-grille="typo" data-effet="mot" data-mots="${mots.join('|')}"><span class="mot-tournant__mot">${mots[0]}</span></span></h1>
+      <p class="ouv-recep__texte">${c.t('receptions.texte')}</p>
+      <p class="ouv-recep__actions"><a class="bouton" href="#demande" data-action-principale data-sans-transition>${c.t('receptions.action')}</a> <a class="bouton bouton--contour bouton--clair" href="#espaces" data-sans-transition>${c.t('receptions.espacesLien')}</a></p>
+      <p class="ouv-recep__info" data-info-cle><a href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
+    </div>
+    <div class="ouv-recep__visuel">
+      ${c.media({ nom: 'vraie/pergola-banquet', alt: c.s('receptions.alt'), cadrage: '50% 52%', priorite: true, classe: 'ouv-recep__arche', sizes: '(max-width: 760px) 80vw, 40vw', attrs: 'data-fx="parallaxe" data-fx-force="5"' })}
+      ${c.media({ nom: 'vraie/table-piscine', alt: c.s('receptions.altMariages'), cadrage: '50% 50%', classe: 'ouv-recep__rond', sizes: '(max-width: 760px) 34vw, 16vw' })}
+      <div class="sceau" aria-hidden="true">
+        <svg class="sceau__texte" viewBox="0 0 200 200"><defs><path id="sceau-cercle" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sceau-cercle" textLength="470">${c.s('receptions.sceau')}</textPath></text></svg>
+        <span class="sceau__logo"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="occasions" id="occasions" aria-labelledby="occasions-titre">
+  <div class="conteneur">
+    <h2 id="occasions-titre" data-anime="lignes">${c.t('receptions.occasionsTitre')}</h2>
+    <ul class="occasions__liste" data-effet="occasions">
+      <li>${c.media({ nom: 'vraie/table-piscine', alt: c.s('receptions.altMariages'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.mariages')}</span></li>
+      <li>${c.media({ nom: 'vraie/gateaux', alt: c.s('receptions.altAnniversaires'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.anniversaires')}</span></li>
+      <li>${c.media({ nom: 'recevoir-depart', alt: c.s('receptions.altDepart'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.depart')}</span></li>
+      <li>${c.media({ nom: 'recevoir-baptemes', alt: c.s('receptions.altBaptemes'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.baptemes')}</span></li>
+    </ul>
   </div>
 </section>
 
@@ -81,18 +102,6 @@ export default (c) => {
       <button type="button" class="volet__tete" aria-expanded="${i === 0 ? 'true' : 'false'}" aria-controls="volet-${e.cle}"><span class="volet__num">0${i + 1}</span><span class="volet__nom">${c.t(`receptions.${e.cle}T`)}</span></button>
       <div class="volet__texte" id="volet-${e.cle}"><p class="saison-tag saison-tag--nuit">${c.t(`receptions.${e.cle}S`)}</p><p>${c.t(`receptions.${e.cle}X`)}</p></div>
     </article>`)}
-  </div>
-</section>
-
-<section class="occasions" id="occasions" aria-labelledby="occasions-titre">
-  <div class="conteneur">
-    <h2 id="occasions-titre" data-anime="lignes">${c.t('receptions.occasionsTitre')}</h2>
-    <ul class="occasions__liste" data-effet="occasions">
-      <li>${c.media({ nom: 'vraie/table-piscine', alt: c.s('receptions.altMariages'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.mariages')}</span></li>
-      <li>${c.media({ nom: 'vraie/gateaux', alt: c.s('receptions.altAnniversaires'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.anniversaires')}</span></li>
-      <li>${c.media({ nom: 'recevoir-depart', alt: c.s('receptions.altDepart'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.depart')}</span></li>
-      <li>${c.media({ nom: 'recevoir-baptemes', alt: c.s('receptions.altBaptemes'), classe: 'occasion__photo', sizes: '(max-width: 760px) 44vw, 22vw' })}<span>${c.t('receptions.baptemes')}</span></li>
-    </ul>
   </div>
 </section>
 

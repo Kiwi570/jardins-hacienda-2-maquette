@@ -25,13 +25,14 @@
     "occasions",
     "invitation",
     "service",
-    "cadran",
     "ete-heure",
     "plan-3d",
     "panorama",
     "soleil",
     "rubriques",
-    "lieu"
+    "lieu",
+    "noel",
+    "semaine"
   ],
   "grille": {
     "dispenses": {}

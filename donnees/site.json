@@ -24,8 +24,8 @@
     "instagram": "https://www.instagram.com/lesjardinsdel.hacienda/"
   },
   "polices": [
-    "/assets/fonts/bricolage.woff2",
-    "/assets/fonts/instrument-serif.woff2"
+    "/assets/fonts/manrope.woff2",
+    "/assets/fonts/fraunces.woff2"
   ],
   "imagePartage": "grok/midi-piscine-1280.webp",
   "curseur": false

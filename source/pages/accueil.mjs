@@ -41,6 +41,34 @@ const ETIQUETTES = [
   { cle: 'saison', x: -4, y: 64, r: -6 },
 ];
 
+
+/* Venir : les vraies positions projetées (x = (lon − 5,55) × 300, y = (49,75 − lat) × 455), les distances à vol d'oiseau
+   calculées depuis Moineville (49,204 N 5,946 E). Les traits se dessinent à l'arrivée, une lueur file vers Moineville. */
+const PV = (lat, lon) => [Math.round((lon - 5.55) * 300), Math.round((49.75 - lat) * 455)];
+const cheminV = (pts) => 'M' + pts.map(([la, lo]) => PV(la, lo).join(' ')).join(' L ');
+function carteVenir(c) {
+  const ici = PV(49.204, 5.946);
+  const villes = [
+    { nom: 'Luxembourg', p: PV(49.6116, 6.1319), km: 47, dx: 10, dy: 5 },
+    { nom: 'Thionville', p: PV(49.3579, 6.1683), km: 24, dx: 10, dy: 5 },
+    { nom: 'Metz', p: PV(49.1193, 6.1757), km: 19, dx: 10, dy: 5 },
+    { nom: 'Nancy', p: PV(48.6921, 6.1844), km: 60, dx: 10, dy: 5 },
+  ];
+  const courbe = (a, b) => { const mx = (a[0] + b[0]) / 2 + (b[1] - a[1]) * 0.12, my = (a[1] + b[1]) / 2 - (b[0] - a[0]) * 0.12; return `M${a.join(' ')} Q ${Math.round(mx)} ${Math.round(my)} ${b.join(' ')}`; };
+  const frontiere = cheminV([[49.58, 5.62], [49.52, 5.80], [49.48, 5.95], [49.465, 6.06], [49.462, 6.13], [49.49, 6.25], [49.47, 6.37], [49.45, 6.50]]);
+  return `<svg class="venir__carte" viewBox="0 0 330 520" role="img" aria-label="${c.s('accueil.venir.carteAlt')}">
+  <path class="venir__frontiere" d="${frontiere}" fill="none"/>
+  <text class="venir__pays" x="12" y="40">LUXEMBOURG</text><text class="venir__pays" x="12" y="150">FRANCE</text>
+  <path class="venir__moselle" d="${cheminV([[48.62, 6.17], [48.69, 6.19], [48.85, 6.12], [49.0, 6.13], [49.1193, 6.185], [49.25, 6.178], [49.3579, 6.176], [49.44, 6.36], [49.60, 6.42], [49.72, 6.45]])}" fill="none"/>
+  ${villes.map((v, i) => { const d = courbe(ici, v.p); return `<path class="venir__trait" d="${d}" fill="none" pathLength="1" style="--i:${i}"/><circle class="venir__comete" r="3.2" style="--i:${i};offset-path:path('${courbe(v.p, ici)}')"/>`; }).join('')}
+  ${villes.map((v, i) => `<g class="venir__ville" style="--i:${i}"><circle cx="${v.p[0]}" cy="${v.p[1]}" r="4.5"/><text x="${v.p[0] + v.dx}" y="${v.p[1] + v.dy}">${v.nom}<tspan class="venir__km" dx="6">${v.km} km</tspan></text></g>`).join('')}
+  <circle class="venir__onde" cx="${ici[0]}" cy="${ici[1]}" r="9"/>
+  <circle class="venir__ici" cx="${ici[0]}" cy="${ici[1]}" r="8"/>
+  <text class="venir__ici-nom" x="${ici[0] - 14}" y="${ici[1] + 6}" text-anchor="end">Moineville</text>
+  <text class="venir__note" x="12" y="510">${c.s('accueil.venir.note')}</text>
+</svg>`;
+}
+
 const dateLongue = (iso) => new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${iso.slice(0, 10)}T12:00:00Z`));
 
 export default (c) => {
@@ -65,7 +93,7 @@ export default (c) => {
       <canvas class="midi__canvas" data-eau aria-hidden="true" data-audit-ignorer></canvas>
     </div>
     <div class="midi__eau midi__hiver" data-grille="manipuler" data-effet="soleil" data-souris>
-      ${c.media({ nom: 'vraie/salle-midi', alt: c.s('accueil.midi.altHiver'), cadrage: '50% 55%', cadrageMobile: '62% 55%', classe: 'midi__photo midi__photo--hiver-jour', sizes: '100vw' })}
+      ${c.media({ nom: 'vraie/salle-panorama', alt: c.s('accueil.midi.altHiver'), cadrage: '56% 50%', cadrageMobile: '62% 55%', classe: 'midi__photo midi__photo--hiver-jour', sizes: '100vw' })}
       ${c.media({ nom: 'vraie/salle-nuit', alt: c.s('accueil.midi.altHiverSoir'), cadrage: '50% 55%', cadrageMobile: '62% 55%', classe: 'midi__photo midi__photo--hiver-soir', sizes: '100vw' })}
       ${c.media({ nom: 'grok/terrasse-nuit', alt: c.s('accueil.midi.altEteSoir'), cadrage: '50% 50%', cadrageMobile: '56% 50%', classe: 'midi__photo midi__photo--ete-soir', sizes: '100vw' })}
       <span class="midi__rayons" aria-hidden="true"></span>
@@ -109,11 +137,15 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
             <p class="polaroid__legende">${c.t('accueil.chef.legende')}</p>
           </div>
           <div class="polaroid__face polaroid__face--dos" data-face="dos" aria-hidden="true">
-            <p class="polaroid__dos-titre">${c.t('accueil.chef.dosTitre')}</p>
-            <ul class="polaroid__dos-liste">
-              ${ardoise.lignes.map((l) => html`<li><span>${l.plat}</span><span data-prix>${l.prix}</span></li>`)}
-            </ul>
-            <p class="polaroid__dos-mot">${c.t('accueil.chef.dosMot')}</p>
+            <div class="ardoise-dos">
+              <p class="ardoise-dos__date">${c.donnees.ardoise.date}</p>
+              <p class="ardoise-dos__titre">${ardoise.titre}</p>
+              <span class="ardoise-dos__trait" aria-hidden="true"></span>
+              <ul class="ardoise-dos__liste">
+                ${ardoise.lignes.map((l) => html`<li><span>${l.plat}</span><span data-prix>${l.prix}</span></li>`)}
+              </ul>
+              <p class="ardoise-dos__mot">${ardoise.mot}</p>
+            </div>
           </div>
         </div>
         <button type="button" class="polaroid__retourner" data-polaroid-retourner aria-pressed="false" data-retourner="${c.s('accueil.chef.retourner')}" data-revoir="${c.s('accueil.chef.revoir')}"><span class="polaroid__retourner-texte">${c.t('accueil.chef.retourner')}</span></button>
@@ -276,20 +308,14 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
         <p class="moment-carte__prix" data-prix>${c.t('accueil.feu.noelX')}</p>
         <p class="moment-carte__plus" aria-hidden="true">${c.t('accueil.moment.decouvrir')} <span>→</span></p>
       ` })}
-      ${c.lien('offrir', { classe: 'moment-carte', attrs: 'aria-labelledby="moment-cadeau"', texte: html`
-        <div class="moment-carte__visuel moment-carte__visuel--cadeau">
-          ${c.media({ nom: 'vraie/diner-feu', alt: '', cadrage: '60% 30%', classe: 'moment-carte__photo', sizes: '(max-width: 760px) 92vw, 30vw' })}
-          <div class="carte-mini" data-audit-ignorer role="img" aria-label="${c.s('accueil.moment.altCadeau')}">
-            <span class="carte-mini__logo" aria-hidden="true"></span>
-            <span class="carte-mini__nom" aria-hidden="true">${c.site.nom}</span>
-            <span class="carte-mini__montant" aria-hidden="true">100 €</span>
-            <span class="carte-mini__mot" aria-hidden="true">${c.t('accueil.moment.carteMot')}</span>
-          </div>
+      ${c.lien('les-fetes', { ancre: 'dates', classe: 'moment-carte', attrs: 'aria-labelledby="moment-soirees"', texte: html`
+        <div class="moment-carte__visuel">
+          ${c.media({ nom: 'vraie/diner-feu', alt: c.s('accueil.moment.altSoirees'), cadrage: '60% 40%', classe: 'moment-carte__photo', sizes: '(max-width: 760px) 92vw, 30vw' })}
         </div>
-        <p class="moment-carte__date">${c.t('accueil.moment.cadeauDate')}</p>
-        <h3 id="moment-cadeau">${c.t('accueil.moment.cadeauT')}</h3>
-        <p class="moment-carte__texte">${c.t('accueil.moment.cadeauX')}</p>
-        <p class="moment-carte__prix" data-prix>${c.t('accueil.moment.cadeauPrix')}</p>
+        <p class="moment-carte__date">${c.t('accueil.moment.soireesDate')}</p>
+        <h3 id="moment-soirees">${c.t('accueil.moment.soireesT')}</h3>
+        <p class="moment-carte__texte">${c.t('accueil.moment.soireesX')}</p>
+        <p class="moment-carte__prix" data-prix>${c.t('accueil.moment.soireesPrix')}</p>
         <p class="moment-carte__plus" aria-hidden="true">${c.t('accueil.moment.decouvrir')} <span>→</span></p>
       ` })}
     </div>
@@ -298,6 +324,65 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
       ${c.lien('les-fetes', { ancre: 'dates', classe: 'lien-fleche', texte: c.t('accueil.feu.dates') })}
       <script type="application/json">${brut(JSON.stringify(c.donnees.agenda.dates.filter((d) => d.type !== 'Fête').map((d) => ({ t: d.titre, d: d.debut, p: d.prix }))).replace(/<\//g, '<\\/'))}</script>
     </p>
+  </div>
+</section>
+
+<section class="offrir-emporter" id="offrir-emporter" data-heure="22:00" data-lumiere="moment" aria-labelledby="oe-titre">
+  <div class="conteneur">
+    <p class="surtitre">${c.t('accueil.oe.surtitre')}</p>
+    <h2 id="oe-titre" class="oe__titre" data-anime="lignes">${c.t('accueil.oe.titre')}</h2>
+    <div class="oe__grille" data-anime="cascade">
+      <article class="oe-carte">
+        <div class="oe-carte__visuel">
+          ${c.media({ nom: 'vraie/foie-gras-maison', alt: c.s('accueil.oe.altFoie'), cadrage: '50% 55%', classe: 'oe-carte__photo', sizes: '(max-width: 760px) 92vw, 44vw' })}
+          <span class="oe-carte__sceau" aria-hidden="true">${c.t('accueil.oe.sceau')}</span>
+        </div>
+        <h3>${c.t('accueil.oe.emporterT')}</h3>
+        <p class="oe-carte__texte">${c.t('accueil.oe.emporterX')}</p>
+        <ul class="oe-carte__liste" aria-label="${c.s('accueil.oe.emporterListe')}">
+          ${c.s('accueil.oe.incontournables').split('|').map((x) => html`<li>${x}</li>`)}
+        </ul>
+        <p class="oe-carte__actions"><a class="bouton" href="tel:${c.site.contact.telephoneLien}">${c.t('accueil.oe.commander')} ${c.site.contact.telephone}</a></p>
+      </article>
+      <article class="oe-carte">
+        <div class="oe-carte__visuel oe-carte__visuel--cadeau" data-carte-luxe>
+          <div class="carte-luxe" role="img" aria-label="${c.s('accueil.oe.altCarte')}" data-audit-ignorer>
+            <span class="carte-luxe__reflet" aria-hidden="true"></span>
+            <span class="carte-luxe__logo" aria-hidden="true"></span>
+            <span class="carte-luxe__montant" aria-hidden="true" data-carte-montant>100 €</span>
+            <span class="carte-luxe__titre" aria-hidden="true">${c.t('accueil.oe.carteTitre')}</span>
+            <span class="carte-luxe__nom" aria-hidden="true">${c.site.nom}</span>
+            <span class="carte-luxe__validite" aria-hidden="true">${c.t('accueil.oe.carteValidite')}</span>
+          </div>
+        </div>
+        <h3>${c.t('accueil.oe.cadeauT')}</h3>
+        <p class="oe-carte__texte">${c.t('accueil.oe.cadeauX')}</p>
+        <div class="oe-carte__montants" role="group" aria-label="${c.s('accueil.oe.montants')}">
+          ${[25, 50, 100, 150, 200].map((m) => html`<button type="button" class="oe-montant" data-montant="${m}" aria-pressed="${m === 100 ? 'true' : 'false'}">${m} €</button>`)}
+        </div>
+        <p class="oe-carte__actions">${c.lien('offrir', { classe: 'bouton bouton--contour', texte: c.t('accueil.oe.offrir') })}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="venir" id="venir" data-heure="23:00" data-lumiere="moment" aria-labelledby="venir-titre">
+  <div class="conteneur venir__grille">
+    <div class="venir__texte">
+      <p class="surtitre">${c.t('accueil.venir.surtitre')}</p>
+      <h2 id="venir-titre" data-anime="lignes">${c.t('accueil.venir.titre')}</h2>
+      <p data-anime>${c.t('accueil.venir.texte')}</p>
+      <address class="venir__adresse">
+        <strong>${c.site.nom}</strong><br>${c.site.contact.adresse}<br>
+        <a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a>
+      </address>
+      <p class="statut venir__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil>${c.t('accueil.midi.statutSansJs')}</span></p>
+      <p class="venir__actions">
+        ${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('accueil.venir.reserver') })}
+        <a class="bouton bouton--contour" href="https://www.google.com/maps/search/?api=1&amp;query=6+Vathier+Haye+54580+Moineville" target="_blank" rel="noopener">${c.t('accueil.venir.itineraire')}<span class="visuellement-cache"> ${c.t('accueil.oe.nouvelOnglet')}</span></a>
+      </p>
+    </div>
+    <div class="venir__plan" data-venir>${brut(carteVenir(c))}</div>
   </div>
 </section>
 `;

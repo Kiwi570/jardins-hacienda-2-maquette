@@ -111,7 +111,7 @@
       "saisonHiver": "L'hiver, près des baies vitrées",
       "indiceHiver": "Passez la main dans le soleil",
       "indiceTactileHiver": "Touchez le soleil",
-      "altHiver": "La salle à midi : le soleil d'hiver entre par les baies vitrées sur les tables rondes en verre",
+      "altHiver": "La salle du restaurant en plein jour : tables rondes en verre sur pied de bois, lampes d'osier, fauteuils crème et peaux de mouton, le mur de pierre et sa cheminée",
       "titre1HiverSoir": "Le soir à la lueur des lampes,",
       "titre1EteSoir": "Le soir sous les guirlandes,",
       "saisonHiverSoir": "L'hiver, le soir aux lampes",
@@ -331,7 +331,40 @@
       "altSylvestre": "L'affiche du menu de la Saint-Sylvestre des Jardins de l'Hacienda",
       "altNoel": "L'affiche du menu de Noël des Jardins de l'Hacienda",
       "altCadeau": "Une carte cadeau des Jardins de l'Hacienda, vert de nuit et or, posée près du feu",
-      "sylvestrePrix": "120 € le menu · 170 € avec l'accord mets et vins"
+      "sylvestrePrix": "120 € le menu · 170 € avec l'accord mets et vins",
+      "soireesDate": "Tout l'hiver",
+      "soireesT": "Les soirées à thème",
+      "soireesX": "Côte de bœuf le 21 novembre, raclette le 28, brunch le dimanche 29, soirée libanaise le 19 décembre.",
+      "soireesPrix": "De 39 à 50 € hors boissons",
+      "altSoirees": "Une table dressée devant la cheminée allumée, un plat du chef et deux verres de vin"
+    },
+    "oe": {
+      "surtitre": "Offrir & emporter",
+      "titre": "Pour les fêtes, ou pour faire plaisir",
+      "sceau": "Fait maison",
+      "emporterT": "Les incontournables des fêtes",
+      "emporterX": "Les spécialités de la maison, à commander auprès du restaurant :",
+      "emporterListe": "Les incontournables des fêtes",
+      "incontournables": "Escargots à la crème d'ail|Tourte aux escargots|Tourte aux grenouilles|Pâté lorrain|Foie gras de canard maison|Gravlax de saumon maison",
+      "commander": "Commander au",
+      "nouvelOnglet": "(s'ouvre dans un nouvel onglet)",
+      "altFoie": "Le foie gras de canard maison et sa briochette, sur une assiette du restaurant",
+      "cadeauT": "La carte cadeau",
+      "cadeauX": "Valable 6 mois sur toute la carte du chef, pour offrir un moment aux Jardins. Choisissez un montant :",
+      "montants": "Montant de la carte cadeau",
+      "altCarte": "Une carte cadeau des Jardins de l'Hacienda, vert de nuit et or, valable 6 mois",
+      "carteTitre": "Carte cadeau",
+      "carteValidite": "Valable 6 mois · toute la carte du chef",
+      "offrir": "Offrir une carte"
+    },
+    "venir": {
+      "surtitre": "Venir",
+      "titre": "En pleine nature, à 19 km de Metz",
+      "texte": "À Moineville, entre Metz, Thionville, Nancy et le Luxembourg : le restaurant, sa terrasse et ses jardins.",
+      "carteAlt": "Carte : Moineville, à 19 km de Metz, 24 km de Thionville, 47 km de Luxembourg et 60 km de Nancy, à vol d'oiseau",
+      "note": "Distances à vol d'oiseau · tracés simplifiés",
+      "reserver": "Réserver",
+      "itineraire": "Itinéraire"
     }
   },
   "p404": {
@@ -401,7 +434,7 @@
     "reserverNoel": "Réserver le déjeuner de Noël",
     "reserverEte": "Réserver une table",
     "altHiver": "La salle le soir, la cheminée allumée et deux tables dressées près du feu",
-    "altEte": "Trois cocktails glacés sur le comptoir du bar, la piscine derrière",
+    "altEte": "La piscine sous le ciel bleu, les palmiers et les paillotes",
     "sylvestreSur": "Jeudi 31 décembre, le soir",
     "sylvestreTitre": "Le menu de la Saint-Sylvestre",
     "sylvestreTexte": "Touchez un plat : le verre prend la forme et la couleur du vin de l'accord.",
@@ -452,7 +485,15 @@
     "noelV1": "Pour commencer",
     "noelV2": "Le cœur du repas",
     "noelV3": "Le dessert",
-    "datesPhotoAlt": "Un soir de fête : un couple danse sous la paillote éclairée de guirlandes"
+    "datesPhotoAlt": "Un soir de fête : un couple danse sous la paillote éclairée de guirlandes",
+    "avantSylvestre": "avant la Saint-Sylvestre",
+    "afficheNoel": "Le menu de Noël : voir le menu",
+    "afficheSylvestre": "Le menu de la Saint-Sylvestre : voir le menu",
+    "altLanternes": "Les lanternes allumées au-dessus de la piscine, la nuit",
+    "noelIntro2": "Le vendredi 25 décembre, au déjeuner : cinq temps, de la coupe de bienvenue à la coque en chocolat. Faites défiler : la carte s'ouvre.",
+    "noelMenu": "Menu de Noël",
+    "noelMot": "Au coin du feu, le 25 décembre",
+    "noelIndice": "Faites défiler pour ouvrir la carte"
   },
   "receptions": {
     "heure": "19:00",
@@ -526,7 +567,8 @@
     "altDepart": "Des invités au cocktail dans le jardin, sous les palmiers",
     "altBaptemes": "Un bébé qui rit dans les bras de ses parents, au jardin",
     "altTerrasseVraie": "La terrasse et la piscine sous les palmiers, en plein jour",
-    "passerOuverture": "Passer l’ouverture"
+    "passerOuverture": "Passer l’ouverture",
+    "sceau": "Mariages · Baptêmes · Anniversaires · Pots de départ · "
   },
   "reserver": {
     "heureMidi": "12:30",
@@ -642,6 +684,10 @@
     "distances": "À 24 km de Thionville, 19 km de Metz, 47 km de Luxembourg (à vol d’oiseau)",
     "questionLien": "Une question ?",
     "accesLien": "Venir",
-    "horairesPhotoAltHiver": "La salle au soleil de midi, les tables dressées près des baies vitrées"
+    "horairesPhotoAltHiver": "La salle au soleil de midi, les tables dressées près des baies vitrées",
+    "distancesTitre": "Distances à vol d'oiseau",
+    "altEnseigneJour": "L'enseigne « les jardins de l'hacienda » entre deux cyprès, au bord de la route, sous le ciel bleu",
+    "semaineCurseur": "Choisir une heure de la journée",
+    "semaineConsigne": "Glissez le curseur : la semaine s'allume à l'heure choisie."
   }
 }

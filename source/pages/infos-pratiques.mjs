@@ -6,7 +6,7 @@
 import { html, brut, fragment } from '../../outils/gabarit.mjs';
 import { preparer, rendreBloc } from '../../assets/js/modules/horaires-ouvert-maintenant/horaires-calcul.js';
 
-export const page = { cle: 'infos-pratiques', fichier: 'infos-pratiques', theme: 'jour', themeAuto: true, imagePartage: 'vraie/enseigne-1280.webp', modules: ['ciel-en-direct', 'horaires-ouvert-maintenant', 'formulaire-par-etapes'] };
+export const page = { cle: 'infos-pratiques', fichier: 'infos-pratiques', theme: 'jour', imagePartage: 'vraie/enseigne-1280.webp', modules: ['formulaire-par-etapes'] };
 
 /* Une question : les sujets en grandes cartes (une icône par carte, sinon le texte se chevauche sur téléphone). */
 const ICONE = (d) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
@@ -43,56 +43,77 @@ function carteAcces(c) {
 </svg>`;
 }
 
+
+/* Horaires (v7.5) : la semaine d'un coup d'œil. Chaque jour est une piste de 0 h à 24 h, les créneaux posés à leur place
+   (midi en or, soir en terre cuite) ; un curseur d'heure parcourt la semaine et allume ce qui est ouvert. */
+const JOURS = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+const enMin = (hm) => { const [a, b] = hm.split(':').map(Number); return a * 60 + b; };
+const lisible = (hm) => { const [a, b] = hm.split(':').map(Number); return a === 0 && b === 0 ? 'minuit' : `${a} h${b ? ' ' + String(b).padStart(2, '0') : ''}`; };
+function semaine(h) {
+  const s = h.adresses[0].semaine;
+  return JOURS.map((j) => {
+    const cr = (s[j] || []).map((x) => { const [d, f] = x.split('-'); const a = enMin(d), b = enMin(f) || 1440; return { a, b, texte: `${lisible(d)} – ${lisible(f)}`, sorte: a >= 17 * 60 ? 'soir' : 'midi' }; });
+    return { j, nom: j[0].toUpperCase() + j.slice(1), cr, texte: cr.length ? cr.map((x) => x.texte).join(' · ') : 'Fermé' };
+  });
+}
+
 export default (c) => {
   const h = c.donnees.horaires;
   const d = preparer(h);
   const json = JSON.stringify(h).replace(/<\//g, '<\\/');
   return html`
-<section class="ouv-infos ced" id="debut" data-effet="heure-reelle" data-module="ciel-en-direct" aria-labelledby="infos-h1">
-  <div class="ced__ciel" aria-hidden="true"><canvas class="ced__toile" data-audit-ignorer></canvas></div>
-  ${c.media({ nom: 'vraie/enseigne-premier-plan', alt: c.s('infos.altEnseigne'), cadrage: '50% 100%', cadrageMobile: '50% 100%', priorite: true, classe: 'ouv-infos__enseigne', sizes: '100vw' })}
-  <div class="ced__cadre conteneur">
-    <div class="ced__texte ouv-infos__contenu">
+<section class="ouv-infos2" id="debut" aria-labelledby="infos-h1">
+  <div class="conteneur ouv-infos2__grille">
+    <div class="ouv-infos2__texte">
       <p class="surtitre">${c.t('infos.sur')}</p>
       <h1 id="infos-h1" data-iris-centre>${c.t('infos.titre')}</h1>
-      <p class="statut ouv-infos__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil>${c.t('infos.horairesSur')}</span></p>
+      <p class="statut ouv-infos2__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil>${c.t('infos.horairesSur')}</span></p>
       <script type="application/json" data-horaires-accueil>${brut(json)}</script>
-      <p class="ouv-infos__adresse" data-info-cle>${c.site.contact.adresse}<br><span class="ouv-infos__distances">${c.t('infos.distances')}</span></p>
-      <p class="ouv-infos__actions"><a class="bouton" href="tel:${c.site.contact.telephoneLien}" data-action-principale>${c.t('commun.appeler')} ${c.site.contact.telephone}</a> <a class="bouton bouton--contour" href="#ecrire" data-sans-transition>${c.t('infos.questionLien')}</a> <a class="lien-fleche" href="#acces" data-sans-transition>${c.t('infos.accesLien')}</a></p>
+      <p class="ouv-infos2__adresse" data-info-cle>${c.site.contact.adresse}</p>
+      <ul class="ouv-infos2__distances" aria-label="${c.s('infos.distancesTitre')}">
+        <li><strong>19 km</strong> Metz</li><li><strong>24 km</strong> Thionville</li><li><strong>47 km</strong> Luxembourg</li>
+      </ul>
+      <p class="ouv-infos2__actions"><a class="bouton" href="tel:${c.site.contact.telephoneLien}" data-action-principale>${c.t('commun.appeler')} ${c.site.contact.telephone}</a> <a class="bouton bouton--contour" href="#ecrire" data-sans-transition>${c.t('infos.questionLien')}</a> <a class="lien-fleche" href="#acces" data-sans-transition>${c.t('infos.accesLien')}</a></p>
     </div>
-    <div class="ced__carte" role="group" aria-labelledby="ced-carte-titre">
-      <p class="ced__carte-haut"><span id="ced-carte-titre">${c.t('infos.cielTitre')}</span><span data-ced-phase></span></p>
-      <p class="ced__heure"><span data-ced-heure>--:--</span><em class="ced__drapeau" data-ced-drapeau hidden>${c.t('infos.cielChoisie')}</em></p>
-      <p class="ced__soleil"><span>${c.t('infos.cielLever')} <b data-ced-lever></b></span><span>${c.t('infos.cielCoucher')} <b data-ced-coucher></b></span></p>
-      <div class="ced__reglage">
-        <label for="ced-curseur">${c.t('infos.cielCurseur')}</label>
-        <input class="ced__curseur" id="ced-curseur" type="range" min="0" max="1435" step="5" data-ced-curseur>
-        <div class="ced__raccourcis" role="group" aria-label="${c.s('infos.cielMoments')}">
-          <button type="button" data-ced-moment="midi">${c.t('infos.cielMidi')}</button>
-          <button type="button" data-ced-moment="crepuscule">${c.t('infos.cielCrepuscule')}</button>
-          <button type="button" data-ced-moment="nuit">${c.t('infos.cielNuit')}</button>
-          <button type="button" data-ced-maintenant aria-pressed="true">${c.t('infos.cielMaintenant')}</button>
-        </div>
+    <div class="ouv-infos2__visuel" data-carte-visite>
+      ${c.media({ nom: 'vraie/enseigne', alt: c.s('infos.altEnseigneJour'), cadrage: '55% 72%', priorite: true, classe: 'ouv-infos2__arche', sizes: '(max-width: 760px) 80vw, 40vw', attrs: 'data-fx="parallaxe" data-fx-force="5"' })}
+      <div class="carte-visite" aria-hidden="true" data-superpose>
+        <span class="carte-visite__logo"></span>
+        <span class="carte-visite__nom">${c.site.nom}</span>
+        <span class="carte-visite__ligne">${c.site.contact.adresse}</span>
+        <span class="carte-visite__ligne carte-visite__tel">${c.site.contact.telephone}</span>
+        <span class="carte-visite__statut"><span class="statut__point"></span><span data-statut-accueil-bis>${c.t('infos.horairesSur')}</span></span>
       </div>
     </div>
   </div>
 </section>
 
-<section class="horaires socle-cadre" id="horaires" data-module="horaires-ouvert-maintenant" aria-labelledby="horaires-titre">
-  <div class="horaires__grille">
-    <div class="horaires__cadran" aria-hidden="true" data-effet="cadran" data-visuel></div>
-    <div class="horaires__texte">
-      <p class="socle-surtitre">${c.t('infos.horairesSur')}</p>
-      <h2 id="horaires-titre" data-anime="lignes">${c.t('infos.horairesTitre')}</h2>
-      <div class="horaires__adresses" data-horaires-choix role="group" aria-label="Choisir une adresse" hidden></div>
-      <p class="horaires__statut" data-horaires-statut><span class="horaires__pastille" aria-hidden="true"></span><span>Horaires de la semaine</span></p>
-      <noscript><style>.horaires__cadran{display:none!important}.horaires__grille{grid-template-columns:minmax(0,1fr)!important}</style></noscript>
-      <script type="application/json" data-horaires>${brut(json)}</script>
-      <div class="horaires__texte-adresse" data-horaires-texte>${fragment(d.adresses.map((a) => rendreBloc(a, false)).join(''))}</div>
-      <p class="horaires__note">${c.t('infos.horairesNote')}</p>
-      ${c.media({ nom: 'vraie/piscine-paillotes', alt: c.s('infos.horairesPhotoAlt'), classe: 'horaires__photo', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-saison-seul="ete"' })}
-      ${c.media({ nom: 'vraie/salle-soleil', alt: c.s('infos.horairesPhotoAltHiver'), cadrage: '46% 50%', classe: 'horaires__photo', sizes: '(max-width: 760px) 92vw, 40vw', attrs: 'data-saison-seul="hiver"' })}
+<section class="semaine" id="horaires" data-effet="semaine" aria-labelledby="horaires-titre">
+  <div class="conteneur">
+    <div class="semaine__tete">
+      <div>
+        <p class="surtitre">${c.t('infos.horairesSur')}</p>
+        <h2 id="horaires-titre" data-anime="lignes">${c.t('infos.horairesTitre')}</h2>
+      </div>
+      <p class="semaine__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil-bis data-horaires-statut>${c.t('infos.horairesSur')}</span></p>
     </div>
+    <div class="semaine__tableau" data-visuel data-semaine>
+      <div class="semaine__echelle" aria-hidden="true"><span style="--t:0">0 h</span><span style="--t:.25">6 h</span><span style="--t:.5">12 h</span><span style="--t:.75">18 h</span><span style="--t:1">24 h</span></div>
+      <ol class="semaine__jours">
+        ${semaine(h).map((j) => html`<li class="semaine__jour" data-jour="${j.j}">
+          <span class="semaine__nom">${j.nom}</span>
+          <span class="semaine__piste" aria-hidden="true">${j.cr.map((x) => html`<span class="semaine__creneau semaine__creneau--${x.sorte}" data-a="${x.a}" data-b="${x.b}" style="--a:${(x.a / 1440).toFixed(4)};--b:${(x.b / 1440).toFixed(4)}"></span>`)}<span class="semaine__maintenant"></span></span>
+          <span class="semaine__texte">${j.texte}</span>
+        </li>`)}
+      </ol>
+      <div class="semaine__curseur" style="--c:.5">
+        <span class="semaine__ligne" aria-hidden="true"><span class="semaine__bulle" data-semaine-bulle>12 h</span></span>
+        <label class="visuellement-cache" for="semaine-heure">${c.t('infos.semaineCurseur')}</label>
+        <input id="semaine-heure" class="semaine__range" type="range" min="0" max="1425" step="15" value="720" data-semaine-range>
+      </div>
+      <p class="semaine__lecture" aria-live="polite" data-semaine-lecture>${c.t('infos.semaineConsigne')}</p>
+    </div>
+    <p class="semaine__note">${c.t('infos.horairesNote')}</p>
   </div>
 </section>
 
