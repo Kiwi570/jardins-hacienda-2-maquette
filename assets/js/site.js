@@ -765,7 +765,7 @@ function motTournant() {
   const el = $('.mot-tournant__mot', zone), mots = zone.dataset.mots.split('|');
   const sec = zone.closest('section'), diapos = $$('[data-diapo]', sec), puces = $$('[data-diapo-aller]', sec), pause = $('[data-diapo-pause]', sec);
   /* v7.5 · Le mot et la photo de l'arche défilent ensemble, sur les quatre occasions ; fil de progression, choix et pause. */
-  const DUREE = 4200;
+  const DUREE = 2600;
   let i = 0, minuteur = 0, enPause = false, visible = true;
   sec.style.setProperty('--recep-duree', `${DUREE}ms`);
   const montrer = (k, anime = true) => {
