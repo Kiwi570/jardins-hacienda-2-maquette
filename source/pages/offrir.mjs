@@ -13,7 +13,6 @@ export default (c) => html`
   <canvas class="ouv-offrir__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
   <div class="conteneur ouv-offrir__grille">
     <div class="ouv-offrir__texte">
-      <p class="heure-geante heure-geante--nuit" data-effet="axes" aria-hidden="true">00:00</p>
       <p class="surtitre">${c.t('offrir.sur')}</p>
       <h1 data-anime="lettres">${c.t('offrir.titre')}</h1>
       <p class="masque-ecran-tres-bas"><span data-saison-seul="hiver">${c.t('offrir.texteHiver')}</span><span data-saison-seul="ete">${c.t('offrir.texteEte')}</span></p>
@@ -43,13 +42,14 @@ export default (c) => html`
         <svg class="ccq__cadre" viewBox="0 0 160 100" preserveAspectRatio="none"><rect x="3.2" y="3.2" width="153.6" height="93.6" rx="5" ry="5" pathLength="1"/></svg>
         <div class="ccq__carte-haut">
           <span class="ccq__logo"><img src="/assets/images/logo-clair.png" alt="" width="48" height="48"></span>
-          <span class="ccq__noms"><span class="ccq__type">${c.t('offrir.carte')}</span><span class="ccq__maison">${c.site.nom}</span></span>
+          <span class="ccq__noms"><span class="ccq__type">${c.t('offrir.carte')}</span><span class="ccq__maison">${c.site.nom}</span><span class="ccq__validite">${c.t('offrir.validite')}</span></span>
           <span class="ccq__quantite" data-ccq-quantite hidden>× 1</span>
         </div>
         <div class="ccq__carte-bas">
           <p class="ccq__montant"><span data-ccq-montant>50</span><span class="ccq__devise">€</span></p>
           <div class="ccq__dedicace" data-grille="typo"><p class="ccq__pour" data-ccq-pour></p><p class="ccq__mot" data-ccq-mot></p><p class="ccq__de" data-ccq-de></p></div>
         </div>
+        <span class="ccq__filigrane" aria-hidden="true"></span>
         <span class="ccq__reflet"></span>
       </div></div></div>
       <p class="ccq__ticket" data-ccq-ticket>Une carte de 50 €</p>

@@ -10,11 +10,7 @@
     "/infos-pratiques"
   ],
   "effets": [
-    "heure",
-    "axes",
-    "heure-section",
     "eau",
-    "passe",
     "vraies",
     "terrasse",
     "guirlandes",
@@ -29,11 +25,13 @@
     "occasions",
     "invitation",
     "service",
-    "heure-reelle",
     "cadran",
     "ete-heure",
     "plan-3d",
-    "panorama"
+    "panorama",
+    "soleil",
+    "rubriques",
+    "lieu"
   ],
   "grille": {
     "dispenses": {}

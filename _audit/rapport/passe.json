@@ -1,15 +1,14 @@
 {
- "id": "20261111-190530-complet-cible-partiel",
- "date": "2026-11-11T19:07:56.260Z",
- "niveau": "complet",
- "pages": "/,/receptions",
+ "id": "20261112-150636-standard-cible-partiel",
+ "date": "2026-11-12T15:06:36.319Z",
+ "niveau": "standard",
+ "pages": "/",
  "etapes": [
-  "fichiers",
-  "mesures"
+  "fichiers"
  ],
  "version": "7",
  "echecs": 0,
- "aRegarder": 1,
+ "aRegarder": 0,
  "nonLances": 0,
  "manquants": 0,
  "statut": "complet"

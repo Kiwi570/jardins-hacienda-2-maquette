@@ -46,13 +46,12 @@ export default (c) => {
   return html`
 <section class="ouv-resa" id="debut" data-effet="service">
   <div class="ouv-resa__photo">
-    ${c.media({ nom: 'vraie/salle-baies', alt: c.s('reserver.altMidi'), cadrage: '50% 50%', classe: 'ouv-resa__img ouv-resa__img--midi', sizes: '(max-width: 760px) 40vw, 30vw' })}
-    ${c.media({ nom: 'grok/assiette-soir', alt: c.s('reserver.altSoir'), cadrage: '50% 50%', priorite: true, classe: 'ouv-resa__img ouv-resa__img--soir', sizes: '(max-width: 760px) 40vw, 30vw' })}
+    ${c.media({ nom: 'vraie/salle-baies', alt: c.s('reserver.altMidi'), cadrage: '50% 50%', classe: 'ouv-resa__img ouv-resa__img--midi', sizes: '(max-width: 760px) 40vw, 30vw', attrs: 'data-fx="parallaxe" data-fx-force="6"' })}
+    ${c.media({ nom: 'grok/assiette-soir', alt: c.s('reserver.altSoir'), cadrage: '50% 50%', priorite: true, classe: 'ouv-resa__img ouv-resa__img--soir', sizes: '(max-width: 760px) 40vw, 30vw', attrs: 'data-fx="parallaxe" data-fx-force="6"' })}
   </div>
   <div class="ouv-resa__texte">
-    <p class="heure-geante ouv-resa__heure" data-iris-centre data-grille="typo" data-effet="axes" aria-hidden="true"><span class="ouv-resa__h-midi">${c.s('reserver.heureMidi')}</span><span class="ouv-resa__h-soir">${c.s('reserver.heureSoir')}</span></p>
     <p class="surtitre"><span class="ouv-resa__h-midi">${c.t('reserver.midi')}</span><span class="ouv-resa__h-soir">${c.t('reserver.soir')}</span></p>
-    <h1>${c.t('reserver.titre')}</h1>
+    <h1 data-iris-centre>${c.t('reserver.titre')}</h1>
     <p class="masque-ecran-bas masque-petit">${c.t('reserver.texte')}</p>
     <p class="ouv-resa__actions"><a class="bouton" href="#formulaire" data-action-principale data-sans-transition>${c.t('reserver.action')}</a> <a class="bouton bouton--contour" href="#plan" data-sans-transition>${c.t('reserver.planLien')}</a> <a class="ouv-resa__tel" href="tel:${c.site.contact.telephoneLien}" data-info-cle>${c.t('reserver.info')}</a></p>
   </div>

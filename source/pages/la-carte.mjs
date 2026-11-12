@@ -28,9 +28,8 @@ export default (c) => {
 <section class="ouv-carte" id="debut" data-effet="moment" aria-labelledby="carte-h1">
   <div class="ouv-carte__grille">
     <div class="ouv-carte__texte">
-      <p class="heure-section ouv-carte__heure" data-iris-centre aria-hidden="true"><span data-moment-seul="jour">${c.s('carte.heureJour')}</span><span data-moment-seul="soir">${c.s('carte.heureSoir')}</span></p>
       <p class="surtitre"><span data-moment-seul="jour">${c.t('carte.surJour')}</span><span data-moment-seul="soir">${c.t('carte.surSoir')}</span></p>
-      <h1 id="carte-h1" data-anime="lettres">${c.t('carte.titre')}</h1>
+      <h1 id="carte-h1" data-anime="lettres" data-iris-centre>${c.t('carte.titre')}</h1>
       <p class="masque-ecran-tres-bas"><span data-moment-seul="jour">${c.t('carte.texteJour')}</span><span data-moment-seul="soir">${c.t('carte.texteSoir')}</span></p>
       <p class="ouv-carte__info" data-info-cle data-prix>${c.t('carte.info')}</p>
       <p class="ouv-carte__actions">

@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 11/11/2026 20:07:56 · 2 min · 2 page(s) · audit complet ciblé sur /,/receptions (étapes : fichiers, mesures)
+Projet : `jardins-hacienda-2-maquette` · 12/11/2026 16:06:36 · 0 min · 1 page(s) · audit standard ciblé sur / (étapes : fichiers)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261111-190530-complet-cible-partiel` · version ?v=7
+- Passe : `20261112-150636-standard-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **1**
+- À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (104), balayage (2)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1)
 
 ## Passes de cette version (?v=7)
 
@@ -35,7 +35,12 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261111-180131-standard-cible-partiel | standard | / | fichiers, mesures, parcours, ecran, fluidite | 0 | 1 | 0 | complet |
 | 20261111-182021-complet | complet | toutes | toutes | 0 | 15 | 1 | complet |
 | 20261111-185503-complet-cible-partiel | complet | /,/la-carte,/les-fetes,/receptions | fichiers, mesures, parcours | 3 | 2 | 0 | échecs |
-| **20261111-190530-complet-cible-partiel** (celle-ci) | complet | /,/receptions | fichiers, mesures | 0 | 1 | 0 | complet |
+| 20261111-190530-complet-cible-partiel | complet | /,/receptions | fichiers, mesures | 0 | 1 | 0 | complet |
+| 20261112-134303-complet-partiel | complet | toutes | fichiers, mesures, parcours, ecran, mouvement | 13 | 0 | 6 | échecs |
+| 20261112-141822-complet-cible | complet | /,/receptions | toutes | 78 | 7 | 1 | échecs |
+| 20261112-143325-complet-partiel | complet | toutes | fichiers, grille, mesures, parcours, mouvement | 18 | 17 | 0 | échecs |
+| 20261112-145451-complet-cible-partiel | complet | /,/infos-pratiques,/offrir,/reserver | fichiers, mesures, parcours, mouvement | 1 | 3 | 0 | échecs |
+| **20261112-150636-standard-cible-partiel** (celle-ci) | standard | / | fichiers | 0 | 0 | 0 | complet |
 
 ## Échecs
 
@@ -43,9 +48,7 @@ Aucun.
 
 ## À regarder
 
-### contraste sur image (1)
-
-- **contraste sur image** — `/receptions` — section#debut > div.conteneur.ouv-recep__contenu > p.heure-geante.heure-geante--nuit:nth-of-type(1) « 19:00 » — 2.35:1 sur les 10 % de la photo les moins favorables (minimum 3:1), ombre portée à vérifier _(1366×768 normal)_
+Rien.
 
 ## Non lancé
 
@@ -55,11 +58,12 @@ Tout a été lancé.
 ## Repères
 
 - Numéro de version des fichiers : ?v=7
-- Journal v7 : 11 étape(s) notée(s), 384 min de travail pour 335 min de budget, 0 min d’attente de l’utilisateur.
+- Journal v7 : 12 étape(s) notée(s), 437 min de travail pour 395 min de budget, 0 min d’attente de l’utilisateur.
 - Journal : « audit standard (deux passages) et corrections » 79 min pour 35 prévues.
 - Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
+- Audit standard : étapes lourdes sur /.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
 
 ## Fichiers

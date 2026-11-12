@@ -42,7 +42,11 @@ html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { ove
 html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); }
 html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); }
 
-/* ===== Jardins de l'Hacienda v6 : intro « 00:00 → l'heure de la page », voile à l'heure d'arrivée, moment réel. ===== */
+/* ===== Jardins de l'Hacienda : intro sur le monogramme de la maison (plus d'heures, v7.4), voile, moment réel. ===== */
+.ouverture-objet { margin: 0 0 6px; }
+.ouverture-logo { display: block; width: clamp(88px, 12vw, 132px); aspect-ratio: 480 / 448; background: currentColor;
+  -webkit-mask: url(/assets/images/logo-480.webp) center / contain no-repeat; mask: url(/assets/images/logo-480.webp) center / contain no-repeat; }
+.voile-heure, .horloge, .menu-heure { display: none !important; }
 .ouverture-panneau { gap: 10px; color: var(--ouverture-texte, #1c1712); }
 .ouverture-heure { margin: 0; display: flex; align-items: flex-start; font-family: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(5rem, min(22vw, 30vh), 15rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .ouverture-rouleau { display: block; height: 1em; overflow: hidden; }

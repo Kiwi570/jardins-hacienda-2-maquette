@@ -54,8 +54,7 @@ export default (c) => {
   <div class="ced__cadre conteneur">
     <div class="ced__texte ouv-infos__contenu">
       <p class="surtitre">${c.t('infos.sur')}</p>
-      <p class="ouv-infos__ilest"><span>${c.t('infos.ilEst')}</span> <span class="heure-geante ouv-infos__heure" data-iris-centre data-grille="typo" data-effet="axes" data-heure-reelle aria-hidden="true">--:--</span> <span>${c.t('infos.aMoineville')}</span></p>
-      <h1 id="infos-h1">${c.t('infos.titre')}</h1>
+      <h1 id="infos-h1" data-iris-centre>${c.t('infos.titre')}</h1>
       <p class="statut ouv-infos__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil>${c.t('infos.horairesSur')}</span></p>
       <script type="application/json" data-horaires-accueil>${brut(json)}</script>
       <p class="ouv-infos__adresse" data-info-cle>${c.site.contact.adresse}<br><span class="ouv-infos__distances">${c.t('infos.distances')}</span></p>

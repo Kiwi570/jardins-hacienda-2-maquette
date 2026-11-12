@@ -61,13 +61,11 @@ function heureDArrivee() {
   if (!$('main [data-heure]')) { const a = $('[data-horloge-h]'), b = $('[data-horloge-m]'); if (a && b && !$('[data-horloge-reelle]')) { a.textContent = hh; b.textContent = mm; } }
   /* Accueil, la nuit et le matin (avant 11 h) : l'intro s'arrête d'abord sur l'heure réelle (« 01:26 · la maison dort »),
      puis roule jusqu'à midi (« Rendez-vous à midi »), au lieu d'afficher « 12:00 » à une heure où tout est fermé. */
-  if (rh && rm && $('.midi') && html.dataset.arrivee === 'intro') {
+  /* Accueil, la nuit et le matin (avant 11 h) : la ligne de l'intro le dit, sans heure (« La maison dort. Rendez-vous à midi. »). */
+  if ($('.midi') && html.dataset.arrivee === 'intro') {
     const [rH, rM] = heureParis().split(':'); const t = +rH * 60 + +rM;
     if (t < 11 * 60) {
-      const hs = [...rh.children], ms = [...rm.children], n = hs.length - 1;
-      hs.forEach((e, i) => { e.textContent = String(Math.round(+rH + ((12 - +rH) * i) / n)).padStart(2, '0'); });
-      ms.forEach((e, i) => { e.textContent = i === 0 ? rM : i === n ? '00' : String((Math.round((+rM * (n - i)) / n / 5) * 5) % 60).padStart(2, '0'); });
-      const l = $('.ouverture-ligne'); if (l) l.textContent = `${rH}:${rM} · ${t < 7 * 60 ? 'la maison dort' : 'la maison se prépare'}. Rendez-vous à midi.`;
+      const l = $('.ouverture-ligne'); if (l) l.textContent = `${t < 7 * 60 ? 'La maison dort' : 'La maison se prépare'}. Rendez-vous à midi.`;
       html.classList.add('intro-nuit');
     }
   }
@@ -239,8 +237,8 @@ async function statuts() {
 }
 
 /* ---------- La lumière de la journée (signature) : horloge de l'en-tête, couleur de l'en-tête, chiffres variables ---------- */
-const TEINTES = { midi: [246, 241, 231], dejeuner: [243, 234, 217], apresmidi: [242, 222, 178], terrasse: [19, 36, 31], diner: [17, 32, 27], feu: [18, 12, 9], fetes: [26, 15, 11], minuit: [14, 10, 8] };
-const NUIT = new Set(['terrasse', 'diner', 'feu', 'fetes', 'minuit']);
+const TEINTES = { midi: [246, 241, 231], chef: [27, 19, 16], lieu: [239, 229, 211], moment: [244, 236, 224], dejeuner: [243, 234, 217], apresmidi: [242, 222, 178], terrasse: [19, 36, 31], diner: [17, 32, 27], feu: [18, 12, 9], fetes: [26, 15, 11], minuit: [14, 10, 8] };
+const NUIT = new Set(['chef', 'terrasse', 'diner', 'feu', 'fetes', 'minuit']);
 const enMinutes = (h) => { const [a, b] = h.split(':').map(Number); return a * 60 + b; };
 function axes(el, f) {
   /* f : 0 à midi, 1 à minuit. Large et fin le jour, serré et gras la nuit. */
@@ -307,7 +305,7 @@ gl_FragColor=vec4(c.rgb+vec3(lum*eau)+vec3(caust*.9,caust,caust),1.);}`;
    revient vers les baies quand la main quitte l'ouverture et s'arrête dès qu'il a rejoint sa cible. */
 function soleil() {
   const zone = $('[data-effet="soleil"]');
-  if (!zone || html.dataset.saison === 'ete' || etat.calme) return;
+  if (!zone || (html.dataset.saison === 'ete' && html.dataset.moment !== 'soir') || etat.calme) return;
   const sec = zone.closest('section') || zone;
   const REPOS = [0.72, 0.36];
   let cx = REPOS[0], cy = REPOS[1], tx = cx, ty = cy, raf = 0;
@@ -326,7 +324,7 @@ function soleil() {
 
 function eau() {
   const zone = $('[data-effet="eau"]'), cv = zone && $('[data-eau]', zone), img = zone && $('img', zone);
-  if (!cv || !img || etat.calme || html.dataset.saison !== 'ete') return null;
+  if (!cv || !img || etat.calme || html.dataset.saison !== 'ete' || html.dataset.moment === 'soir') return null;
   const gl = cv.getContext('webgl', { premultipliedAlpha: false, antialias: false, alpha: false });
   if (!gl) return null;
   const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
@@ -379,7 +377,7 @@ function eau() {
     /* Au toucher : l'eau ne bouge que quelques secondes après le geste ; pendant le défilement, l'image ne bouge pas. */
     const calme = leger && temps - derniereT > 3.4;
     cv.classList.toggle('est-actif', !calme);
-    if (calme || performance.now() - enDefilement < 120) return;
+    if (calme || performance.now() - enDefilement < 120 || section.classList.contains('est-en-pause')) return;
     impaire = !impaire; if (impaire) return;
     gl.uniform1f(U.t, temps); gl.uniform4fv(U.gouttes, gouttes); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   };
@@ -491,7 +489,7 @@ function miniResa() {
   if (!form || !src) return;
   let R; try { R = JSON.parse(src.textContent); } catch { return; }
   const zone = $('[data-services]', form), date = form.elements.date;
-  const services = prochainsServices(R, 6);
+  const services = prochainsServices(R, telephone() ? 6 : (+form.dataset.servicesNombre || 6));
   /* Sous « Le dîner » : le prochain soir est coché d'avance (le midi reste proposé). */
   const coche = Math.max(0, services.findIndex((s) => s.sv === 'soir'));
   if (services.length) {
@@ -1069,6 +1067,142 @@ if (retourCalme) {
   addEventListener('load', () => [250, 700, 1400, 2200].forEach((d) => setTimeout(revenir, d)), { once: true });
 }
 
+/* ===================== v7.4 · accueil ===================== */
+const HEROS_ENTREE = '.heros__lieu, .heros__titre, .heros__intro, .heros__actions, .heros__barre';
+/* L'ouverture : pause des animations (eau, lumière, lent zoom de la photo), prochain rendez-vous au jour réel,
+   bascule été/hiver qui garde le moment forcé (?moment=). */
+function heros() {
+  const sec = $('#midi.heros'); if (!sec) return;
+  const b = $('[data-heros-pause]', sec);
+  if (b) b.addEventListener('click', () => {
+    const p = !sec.classList.contains('est-en-pause');
+    sec.classList.toggle('est-en-pause', p);
+    b.setAttribute('aria-pressed', String(p));
+    b.setAttribute('aria-label', p ? b.dataset.reprendre : b.dataset.pause);
+  });
+  const lien = $('[data-heros-rdv-lien]', sec), txt = $('[data-heros-rdv]', sec), src = $('[data-heros-agenda]', sec);
+  if (lien && txt && src) {
+    let L = []; try { L = JSON.parse(src.textContent); } catch {}
+    const p = L.filter((x) => joursAvant(x.d) >= 0).sort((a, z) => a.d.localeCompare(z.d))[0];
+    if (p) {
+      const j = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${p.d}T12:00:00Z`));
+      txt.textContent = `${p.t}, ${j}`;
+      const u = new URL(lien.getAttribute('href'), location.href); u.hash = p.a; lien.setAttribute('href', u.pathname + u.search + u.hash);
+    }
+  }
+  const bas = $('[data-heros-bascule]', sec);
+  if (bas) {
+    const m = new URL(location.href).searchParams.get('moment');
+    if (m) { const u = new URL(bas.getAttribute('href'), location.href); u.searchParams.set('moment', m); bas.setAttribute('href', u.pathname + u.search); }
+    bas.addEventListener('click', () => bas.classList.add('est-bascule'));
+  }
+}
+
+/* Le chef : le polaroïd se retourne (la carte de la semaine au dos), suit un peu la main ; les étiquettes se collent
+   à l'arrivée et se déplacent du doigt, dans les limites de la table. */
+function chef() {
+  const table = $('[data-chef-table]'); if (!table) return;
+  const pol = $('[data-polaroid]', table), btn = $('[data-polaroid-retourner]', table);
+  if (pol && btn) {
+    const avant = $('.polaroid__face--avant', pol), dos = $('.polaroid__face--dos', pol), txt = $('.polaroid__retourner-texte', btn);
+    btn.addEventListener('click', () => {
+      const r = !pol.classList.contains('est-retourne');
+      pol.classList.toggle('est-retourne', r);
+      btn.setAttribute('aria-pressed', String(r));
+      if (txt) txt.textContent = r ? btn.dataset.revoir : btn.dataset.retourner;
+      dos?.setAttribute('aria-hidden', String(!r)); avant?.setAttribute('aria-hidden', String(r));
+    });
+    if (matchMedia('(hover: hover)').matches && !etat.calme) {
+      pol.addEventListener('pointermove', (e) => {
+        const r = pol.getBoundingClientRect();
+        pol.style.setProperty('--ry', `${(((e.clientX - r.left) / r.width) - 0.5) * 12}deg`);
+        pol.style.setProperty('--rx', `${-(((e.clientY - r.top) / r.height) - 0.5) * 8}deg`);
+      });
+      pol.addEventListener('pointerleave', () => { pol.style.setProperty('--ry', '0deg'); pol.style.setProperty('--rx', '0deg'); });
+    }
+  }
+  if (!etat.calme && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { table.classList.add('est-arrivee'); io.disconnect(); } }, { threshold: 0.3 });
+    io.observe(table);
+  } else table.classList.add('est-arrivee');
+  let z = 1;
+  for (const e of $$('[data-etiquette]', table)) {
+    let x0 = 0, y0 = 0, dx = 0, dy = 0, px = 0, id = null;
+    e.addEventListener('pointerdown', (ev) => {
+      id = ev.pointerId; try { e.setPointerCapture(id); } catch {}
+      x0 = ev.clientX - dx; y0 = ev.clientY - dy; px = ev.clientX;
+      e.classList.add('est-tenue'); e.style.zIndex = String(++z);
+    });
+    e.addEventListener('pointermove', (ev) => {
+      if (ev.pointerId !== id) return;
+      const T = table.getBoundingClientRect(), R = e.getBoundingClientRect();
+      const bx = R.left - dx, by = R.top - dy;
+      const nx = Math.max(T.left - bx - 16, Math.min(T.right - (bx + R.width) + 16, ev.clientX - x0));
+      const ny = Math.max(T.top - by - 16, Math.min(T.bottom - (by + R.height) + 16, ev.clientY - y0));
+      const v = ev.clientX - px; px = ev.clientX; dx = nx; dy = ny;
+      e.style.setProperty('--dx', `${dx}px`); e.style.setProperty('--dy', `${dy}px`);
+      e.style.setProperty('--tilt', `${Math.max(-14, Math.min(14, v * 1.4))}deg`);
+    });
+    const lacher = (ev) => { if (ev.pointerId !== id) return; id = null; e.classList.remove('est-tenue'); e.style.setProperty('--tilt', '0deg'); };
+    e.addEventListener('pointerup', lacher); e.addEventListener('pointercancel', lacher);
+  }
+}
+
+/* 12 h 30 : les cartes de la carte arrivent l'une après l'autre au défilement, leurs pointillés se tracent. */
+function rubriques() {
+  const cartes = $$('.rubrique-carte'); if (!cartes.length || !gsap || !window.ScrollTrigger || etat.calme) return;
+  /* Le déclencheur est la colonne (jamais déplacée), décalée de la position de la carte (offsetTop ignore la translation) :
+     au recalcul, la carte encore décalée de 90 px ne change pas sa position de départ. */
+  const col = cartes[0].parentElement;
+  for (const c of cartes) {
+    gsap.timeline({ scrollTrigger: { trigger: col, start: () => `top+=${c.offsetTop - col.offsetTop} 92%`, once: true, invalidateOnRefresh: true } })
+      .fromTo(c, { y: 90, opacity: 0, rotate: 1.2 }, { y: 0, opacity: 1, rotate: 0, duration: 0.9, ease: 'power3.out' })
+      .fromTo($$('.plat-ligne__points', c), { scaleX: 0 }, { scaleX: 1, duration: 0.8, stagger: 0.14, ease: 'power2.out' }, 0.3);
+  }
+}
+
+/* Le lieu : la piste de cartes file vers la gauche (les cartes « défilent vers la droite ») pendant que le cadre reste collé ;
+   la hauteur de la section suit la longueur de la piste. Sans animation : piste qui se fait glisser. */
+function lieuDefile() {
+  const sec = $('[data-effet="lieu"]'); if (!sec) return;
+  const piste = $('[data-lieu-piste]', sec), barre = $('[data-lieu-progres]', sec);
+  if (!piste || !gsap || !window.ScrollTrigger || etat.calme) { sec.classList.add('lieu-defile--libre'); return; }
+  const distance = () => Math.max(0, piste.scrollWidth - document.documentElement.clientWidth);
+  const hauteur = () => { sec.style.height = `calc(100svh + ${Math.round(distance() * 1.05)}px)`; };
+  hauteur();
+  window.ScrollTrigger.addEventListener('refreshInit', hauteur);
+  gsap.to(piste, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.5, invalidateOnRefresh: true,
+    onUpdate: (st) => barre && barre.style.setProperty('--p', (0.08 + 0.92 * st.progress).toFixed(3)) } });
+}
+
+/* Au coin du feu : la scène plein écran du socle ouvre la photo et écarte les mots ; ensuite le titre remonte et se resserre,
+   et le petit module de réservation arrive du bas. */
+function feuResa() {
+  const sec = $('#feu'), tete = sec && $('[data-feu-tete]', sec), resa = sec && $('[data-feu-resa]', sec);
+  if (!tete || !resa || etat.calme || !gsap || !window.ScrollTrigger) return;
+  const brancher = (tl) => {
+    if (!tl || sec.dataset.suite) return; sec.dataset.suite = '1';
+    const cadre = $('.feu__cadre', sec), titre = $('.feu__titre', tete), mots = $$('[data-fx-ecarte]', tete);
+    const sous = $('.feu__sous', tete), leg = $('.feu__legende', tete), indice = $('.feu__indice', sec);
+    const s = () => (telephone() ? 0.9 : 0.68);
+    const rentre = () => titre.offsetHeight * (1 - s()) / 2;
+    const dy = () => {
+      const H = cadre.clientHeight, bas = H - resa.offsetHeight - parseFloat(getComputedStyle(resa).bottom || '0') - 12;
+      return Math.max(bas * 0.5, 130) - H / 2;
+    };
+    tl.to(tete, { y: dy, ease: 'power2.inOut', duration: 0.5 }, 1.05);
+    tl.to(titre, { scale: s, ease: 'power2.inOut', duration: 0.5 }, 1.05);
+    if (sous) tl.to(sous, { y: rentre, ease: 'power2.inOut', duration: 0.5 }, 1.05);
+    if (leg) tl.to(leg, { y: () => -rentre(), ease: 'power2.inOut', duration: 0.5 }, 1.05);
+    tl.to(mots, { xPercent: (i, el) => (el.dataset.fxEcarte === 'g' ? -12 : 12), ease: 'power2.inOut', duration: 0.5 }, 1.05);
+    if (indice) tl.to(indice, { autoAlpha: 0, duration: 0.2 }, 1.05);
+    tl.fromTo(resa, { y: 80, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: 'power3.out', duration: 0.4 }, 1.22);
+    tl.to({}, { duration: 0.35 });
+    window.ScrollTrigger.refresh();
+  };
+  if (sec.fxTimeline) brancher(sec.fxTimeline); else sec.addEventListener('fx:pret', () => brancher(sec.fxTimeline), { once: true });
+}
+
 demarrer({
   preparer() {
     heureDArrivee();
@@ -1080,7 +1214,12 @@ demarrer({
     terrasse();
     panorama();
     soleil();
+    heros();
+    chef();
+    rubriques();
+    lieuDefile();
     miniResa();
+    feuResa();
     feuVivant();
     braises();
     assiettes();
@@ -1108,38 +1247,32 @@ demarrer({
     chargerModules();
   },
   pret: [eau()].filter(Boolean),
-  /* Intro (environ 2,4 s) : « 00:00 » sur le blanc de midi, les chiffres roulent jusqu'à l'heure de la page, puis
-     ils glissent jusqu'à l'heure géante de l'ouverture ([data-iris-centre]) et l'écran s'ouvre depuis elle. */
+  /* Intro (environ 2,2 s) : le monogramme de la maison se pose, le nom et la ligne apparaissent, puis l'écran s'ouvre
+     en cercle depuis le centre (plus de chiffres : retour du client, « on enlève toutes les heures »). */
   jouer() {
     if (!gsap) return null;
     const tl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
-    /* La nuit, l'heure réelle reste lisible un instant avant de rouler vers midi. */
-    const pause = html.classList.contains('intro-nuit') ? 0.9 : 0;
-    $$('[data-rouleau]').forEach((r, i) => {
-      const n = r.children.length - 1;
-      tl.fromTo(r.children, { yPercent: 0 }, { yPercent: -100 * n, duration: 0.85 + i * 0.12 }, 0.12 + pause);
-    });
-    tl.to('.ouverture-nom, .ouverture-ligne', { opacity: 0, duration: 0.25, ease: 'power1.out' }, 0.95 + pause);
-    /* L'horloge de l'intro arrive à la taille exacte de l'heure géante (hauteur pour hauteur), sans rétrécir puis regrossir. */
-    const cible = $('[data-iris-centre]'), objet = $('[data-ouverture-objet]');
-    const ec = cible && objet && objet.getBoundingClientRect().height ? cible.getBoundingClientRect().height / objet.getBoundingClientRect().height : null;
-    versObjet(tl, { a: 1.1, duree: 0.45, ouverture: 0.75, ...(ec ? { echelleMin: Math.min(ec, 3), echelleMax: Math.min(ec, 3) } : {}) });
-    if ($('.midi__actions')) {
+    const pause = html.classList.contains('intro-nuit') ? 0.7 : 0;
+    tl.fromTo('[data-ouverture-objet]', { scale: 0.86, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: 'power3.out' }, 0.05);
+    tl.fromTo('.ouverture-nom, .ouverture-ligne', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out' }, 0.3);
+    tl.to('.ouverture-nom, .ouverture-ligne', { opacity: 0, duration: 0.25, ease: 'power1.out' }, 1.0 + pause);
+    versObjet(tl, { a: 1.1 + pause, duree: 0.4, ouverture: 0.75, echelleMin: 1, echelleMax: 1 });
+    if ($('.heros__actions')) {
       tl.call(() => {
-        $$('.midi [data-anime="gsap"]').forEach((e) => e.classList.add('vu'));
-        gsap.fromTo('.midi__intro, .midi__actions, .midi__statut', { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, delay: 0.2, ease: 'power3.out' });
+        $$('.heros [data-anime="gsap"]').forEach((e) => e.classList.add('vu'));
+        gsap.fromTo(HEROS_ENTREE, { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.08, delay: 0.15, ease: 'power3.out' });
       }, null, 1.5);
     }
     return tl;
   },
   arrivee() {
-    if (!gsap || !$('.midi__actions')) return;
-    $$('.midi [data-anime="gsap"]').forEach((e) => e.classList.add('vu'));
-    gsap.fromTo('.midi__intro, .midi__actions, .midi__statut', { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, delay: 0.3 });
+    if (!gsap || !$('.heros__actions')) return;
+    $$('.heros [data-anime="gsap"]').forEach((e) => e.classList.add('vu'));
+    gsap.fromTo(HEROS_ENTREE, { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.08, delay: 0.3, ease: 'power3.out' });
   },
   etatFinal() {
-    $$('.midi [data-anime="gsap"]').forEach((e) => e.classList.add('vu'));
+    $$('.heros [data-anime="gsap"]').forEach((e) => e.classList.add('vu'));
     if (!gsap) return;
-    gsap.set('.midi__intro, .midi__actions, .midi__statut', { clearProps: 'transform,opacity' });
+    gsap.set(HEROS_ENTREE, { clearProps: 'transform,opacity' });
   },
 });

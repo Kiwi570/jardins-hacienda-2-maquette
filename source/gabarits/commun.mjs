@@ -1,6 +1,6 @@
 /* Gabarit commun des Jardins de l'Hacienda v6 « De midi à minuit » : head, en-tête avec l'horloge de la page (le fil),
    menu, pied de page de nuit, barre fixe du téléphone, voile « cloche » (la transition en assiette gardée de la v5,
-   habillée de la couleur et des chiffres de l'heure d'arrivée), panneau d'intro « 00:00 → 12:00 ».
+   habillée de la couleur et des chiffres de l'heure d'arrivée), panneau d'intro (le monogramme de la maison).
    Les conventions data-* sont celles que lisent le socle JavaScript et l'audit (voir le README du socle). */
 import { html, brut } from '../../outils/gabarit.mjs';
 
@@ -170,7 +170,7 @@ ${tete(c)}
 <body id="haut">
 ${voile(c)}
 <div class="ouverture-panneau" data-ouverture aria-hidden="true">
-  <p class="ouverture-heure" data-ouverture-objet><span class="ouverture-rouleau" data-rouleau="h">${rouleau(H.h).map((x) => html`<span>${x}</span>`)}</span><span class="ouverture-sep">:</span><span class="ouverture-rouleau" data-rouleau="m">${['00', '15', '30', '45', H.m === '--' ? '00' : H.m].map((x) => html`<span>${x}</span>`)}</span></p>
+  <p class="ouverture-objet" data-ouverture-objet><span class="ouverture-logo"></span></p>
   <p class="ouverture-nom">${c.site.nom}</p>
   <p class="ouverture-ligne">${c.t('commun.introLigne')}</p>
 </div>

@@ -1,0 +1,18 @@
+{
+ "id": "20261112-145451-complet-cible-partiel",
+ "date": "2026-11-12T15:06:11.030Z",
+ "niveau": "complet",
+ "pages": "/,/infos-pratiques,/offrir,/reserver",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "parcours",
+  "mouvement"
+ ],
+ "version": "7",
+ "echecs": 1,
+ "aRegarder": 3,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "échecs"
+}

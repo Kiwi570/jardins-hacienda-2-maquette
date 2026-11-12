@@ -11,8 +11,7 @@ export default (c) => html`
   <div class="lum__ombre" aria-hidden="true"></div>
   <div class="lum__voile" aria-hidden="true"></div>
   <div class="conteneur introuvable__texte lum__cadre">
-    <p class="heure-geante heure-geante--nuit" data-iris-centre data-grille="typo fil" data-effet="axes" aria-hidden="true"><span class="hg__h">00</span><span class="hg__sep">:</span><span class="hg__m">00</span></p>
-    <h1 id="lum-titre" class="lum__titre" data-anime="lignes">${c.t('p404.titre')}</h1>
+    <h1 id="lum-titre" class="lum__titre" data-anime="lignes" data-iris-centre>${c.t('p404.titre')}</h1>
     <p class="lum__texte" data-anime>${c.t('p404.texte')}</p>
     <p class="introuvable__actions lum__actions" data-anime>${c.lien('accueil', { classe: 'bouton', texte: c.t('p404.accueil'), attrs: 'data-action-principale' })} ${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton bouton--contour bouton--clair', texte: c.t('p404.reserver') })}</p>
     <div class="lum__indice indice" aria-hidden="true"><span class="lum__indice-souris">${c.t('p404.indice')}</span><span class="lum__indice-doigt">${c.t('p404.indiceDoigt')}</span></div>

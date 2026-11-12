@@ -7,28 +7,27 @@ La v7 garde l'idée et la met au propre : une vraie photo de la maison dans chaq
 
 ## L'idée
 
-L'accueil est une journée à l'Hacienda, réglée sur les vraies heures de la maison : 12 h la piscine (l'eau bouge sous le doigt),
-12 h 30 le déjeuner (la salle au soleil, la carte de la semaine et ses prix), 14 h 30 l'après-midi d'été (un panorama de la piscine que l'on parcourt,
-l'heure avance jusqu'à 19 h et la lumière dore ; piscine, bar, journées festives, pool parties accrochés à leur place), 19 h la terrasse s'allume
-(le soleil se couche sur la table de réception, les guirlandes s'allument), 21 h le dîner (la vraie assiette devant la cheminée, sa vapeur qu'on écarte
-de la main ; réserver dans la page), 23 h au coin du feu (« Au creux de la cheminée » : la fenêtre de la salle s'ouvre jusqu'au plein écran, les braises
-qu'on attise), 23 h 30 Noël, la Saint-Sylvestre et la prochaine soirée à thème, minuit offrir (venir est au pied de page).
-La nuit et le matin (avant 11 h), l'intro s'arrête d'abord sur l'heure réelle (« 01:26 · la maison dort ») avant de rouler jusqu'à midi.
-La lumière de la page passe du blanc de midi à la braise de minuit ; l'horloge de l'en-tête suit le défilement. Chaque moment dit sa saison réelle
-(« Piscine et terrasse de juin à septembre », « Cet hiver »).
-La saison décide aussi de l'accueil : d'octobre à avril, l'ouverture de 12 h est la salle aux baies vitrées (un halo de soleil suit la main),
-le panorama de la piscine disparaît, le coin du feu ouvre la soirée à 19 h et la terrasse d'été ferme la page en clin d'œil ;
-de mai à septembre, la piscine et son eau à toucher, puis la journée dans l'ordre. 12 h 30 : l'assiette qui fume et les petites assiettes à toucher. `?saison=ete` ou
-`?saison=hiver` force l'une ou l'autre pour la présentation.
+L'accueil raconte une journée à l'Hacienda, sans afficher d'heures (retour du client, v7.4).
+L'ouverture, sur le modèle donné par le client : le nom en grand, la pastille du lieu (19 km de Metz), la phrase du chef,
+« Réserver une table » et « Voir la carte », puis la saison, le prochain rendez-vous de l'agenda et la bascule été/hiver ;
+un bouton pause arrête les animations. Elle a quatre états, posés avant le premier affichage selon la saison et le moment
+réels (`data-saison`, `data-moment`) : l'été à midi la piscine (l'eau bouge sous le doigt), l'été le soir la terrasse sous
+les guirlandes, l'hiver à midi la vraie salle aux baies vitrées, l'hiver le soir la même salle retouchée en soirée.
+`?saison=ete|hiver` et `?moment=jour|soir` forcent l'un ou l'autre pour la présentation.
+Ensuite : le chef (polaroïd de Régis Clauss qui se retourne, étiquettes à déplacer), le déjeuner (la carte en cartes qui
+défilent, l'assiette qui fume collée à côté), le lieu (cinq cartes qui filent au défilement), l'été le panorama de la
+piscine, le coin du feu (la vraie cheminée animée ; la réservation arrive après l'ouverture du titre) et « En ce moment »
+(vraies affiches de Noël et de la Saint-Sylvestre, carte cadeau). La terrasse du soir est sur la page Réceptions.
+L'intro montre le monogramme de la maison, puis l'écran s'ouvre en cercle.
 
 ## Les pages, chacune à son heure
 
 | Page | Adresse | Idée | Modules de la bibliothèque |
 |---|---|---|---|
-| Accueil | `/` | La journée, de 12 h à minuit (ci-dessus) | — (effets propres) |
+| Accueil | `/` | La journée à l'Hacienda (ci-dessus) | plat-fumant |
 | La carte | `/la-carte` | « La carte se met à l'heure » : déjeuner ou dîner selon l'heure réelle à Moineville ; la bascule rallume toute la page ; la carte en grand index, filtres, recherche | carte-du-restaurant |
 | Les fêtes | `/les-fetes` | « La saison décide » : l'hiver, le décompte géant de la Saint-Sylvestre, le menu en accords mets et vins, Noël plat par plat sous sa cloche, les soirées passées ; l'été (`?saison=ete`), la journée d'été heure par heure | accords-mets-et-vins |
-| Réceptions | `/receptions` | Nouvelle page : le mot de l'occasion qui change dans le titre, trois espaces en volets (la salle d'abord l'hiver, la terrasse d'abord l'été), demande en trois étapes et carton d'invitation tamponné | — |
+| Réceptions | `/receptions` | Nouvelle page : le mot de l'occasion qui change dans le titre, la terrasse qui s'allume au défilement (v7.4), trois espaces en volets (la salle d'abord l'hiver, la terrasse d'abord l'été), demande en trois étapes et carton d'invitation tamponné | — |
 | Réserver | `/reserver` | « La lumière du service » : claire pour un déjeuner, de nuit pour un dîner ; plan de la salle facultatif ; carte de placement sous la cloche | reservation-de-table, plan-de-salle, envol-vers-le-panier |
 | Offrir | `/offrir` | « Minuit, au coin du feu » : la carte cadeau s'écrit à la lueur du feu, puis part dans son enveloppe | carte-cadeau-qui-se-compose |
 | Infos pratiques | `/infos-pratiques` | « Il est 21 h 04 à Moineville » : l'heure réelle en grand, la photo de ce moment, le statut, le cadran des horaires à faire tourner, l'accès, l'été | horaires-ouvert-maintenant |

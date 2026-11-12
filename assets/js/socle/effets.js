@@ -282,6 +282,9 @@ function pleinEcran(el, gsap) {
   });
   const apres = el.querySelectorAll('[data-fx-apres]');
   if (apres.length) tl.fromTo(apres, { y: 32, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, stagger: 0.04 }, 0.78);
+  /* Le projet peut ajouter une suite à la scène (après l'ouverture, positions > 1) : la frise lui est confiée. */
+  el.fxTimeline = tl;
+  el.dispatchEvent(new CustomEvent('fx:pret', { detail: tl }));
 }
 
 /* Vitesse de défilement lissée (px/s), partagée par mots-geants et vitesse : une seule écoute du défilement

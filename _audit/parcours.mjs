@@ -45,9 +45,12 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     }));
     for (const x of jours) if (String(x.attendu) !== String(x.affiche).trim()) R.regarder('decompte', `affiché ${x.affiche}, attendu ${x.attendu}`, { page: '/les-fetes', taille: '390×844' });
 
-    /* v6 : réserver depuis l'accueil (21 h) : le service et les couverts arrivent dans la réservation. */
+    /* v6 : réserver depuis l'accueil (au coin du feu en v7.4) : le service et les couverts arrivent dans la réservation. */
     await page.goto(BASE + '/', { waitUntil: 'load' });
     await attendrePret(page);
+    /* v7.4 : le module est au coin du feu ; il arrive après l'ouverture du titre, à la fin de la scène. */
+    await page.evaluate(() => { const s = document.getElementById('feu'); if (s) window.scrollTo(0, s.getBoundingClientRect().top + scrollY + s.offsetHeight - innerHeight - 4); });
+    await attendre(1500);
     const choisi = await page.evaluate(() => { const r = document.querySelector('[data-mini-resa] [name="service"]:checked'); return r ? { d: r.dataset.date, s: r.value } : null; });
     await page.locator('[data-mini-resa] [data-plus]').click();
     await page.locator('[data-mini-resa] [type="submit"]').click();

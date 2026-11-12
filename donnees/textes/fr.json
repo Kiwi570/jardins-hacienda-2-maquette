@@ -111,7 +111,16 @@
       "saisonHiver": "L'hiver, près des baies vitrées",
       "indiceHiver": "Passez la main dans le soleil",
       "indiceTactileHiver": "Touchez le soleil",
-      "altHiver": "La salle à midi : le soleil d'hiver entre par les baies vitrées sur les tables rondes en verre"
+      "altHiver": "La salle à midi : le soleil d'hiver entre par les baies vitrées sur les tables rondes en verre",
+      "titre1HiverSoir": "Le soir à la lueur des lampes,",
+      "titre1EteSoir": "Le soir sous les guirlandes,",
+      "saisonHiverSoir": "L'hiver, le soir aux lampes",
+      "saisonEteSoir": "L'été, le soir sur la terrasse",
+      "indiceSoir": "Passez la main dans la lumière",
+      "indiceTactileSoir": "Touchez la lumière",
+      "altHiverSoir": "La salle le soir, les lampes d'osier allumées, les baies vitrées dans la nuit",
+      "altEteSoir": "La terrasse la nuit, les guirlandes allumées au-dessus de la grande table",
+      "retouche": "Photo de la salle retouchée en soirée"
     },
     "dejeuner": {
       "heure": "12:30",
@@ -127,7 +136,10 @@
       "assiette1": "L'assiette de légumes de saison devant la cheminée",
       "assiette2": "Une assiette du chef : pièce rôtie, cèpes et purée",
       "assiette3": "Une assiette du chef sur céramique turquoise",
-      "assiette4": "Une assiette du chef : saumon en rose et petites fleurs"
+      "assiette4": "Une assiette du chef : saumon en rose et petites fleurs",
+      "entrees": "Nos entrées",
+      "plats": "Nos plats",
+      "desserts": "Nos desserts"
     },
     "apresmidi": {
       "heure": "14:30",
@@ -155,7 +167,7 @@
       "altPool": "Une bouée licorne sur la piscine, devant la paillote",
       "suiteT": "Le soleil descend : la terrasse va s'allumer.",
       "altPanorama": "La piscine, la grande pergola de paille, les transats et les palmiers, un après-midi d’été",
-      "indice": "Faites défiler : l’après-midi avance jusqu’à 19 h"
+      "indice": "Faites défiler : l’après-midi avance, la lumière dore"
     },
     "terrasse": {
       "heure": "19:00",
@@ -219,11 +231,12 @@
       "sous": "Au creux de la cheminée",
       "soirees": "Et des soirées à thème tout l’hiver.",
       "dates": "Toutes les dates",
-      "altVraie": "Le feu dans la cheminée de la salle, deux verres de vin et un dessert sur la table de bois, un plaid de fourrure"
+      "altVraie": "Le feu dans la cheminée de la salle, deux verres de vin et un dessert sur la table de bois, un plaid de fourrure",
+      "resaTitre": "Votre table au coin du feu"
     },
     "minuit": {
       "heure": "00:00",
-      "surtitre": "Minuit, au coin du feu",
+      "surtitre": "Offrir",
       "titre": "Offrir un moment, de midi à minuit",
       "texte": "Une carte cadeau de 25 à 200 €, valable 6 mois sur toute la carte proposée par le chef, à présenter à l'arrivée.",
       "action": "Composer une carte cadeau",
@@ -235,6 +248,90 @@
       "infos": "Horaires et accès",
       "fin": "On ferme à minuit le vendredi et le samedi.",
       "carteAlt": "Plan schématique : Moineville, à l'ouest de Metz, au sud de Thionville et du Luxembourg"
+    },
+    "heros": {
+      "lieu": "Restaurant & lieu de réception à Moineville, à 19 km de Metz",
+      "titre1": "Les Jardins",
+      "titre2": "de l'Hacienda",
+      "intro": "La cuisine de saison du chef Régis Clauss, servie au coin du feu, et des soirées pour finir l'année en beauté.",
+      "introHiverSoir": "La cuisine de saison du chef Régis Clauss, servie le soir à la lueur des lampes, et des soirées pour finir l'année en beauté.",
+      "introEte": "La cuisine de saison du chef Régis Clauss, servie au bord de la piscine, sous les palmiers, et des journées festives tout l'été.",
+      "introEteSoir": "La cuisine de saison du chef Régis Clauss, servie le soir sur la terrasse, et des pool parties tout l'été.",
+      "reserver": "Réserver une table",
+      "carte": "Voir la carte",
+      "saisonHiver": "Saison d'hiver",
+      "saisonEte": "Saison d'été",
+      "rdv": "Prochain rendez-vous :",
+      "rdvTous": "Les dates des soirées",
+      "voirEte": "Voir l'été",
+      "voirHiver": "Voir l'hiver",
+      "pause": "Mettre en pause les animations de l'ouverture",
+      "reprendre": "Relancer les animations de l'ouverture"
+    },
+    "chef": {
+      "surtitre": "Le chef",
+      "titre": "Régis Clauss, l'âme de notre cuisine",
+      "signature": "Une signature culinaire entre tradition et créativité",
+      "texte1": "À la tête du restaurant, Régis Clauss met en valeur les produits de saison. Chaque semaine, il renouvelle sa carte, et les suggestions du moment s'annoncent de vive voix, à table.",
+      "texte2": "Laissez-vous surprendre, et venez partager un moment dans un cadre convivial : toute l'équipe des Jardins de l'Hacienda vous attend.",
+      "carte": "La carte de la semaine",
+      "instagram": "Les suggestions sur Instagram",
+      "nouvelOnglet": "(s'ouvre dans un nouvel onglet)",
+      "alt": "Le chef Régis Clauss, chemise blanche et barbe blanche, souriant au bord de la piscine, un jour d'été",
+      "legende": "Au bord de la piscine, un jour d'été",
+      "retourner": "Retournez la photo",
+      "revoir": "Revoir la photo",
+      "dosTitre": "Cette semaine, à la carte",
+      "dosMot": "Et les suggestions du chef, de vive voix",
+      "indice": "Déplacez les étiquettes",
+      "indiceTactile": "Faites glisser les étiquettes",
+      "etiquette": {
+        "cepes": "Cèpes",
+        "maison": "Fait maison",
+        "saison": "Produits de saison",
+        "girolles": "Girolles",
+        "semaine": "Une nouvelle carte chaque semaine",
+        "voix": "Suggestions de vive voix"
+      }
+    },
+    "lieu": {
+      "surtitre": "Le lieu",
+      "titre": "Un endroit magique, en pleine nature",
+      "texte": "À 19 km de Metz, entre Thionville et le Luxembourg : la salle aux baies vitrées, la terrasse, la piscine sous les palmiers et les jardins.",
+      "restaurantT": "Le restaurant",
+      "restaurantX": "Les baies vitrées et les tables rondes en verre sur pied de bois : la salle, en toute saison.",
+      "restaurantAlt": "La salle du restaurant en plein jour : baies vitrées, tables rondes en verre sur pied de bois, lampe d'osier",
+      "terrasseT": "La terrasse",
+      "terrasseX": "Sous les paillotes, autour du brasero, pour les beaux jours.",
+      "terrasseAlt": "La terrasse sous les paillotes, le brasero allumé au premier plan",
+      "piscineT": "La piscine",
+      "piscineX": "L'eau turquoise, les palmiers et les transats, de juin à septembre.",
+      "piscineAlt": "La piscine sous le ciel bleu, les palmiers et les paillotes",
+      "receptionsT": "Les réceptions",
+      "receptionsX": "Mariages, baptêmes, anniversaires, pots de départ : la grande table dressée pour vous.",
+      "receptionsAlt": "Une longue table de réception dressée au bord de la piscine, chemin de table d'olivier",
+      "feuT": "Le coin du feu",
+      "feuX": "L'hiver, la salle se resserre autour de la cheminée : réservez près du feu.",
+      "feuAlt": "Le feu dans la cheminée de la salle, deux verres de vin sur la table de bois"
+    },
+    "moment": {
+      "titre": "En ce moment",
+      "sylvestreDate": "Jeudi 31 décembre",
+      "sylvestreT": "Saint-Sylvestre",
+      "sylvestreX": "Menu de fête en cinq temps, accords mets et vins, soirée animée par DJ Laurent Geymet.",
+      "noelDate": "Vendredi 25 décembre, au déjeuner",
+      "noelT": "Le menu de Noël",
+      "noelX": "Huître tiède au sabayon de champagne, foie gras poêlé, suprême de chapon farci à la truffe.",
+      "cadeauDate": "Toute l'année",
+      "cadeauT": "La carte cadeau",
+      "cadeauX": "Valable 6 mois sur toute la carte du chef.",
+      "cadeauPrix": "De 25 à 200 €",
+      "carteMot": "Carte cadeau",
+      "decouvrir": "Découvrir",
+      "altSylvestre": "L'affiche du menu de la Saint-Sylvestre des Jardins de l'Hacienda",
+      "altNoel": "L'affiche du menu de Noël des Jardins de l'Hacienda",
+      "altCadeau": "Une carte cadeau des Jardins de l'Hacienda, vert de nuit et or, posée près du feu",
+      "sylvestrePrix": "120 € le menu · 170 € avec l'accord mets et vins"
     }
   },
   "p404": {
@@ -469,7 +566,8 @@
     "remise": "Pour la recevoir, appelez-nous au 06 18 21 28 10.",
     "simule": "Achat simulé : rien n'est payé ni envoyé dans cette maquette.",
     "carte": "Carte cadeau",
-    "indice": "Passez la main sur les braises"
+    "indice": "Passez la main sur les braises",
+    "validite": "Valable 6 mois · toute la carte"
   },
   "infos": {
     "sur": "Infos pratiques",
