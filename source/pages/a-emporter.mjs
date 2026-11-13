@@ -5,7 +5,7 @@
    v7.5.8 · Les produits en vitrine sous cloches de verre (reprise de la vitrine de la maquette Lemoy) : chaque plat dessiné en
    illustration (pas de photo détourée des produits pour l'instant), la cloche se soulève au survol, s'ouvre au toucher, et
    la vapeur monte des plats chauds. Dessins et cloche : source/gabarits/cloches.svg. */
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { html, brut } from '../../outils/gabarit.mjs';
 
 export const page = { cle: 'a-emporter', fichier: 'a-emporter', theme: 'jour', imagePartage: 'vraie/plat-cheminee-1280.webp', modules: [] };
@@ -13,6 +13,8 @@ export const page = { cle: 'a-emporter', fichier: 'a-emporter', theme: 'jour', i
 const CLOCHES = readFileSync(new URL('../gabarits/cloches.svg', import.meta.url), 'utf8');
 const CHAUDS = new Set(['escargots', 'tourte-escargots', 'tourte-grenouilles', 'pate-lorrain']);
 const VAPEUR = '<svg class="emp-cloche__vapeur" viewBox="0 56 400 374" aria-hidden="true"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="5" filter="url(#pl-flou-l)"><path class="vapeur vapeur--1" d="M168 296C158 276 180 262 170 242C160 222 182 208 174 188"/><path class="vapeur vapeur--2" d="M204 290C194 270 216 256 206 236C196 216 218 202 210 182"/><path class="vapeur vapeur--3" d="M240 298C230 278 252 264 242 244C232 224 254 210 246 190"/></g></svg>';
+/* Les plats en image (Grok, détourés par outils/detourer-plats.py) quand ils existent, sinon le dessin. */
+const photoPlat = (id) => existsSync(new URL(`../../assets/images/grok/traiteur/${id}-800.webp`, import.meta.url));
 const couche = (cls, id) => `<svg class="emp-cloche__${cls}" viewBox="0 56 400 374" aria-hidden="true"><use href="#${id}" width="400" height="430"/></svg>`;
 
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
@@ -85,8 +87,11 @@ export default (c) => {
       ${E.produits.map((p, i) => html`<li class="emp-produit" data-produit="${p.id}">
         <div class="emp-cloche" data-emp-cloche data-superpose>
           ${brut(couche('fond', 'cl-assiette') + couche('ombre', 'cl-pied') + couche('arriere', 'cl-arriere'))}
-          <svg class="emp-cloche__plat" viewBox="0 56 400 374" role="img" aria-label="${c.s('emporter.illustration', { nom: p.nom })}"><use href="#pl-${p.id}" width="400" height="430"/></svg>
+          ${photoPlat(p.id)
+            ? html`<img class="emp-cloche__plat emp-cloche__plat--photo" src="/assets/images/grok/traiteur/${p.id}-800.webp" srcset="/assets/images/grok/traiteur/${p.id}-480.webp 480w, /assets/images/grok/traiteur/${p.id}-800.webp 800w" sizes="(max-width: 860px) 46vw, 22vw" alt="${c.s('emporter.illustration', { nom: p.nom })}" loading="lazy" decoding="async">`
+            : html`<svg class="emp-cloche__plat" viewBox="0 56 400 374" role="img" aria-label="${c.s('emporter.illustration', { nom: p.nom })}"><use href="#pl-${p.id}" width="400" height="430"/></svg>`}
           ${brut((CHAUDS.has(p.id) ? VAPEUR : '') + couche('dome', 'cl-verre'))}
+          ${photoPlat(p.id) ? html`<span class="mention-ia emp-cloche__mention">${c.t('commun.mentionIa')}</span>` : ''}
           <button type="button" class="emp-cloche__verre" aria-pressed="false" aria-label="${c.s('emporter.soulever', { nom: p.nom })}"></button>
         </div>
         <div class="emp-produit__corps">

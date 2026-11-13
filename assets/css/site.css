@@ -2742,3 +2742,22 @@ html.calme .emp-cloche__vapeur .vapeur { animation: none; opacity: .5; transform
 .demande .invitation__sur, .demande .invitation__lieu { font-size: .75rem; letter-spacing: .2em; }
 .invitation__orne { font-size: .75rem; }
 @media (min-width: 901px) and (max-width: 1100px) { .demande .invitation__sur { font-size: .75rem; letter-spacing: .14em; } }
+
+/* Traiteur : les plats en image (Grok détouré) sous la cloche, posés au fond de l'assiette ; la mention « Illustration générée »
+   en bas de chaque cloche. */
+.emp-cloche__plat--photo { position: absolute; left: 17%; width: 66%; bottom: 13.5%; height: auto; max-height: 50%; object-fit: contain; object-position: 50% 100%;
+  transform: none; transform-origin: 50% 100%; pointer-events: none; filter: drop-shadow(0 6px 8px rgba(40, 24, 14, .22)); }
+@media (hover: hover) { .emp-cloche:not(.est-levee):hover .emp-cloche__plat--photo { transform: scale(1.04); } }
+.emp-cloche.est-levee .emp-cloche__plat--photo { transform: scale(1.08); }
+.emp-cloche .emp-cloche__mention { position: absolute; z-index: 3; right: 2%; bottom: 0; left: auto; top: auto; }
+
+/* v7.5.10 · Les onglets en Fraunces, comme le logo et les titres : l'onglet courant en italique, doré quand l'en-tête est sombre,
+   terre cuite quand il est clair, avec un filet fin dessous qui se trace aussi au survol. */
+[data-nav] a { position: relative; font-family: var(--police-titres); font-size: 1.14rem; font-weight: 400; letter-spacing: .005em; text-decoration: none !important; }
+[data-nav] a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 8px; height: 1.5px; border-radius: 2px; background: var(--rouge); transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+[data-nav] a[aria-current] { font-style: italic; color: var(--rouge); }
+[data-nav] a[aria-current]::after, [data-nav] a:hover::after, [data-nav] a:focus-visible::after { transform: scaleX(1); }
+html[data-entete-theme="nuit"] [data-nav] a[aria-current], html[data-theme="nuit"]:not([data-entete-theme="jour"]) [data-nav] a[aria-current] { color: #e2b45e; }
+html[data-entete-theme="nuit"] [data-nav] a::after, html[data-theme="nuit"]:not([data-entete-theme="jour"]) [data-nav] a::after { background: #e2b45e; }
+@media (min-width: 900px) and (max-width: 1150px) { [data-nav] a { font-size: 1.04rem; } }
+@media (prefers-reduced-motion: reduce) { [data-nav] a::after { transition: none; } }

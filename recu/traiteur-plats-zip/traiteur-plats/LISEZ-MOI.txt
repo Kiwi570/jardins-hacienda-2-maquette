@@ -1,0 +1,31 @@
+LES JARDINS DE L'HACIENDA — VISUELS TRAITEUR
+===========================================
+
+Dossier : 16 fichiers JPG, 8 plats, 2 propositions par plat.
+Format : 1536 x 1024 pixels (paysage 3:2), fond blanc, sans texte.
+
+PLATS
+1. Escargots à la crème d'ail : traiteur-escargots-1.jpg et -2.jpg
+2. Tourte aux escargots : traiteur-tourte-escargots-1.jpg et -2.jpg
+3. Tourte aux grenouilles : traiteur-tourte-grenouilles-1.jpg et -2.jpg
+4. Pâté lorrain : traiteur-pate-lorrain-1.jpg et -2.jpg
+5. Foie gras de canard maison : traiteur-foie-gras-1.jpg et -2.jpg
+6. Gravlax de saumon maison : traiteur-gravlax-1.jpg et -2.jpg
+7. Tataki de bœuf : traiteur-tataki-boeuf-1.jpg et -2.jpg
+8. Tataki de thon : traiteur-tataki-thon-1.jpg et -2.jpg
+
+IMPORTANT — QUALITÉ ET PROVENANCE
+Les visuels des plats 1 à 6 proviennent d'images générées par IA.
+Pour les plats 1 et 2, les deux fichiers sont des générations distinctes.
+Pour les plats 3 à 6, la seconde proposition est un recadrage de la
+première, et non une nouvelle génération.
+
+Les tatakis (7 et 8) sont des COMPOSITIONS NUMÉRIQUES PROVISOIRES réalisées
+à partir de textures issues des images générées précédemment. Leur style est
+plus illustratif, moins photoréaliste, et ne reproduit pas pleinement les
+photos professionnelles demandées par le brief. Il est conseillé de les
+remplacer par de véritables visuels produits avant publication.
+
+Ces images n'illustrent pas les vrais produits cuisinés par le restaurant.
+Conserver la mention « Illustration générée » sur les éléments pertinents
+et remplacer les visuels par des photos de produits dès que possible.
