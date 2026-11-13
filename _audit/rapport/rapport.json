@@ -9,7 +9,9 @@
     "numéro de version": 1,
     "langues": 1,
     "mesures": 32,
-    "balayage": 1
+    "balayage": 1,
+    "mouvement": 2,
+    "effets du plan": 28
   },
   "infos": [
     "Numéro de version des fichiers : ?v=7",
@@ -18,7 +20,8 @@
     "Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.",
     "Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.",
     "Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.",
-    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés."
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.",
+    "Tient dans l'écran /a-emporter : aucune section épinglée ou plein écran."
   ],
   "grille": []
 }

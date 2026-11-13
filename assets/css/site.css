@@ -2761,3 +2761,52 @@ html[data-entete-theme="nuit"] [data-nav] a[aria-current], html[data-theme="nuit
 html[data-entete-theme="nuit"] [data-nav] a::after, html[data-theme="nuit"]:not([data-entete-theme="jour"]) [data-nav] a::after { background: #e2b45e; }
 @media (min-width: 900px) and (max-width: 1150px) { [data-nav] a { font-size: 1.04rem; } }
 @media (prefers-reduced-motion: reduce) { [data-nav] a::after { transition: none; } }
+
+/* v7.5.11 · Traiteur, le tiroir de la commande : un panneau papier qui glisse depuis la droite sur la page assombrie ;
+   chaque ligne a la vignette de son plat sur une petite assiette, ses quantités, son prix ; le total et « Choisir le jour
+   de retrait » restent en bas. */
+.emp-tiroir { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; overflow: hidden; color: #1c1712; }
+.emp-tiroir::backdrop { background: transparent; }
+.emp-tiroir__voile { position: absolute; inset: 0; background: rgba(18, 12, 9, .56); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); opacity: 0; transition: opacity .42s ease; cursor: pointer; }
+.emp-tiroir.est-ouvert .emp-tiroir__voile { opacity: 1; }
+.emp-tiroir__panneau { position: absolute; top: 0; right: 0; bottom: 0; width: min(460px, 100vw); display: flex; flex-direction: column;
+  background: #f6f1e7; box-shadow: -30px 0 70px rgba(10, 6, 4, .38); transform: translateX(102%); transition: transform .48s cubic-bezier(.22, .7, .18, 1); }
+.emp-tiroir.est-ouvert .emp-tiroir__panneau { transform: none; }
+.emp-tiroir__tete { display: flex; align-items: center; gap: 16px; padding: 26px 28px 20px; border-bottom: 1px solid rgba(28, 23, 18, .12); }
+.emp-tiroir__titre { margin: 0; font-size: clamp(1.6rem, 1.3rem + .8vw, 2rem); line-height: 1.1; color: #1c1712; }
+.emp-tiroir__nombre { margin: 4px 0 0; color: #66574a; font-size: .95rem; }
+.emp-tiroir__fermer { flex: none; margin-left: auto; width: 46px; height: 46px; display: grid; place-items: center; padding: 0; border: 1px solid rgba(28, 23, 18, .25); border-radius: 50%; background: transparent; color: #1c1712; font-size: 1.6rem; line-height: 1; cursor: pointer; transition: background .2s, transform .3s; }
+.emp-tiroir__fermer:hover { background: #1c1712; color: #f6f1e7; transform: rotate(90deg); }
+.emp-tiroir__fermer:focus-visible, .emp-tiroir__continuer:focus-visible, .emp-tl button:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 2px; }
+.emp-tiroir__ajoute { display: flex; align-items: center; gap: 10px; margin: 0; padding: 12px 28px; background: #2f5a43; color: #fff; font-weight: 600; font-size: .95rem; animation: tiroir-ajoute .5s cubic-bezier(.2, .8, .2, 1); }
+.emp-tiroir__ajoute::before { content: '✓'; display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; background: #fff; color: #2f5a43; font-size: .8rem; font-weight: 800; }
+.emp-tiroir__ajoute[hidden] { display: none; }
+@keyframes tiroir-ajoute { from { opacity: 0; transform: translateY(-8px); } }
+.emp-tiroir__defile { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 28px 12px; }
+.emp-tiroir__lignes { list-style: none; margin: 0; padding: 0; }
+.emp-tl { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; grid-template-areas: "vig corps prix" "vig qte retirer"; align-items: center; gap: 8px 16px; margin: 0 -28px; padding: 18px 28px; border-bottom: 1px solid rgba(28, 23, 18, .1); }
+.emp-tl.est-nouvelle { animation: tl-arrivee 1.6s ease; }
+@keyframes tl-arrivee { 0%, 35% { background: rgba(233, 207, 142, .5); } 100% { background: rgba(233, 207, 142, 0); } }
+.emp-tl__vignette { grid-area: vig; width: 72px; height: 72px; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 50% 42%, #fffdf9 0%, #f5ecdf 62%, #e3d2b8 100%); box-shadow: inset 0 0 0 1.5px rgba(220, 163, 48, .45), 0 6px 14px -6px rgba(60, 40, 20, .35); transition: opacity .2s; }
+.emp-tl__vignette img, .emp-tl__vignette svg { width: 84%; height: 84%; object-fit: contain; overflow: visible; }
+.emp-tl__corps { grid-area: corps; min-width: 0; }
+.emp-tl__nom { display: block; font-family: var(--police-titres); font-size: 1.12rem; font-weight: 500; line-height: 1.2; }
+.emp-tl__unite { display: block; margin-top: 2px; color: #66574a; font-size: .88rem; }
+.emp-tl__prix { grid-area: prix; align-self: start; padding-top: 2px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.emp-tl__qte { grid-area: qte; justify-self: start; display: inline-flex; align-items: center; gap: 2px; padding: 2px; border: 1px solid rgba(28, 23, 18, .2); border-radius: 999px; }
+.emp-tl__qte button { width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; color: #1c1712; font-size: 1.15rem; cursor: pointer; }
+.emp-tl__qte button:hover { background: rgba(28, 23, 18, .08); }
+.emp-tl__qte span { min-width: 1.8em; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.emp-tl__retirer { grid-area: retirer; justify-self: end; min-height: 44px; padding: 0 2px; border: 0; background: none; color: #66574a; font: inherit; font-size: .9rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.emp-tl__retirer:hover { color: var(--rouge); }
+.emp-tiroir__vide { margin: 24px 0; color: #66574a; }
+.emp-tiroir__pied { display: grid; gap: 12px; padding: 20px 28px 26px; border-top: 1px solid rgba(28, 23, 18, .12); background: #efe6d6; }
+.emp-tiroir__total { display: flex; justify-content: space-between; align-items: baseline; margin: 0; font-size: 1.1rem; }
+.emp-tiroir__total strong { font-family: var(--police-titres); font-size: 1.9rem; font-variant-numeric: tabular-nums; }
+.emp-tiroir__retrait { margin: 0; color: #66574a; font-size: .92rem; line-height: 1.45; }
+.emp-tiroir__valider { justify-content: center; width: 100%; min-height: 54px; font-size: 1.05rem; }
+.emp-tiroir__valider[hidden] { display: none; }
+.emp-tiroir__continuer { min-height: 44px; border: 0; background: none; color: #1c1712; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.emp-vol-plat { position: fixed; z-index: 5; margin: 0; pointer-events: none; transform-origin: 50% 50%; object-fit: contain; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .35)); }
+@media (prefers-reduced-motion: reduce) { .emp-tiroir__voile, .emp-tiroir__panneau { transition: none; } .emp-tl.est-nouvelle, .emp-tiroir__ajoute { animation: none; } }
+html.calme .emp-tiroir__voile, html.calme .emp-tiroir__panneau { transition: none; }

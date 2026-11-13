@@ -59,14 +59,14 @@ export function initDefilement() {
     if (!verrous.size) return;
     let dy = e.deltaY;
     if (e.type === 'touchmove' && e.touches[0]) { dy = yToucher - e.touches[0].clientY; yToucher = e.touches[0].clientY; }
-    if (e.target.closest && e.target.closest('[data-menu]') && blocDefilable(e.target, dy || 0)) return;
+    if (e.target.closest && e.target.closest('[data-menu], [data-defilable]') && blocDefilable(e.target, dy || 0)) return;
     e.preventDefault();
   };
   window.addEventListener('wheel', bloquer, { passive: false });
   window.addEventListener('touchmove', bloquer, { passive: false });
   window.addEventListener('keydown', (e) => {
     if (verrous.size && [' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)
-      && !e.target.closest('input, textarea, select, [contenteditable], [data-menu]')) e.preventDefault();
+      && !e.target.closest('input, textarea, select, button, [contenteditable], [data-menu], dialog')) e.preventDefault();
   });
 
   if (!adouci) return;

@@ -3,7 +3,7 @@
    bibliothèque (dossier modules/) sont chargés ici, page par page, et réglés sans être réécrits.
    Effets propres (data-effet) : heure (horloge de l'en-tête), axes (chiffres variables), heure-section, eau (WebGL),
    passe, vraies, apres-midi, terrasse, guirlandes, carton, braises, decompte, carte-apercu. */
-import { demarrer, boucle, etat, versObjet, quand, aller, partir } from './socle/index.js?v=7';
+import { demarrer, boucle, etat, versObjet, quand, aller, partir, bloquerDefilement, debloquerDefilement } from './socle/index.js?v=7';
 
 const gsap = window.gsap;
 const $ = (s, r = document) => r.querySelector(s);
@@ -1013,7 +1013,51 @@ function emporter() {
   const total = () => lignes.reduce((s, l) => s + prixLigne(l), 0);
   const nombre = () => lignes.reduce((s, l) => s + l.qte, 0);
   let commandeVue = false;
-  const rendre = () => {
+  /* v7.5.11 · Le tiroir de la commande, à droite : lignes avec vignette du plat, quantités, retrait d'une ligne, total. */
+  const tiroir = $('[data-emp-tiroir]'), dansTiroir = (sel) => tiroir && $(sel, tiroir);
+  const tLignes = dansTiroir('[data-tiroir-lignes]'), tVide = dansTiroir('[data-tiroir-vide]'), tTotal = dansTiroir('[data-tiroir-total]');
+  const tNombre = dansTiroir('[data-tiroir-nombre]'), tAjoute = dansTiroir('[data-tiroir-ajoute]'), tPanneau = dansTiroir('.emp-tiroir__panneau');
+  const cleLigne = (l) => `${l.id}|${l.poids || 0}`;
+  const vignette = (id) => {
+    const v = T.produits[id].vignette;
+    if (v) { const i = document.createElement('img'); i.src = v; i.alt = ''; i.width = 64; i.height = 64; i.decoding = 'async'; return i; }
+    const sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); sv.setAttribute('viewBox', '70 230 260 160'); sv.setAttribute('aria-hidden', 'true');
+    const u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); u.setAttribute('href', `#pl-${id}`); u.setAttribute('width', '400'); u.setAttribute('height', '430'); sv.append(u); return sv;
+  };
+  const changer = (l, delta) => { l.qte += delta; if (l.qte <= 0) lignes.splice(lignes.indexOf(l), 1); garder(); rendre(); };
+  const rendreTiroir = (nouvelle) => {
+    if (!tiroir) return;
+    tLignes.replaceChildren(...lignes.map((l) => {
+      const p = T.produits[l.id], nom = nomLigne(l);
+      const li = document.createElement('li'); li.className = 'emp-tl' + (cleLigne(l) === nouvelle ? ' est-nouvelle' : ''); li.dataset.cle = cleLigne(l);
+      li.innerHTML = '<span class="emp-tl__vignette"></span><span class="emp-tl__corps"><span class="emp-tl__nom"></span><span class="emp-tl__unite"></span></span><span class="emp-tl__prix"></span><span class="emp-tl__qte"><button type="button" data-action="moins"></button><span></span><button type="button" data-action="plus"></button></span><button type="button" class="emp-tl__retirer" data-action="retirer"></button>';
+      li.querySelector('.emp-tl__vignette').append(vignette(l.id));
+      li.querySelector('.emp-tl__nom').textContent = nom;
+      li.querySelector('.emp-tl__unite').textContent = fmt(p.unite === 'kg' ? T.tiroirKg : T.tiroirUnite, { prix: euros(p.prix) });
+      li.querySelector('.emp-tl__prix').textContent = euros(prixLigne(l));
+      li.querySelector('.emp-tl__qte span').textContent = l.qte;
+      const [m, pl, r] = li.querySelectorAll('button');
+      m.textContent = '−'; pl.textContent = '+'; r.textContent = T.tiroirRetirerTexte;
+      m.setAttribute('aria-label', fmt(T.moins, { nom })); pl.setAttribute('aria-label', fmt(T.plus, { nom })); r.setAttribute('aria-label', fmt(T.tiroirRetirer, { nom }));
+      m.addEventListener('click', () => changer(l, -1)); pl.addEventListener('click', () => changer(l, 1)); r.addEventListener('click', () => changer(l, -l.qte));
+      return li;
+    }));
+    tVide.hidden = lignes.length > 0;
+    tTotal.textContent = euros(total());
+    const n = nombre(); tNombre.textContent = n === 1 ? T.tiroirNombreUn : fmt(T.tiroirNombre, { n });
+    $('[data-tiroir-valider]', tiroir).hidden = !lignes.length;
+  };
+  /* Après un rendu, le focus revient sur le même bouton de la même ligne (ou sur la fermeture si la ligne a disparu). */
+  const garderFocus = (faire) => {
+    const f = document.activeElement, li = f && f.closest && f.closest('.emp-tl'), action = f && f.dataset && f.dataset.action;
+    faire();
+    if (!li || !tiroir || !tiroir.open) return;
+    const meme = $(`.emp-tl[data-cle="${CSS.escape(li.dataset.cle)}"] [data-action="${action}"]`, tiroir);
+    (meme || $('.emp-tl [data-action="plus"]', tiroir) || $('.emp-tiroir__fermer', tiroir)).focus({ preventScroll: true });
+  };
+  let nouvelle = '';
+  const rendre = () => garderFocus(() => { rendreListe(); rendreTiroir(nouvelle); nouvelle = ''; });
+  const rendreListe = () => {
     lignesEl.replaceChildren(...lignes.map((l, k) => {
       const li = document.createElement('li'); li.className = 'emp-ligne';
       const nom = nomLigne(l);
@@ -1031,7 +1075,54 @@ function emporter() {
     vide.hidden = lignes.length > 0;
     totalEl.textContent = euros(total());
     nbEl.textContent = nombre(); ptEl.textContent = euros(total());
-    pastille.hidden = !lignes.length || commandeVue;
+    pastille.hidden = !lignes.length || commandeVue || !!(tiroir && tiroir.open);
+  };
+  /* Ouvrir et fermer le tiroir (dialog modal : focus gardé dedans, Échap ; le défilement de la page est bloqué). */
+  let declencheur = null, minuteFermeture = 0;
+  const ouvrir = (depuis) => {
+    if (!tiroir) return false;
+    clearTimeout(minuteFermeture);
+    declencheur = depuis || document.activeElement;
+    if (!tiroir.open) {
+      tiroir.showModal(); bloquerDefilement('tiroir');
+      if (etat.calme) tiroir.classList.add('est-ouvert'); else requestAnimationFrame(() => requestAnimationFrame(() => tiroir.classList.add('est-ouvert')));
+    }
+    pastille.hidden = true;
+    return true;
+  };
+  const fermer = (apres) => {
+    if (!tiroir || !tiroir.open) return;
+    tiroir.classList.remove('est-ouvert');
+    const fin = () => { tiroir.close(); debloquerDefilement('tiroir'); tAjoute.hidden = true; rendre(); if (apres) apres(); else if (declencheur && declencheur.isConnected) declencheur.focus({ preventScroll: true }); };
+    if (etat.calme) fin(); else minuteFermeture = setTimeout(fin, 420);
+  };
+  if (tiroir) {
+    tiroir.addEventListener('cancel', (e) => { e.preventDefault(); fermer(); });
+    for (const b of $$('[data-tiroir-fermer]', tiroir)) b.addEventListener('click', () => fermer());
+    $('[data-tiroir-valider]', tiroir).addEventListener('click', (e) => {
+      e.preventDefault();
+      fermer(() => { aller($('#commande')); const j = $('[name="jour"]:checked, [name="jour"]:not(:disabled)', form); if (j) setTimeout(() => j.focus({ preventScroll: true }), etat.calme ? 0 : 700); });
+    });
+    pastille.addEventListener('click', (e) => { e.preventDefault(); ouvrir(pastille); });
+  }
+  /* Le plat s'envole de sa cloche jusqu'à sa vignette dans le tiroir (qui glisse encore : on vise sa position finale). */
+  const envolPlat = (carte, cle) => {
+    const src = $('.emp-cloche__plat', carte), cible = $(`.emp-tl[data-cle="${CSS.escape(cle)}"] .emp-tl__vignette`, tiroir);
+    if (etat.calme || !src || !cible || !src.animate) return;
+    const a = src.getBoundingClientRect(), b = cible.getBoundingClientRect();
+    const tx = new DOMMatrixReadOnly(getComputedStyle(tPanneau).transform).m41;
+    const clone = src.cloneNode(true);
+    clone.removeAttribute('role'); clone.removeAttribute('aria-label'); clone.removeAttribute('srcset'); clone.setAttribute('aria-hidden', 'true'); clone.setAttribute('class', 'emp-vol-plat');
+    Object.assign(clone.style, { left: `${a.left}px`, top: `${a.top}px`, width: `${a.width}px`, height: `${a.height}px` });
+    tiroir.append(clone);
+    const echelle = (b.width * 0.9) / a.width;
+    const dx = b.left - tx + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
+    cible.style.opacity = '0';
+    clone.animate([
+      { transform: 'translate(0, 0) scale(1)' },
+      { transform: `translate(${dx * 0.45}px, ${dy * 0.45 - 110}px) scale(${(1 + echelle) / 1.8})`, offset: 0.5 },
+      { transform: `translate(${dx}px, ${dy}px) scale(${echelle})` },
+    ], { duration: 820, easing: 'cubic-bezier(.45, 0, .2, 1)' }).finished.then(() => { clone.remove(); cible.style.opacity = ''; }, () => { clone.remove(); cible.style.opacity = ''; });
   };
   const toucher = () => { if (etat.calme) return; pastille.classList.remove('est-touchee'); void pastille.offsetWidth; pastille.classList.add('est-touchee'); setTimeout(() => pastille.classList.remove('est-touchee'), 320); };
   const envol = (depuis) => {
@@ -1048,10 +1139,15 @@ function emporter() {
     const poids = T.produits[id].unite === 'kg' ? +($('[data-poids]', carte)?.value || 1) : 0;
     const l = lignes.find((x) => x.id === id && (x.poids || 0) === poids);
     if (l) l.qte++; else lignes.push(poids ? { id, poids, qte: 1 } : { id, qte: 1 });
-    garder(); rendre(); envol(b);
+    nouvelle = `${id}|${poids || 0}`; const cle = nouvelle;
+    garder(); rendre();
+    if (ouvrir(b)) {
+      tAjoute.textContent = fmt(T.tiroirAjoute, { nom: nomLigne({ id, poids }) }); tAjoute.hidden = false;
+      envolPlat(carte, cle);
+    } else envol(b);
     const txt = $('[data-ajouter-texte]', b); b.classList.add('est-ajoute'); txt.textContent = T.ajoute;
     clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('est-ajoute'); txt.textContent = T.ajouter; }, 1400);
-    annonce.textContent = fmt(T.annonce, { nom: nomLigne({ id, poids }), total: euros(total()) });
+    if (!tiroir) annonce.textContent = fmt(T.annonce, { nom: nomLigne({ id, poids }), total: euros(total()) });
     $('[data-erreur="panier"]', form).hidden = true;
   });
   addEventListener('storage', (e) => { if (e.key !== CLE) return; try { lignes = JSON.parse(e.newValue || '[]'); } catch { lignes = []; } rendre(); });

@@ -4,7 +4,9 @@
    Effet propre : à l'ajout, une pastille s'envole du produit vers la commande.
    v7.5.8 · Les produits en vitrine sous cloches de verre (reprise de la vitrine de la maquette Lemoy) : chaque plat dessiné en
    illustration (pas de photo détourée des produits pour l'instant), la cloche se soulève au survol, s'ouvre au toucher, et
-   la vapeur monte des plats chauds. Dessins et cloche : source/gabarits/cloches.svg. */
+   la vapeur monte des plats chauds. Dessins et cloche : source/gabarits/cloches.svg.
+   v7.5.11 · Le tiroir de la commande : à chaque ajout (ou depuis la pastille), la commande s'ouvre dans un panneau à droite
+   (dialog modal : Échap, clic à côté, focus gardé dedans puis rendu) ; le plat s'envole de sa cloche jusqu'à sa ligne. */
 import { readFileSync, existsSync } from 'node:fs';
 import { html, brut } from '../../outils/gabarit.mjs';
 
@@ -51,7 +53,9 @@ function calendrier(c, E) {
 
 export default (c) => {
   const E = c.donnees.emporter;
-  const textes = { articles: c.s('emporter.articles'), annonce: c.s('emporter.annonce'), moins: c.s('emporter.moins'), plus: c.s('emporter.plus'), retrait: c.s('emporter.retraitResume'), retraitPanier: c.s('emporter.retraitPanier'), retraitAChoisir: c.s('emporter.retraitAChoisir'), midi: c.s('emporter.midi').toLowerCase(), soir: c.s('emporter.soir').toLowerCase(), recap: c.s('emporter.recap'), simule: c.s('emporter.simule'), ajoute: c.s('emporter.ajoute'), ajouter: c.s('emporter.ajouter'), produits: Object.fromEntries(E.produits.map((p) => [p.id, { nom: p.nom, prix: p.prix, unite: p.unite }])) };
+  const textes = { articles: c.s('emporter.articles'), annonce: c.s('emporter.annonce'), moins: c.s('emporter.moins'), plus: c.s('emporter.plus'), retrait: c.s('emporter.retraitResume'), retraitPanier: c.s('emporter.retraitPanier'), retraitAChoisir: c.s('emporter.retraitAChoisir'), midi: c.s('emporter.midi').toLowerCase(), soir: c.s('emporter.soir').toLowerCase(), recap: c.s('emporter.recap'), simule: c.s('emporter.simule'), ajoute: c.s('emporter.ajoute'), ajouter: c.s('emporter.ajouter'), tiroirAjoute: c.s('emporter.tiroirAjoute'), tiroirNombre: c.s('emporter.tiroirNombre'), tiroirNombreUn: c.s('emporter.tiroirNombreUn'), tiroirRetirer: c.s('emporter.tiroirRetirer'), tiroirRetirerTexte: c.s('emporter.tiroirRetirerTexte'), tiroirUnite: c.s('emporter.tiroirUnite'), tiroirKg: c.s('emporter.tiroirKg'),
+    produits: Object.fromEntries(E.produits.map((p) => [p.id, { nom: p.nom, prix: p.prix, unite: p.unite, vignette: photoPlat(p.id) ? `/assets/images/grok/traiteur/${p.id}-480.webp` : null }])) };
+  const jourLong = (iso) => new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`));
   return html`
 <section class="ouv-emp" id="debut">
   <div class="conteneur ouv-emp__grille">
@@ -146,6 +150,29 @@ export default (c) => {
 </section>
 
 <a class="emp-pastille" href="#commande" data-emp-pastille data-sans-transition hidden aria-label="${c.s('emporter.pastille')}"><span class="emp-pastille__nombre" data-pastille-nombre>0</span><span data-pastille-total>0 €</span></a>
+<dialog class="emp-tiroir" data-emp-tiroir aria-labelledby="tiroir-titre">
+  <div class="emp-tiroir__voile" data-tiroir-fermer aria-hidden="true"></div>
+  <div class="emp-tiroir__panneau">
+    <div class="emp-tiroir__tete">
+      <div>
+        <h2 id="tiroir-titre" class="emp-tiroir__titre">${c.t('emporter.panierTitre')}</h2>
+        <p class="emp-tiroir__nombre" data-tiroir-nombre></p>
+      </div>
+      <button type="button" class="emp-tiroir__fermer" data-tiroir-fermer autofocus aria-label="${c.s('emporter.tiroirFermer')}"><span aria-hidden="true">×</span></button>
+    </div>
+    <p class="emp-tiroir__ajoute" data-tiroir-ajoute role="status" hidden></p>
+    <div class="emp-tiroir__defile" data-defilable>
+      <ul class="emp-tiroir__lignes" data-tiroir-lignes></ul>
+      <p class="emp-tiroir__vide" data-tiroir-vide hidden>${c.t('emporter.panierVide')}</p>
+    </div>
+    <div class="emp-tiroir__pied">
+      <p class="emp-tiroir__total"><span>${c.t('emporter.total')}</span><strong data-tiroir-total>0 €</strong></p>
+      <p class="emp-tiroir__retrait" data-tiroir-retrait>${c.s('emporter.tiroirRetrait', { debut: jourLong(E.debut), fin: jourLong(E.fin) })}</p>
+      <a class="bouton emp-tiroir__valider" href="#commande" data-tiroir-valider data-sans-transition>${c.t('emporter.tiroirValider')}</a>
+      <button type="button" class="emp-tiroir__continuer" data-tiroir-fermer>${c.t('emporter.tiroirContinuer')}</button>
+    </div>
+  </div>
+</dialog>
 <p class="visuellement-cache" aria-live="polite" data-emp-annonce></p>
 <script type="application/json" data-emp-textes>${brut(JSON.stringify(textes).replace(/</g, '\\u003c'))}</script>
 `;

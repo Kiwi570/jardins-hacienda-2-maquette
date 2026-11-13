@@ -328,8 +328,31 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   </div>
 </section>
 <a class="emp-pastille" href="#commande" data-emp-pastille data-sans-transition hidden aria-label="Voir ma commande"><span class="emp-pastille__nombre" data-pastille-nombre>0</span><span data-pastille-total>0 €</span></a>
+<dialog class="emp-tiroir" data-emp-tiroir aria-labelledby="tiroir-titre">
+  <div class="emp-tiroir__voile" data-tiroir-fermer aria-hidden="true"></div>
+  <div class="emp-tiroir__panneau">
+    <div class="emp-tiroir__tete">
+      <div>
+        <h2 id="tiroir-titre" class="emp-tiroir__titre">Ma commande</h2>
+        <p class="emp-tiroir__nombre" data-tiroir-nombre></p>
+      </div>
+      <button type="button" class="emp-tiroir__fermer" data-tiroir-fermer autofocus aria-label="Fermer la commande"><span aria-hidden="true">×</span></button>
+    </div>
+    <p class="emp-tiroir__ajoute" data-tiroir-ajoute role="status" hidden></p>
+    <div class="emp-tiroir__defile" data-defilable>
+      <ul class="emp-tiroir__lignes" data-tiroir-lignes></ul>
+      <p class="emp-tiroir__vide" data-tiroir-vide hidden>Votre commande est vide : ajoutez un produit.</p>
+    </div>
+    <div class="emp-tiroir__pied">
+      <p class="emp-tiroir__total"><span>Total</span><strong data-tiroir-total>0 €</strong></p>
+      <p class="emp-tiroir__retrait" data-tiroir-retrait>À retirer au restaurant, du samedi 5 décembre au jeudi 31 décembre : jour et moment à choisir à l&#39;étape suivante.</p>
+      <a class="bouton emp-tiroir__valider" href="#commande" data-tiroir-valider data-sans-transition>Choisir le jour de retrait</a>
+      <button type="button" class="emp-tiroir__continuer" data-tiroir-fermer>Continuer mes achats</button>
+    </div>
+  </div>
+</dialog>
 <p class="visuellement-cache" aria-live="polite" data-emp-annonce></p>
-<script type="application/json" data-emp-textes>{"articles":"{n} article(s)","annonce":"{nom} ajouté à la commande. Total : {total}.","moins":"Retirer un {nom}","plus":"Ajouter un {nom}","retrait":"le {jour}, {moment}","retraitPanier":"Retrait {retrait}.","retraitAChoisir":"Jour et moment du retrait à choisir.","midi":"midi","soir":"soir","recap":"{produits} · {total} · retrait {retrait}.","simule":"Commande simulée : rien n'est envoyé ni payé dans cette maquette. Sur le vrai site, le restaurant recevrait votre commande.","ajoute":"Ajouté","ajouter":"Ajouter","produits":{"escargots":{"nom":"Escargots à la crème d'ail","prix":18,"unite":"piece"},"tourte-escargots":{"nom":"Tourte aux escargots","prix":32,"unite":"piece"},"tourte-grenouilles":{"nom":"Tourte aux grenouilles","prix":32,"unite":"piece"},"pate-lorrain":{"nom":"Pâté lorrain","prix":28,"unite":"kg"},"foie-gras":{"nom":"Foie gras de canard maison","prix":36,"unite":"piece"},"gravlax":{"nom":"Gravlax de saumon maison","prix":22,"unite":"piece"},"tataki-boeuf":{"nom":"Tataki de bœuf","prix":25,"unite":"piece"},"tataki-thon":{"nom":"Tataki de thon","prix":25,"unite":"piece"}}}</script>
+<script type="application/json" data-emp-textes>{"articles":"{n} article(s)","annonce":"Ajouté à la commande : {nom}. Total : {total}.","moins":"Diminuer la quantité : {nom}","plus":"Augmenter la quantité : {nom}","retrait":"le {jour}, {moment}","retraitPanier":"Retrait {retrait}.","retraitAChoisir":"Jour et moment du retrait à choisir.","midi":"midi","soir":"soir","recap":"{produits} · {total} · retrait {retrait}.","simule":"Commande simulée : rien n'est envoyé ni payé dans cette maquette. Sur le vrai site, le restaurant recevrait votre commande.","ajoute":"Ajouté","ajouter":"Ajouter","tiroirAjoute":"Ajouté à votre commande : {nom}","tiroirNombre":"{n} plats","tiroirNombreUn":"1 plat","tiroirRetirer":"Retirer {nom} de la commande","tiroirRetirerTexte":"Retirer","tiroirUnite":"{prix} l'unité","tiroirKg":"{prix} le kg","produits":{"escargots":{"nom":"Escargots à la crème d'ail","prix":18,"unite":"piece","vignette":"/assets/images/grok/traiteur/escargots-480.webp"},"tourte-escargots":{"nom":"Tourte aux escargots","prix":32,"unite":"piece","vignette":"/assets/images/grok/traiteur/tourte-escargots-480.webp"},"tourte-grenouilles":{"nom":"Tourte aux grenouilles","prix":32,"unite":"piece","vignette":"/assets/images/grok/traiteur/tourte-grenouilles-480.webp"},"pate-lorrain":{"nom":"Pâté lorrain","prix":28,"unite":"kg","vignette":"/assets/images/grok/traiteur/pate-lorrain-480.webp"},"foie-gras":{"nom":"Foie gras de canard maison","prix":36,"unite":"piece","vignette":"/assets/images/grok/traiteur/foie-gras-480.webp"},"gravlax":{"nom":"Gravlax de saumon maison","prix":22,"unite":"piece","vignette":"/assets/images/grok/traiteur/gravlax-480.webp"},"tataki-boeuf":{"nom":"Tataki de bœuf","prix":25,"unite":"piece","vignette":null},"tataki-thon":{"nom":"Tataki de thon","prix":25,"unite":"piece","vignette":null}}}</script>
 </main>
 <footer class="pied" id="pied">
   <div class="conteneur pied-grille">

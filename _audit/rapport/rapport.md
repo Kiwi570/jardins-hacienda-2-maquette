@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 13/11/2026 15:13:03 · 1 min · 1 page(s) · audit complet ciblé sur / (étapes : fichiers, mesures)
+Projet : `jardins-hacienda-2-maquette` · 13/11/2026 15:25:37 · 1 min · 1 page(s) · audit complet ciblé sur /a-emporter (étapes : fichiers, mesures, ecran, mouvement)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261113-141152-complet-cible-partiel` · version ?v=7
+- Passe : `20261113-142428-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
 - À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (32), balayage (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (32), balayage (1), mouvement (2), effets du plan (28)
 
 ## Passes de cette version (?v=7)
 
@@ -62,7 +62,8 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261113-130027-complet-cible-partiel | complet | /receptions | fichiers, ecran, mouvement | 0 | 1 | 0 | complet |
 | 20261113-132429-complet-cible-partiel | complet | /,/les-fetes,/a-emporter | fichiers, mesures | 0 | 0 | 0 | complet |
 | 20261113-140256-complet-partiel | complet | toutes | fichiers, mesures | 2 | 0 | 0 | échecs |
-| **20261113-141152-complet-cible-partiel** (celle-ci) | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
+| 20261113-141152-complet-cible-partiel | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
+| **20261113-142428-complet-cible-partiel** (celle-ci) | complet | /a-emporter | fichiers, mesures, ecran, mouvement | 0 | 0 | 0 | complet |
 
 ## Échecs
 
@@ -86,6 +87,7 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
+- Tient dans l'écran /a-emporter : aucune section épinglée ou plein écran.
 
 ## Fichiers
 
