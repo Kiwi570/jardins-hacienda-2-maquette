@@ -55,8 +55,7 @@
     "fr": "Le chef vous propose pour les fêtes son foie gras de canard maison."
    },
    "prix": 36,
-   "unite": "piece",
-   "photo": "vraie/foie-gras-maison"
+   "unite": "piece"
   },
   {
    "id": "gravlax",

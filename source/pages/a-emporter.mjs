@@ -1,10 +1,19 @@
 /* À emporter (v7.5, reprise de la page « À emporter » de la maquette de référence du client) : les incontournables des fêtes
    du chef, leurs prix, le panier (quantités, total, pastille flottante), le jour de retrait du 5 au 31 décembre calculé sur les
    vrais horaires d'ouverture (jours fermés grisés, midi ou soir selon le jour), commande simulée.
-   Effet propre : à l'ajout, une pastille s'envole du produit vers la commande. */
+   Effet propre : à l'ajout, une pastille s'envole du produit vers la commande.
+   v7.5.8 · Les produits en vitrine sous cloches de verre (reprise de la vitrine de la maquette Lemoy) : chaque plat dessiné en
+   illustration (pas de photo détourée des produits pour l'instant), la cloche se soulève au survol, s'ouvre au toucher, et
+   la vapeur monte des plats chauds. Dessins et cloche : source/gabarits/cloches.svg. */
+import { readFileSync } from 'node:fs';
 import { html, brut } from '../../outils/gabarit.mjs';
 
 export const page = { cle: 'a-emporter', fichier: 'a-emporter', theme: 'jour', imagePartage: 'vraie/plat-cheminee-1280.webp', modules: [] };
+
+const CLOCHES = readFileSync(new URL('../gabarits/cloches.svg', import.meta.url), 'utf8');
+const CHAUDS = new Set(['escargots', 'tourte-escargots', 'tourte-grenouilles', 'pate-lorrain']);
+const VAPEUR = '<svg class="emp-cloche__vapeur" viewBox="0 56 400 374" aria-hidden="true"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="5" filter="url(#pl-flou-l)"><path class="vapeur vapeur--1" d="M168 296C158 276 180 262 170 242C160 222 182 208 174 188"/><path class="vapeur vapeur--2" d="M204 290C194 270 216 256 206 236C196 216 218 202 210 182"/><path class="vapeur vapeur--3" d="M240 298C230 278 252 264 242 244C232 224 254 210 246 190"/></g></svg>';
+const couche = (cls, id) => `<svg class="emp-cloche__${cls}" viewBox="0 56 400 374" aria-hidden="true"><use href="#${id}" width="400" height="430"/></svg>`;
 
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const euros = (n) => `${String(n).replace('.', ',')}\u00a0€`;
@@ -61,24 +70,33 @@ export default (c) => {
   </div>
 </section>
 
-<section class="emp-produits" id="produits" aria-labelledby="produits-titre">
+<section class="emp-produits emp-vitrine" id="produits" aria-labelledby="produits-titre">
+  ${brut(CLOCHES)}
   <div class="conteneur">
     <div class="emp-produits__tete">
       <div>
         <p class="surtitre">${c.t('emporter.produitsSur')}</p>
         <h2 id="produits-titre" data-anime="lignes">${c.t('emporter.produitsTitre')}</h2>
+        <p class="emp-vitrine__chapeau">${c.t('emporter.vitrineChapeau')}</p>
       </div>
       <p class="emp-produits__note">${c.t('emporter.allergenes')}</p>
     </div>
     <ul class="emp-produits__grille" data-anime="cascade" data-effet="emporter">
-      ${E.produits.map((p) => html`<li class="emp-produit${p.photo ? ' emp-produit--photo' : ''}" data-produit="${p.id}">
-        ${p.photo ? c.media({ nom: p.photo, alt: c.s('emporter.photoFoie'), cadrage: '50% 60%', classe: 'emp-produit__photo', sizes: '(max-width: 760px) 92vw, 30vw' }) : ''}
+      ${E.produits.map((p, i) => html`<li class="emp-produit" data-produit="${p.id}">
+        <div class="emp-cloche" data-emp-cloche data-superpose>
+          ${brut(couche('fond', 'cl-assiette') + couche('ombre', 'cl-pied') + couche('arriere', 'cl-arriere'))}
+          <svg class="emp-cloche__plat" viewBox="0 56 400 374" role="img" aria-label="${c.s('emporter.illustration', { nom: p.nom })}"><use href="#pl-${p.id}" width="400" height="430"/></svg>
+          ${brut((CHAUDS.has(p.id) ? VAPEUR : '') + couche('dome', 'cl-verre'))}
+          <button type="button" class="emp-cloche__verre" aria-pressed="false" aria-label="${c.s('emporter.soulever', { nom: p.nom })}"></button>
+        </div>
         <div class="emp-produit__corps">
-          <p class="emp-produit__ligne"><span class="emp-produit__nom">${p.nom}</span><span class="emp-produit__points" aria-hidden="true"></span><span class="emp-produit__prix">${euros(p.prix)}${p.unite === 'kg' ? html` <small>${c.t('emporter.parKg')}</small>` : ''}</span></p>
-          <p class="emp-produit__texte">${p.texte}${p.format ? html` <span class="emp-produit__format">${p.format}</span>` : ''}</p>
+          <p class="emp-produit__num">N° ${String(i + 1).padStart(2, '0')}</p>
+          <h3 class="emp-produit__nom">${p.nom}</h3>
+          <p class="emp-produit__meta"><span class="emp-produit__prix">${euros(p.prix)}</span>${p.unite === 'kg' ? html`<small>${c.t('emporter.parKg')}</small>` : ''}</p>
+          <p class="emp-produit__texte">${p.texte}</p>
           <p class="emp-produit__bas">
             ${p.unite === 'kg' ? html`<label class="emp-produit__poids"><span class="visuellement-cache">${c.s('emporter.poidsDe', { nom: p.nom })}</span><select data-poids>${[0.5, 1, 1.5, 2].map((k) => html`<option value="${k}"${k === 1 ? brut(' selected') : ''}>${String(k).replace('.', ',')} kg</option>`)}</select></label>` : ''}
-            <button type="button" class="bouton emp-produit__ajouter" data-ajouter="${p.id}" aria-label="${c.s('emporter.ajouterA', { nom: p.nom })}"><span data-ajouter-texte>${c.t('emporter.ajouter')}</span></button>
+            <button type="button" class="emp-ajout" data-ajouter="${p.id}" aria-label="${c.s('emporter.ajouterA', { nom: p.nom })}"><span class="emp-ajout__plus" aria-hidden="true"></span><span data-ajouter-texte>${c.t('emporter.ajouter')}</span></button>
           </p>
         </div>
       </li>`)}

@@ -807,7 +807,14 @@
           "alt": "Une table fleurie de roses blanches sous la pergola, la piscine derrière"
         }
       }
-    }
+    },
+    "demandeAppel": "Plutôt de vive voix ?",
+    "apercuOccasion": "Votre occasion",
+    "apercuLieu": "Moineville",
+    "apercuNote": "Votre carton se remplit à mesure de vos choix.",
+    "invitesVite": "Nombre d'invités, en un geste",
+    "invitesEnviron": "Environ {n} invités",
+    "invitesIndice": "La salle de réception accueille jusqu'à 220 invités, 140 en cocktail."
   },
   "reserver": {
     "heureMidi": "12:30",
@@ -946,7 +953,6 @@
     "ajoute": "Ajouté",
     "ajouterA": "Ajouter {nom} à la commande",
     "poidsDe": "Poids de {nom}",
-    "photoFoie": "Le foie gras maison du chef, ici servi au restaurant avec sa briochette.",
     "commandeSur": "Votre commande",
     "retraitTitre": "Le retrait",
     "retraitTexte": "Au restaurant, 6 Vathier Haye à Moineville, pendant les horaires d'ouverture : le midi le mercredi, le jeudi, le vendredi et le dimanche, le soir le vendredi et le samedi. Heures exactes à confirmer.",
@@ -982,6 +988,9 @@
     "retraitResume": "le {jour}, {moment}",
     "retraitAChoisir": "Jour et moment du retrait à choisir.",
     "altRetrait": "Le foie gras maison, prêt à partir pour les fêtes",
-    "retraitPanier": "Retrait {retrait}."
+    "retraitPanier": "Retrait {retrait}.",
+    "vitrineChapeau": "Les incontournables du chef pour les fêtes, sous cloche. Soulevez-en une : le plat se découvre.",
+    "illustration": "Illustration : {nom}",
+    "soulever": "Soulever la cloche : {nom}"
   }
 }

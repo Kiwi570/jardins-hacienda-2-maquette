@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 12/11/2026 20:45:03 · 3 min · 1 page(s) · audit complet ciblé sur / (étapes : fichiers, mesures, ecran, mouvement)
+Projet : `jardins-hacienda-2-maquette` · 13/11/2026 14:00:53 · 0 min · 1 page(s) · audit complet ciblé sur /receptions (étapes : fichiers, ecran, mouvement)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261112-194221-complet-cible-partiel` · version ?v=7
+- Passe : `20261113-130027-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **0**
+- À regarder : **1**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (32), balayage (1), tient dans l’écran (8), mouvement (2), effets du plan (28), souris immobile (3)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mouvement (2), effets du plan (28)
 
 ## Passes de cette version (?v=7)
 
@@ -56,7 +56,10 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261112-183220-complet-cible-partiel | complet | /receptions | fichiers, mesures | 0 | 0 | 0 | complet |
 | 20261112-185751-complet-cible-partiel | complet | / | fichiers, mesures, ecran, mouvement | 8 | 0 | 0 | échecs |
 | 20261112-190040-complet-cible-partiel | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
-| **20261112-194221-complet-cible-partiel** (celle-ci) | complet | / | fichiers, mesures, ecran, mouvement | 0 | 0 | 0 | complet |
+| 20261112-194221-complet-cible-partiel | complet | / | fichiers, mesures, ecran, mouvement | 0 | 0 | 0 | complet |
+| 20261113-125411-complet-cible-partiel | complet | /receptions,/infos-pratiques,/a-emporter | fichiers, mesures, ecran, mouvement | 3 | 2 | 0 | échecs |
+| 20261113-125814-complet-cible-partiel | complet | /,/receptions | fichiers, mesures | 0 | 0 | 0 | complet |
+| **20261113-130027-complet-cible-partiel** (celle-ci) | complet | /receptions | fichiers, ecran, mouvement | 0 | 1 | 0 | complet |
 
 ## Échecs
 
@@ -64,7 +67,9 @@ Aucun.
 
 ## À regarder
 
-Rien.
+### effet qui ne bouge pas au défilement (1)
+
+- **effet qui ne bouge pas au défilement** — `/receptions` — div.invitation — invitation : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section _(1366×768 normal, 390×844 normal)_
 
 ## Non lancé
 
@@ -80,6 +85,7 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
+- Tient dans l'écran /receptions : aucune section épinglée ou plein écran.
 
 ## Fichiers
 

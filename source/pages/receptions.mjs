@@ -1,26 +1,13 @@
 /* Réceptions · « la grande table » (nouvelle page v6, vraies photos en v7, retours du client en v7.5) : en arrivant d'une autre
    page, le voile s'ouvre en lanières comme des palmes qui s'écartent (module rideau-en-lanieres) ; l'ouverture fait défiler les
-   occasions (le mot du titre et la photo de l'arche) ; « Ce que l'on fête ici » par paliers au défilement ; la terrasse qui
-   s'allume ; « Cinq espaces, un seul domaine » en cartes qui défilent ; puis la demande en trois étapes ; à l'envoi, un carton
-   d'invitation reçoit le tampon « Demande reçue ». */
-import { readFileSync } from 'node:fs';
+   occasions (le mot du titre et la photo de l'arche) ; « Ce que l'on fête ici » par paliers au défilement ; « Cinq espaces, un
+   seul domaine » en cartes qui défilent ; la demande en trois étapes sur fond clair (v7.5.8), dont le carton d'invitation se
+   remplit et reçoit à l'envoi le tampon « Demande reçue » ; la terrasse qui s'allume ; « Ils ont dit oui aux Jardins ». */
+import { existsSync } from 'node:fs';
 import { html, brut } from '../../outils/gabarit.mjs';
 
 export const page = { cle: 'receptions', fichier: 'receptions', theme: 'nuit', imagePartage: 'vraie/pergola-banquet-1280.webp', modules: ['rideau-en-lanieres'] };
 
-/* v7.5 · « Le plan du domaine » (page Espaces de la maquette de référence du client) : le plan dessiné, des points qui
-   appellent ; un lieu touché montre sa photo, son ambiance, sa capacité et sa saison. L'hiver, la terrasse et la piscine
-   pâlissent sous la neige. Le dessin du plan est repris tel quel (source/gabarits/plan-domaine.svg). */
-const PLAN_SVG = readFileSync(new URL('../gabarits/plan-domaine.svg', import.meta.url), 'utf8');
-const PLAN = [
-  { cle: 'restaurant', x: 18, y: 15.5, image: 'vraie/salle-soleil', cadrage: '50% 55%' },
-  { cle: 'salon', x: 38.5, y: 15.5, image: 'vraie/salle-pierre', cadrage: '60% 55%' },
-  { cle: 'reception', x: 73.5, y: 14.5, image: 'vraie/pergola-banquet', cadrage: '50% 50%' },
-  { cle: 'terrasse', x: 44, y: 74, image: 'vraie/brasero', cadrage: '45% 62%', ete: true },
-  { cle: 'piscine', x: 86, y: 53, image: 'vraie/piscine-palmiers', cadrage: '55% 62%', ete: true },
-  { cle: 'bar', x: 88, y: 87.5, image: 'vraie/bar-paillote', cadrage: '50% 55%', ete: true },
-  { cle: 'parking', x: 37, y: 93, image: 'vraie/enseigne', cadrage: '55% 72%' },
-];
 /* v7.5 · « Ils ont dit oui aux Jardins » (idée de la maquette de référence du client, en plus ludique) : les vraies photos de
    mariages en polaroïds pincés sur un fil à linge ; la section reste à l'écran et le fil défile au défilement, les photos se
    balancent avec la vitesse ; une photo touchée s'ouvre en grand dans un album (flèches, clavier), avec des confettis. */
@@ -36,6 +23,32 @@ const OUI = [
   { cle: 'buffet', image: 'vraie/mariage-buffet', cadrage: '50% 50%', r: -2 },
   { cle: 'table-fleurie', image: 'vraie/mariage-table-fleurie', cadrage: '50% 55%', r: 4 },
 ];
+/* v7.5.8 · « Demander une réception » sur fond clair : chaque occasion et chaque espace a sa vraie photo ; à gauche, le carton
+   d'invitation se remplit et deux polaroïds montrent l'occasion et l'espace choisis. */
+const DEMANDE_OCC = [
+  { cle: 'mariages', image: 'vraie/table-piscine', cadrage: '50% 55%' },
+  { cle: 'baptemes', image: 'recevoir-baptemes', cadrage: '55% 40%' },
+  { cle: 'anniversaires', image: 'vraie/gateaux', cadrage: '50% 45%' },
+  { cle: 'depart', image: 'recevoir-depart', cadrage: '55% 35%' },
+  { cle: 'autre', image: 'vraie/piscine-paillotes', cadrage: '40% 62%' },
+];
+const DEMANDE_ESP = [
+  { cle: 'salle', image: 'vraie/salle-pierre', cadrage: '60% 55%' },
+  { cle: 'terrasse', image: 'vraie/brasero', cadrage: '45% 62%' },
+  { cle: 'piscine', image: 'vraie/piscine-palmiers', cadrage: '55% 62%' },
+];
+const vignette = (nom, cadrage) => {
+  const w = [480, 640].find((x) => existsSync(new URL(`../../assets/images/${nom}-${x}.webp`, import.meta.url)));
+  if (!w) throw new Error(`Vignette introuvable : ${nom}`);
+  return brut(`<img src="/assets/images/${nom}-${w}.webp" alt="" width="160" height="160" loading="lazy" decoding="async" style="--cadrage:${cadrage}">`);
+};
+const polaroid = (c, type, cle, defaut, liste, legende) => html`<div class="dm-pola dm-pola--${type}" data-apercu="${type}" data-cle="${cle}">
+  <span class="dm-pola__scotch"></span>
+  <div class="dm-pola__photos">
+    ${[defaut, ...liste].map((p, i) => c.media({ nom: p.image, cadrage: p.cadrage, classe: `dm-pola__photo${i === 0 ? ' est-active' : ''}`, sizes: '(max-width: 760px) 44vw, 240px', attrs: `data-apercu-photo="${p.cle}"` }))}
+  </div>
+  <p class="dm-pola__legende" data-apercu-legende>${legende}</p>
+</div>`;
 const OCCASIONS = ['mariages', 'baptemes', 'anniversaires', 'depart'];
 /* v7.5 · « Cinq espaces, un seul domaine » (section de la maquette de référence du client, le coin bar à la place du salon) :
    cartes qui défilent à l'horizontale (flèches, glisser, molette), fiche capacité, saison, ambiance. Capacités : fiche Bridebook
@@ -132,32 +145,6 @@ export default (c) => {
   </div>
 </section>
 
-<section class="terrasse" id="terrasse" data-scene data-entete-cache data-grille="scene" aria-labelledby="terrasse-titre">
-  <div class="terrasse__cadre" data-collant>
-    <div class="terrasse__images" data-effet="terrasse">
-      ${c.media({ nom: 'grok/terrasse-or', alt: c.s('accueil.terrasse.alt1'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--1', sizes: '100vw' })}
-      ${c.media({ nom: 'grok/terrasse-bleue', alt: c.s('accueil.terrasse.alt2'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--2', sizes: '100vw' })}
-      ${c.media({ nom: 'grok/terrasse-nuit', alt: c.s('accueil.terrasse.alt3'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--3', sizes: '100vw' })}
-      ${brut(guirlandes(c.donnees.ampoules))}
-    </div>
-    <div class="terrasse__texte conteneur">
-      <p class="surtitre">${c.t('accueil.terrasse.surtitreHiver')}</p>
-      <h2 id="terrasse-titre">${c.t('accueil.terrasse.titre')}</h2>
-      <ol class="terrasse__etapes">
-        <li data-etape="1">${c.t('accueil.terrasse.e1')}</li>
-        <li data-etape="2">${c.t('accueil.terrasse.e2')}</li>
-        <li data-etape="3">${c.t('accueil.terrasse.e3')}</li>
-      </ol>
-      <p class="terrasse__fin">
-        <a class="bouton" href="#demande" data-sans-transition>${c.t('accueil.terrasse.action')}</a>
-        <a class="bouton bouton--contour bouton--clair" href="#espaces" data-sans-transition>${c.t('accueil.terrasse.espaces')}</a>
-      </p>
-      <p class="saison-tag saison-tag--nuit">${c.t('accueil.terrasse.saison')}</p>
-    </div>
-    <p class="indice terrasse__indice" aria-hidden="true">${c.t('accueil.terrasse.indice')}</p>
-  </div>
-</section>
-
 <section class="domaine" id="espaces" aria-labelledby="espaces-titre">
   <div class="conteneur domaine__tete">
     <div>
@@ -186,34 +173,105 @@ export default (c) => {
   </div>
 </section>
 
-<section class="plan-domaine" id="plan" aria-labelledby="plan-titre">
-  <div class="conteneur">
-    <div class="plan-domaine__tete">
-      <h2 id="plan-titre" data-anime="lignes">${c.t('receptions.planTitre')}</h2>
-      <p class="plan-domaine__consigne">${c.t('receptions.planConsigne')} <span class="plan-domaine__note">${c.t('receptions.planNote')}</span></p>
-    </div>
-    <div class="plan-domaine__zone" data-plan-domaine>
-      <div class="plan-domaine__carte" data-effet="plan-domaine">
-        ${brut(PLAN_SVG)}
-        <div class="plan-domaine__points" role="group" aria-label="${c.s('receptions.planLieux')}">
-          ${PLAN.map((p, i) => html`<button type="button" class="plan-domaine__point" style="left:${p.x}%;top:${p.y}%" data-plan-point="${p.cle}" aria-pressed="${i === 0 ? 'true' : 'false'}" aria-controls="plan-fiche-${p.cle}"><span>${c.t(`receptions.plan.${p.cle}.nom`)}</span></button>`)}
-        </div>
+<section class="demande" aria-labelledby="demande-titre">
+  <div class="conteneur" id="demande">
+    <div class="demande__tete">
+      <div>
+        <p class="surtitre">${c.t('receptions.demandeSur')}</p>
+        <h2 id="demande-titre" data-anime="lignes">${c.t('receptions.demandeTitre')}</h2>
       </div>
-      <div class="plan-domaine__fiches" aria-live="polite">
-        ${PLAN.map((p, i) => html`<article class="plan-fiche${i === 0 ? ' est-active' : ''}" id="plan-fiche-${p.cle}" data-plan-fiche="${p.cle}"${i === 0 ? '' : brut(' hidden')}>
-          <div class="plan-fiche__photo-cadre">
-            ${c.media({ nom: p.image, alt: c.s(`receptions.plan.${p.cle}.alt`), cadrage: p.cadrage, classe: 'plan-fiche__photo', sizes: '(max-width: 900px) 92vw, 32vw' })}
-            ${p.ete ? html`<p class="domaine__badge" data-saison-seul="hiver">${c.t('receptions.fermeHiver')}</p>` : ''}
+      <div class="demande__intro">
+        <p>${c.t('receptions.demandeTexte')}</p>
+        <p class="demande__appel">${c.t('receptions.demandeAppel')} <a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
+      </div>
+    </div>
+    <div class="demande__grille">
+      <div class="demande__apercu">
+        <div class="demande__scene" aria-hidden="true" data-visuel data-superpose>
+          ${polaroid(c, 'occasion', '', { cle: 'defaut', image: 'vraie/pergola-banquet', cadrage: '50% 50%' }, DEMANDE_OCC, c.s('receptions.apercuOccasion'))}
+          ${polaroid(c, 'espace', 'indifferent', { cle: 'indifferent', image: 'vraie/enseigne', cadrage: '49% 40%' }, DEMANDE_ESP, c.s('receptions.indifferent'))}
+          <div class="invitation" data-invitation data-effet="invitation">
+            <span class="invitation__logo"></span>
+            <p class="invitation__sur">${c.site.nom}</p>
+            <p class="invitation__occasion est-vide" data-inv-occasion data-vide="${c.s('receptions.recap')}">${c.t('receptions.recap')}</p>
+            <p class="invitation__orne"><span>✦</span></p>
+            <p class="invitation__detail est-vide" data-inv-detail data-vide="${c.s('receptions.recapDetail')}">${c.t('receptions.recapDetail')}</p>
+            <p class="invitation__lieu">${c.t('receptions.apercuLieu')}</p>
+            <p class="invitation__tampon">${c.t('receptions.recu')}</p>
           </div>
-          <h3>${c.t(`receptions.plan.${p.cle}.nom`)}</h3>
-          <p class="plan-fiche__ambiance">${c.t(`receptions.plan.${p.cle}.ambiance`)}</p>
-          <dl class="domaine__fiche plan-fiche__fiche">
-            <div><dt>${c.t('receptions.capacite')}</dt><dd>${c.t(`receptions.plan.${p.cle}.capacite`)}</dd></div>
-            <div><dt>${c.t('receptions.saison')}</dt><dd>${c.t(`receptions.plan.${p.cle}.saison`)}</dd></div>
-          </dl>
-        </article>`)}
+        </div>
+        <p class="demande__apercu-note">${c.t('receptions.apercuNote')}</p>
+      </div>
+      <div class="demande__carte">
+        <ol class="demande__etapes" aria-hidden="true">${[1, 2, 3].map((n) => html`<li data-etape-num="${n}"><span class="demande__num">${n}</span><span class="demande__etape-nom">${c.t(`receptions.etape${n}`)}</span></li>`)}</ol>
+        <form class="demande__form" data-demande action="#demande" novalidate data-occasion-manque="${c.s('receptions.occasionManque')}" data-date-ou-periode="${c.s('receptions.dateOuPeriode')}">
+          <fieldset class="demande__etape" data-etape="1">
+            <legend>${c.t('receptions.occasion')}</legend>
+            <div class="demande__puces demande__puces--tuiles">
+              ${DEMANDE_OCC.map((o) => html`<label class="tuile"><input type="radio" name="occasion" value="${c.s(`receptions.${o.cle}`)}" data-un="${c.s(`receptions.${o.cle}Un`)}" data-cle="${o.cle}"><span class="tuile__photo">${vignette(o.image, o.cadrage)}</span><span class="tuile__nom">${c.t(`receptions.${o.cle}`)}</span></label>`)}
+            </div>
+            <p class="demande__legende">${c.t('receptions.espace')}</p>
+            <div class="demande__puces demande__puces--espaces">
+              ${DEMANDE_ESP.map((o) => html`<label class="puce puce--photo"><input type="radio" name="espace" value="${c.s(`receptions.${o.cle}T`)}" data-cle="${o.cle}"><span>${vignette(o.image, o.cadrage)}${c.t(`receptions.${o.cle}T`)}</span></label>`)}
+              <label class="puce puce--photo"><input type="radio" name="espace" value="${c.s('receptions.indifferent')}" data-cle="indifferent" checked><span><svg class="puce__icone" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/><circle cx="11.5" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="24.5" cy="18" r="2"/></svg>${c.t('receptions.indifferent')}</span></label>
+            </div>
+            <p class="demande__nav"><button type="button" class="bouton" data-suivant>${c.t('receptions.suivant')} <span aria-hidden="true">→</span></button></p>
+          </fieldset>
+          <fieldset class="demande__etape" data-etape="2">
+            <legend>${c.t('receptions.etape2')}</legend>
+            <div class="demande__deux">
+              <label><span>${c.t('receptions.date')}</span><input type="date" name="date" data-date-ou-periode></label>
+              <label><span>${c.t('receptions.periode')}</span><select name="periode"><option value="">${c.t('receptions.periodeVide')}</option>${c.s('receptions.periodes').split('|').map((x) => html`<option>${x}</option>`)}</select></label>
+            </div>
+            <div class="demande__invites">
+              <label><span>${c.t('receptions.invites')}</span><input type="number" name="invites" min="2" max="400" inputmode="numeric" required></label>
+              <div class="demande__vite" role="group" aria-label="${c.s('receptions.invitesVite')}">${[20, 50, 100, 150].map((n) => html`<button type="button" data-invites-vite="${n}" aria-pressed="false" aria-label="${c.s('receptions.invitesEnviron', { n })}">${n}</button>`)}</div>
+              <p class="demande__indice">${c.t('receptions.invitesIndice')}</p>
+            </div>
+            <label><span>${c.t('receptions.message')}</span><textarea name="message" rows="3" placeholder="${c.s('receptions.messageIndice')}"></textarea></label>
+            <p class="demande__nav"><button type="button" class="bouton bouton--contour" data-precedent><span aria-hidden="true">←</span> ${c.t('receptions.precedent')}</button> <button type="button" class="bouton" data-suivant>${c.t('receptions.suivant')} <span aria-hidden="true">→</span></button></p>
+          </fieldset>
+          <fieldset class="demande__etape" data-etape="3">
+            <legend>${c.t('receptions.etape3')}</legend>
+            <div class="demande__deux">
+              <label><span>${c.t('receptions.prenom')}</span><input type="text" name="prenom" autocomplete="given-name" required></label>
+              <label><span>${c.t('receptions.nom')}</span><input type="text" name="nom" autocomplete="family-name" required></label>
+              <label><span>${c.t('receptions.telephone')}</span><input type="tel" name="telephone" autocomplete="tel" required></label>
+              <label><span>${c.t('receptions.email')}</span><input type="email" name="email" autocomplete="email"></label>
+            </div>
+            <p class="demande__rgpd">${c.t('receptions.rgpd')} ${c.t('commun.confidentialiteForm')}</p>
+            <p class="demande__nav"><button type="button" class="bouton bouton--contour" data-precedent><span aria-hidden="true">←</span> ${c.t('receptions.precedent')}</button> <button type="submit" class="bouton" data-grille="retour">${c.t('receptions.envoyer')}</button></p>
+          </fieldset>
+          <p class="demande__message" data-demande-message role="status" tabindex="-1" hidden>${c.t('receptions.merci')}</p>
+        </form>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="terrasse" id="terrasse" data-scene data-entete-cache data-grille="scene" aria-labelledby="terrasse-titre">
+  <div class="terrasse__cadre" data-collant>
+    <div class="terrasse__images" data-effet="terrasse">
+      ${c.media({ nom: 'grok/terrasse-or', alt: c.s('accueil.terrasse.alt1'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--1', sizes: '100vw' })}
+      ${c.media({ nom: 'grok/terrasse-bleue', alt: c.s('accueil.terrasse.alt2'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--2', sizes: '100vw' })}
+      ${c.media({ nom: 'grok/terrasse-nuit', alt: c.s('accueil.terrasse.alt3'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--3', sizes: '100vw' })}
+      ${brut(guirlandes(c.donnees.ampoules))}
+    </div>
+    <div class="terrasse__texte conteneur">
+      <p class="surtitre">${c.t('accueil.terrasse.surtitreHiver')}</p>
+      <h2 id="terrasse-titre">${c.t('accueil.terrasse.titre')}</h2>
+      <ol class="terrasse__etapes">
+        <li data-etape="1">${c.t('accueil.terrasse.e1')}</li>
+        <li data-etape="2">${c.t('accueil.terrasse.e2')}</li>
+        <li data-etape="3">${c.t('accueil.terrasse.e3')}</li>
+      </ol>
+      <p class="terrasse__fin">
+        <a class="bouton" href="#demande" data-sans-transition>${c.t('accueil.terrasse.action')}</a>
+        <a class="bouton bouton--contour bouton--clair" href="#espaces" data-sans-transition>${c.t('accueil.terrasse.espaces')}</a>
+      </p>
+      <p class="saison-tag saison-tag--nuit">${c.t('accueil.terrasse.saison')}</p>
+    </div>
+    <p class="indice terrasse__indice" aria-hidden="true">${c.t('accueil.terrasse.indice')}</p>
   </div>
 </section>
 
@@ -252,58 +310,5 @@ export default (c) => {
   <script type="application/json" data-oui-textes>${brut(JSON.stringify({ compte: c.s('receptions.oui.compte') }))}</script>
 </section>
 
-<section class="demande" aria-labelledby="demande-titre">
-  <div class="conteneur demande__grille" id="demande">
-    <div class="demande__tete">
-      <p class="surtitre">${c.t('receptions.demandeSur')}</p>
-      <h2 id="demande-titre" data-anime="lignes">${c.t('receptions.demandeTitre')}</h2>
-      <p>${c.t('receptions.demandeTexte')}</p>
-      <ol class="demande__etapes" aria-hidden="true"><li data-etape-num="1">${c.t('receptions.etape1')}</li><li data-etape-num="2">${c.t('receptions.etape2')}</li><li data-etape-num="3">${c.t('receptions.etape3')}</li></ol>
-      <div class="invitation" data-invitation aria-hidden="true" data-effet="invitation" data-visuel>
-        <p class="invitation__sur">${c.site.nom}</p>
-        <p class="invitation__occasion est-vide" data-inv-occasion data-vide="${c.s('receptions.recap')}">${c.t('receptions.recap')}</p>
-        <p class="invitation__detail est-vide" data-inv-detail data-vide="${c.s('receptions.recapDetail')}">${c.t('receptions.recapDetail')}</p>
-        <p class="invitation__tampon">${c.t('receptions.recu')}</p>
-      </div>
-    </div>
-    <form class="demande__form" data-demande action="#demande" novalidate data-occasion-manque="${c.s('receptions.occasionManque')}" data-date-ou-periode="${c.s('receptions.dateOuPeriode')}">
-      <fieldset class="demande__etape" data-etape="1">
-        <legend>${c.t('receptions.occasion')}</legend>
-        <div class="demande__puces">
-          ${['mariages', 'baptemes', 'anniversaires', 'depart'].map((o) => html`<label class="puce"><input type="radio" name="occasion" value="${c.s(`receptions.${o}`)}" data-un="${c.s(`receptions.${o}Un`)}"><span>${c.t(`receptions.${o}`)}</span></label>`)}
-          <label class="puce"><input type="radio" name="occasion" value="${c.s('receptions.autre')}" data-un="${c.s('receptions.autreUn')}"><span>${c.t('receptions.autre')}</span></label>
-        </div>
-        <p class="demande__legende">${c.t('receptions.espace')}</p>
-        <div class="demande__puces">
-          ${['salle', 'terrasse', 'piscine'].map((o) => html`<label class="puce"><input type="radio" name="espace" value="${c.s(`receptions.${o}T`)}"><span>${c.t(`receptions.${o}T`)}</span></label>`)}
-          <label class="puce"><input type="radio" name="espace" value="${c.s('receptions.indifferent')}" checked><span>${c.t('receptions.indifferent')}</span></label>
-        </div>
-        <p class="demande__nav"><button type="button" class="bouton" data-suivant>${c.t('receptions.suivant')}</button></p>
-      </fieldset>
-      <fieldset class="demande__etape" data-etape="2">
-        <legend>${c.t('receptions.etape2')}</legend>
-        <div class="demande__deux">
-          <label><span>${c.t('receptions.date')}</span><input type="date" name="date" data-date-ou-periode></label>
-          <label><span>${c.t('receptions.periode')}</span><select name="periode"><option value="">${c.t('receptions.periodeVide')}</option>${c.s('receptions.periodes').split('|').map((x) => html`<option>${x}</option>`)}</select></label>
-          <label><span>${c.t('receptions.invites')}</span><input type="number" name="invites" min="2" max="400" inputmode="numeric" required></label>
-        </div>
-        <label><span>${c.t('receptions.message')}</span><textarea name="message" rows="3" placeholder="${c.s('receptions.messageIndice')}"></textarea></label>
-        <p class="demande__nav"><button type="button" class="bouton bouton--contour" data-precedent>${c.t('receptions.precedent')}</button> <button type="button" class="bouton" data-suivant>${c.t('receptions.suivant')}</button></p>
-      </fieldset>
-      <fieldset class="demande__etape" data-etape="3">
-        <legend>${c.t('receptions.etape3')}</legend>
-        <div class="demande__deux">
-          <label><span>${c.t('receptions.prenom')}</span><input type="text" name="prenom" autocomplete="given-name" required></label>
-          <label><span>${c.t('receptions.nom')}</span><input type="text" name="nom" autocomplete="family-name" required></label>
-          <label><span>${c.t('receptions.telephone')}</span><input type="tel" name="telephone" autocomplete="tel" required></label>
-          <label><span>${c.t('receptions.email')}</span><input type="email" name="email" autocomplete="email"></label>
-        </div>
-        <p class="demande__rgpd">${c.t('receptions.rgpd')} ${c.t('commun.confidentialiteForm')}</p>
-        <p class="demande__nav"><button type="button" class="bouton bouton--contour" data-precedent>${c.t('receptions.precedent')}</button> <button type="submit" class="bouton" data-grille="retour">${c.t('receptions.envoyer')}</button></p>
-      </fieldset>
-      <p class="demande__message" data-demande-message role="status" tabindex="-1" hidden>${c.t('receptions.merci')}</p>
-    </form>
-  </div>
-</section>
 `;
 };

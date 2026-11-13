@@ -990,6 +990,13 @@ function carteSemaine() {
 
 /* v7.5 · À emporter : panier (un seul état, gardé dans le navigateur s'il le permet), jour et moment de retrait selon les horaires,
    pastille flottante, envol vers la commande à l'ajout, commande simulée avec récapitulatif. */
+/* v7.5.8 · À emporter, la vitrine sous cloches : la cloche s'ouvre au toucher (ou au clavier) et se referme au second. */
+function vitrineCloches() {
+  for (const cl of $$('[data-emp-cloche]')) {
+    const b = $('.emp-cloche__verre', cl);
+    b.addEventListener('click', () => { const o = !cl.classList.contains('est-levee'); cl.classList.toggle('est-levee', o); b.setAttribute('aria-pressed', String(o)); });
+  }
+}
 function emporter() {
   const src = $('[data-emp-textes]'); if (!src) return;
   let T; try { T = JSON.parse(src.textContent); } catch { return; }
@@ -1131,17 +1138,42 @@ function demande() {
   let k = 0;
   const montrer = (n, focus = true) => {
     k = n; etapes.forEach((e, i) => e.classList.toggle('est-courante', i === k));
-    pastilles.forEach((p, i) => p.classList.toggle('est-courant', i === k));
+    pastilles.forEach((p, i) => { p.classList.toggle('est-courant', i === k); p.classList.toggle('est-fait', i < k); });
     if (focus) { const c = $('input:not([type="radio"]), textarea, input[type="radio"]:checked', etapes[k]); c && c.focus({ preventScroll: true }); }
   };
+  /* v7.5.8 · Le carton : le texte qui change arrive en douceur ; les polaroïds montrent l'occasion et l'espace choisis. */
+  const ecrire = (el, texte, vide) => {
+    if (el.textContent === texte) { el.classList.toggle('est-vide', vide); return; }
+    el.textContent = texte; el.classList.toggle('est-vide', vide);
+    if (!etat.calme && pret) el.animate([{ opacity: 0, transform: 'translateY(8px)' }], { duration: 450, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  };
+  const apercus = $$('[data-apercu]');
+  const apercu = (type, champ) => {
+    const a = apercus.find((x) => x.dataset.apercu === type); if (!a) return;
+    const cle = champ?.dataset.cle || '';
+    if (a.dataset.cle === cle) return; a.dataset.cle = cle;
+    const photos = $$('[data-apercu-photo]', a), cible = photos.find((x) => x.dataset.apercuPhoto === cle) || photos[0];
+    photos.forEach((x) => x.classList.toggle('est-active', x === cible));
+    const lg = $('[data-apercu-legende]', a); lg.textContent = champ ? champ.value : lg.dataset.vide || lg.textContent;
+    if (!etat.calme && pret) { a.classList.remove('est-secoue'); void a.offsetWidth; a.classList.add('est-secoue'); }
+  };
+  for (const a of apercus) { const lg = $('[data-apercu-legende]', a); lg.dataset.vide = lg.textContent; }
+  let pret = false;
   const recap = () => {
     const d = new FormData(f);
     const o = $('[name="occasion"]:checked', f)?.dataset.un || d.get('occasion') || '';
-    occ.textContent = o || occ.dataset.vide; occ.classList.toggle('est-vide', !o);
+    ecrire(occ, o || occ.dataset.vide, !o);
     const date = d.get('date') ? new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(d.get('date') + 'T12:00:00Z')) : (d.get('periode') || '');
     const dt = [date, d.get('invites') ? `${d.get('invites')} invités` : '', d.get('espace') && d.get('espace') !== 'À voir ensemble' ? d.get('espace') : ''].filter(Boolean).join(' · ');
-    det.textContent = dt || det.dataset.vide; det.classList.toggle('est-vide', !dt);
+    ecrire(det, dt || det.dataset.vide, !dt);
+    apercu('occasion', $('[name="occasion"]:checked', f));
+    apercu('espace', $('[name="espace"]:checked', f));
   };
+  /* Le nombre d'invités en un geste. */
+  const vite = $$('[data-invites-vite]', f), champInv = f.elements.invites;
+  const majVite = () => vite.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.invitesVite === champInv.value)));
+  vite.forEach((b) => b.addEventListener('click', () => { champInv.value = b.dataset.invitesVite; champInv.dispatchEvent(new Event('input', { bubbles: true })); majVite(); }));
+  champInv && champInv.addEventListener('input', majVite);
   const valide = (e) => {
     let ok = true;
     for (const c of $$('input[required], textarea[required]', e)) {
@@ -1193,7 +1225,7 @@ function demande() {
   /* Arrivée depuis l'accueil ou les fêtes : ?occasion=…&invites=… préremplissent la demande. */
   const q = new URLSearchParams(location.search);
   if (q.get('invites') && /^\d{1,3}$/.test(q.get('invites'))) f.elements.invites.value = q.get('invites');
-  montrer(0, false); recap();
+  montrer(0, false); recap(); majVite(); pret = true;
 }
 
 /* Réserver : la page prend la lumière du service choisi ; carte de placement sous la cloche (code gardé de la v5). */
@@ -1639,6 +1671,7 @@ demarrer({
     occasions();
     fetesDefile();
     emporter();
+    vitrineCloches();
     domaine();
     planDomaine();
     devise();

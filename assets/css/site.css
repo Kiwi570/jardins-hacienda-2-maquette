@@ -2511,3 +2511,234 @@ html.js:not(.calme) .oui__album.est-fete .oui__album-confettis span { animation:
   .dejeuner__visuel { order: 1; }
   .dej-semaine, .dejeuner__cartes > * { order: 2; }
 }
+
+/* v7.5.8 · Réceptions, « Demander une réception » sur fond clair : en-tête sur toute la largeur, à gauche le carton d'invitation
+   et les deux polaroïds (l'occasion, l'espace) qui suivent les choix, à droite le formulaire sur une carte de papier avec ses
+   trois étapes numérotées ; les occasions en tuiles photo, les espaces en puces à vignette, les invités en un geste. */
+.demande { --dm-papier: #fffaf3; --dm-encre: #1c1712; --dm-doux: #66574a; --dm-trait: #e3d6c1; --dm-or: #b08a4a;
+  position: relative; overflow: hidden; padding-block: clamp(84px, 13vh, 150px); color: var(--dm-encre);
+  background: radial-gradient(55% 50% at 6% 0%, #fcf7ee 0%, rgba(252, 247, 238, 0) 70%), radial-gradient(50% 55% at 100% 100%, #ebdcc2 0%, rgba(235, 220, 194, 0) 72%), #f3eadb; }
+.demande h2 { color: var(--dm-encre); }
+.demande .surtitre { color: var(--rouge); }
+.demande__tete { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 18px 56px; margin-bottom: clamp(36px, 6vh, 64px); }
+.demande__tete h2 { margin: 0; font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.8rem); line-height: 1.02; letter-spacing: -.01em; }
+.demande__intro { max-width: 27em; padding-bottom: .4em; }
+.demande__intro p { margin: 0; font-size: 1.1rem; line-height: 1.55; }
+.demande__intro .demande__appel { margin-top: 12px; color: var(--dm-doux); font-size: 1rem; }
+.demande__appel a { color: var(--dm-encre); font-weight: 700; white-space: nowrap; text-decoration: underline; text-decoration-color: var(--rouge); text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.demande .demande__grille { display: grid; grid-template-columns: minmax(0, 4.5fr) minmax(0, 7.5fr); gap: clamp(36px, 5vw, 88px); align-items: center; }
+
+/* Le carton et les polaroïds. */
+.demande__apercu { display: grid; justify-items: center; gap: 22px; }
+.demande__scene { position: relative; width: min(100%, 450px); aspect-ratio: 450 / 590; }
+.dm-pola { --rot: -6deg; position: absolute; top: 0; left: 0; width: 51%; padding: 10px 10px 0; background: #fff; border-radius: 3px; transform: rotate(var(--rot));
+  box-shadow: 0 1px 1px rgba(70, 45, 20, .08), 0 18px 34px rgba(70, 45, 20, .18); }
+.dm-pola--espace { --rot: 5deg; left: auto; right: 0; top: 3%; }
+.dm-pola.est-secoue { animation: dm-pola-hop .7s cubic-bezier(.3, 1.5, .5, 1); }
+@keyframes dm-pola-hop { 0% { transform: rotate(var(--rot)); } 35% { transform: translateY(-14px) rotate(calc(var(--rot) * -.35)); } 100% { transform: rotate(var(--rot)); } }
+.dm-pola__scotch { position: absolute; z-index: 2; top: -11px; left: 50%; width: 78px; height: 24px; transform: translateX(-50%) rotate(-4deg); background: rgba(233, 207, 142, .72); box-shadow: 0 1px 2px rgba(70, 45, 20, .12); }
+.dm-pola--espace .dm-pola__scotch { transform: translateX(-50%) rotate(5deg); background: rgba(214, 170, 150, .62); }
+.dm-pola__photos { position: relative; aspect-ratio: 1; overflow: hidden; border-radius: 2px; background: #eadfcd; }
+.dm-pola__photo { position: absolute; inset: 0; margin: 0; opacity: 0; transform: scale(1.08); transition: opacity .6s ease, transform 1.4s cubic-bezier(.2, .8, .2, 1); }
+.dm-pola__photo.est-active { opacity: 1; transform: none; }
+.dm-pola__photo picture, .dm-pola__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.dm-pola__legende { margin: 0; padding: 12px 6px 20px; text-align: center; font-family: var(--police-titres); font-style: italic; font-size: 1.04rem; line-height: 1.2; color: #3b3027; }
+.demande .invitation { position: absolute; z-index: 3; left: 4%; right: 4%; bottom: 0; max-width: none; aspect-ratio: 5 / 3.55; padding: 34px 40px; border-radius: 4px;
+  display: grid; align-content: center; justify-items: center; gap: 6px; text-align: center; transform: rotate(-1.5deg);
+  background: linear-gradient(165deg, #fffdf8 0%, #fbf3e4 100%); color: var(--dm-encre); box-shadow: 0 1px 0 rgba(176, 138, 74, .2), 0 32px 64px rgba(70, 45, 20, .24); }
+.demande .invitation::before { content: ''; position: absolute; inset: 12px; border: 1px solid rgba(176, 138, 74, .6); border-radius: 2px; box-shadow: inset 0 0 0 4px #fdf8ef, inset 0 0 0 5px rgba(176, 138, 74, .32); pointer-events: none; }
+.invitation__logo { width: 38px; aspect-ratio: 480 / 448; margin-bottom: 4px; background: var(--dm-or, #b08a4a); -webkit-mask: url(/assets/images/logo-480.webp) center / contain no-repeat; mask: url(/assets/images/logo-480.webp) center / contain no-repeat; }
+.demande .invitation__sur { font-size: .66rem; letter-spacing: .28em; color: #7a6248; }
+.demande .invitation__occasion { margin: 2px 0 0; font-style: italic; color: var(--rouge); font-size: clamp(1.8rem, 1.2rem + 1.4vw, 2.6rem); line-height: 1.1; }
+.demande .invitation__occasion.est-vide { font-size: clamp(1.6rem, 1.1rem + 1.2vw, 2.2rem); }
+.invitation__orne { display: flex; align-items: center; gap: 10px; width: 44%; margin: 2px 0; color: var(--dm-or, #b08a4a); font-size: .7rem; }
+.invitation__orne::before, .invitation__orne::after { content: ''; flex: 1; height: 1px; background: currentColor; opacity: .55; }
+.demande .invitation__detail { max-width: 30ch; color: #3b3027; font-size: .98rem; line-height: 1.4; }
+.invitation__lieu { margin: 6px 0 0; font-size: .62rem; letter-spacing: .32em; text-transform: uppercase; color: #8a735a; }
+.demande .invitation .est-vide { opacity: .5; }
+.demande .invitation__tampon { right: 22px; bottom: 18px; background: rgba(255, 250, 243, .7); }
+.demande__apercu-note { margin: 0; display: inline-flex; align-items: center; gap: 10px; color: var(--dm-doux); font-size: .95rem; font-style: italic; }
+.demande__apercu-note::before { content: ''; width: 28px; height: 1px; background: currentColor; opacity: .6; }
+
+/* Le formulaire sur sa carte. */
+.demande__carte { position: relative; padding: clamp(28px, 3vw, 48px); border-radius: 28px; background: var(--dm-papier);
+  box-shadow: 0 0 0 1px rgba(176, 138, 74, .16), 0 30px 70px rgba(70, 45, 20, .12); }
+.demande .demande__etapes { display: flex; align-items: center; gap: 0; margin: 0 0 clamp(24px, 3.4vh, 34px); padding: 0 0 clamp(20px, 3vh, 28px); border-bottom: 1px solid var(--dm-trait); }
+.demande .demande__etapes li { display: flex; align-items: center; gap: 10px; padding: 0; border-radius: 0; background: none; box-shadow: none; color: var(--dm-doux); font-size: .92rem; font-weight: 600; }
+.demande .demande__etapes li:not(:last-child) { flex: 1; }
+.demande .demande__etapes li:not(:last-child)::after { content: ''; flex: 1; min-width: 18px; height: 2px; margin: 0 14px; border-radius: 2px; background: var(--dm-trait); transition: background .4s; }
+.demande .demande__etapes li.est-fait::after { background: var(--rouge); }
+.demande__num { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px #cdbb9f; color: var(--dm-doux); font-size: .92rem; font-weight: 700; transition: background .3s, color .3s, box-shadow .3s; }
+.demande .demande__etapes li.est-courant { background: none; color: var(--dm-encre); font-weight: 700; }
+.demande .demande__etapes li.est-courant .demande__num { background: var(--rouge); color: #fff; box-shadow: 0 6px 14px rgba(184, 50, 44, .28); }
+.demande .demande__etapes li.est-fait .demande__num { background: var(--dm-encre); color: transparent; box-shadow: none; position: relative; }
+.demande .demande__etapes li.est-fait .demande__num::after { content: '✓'; position: absolute; color: #fff; font-size: .95rem; }
+.demande .demande__etape { gap: 16px; }
+.demande .demande__etape legend { margin-bottom: 18px; font-size: clamp(1.5rem, 1.2rem + .8vw, 2rem); color: var(--dm-encre); }
+.demande .demande__legende { margin: 12px 0 0; font-family: var(--police-titres); font-weight: 400; font-size: 1.25rem; }
+
+/* Les occasions en tuiles photo. */
+.demande__puces--tuiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.tuile { position: relative; display: grid; justify-items: center; gap: 10px; padding: 7px 7px 12px; border-radius: 18px; background: #fff; text-align: center; cursor: pointer;
+  box-shadow: 0 0 0 1px var(--dm-trait); transition: box-shadow .25s, transform .25s cubic-bezier(.2, .8, .2, 1); }
+.tuile input { position: absolute; inset: 0; z-index: 1; margin: 0; opacity: 0; cursor: pointer; }
+.tuile__photo { display: block; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 12px; background: #eadfcd; }
+.tuile__photo img, .puce--photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage, 50% 50%); transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
+.tuile__nom { font-size: .9rem; font-weight: 600; line-height: 1.2; }
+.tuile:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px #cdb995, 0 14px 26px rgba(70, 45, 20, .1); }
+.tuile:hover img { transform: scale(1.06); }
+.tuile:has(input:checked) { box-shadow: 0 0 0 2px var(--rouge), 0 16px 30px rgba(184, 50, 44, .16); }
+.tuile:has(input:checked)::after { content: '✓'; position: absolute; z-index: 2; top: 13px; right: 13px; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%;
+  background: var(--rouge); color: #fff; font-size: .85rem; font-weight: 800; box-shadow: 0 0 0 3px #fff; animation: tuile-coche .4s cubic-bezier(.2, 1.6, .4, 1); }
+.tuile:has(input:focus-visible) { outline: 3px solid var(--or-fonce); outline-offset: 3px; }
+@keyframes tuile-coche { from { transform: scale(0); } to { transform: none; } }
+
+/* Les espaces en puces à vignette. */
+.demande__puces--espaces { gap: 10px; }
+.demande .puce > span { gap: 10px; min-height: 50px; padding: 6px 18px 6px 6px; background: #fff; color: var(--dm-encre); box-shadow: inset 0 0 0 1px #d8c8ac; font-weight: 600; transition: box-shadow .25s, background .25s; }
+.demande .puce:hover > span { box-shadow: inset 0 0 0 1px #b9a07a; }
+.demande .puce input:checked + span { background: #fbebe6; color: var(--dm-encre); box-shadow: inset 0 0 0 2px var(--rouge); }
+.demande .puce input:focus-visible + span { outline-color: var(--or-fonce); }
+.puce--photo img { flex: none; width: 38px; height: 38px; border-radius: 50%; }
+.puce__icone { flex: none; width: 38px; height: 38px; color: var(--dm-doux); fill: currentColor; }
+.puce__icone circle:first-child { fill: none; }
+
+/* Les champs, la date et les invités. */
+.demande .demande__form label { color: var(--dm-encre); font-weight: 600; }
+.demande .demande__form input:not([type="radio"]), .demande .demande__form textarea, .demande .demande__form select { min-height: 52px; border-radius: 12px; border: 1px solid #d6c6ab; background-color: #fff; color: var(--dm-encre); font-weight: 400; }
+.demande .demande__form select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%231c1712' stroke-width='2'/%3E%3C/svg%3E"); }
+.demande .demande__form input:not([type="radio"]):focus-visible, .demande .demande__form textarea:focus-visible, .demande .demande__form select:focus-visible { outline: 2px solid var(--rouge); outline-offset: 2px; border-color: transparent; }
+.demande .demande__form input::placeholder, .demande .demande__form textarea::placeholder { color: #8a7a68; }
+.demande .demande__form [aria-invalid="true"] { border-color: #c0392b; }
+.demande .demande__erreur { color: #a3261f; }
+.demande__invites { display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr); align-items: end; gap: 10px 16px; }
+.demande__vite { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 4px; }
+.demande__vite button { min-width: 56px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 999px; background: #f3eadb; color: var(--dm-encre); font: inherit; font-weight: 700; font-variant-numeric: tabular-nums; cursor: pointer; transition: background .2s, color .2s, transform .2s; }
+.demande__vite button:hover { background: #eadcc4; transform: translateY(-2px); }
+.demande__vite button[aria-pressed="true"] { background: var(--dm-encre); color: #fff; }
+.demande__vite button:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 2px; }
+.demande__indice { grid-column: 1 / -1; margin: 0; color: var(--dm-doux); font-size: .9rem; }
+.demande .demande__rgpd { color: var(--dm-doux); opacity: 1; }
+.demande .demande__nav { justify-content: flex-end; align-items: center; margin-top: 10px; padding-top: 22px; border-top: 1px solid var(--dm-trait); }
+.demande .demande__nav [data-precedent] { margin-right: auto; box-shadow: inset 0 0 0 1.5px #cdbb9f; }
+.demande .demande__message { background: #f3eadb; color: var(--dm-encre); border-left: 3px solid var(--rouge); }
+@media (max-width: 1100px) {
+  .demande .demande__grille { grid-template-columns: minmax(0, 1fr); }
+  .demande__scene { width: min(100%, 420px); }
+}
+@media (max-width: 760px) {
+  .demande__puces--tuiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .demande__invites { grid-template-columns: minmax(0, 1fr); }
+  .demande .demande__etapes .demande__etape-nom { display: none; }
+  .demande .demande__etapes li.est-courant .demande__etape-nom { display: inline; }
+}
+/* v7.5.8 · Réglages après capture : l'en-tête sur une ligne, les étapes sans retour à la ligne, polaroïds plus larges que hauts. */
+.demande__tete { margin-bottom: clamp(30px, 5vh, 52px); }
+.demande__tete h2 { font-size: clamp(2.5rem, 1.5rem + 3vw, 4.4rem); }
+.demande__intro { max-width: 24em; }
+.demande .demande__etapes { margin-bottom: clamp(20px, 3vh, 28px); padding-bottom: clamp(16px, 2.4vh, 22px); }
+.demande .demande__etapes li { white-space: nowrap; }
+.demande .demande__etape legend { margin-bottom: 12px; }
+.demande .demande__nav { padding-top: 18px; }
+.dm-pola__photos { aspect-ratio: 1 / .84; }
+.demande__scene { width: min(100%, 440px); aspect-ratio: 440 / 545; }
+
+/* v7.5.8 · À emporter, la vitrine sous cloches (reprise de la vitrine de la maquette Lemoy, adaptée aux plats du chef) :
+   fond sombre et chaud, quatre cloches par rangée ; au survol la cloche se soulève, la buée s'efface et un reflet balaie le
+   verre ; au toucher elle s'ouvre, le plat avance un peu et la vapeur monte des plats chauds. */
+.emp-vitrine { --courbe: cubic-bezier(.22, .7, .18, 1); --or-vitrine: #e2b45e; position: relative; padding-block: clamp(84px, 13vh, 150px); color: #f6efe2;
+  background: radial-gradient(60% 46% at 50% 0%, #34231a 0%, rgba(52, 35, 26, 0) 72%), radial-gradient(40% 40% at 100% 100%, #2a1a12 0%, rgba(42, 26, 18, 0) 70%), #1b120d; }
+.sprite-cloches { position: absolute; width: 0; height: 0; overflow: hidden; }
+.emp-vitrine h2 { color: #f6efe2; }
+.emp-vitrine .surtitre { color: var(--or-vitrine); }
+.emp-vitrine .emp-produits__tete { margin-bottom: clamp(36px, 6vh, 64px); }
+.emp-vitrine .emp-produits__note { max-width: 26em; color: rgba(246, 239, 226, .74); }
+.emp-vitrine__chapeau { margin: 16px 0 0; max-width: 36em; color: rgba(246, 239, 226, .84); font-size: 1.08rem; line-height: 1.55; }
+.emp-vitrine .emp-produits__grille { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(44px, 7vh, 72px) clamp(20px, 2.6vw, 40px); }
+.emp-vitrine .emp-produit { display: flex; flex-direction: column; border-radius: 0; background: none; box-shadow: none; overflow: visible; }
+.emp-cloche { position: relative; aspect-ratio: 400 / 374; }
+.emp-cloche > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.emp-cloche__arriere, .emp-cloche__dome { transition: transform .9s var(--courbe), opacity .9s var(--courbe); }
+.emp-cloche__plat { transform-origin: 50% 84%; transition: transform .9s var(--courbe); }
+.emp-cloche__verre { position: absolute; z-index: 2; left: 12.5%; right: 12.5%; top: 9%; bottom: 10%; padding: 0; border: 0; border-radius: 50% 50% 12px 12px / 36% 36% 12px 12px; background: none; cursor: pointer; }
+.emp-cloche__verre:focus-visible { outline: 2px solid var(--or-vitrine); outline-offset: 4px; }
+@media (hover: hover) {
+  .emp-cloche:not(.est-levee):hover :is(.emp-cloche__arriere, .emp-cloche__dome) { transform: translateY(-16px); }
+  .emp-cloche:not(.est-levee):hover .emp-cloche__plat { transform: scale(1.04); }
+  .emp-cloche:not(.est-levee):hover .emp-cloche__dome { --cl-buee: 0; --cl-balaye: 600px; --cl-balaye-t: 1.4s; }
+}
+.emp-cloche:not(.est-levee):has(.emp-cloche__verre:focus-visible) :is(.emp-cloche__arriere, .emp-cloche__dome) { transform: translateY(-16px); }
+.emp-cloche.est-levee :is(.emp-cloche__arriere, .emp-cloche__dome) { transform: translateY(-30%); opacity: 0; }
+.emp-cloche.est-levee .emp-cloche__plat { transform: scale(1.08); }
+.emp-cloche__vapeur { opacity: 0; transition: opacity .6s .25s; }
+.emp-cloche.est-levee .emp-cloche__vapeur { opacity: 1; }
+.emp-cloche__vapeur .vapeur { stroke-opacity: .5; stroke-dasharray: 46 150; stroke-dashoffset: 0; animation: vapeur-monte 2.8s linear infinite; }
+.emp-cloche__vapeur .vapeur--2 { animation-delay: -.9s; }
+.emp-cloche__vapeur .vapeur--3 { animation-delay: -1.8s; }
+@keyframes vapeur-monte { from { stroke-dashoffset: 46; } to { stroke-dashoffset: -150; } }
+html.calme .emp-cloche__vapeur .vapeur { animation: none; stroke-dasharray: none; stroke-opacity: .3; }
+.emp-vitrine .emp-produit__corps { position: relative; flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 22px 0 0; }
+.emp-produit__num { margin: 0; font-family: var(--police-titres); font-size: 1rem; color: var(--or-vitrine); font-variant-numeric: lining-nums; }
+.emp-vitrine .emp-produit__nom { margin: 0; font-family: var(--police-titres); font-weight: 500; font-size: clamp(1.25rem, 1rem + .6vw, 1.6rem); line-height: 1.15; color: #f6efe2; }
+.emp-produit__meta { display: flex; align-items: baseline; gap: 10px; margin: 6px 0 0; }
+.emp-vitrine .emp-produit__prix { font-size: 1.2rem; font-weight: 700; color: #f6efe2; font-variant-numeric: tabular-nums; }
+.emp-produit__meta small { color: rgba(246, 239, 226, .74); font-size: .95rem; }
+.emp-vitrine .emp-produit__texte { margin: 2px 0 0; color: rgba(246, 239, 226, .76); font-size: .95rem; line-height: 1.5; }
+.emp-vitrine .emp-produit__bas { justify-content: flex-start; margin-top: auto; padding-top: 14px; gap: 10px; }
+.emp-vitrine .emp-produit__poids select { min-height: 46px; border-color: rgba(246, 239, 226, .35); color: #f6efe2; background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23f6efe2' stroke-width='1.8'/%3E%3C/svg%3E"); }
+.emp-vitrine .emp-produit__poids select option { color: #1c1712; background: #f6efe2; }
+.emp-ajout { display: inline-flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 18px 0 6px; border: 1px solid rgba(246, 239, 226, .38); border-radius: 999px; background: transparent; color: #f6efe2;
+  font: inherit; font-weight: 600; cursor: pointer; transition: background .25s, color .25s, border-color .25s; }
+.emp-ajout__plus { position: relative; flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--or-vitrine); transition: background .25s, transform .4s var(--courbe); }
+.emp-ajout__plus::before, .emp-ajout__plus::after { content: ''; position: absolute; left: 50%; top: 50%; width: 14px; height: 2px; border-radius: 2px; background: #1b120d; transform: translate(-50%, -50%); }
+.emp-ajout__plus::after { transform: translate(-50%, -50%) rotate(90deg); }
+.emp-ajout:hover { background: #f6efe2; border-color: #f6efe2; color: #1b120d; }
+.emp-ajout:hover .emp-ajout__plus { transform: rotate(90deg); }
+.emp-ajout:focus-visible { outline: 3px solid var(--or-vitrine); outline-offset: 3px; }
+.emp-ajout.est-ajoute { background: #2f5a43; border-color: #2f5a43; color: #fff; }
+.emp-ajout.est-ajoute .emp-ajout__plus { background: #fff; }
+.emp-ajout.est-ajoute .emp-ajout__plus::before { width: 7px; transform: translate(-90%, 10%) rotate(45deg); background: #2f5a43; }
+.emp-ajout.est-ajoute .emp-ajout__plus::after { width: 12px; transform: translate(-30%, -40%) rotate(-50deg); background: #2f5a43; }
+@media (max-width: 1100px) { .emp-vitrine .emp-produits__grille { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 860px) { .emp-vitrine .emp-produits__grille { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Le plat un peu plus présent sous le verre. */
+.emp-cloche__plat { transform: scale(1.12); }
+@media (hover: hover) { .emp-cloche:not(.est-levee):hover .emp-cloche__plat { transform: scale(1.16); } }
+.emp-cloche.est-levee .emp-cloche__plat { transform: scale(1.2); }
+/* La coche du bouton ajouté, et une vapeur en volutes qui montent et s'effacent. */
+.emp-ajout.est-ajoute .emp-ajout__plus::before { width: 7px; height: 12px; border: solid #2f5a43; border-width: 0 2.5px 2.5px 0; border-radius: 0; background: none; transform: translate(-50%, -62%) rotate(45deg); }
+.emp-ajout.est-ajoute .emp-ajout__plus::after { display: none; }
+.emp-cloche__vapeur .vapeur { stroke-dasharray: none; opacity: 0; transform-box: fill-box; transform-origin: 50% 100%; animation: vapeur-volute 3.2s ease-in-out infinite; }
+.emp-cloche__vapeur .vapeur--2 { animation-delay: -1.1s; }
+.emp-cloche__vapeur .vapeur--3 { animation-delay: -2.2s; }
+@keyframes vapeur-volute { 0% { opacity: 0; transform: translateY(16px) scaleY(.7); } 40% { opacity: .8; } 100% { opacity: 0; transform: translateY(-30px) scaleY(1.12); } }
+html.calme .emp-cloche__vapeur .vapeur { animation: none; opacity: .5; transform: none; }
+.emp-ajout.est-ajoute .emp-ajout__plus, .emp-ajout.est-ajoute:hover .emp-ajout__plus { transform: none; }
+/* Petits ordinateurs : le carton reste à gauche du formulaire, plus étroit ; empilés seulement sous 900 px. */
+@media (max-width: 1100px) {
+  .demande .demande__grille { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 32px; align-items: start; }
+  .demande__scene { width: 100%; }
+  .demande__carte { padding: 28px 24px; }
+  .tuile { padding: 6px 5px 10px; }
+  .tuile__nom { font-size: .82rem; }
+  .demande .demande__etapes li { font-size: .84rem; }
+}
+@media (max-width: 900px) {
+  .demande .demande__grille { grid-template-columns: minmax(0, 1fr); }
+  .demande__scene { width: min(100%, 420px); }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .demande__scene { aspect-ratio: 440 / 615; }
+  .demande .invitation { padding: 26px 22px; }
+  .demande .invitation__sur { font-size: .58rem; letter-spacing: .2em; }
+  .demande .invitation__occasion, .demande .invitation__occasion.est-vide { font-size: 1.5rem; }
+  .demande .invitation__detail { font-size: .88rem; }
+  .dm-pola__legende { font-size: .92rem; padding-bottom: 14px; }
+  .demande .demande__etapes { flex-wrap: nowrap; }
+  .demande .demande__etapes li:not(.est-courant) .demande__etape-nom { display: none; }
+}
+/* Audit : rien sous 12 px sur le carton (monogramme, lieu, ornement). */
+.demande .invitation__sur, .demande .invitation__lieu { font-size: .75rem; letter-spacing: .2em; }
+.invitation__orne { font-size: .75rem; }
+@media (min-width: 901px) and (max-width: 1100px) { .demande .invitation__sur { font-size: .75rem; letter-spacing: .14em; } }

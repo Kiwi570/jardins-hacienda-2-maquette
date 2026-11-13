@@ -1,13 +1,27 @@
 /* Infos pratiques · « l'heure qu'il est à Moineville » : l'heure réelle en chiffres géants, le vrai ciel de Moineville à
    cette heure (soleil, lune, étoiles calculés : module ciel-en-direct) au-dessus de la vraie enseigne détourée ; le statut
    ouvert ou fermé et le téléphone ; puis le cadran des horaires (module horaires-ouvert-maintenant, horaires RankEat à
-   confirmer), le plan d'accès (coordonnées réelles, Moselle, A31, distances à vol d'oiseau), les règles de l'été, et
-   « Une question » en quatre étapes (module formulaire-par-etapes ; les réceptions ont leur page). */
+   confirmer), le plan d'accès (coordonnées réelles, Moselle, A31, distances à vol d'oiseau), les règles de l'été, le plan du
+   domaine (v7.5.8, venu de Réceptions : l'entrée, le parking, chaque lieu), et « Une question » en quatre étapes (module formulaire-par-etapes ; les réceptions ont leur page). */
+import { readFileSync } from 'node:fs';
 import { html, brut, fragment } from '../../outils/gabarit.mjs';
 import { preparer, rendreBloc } from '../../assets/js/modules/horaires-ouvert-maintenant/horaires-calcul.js';
 
 export const page = { cle: 'infos-pratiques', fichier: 'infos-pratiques', theme: 'jour', imagePartage: 'vraie/enseigne-1280.webp', modules: ['formulaire-par-etapes'] };
 
+/* v7.5 · « Le plan du domaine » (page Espaces de la maquette de référence du client ; venu de Réceptions en v7.5.8) : le plan dessiné, des points qui
+   appellent ; un lieu touché montre sa photo, son ambiance, sa capacité et sa saison. L'hiver, la terrasse et la piscine
+   pâlissent sous la neige. Le dessin du plan est repris tel quel (source/gabarits/plan-domaine.svg). */
+const PLAN_SVG = readFileSync(new URL('../gabarits/plan-domaine.svg', import.meta.url), 'utf8');
+const PLAN = [
+  { cle: 'restaurant', x: 18, y: 15.5, image: 'vraie/salle-soleil', cadrage: '50% 55%' },
+  { cle: 'salon', x: 38.5, y: 15.5, image: 'vraie/salle-pierre', cadrage: '60% 55%' },
+  { cle: 'reception', x: 73.5, y: 14.5, image: 'vraie/pergola-banquet', cadrage: '50% 50%' },
+  { cle: 'terrasse', x: 44, y: 74, image: 'vraie/brasero', cadrage: '45% 62%', ete: true },
+  { cle: 'piscine', x: 86, y: 53, image: 'vraie/piscine-palmiers', cadrage: '55% 62%', ete: true },
+  { cle: 'bar', x: 88, y: 87.5, image: 'vraie/bar-paillote', cadrage: '50% 55%', ete: true },
+  { cle: 'parking', x: 37, y: 93, image: 'vraie/enseigne', cadrage: '55% 72%' },
+];
 /* Une question : les sujets en grandes cartes (une icône par carte, sinon le texte se chevauche sur téléphone). */
 const ICONE = (d) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const SUJETS = [
@@ -131,6 +145,37 @@ export default (c) => {
       <div><dt>${c.t('infos.piscineTitre')}</dt><dd>${c.t('infos.piscineTexte')}</dd></div>
       <div><dt>${c.t('infos.barTitre')}</dt><dd>${c.t('infos.barTexte')}</dd></div>
     </dl>
+  </div>
+</section>
+
+<section class="plan-domaine" id="plan" aria-labelledby="plan-titre">
+  <div class="conteneur">
+    <div class="plan-domaine__tete">
+      <h2 id="plan-titre" data-anime="lignes">${c.t('receptions.planTitre')}</h2>
+      <p class="plan-domaine__consigne">${c.t('receptions.planConsigne')} <span class="plan-domaine__note">${c.t('receptions.planNote')}</span></p>
+    </div>
+    <div class="plan-domaine__zone" data-plan-domaine>
+      <div class="plan-domaine__carte" data-effet="plan-domaine">
+        ${brut(PLAN_SVG)}
+        <div class="plan-domaine__points" role="group" aria-label="${c.s('receptions.planLieux')}">
+          ${PLAN.map((p, i) => html`<button type="button" class="plan-domaine__point" style="left:${p.x}%;top:${p.y}%" data-plan-point="${p.cle}" aria-pressed="${i === 0 ? 'true' : 'false'}" aria-controls="plan-fiche-${p.cle}"><span>${c.t(`receptions.plan.${p.cle}.nom`)}</span></button>`)}
+        </div>
+      </div>
+      <div class="plan-domaine__fiches" aria-live="polite">
+        ${PLAN.map((p, i) => html`<article class="plan-fiche${i === 0 ? ' est-active' : ''}" id="plan-fiche-${p.cle}" data-plan-fiche="${p.cle}"${i === 0 ? '' : brut(' hidden')}>
+          <div class="plan-fiche__photo-cadre">
+            ${c.media({ nom: p.image, alt: c.s(`receptions.plan.${p.cle}.alt`), cadrage: p.cadrage, classe: 'plan-fiche__photo', sizes: '(max-width: 900px) 92vw, 32vw' })}
+            ${p.ete ? html`<p class="domaine__badge" data-saison-seul="hiver">${c.t('receptions.fermeHiver')}</p>` : ''}
+          </div>
+          <h3>${c.t(`receptions.plan.${p.cle}.nom`)}</h3>
+          <p class="plan-fiche__ambiance">${c.t(`receptions.plan.${p.cle}.ambiance`)}</p>
+          <dl class="domaine__fiche plan-fiche__fiche">
+            <div><dt>${c.t('receptions.capacite')}</dt><dd>${c.t(`receptions.plan.${p.cle}.capacite`)}</dd></div>
+            <div><dt>${c.t('receptions.saison')}</dt><dd>${c.t(`receptions.plan.${p.cle}.saison`)}</dd></div>
+          </dl>
+        </article>`)}
+      </div>
+    </div>
   </div>
 </section>
 
