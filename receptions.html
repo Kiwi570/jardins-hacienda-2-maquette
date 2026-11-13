@@ -13,8 +13,7 @@ var d = document.documentElement, ss = null, ls = null;
 try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
 d.classList.add('js');
 var calme = false;
-try { calme = !!ls && ls.getItem('socle:calme') === 'oui'; } catch (e) {}
-if (!calme && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) calme = true;
+try { if (ls) ls.removeItem('socle:calme'); } catch (e) {}
 if (calme) d.classList.add('calme');
 var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
 var type = nav ? nav.type : 'navigate';
@@ -113,7 +112,6 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
   <ul><li style="--i:0"><span class="menu-heure" aria-hidden="true">12:00</span><a href="/" class="menu-lien" data-libelle="Accueil">Accueil</a></li><li style="--i:1"><span class="menu-heure" aria-hidden="true">12:30</span><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><span class="menu-heure" aria-hidden="true">19:00</span><a href="/receptions" class="menu-lien" data-libelle="Réceptions" aria-current="page">Réceptions</a></li><li style="--i:3"><span class="menu-heure" aria-hidden="true">23:30</span><a href="/les-fetes" class="menu-lien" data-libelle="Évènements">Évènements</a></li><li style="--i:4"><span class="menu-heure" aria-hidden="true">18:00</span><a href="/a-emporter" class="menu-lien" data-libelle="Traiteur">Traiteur</a></li><li style="--i:5"><span class="menu-heure" aria-hidden="true">00:00</span><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:6"><span class="menu-heure" aria-hidden="true">Maintenant</span><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
   <p class="menu-actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une table</a> <a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
-  <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
 <main id="contenu" tabindex="-1">
 <script>try{var d=document.documentElement;if(d.getAttribute('data-arrivee')!=='voile'||d.classList.contains('calme'))d.classList.add('rdl-vu')}catch(e){}</script>
@@ -177,8 +175,8 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         <div class="occ__cadre conteneur">
           <h3 class="occ__mot">Mariages</h3>
           <figure class="media occ__image" style="--cadrage:50% 55%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="(max-width: 860px) 70vw, 34vw">
-    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="(max-width: 860px) 70vw, 34vw" alt="Une longue table de bois fleurie de blanc, sous la pergola, au bord de la piscine" width="960" height="1280" loading="lazy" decoding="async">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="(max-width: 860px) 70vw, 50vw">
+    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="(max-width: 860px) 70vw, 50vw" alt="Une longue table de bois fleurie de blanc, sous la pergola, au bord de la piscine" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
 </figure>
           <div class="occ__texte">
@@ -192,8 +190,8 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         <div class="occ__cadre conteneur">
           <h3 class="occ__mot">Anniversaires</h3>
           <figure class="media occ__image" style="--cadrage:50% 45%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="(max-width: 860px) 70vw, 34vw">
-    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="(max-width: 860px) 70vw, 34vw" alt="Une table de gâteaux et de pièces montées, entre ballons dorés et fleurs blanches" width="960" height="1280" loading="lazy" decoding="async">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="(max-width: 860px) 70vw, 50vw">
+    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="(max-width: 860px) 70vw, 50vw" alt="Une table de gâteaux et de pièces montées, entre ballons dorés et fleurs blanches" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
 </figure>
           <div class="occ__texte">
@@ -208,7 +206,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
           <h3 class="occ__mot">Pots de départ</h3>
           <figure class="media occ__image" style="--cadrage:55% 40%">
   <picture>
-    <img src="/assets/images/recevoir-depart-960.webp" srcset="/assets/images/recevoir-depart-480.webp 480w, /assets/images/recevoir-depart-640.webp 640w, /assets/images/recevoir-depart-960.webp 960w" sizes="(max-width: 860px) 70vw, 34vw" alt="Des invités au cocktail dans le jardin, sous les palmiers" width="960" height="1279" loading="lazy" decoding="async">
+    <img src="/assets/images/recevoir-depart-960.webp" srcset="/assets/images/recevoir-depart-480.webp 480w, /assets/images/recevoir-depart-640.webp 640w, /assets/images/recevoir-depart-960.webp 960w" sizes="(max-width: 860px) 70vw, 50vw" alt="Des invités au cocktail dans le jardin, sous les palmiers" width="960" height="1279" loading="lazy" decoding="async">
   </picture>
 </figure>
           <div class="occ__texte">
@@ -223,7 +221,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
           <h3 class="occ__mot">Baptêmes</h3>
           <figure class="media occ__image" style="--cadrage:55% 45%">
   <picture>
-    <img src="/assets/images/recevoir-baptemes-960.webp" srcset="/assets/images/recevoir-baptemes-480.webp 480w, /assets/images/recevoir-baptemes-640.webp 640w, /assets/images/recevoir-baptemes-960.webp 960w" sizes="(max-width: 860px) 70vw, 34vw" alt="Un bébé qui rit dans les bras de ses parents, au jardin" width="960" height="1280" loading="lazy" decoding="async">
+    <img src="/assets/images/recevoir-baptemes-960.webp" srcset="/assets/images/recevoir-baptemes-480.webp 480w, /assets/images/recevoir-baptemes-640.webp 640w, /assets/images/recevoir-baptemes-960.webp 960w" sizes="(max-width: 860px) 70vw, 50vw" alt="Un bébé qui rit dans les bras de ses parents, au jardin" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
 </figure>
           <div class="occ__texte">
@@ -621,71 +619,6 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 </section>
 </main>
 <footer class="pied pied2" id="pied">
-  <div class="pied2__bandeau" aria-hidden="true"><div class="pied2__piste"><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 55%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:40% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-baies-mobile-640.webp 640w, /assets/images/vraie/salle-baies-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/salle-baies-1280.webp" srcset="/assets/images/vraie/salle-baies-640.webp 640w, /assets/images/vraie/salle-baies-1280.webp 1280w, /assets/images/vraie/salle-baies-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 55%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/cepes-mobile-640.webp 640w, /assets/images/vraie/cepes-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/cepes-1280.webp" srcset="/assets/images/vraie/cepes-640.webp 640w, /assets/images/vraie/cepes-1280.webp 1280w, /assets/images/vraie/cepes-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:45% 62%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/brasero-mobile-640.webp 640w, /assets/images/vraie/brasero-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/brasero-1280.webp" srcset="/assets/images/vraie/brasero-640.webp 640w, /assets/images/vraie/brasero-1280.webp 1280w, /assets/images/vraie/brasero-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 45%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:55% 62%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/piscine-palmiers-mobile-640.webp 640w, /assets/images/vraie/piscine-palmiers-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/piscine-palmiers-1280.webp" srcset="/assets/images/vraie/piscine-palmiers-640.webp 640w, /assets/images/vraie/piscine-palmiers-1280.webp 1280w, /assets/images/vraie/piscine-palmiers-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-midi-mobile-640.webp 640w, /assets/images/vraie/salle-midi-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/salle-midi-1280.webp" srcset="/assets/images/vraie/salle-midi-640.webp 640w, /assets/images/vraie/salle-midi-1280.webp 1280w, /assets/images/vraie/salle-midi-1920.webp 1920w" sizes="240px" alt="" width="1280" height="854" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:50% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/pergola-banquet-mobile-640.webp 640w, /assets/images/vraie/pergola-banquet-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w, /assets/images/vraie/pergola-banquet-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 55%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:40% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-baies-mobile-640.webp 640w, /assets/images/vraie/salle-baies-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/salle-baies-1280.webp" srcset="/assets/images/vraie/salle-baies-640.webp 640w, /assets/images/vraie/salle-baies-1280.webp 1280w, /assets/images/vraie/salle-baies-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 55%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/cepes-mobile-640.webp 640w, /assets/images/vraie/cepes-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/cepes-1280.webp" srcset="/assets/images/vraie/cepes-640.webp 640w, /assets/images/vraie/cepes-1280.webp 1280w, /assets/images/vraie/cepes-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:45% 62%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/brasero-mobile-640.webp 640w, /assets/images/vraie/brasero-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/brasero-1280.webp" srcset="/assets/images/vraie/brasero-640.webp 640w, /assets/images/vraie/brasero-1280.webp 1280w, /assets/images/vraie/brasero-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 45%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:55% 62%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/piscine-palmiers-mobile-640.webp 640w, /assets/images/vraie/piscine-palmiers-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/piscine-palmiers-1280.webp" srcset="/assets/images/vraie/piscine-palmiers-640.webp 640w, /assets/images/vraie/piscine-palmiers-1280.webp 1280w, /assets/images/vraie/piscine-palmiers-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-midi-mobile-640.webp 640w, /assets/images/vraie/salle-midi-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/salle-midi-1280.webp" srcset="/assets/images/vraie/salle-midi-640.webp 640w, /assets/images/vraie/salle-midi-1280.webp 1280w, /assets/images/vraie/salle-midi-1920.webp 1920w" sizes="240px" alt="" width="1280" height="854" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:50% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/pergola-banquet-mobile-640.webp 640w, /assets/images/vraie/pergola-banquet-mobile-1080.webp 1080w" sizes="240px">
-    <img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w, /assets/images/vraie/pergola-banquet-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure></div></div>
   <div class="conteneur pied2__appel">
     <div>
       <p class="surtitre">À bientôt</p>
@@ -710,11 +643,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <div class="pied2__bloc">
       <p class="pied2__t">Suivez-nous</p>
       <p class="pied2__reseaux"><a class="pied2__reseau" href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener" aria-label="Instagram (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a><a class="pied2__reseau" href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener" aria-label="Facebook (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M13.4 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.6-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21z"/></svg><span>Facebook</span></a></p>
-      <p class="pied2__t pied2__t--confort">Confort de lecture</p>
-      <ul class="pied2__confort">
-        <li><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></li>
-        <li><a class="pied2__haut" href="#haut" data-sans-transition><span class="pied2__haut-icone"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span>Retour en haut</a></li>
-      </ul>
+      <p class="pied2__haut-ligne"><a class="pied2__haut" href="#haut" data-sans-transition><span class="pied2__haut-icone"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span>Retour en haut</a></p>
     </div>
   </div>
   <p class="pied2__marque" aria-hidden="true" data-pied-marque>Les Jardins de l&#39;Hacienda</p>

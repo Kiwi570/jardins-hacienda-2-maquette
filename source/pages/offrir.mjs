@@ -1,16 +1,16 @@
-/* Offrir · « minuit, au coin du feu » : la carte cadeau s'écrit à la lueur du feu. Ouverture : la salle de nuit, les
-   braises qu'on attise, la carte dorée qui se redresse ; le texte change avec la saison. Puis la carte se compose
+/* Offrir · la carte cadeau s'écrit aux Jardins. Ouverture (v7.5.15) : la salle au soleil de midi, la carte dorée en vrai
+   objet (elle se redresse au défilement, s'incline vers la souris avec un reflet qui la suit, se retourne d'un toucher :
+   au dos, la place du mot écrit à la main) ; le texte change avec la saison. Puis la carte se compose
    (module carte-cadeau-qui-se-compose, montants du site actuel) et part dans son enveloppe (code gardé de la v5). */
 import { html } from '../../outils/gabarit.mjs';
 
-export const page = { cle: 'offrir', fichier: 'offrir', theme: 'nuit', imagePartage: 'vraie/diner-feu-1080.webp', modules: ['carte-cadeau-qui-se-compose'] };
+export const page = { cle: 'offrir', fichier: 'offrir', theme: 'nuit', imagePartage: 'vraie/salle-midi-1280.webp', modules: ['carte-cadeau-qui-se-compose'] };
 
 const MONTANTS = [25, 50, 100, 150, 200];
 
 export default (c) => html`
 <section class="ouv-offrir" id="debut">
-  ${c.media({ nom: 'vraie/diner-feu', alt: c.s('offrir.alt'), cadrage: '60% 8%', cadrageMobile: '50% 20%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw' })}
-  <canvas class="ouv-offrir__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
+  ${c.media({ nom: 'vraie/salle-midi', alt: c.s('offrir.alt'), cadrage: '46% 50%', cadrageMobile: '50% 40%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw' })}
   <div class="conteneur ouv-offrir__grille">
     <div class="ouv-offrir__texte">
       <p class="surtitre">${c.t('offrir.sur')}</p>
@@ -18,16 +18,25 @@ export default (c) => html`
       <p class="masque-ecran-tres-bas"><span data-saison-seul="hiver">${c.t('offrir.texteHiver')}</span><span data-saison-seul="ete">${c.t('offrir.texteEte')}</span></p>
       <p class="ouv-offrir__actions"><a class="bouton" href="#composer" data-action-principale data-sans-transition>${c.t('offrir.action')}</a> <span class="ouv-offrir__info" data-info-cle data-prix>${c.t('offrir.info')}</span></p>
     </div>
-    <div class="carte-cadeau-apercu ouv-offrir__carte" data-effet="carte-apercu" data-iris-centre data-grille="typo" aria-hidden="true">
-      <div class="cca__face">
-        <img src="/assets/images/logo-clair.png" alt="" width="56" height="56">
-        <p class="cca__nom">${c.t('offrir.carte')}</p>
-        <p class="cca__montant" data-montant-tournant>100 €</p>
-        <p class="cca__pour">${c.site.nom}</p>
+    <div class="carte-cadeau-apercu ouv-offrir__carte" data-effet="carte-apercu" data-iris-centre data-grille="manipuler" data-cca>
+      <div class="cca__objet">
+        <div class="cca__face" aria-hidden="true">
+          <img src="/assets/images/logo-clair.png" alt="" width="56" height="56">
+          <p class="cca__nom">${c.t('offrir.carte')}</p>
+          <p class="cca__montant" data-montant-tournant>100 €</p>
+          <p class="cca__pour">${c.site.nom}</p>
+          <span class="cca__brillance"></span>
+        </div>
+        <div class="cca__dos" data-face="dos" aria-hidden="true">
+          <p class="cca__dos-sur">${c.t('offrir.dosSur')}</p>
+          <p class="cca__dos-mot">${c.t('offrir.dosMot')}</p>
+          <p class="cca__dos-bas"><span>${c.t('offrir.validite')}</span><span class="cca__dos-signe">${c.t('offrir.dosSigne')}</span></p>
+        </div>
       </div>
+      <button type="button" class="cca__retourner" data-cca-retourner aria-pressed="false" aria-label="${c.s('offrir.retourner')}"></button>
     </div>
   </div>
-  <p class="indice ouv-offrir__indice" aria-hidden="true">${c.t('offrir.indice')}</p>
+  <p class="indice ouv-offrir__indice" aria-hidden="true"><span class="indice--souris">${c.t('offrir.indice')}</span><span class="indice--doigt">${c.t('offrir.indiceTactile')}</span></p>
 </section>
 
 <section class="ccq offrir-composer" id="composer" data-module="carte-cadeau-qui-se-compose" data-cachet="JH" data-grille="retour" aria-labelledby="ccq-titre">

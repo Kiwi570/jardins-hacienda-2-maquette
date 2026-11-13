@@ -8,7 +8,6 @@
 import { aller } from './defilement.js?v=7';
 
 const html = document.documentElement;
-const mqReduit = matchMedia('(prefers-reduced-motion: reduce)');
 
 let attente = 0;
 function rafraichir() {
@@ -33,7 +32,7 @@ export const socle = {
      adouci du projet annule aussitôt (confirmations restées hors de l'écran, test « vrai visiteur ») : on leur
      donne le défilement du projet, avec la même signature que Lenis. */
   lenis: { scrollTo: (y, { immediate = false } = {}) => aller(typeof y === 'number' ? y : y, { instant: immediate }) },
-  get calme() { return mqReduit.matches || html.classList.contains('calme'); },
+  get calme() { return html.classList.contains('calme'); },
   get souris() { return matchMedia('(hover: hover) and (pointer: fine)').matches; },
   get telephone() { return innerWidth < 700; },
   webgl() {
@@ -65,7 +64,7 @@ function chargerOgl() {
 export async function pret(besoins = []) {
   const voulus = besoins.map((b) => b.toLowerCase());
   if (voulus.some((b) => b !== 'ogl')) await attendreGsap();
-  if (voulus.includes('ogl') && !(mqReduit.matches || html.classList.contains('calme'))) await chargerOgl();
+  if (voulus.includes('ogl') && !html.classList.contains('calme')) await chargerOgl();
   if (window.OGL) socle.OGL = window.OGL;
   const g = window.gsap || null;
   socle.gsap = g;

@@ -552,7 +552,14 @@
     "ssAvec": "Avec",
     "ssSans": "Sans l'accord, le menu reste à 120 €.",
     "ssTable": "Les cinq temps du dîner",
-    "ssAccord": "L'accord :"
+    "ssAccord": "L'accord :",
+    "afficheNoelLabel": "Le menu de Noël : retourner l'affiche pour lire le menu",
+    "afficheSylvestreLabel": "Le menu de la Saint-Sylvestre : retourner l'affiche pour lire le menu",
+    "afficheRetourner": "Retourner l'affiche",
+    "afficheVoir": "Voir le menu",
+    "afficheIndice": "Attrapez une affiche, retournez-la",
+    "afficheIndiceTactile": "Touchez une affiche pour la retourner",
+    "afficheAccord": "avec l'accord mets et vins"
   },
   "receptions": {
     "heure": "19:00",
@@ -851,7 +858,8 @@
     "planSur": "Plan de la salle",
     "planTitre": "Choisir ma table (facultatif)",
     "planTexte": "Plan indicatif de la salle, d'après les photos. Les tables indisponibles sont simulées pour la maquette.",
-    "planPhotoAlt": "La salle au soleil de midi : tables rondes en verre, fauteuils crème et baies vitrées"
+    "planPhotoAlt": "La salle au soleil de midi : tables rondes en verre, fauteuils crème et baies vitrées",
+    "voirTable": "Voir votre table allumée sur le plan"
   },
   "offrir": {
     "heure": "00:00",
@@ -861,7 +869,7 @@
     "texteEte": "Un déjeuner au bord de l'eau, une soirée sous les guirlandes : une carte de 25 à 200 €, valable 6 mois sur toute la carte proposée par le chef.",
     "info": "De 25 à 200 € · valable 6 mois",
     "action": "Composer la carte",
-    "alt": "Un dîner au coin du feu : deux verres de vin rouge, une assiette du chef, la cheminée allumée au fond",
+    "alt": "La salle au soleil de midi : tables rondes en verre, fauteuils crème, baies vitrées et plantes",
     "composerSur": "Composer",
     "composerTitre": "Votre carte cadeau",
     "composerTexte": "Choisissez le montant, ajoutez un mot : la carte s'écrit sous vos yeux, puis part dans son enveloppe.",
@@ -869,8 +877,13 @@
     "remise": "Pour la recevoir, appelez-nous au 06 18 21 28 10.",
     "simule": "Achat simulé : rien n'est payé ni envoyé dans cette maquette.",
     "carte": "Carte cadeau",
-    "indice": "Passez la main sur les braises",
-    "validite": "Valable 6 mois · toute la carte"
+    "indice": "Inclinez la carte, touchez-la pour la retourner",
+    "validite": "Valable 6 mois · toute la carte",
+    "indiceTactile": "Touchez la carte pour la retourner",
+    "retourner": "Retourner la carte cadeau",
+    "dosSur": "Au dos de la carte",
+    "dosMot": "Votre petit mot s’écrit ici, de votre main.",
+    "dosSigne": "Les Jardins de l’Hacienda"
   },
   "infos": {
     "sur": "Infos pratiques",
@@ -1037,6 +1050,19 @@
     "rondeLabel": "Les plats du chef sous leurs cloches",
     "rondeVoir": "{nom} : voir dans la vitrine",
     "rondePrec": "Plat précédent",
-    "rondeSuiv": "Plat suivant"
+    "rondeSuiv": "Plat suivant",
+    "aventSur": "Du 5 au 31 décembre",
+    "aventTitre": "Le calendrier",
+    "aventTitre2": "du retrait",
+    "aventTexte": "Chaque case dit quand venir chercher votre commande aux Jardins : le midi, le soir, ou fermé ce jour-là. Touchez votre jour : il se met tout seul dans votre commande.",
+    "aventAucun": "Touchez un jour ouvert pour le choisir.",
+    "aventChoisi": "Retrait choisi : {jour}, {moments}.",
+    "aventSuite": "Choisir mes plats",
+    "aventFerme": "Fermé",
+    "aventVotre": "Votre jour",
+    "aventLabel": "{jour} : retrait {moments}",
+    "aventLabelFerme": "{jour} : fermé",
+    "aventOu": "ou",
+    "aventLe": "le"
   }
 }

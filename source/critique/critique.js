@@ -10,8 +10,9 @@
   d.classList.add('js');
 
   var calme = false;
-  try { calme = !!ls && ls.getItem('socle:calme') === 'oui'; } catch (e) {}
-  if (!calme && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) calme = true;
+  /* v7.5.15 : plus de mode calme dans la maquette (décision du 12 novembre 2026) : toutes les animations pour tout le monde,
+     ni bouton ni réglage de l'appareil ; un ancien choix enregistré est effacé. */
+  try { if (ls) ls.removeItem('socle:calme'); } catch (e) {}
   if (calme) d.classList.add('calme');
 
   var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;

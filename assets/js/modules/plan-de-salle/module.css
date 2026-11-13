@@ -140,4 +140,4 @@ a.pds__lien:hover, button.pds__lien:not([aria-disabled="true"]):hover, .pds__ite
 
 /* Mode calme, « réduire les animations » : plan déjà incliné, anneau fixe, aucun mouvement. */
 .calme .pds__t.est-choisie .pds__anneau { animation: none; opacity: .7; transform: scale(1.12); }
-@media (prefers-reduced-motion: reduce) { .pds__t.est-choisie .pds__anneau { animation: none; opacity: .7; transform: scale(1.12); } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .pds__t.est-choisie .pds__anneau { animation: none; opacity: .7; transform: scale(1.12); } }

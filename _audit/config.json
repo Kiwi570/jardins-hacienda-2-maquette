@@ -41,9 +41,13 @@
     "dej-semaine",
     "ronde",
     "dates-photo",
-    "saint-sylvestre"
+    "saint-sylvestre",
+    "carte-photo",
+    "avent",
+    "affiches"
   ],
   "grille": {
     "dispenses": {}
-  }
+  },
+  "sansModeCalme": true
 }

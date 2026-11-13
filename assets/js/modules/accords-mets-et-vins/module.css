@@ -90,4 +90,4 @@
 /* Mode calme, « réduire les animations » : verre plein, pas de houle ni de bulles, la fiche change d'un coup. */
 .calme .ame__bulles { display: none; }
 .calme .ame__verre { transition: none; }
-@media (prefers-reduced-motion: reduce) { .ame__bulles { display: none; } .ame__verre { transition: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .ame__bulles { display: none; } .ame__verre { transition: none; } }

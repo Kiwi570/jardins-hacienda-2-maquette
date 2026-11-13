@@ -131,7 +131,7 @@ export default (c) => {
       ${FETES.map((f, i) => html`<li class="occ${i === 0 ? ' est-active' : ''}" data-occ="${f.cle}" style="--fete-fond:${f.fond}">
         <div class="occ__cadre conteneur">
           <h3 class="occ__mot">${c.t(`receptions.${f.cle}`)}</h3>
-          ${c.media({ nom: f.image, alt: c.s(f.alt), cadrage: f.cadrage, classe: 'occ__image', sizes: '(max-width: 860px) 70vw, 34vw' })}
+          ${c.media({ nom: f.image, alt: c.s(f.alt), cadrage: f.cadrage, classe: 'occ__image', sizes: '(max-width: 860px) 70vw, 50vw' })}
           <div class="occ__texte">
             <p class="occ__accroche">${c.t(`receptions.fetes.${f.cle}.accroche`)}</p>
             <p class="occ__desc">${c.t(`receptions.fetes.${f.cle}.texte`)}</p>

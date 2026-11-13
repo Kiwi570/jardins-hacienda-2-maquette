@@ -418,8 +418,14 @@ function terrasse() {
   const ampoules = svg ? guirlandes(svg) : [];
   const touchees = new Set();
   ampoules.forEach((a) => a.addEventListener('pointerdown', () => { touchees.add(a); a.classList.add('est-allumee'); }));
+  /* v7.5.15 · Fluidité : les fondus des deux images sont posés sur elles seules (couches composées), et la lumière des halos
+     ne change que par paliers de 5 % : plus de recalcul de toute la scène ni de repeinte des guirlandes à chaque image. */
+  const img2 = $('.terrasse__img--2', sec), img3 = $('.terrasse__img--3', sec);
+  let pHalo = -1;
   const appliquer = (p) => {
-    sec.style.setProperty('--p', p.toFixed(3));
+    if (img2) img2.style.opacity = Math.max(0, Math.min(1, (p - 0.25) * 4)).toFixed(3);
+    if (img3) img3.style.opacity = Math.max(0, Math.min(1, (p - 0.55) * 4)).toFixed(3);
+    const q = Math.round(p * 20) / 20; if (q !== pHalo && svg) { pHalo = q; svg.style.setProperty('--p', q.toFixed(2)); }
     const k = p < 0.3 ? 0 : p < 0.62 ? 1 : 2;
     etapes.forEach((e, i) => e.classList.toggle('est-actif', i <= k));
     const allumees = Math.round(Math.max(0, Math.min(1, (p - 0.28) / 0.34)) * ampoules.length);
@@ -690,11 +696,13 @@ function decomptes() {
 /* ---------- Minuit · la carte cadeau se redresse au défilement ---------- */
 function carteApercu() {
   if (!gsap || !window.ScrollTrigger || etat.calme) return;
-  for (const c of $$('[data-effet="carte-apercu"] .cca__face')) {
-    gsap.fromTo(c, { '--ry': '-28deg', '--rx': '14deg' }, { '--ry': '10deg', '--rx': '-4deg', ease: 'none', scrollTrigger: { trigger: c, start: 'top bottom', end: 'bottom top', scrub: 0.5 } });
+  for (const c of $$('[data-effet="carte-apercu"]').map((x) => $('.cca__objet', x) || $('.cca__face', x)).filter(Boolean)) {
+    /* Le déclencheur est le cadre de la carte, jamais la carte qui tourne (sa boîte change quand elle se retourne). */
+    const cadre = c.closest('[data-effet="carte-apercu"]') || c;
+    gsap.fromTo(c, { '--ry': '-28deg', '--rx': '14deg' }, { '--ry': '10deg', '--rx': '-4deg', ease: 'none', scrollTrigger: { trigger: cadre, start: 'top bottom', end: 'bottom top', scrub: 0.5 } });
     /* Offrir : le montant parcourt les cartes de la maison (25 à 200 €) pendant qu'elle se redresse. */
     const m = $('[data-montant-tournant]', c);
-    if (m) { const v = [25, 50, 100, 150, 200]; ScrollTriggerSimple(c, (p) => { m.textContent = `${v[Math.min(4, Math.floor(p * 5))]} €`; }); }
+    if (m) { const v = [25, 50, 100, 150, 200]; ScrollTriggerSimple(cadre, (p) => { m.textContent = `${v[Math.min(4, Math.floor(p * 5))]} €`; }); }
   }
 }
 function ScrollTriggerSimple(el, f) { window.ScrollTrigger.create({ trigger: el, start: 'top 80%', end: 'bottom top', onUpdate: (st) => f(st.progress) }); }
@@ -1036,6 +1044,24 @@ function saintSylvestre() {
     formes.forEach((f) => f.classList.toggle('est-active', f.dataset.forme === p.dataset.verre));
     typeEl.textContent = p.dataset.type; vinEl.textContent = p.dataset.vin; regionEl.textContent = p.dataset.region;
     if (!etat.calme && fiche.animate) fiche.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    /* v7.5.15 · Au dessert, minuit : une pluie d'or et de paillettes traverse la scène, trois ondes dorées partent du verre et
+       les bulles montent plus vite. Doux (aucun éclair) ; rejoué à chaque retour sur le dessert. */
+    if (i === n - 1 && enScene()) minuit(); else sec.classList.remove('est-minuit');
+  };
+  const pluie = $('[data-ss-minuit]', sec), verre = $('.ss__verre', sec);
+  const minuit = () => {
+    sec.classList.add('est-minuit');
+    if (!pluie || etat.calme) return;
+    pluie.textContent = '';
+    const couleurs = ['#f3d98f', '#e9c46a', '#fff3c4', '#d9a043', '#fbf4e6'];
+    for (let k = 0; k < 64; k++) {
+      const e = document.createElement('span');
+      e.className = k % 3 ? 'ss__or' : 'ss__or ss__or--ruban';
+      e.style.cssText = `--x:${(Math.random() * 100).toFixed(1)}%;--t:${(3.2 + Math.random() * 2.6).toFixed(2)}s;--r:${(Math.random() * .9).toFixed(2)}s;--b:${(Math.random() * 60 - 30).toFixed(0)}px;--c:${couleurs[k % couleurs.length]};--s:${(.6 + Math.random() * .9).toFixed(2)}`;
+      pluie.append(e);
+    }
+    for (let k = 0; k < 3; k++) { const o = document.createElement('span'); o.className = 'ss__onde'; o.style.animationDelay = `${k * .55}s`; verre.append(o); setTimeout(() => o.remove(), 2600 + k * 550); }
+    clearTimeout(pluie._fin); pluie._fin = setTimeout(() => { pluie.textContent = ''; }, 6400);
   };
   const accord = () => {
     const oui = bascule.checked;
@@ -1101,6 +1127,164 @@ function datesSync() {
   choisir();
 }
 
+/* v7.5.15 · Offrir, la carte cadeau en vrai objet : elle s'incline vers la souris (sur toute l'ouverture), son reflet doré
+   suit la main ; un toucher la retourne, un second la remet à l'endroit (Échap aussi). */
+function carteObjet() {
+  const w = $('[data-cca]'); if (!w) return;
+  const sec = w.closest('section') || w, objet = $('.cca__objet', w), bouton = $('[data-cca-retourner]', w), dos = $('.cca__dos', w);
+  let raf = 0, cible = [0, 0, 30, 25];
+  const poser = () => { raf = 0; const [px, py, mx, my] = cible; objet.style.setProperty('--px', `${px.toFixed(2)}deg`); objet.style.setProperty('--py', `${py.toFixed(2)}deg`); w.style.setProperty('--mx', `${mx.toFixed(1)}%`); w.style.setProperty('--my', `${my.toFixed(1)}%`); };
+  if (matchMedia('(hover: hover)').matches) {
+    sec.addEventListener('pointermove', (e) => {
+      const r = w.getBoundingClientRect(), x = (e.clientX - (r.left + r.width / 2)) / Math.max(r.width, 1), y = (e.clientY - (r.top + r.height / 2)) / Math.max(r.height, 1);
+      const cx = Math.max(-1, Math.min(1, x)), cy = Math.max(-1, Math.min(1, y));
+      cible = [cx * 16, -cy * 12, 50 + cx * 45, 50 + cy * 45];
+      if (!raf) raf = requestAnimationFrame(poser);
+    });
+    sec.addEventListener('pointerleave', () => { cible = [0, 0, 30, 25]; if (!raf) raf = requestAnimationFrame(poser); });
+  }
+  const retourner = (oui) => {
+    w.classList.add('est-tourne'); clearTimeout(w._t); w._t = setTimeout(() => w.classList.remove('est-tourne'), 1000);
+    w.classList.toggle('est-retournee', oui); bouton.setAttribute('aria-pressed', String(oui)); dos.setAttribute('aria-hidden', String(!oui));
+  };
+  bouton.addEventListener('click', () => retourner(!w.classList.contains('est-retournee')));
+  w.addEventListener('keydown', (e) => { if (e.key === 'Escape' && w.classList.contains('est-retournee')) retourner(false); });
+}
+
+/* v7.5.15 · Évènements, les affiches à prendre en main : inclinaison et reflet vers la souris ; on attrape une affiche, elle
+   se soulève et suit la main (elle penche selon la vitesse), puis revient à sa place ; un clic la retourne (au dos, le menu),
+   « Retourner l'affiche » ou Échap la remet à l'endroit. Une fois, après l'arrivée, la Saint-Sylvestre se tourne un peu
+   pour montrer le geste. */
+function affiches() {
+  const toutes = $$('[data-affiche]'); if (!toutes.length) return;
+  let touchee = false;
+  for (const a of toutes) {
+    const avant = $('[data-affiche-avant]', a), dos = $('.affiche__face--dos', a), retour = $('[data-affiche-retour]', a);
+    const liens = $$('a, button', dos);
+    /* Avec JavaScript, la face avant est un bouton (elle retourne l'affiche) ; sans, un lien vers la section. */
+    avant.removeAttribute('href'); avant.setAttribute('role', 'button'); avant.tabIndex = 0;
+    avant.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); avant.click(); } });
+    let depart = null, tire = false, ignorer = false, dernier = null;
+    const incliner = (e) => {
+      if (depart || a.classList.contains('est-retournee')) return;
+      const r = a.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      a.style.setProperty('--rx', `${(-y * 14).toFixed(2)}deg`); a.style.setProperty('--ry', `${(x * 18).toFixed(2)}deg`);
+      a.style.setProperty('--mx', `${((x + .5) * 100).toFixed(1)}%`); a.style.setProperty('--my', `${((y + .5) * 100).toFixed(1)}%`);
+    };
+    const redresser = () => { a.style.setProperty('--rx', '0deg'); a.style.setProperty('--ry', '0deg'); };
+    const retourner = (oui) => {
+      a.classList.toggle('est-retournee', oui);
+      avant.setAttribute('aria-expanded', String(oui)); dos.setAttribute('aria-hidden', String(!oui));
+      liens.forEach((l) => { l.tabIndex = oui ? 0 : -1; });
+      redresser();
+      if (oui) setTimeout(() => retour.focus({ preventScroll: true }), 420); else avant.focus({ preventScroll: true });
+    };
+    a.addEventListener('pointermove', incliner);
+    a.addEventListener('pointerleave', () => { if (!depart) redresser(); });
+    avant.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      touchee = true; depart = { x: e.clientX, y: e.clientY }; tire = false; dernier = { x: e.clientX, t: performance.now() };
+      avant.setPointerCapture(e.pointerId);
+    });
+    avant.addEventListener('pointermove', (e) => {
+      if (!depart) return;
+      const dx = e.clientX - depart.x, dy = e.clientY - depart.y;
+      if (!tire && Math.hypot(dx, dy) < 7) return;
+      if (!tire) { tire = true; a.classList.add('est-tenue'); redresser(); }
+      const t = performance.now(), v = (e.clientX - dernier.x) / Math.max(8, t - dernier.t); dernier = { x: e.clientX, t };
+      a.style.setProperty('--dx', `${dx}px`); a.style.setProperty('--dy', `${dy}px`);
+      a.style.setProperty('--dr', `${Math.max(-14, Math.min(14, v * 9)).toFixed(2)}deg`);
+    });
+    const lacher = () => {
+      if (!depart) return;
+      depart = null;
+      if (tire) { ignorer = true; a.classList.remove('est-tenue'); ['--dx', '--dy', '--dr'].forEach((k) => a.style.setProperty(k, k === '--dr' ? '0deg' : '0px')); }
+    };
+    avant.addEventListener('pointerup', lacher); avant.addEventListener('pointercancel', lacher);
+    avant.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (ignorer) { ignorer = false; return; }
+      touchee = true; retourner(!a.classList.contains('est-retournee'));
+    });
+    avant.addEventListener('dragstart', (e) => e.preventDefault());
+    retour.addEventListener('click', () => retourner(false));
+    a.addEventListener('keydown', (e) => { if (e.key === 'Escape' && a.classList.contains('est-retournee')) retourner(false); });
+  }
+  /* L'indice : une fois, deux secondes après l'arrivée, si personne n'a encore touché une affiche. */
+  const ss = $('.affiche--sylvestre');
+  if (ss && !etat.calme) quand('pret', () => setTimeout(() => { if (touchee || !ss.offsetParent || scrollY > innerHeight * .5) return; ss.classList.add('est-indice'); setTimeout(() => ss.classList.remove('est-indice'), 1700); }, 1800));
+}
+
+/* v7.5.15 · Traiteur, « Le calendrier du retrait » : les portes s'ouvrent en cascade quand le calendrier arrive à l'écran ;
+   un jour ouvert touché coche le même jour dans la commande (le panneau suit) et s'illumine, quelques éclats d'or en sortent.
+   Un jour choisi dans le panneau s'allume aussi dans le calendrier. */
+function aventCalendrier() {
+  const sec = $('[data-avent]'); if (!sec) return;
+  const choix = $('[data-avent-choix]', sec), modele = sec.dataset.choisi, ou = sec.dataset.ou, le = sec.dataset.le;
+  const ouvrir = () => sec.classList.add('est-ouvert');
+  if (etat.calme || !('IntersectionObserver' in window)) ouvrir();
+  else { const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { ouvrir(); io.disconnect(); } }, { threshold: 0.2 }); io.observe($('.avent__mur', sec)); }
+  const radio = (iso) => $(`[name="jour"][value="${iso}"]`);
+  const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date());
+  for (const b of $$('[data-avent-jour]', sec)) if (b.dataset.aventJour < auj) { b.disabled = true; b.closest('li').classList.add('est-passe'); }
+  const marquer = (iso) => {
+    for (const b of $$('[data-avent-jour]', sec)) { const oui = b.dataset.aventJour === iso; b.setAttribute('aria-pressed', String(oui)); b.closest('li').classList.toggle('est-choisi', oui); }
+    const r = iso && radio(iso);
+    if (!r) return;
+    const moments = [r.dataset.midi === '1' && 'midi', r.dataset.soir === '1' && 'soir'].filter(Boolean).map((x) => `${le} ${x}`).join(` ${ou} `);
+    choix.textContent = modele.replace('{jour}', r.dataset.libelle).replace('{moments}', moments);
+  };
+  const eclats = (cellule) => {
+    if (etat.calme || !cellule.animate) return;
+    for (let k = 0; k < 12; k++) {
+      const e = document.createElement('span'); e.className = 'avent__eclat'; cellule.append(e);
+      const a = (k / 12) * Math.PI * 2 + Math.random() * .4, d = 40 + Math.random() * 46;
+      e.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${Math.cos(a) * d}px, ${Math.sin(a) * d}px) scale(.2)`, opacity: 0 }], { duration: 760 + Math.random() * 300, easing: 'cubic-bezier(.2,.8,.2,1)' }).onfinish = () => e.remove();
+    }
+  };
+  sec.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-avent-jour]'); if (!b || b.disabled) return;
+    const r = radio(b.dataset.aventJour); if (!r || r.disabled) return;
+    r.checked = true; r.dispatchEvent(new Event('change', { bubbles: true }));
+    marquer(b.dataset.aventJour); eclats(b);
+  });
+  document.addEventListener('change', (e) => { if (e.target.name === 'jour' && e.target.checked && !sec.contains(e.target)) marquer(e.target.value); });
+  const deja = $('[name="jour"]:checked'); if (deja) marquer(deja.value);
+}
+
+/* v7.5.15 · La carte, « Toute la carte » : la grande photo de gauche suit la rubrique lue (celle qui passe au tiers haut de
+   l'écran) ; fondu enchaîné, numéro, nom, fourchette de prix et nombre de plats ; la rubrique lue est marquée d'un trait. */
+function carteSynchro() {
+  const visuel = $('[data-carte-visuel]'); if (!visuel) return;
+  const sec = visuel.closest('.carte-resto'), imgs = $$('[data-carte-image]', visuel);
+  const num = $('[data-carte-num]', visuel), nom = $('[data-carte-nom]', visuel), detail = $('[data-carte-detail]', visuel), badge = $('.carte-synchro__badge', visuel);
+  let courant = null, attente = false;
+  const montrer = (rub) => {
+    if (!rub || rub === courant) return;
+    if (courant) courant.classList.remove('est-lue');
+    courant = rub; rub.classList.add('est-lue');
+    const im = imgs.find((x) => x.dataset.carteImage === rub.dataset.rubrique) || imgs[0];
+    imgs.forEach((x) => x.classList.toggle('est-active', x === im));
+    num.textContent = im.dataset.numero; nom.textContent = im.dataset.titre; detail.textContent = im.dataset.detail;
+    if (badge.animate) badge.animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 560, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  };
+  const choisir = () => {
+    attente = false;
+    if (!visuel.offsetParent) return;
+    const liste = $$('.carte-resto__rubrique', sec).filter((r) => !r.hidden && r.offsetParent);
+    if (!liste.length) return;
+    const repere = innerHeight * 0.42;
+    let meilleur = liste[0];
+    for (const r of liste) if (r.getBoundingClientRect().top <= repere) meilleur = r;
+    montrer(meilleur);
+  };
+  const demander = () => { if (!attente) { attente = true; requestAnimationFrame(choisir); } };
+  addEventListener('scroll', demander, { passive: true });
+  addEventListener('resize', demander);
+  new MutationObserver(demander).observe(sec, { subtree: true, attributes: true, attributeFilter: ['hidden', 'aria-pressed'] });
+  choisir();
+}
+
 /* v7.5.13 · Traiteur, « la ronde des cloches » : les cloches tournent en cercle (perspective calculée : position, taille,
    lumière et profondeur) ; celle de devant soulève son verre et donne nom et prix. Tour automatique toutes les 3,6 s quand la
    section est visible, en pause au survol ou au clavier ; flèches ; clic sur une cloche pour la faire venir, sur celle de
@@ -1110,7 +1294,7 @@ function rondeHero() {
   const scene = $('.ronde', sec), items = $$('.ronde__cloche', sec), n = items.length; if (!n) return;
   const nomEl = $('[data-ronde-nom]', sec), prixEl = $('[data-ronde-prix]', sec), numEl = $('[data-ronde-num]', sec), legende = $('.ronde__legende', sec);
   const pas = (Math.PI * 2) / n;
-  let phi = 0, cible = 0, actif = -1, raf = 0, survol = false, visible = true, dernier = performance.now();
+  let phi = 0, cible = 0, actif = -1, raf = 0, survol = false, visible = true, dernier = performance.now() + 2600; /* premier tour après l'ouverture */
   let rx = 0, ry = 0;
   const mesurer = () => { rx = scene.clientWidth * 0.34; ry = scene.clientHeight * 0.12; };
   const placer = () => {
@@ -1123,11 +1307,11 @@ function rondeHero() {
     });
     const i = ((Math.round(phi / pas) % n) + n) % n;
     if (i !== actif) {
-      actif = i;
+      const premier = actif === -1; actif = i;
       items.forEach((el, j) => { el.classList.toggle('est-devant', j === i); el.querySelector('[data-ronde-bouton]').tabIndex = j === i ? 0 : -1; });
       const el = items[i];
       numEl.textContent = `N° ${el.dataset.num}`; nomEl.textContent = el.dataset.nom; prixEl.textContent = el.dataset.prix;
-      if (!etat.calme && legende.animate) legende.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      if (!etat.calme && legende.animate && !premier) legende.animate([{ opacity: .5, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 480, easing: 'cubic-bezier(.2,.8,.2,1)' });
     }
   };
   const tourner = (t) => {
@@ -1422,6 +1606,7 @@ function emporter() {
 function fetesDefile() {
   const sec = $('[data-fetes-defile]'); if (!sec) return;
   const fetes = $$('.occ', sec), points = $$('[data-fete-aller]', sec), collant = $('.fetes-defile__collant', sec);
+  const anneau = $('.fetes-defile__anneau', sec); /* v7.5.15 · la progression posée sur l'anneau seul (pas de recalcul de toute la scène) */
   /* Un lien « Organiser un mariage » coche l'occasion dans la demande. */
   for (const a of $$('[data-occasion-choisir]', sec)) a.addEventListener('click', () => {
     const r = $$('[name="occasion"]').find((x) => x.value === a.dataset.occasionChoisir);
@@ -1440,13 +1625,17 @@ function fetesDefile() {
   const maj = () => {
     attente = false;
     const p = Math.min(1, Math.max(0, -sec.getBoundingClientRect().top / course()));
-    sec.style.setProperty('--fetes-p', p.toFixed(4));
-    activer(Math.min(fetes.length - 1, Math.floor(p * fetes.length)));
+    if (anneau) anneau.style.setProperty('--fetes-p', p.toFixed(3));
+    const i = Math.min(fetes.length - 1, Math.floor(p * fetes.length));
+    activer(i);
+    /* v7.5.15 · Dans son palier, la photo de la fête grandit jusqu'à occuper toute la moitié droite de l'écran, bord à bord. */
+    const q = p * fetes.length - i, g = Math.min(1, Math.max(0, (q - 0.16) / 0.46));
+    fetes[i].style.setProperty('--g', (g * g * (3 - 2 * g)).toFixed(4));
   };
   addEventListener('scroll', () => { if (!attente) { attente = true; requestAnimationFrame(maj); } }, { passive: true });
   addEventListener('resize', maj);
   maj();
-  points.forEach((b, k) => b.addEventListener('click', () => aller(sec.getBoundingClientRect().top + scrollY + course() * ((k + 0.5) / fetes.length))));
+  points.forEach((b, k) => b.addEventListener('click', () => aller(sec.getBoundingClientRect().top + scrollY + course() * ((k + 0.7) / fetes.length))));
 }
 function occasions() {
   if (!gsap || !window.ScrollTrigger || etat.calme) return;
@@ -1625,12 +1814,21 @@ function reservationPlacement() {
     const jour = d.date ? new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(d.date + 'T12:00:00Z')) : '';
     const heure = d.heure ? d.heure.replace(':00', ' h').replace(':', ' h ') : '';
     const n = +d.couverts || 0;
-    recap.querySelector('.placement')?.remove();
+    recap.querySelector('.placement')?.remove(); recap.querySelector('.placement__voir')?.remove();
     const carte = document.createElement('div'); carte.className = 'placement'; carte.setAttribute('aria-hidden', 'true'); carte.dataset.effet = 'placement';
     const f = $('[data-resa-form]', resa), qui = f ? [f.elements.prenom?.value, f.elements.nom?.value].filter(Boolean).join(' ').trim() : '';
     carte.innerHTML = `<p class="placement__carton"><span>Réservé</span>${qui ? `<em>${qui.replace(/[<>&"]/g, '')}</em>` : ''}<strong>${jour}${heure ? ' · ' + heure : ''}</strong><span>${n} couvert${n > 1 ? 's' : ''}${d.table ? ' · table ' + d.table : ''}</span></p><svg class="placement__cloche" viewBox="0 0 120 70"><path d="M8 62 Q 10 14 60 12 Q 110 14 112 62 Z" fill="#e9a23b"/><path d="M4 62 H116" stroke="#9a5a12" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="9" r="6" fill="#9a5a12"/></svg>`;
     recap.prepend(carte);
     const rep = d.table && $('.pds__repere');
+    /* v7.5.15 · La table s'allume : sur le plan, la salle baisse la lumière, la table choisie garde la sienne, une bougie
+       s'allume sous le carton « Réservé » ; un lien du récapitulatif y mène. */
+    if (rep && !rep.hidden && plan) {
+      plan.classList.add('est-allume');
+      const lien = document.createElement('p'); lien.className = 'placement__voir';
+      const a = document.createElement('a'); a.href = '#plan'; a.dataset.sansTransition = ''; a.textContent = resa.dataset.voirTable || 'Voir votre table sur le plan';
+      a.addEventListener('click', (ev) => { ev.preventDefault(); const sc = $('.pds__scene', plan) || plan; const r = sc.getBoundingClientRect(); aller(scrollY + r.top - Math.max(0, (innerHeight - r.height) / 2)); });
+      lien.append(a); carte.after(lien);
+    }
     if (rep && !rep.hidden) { rep.classList.add('est-reserve'); rep.querySelector('b').textContent = 'Réservé'; const jc = d.date ? new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(d.date + 'T12:00:00Z')) : ''; rep.querySelector('.pds__repere-etiquette > span').textContent = `${jc}${heure ? ' · ' + heure : ''} · ${n} couvert${n > 1 ? 's' : ''}`; }
     if (etat.calme) carte.classList.add('est-pose'); else requestAnimationFrame(() => requestAnimationFrame(() => carte.classList.add('est-pose')));
     setTimeout(() => { const el = $('[data-resa-recap]', resa); if (!el) return; const eh = parseFloat(getComputedStyle(html).getPropertyValue('--entete-h')) || 0, r = el.getBoundingClientRect(); const libre = innerHeight - eh, dy = r.height < libre - 32 ? r.top - eh - (libre - r.height) / 2 : r.top - eh - 16; if (Math.abs(dy) > 4) aller(scrollY + dy); }, 450);
@@ -1996,6 +2194,10 @@ demarrer({
     vitrineCloches();
     rondeHero();
     datesSync();
+    carteSynchro();
+    aventCalendrier();
+    affiches();
+    carteObjet();
     saintSylvestre();
     piedMarque();
     domaine();

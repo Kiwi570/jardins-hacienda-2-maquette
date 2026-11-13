@@ -128,8 +128,8 @@
    "id": "desserts",
    "titre": "Nos desserts",
    "photo": {
-    "src": "/assets/images/carte-desserts-640.webp",
-    "alt": "Dessert en coupe sur une table en bois, devant le feu",
+    "src": "/assets/images/vraie/coupe-cheminee-640.webp",
+    "alt": "Une coupe glacée sur une table de bois, devant la cheminée",
     "largeur": 640,
     "hauteur": 800
    },

@@ -56,6 +56,47 @@ function calendrier(c, E) {
   </fieldset>`;
 }
 
+/* v7.5.15 · « Le calendrier du retrait » : du 5 au 31 décembre, une case par jour comme un calendrier de l'Avent. Les portes
+   s'ouvrent en cascade quand le calendrier arrive à l'écran : derrière, le midi, le soir ou « Fermé », d'après les horaires.
+   Un jour ouvert touché devient le jour de retrait de la commande (le même choix que dans le panneau). Sans JavaScript, les
+   portes sont ouvertes. */
+function avent(c, E) {
+  const [a, m] = E.debut.split('-').map(Number);
+  const d0 = +E.debut.slice(8), d1 = +E.fin.slice(8);
+  const court = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', timeZone: 'UTC' });
+  const long = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+  const cases = [];
+  for (let j = d0, i = 0; j <= d1; j++, i++) {
+    const iso = `${a}-${String(m).padStart(2, '0')}-${String(j).padStart(2, '0')}`;
+    const date = new Date(`${iso}T12:00:00Z`);
+    const s = services(c.donnees.horaires, iso);
+    const libres = [s.midi && c.s('emporter.midi'), s.soir && c.s('emporter.soir')].filter(Boolean);
+    const sem = court.format(date).replace('.', '');
+    const tete = html`<span class="avent__date"><span class="avent__sem">${sem}</span><span class="avent__jour">${j}</span></span>`;
+    const porte = html`<span class="avent__porte" aria-hidden="true" data-superpose><span class="avent__porte-num">${j}</span></span>`;
+    if (!libres.length) cases.push(html`<li class="avent__case est-ferme" style="--i:${i}"><span class="avent__cellule" role="img" aria-label="${c.s('emporter.aventLabelFerme', { jour: long.format(date) })}">${tete}<span class="avent__services"><span class="avent__ferme">${c.t('emporter.aventFerme')}</span></span>${porte}</span></li>`);
+    else cases.push(html`<li class="avent__case" style="--i:${i}"><button type="button" class="avent__cellule" data-avent-jour="${iso}" aria-pressed="false" aria-label="${c.s('emporter.aventLabel', { jour: long.format(date), moments: libres.map((x) => (c.s('emporter.aventLe') + ' ' + x.toLowerCase())).join(' ' + c.s('emporter.aventOu') + ' ') })}">${tete}<span class="avent__services">${libres.map((x) => html`<span class="avent__service">${x}</span>`)}</span><span class="avent__votre">${c.t('emporter.aventVotre')}</span>${porte}</button></li>`);
+  }
+  return html`<section class="avent" id="calendrier" aria-labelledby="avent-titre" data-avent data-choisi="${c.s('emporter.aventChoisi')}" data-ou="${c.s('emporter.aventOu')}" data-le="${c.s('emporter.aventLe')}">
+  <div class="conteneur">
+    <div class="avent__tete">
+      <div>
+        <p class="surtitre">${c.t('emporter.aventSur')}</p>
+        <h2 id="avent-titre" class="avent__titre" data-anime="lignes">${c.t('emporter.aventTitre')} <em>${c.t('emporter.aventTitre2')}</em></h2>
+      </div>
+      <div class="avent__intro">
+        <p>${c.t('emporter.aventTexte')}</p>
+        <p class="avent__choix" data-avent-choix aria-live="polite">${c.t('emporter.aventAucun')}</p>
+        <p><a class="bouton" href="#produits" data-sans-transition>${c.t('emporter.aventSuite')}</a></p>
+      </div>
+    </div>
+    <div class="avent__mur" data-visuel>
+      <ol class="avent__cases" data-effet="avent">${cases}</ol>
+    </div>
+  </div>
+</section>`;
+}
+
 export default (c) => {
   const E = c.donnees.emporter;
   const textes = { articles: c.s('emporter.articles'), annonce: c.s('emporter.annonce'), moins: c.s('emporter.moins'), plus: c.s('emporter.plus'), retrait: c.s('emporter.retraitResume'), retraitPanier: c.s('emporter.retraitPanier'), retraitAChoisir: c.s('emporter.retraitAChoisir'), midi: c.s('emporter.midi').toLowerCase(), soir: c.s('emporter.soir').toLowerCase(), recap: c.s('emporter.recap'), simule: c.s('emporter.simule'), ajoute: c.s('emporter.ajoute'), ajouter: c.s('emporter.ajouter'), tiroirAjoute: c.s('emporter.tiroirAjoute'), tiroirNombre: c.s('emporter.tiroirNombre'), tiroirNombreUn: c.s('emporter.tiroirNombreUn'), tiroirRetirer: c.s('emporter.tiroirRetirer'), tiroirRetirerTexte: c.s('emporter.tiroirRetirerTexte'), tiroirUnite: c.s('emporter.tiroirUnite'), tiroirKg: c.s('emporter.tiroirKg'),
@@ -128,6 +169,8 @@ export default (c) => {
     </ul>
   </div>
 </section>
+
+${avent(c, E)}
 
 <section class="emp-commande" id="commande" aria-labelledby="commande-titre">
   <div class="conteneur emp-commande__grille">

@@ -142,7 +142,7 @@
 }
 
 /* Réduire les animations, mode calme : état final immédiat. */
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) {
   .fpe__coche path, .fpe__coche circle { animation: none; stroke-dashoffset: 0; }
   .fpe__bouton:hover { transform: none; }
 }

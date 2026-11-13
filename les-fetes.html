@@ -13,8 +13,7 @@ var d = document.documentElement, ss = null, ls = null;
 try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
 d.classList.add('js');
 var calme = false;
-try { calme = !!ls && ls.getItem('socle:calme') === 'oui'; } catch (e) {}
-if (!calme && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) calme = true;
+try { if (ls) ls.removeItem('socle:calme'); } catch (e) {}
 if (calme) d.classList.add('calme');
 var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
 var type = nav ? nav.type : 'navigate';
@@ -113,7 +112,6 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
   <ul><li style="--i:0"><span class="menu-heure" aria-hidden="true">12:00</span><a href="/" class="menu-lien" data-libelle="Accueil">Accueil</a></li><li style="--i:1"><span class="menu-heure" aria-hidden="true">12:30</span><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><span class="menu-heure" aria-hidden="true">19:00</span><a href="/receptions" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><span class="menu-heure" aria-hidden="true">23:30</span><a href="/les-fetes" class="menu-lien" data-libelle="Évènements" aria-current="page">Évènements</a></li><li style="--i:4"><span class="menu-heure" aria-hidden="true">18:00</span><a href="/a-emporter" class="menu-lien" data-libelle="Traiteur">Traiteur</a></li><li style="--i:5"><span class="menu-heure" aria-hidden="true">00:00</span><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:6"><span class="menu-heure" aria-hidden="true">Maintenant</span><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
   <p class="menu-actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une table</a> <a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
-  <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
 <main id="contenu" tabindex="-1">
 <section class="ouv-fetes" id="debut" data-effet="saison" aria-labelledby="fetes-h1">
@@ -131,17 +129,44 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     </p>
       <p class="ouv-fetes__info" data-info-cle><span data-saison-seul="hiver">Saint-Sylvestre : 120 € le menu · Noël : 79 € par personne, hors boissons</span><span data-saison-seul="ete">12 h – 19 h · 14 h 30 · 15 h 30</span></p>
     </div>
-    <div class="ouv-fetes__visuel" data-saison-seul="hiver">
-      <a class="affiche affiche--noel" href="#noel" data-sans-transition aria-label="Le menu de Noël : voir le menu"><figure class="media affiche__photo" style="--cadrage:50% 50%">
+    <div class="ouv-fetes__visuel" data-saison-seul="hiver" data-effet="affiches" data-grille="manipuler">
+      <div class="affiche affiche--noel" data-affiche>
+    <div class="affiche__main">
+      <div class="affiche__pivot">
+        <a class="affiche__face affiche__face--avant" href="#noel" data-sans-transition data-affiche-avant aria-label="Le menu de Noël : retourner l&#39;affiche pour lire le menu" aria-expanded="false" aria-controls="dos-noel"><figure class="media affiche__photo" style="--cadrage:50% 50%">
   <picture>
-    <img src="/assets/images/vraie/affiche-noel-1024.webp" srcset="/assets/images/vraie/affiche-noel-480.webp 480w, /assets/images/vraie/affiche-noel-640.webp 640w, /assets/images/vraie/affiche-noel-1024.webp 1024w" sizes="(max-width: 760px) 46vw, 24vw" alt="" width="1024" height="1535" fetchpriority="high" loading="eager" decoding="async">
+    <img src="/assets/images/vraie/affiche-noel-1024.webp" srcset="/assets/images/vraie/affiche-noel-480.webp 480w, /assets/images/vraie/affiche-noel-640.webp 640w, /assets/images/vraie/affiche-noel-1024.webp 1024w" sizes="(max-width: 760px) 46vw, 26vw" alt="" width="1024" height="1535" fetchpriority="high" loading="eager" decoding="async">
   </picture>
-</figure></a>
-      <a class="affiche affiche--sylvestre" href="#saint-sylvestre" data-sans-transition aria-label="Le menu de la Saint-Sylvestre : voir le menu"><figure class="media affiche__photo" style="--cadrage:50% 50%">
+</figure><span class="affiche__reflet" aria-hidden="true"></span></a>
+        <div class="affiche__face affiche__face--dos" id="dos-noel" data-face="dos" aria-hidden="true">
+          <p class="affiche__dos-sur">Vendredi 25 décembre, au déjeuner</p>
+          <p class="affiche__dos-titre">Menu de Noël</p>
+          <ol class="affiche__plats"><li><span>Coupe de bienvenue</span> <small></small></li><li><span>Huître tiède</span> <small>au sabayon de champagne</small></li><li><span>Foie gras</span> <small>poêlé sur poire pochée au vin moelleux</small></li><li><span>Suprême de chapon</span> <small>farci à la truffe et purée de châtaigne</small></li><li><span>Coque en chocolat</span> <small>tiramisu mangue passion</small></li></ol>
+          <p class="affiche__prix"><strong>79 €</strong> par personne, hors boissons</p>
+          <p class="affiche__dos-actions"><a href="#noel" data-sans-transition tabindex="-1">Voir le menu</a><button type="button" data-affiche-retour tabindex="-1">Retourner l&#39;affiche</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+      <div class="affiche affiche--sylvestre" data-affiche>
+    <div class="affiche__main">
+      <div class="affiche__pivot">
+        <a class="affiche__face affiche__face--avant" href="#saint-sylvestre" data-sans-transition data-affiche-avant aria-label="Le menu de la Saint-Sylvestre : retourner l&#39;affiche pour lire le menu" aria-expanded="false" aria-controls="dos-sylvestre"><figure class="media affiche__photo" style="--cadrage:50% 50%">
   <picture>
-    <img src="/assets/images/vraie/affiche-sylvestre-960.webp" srcset="/assets/images/vraie/affiche-sylvestre-480.webp 480w, /assets/images/vraie/affiche-sylvestre-640.webp 640w, /assets/images/vraie/affiche-sylvestre-960.webp 960w" sizes="(max-width: 760px) 52vw, 26vw" alt="" width="960" height="960" fetchpriority="high" loading="eager" decoding="async">
+    <img src="/assets/images/vraie/affiche-sylvestre-960.webp" srcset="/assets/images/vraie/affiche-sylvestre-480.webp 480w, /assets/images/vraie/affiche-sylvestre-640.webp 640w, /assets/images/vraie/affiche-sylvestre-960.webp 960w" sizes="(max-width: 760px) 52vw, 28vw" alt="" width="960" height="960" fetchpriority="high" loading="eager" decoding="async">
   </picture>
-</figure></a>
+</figure><span class="affiche__reflet" aria-hidden="true"></span></a>
+        <div class="affiche__face affiche__face--dos" id="dos-sylvestre" data-face="dos" aria-hidden="true">
+          <p class="affiche__dos-sur">Jeudi 31 décembre, le soir</p>
+          <p class="affiche__dos-titre">Saint-Sylvestre</p>
+          <ol class="affiche__plats"><li><span>Amuse-bouche</span> <small>et coupe de Champagne</small></li><li><span>Velours de foie gras</span> <small>Éclats de truffe noire</small></li><li><span>Esturgeon délicatement poché</span> <small>Sauce citronnée au caviar et lentilles noires Béluga</small></li><li><span>Filet de bœuf d&#39;exception</span> <small>Aux morilles, jus réduit infusé au café</small></li><li><span>Sablé breton au yuzu</span> <small>Crémeux de yuzu et meringue délicatement brûlée</small></li></ol>
+          <p class="affiche__prix"><strong>120 €</strong> le menu · <strong>170 €</strong> avec l&#39;accord mets et vins</p>
+          <p class="affiche__dos-actions"><a href="#saint-sylvestre" data-sans-transition tabindex="-1">Voir le menu</a><button type="button" data-affiche-retour tabindex="-1">Retourner l&#39;affiche</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+      <p class="indice affiches__indice" aria-hidden="true"><span class="indice--souris">Attrapez une affiche, retournez-la</span><span class="indice--doigt">Touchez une affiche pour la retourner</span></p>
     </div>
     <div class="ouv-fetes__visuel ouv-fetes__visuel--ete" data-saison-seul="ete">
       <figure class="media ouv-fetes__arche" data-fx="parallaxe" data-fx-force="5" style="--cadrage:50% 55%">
@@ -186,9 +211,9 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soir-mobile-640.webp 640w, /assets/images/vraie/salle-soir-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
     <img src="/assets/images/vraie/salle-soir-1280.webp" srcset="/assets/images/vraie/salle-soir-640.webp 640w, /assets/images/vraie/salle-soir-1280.webp 1280w, /assets/images/vraie/salle-soir-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
   </picture>
-</figure><figure class="media dates__img" data-dates-image="vraie/dessert-cheminee" style="--cadrage:45% 50%">
-  <picture>
-    <img src="/assets/images/vraie/dessert-cheminee-784.webp" srcset="/assets/images/vraie/dessert-cheminee-480.webp 480w, /assets/images/vraie/dessert-cheminee-640.webp 640w, /assets/images/vraie/dessert-cheminee-784.webp 784w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="784" height="980" loading="lazy" decoding="async">
+</figure><figure class="media dates__img" data-dates-image="vraie/plat-cheminee" style="--cadrage:50% 72%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/plat-cheminee-mobile-640.webp 640w, /assets/images/vraie/plat-cheminee-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
+    <img src="/assets/images/vraie/plat-cheminee-1280.webp" srcset="/assets/images/vraie/plat-cheminee-640.webp 640w, /assets/images/vraie/plat-cheminee-1280.webp 1280w, /assets/images/vraie/plat-cheminee-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="853" loading="lazy" decoding="async">
   </picture>
 </figure><figure class="media dates__img" data-dates-image="vraie/coupe-cheminee" style="--cadrage:50% 45%">
   <picture>
@@ -215,7 +240,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       </li><li class="agd__date" id="date-libanaise" data-debut="2026-12-19" data-type="Soirée" data-image="vraie/salle-soir" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-19&amp;service=soir#formulaire">
         <h3 class="agd__titre">Soirée libanaise</h3>
         <p class="agd__texte" data-prix>49 € hors boissons</p>
-      </li><li class="agd__date" id="date-noel" data-debut="2026-12-25" data-type="Fête" data-image="vraie/dessert-cheminee" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-25&amp;service=midi#formulaire">
+      </li><li class="agd__date" id="date-noel" data-debut="2026-12-25" data-type="Fête" data-image="vraie/plat-cheminee" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-25&amp;service=midi#formulaire">
         <h3 class="agd__titre">Le menu de Noël</h3>
         <p class="agd__texte" data-prix>79 € par personne, hors boissons</p>
         <p class="agd__texte"><a href="#noel" data-sans-transition>Voir le menu</a></p>
@@ -278,6 +303,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <section class="ss" id="saint-sylvestre" data-saison-seul="hiver" data-ss data-accord="oui" aria-labelledby="ss-titre">
   <span class="sylvestre__pluie" aria-hidden="true"><span style="--x:6%;--y:12%;--d:0s"></span><span style="--x:14%;--y:70%;--d:-1.2s"></span><span style="--x:22%;--y:30%;--d:-2.1s"></span><span style="--x:31%;--y:85%;--d:-0.6s"></span><span style="--x:39%;--y:8%;--d:-1.7s"></span><span style="--x:47%;--y:55%;--d:-2.6s"></span><span style="--x:56%;--y:22%;--d:-0.3s"></span><span style="--x:63%;--y:78%;--d:-1.4s"></span><span style="--x:71%;--y:40%;--d:-2.2s"></span><span style="--x:79%;--y:10%;--d:-0.9s"></span><span style="--x:86%;--y:64%;--d:-1.9s"></span><span style="--x:93%;--y:33%;--d:-2.8s"></span><span style="--x:10%;--y:48%;--d:-3.1s"></span><span style="--x:52%;--y:92%;--d:-0.5s"></span><span style="--x:88%;--y:90%;--d:-2.4s"></span></span>
   <div class="ss__collant">
+    <div class="ss__minuit" data-ss-minuit aria-hidden="true" data-audit-ignorer></div>
     <div class="conteneur ss__grille">
       <div class="ss__tete">
         <p class="surtitre">Jeudi 31 décembre, le soir</p>
@@ -481,11 +507,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <div class="pied2__bloc">
       <p class="pied2__t">Suivez-nous</p>
       <p class="pied2__reseaux"><a class="pied2__reseau" href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener" aria-label="Instagram (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a><a class="pied2__reseau" href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener" aria-label="Facebook (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M13.4 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.6-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21z"/></svg><span>Facebook</span></a></p>
-      <p class="pied2__t pied2__t--confort">Confort de lecture</p>
-      <ul class="pied2__confort">
-        <li><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></li>
-        <li><a class="pied2__haut" href="#haut" data-sans-transition><span class="pied2__haut-icone"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span>Retour en haut</a></li>
-      </ul>
+      <p class="pied2__haut-ligne"><a class="pied2__haut" href="#haut" data-sans-transition><span class="pied2__haut-icone"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span>Retour en haut</a></p>
     </div>
   </div>
   <p class="pied2__marque" aria-hidden="true" data-pied-marque>Les Jardins de l&#39;Hacienda</p>

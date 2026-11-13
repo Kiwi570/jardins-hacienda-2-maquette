@@ -106,7 +106,7 @@ const TAILLES_NORMAL = ordi(COMPLET ? TAILLES : (RAPIDE ? ['390×844', '844×390
 const TAILLES_AUTRES = ordi(COMPLET ? TAILLES : (RAPIDE ? ['390×844'] : ['390×844', '1366×768']).map(T));
 /* En plus, hors audit complet : les cas qui faisaient échouer les audits complets de fin de projet
    (en-tête sans JavaScript sur petit téléphone, scènes trop hautes en mode calme à l'horizontale). */
-const CAS_EN_PLUS = (COMPLET || ORDI) ? [] : (RAPIDE ? [['320×568', 'sansJs']] : [['320×568', 'sansJs'], ['844×390', 'calme']]).map(([n, m]) => [T(n), m]);
+const CAS_EN_PLUS = (COMPLET || ORDI) ? [] : (RAPIDE ? [['320×568', 'sansJs']] : [['320×568', 'sansJs'], ['844×390', config.sansModeCalme ? 'sansWebgl' : 'calme']]).map(([n, m]) => [T(n), m]);
 const TAILLES_EPINGLE = (COMPLET ? ['1000×560', '1024×640', '1280×720', '1366×768', '1440×900', '1728×1000', '1920×1080', '2560×1440']
   : RAPIDE ? ['1000×560', '1366×768'] : ['1000×560', '1280×720', '1366×768', '1440×900', '1920×1080'])
   .map((n) => T(n) || { nom: n, w: +n.split('×')[0], h: +n.split('×')[1], tactile: false });
@@ -324,7 +324,7 @@ await tache('mesures', async () => {
   const travaux = [];
   for (const p of PAGES) {
     for (const t of TAILLES_NORMAL) travaux.push([p, t, 'normal']);
-    for (const t of TAILLES_AUTRES) for (const m of ['calme', 'sansWebgl', 'sansJs']) travaux.push([p, t, m]);
+    for (const t of TAILLES_AUTRES) for (const m of (config.sansModeCalme ? ['sansWebgl', 'sansJs'] : ['calme', 'sansWebgl', 'sansJs'])) travaux.push([p, t, m]);
     for (const [t, m] of CAS_EN_PLUS) travaux.push([p, t, m]);
   }
   let i = 0;
@@ -998,6 +998,8 @@ await tache('parcours:hauteur', async () => {
 });
 
 await tache('parcours:calme', async () => {
+  /* v7.5.15 : plus de mode calme dans les maquettes (décision du 12 novembre 2026, skill v10.11) : rien à vérifier. */
+  if (config.sansModeCalme) { R.info('Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.'); return; }
   for (const taille of ['390×844', '1366×768'].map(T)) {
     for (const p of PAGES_TYPES) {
       const { ctx, page, erreurs } = await contexte({ taille, mode: 'calme' });

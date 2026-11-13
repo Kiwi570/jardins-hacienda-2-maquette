@@ -2,14 +2,15 @@
    (html[data-moment], posé avant le premier affichage). L'ouverture est une scène à elle : l'ardoise de la semaine, écrite à
    la craie (module ardoise-a-la-craie) ; la bascule midi/soir efface l'ardoise au chiffon et la réécrit, et rallume la page.
    Puis la carte complète (module carte-du-restaurant, rendu ici depuis donnees/carte.json), la passe où une vraie
-   assiette du chef se dresse au défilement (module assiette-qui-se-dresse, couches tirées de la photo du site), la fin. */
-import { html, brut, fragment } from '../../outils/gabarit.mjs';
+   assiette du chef se dresse au défilement (module assiette-qui-se-dresse, couches tirées de la photo du site). v7.5.15 :
+   l'ancienne fin « Une table vous attend » est retirée, l'invitation du pied de page la remplace (plus de doublon). */
+import { html, brut, fragment, texteBrut } from '../../outils/gabarit.mjs';
 import { rendreCarte } from '../../assets/js/modules/carte-du-restaurant/carte-rendu.js';
 
 export const page = { cle: 'la-carte', fichier: 'la-carte', theme: 'jour', themeAuto: true, imagePartage: 'grok/assiette-midi-640.webp', modules: ['ardoise-a-la-craie', 'carte-du-restaurant', 'assiette-qui-se-dresse'] };
 
 /* La passe : la vraie photo d'une assiette du chef, découpée en couches (chacune posée au défilement sur la même
-   assiette, floue et dans l'ombre, puis la photo nette) ; positions en % de la photo (centre de chaque couche). */
+   assiette encore dans l’ombre, nette (v7.5.15 : plus de flou), puis la photo en pleine lumière) ; positions en % de la photo. */
 const COUCHES = [
   { nom: 'puree', de: 0, a: 0.18, ox: 33, oy: 69, h: 0.3 },
   { nom: 'viande', de: 0.18, a: 0.36, ox: 35, oy: 28, h: 0.7 },
@@ -20,8 +21,28 @@ const COUCHES = [
 ];
 const TRAIT = '<svg class="ardoise__trait" viewBox="0 0 400 24" preserveAspectRatio="none" aria-hidden="true"><path d="M4 16 C 90 6, 200 22, 396 10" pathLength="1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
 
+/* v7.5.15 · « Toute la carte » : une grande photo fixée à gauche qui change à chaque rubrique (fondu et léger zoom), le numéro,
+   le nom, la fourchette de prix et le nombre de plats posés dessus. Les petites photos des rubriques restent pour le téléphone. */
+const VISUELS = {
+  entrees: { nom: 'vraie/foie-gras-maison', cadrage: '50% 55%' },
+  plats: { nom: 'carte-plats', cadrage: '50% 50%' },
+  partager: { nom: 'carte-partager', cadrage: '50% 50%' },
+  desserts: { nom: 'vraie/coupe-cheminee', cadrage: '45% 40%' },
+};
+function visuelCarte(c) {
+  const rub = c.donnees.carte.rubriques.filter((r) => VISUELS[r.id]);
+  const fourchette = (r) => { const v = r.plats.filter((x) => !/^menu/i.test(x.nom)).map((x) => x.prix).filter((x) => typeof x === 'number'); return v.length ? (Math.min(...v) === Math.max(...v) ? `${Math.min(...v)} €` : `de ${Math.min(...v)} à ${Math.max(...v)} €`) : ''; };
+  return html`<aside class="carte-synchro__visuel" data-carte-visuel data-effet="carte-photo" aria-hidden="true">
+    ${rub.map((r, i) => html`<div class="carte-synchro__img${i ? '' : ' est-active'}" data-carte-image="${r.id}" data-numero="${String(i + 1).padStart(2, '0')}" data-titre="${r.titre}" data-detail="${[fourchette(r), `${r.plats.length} ${r.plats.length > 1 ? 'propositions' : 'proposition'}`].filter(Boolean).join(' · ')}">${c.media({ nom: VISUELS[r.id].nom, alt: '', cadrage: VISUELS[r.id].cadrage, sizes: '(max-width: 1100px) 1px, 40vw' })}</div>`)}
+    <p class="carte-synchro__badge"><span class="carte-synchro__num" data-carte-num>01</span><span class="carte-synchro__nom" data-carte-nom>${rub[0].titre}</span><span class="carte-synchro__detail" data-carte-detail></span></p>
+  </aside>`;
+}
+
 export default (c) => {
-  const carte = rendreCarte(c.donnees.carte).replace(/<figure class="carte-resto__photo">/g, '<figure class="carte-resto__photo" data-fx="vitesse" data-fx-force="3">');
+  const carte = rendreCarte(c.donnees.carte).replace(/<figure class="carte-resto__photo">/g, '<figure class="carte-resto__photo" data-fx="vitesse" data-fx-force="3">')
+    .replace('<div class="carte-resto__corps">', `<div class="carte-resto__corps carte-synchro">${texteBrut(visuelCarte(c))}`)
+    /* La grande photo de gauche sert de visuel à toutes les rubriques sur grand écran (leurs petites photos restent au téléphone). */
+    .replace(/<section class="carte-resto__rubrique"/g, '<section class="carte-resto__rubrique" data-sans-visuel');
   const a = c.donnees.ardoise, j = a.jour;
   const etapes = ['1', '2', '3', '4', '5'].map((n, i) => ({ de: [0, 0.18, 0.36, 0.54, 0.72][i], titre: c.s(`carte.etape${n}Titre`), texte: c.s(`carte.etape${n}Texte`) }));
   return html`
@@ -52,6 +73,8 @@ export default (c) => {
       </div>
       <script type="application/json" data-ardoise>${brut(JSON.stringify(a).replace(/<\//g, '<\\/'))}</script>
       <p class="ouv-carte__lien"><a href="#toute-la-carte" data-sans-transition>${c.t('carte.versCarte')}</a></p>
+      <script type="application/json" data-reservation-accueil>${brut(JSON.stringify(c.donnees.reservation).replace(/<\//g, '<\\/'))}</script>
+      <script type="application/json" data-horaires-accueil>${brut(JSON.stringify(c.donnees.horaires).replace(/<\//g, '<\\/'))}</script>
     </div>
   </div>
 </section>
@@ -75,7 +98,7 @@ ${fragment(carte)}
       <p class="assiette__intro">${c.t('carte.passeTexte')}</p>
     </div>
     <div class="assiette__scene passe__scene" data-tient role="img" aria-label="${c.s('carte.passeScene')}">
-      <div class="assiette__plat passe__fond" aria-hidden="true"><img src="/assets/images/vraie/passe/vide.webp" alt="" width="960" height="960" loading="lazy" decoding="async"></div>
+      <div class="assiette__plat passe__fond" aria-hidden="true"><img src="/assets/images/vraie/passe/ombre.webp" alt="" width="960" height="960" loading="lazy" decoding="async"></div>
       ${COUCHES.map((x) => html`<div class="assiette__element" data-de="${x.de}" data-a="${x.a}" style="--ox:${x.ox}%;--oy:${x.oy}%;--hauteur:${x.h}"><img src="/assets/images/vraie/passe/${x.nom}.webp" alt="" width="960" height="960" loading="lazy" decoding="async"></div>`)}
     </div>
     <ol class="assiette__etapes" data-tient>
@@ -84,16 +107,5 @@ ${fragment(carte)}
   </div>
 </section>
 
-<section class="fin-carte" id="fin" aria-labelledby="fin-titre">
-  ${c.media({ nom: 'vraie/cepes', alt: c.s('carte.finAlt'), cadrage: '47% 44%', classe: 'fin-carte__photo', sizes: '100vw', attrs: 'data-fx="parallaxe" data-fx-force="8"' })}
-  <div class="conteneur fin-carte__texte">
-    <h2 id="fin-titre" data-anime="lignes">${c.t('carte.finTitre')}</h2>
-    <p data-anime>${c.t('carte.finTexte')}</p>
-    <p class="statut"><span class="statut__point" aria-hidden="true"></span><a href="${c.url('infos-pratiques', 'horaires')}" data-libelle="${c.libelle('infos-pratiques')}" data-statut-accueil>${c.t('carte.horaires')}</a></p>
-    <script type="application/json" data-reservation-accueil>${brut(JSON.stringify(c.donnees.reservation).replace(/<\//g, '<\\/'))}</script>
-    <script type="application/json" data-horaires-accueil>${brut(JSON.stringify(c.donnees.horaires).replace(/<\//g, '<\\/'))}</script>
-    <p class="fin-carte__actions">${c.lien('reserver', { ancre: 'formulaire', params: 'service=midi', classe: 'bouton', texte: c.t('carte.reserverJour'), attrs: 'data-moment-seul="jour"' })}${c.lien('reserver', { ancre: 'formulaire', params: 'service=soir', classe: 'bouton', texte: c.t('carte.reserverSoir'), attrs: 'data-moment-seul="soir"' })} <a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
-  </div>
-</section>
 `;
 };

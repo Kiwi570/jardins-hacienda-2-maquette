@@ -1205,7 +1205,7 @@ html:not([data-saison="ete"]) .midi::after { background:
   background: radial-gradient(circle at var(--sx, 72%) var(--sy, 36%), rgba(255, 214, 140, .5) 0, rgba(255, 200, 120, .2) 14%, rgba(255, 200, 120, 0) 32%); }
 .soleil--actif .midi__soleil { opacity: 1; }
 @media (max-width: 760px) { .midi__rayons { inset: -10% -20%; } }
-@media (prefers-reduced-motion: reduce) { .midi__soleil { display: none; } .midi__rayons, .midi__hiver .midi__photo img { animation: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .midi__soleil { display: none; } .midi__rayons, .midi__hiver .midi__photo img { animation: none; } }
 html.calme .midi__rayons, html.calme .midi__hiver .midi__photo img { animation: none; }
 /* Lisibilité sur la photo plus vive : bouton contour plein, statut sur un halo crème. */
 html:not([data-saison="ete"]) .midi .midi__actions .bouton--contour { background: rgba(246, 241, 231, .88); }
@@ -1332,7 +1332,7 @@ html[data-moment="soir"] .midi__saison { background: rgba(18, 12, 9, .66); color
 .offrir-composer .ccq__qte { border-color: rgba(214, 176, 102, .45); }
 .offrir-composer .ccq__total { border-color: rgba(214, 176, 102, .3); }
 .offrir-composer .ccq__total output { color: var(--or-1); }
-@media (prefers-reduced-motion: reduce) { .offrir-composer .ccq__montant span:first-child, .offrir-composer .ccq__devise, .offrir-composer .ccq__reflet::after { animation: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .offrir-composer .ccq__montant span:first-child, .offrir-composer .ccq__devise, .offrir-composer .ccq__reflet::after { animation: none; } }
 html.calme .offrir-composer :is(.ccq__montant span:first-child, .ccq__devise, .ccq__reflet::after) { animation: none; }
 
 /* ===================================================================================================
@@ -1358,7 +1358,7 @@ html.calme .offrir-composer :is(.ccq__montant span:first-child, .ccq__devise, .c
 #midi .midi__hiver .midi__photo { animation: heros-derive 40s ease-in-out 2.6s infinite alternate both; }
 .heros.est-en-pause .midi__photo, .heros.est-en-pause .midi__photo img, .heros.est-en-pause .midi__rayons { animation-play-state: paused !important; }
 html.calme #midi .midi__photo { animation: none; }
-@media (prefers-reduced-motion: reduce) { #midi .midi__photo { animation: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { #midi .midi__photo { animation: none; } }
 .heros__pause { position: absolute; z-index: 4; top: calc(var(--entete-h) + 16px); right: var(--gouttiere); width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border-radius: 50%; border: 1px solid rgba(246, 239, 226, .6); background: rgba(20, 13, 9, .4); color: #f6efe2; cursor: pointer; transition: background .25s; }
 .heros__pause:hover { background: rgba(20, 13, 9, .65); }
 .heros__pause:focus-visible { outline: 3px solid #f6efe2; outline-offset: 3px; }
@@ -1688,7 +1688,7 @@ html.js:not(.calme):not(.secours) .chef__table.est-arrivee .etiquette { animatio
 .sceau__logo { width: 38%; aspect-ratio: 480 / 448; background: #e9cf8e; -webkit-mask: url(/assets/images/logo-480.webp) center / contain no-repeat; mask: url(/assets/images/logo-480.webp) center / contain no-repeat; }
 @keyframes sceau-tourne { to { transform: rotate(360deg); } }
 html.calme .sceau__texte { animation: none; }
-@media (prefers-reduced-motion: reduce) { .sceau__texte { animation: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .sceau__texte { animation: none; } }
 @media (min-width: 761px) and (max-height: 700px) { .ouv-recep__visuel { width: min(100%, calc(70svh * .8)); } .ouv-recep__texte { display: none; } }
 @media (max-width: 760px) {
   .ouv-recep__grille { grid-template-columns: minmax(0, 1fr); gap: 22px; min-height: 0; padding-top: calc(var(--entete-h) + 18px); }
@@ -1735,7 +1735,7 @@ html[data-saison="ete"] .ouv-fetes { background: radial-gradient(55% 65% at 76% 
 .ouv-fetes__arche img, .ouv-fetes__rond img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
 .ouv-fetes__rond { position: absolute; left: -12%; bottom: 8%; width: 38%; aspect-ratio: 1; overflow: hidden; border-radius: 50%; box-shadow: 0 0 0 6px #0b2529, 0 0 0 7px rgba(127, 211, 217, .5), 0 26px 40px -18px rgba(0, 0, 0, .7); }
 html.calme .ouv-fetes__lueurs, html.calme .affiche { animation: none; }
-@media (prefers-reduced-motion: reduce) { .ouv-fetes__lueurs, .affiche { animation: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .ouv-fetes__lueurs, .affiche { animation: none; } }
 @media (min-width: 761px) and (max-height: 700px) { .ouv-fetes__visuel { width: min(100%, 66svh); } .ouv-fetes .ouv-fetes__texte { display: none; } }
 @media (max-width: 760px) {
   .ouv-fetes__grille { grid-template-columns: minmax(0, 1fr); gap: 20px; min-height: 0; padding-top: calc(var(--entete-h) + 16px); }
@@ -1836,7 +1836,7 @@ html.js:not(.calme):not(.secours) [data-venir] .venir__trait { transition: strok
 html.js:not(.calme):not(.secours) [data-venir] .venir__ville { transition: opacity .5s ease calc(.9s + var(--i) * .18s); }
 html.js:not(.calme):not(.secours) [data-venir].est-vu .venir__comete { animation: venir-comete 3.6s ease-in-out calc(1.6s + var(--i) * .9s) infinite; }
 html.calme .venir__onde { animation: none; }
-@media (prefers-reduced-motion: reduce) { .venir__onde, .venir__comete { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .venir__onde, .venir__comete { animation: none !important; } }
 @media (max-width: 860px) { .venir__grille { grid-template-columns: minmax(0, 1fr); } .venir__carte { max-height: 70svh; } }
 
 /* v7.4 · le dos du polaroïd : l'ardoise de la semaine à la craie, dans son cadre de bois, au format de la photo. */
@@ -1897,7 +1897,7 @@ html.calme .venir__onde { animation: none; }
 :is(html.calme, html.secours, html:not(.js)) .noel-scene__cadre { position: relative; height: auto; padding-block: calc(var(--entete-h) + 24px) 64px; }
 :is(html.calme, html.secours, html:not(.js)) .noel-scene__neige span, :is(html.calme, html.secours, html:not(.js)) .noel-carte__brillant { animation: none; display: none; }
 :is(html.calme, html.secours, html:not(.js)) .noel-scene__indice { display: none; }
-@media (prefers-reduced-motion: reduce) { .noel-scene__neige span, .noel-carte__brillant { animation: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .noel-scene__neige span, .noel-carte__brillant { animation: none; } }
 @media (min-width: 761px) and (max-height: 700px) { .noel-scene__intro, .noel-scene__acompte { display: none; } }
 @media (max-width: 760px) {
   .noel-scene { height: 280svh; }
@@ -1946,7 +1946,7 @@ html.calme .venir__onde { animation: none; }
 .sylvestre .ame__scene { position: relative; }
 .sylvestre .ame__scene::after { content: ''; position: absolute; left: 18%; right: 46%; bottom: 6%; height: 26px; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--vin) 45%, transparent), transparent); filter: blur(4px); pointer-events: none; transition: --vin 1.2s; }
 html.calme .sylvestre__pluie span, html.calme .vinyle { animation: none; }
-@media (prefers-reduced-motion: reduce) { .sylvestre__pluie span, .vinyle { animation: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .sylvestre__pluie span, .vinyle { animation: none; } }
 @media (max-width: 760px) { .noel-carte__couverture { opacity: clamp(0, calc(1.7 - var(--ouvre) * 2), 1); } }
 
 /* v7.5 · transitions entre pages aux couleurs du site : le voile est un papier crème, le monogramme terre cuite,
@@ -2066,7 +2066,7 @@ html:not(.js) .ouv-fetes__grille { align-items: start; padding-top: clamp(12px, 
 html:not(.js) .ouv-recep__fil { display: none; }
 :is(html.calme) .ouv-recep__diapo { transition: none; transform: none; }
 :is(html.calme) .ouv-recep__pause { display: none; }
-@media (prefers-reduced-motion: reduce) { .ouv-recep__diapo { transition: opacity .3s; transform: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .ouv-recep__diapo { transition: opacity .3s; transform: none; } }
 /* Le mot le plus long (« un pot de départ ») tient sur la ligne : le titre garde sa hauteur quand le mot change. */
 .ouv-recep .mot-tournant { white-space: nowrap; }
 /* v7.5 · Réceptions, « Ce que l'on fête ici » : le défilement de la « journée à l'Hacienda » (maquette de référence du client),
@@ -2760,7 +2760,7 @@ html.calme .emp-cloche__vapeur .vapeur { animation: none; opacity: .5; transform
 html[data-entete-theme="nuit"] [data-nav] a[aria-current], html[data-theme="nuit"]:not([data-entete-theme="jour"]) [data-nav] a[aria-current] { color: #e2b45e; }
 html[data-entete-theme="nuit"] [data-nav] a::after, html[data-theme="nuit"]:not([data-entete-theme="jour"]) [data-nav] a::after { background: #e2b45e; }
 @media (min-width: 900px) and (max-width: 1150px) { [data-nav] a { font-size: 1.04rem; } }
-@media (prefers-reduced-motion: reduce) { [data-nav] a::after { transition: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { [data-nav] a::after { transition: none; } }
 
 /* v7.5.11 · Traiteur, le tiroir de la commande : un panneau papier qui glisse depuis la droite sur la page assombrie ;
    chaque ligne a la vignette de son plat sur une petite assiette, ses quantités, son prix ; le total et « Choisir le jour
@@ -2808,7 +2808,7 @@ html[data-entete-theme="nuit"] [data-nav] a::after, html[data-theme="nuit"]:not(
 .emp-tiroir__valider[hidden] { display: none; }
 .emp-tiroir__continuer { min-height: 44px; border: 0; background: none; color: #1c1712; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
 .emp-vol-plat { position: fixed; z-index: 5; margin: 0; pointer-events: none; transform-origin: 50% 50%; object-fit: contain; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .35)); }
-@media (prefers-reduced-motion: reduce) { .emp-tiroir__voile, .emp-tiroir__panneau { transition: none; } .emp-tl.est-nouvelle, .emp-tiroir__ajoute { animation: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .emp-tiroir__voile, .emp-tiroir__panneau { transition: none; } .emp-tl.est-nouvelle, .emp-tiroir__ajoute { animation: none; } }
 html.calme .emp-tiroir__voile, html.calme .emp-tiroir__panneau { transition: none; }
 
 /* v7.5.12 · Le panneau en trois étapes : fil Commande · Retrait · Coordonnées, flèche de retour, et le formulaire du
@@ -3027,7 +3027,7 @@ html.calme .ss-verre__bulles circle { animation: none; }
 /* Le menu tient sur une rangée dès 900 px (plus de bascule vers deux rangées au redimensionnement). */
 @media (min-width: 900px) and (max-width: 1000px) { [data-nav] a { font-size: .92rem; } [data-nav] ul { gap: 10px; } .entete-logo span { font-size: .92rem; } }
 /* « Venir » de l'accueil : un peu d'air sous le titre, ses lignes montent sans frôler le texte. */
-#venir-titre { margin-bottom: .55em; }
+#venir-titre { margin-bottom: .8em; }
 
 /* v7.5.14 · Le pied de page : bandeau de vraies photos qui défile (pause au survol), grande invitation avec le statut en
    direct, trois blocs clairs, le nom de la maison en très grand dont les lettres se soulèvent sous la main. */
@@ -3042,7 +3042,7 @@ html.calme .ss-verre__bulles circle { animation: none; }
 .pied2__photo:hover { transform: rotate(0) scale(1.06); }
 .pied2__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
 html.calme .pied2__piste { animation: none; }
-@media (prefers-reduced-motion: reduce) { .pied2__piste { animation: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .pied2__piste { animation: none; } }
 .pied2__appel { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px 48px; padding: clamp(48px, 8vh, 88px) 0 clamp(40px, 6vh, 64px); border-bottom: 1px solid rgba(233, 196, 106, .2); }
 .pied2 .surtitre { color: #e9c46a; }
 .pied2__titre { margin: .15em 0 .3em; font-size: clamp(2.6rem, 1.6rem + 3.6vw, 5.2rem); line-height: 1; color: #fbf4e6; }
@@ -3081,3 +3081,175 @@ html.calme .pied2__statut .statut__point { animation: none; }
 .pied2__bas p { margin: 0; }
 @media (max-width: 960px) { .pied2__grille { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .pied2__grille > :first-child { grid-column: 1 / -1; } }
 @media (max-width: 600px) { .pied2__grille { grid-template-columns: minmax(0, 1fr); } .pied2__photo { width: 160px; } }
+
+/* v7.5.15 · Plus de « Réduire les animations » : le retour en haut seul sous les réseaux ; sans bandeau (Réceptions), l'invitation
+   garde de l'air au-dessus. */
+.pied2__haut-ligne { margin: 22px 0 0; }
+.pied2 > .pied2__appel:first-child { padding-top: clamp(64px, 10vh, 110px); }
+
+/* v7.5.15 · La carte, « Toute la carte » sur grand écran : une grande photo fixée à gauche (fondu enchaîné et léger zoom à
+   chaque rubrique), le numéro, le nom, la fourchette de prix et le nombre de plats posés dessus ; la liste à droite. */
+.carte-synchro__visuel { display: none; }
+@media (min-width: 1100px) {
+  .carte-synchro { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.45fr); column-gap: clamp(36px, 4vw, 72px); row-gap: 0; align-items: start; }
+  .carte-synchro > .carte-resto__rubrique, .carte-synchro > .carte-resto__aucun { grid-column: 2; }
+  .carte-synchro__visuel { display: block; grid-column: 1; grid-row: 1 / span 5; position: sticky; top: calc(var(--entete-h) + var(--carte-barre-h, 64px) + 20px); height: min(calc(100svh - var(--entete-h) - var(--carte-barre-h, 64px) - 44px), 720px); margin-top: clamp(14px, 2vw, 22px); border-radius: 22px; overflow: hidden; background: #2a1d15; box-shadow: 0 34px 70px -38px rgba(28, 23, 18, .65); }
+  .carte-synchro__img { position: absolute; inset: 0; opacity: 0; transform: scale(1.08); transition: opacity .8s ease, transform 2.6s cubic-bezier(.2, .8, .2, 1); }
+  .carte-synchro__img.est-active { opacity: 1; transform: scale(1); }
+  .carte-synchro__img .media, .carte-synchro__img picture, .carte-synchro__img img { display: block; width: 100%; height: 100%; margin: 0; object-fit: cover; object-position: var(--cadrage); }
+  .carte-synchro__visuel::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(18, 12, 9, .8) 0%, rgba(18, 12, 9, .3) 32%, rgba(18, 12, 9, 0) 55%); pointer-events: none; }
+  .carte-synchro__badge { position: absolute; z-index: 2; left: clamp(22px, 2.4vw, 34px); right: clamp(22px, 2.4vw, 34px); bottom: clamp(20px, 2.6vw, 34px); margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: end; column-gap: 18px; color: #f6efe2; }
+  .carte-synchro__num { grid-row: span 2; font-family: var(--police-titres); font-size: clamp(3.6rem, 2.4rem + 3vw, 6rem); line-height: .82; color: #f3d98f; font-variant-numeric: tabular-nums; }
+  .carte-synchro__nom { font-family: var(--police-titres); font-style: italic; font-weight: 600; font-size: clamp(1.7rem, 1.2rem + 1.2vw, 2.5rem); line-height: 1.05; }
+  .carte-synchro__detail { font-size: .95rem; font-weight: 600; color: rgba(246, 239, 226, .86); }
+  .carte-synchro .carte-resto__rubrique { grid-template-columns: minmax(0, 1fr); }
+  .carte-synchro .carte-resto__photo { display: none; }
+  .carte-synchro .carte-resto__rubrique::before, .carte-synchro .carte-resto__rubrique-titre, .carte-synchro .carte-resto__rubrique-note, .carte-synchro .carte-resto__plats { grid-column: 1; }
+  .carte-synchro .carte-resto__rubrique.est-lue::before { box-shadow: inset 4px 0 0 var(--rouge), 0 22px 44px -34px rgba(28, 23, 18, .4); }
+}
+
+/* v7.5.15 · Traiteur, « Le calendrier du retrait » : un calendrier de l'Avent du 5 au 31 décembre. Panneau laqué rouge cerclé
+   d'or ; chaque case a sa porte de papier crème numérotée qui s'ouvre en cascade à l'arrivée ; derrière, la lumière dorée et
+   le midi, le soir, ou « Fermé ». Le jour touché s'illumine (« Votre jour ») et devient le jour de retrait de la commande. */
+.avent { position: relative; padding-block: clamp(70px, 11vh, 130px); color: #f6efe2; background: radial-gradient(55% 60% at 75% 40%, rgba(184, 50, 44, .22), rgba(184, 50, 44, 0) 70%), #120c09; }
+.avent__tete { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px clamp(32px, 5vw, 80px); align-items: end; margin-bottom: clamp(30px, 5vh, 54px); }
+.avent .surtitre { color: #e9c46a; }
+.avent__titre { margin: .1em 0 0; font-size: clamp(2.6rem, 1.6rem + 3.4vw, 4.8rem); line-height: 1; color: #fbf4e6; }
+.avent__titre em { font-style: italic; color: #e9c46a; }
+.avent__intro > p { margin: 0 0 .9em; color: rgba(246, 239, 226, .86); max-width: 34em; }
+.avent__intro > p:last-child { margin-bottom: 0; }
+.avent__choix { font-weight: 700; color: #f3d98f !important; min-height: 1.6em; }
+.avent__mur { position: relative; padding: clamp(18px, 2.4vw, 32px); border-radius: 28px; background: radial-gradient(circle at 18% 22%, rgba(243, 217, 143, .14) 0 1.5px, transparent 2px) 0 0 / 46px 46px, radial-gradient(circle at 62% 70%, rgba(243, 217, 143, .1) 0 1px, transparent 1.6px) 0 0 / 34px 34px, linear-gradient(160deg, #6a1c16, #3d0e0b 70%); box-shadow: inset 0 0 0 2px rgba(233, 196, 106, .55), inset 0 0 0 9px rgba(61, 14, 11, .9), inset 0 0 0 10px rgba(233, 196, 106, .28), 0 50px 90px -50px rgba(0, 0, 0, .9); }
+.avent__cases { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: clamp(10px, 1.2vw, 16px); margin: 0; padding: 0; list-style: none; }
+.avent__case { position: relative; aspect-ratio: 4 / 5; perspective: 900px; }
+.avent__cellule { position: relative; display: flex; flex-direction: column; justify-content: space-between; width: 100%; height: 100%; padding: 10px 14px 11px 12px; border: 0; border-radius: 12px; font: inherit; text-align: left; color: #3d1a0e; background: radial-gradient(120% 85% at 50% 18%, #fff6dc 0%, #f6dc93 42%, #d9a043 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5), 0 10px 22px -14px rgba(0, 0, 0, .9); transition: transform .35s cubic-bezier(.2, 1.4, .4, 1), box-shadow .35s; }
+button.avent__cellule { cursor: pointer; }
+button.avent__cellule:hover { transform: translateY(-4px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .6), 0 0 0 3px rgba(243, 217, 143, .55), 0 18px 30px -16px rgba(0, 0, 0, .9); }
+button.avent__cellule:focus-visible { outline: 3px solid #fbf4e6; outline-offset: 3px; }
+.avent__date { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; }
+.avent__sem { font-size: .82rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.avent__jour { font-family: var(--police-titres); font-weight: 600; font-size: clamp(1.4rem, 1rem + .9vw, 2rem); line-height: 1; }
+.avent__services { display: flex; flex-wrap: wrap; gap: 4px; }
+.avent__service { padding: .22em .55em; border-radius: 999px; background: #7a1f1a; color: #fbf4e6; font-size: .82rem; font-weight: 700; line-height: 1.2; }
+.avent__votre { position: absolute; left: 50%; top: 42%; translate: -50% -50%; padding: .25em .6em; border-radius: 999px; background: #fbf4e6; color: #7a1f1a; font-size: .82rem; font-weight: 800; white-space: nowrap; opacity: 0; scale: .6; transition: opacity .3s, scale .45s cubic-bezier(.2, 1.4, .4, 1); pointer-events: none; }
+.est-ferme .avent__cellule { color: rgba(246, 239, 226, .8); background: radial-gradient(120% 85% at 50% 18%, #3a2a20, #1e1510 80%); box-shadow: inset 0 0 0 1px rgba(246, 239, 226, .12); }
+.avent__ferme { font-size: .85rem; font-weight: 700; letter-spacing: .04em; color: rgba(246, 239, 226, .82); }
+.avent__porte { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; border-radius: 12px; background: repeating-linear-gradient(135deg, rgba(122, 31, 26, .05) 0 6px, rgba(122, 31, 26, 0) 6px 12px), #f6efe2; box-shadow: inset 0 0 0 5px #f6efe2, inset 0 0 0 6px rgba(184, 140, 60, .7), 0 8px 18px -10px rgba(0, 0, 0, .8); transform-origin: 0 50%; backface-visibility: visible; pointer-events: none; will-change: transform; transition: transform 1s cubic-bezier(.2, .8, .2, 1) calc(var(--i) * 55ms); }
+.avent__porte-num { font-family: var(--police-titres); font-weight: 600; font-size: clamp(1.8rem, 1.2rem + 1.4vw, 2.8rem); color: #7a1f1a; transition: opacity .3s calc(var(--i) * 55ms + .25s); }
+.avent.est-ouvert .avent__porte-num, html:not(.js) .avent__porte-num { opacity: 0; }
+.avent.est-ouvert .avent__porte, html:not(.js) .avent__porte { transform: rotateY(-95deg); }
+.avent__case.est-choisi .avent__cellule { box-shadow: inset 0 0 0 2px #fff, 0 0 0 3px #f3d98f, 0 0 34px 6px rgba(243, 217, 143, .55); transform: translateY(-4px); }
+.avent__case.est-choisi .avent__votre { opacity: 1; scale: 1; }
+.avent__case.est-passe .avent__cellule { opacity: .45; cursor: default; }
+.avent__eclat { position: absolute; z-index: 3; left: 50%; top: 45%; width: 7px; height: 7px; margin: -3.5px; border-radius: 50%; background: #fff3c4; box-shadow: 0 0 10px 2px rgba(243, 217, 143, .9); pointer-events: none; }
+@media (max-width: 1100px) { .avent__cases { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
+@media (max-width: 860px) { .avent__tete { grid-template-columns: minmax(0, 1fr); } .avent__cases { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* v7.5.15 · Évènements, les affiches à prendre en main : plus grandes ; elles s'inclinent vers la souris avec un reflet qui la
+   suit, s'attrapent (elles se soulèvent et suivent la main, puis reviennent en douceur) et se retournent : au dos, le menu. */
+@media (min-width: 861px) { .ouv-fetes__visuel[data-grille] { width: min(100%, 640px); } }
+.affiche { overflow: visible; border-radius: 0; box-shadow: none; background: none; }
+.affiche:hover, .affiche:focus-within { box-shadow: none; }
+.affiche__main { position: absolute; inset: 0; perspective: 1300px; transform: translate3d(var(--dx, 0px), var(--dy, 0px), 0) rotate(var(--dr, 0deg)) scale(var(--ds, 1)); transition: transform .9s cubic-bezier(.2, 1.3, .35, 1); }
+.affiche.est-tenue { z-index: 5; }
+.affiche.est-tenue .affiche__main { --ds: 1.06; transition: transform .08s linear; cursor: grabbing; }
+.affiche__pivot { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(var(--rx, 0deg)) rotateY(calc(var(--ry, 0deg) + var(--flip, 0deg))); transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+.affiche.est-retournee .affiche__pivot { --flip: 180deg; transition: transform 1s cubic-bezier(.3, 1.2, .4, 1); }
+.affiche__face { position: absolute; inset: 0; display: block; border-radius: 10px; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 40px 70px -34px rgba(0, 0, 0, .9), 0 0 0 1px rgba(233, 207, 142, .35); }
+.affiche__face--avant { cursor: grab; touch-action: pan-y; -webkit-user-drag: none; user-select: none; }
+.affiche__face--avant img { pointer-events: none; }
+.affiche.est-tenue .affiche__face { box-shadow: 0 70px 90px -40px rgba(0, 0, 0, .95), 0 0 0 1px rgba(233, 207, 142, .7), 0 0 70px rgba(240, 160, 80, .3); }
+.affiche__face--avant:focus-visible { outline: 3px solid #e9cf8e; outline-offset: 4px; }
+.affiche__reflet { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(42% 36% at var(--mx, 50%) var(--my, 30%), rgba(255, 246, 220, .42), rgba(255, 246, 220, 0) 70%); transition: opacity .4s; }
+.affiche:hover .affiche__reflet, .affiche.est-tenue .affiche__reflet { opacity: 1; }
+.affiche__face--dos { transform: rotateY(180deg); display: flex; flex-direction: column; padding: clamp(16px, 1.8vw, 24px); visibility: hidden; color: #3d1a0e; background: radial-gradient(90% 60% at 50% 0%, #fffaf0, #f3e7cf 70%), #f3e7cf; box-shadow: inset 0 0 0 6px #f3e7cf, inset 0 0 0 7px rgba(184, 140, 60, .65), 0 40px 70px -34px rgba(0, 0, 0, .9); transition: visibility 0s .5s; }
+.affiche.est-retournee .affiche__face--dos { visibility: visible; transition: visibility 0s .25s; }
+.affiche__dos-sur { margin: 0; font-size: .82rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #9a3a22; }
+.affiche__dos-titre { margin: .2em 0 .5em; font-family: var(--police-titres); font-style: italic; font-weight: 600; font-size: clamp(1.4rem, 1rem + 1vw, 1.9rem); line-height: 1.05; color: #7a1f1a; }
+.affiche__plats { flex: 1; display: grid; align-content: start; gap: .45em; margin: 0; padding: 0 0 0 1.1em; font-size: .95rem; line-height: 1.2; }
+.affiche__plats li::marker { color: #b8862e; font-weight: 700; }
+.affiche__plats span { font-family: var(--police-titres); font-weight: 600; }
+.affiche__plats small { display: block; font-size: .82rem; color: #5a4636; }
+.affiche__prix { margin: .6em 0 .5em; font-size: .9rem; color: #3d1a0e; }
+.affiche__prix strong { font-family: var(--police-titres); font-size: 1.15em; color: #7a1f1a; }
+.affiche__dos-actions { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 0; font-size: .9rem; font-weight: 700; }
+.affiche__dos-actions a { color: #7a1f1a; }
+.affiche__dos-actions button { padding: 0; border: 0; background: none; font: inherit; color: #5a4636; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.affiche--sylvestre .affiche__plats { gap: .28em; font-size: .9rem; }
+.affiche--sylvestre .affiche__dos-titre { margin-bottom: .35em; }
+.affiche--sylvestre .affiche__prix { margin: .45em 0 .35em; }
+.affiche.est-indice .affiche__pivot { animation: affiche-indice 1.6s cubic-bezier(.3, .8, .3, 1); }
+@keyframes affiche-indice { 0% { transform: rotateY(0); } 35% { transform: rotateY(-38deg) rotateX(6deg); } 70% { transform: rotateY(12deg); } 100% { transform: rotateY(0); } }
+.affiches__indice { position: absolute; left: 50%; bottom: -6%; translate: -50% 0; margin: 0; white-space: nowrap; }
+html:not(.js) .affiche__face--dos { display: none; }
+
+/* v7.5.15 · Saint-Sylvestre, minuit au dessert : pluie d'or (paillettes et rubans) sur toute la scène, ondes dorées depuis le
+   verre, bulles plus rapides. Aucun éclair : des chutes lentes, une seule fois à chaque arrivée sur le dessert. */
+.ss__collant { position: relative; }
+.ss__minuit { position: absolute; inset: 0; z-index: 3; overflow: hidden; pointer-events: none; }
+.ss__or { position: absolute; top: -4%; left: var(--x); width: calc(7px * var(--s)); height: calc(7px * var(--s)); border-radius: 50%; background: var(--c); box-shadow: 0 0 8px 1px rgba(243, 217, 143, .55); opacity: 0; animation: ss-tombe var(--t) cubic-bezier(.3, .2, .6, 1) var(--r) forwards; }
+.ss__or--ruban { width: calc(4px * var(--s)); height: calc(15px * var(--s)); border-radius: 2px; }
+@keyframes ss-tombe { 0% { opacity: 0; transform: translate(0, 0) rotate(0); } 10% { opacity: 1; } 50% { transform: translate(var(--b), 55svh) rotate(260deg); } 85% { opacity: .9; } 100% { opacity: 0; transform: translate(calc(var(--b) * -.6), 108svh) rotate(540deg); } }
+.ss__onde { position: absolute; left: 50%; top: 32%; width: 160px; height: 160px; margin: -80px 0 0 -80px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(243, 217, 143, .55), 0 0 30px rgba(243, 217, 143, .25); opacity: 0; pointer-events: none; animation: ss-onde 2.2s cubic-bezier(.2, .7, .3, 1) forwards; }
+@keyframes ss-onde { 0% { opacity: .8; transform: scale(.5); } 100% { opacity: 0; transform: scale(2.6); } }
+.ss.est-minuit .ss-verre__bulles circle { animation-duration: 1.1s; }
+
+/* v7.5.15 · Réceptions, « Ce que l'on fête ici » : dans son palier, la photo de chaque fête part de sa carte et grandit jusqu'à
+   occuper toute la moitié droite de l'écran, bord à bord (photos en portrait : la pleine largeur les aurait agrandies au-delà
+   de leur définition) ; le texte reste à gauche, sur la couleur de la fête. --g (0 à 1) vient du défilement. */
+@media (min-width: 861px) {
+  html.js:not(.calme) .fetes-defile { height: calc(5 * 100svh); }
+  html.js:not(.calme) .occ__cadre { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  html.js:not(.calme) .occ .occ__image { --h: min(64svh, 620px); --ix: max(0px, calc((50vw - var(--h) * .8) / 2)); --iy: calc((100svh - var(--h)) / 2); --dy: calc(var(--entete-h, 64px) / 2); --k: calc(1 - var(--g, 0));
+    position: absolute; z-index: 0; top: 0; bottom: 0; left: 50%; right: 0; place-self: stretch; grid-area: auto; width: auto; height: auto; max-height: none; aspect-ratio: auto; border-radius: 0; box-shadow: none;
+    clip-path: inset(calc((var(--iy) + var(--dy)) * var(--k) + 40px) calc(var(--ix) * var(--k) + 40px) calc((var(--iy) - var(--dy)) * var(--k) + 40px) calc(var(--ix) * var(--k) + 40px) round calc(22px * var(--k)));
+    transition: clip-path .45s cubic-bezier(.2, .7, .2, 1); }
+  html.js:not(.calme) .occ.est-active .occ__image { clip-path: inset(calc((var(--iy) + var(--dy)) * var(--k)) calc(var(--ix) * var(--k)) calc((var(--iy) - var(--dy)) * var(--k)) calc(var(--ix) * var(--k)) round calc(22px * var(--k))); }
+  html.js:not(.calme) .occ .occ__image img { transform: scale(calc(1.06 - .06 * var(--g, 0))); }
+  html.js:not(.calme) .occ__mot, html.js:not(.calme) .occ__texte { position: relative; z-index: 1; }
+  html.js:not(.calme) .fetes-defile__points { left: var(--gouttiere); right: auto; }
+}
+
+/* v7.5.15 · Offrir, la carte cadeau en vrai objet : la salle au soleil de midi derrière ; la carte se redresse au défilement,
+   s'incline vers la souris avec un reflet doré qui la suit, et se retourne d'un toucher (au dos, la place du mot écrit à
+   la main, dans l'écriture manuscrite du site). */
+.cca__objet { position: relative; transform-style: preserve-3d; transform: rotateY(calc(var(--ry, -14deg) + var(--px, 0deg) + var(--flip, 0deg))) rotateX(calc(var(--rx, 6deg) + var(--py, 0deg))); transition: --flip 0s; }
+.cca__objet .cca__face { position: relative; overflow: hidden; transform: none; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.cca__brillance { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(38% 46% at var(--mx, 30%) var(--my, 25%), rgba(255, 250, 230, .7), rgba(255, 250, 230, 0) 70%), linear-gradient(115deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, .28) calc(var(--mx, 30%) + 8%), rgba(255, 255, 255, 0) calc(var(--mx, 30%) + 24%)); opacity: .55; transition: opacity .4s; }
+.carte-cadeau-apercu:hover .cca__brillance { opacity: 1; }
+.cca__dos { position: absolute; inset: 0; display: grid; align-content: space-between; padding: 20px 24px; border-radius: 12px; color: #3d1a0e; background: repeating-linear-gradient(0deg, rgba(122, 31, 26, .07) 0 1px, transparent 1px 30px) 0 58px / 100% 100% no-repeat, linear-gradient(135deg, #fbf3e0, #f1e2c2); box-shadow: inset 0 0 0 6px #f6ead0, inset 0 0 0 7px rgba(184, 134, 47, .7), 0 30px 60px rgba(0, 0, 0, .45); transform: rotateY(180deg); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.cca__dos-sur { margin: 0; font-size: .82rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #9a3a22; }
+.cca__dos-mot { margin: 0; font-family: 'Caveat', cursive; font-size: clamp(1.6rem, 1.1rem + 1.2vw, 2.2rem); line-height: 1.15; color: #2f2a6b; rotate: -2deg; }
+.cca__dos-bas { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin: 0; font-size: .82rem; font-weight: 600; }
+.cca__dos-signe { font-family: var(--police-titres); font-style: italic; font-size: 1rem; color: #7a1f1a; }
+.cca__retourner { position: absolute; inset: 0; z-index: 3; border: 0; border-radius: 12px; background: transparent; cursor: pointer; }
+.cca__retourner:focus-visible { outline: 3px solid #f3d98f; outline-offset: 6px; }
+.carte-cadeau-apercu.est-retournee .cca__objet { --flip: 180deg; }
+.carte-cadeau-apercu .cca__objet { transition: transform .25s ease-out; }
+.carte-cadeau-apercu.est-tourne .cca__objet { transition: transform 1s cubic-bezier(.3, 1.25, .4, 1); }
+.ouv-offrir::after { background: linear-gradient(90deg, rgba(18, 12, 9, .9), rgba(18, 12, 9, .62) 48%, rgba(18, 12, 9, .12) 80%); }
+html:not(.js) .cca__dos, html:not(.js) .cca__retourner { display: none; }
+
+/* v7.5.15 · Réserver, la table s'allume : à la confirmation, la salle du plan baisse la lumière, la table choisie garde la
+   sienne (halo doré qui respire), une bougie s'allume sous le carton « Réservé » (flamme qui vacille, lueur au sol). */
+.pds.est-allume .pds__t:not(.est-choisie) { opacity: .38; }
+.pds.est-allume .pds__t.est-choisie .pds__plateau { fill: #e9c46a; transition: fill .8s; }
+.pds.est-allume .pds__t.est-choisie .pds__anneau { stroke: #f3d98f; animation-duration: 2.6s; }
+.pds__repere.est-reserve .pds__repere-tige { height: clamp(20px, 3.4vw, 36px); width: 1px; opacity: .5; }
+.pds__repere.est-reserve .pds__repere-pied { position: relative; width: 12px; height: 26px; margin-bottom: 0; border-radius: 3px 3px 2px 2px; background: linear-gradient(90deg, #e6d9bf, #fffaf0 45%, #d6c6a6); box-shadow: 0 0 0 0 transparent; }
+.pds__repere.est-reserve .pds__repere-pied::before { content: ''; position: absolute; left: 50%; bottom: 100%; width: 11px; height: 20px; margin: 0 0 1px -5.5px; border-radius: 50% 50% 46% 46% / 62% 62% 38% 38%; background: radial-gradient(circle at 50% 72%, #fffbe0 0 18%, #ffd25e 40%, #ff8a1f 72%, rgba(255, 138, 31, 0) 100%); box-shadow: 0 0 16px 6px rgba(255, 176, 64, .6), 0 0 44px 16px rgba(255, 150, 40, .25); transform-origin: 50% 100%; animation: bougie-flamme 1.3s ease-in-out infinite alternate; }
+.pds__repere.est-reserve .pds__repere-pied::after { content: ''; position: absolute; left: 50%; bottom: -14px; width: 120px; height: 44px; margin-left: -60px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 184, 80, .55), rgba(255, 184, 80, 0)); animation: bougie-lueur 2.6s ease-in-out infinite alternate; pointer-events: none; }
+@keyframes bougie-flamme { 0% { transform: scale(1, 1) rotate(-2deg); } 50% { transform: scale(.92, 1.08) rotate(2deg); } 100% { transform: scale(1.04, .95) rotate(-1deg); } }
+@keyframes bougie-lueur { from { opacity: .75; transform: scale(.95); } to { opacity: 1; transform: scale(1.06); } }
+.placement__voir { margin: 10px 0 0; font-weight: 700; }
+.placement__voir a { color: inherit; text-underline-offset: 4px; }
+
+/* v7.5.15 · Fluidité de « Recevoir, le soir venu » : les deux images du soir sur leur propre couche (le fondu ne repeint rien). */
+html.js:not(.calme) .terrasse:not(.terrasse--clin) :is(.terrasse__img--2, .terrasse__img--3) { will-change: opacity; }
+
+/* v7.5.15 · Petits écrans : l'ouverture d'Offrir (photo claire) garde un voile sombre sous tout le texte ; le nom de la maison
+   du pied de page passe à la ligne au lieu de sortir de l'écran. */
+@media (max-width: 760px) {
+  .ouv-offrir::after { background: linear-gradient(0deg, rgba(18, 12, 9, .94) 0%, rgba(18, 12, 9, .82) 55%, rgba(18, 12, 9, .55)); }
+  .pied2__marque { white-space: normal; font-size: 13.5vw; line-height: 1; }
+}

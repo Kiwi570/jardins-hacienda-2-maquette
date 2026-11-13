@@ -52,6 +52,6 @@
 .rdl.est-couvre .rdl__passer { visibility: hidden; }
 
 /* Réduire les animations et mode calme : pas de rideau du tout, la page est là. */
-@media (prefers-reduced-motion: reduce) { .rdl { display: none; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 0px) { .rdl { display: none; } }
 html.calme .rdl { display: none; }
 @media print { .rdl { display: none; } }

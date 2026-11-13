@@ -8,6 +8,26 @@ import { html, brut } from '../../outils/gabarit.mjs';
 
 export const page = { cle: 'les-fetes', fichier: 'les-fetes', theme: 'nuit', imagePartage: 'vraie/affiche-sylvestre-960.webp', modules: ['agenda-des-dates'] };
 
+/* v7.5.15 · Les deux vraies affiches de l'ouverture se prennent en main : elles s'inclinent vers la souris (reflet qui suit),
+   s'attrapent et se déplacent puis reviennent à leur place, et se retournent d'un clic : au dos, le menu en texte lisible, le
+   prix et le lien vers la section. Sans JavaScript : l'affiche mène à sa section, le dos n'existe pas. */
+function affiche(c, o) {
+  return html`<div class="affiche affiche--${o.cle}" data-affiche>
+    <div class="affiche__main">
+      <div class="affiche__pivot">
+        <a class="affiche__face affiche__face--avant" href="#${o.ancre}" data-sans-transition data-affiche-avant aria-label="${o.label}" aria-expanded="false" aria-controls="dos-${o.cle}">${o.photo}<span class="affiche__reflet" aria-hidden="true"></span></a>
+        <div class="affiche__face affiche__face--dos" id="dos-${o.cle}" data-face="dos" aria-hidden="true">
+          <p class="affiche__dos-sur">${o.sur}</p>
+          <p class="affiche__dos-titre">${o.titre}</p>
+          <ol class="affiche__plats">${o.plats.map((x) => html`<li><span>${x.nom}</span> <small>${x.detail}</small></li>`)}</ol>
+          <p class="affiche__prix">${o.prix}</p>
+          <p class="affiche__dos-actions"><a href="#${o.ancre}" data-sans-transition tabindex="-1">${c.t('fetes.afficheVoir')}</a><button type="button" data-affiche-retour tabindex="-1">${c.t('fetes.afficheRetourner')}</button></p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
 export default (c) => {
   const f = c.donnees.fetes, a = c.donnees.accords, N = f.noel.plats;
   const TYPES = { 'vin-rouge': 'Vin rouge', 'vin-blanc': 'Vin blanc', petillant: 'Bulles' };
@@ -39,9 +59,12 @@ export default (c) => {
     </p>
       <p class="ouv-fetes__info" data-info-cle><span data-saison-seul="hiver">${c.t('fetes.infoSylvestre')} ${c.t('fetes.menuPrix')} · ${c.t('fetes.infoNoel')} ${c.t('fetes.noelPrix')}</span><span data-saison-seul="ete">${c.t('fetes.festivesH')} · ${c.t('fetes.piscineH')} · ${c.t('fetes.barH')}</span></p>
     </div>
-    <div class="ouv-fetes__visuel" data-saison-seul="hiver">
-      <a class="affiche affiche--noel" href="#noel" data-sans-transition aria-label="${c.s('fetes.afficheNoel')}">${c.media({ nom: 'vraie/affiche-noel', alt: '', cadrage: '50% 50%', priorite: true, classe: 'affiche__photo', sizes: '(max-width: 760px) 46vw, 24vw' })}</a>
-      <a class="affiche affiche--sylvestre" href="#saint-sylvestre" data-sans-transition aria-label="${c.s('fetes.afficheSylvestre')}">${c.media({ nom: 'vraie/affiche-sylvestre', alt: '', cadrage: '50% 50%', priorite: true, classe: 'affiche__photo', sizes: '(max-width: 760px) 52vw, 26vw' })}</a>
+    <div class="ouv-fetes__visuel" data-saison-seul="hiver" data-effet="affiches" data-grille="manipuler">
+      ${affiche(c, { cle: 'noel', ancre: 'noel', label: c.s('fetes.afficheNoelLabel'), photo: c.media({ nom: 'vraie/affiche-noel', alt: '', cadrage: '50% 50%', priorite: true, classe: 'affiche__photo', sizes: '(max-width: 760px) 46vw, 26vw' }),
+        sur: `${f.noel.jour}, ${f.noel.moment.toLowerCase()}`, titre: f.noel.titre, plats: N.map((x) => ({ nom: x.nom, detail: x.detail })), prix: html`<strong>${f.noel.prix}</strong> ${f.noel.prixDetail}` })}
+      ${affiche(c, { cle: 'sylvestre', ancre: 'saint-sylvestre', label: c.s('fetes.afficheSylvestreLabel'), photo: c.media({ nom: 'vraie/affiche-sylvestre', alt: '', cadrage: '50% 50%', priorite: true, classe: 'affiche__photo', sizes: '(max-width: 760px) 52vw, 28vw' }),
+        sur: `${f.sylvestre.jour}, ${f.sylvestre.moment.toLowerCase()}`, titre: f.sylvestre.titre, plats: a.plats.map((x) => ({ nom: x.plat, detail: x.detail })), prix: html`<strong>${f.sylvestre.prix}</strong> ${f.sylvestre.prixDetail} · <strong>${f.sylvestre.prixAccord}</strong> ${c.t('fetes.afficheAccord')}` })}
+      <p class="indice affiches__indice" aria-hidden="true"><span class="indice--souris">${c.t('fetes.afficheIndice')}</span><span class="indice--doigt">${c.t('fetes.afficheIndiceTactile')}</span></p>
     </div>
     <div class="ouv-fetes__visuel ouv-fetes__visuel--ete" data-saison-seul="ete">
       ${c.media({ nom: 'vraie/piscine-paillotes', alt: c.s('fetes.altEte'), cadrage: '50% 55%', classe: 'ouv-fetes__arche', sizes: '(max-width: 760px) 80vw, 40vw', attrs: 'data-fx="parallaxe" data-fx-force="5"' })}
@@ -116,6 +139,7 @@ export default (c) => {
 <section class="ss" id="saint-sylvestre" data-saison-seul="hiver" data-ss data-accord="oui" aria-labelledby="ss-titre">
   <span class="sylvestre__pluie" aria-hidden="true"><span style="--x:6%;--y:12%;--d:0s"></span><span style="--x:14%;--y:70%;--d:-1.2s"></span><span style="--x:22%;--y:30%;--d:-2.1s"></span><span style="--x:31%;--y:85%;--d:-0.6s"></span><span style="--x:39%;--y:8%;--d:-1.7s"></span><span style="--x:47%;--y:55%;--d:-2.6s"></span><span style="--x:56%;--y:22%;--d:-0.3s"></span><span style="--x:63%;--y:78%;--d:-1.4s"></span><span style="--x:71%;--y:40%;--d:-2.2s"></span><span style="--x:79%;--y:10%;--d:-0.9s"></span><span style="--x:86%;--y:64%;--d:-1.9s"></span><span style="--x:93%;--y:33%;--d:-2.8s"></span><span style="--x:10%;--y:48%;--d:-3.1s"></span><span style="--x:52%;--y:92%;--d:-0.5s"></span><span style="--x:88%;--y:90%;--d:-2.4s"></span></span>
   <div class="ss__collant">
+    <div class="ss__minuit" data-ss-minuit aria-hidden="true" data-audit-ignorer></div>
     <div class="conteneur ss__grille">
       <div class="ss__tete">
         <p class="surtitre">${c.t('fetes.sylvestreSur')}</p>

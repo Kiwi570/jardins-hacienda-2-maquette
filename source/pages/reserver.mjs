@@ -57,7 +57,7 @@ export default (c) => {
   </div>
 </section>
 
-<section class="resa" id="formulaire" data-module="reservation-de-table" data-grille="retour" aria-labelledby="resa-titre">
+<section class="resa" id="formulaire" data-module="reservation-de-table" data-grille="retour" data-voir-table="${c.s('reserver.voirTable')}" aria-labelledby="resa-titre">
   <script type="application/json" data-reservation>${brut(reglages)}</script>
   <noscript><style>.resa__jours{display:none}.resa__creneaux{min-height:0}.resa__compteur button{display:none}</style></noscript>
   <div class="resa__grille socle-cadre">

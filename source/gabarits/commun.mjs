@@ -109,7 +109,6 @@ function entete(c) {
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">${c.t('commun.fermer')}</a></p>
   <ul>${navigation(c).map((k, i) => html`<li style="--i:${i}"><span class="menu-heure" aria-hidden="true">${(HEURES[k] || {}).reelle ? c.s('commun.maintenant') : `${HEURES[k].h}:${HEURES[k].m}`}</span>${c.lien(k, { classe: 'menu-lien' })}</li>`)}</ul>
   <p class="menu-actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('commun.actionMenu') })} <a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
-  <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="${c.s('commun.calmeReduire')}" data-libelle-retablir="${c.s('commun.calmeRetablir')}" data-libelle-systeme="${c.s('commun.calmeSysteme')}"><span data-libelle-bouton>${c.t('commun.calmeReduire')}</span></button></p>
 </div>`;
 }
 
@@ -128,7 +127,7 @@ const ICONES = {
 function pied(c) {
   const photos = [...PIED_PHOTOS, ...PIED_PHOTOS];
   return html`<footer class="pied pied2" id="pied">
-  <div class="pied2__bandeau" aria-hidden="true"><div class="pied2__piste">${photos.map(([nom, cadrage], i) => c.media({ nom, cadrage, classe: `pied2__photo pied2__photo--${i % 4}`, sizes: '240px' }))}</div></div>
+  ${c.page.cle === 'receptions' ? '' : html`<div class="pied2__bandeau" aria-hidden="true"><div class="pied2__piste">${photos.map(([nom, cadrage], i) => c.media({ nom, cadrage, classe: `pied2__photo pied2__photo--${i % 4}`, sizes: '240px' }))}</div></div>`}
   <div class="conteneur pied2__appel">
     <div>
       <p class="surtitre">${c.t('commun.piedSur')}</p>
@@ -152,11 +151,7 @@ function pied(c) {
     <div class="pied2__bloc">
       <p class="pied2__t">${c.t('commun.piedSuivre')}</p>
       <p class="pied2__reseaux"><a class="pied2__reseau" href="${c.site.contact.instagram}" target="_blank" rel="noopener" aria-label="${c.s('commun.instagram')}">${brut(ICONES.instagram)}<span>Instagram</span></a><a class="pied2__reseau" href="${c.site.contact.facebook}" target="_blank" rel="noopener" aria-label="${c.s('commun.facebook')}">${brut(ICONES.facebook)}<span>Facebook</span></a></p>
-      <p class="pied2__t pied2__t--confort">${c.t('commun.confort')}</p>
-      <ul class="pied2__confort">
-        <li><button type="button" class="lien" data-calme-bascule data-libelle-reduire="${c.s('commun.calmeReduire')}" data-libelle-retablir="${c.s('commun.calmeRetablir')}" data-libelle-systeme="${c.s('commun.calmeSysteme')}"><span data-libelle-bouton>${c.t('commun.calmeReduire')}</span></button></li>
-        <li><a class="pied2__haut" href="#haut" data-sans-transition><span class="pied2__haut-icone">${brut(ICONES.haut)}</span>${c.t('commun.retourHaut')}</a></li>
-      </ul>
+      <p class="pied2__haut-ligne"><a class="pied2__haut" href="#haut" data-sans-transition><span class="pied2__haut-icone">${brut(ICONES.haut)}</span>${c.t('commun.retourHaut')}</a></p>
     </div>
   </div>
   <p class="pied2__marque" aria-hidden="true" data-pied-marque>${c.site.nom}</p>

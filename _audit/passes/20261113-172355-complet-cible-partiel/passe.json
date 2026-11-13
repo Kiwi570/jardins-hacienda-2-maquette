@@ -1,0 +1,17 @@
+{
+ "id": "20261113-172355-complet-cible-partiel",
+ "date": "2026-11-13T17:31:34.435Z",
+ "niveau": "complet",
+ "pages": "/,/la-carte,/offrir,/les-fetes",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "parcours"
+ ],
+ "version": "7",
+ "echecs": 0,
+ "aRegarder": 3,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "complet"
+}
