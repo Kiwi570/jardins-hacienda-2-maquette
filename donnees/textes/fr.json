@@ -55,10 +55,10 @@
       "accroche": "La carte de la semaine"
     },
     "les-fetes": {
-      "titre": "Les fêtes : Saint-Sylvestre, Noël et l'été aux Jardins de l'Hacienda",
+      "titre": "Évènements : Saint-Sylvestre, Noël et l'été aux Jardins de l'Hacienda",
       "description": "Saint-Sylvestre le 31 décembre (120 €, 170 € avec l'accord mets et vins), menu de Noël le 25 décembre au déjeuner (79 €), et l'été : journées festives, piscine, bar et pool parties.",
-      "nav": "Les fêtes",
-      "partageAlt": "Les fêtes aux Jardins de l'Hacienda",
+      "nav": "Évènements",
+      "partageAlt": "Les évènements aux Jardins de l'Hacienda",
       "accroche": "Saint-Sylvestre, Noël et l'été"
     },
     "receptions": {
@@ -90,9 +90,9 @@
       "accroche": "Horaires, accès, contact"
     },
     "a-emporter": {
-      "titre": "À emporter : les incontournables des fêtes, Les Jardins de l'Hacienda",
+      "titre": "Traiteur : les incontournables des fêtes, Les Jardins de l'Hacienda",
       "description": "Escargots à la crème d'ail, tourtes, pâté lorrain, foie gras et gravlax maison, tatakis : les spécialités des fêtes du chef Régis Clauss, à commander et à retirer au restaurant du 5 au 31 décembre.",
-      "nav": "À emporter",
+      "nav": "Traiteur",
       "partageAlt": "Une assiette du chef devant la cheminée des Jardins de l'Hacienda",
       "accroche": "Les incontournables des fêtes"
     }
@@ -937,7 +937,7 @@
     "semaineConsigne": "Glissez le curseur : la semaine s'allume à l'heure choisie."
   },
   "emporter": {
-    "sur": "À emporter",
+    "sur": "Traiteur",
     "titre": "Les incontournables",
     "titre2": "des fêtes",
     "texte": "Les spécialités du chef Régis Clauss pour vos tables de fête : choisissez vos produits, puis le jour et le moment du retrait au restaurant, du 5 au 31 décembre.",
