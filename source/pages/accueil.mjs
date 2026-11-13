@@ -39,7 +39,7 @@ const LIEUX = [
   { cle: 'terrasse', image: 'vraie/brasero', cadrage: '50% 60%', page: 'receptions', ancre: 'espaces' },
   { cle: 'piscine', image: 'vraie/piscine-paillotes', cadrage: '50% 55%', page: 'les-fetes', ancre: 'ete', params: 'saison=ete' },
   { cle: 'receptions', image: 'vraie/table-mariage', cadrage: '50% 45%', page: 'receptions' },
-  { cle: 'feu', image: 'vraie/feu-salle', cadrage: '72% 50%', page: 'reserver', ancre: 'formulaire' },
+  { cle: 'feu', image: 'vraie/feu-table', cadrage: '40% 40%', page: 'reserver', ancre: 'formulaire' },
 ];
 /* Le chef : étiquettes posées autour du polaroïd (position en % de la table, angle), à déplacer du doigt. */
 const ETIQUETTES = [

@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jh` · 13/11/2026 18:31:34 · 8 min · 4 page(s) · audit complet ciblé sur /,/la-carte,/offrir,/les-fetes (étapes : fichiers, mesures, parcours)
+Projet : `jardins-hacienda-2-maquette` · 13/11/2026 18:48:43 · 1 min · 1 page(s) · audit complet ciblé sur / (étapes : fichiers, mesures)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261113-172355-complet-cible-partiel` · version ?v=7
+- Passe : `20261113-174741-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **3**
+- À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (96), balayage (4), intro accélérable et passable (7), menu (1), clavier (4), liens et boutons (4), liens profonds (16), liens vers la page en cours (4), changements de hauteur (4), parcours du projet (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (24), balayage (1)
 
 ## Passes de cette version (?v=7)
 
@@ -77,7 +77,8 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261113-155441-complet | complet | toutes | toutes | 5 | 34 | 1 | échecs |
 | 20261113-163915-complet | complet | toutes | toutes | 6 | 42 | 1 | échecs |
 | 20261113-171418-complet-cible-partiel | complet | /,/la-carte,/offrir,/les-fetes | fichiers, mesures, parcours | 21 | 3 | 0 | échecs |
-| **20261113-172355-complet-cible-partiel** (celle-ci) | complet | /,/la-carte,/offrir,/les-fetes | fichiers, mesures, parcours | 0 | 3 | 0 | complet |
+| 20261113-172355-complet-cible-partiel | complet | /,/la-carte,/offrir,/les-fetes | fichiers, mesures, parcours | 0 | 3 | 0 | complet |
+| **20261113-174741-complet-cible-partiel** (celle-ci) | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
 
 ## Échecs
 
@@ -85,14 +86,7 @@ Aucun.
 
 ## À regarder
 
-### bouton sans effet visible (2)
-
-- **bouton sans effet visible** — `/les-fetes` — IPour commencer _(1366×768)_
-- **bouton sans effet visible** — `/les-fetes` — IIEntrée _(1366×768)_
-
-### rechargement au milieu de la page (1)
-
-- **rechargement au milieu de la page** — `/la-carte` — écran différent à la même position après rechargement (42.0 %), voir comparaisons/rechargement-la-carte-*.png _(1366×768)_
+Rien.
 
 ## Non lancé
 
@@ -108,7 +102,6 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
 
 ## Fichiers
 
