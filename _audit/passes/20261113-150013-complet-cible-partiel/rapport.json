@@ -1,0 +1,50 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec section#venir > div.conteneur.venir__grille > div.venir__texte:nth-of-type(1) > p:nth-of-type(2) « À Moineville, entre Metz, Thionville, Nancy et le  »",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "1728×1000",
+      "mode": "sansWebgl",
+      "selecteur": "h2#venir-titre > div.fx-ligne-mask:nth-of-type(2) > div.fx-ligne « à 19 km de Metz »",
+      "lieux": [
+        "1728×1000 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "bouton Menu seul sur ordinateur",
+      "detail": "les liens doivent passer sur une deuxième rangée, pas derrière le bouton Menu — largeurs : 900 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "balayage 320–1920",
+      "mode": "normal",
+      "lieux": [
+        "balayage 320–1920 normal"
+      ]
+    }
+  ],
+  "aRegarder": [],
+  "nonLances": [],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "mesures": 64,
+    "balayage": 2
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=7",
+    "Journal v7 : 13 étape(s) notée(s), 532 min de travail pour 515 min de budget, 0 min d’attente de l’utilisateur.",
+    "Journal : « audit standard (deux passages) et corrections » 79 min pour 35 prévues.",
+    "Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.",
+    "Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.",
+    "Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés."
+  ],
+  "grille": []
+}

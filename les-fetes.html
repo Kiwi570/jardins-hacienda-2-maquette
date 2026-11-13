@@ -45,7 +45,6 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <link rel="preload" href="/assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/socle.css?v=7">
 <link rel="stylesheet" href="/assets/js/modules/agenda-des-dates/module.css?v=7">
-<link rel="stylesheet" href="/assets/js/modules/accords-mets-et-vins/module.css?v=7">
 <link rel="stylesheet" href="/assets/css/site.css?v=7">
 <link rel="modulepreload" href="/assets/js/site.js?v=7">
 <link rel="modulepreload" href="/assets/js/socle/index.js?v=7">
@@ -276,56 +275,76 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <p class="indice noel-scene__indice" aria-hidden="true">Faites défiler pour ouvrir la carte</p>
   </div>
 </section>
-<section class="ame sylvestre" id="saint-sylvestre" data-saison-seul="hiver" data-module="accords-mets-et-vins" data-sylvestre aria-labelledby="ame-titre">
+<section class="ss" id="saint-sylvestre" data-saison-seul="hiver" data-ss data-accord="oui" aria-labelledby="ss-titre">
   <span class="sylvestre__pluie" aria-hidden="true"><span style="--x:6%;--y:12%;--d:0s"></span><span style="--x:14%;--y:70%;--d:-1.2s"></span><span style="--x:22%;--y:30%;--d:-2.1s"></span><span style="--x:31%;--y:85%;--d:-0.6s"></span><span style="--x:39%;--y:8%;--d:-1.7s"></span><span style="--x:47%;--y:55%;--d:-2.6s"></span><span style="--x:56%;--y:22%;--d:-0.3s"></span><span style="--x:63%;--y:78%;--d:-1.4s"></span><span style="--x:71%;--y:40%;--d:-2.2s"></span><span style="--x:79%;--y:10%;--d:-0.9s"></span><span style="--x:86%;--y:64%;--d:-1.9s"></span><span style="--x:93%;--y:33%;--d:-2.8s"></span><span style="--x:10%;--y:48%;--d:-3.1s"></span><span style="--x:52%;--y:92%;--d:-0.5s"></span><span style="--x:88%;--y:90%;--d:-2.4s"></span></span>
-  <div class="ame__grille socle-cadre">
-    <div class="ame__tete">
-      <p class="socle-surtitre">Jeudi 31 décembre, le soir</p>
-      <h2 id="ame-titre" class="sylvestre__titre" data-anime="lignes">Le menu de la Saint-Sylvestre</h2>
-      <p>Touchez un plat : le verre prend la forme et la couleur du vin de l&#39;accord.</p>
-      <p class="sylvestre__prix" data-prix><span class="sylvestre__medaille"><strong>120 €</strong> le menu</span><span class="sylvestre__medaille sylvestre__medaille--or"><strong>170 €</strong> avec l&#39;accord mets et vins</span></p>
-<svg class="ame__statique" viewBox="0 0 120 200" aria-hidden="true" data-visuel><path d="M30 10 h60 c0 50 -10 78 -30 86 c-20 -8 -30 -36 -30 -86 Z M60 96 V176 M34 182 H86" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M33 40 h54 c-2 30 -10 46 -27 52 c-17 -6 -25 -22 -27 -52 Z" fill="currentColor" opacity=".55"/></svg>
-      <p class="sylvestre__dj"><span class="vinyle" aria-hidden="true"></span><span>Soirée animée par DJ Laurent Geymet<br><small>Horaires de la soirée donnés à la réservation.</small></span></p>
-    </div>
-    <ul class="ame__liste" data-choisi="esturgeon">
-      <li class="ame__plat" data-plat="amuse" data-type="petillant" data-couleur="#e8d38c" style="--c: #e8d38c">
-        <span class="ame__pastille" aria-hidden="true"></span>
-        <p class="ame__moment"><span class="ame__rang" aria-hidden="true">I</span>Pour commencer</p>
-        <h3 class="ame__nom">Amuse-bouche</h3>
-        <p class="ame__detail">et coupe de Champagne</p>
-        <p class="ame__accord"><span class="ame__type">Bulles</span> · <span class="ame__boisson">Coupe de Champagne</span> · <span class="ame__region">Servie avec l&#39;amuse-bouche</span></p>
-      </li><li class="ame__plat" data-plat="foie-gras" data-type="petillant" data-couleur="#ecdc9a" style="--c: #ecdc9a">
-        <span class="ame__pastille" aria-hidden="true"></span>
-        <p class="ame__moment"><span class="ame__rang" aria-hidden="true">II</span>Entrée</p>
-        <h3 class="ame__nom">Velours de foie gras</h3>
-        <p class="ame__detail">Éclats de truffe noire</p>
-        <p class="ame__accord"><span class="ame__type">Bulles</span> · <span class="ame__boisson">Champagne blanc de blancs</span> · <span class="ame__region">Champagne</span></p>
-      </li><li class="ame__plat" data-plat="esturgeon" data-type="vin-blanc" data-couleur="#e4cf78" style="--c: #e4cf78">
-        <span class="ame__pastille" aria-hidden="true"></span>
-        <p class="ame__moment"><span class="ame__rang" aria-hidden="true">III</span>Poisson</p>
-        <h3 class="ame__nom">Esturgeon délicatement poché</h3>
-        <p class="ame__detail">Sauce citronnée au caviar et lentilles noires Béluga</p>
-        <p class="ame__accord"><span class="ame__type">Vin blanc</span> · <span class="ame__boisson">Chablis premier cru</span> · <span class="ame__region">Bourgogne, Chablis</span></p>
-      </li><li class="ame__plat" data-plat="boeuf" data-type="vin-rouge" data-couleur="#5e1626" style="--c: #5e1626">
-        <span class="ame__pastille" aria-hidden="true"></span>
-        <p class="ame__moment"><span class="ame__rang" aria-hidden="true">IV</span>Plat</p>
-        <h3 class="ame__nom">Filet de bœuf d&#39;exception</h3>
-        <p class="ame__detail">Aux morilles, jus réduit infusé au café</p>
-        <p class="ame__accord"><span class="ame__type">Vin rouge</span> · <span class="ame__boisson">Pomerol ou Côte-Rôtie</span> · <span class="ame__region">Bordeaux ou vallée du Rhône</span></p>
-      </li><li class="ame__plat" data-plat="sable" data-type="vin-blanc" data-couleur="#d6a03a" data-verre="tulipe" style="--c: #d6a03a">
-        <span class="ame__pastille" aria-hidden="true"></span>
-        <p class="ame__moment"><span class="ame__rang" aria-hidden="true">V</span>Dessert</p>
-        <h3 class="ame__nom">Sablé breton au yuzu</h3>
-        <p class="ame__detail">Crémeux de yuzu et meringue délicatement brûlée</p>
-        <p class="ame__accord"><span class="ame__type">Vin blanc</span> · <span class="ame__boisson">Jurançon moelleux</span> · <span class="ame__region">Sud-Ouest, Jurançon</span></p>
-      </li>
-    </ul>
-    <div class="ame__scene">
-      <figure class="ame__verre" aria-hidden="true"></figure>
-      <div class="ame__fiche" aria-live="polite" aria-atomic="true"></div>
+  <div class="ss__collant">
+    <div class="conteneur ss__grille">
+      <div class="ss__tete">
+        <p class="surtitre">Jeudi 31 décembre, le soir</p>
+        <h2 id="ss-titre" class="ss__titre" data-anime="lignes">Le menu de la <em>Saint-Sylvestre</em></h2>
+        <p class="ss__intro">Cinq temps, cinq verres : faites défiler le dîner, chaque plat arrive avec le vin de son accord.</p>
+        <div class="ss__formule">
+          <p class="ss__prix"><strong data-ss-prix data-sans="120 €" data-avec="170 €">170 €</strong> <span data-ss-prix-detail data-sans="le menu" data-avec="avec l&#39;accord mets et vins">avec l&#39;accord mets et vins</span></p>
+          <label class="ss__bascule"><input type="checkbox" data-ss-accord checked><span class="ss__interrupteur" aria-hidden="true"><span></span></span><span>Avec l&#39;accord mets et vins</span></label>
+        </div>
+        <p class="ss__dj"><span class="vinyle" aria-hidden="true"></span><span>Soirée animée par DJ Laurent Geymet<br><small>Horaires de la soirée donnés à la réservation.</small></span></p>
+        <p class="ss__actions"><a href="/reserver?date=2026-12-31&amp;service=soir#formulaire" class="bouton" data-libelle="Réserver">Réserver la Saint-Sylvestre</a></p>
+        <p class="ss__alcool">L&#39;abus d&#39;alcool est dangereux pour la santé, à consommer avec modération.</p>
+      </div>
+      <div class="ss__scene" data-effet="saint-sylvestre">
+        <ol class="ss__plats">
+          <li class="ss-plat est-actif" data-ss-plat data-couleur="#e8d38c" data-verre="flute" data-type="Bulles" data-vin="Coupe de Champagne" data-region="Servie avec l&#39;amuse-bouche" style="--c: #e8d38c">
+            <p class="ss-plat__rang" aria-hidden="true">I</p>
+            <p class="ss-plat__moment">Pour commencer</p>
+            <h3 class="ss-plat__nom">Amuse-bouche</h3>
+            <p class="ss-plat__detail">et coupe de Champagne</p>
+            <p class="ss-plat__vin"><span class="ss-plat__goutte" aria-hidden="true"></span>L&#39;accord : <strong>Coupe de Champagne</strong> · Servie avec l&#39;amuse-bouche</p>
+          </li><li class="ss-plat" data-ss-plat data-couleur="#ecdc9a" data-verre="flute" data-type="Bulles" data-vin="Champagne blanc de blancs" data-region="Champagne" style="--c: #ecdc9a">
+            <p class="ss-plat__rang" aria-hidden="true">II</p>
+            <p class="ss-plat__moment">Entrée</p>
+            <h3 class="ss-plat__nom">Velours de foie gras</h3>
+            <p class="ss-plat__detail">Éclats de truffe noire</p>
+            <p class="ss-plat__vin"><span class="ss-plat__goutte" aria-hidden="true"></span>L&#39;accord : <strong>Champagne blanc de blancs</strong> · Champagne</p>
+          </li><li class="ss-plat" data-ss-plat data-couleur="#e4cf78" data-verre="blanc" data-type="Vin blanc" data-vin="Chablis premier cru" data-region="Bourgogne, Chablis" style="--c: #e4cf78">
+            <p class="ss-plat__rang" aria-hidden="true">III</p>
+            <p class="ss-plat__moment">Poisson</p>
+            <h3 class="ss-plat__nom">Esturgeon délicatement poché</h3>
+            <p class="ss-plat__detail">Sauce citronnée au caviar et lentilles noires Béluga</p>
+            <p class="ss-plat__vin"><span class="ss-plat__goutte" aria-hidden="true"></span>L&#39;accord : <strong>Chablis premier cru</strong> · Bourgogne, Chablis</p>
+          </li><li class="ss-plat" data-ss-plat data-couleur="#5e1626" data-verre="rouge" data-type="Vin rouge" data-vin="Pomerol ou Côte-Rôtie" data-region="Bordeaux ou vallée du Rhône" style="--c: #5e1626">
+            <p class="ss-plat__rang" aria-hidden="true">IV</p>
+            <p class="ss-plat__moment">Plat</p>
+            <h3 class="ss-plat__nom">Filet de bœuf d&#39;exception</h3>
+            <p class="ss-plat__detail">Aux morilles, jus réduit infusé au café</p>
+            <p class="ss-plat__vin"><span class="ss-plat__goutte" aria-hidden="true"></span>L&#39;accord : <strong>Pomerol ou Côte-Rôtie</strong> · Bordeaux ou vallée du Rhône</p>
+          </li><li class="ss-plat" data-ss-plat data-couleur="#d6a03a" data-verre="tulipe" data-type="Vin blanc" data-vin="Jurançon moelleux" data-region="Sud-Ouest, Jurançon" style="--c: #d6a03a">
+            <p class="ss-plat__rang" aria-hidden="true">V</p>
+            <p class="ss-plat__moment">Dessert</p>
+            <h3 class="ss-plat__nom">Sablé breton au yuzu</h3>
+            <p class="ss-plat__detail">Crémeux de yuzu et meringue délicatement brûlée</p>
+            <p class="ss-plat__vin"><span class="ss-plat__goutte" aria-hidden="true"></span>L&#39;accord : <strong>Jurançon moelleux</strong> · Sud-Ouest, Jurançon</p>
+          </li>
+        </ol>
+        <div class="ss__verre" aria-hidden="true">
+          <span class="ss__halo"></span>
+          <svg class="ss-verre" viewBox="0 0 200 320">
+            <defs><clipPath id="ss-clip-flute"><path d="M84 24 C82 70 82 118 88 146 C92 160 96 166 100 168 C104 166 108 160 112 146 C118 118 118 70 116 24 Z"/></clipPath><clipPath id="ss-clip-blanc"><path d="M64 26 C60 76 64 124 80 150 C88 162 94 168 100 170 C106 168 112 162 120 150 C136 124 140 76 136 26 Z"/></clipPath><clipPath id="ss-clip-rouge"><path d="M50 30 C42 92 50 140 72 164 C82 174 92 178 100 179 C108 178 118 174 128 164 C150 140 158 92 150 30 Z"/></clipPath><clipPath id="ss-clip-tulipe"><path d="M70 30 C56 66 56 110 72 140 C82 158 92 164 100 165 C108 164 118 158 128 140 C144 110 144 66 130 30 Z"/></clipPath></defs>
+            <g class="ss-verre__forme est-active" data-forme="flute"><g clip-path="url(#ss-clip-flute)"><rect class="ss-verre__vin" x="0" y="58" width="200" height="142"/><rect class="ss-verre__reflet-vin" x="0" y="58" width="200" height="6"/><g class="ss-verre__bulles"><circle cx="96" cy="150" r="2"/><circle cx="104" cy="140" r="1.6"/><circle cx="100" cy="128" r="1.8"/><circle cx="94" cy="116" r="1.4"/><circle cx="106" cy="104" r="1.5"/></g></g><path class="ss-verre__bol" d="M84 24 C82 70 82 118 88 146 C92 160 96 166 100 168 C104 166 108 160 112 146 C118 118 118 70 116 24 Z"/><path class="ss-verre__eclat" d="M89 40 C87 80 88 118 92 140"/><path class="ss-verre__pied" d="M100 168 V280 M66 286 Q100 278 134 286"/></g><g class="ss-verre__forme" data-forme="blanc"><g clip-path="url(#ss-clip-blanc)"><rect class="ss-verre__vin" x="0" y="96" width="200" height="104"/><rect class="ss-verre__reflet-vin" x="0" y="96" width="200" height="6"/></g><path class="ss-verre__bol" d="M64 26 C60 76 64 124 80 150 C88 162 94 168 100 170 C106 168 112 162 120 150 C136 124 140 76 136 26 Z"/><path class="ss-verre__eclat" d="M74 46 C71 86 76 120 86 142"/><path class="ss-verre__pied" d="M100 170 V280 M66 286 Q100 278 134 286"/></g><g class="ss-verre__forme" data-forme="rouge"><g clip-path="url(#ss-clip-rouge)"><rect class="ss-verre__vin" x="0" y="112" width="200" height="88"/><rect class="ss-verre__reflet-vin" x="0" y="112" width="200" height="6"/></g><path class="ss-verre__bol" d="M50 30 C42 92 50 140 72 164 C82 174 92 178 100 179 C108 178 118 174 128 164 C150 140 158 92 150 30 Z"/><path class="ss-verre__eclat" d="M62 52 C58 98 64 134 78 156"/><path class="ss-verre__pied" d="M100 179 V280 M66 286 Q100 278 134 286"/></g><g class="ss-verre__forme" data-forme="tulipe"><g clip-path="url(#ss-clip-tulipe)"><rect class="ss-verre__vin" x="0" y="94" width="200" height="106"/><rect class="ss-verre__reflet-vin" x="0" y="94" width="200" height="6"/></g><path class="ss-verre__bol" d="M70 30 C56 66 56 110 72 140 C82 158 92 164 100 165 C108 164 118 158 128 140 C144 110 144 66 130 30 Z"/><path class="ss-verre__eclat" d="M78 50 C70 84 72 116 84 138"/><path class="ss-verre__pied" d="M100 165 V280 M66 286 Q100 278 134 286"/></g>
+          </svg>
+          <div class="ss__accord">
+            <p class="ss__avec">Avec</p>
+            <p class="ss__type"><span class="ss-plat__goutte" aria-hidden="true"></span><span data-ss-type>Bulles</span></p>
+            <p class="ss__vin" data-ss-vin>Coupe de Champagne</p>
+            <p class="ss__region" data-ss-region>Servie avec l&#39;amuse-bouche</p>
+            <p class="ss__sans">Sans l&#39;accord, le menu reste à 120 €.</p>
+          </div>
+        </div>
+        <ol class="ss__table" aria-label="Les cinq temps du dîner">
+          <li><button type="button" class="ss__pas" data-ss-aller="0" aria-current="step"><span class="ss__pas-rang" aria-hidden="true">I</span><span class="ss__pas-nom">Pour commencer</span></button></li><li><button type="button" class="ss__pas" data-ss-aller="1"><span class="ss__pas-rang" aria-hidden="true">II</span><span class="ss__pas-nom">Entrée</span></button></li><li><button type="button" class="ss__pas" data-ss-aller="2"><span class="ss__pas-rang" aria-hidden="true">III</span><span class="ss__pas-nom">Poisson</span></button></li><li><button type="button" class="ss__pas" data-ss-aller="3"><span class="ss__pas-rang" aria-hidden="true">IV</span><span class="ss__pas-nom">Plat</span></button></li><li><button type="button" class="ss__pas" data-ss-aller="4"><span class="ss__pas-rang" aria-hidden="true">V</span><span class="ss__pas-nom">Dessert</span></button></li>
+        </ol>
+      </div>
     </div>
   </div>
-  <p class="socle-cadre sylvestre__actions"><a href="/reserver?date=2026-12-31&amp;service=soir#formulaire" class="bouton" data-libelle="Réserver">Réserver la Saint-Sylvestre</a> <span class="sylvestre__alcool">L&#39;abus d&#39;alcool est dangereux pour la santé, à consommer avec modération.</span></p>
 </section>
 <section class="ete-heures" id="ete" data-saison-seul="ete" data-sans-visuel aria-labelledby="ete-titre">
   <div class="conteneur">
@@ -372,32 +391,105 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   </div>
 </section>
 </main>
-<footer class="pied" id="pied">
-  <div class="conteneur pied-grille">
-    <div class="pied-maison">
-      <img class="pied-logo" src="/assets/images/logo-clair.png" alt="" width="56" height="56" loading="lazy" decoding="async">
-      <p><strong>Les Jardins de l&#39;Hacienda</strong></p>
-      <p>6 Vathier Haye, 54580 Moineville<br><a href="tel:+33618212810">06 18 21 28 10</a></p>
-      <p class="pied-reseaux"><a href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener" aria-label="Facebook (nouvel onglet)">Facebook <span aria-hidden="true">↗</span></a> <a href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener" aria-label="Instagram (nouvel onglet)">Instagram <span aria-hidden="true">↗</span></a></p>
+<footer class="pied pied2" id="pied">
+  <div class="pied2__bandeau" aria-hidden="true"><div class="pied2__piste"><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:40% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-baies-mobile-640.webp 640w, /assets/images/vraie/salle-baies-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/salle-baies-1280.webp" srcset="/assets/images/vraie/salle-baies-640.webp 640w, /assets/images/vraie/salle-baies-1280.webp 1280w, /assets/images/vraie/salle-baies-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/cepes-mobile-640.webp 640w, /assets/images/vraie/cepes-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/cepes-1280.webp" srcset="/assets/images/vraie/cepes-640.webp 640w, /assets/images/vraie/cepes-1280.webp 1280w, /assets/images/vraie/cepes-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:45% 62%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/brasero-mobile-640.webp 640w, /assets/images/vraie/brasero-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/brasero-1280.webp" srcset="/assets/images/vraie/brasero-640.webp 640w, /assets/images/vraie/brasero-1280.webp 1280w, /assets/images/vraie/brasero-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 45%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:55% 62%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/piscine-palmiers-mobile-640.webp 640w, /assets/images/vraie/piscine-palmiers-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/piscine-palmiers-1280.webp" srcset="/assets/images/vraie/piscine-palmiers-640.webp 640w, /assets/images/vraie/piscine-palmiers-1280.webp 1280w, /assets/images/vraie/piscine-palmiers-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-midi-mobile-640.webp 640w, /assets/images/vraie/salle-midi-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/salle-midi-1280.webp" srcset="/assets/images/vraie/salle-midi-640.webp 640w, /assets/images/vraie/salle-midi-1280.webp 1280w, /assets/images/vraie/salle-midi-1920.webp 1920w" sizes="240px" alt="" width="1280" height="854" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/pergola-banquet-mobile-640.webp 640w, /assets/images/vraie/pergola-banquet-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w, /assets/images/vraie/pergola-banquet-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:40% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-baies-mobile-640.webp 640w, /assets/images/vraie/salle-baies-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/salle-baies-1280.webp" srcset="/assets/images/vraie/salle-baies-640.webp 640w, /assets/images/vraie/salle-baies-1280.webp 1280w, /assets/images/vraie/salle-baies-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/cepes-mobile-640.webp 640w, /assets/images/vraie/cepes-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/cepes-1280.webp" srcset="/assets/images/vraie/cepes-640.webp 640w, /assets/images/vraie/cepes-1280.webp 1280w, /assets/images/vraie/cepes-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:45% 62%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/brasero-mobile-640.webp 640w, /assets/images/vraie/brasero-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/brasero-1280.webp" srcset="/assets/images/vraie/brasero-640.webp 640w, /assets/images/vraie/brasero-1280.webp 1280w, /assets/images/vraie/brasero-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 45%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:55% 62%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/piscine-palmiers-mobile-640.webp 640w, /assets/images/vraie/piscine-palmiers-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/piscine-palmiers-1280.webp" srcset="/assets/images/vraie/piscine-palmiers-640.webp 640w, /assets/images/vraie/piscine-palmiers-1280.webp 1280w, /assets/images/vraie/piscine-palmiers-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-midi-mobile-640.webp 640w, /assets/images/vraie/salle-midi-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/salle-midi-1280.webp" srcset="/assets/images/vraie/salle-midi-640.webp 640w, /assets/images/vraie/salle-midi-1280.webp 1280w, /assets/images/vraie/salle-midi-1920.webp 1920w" sizes="240px" alt="" width="1280" height="854" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/pergola-banquet-mobile-640.webp 640w, /assets/images/vraie/pergola-banquet-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w, /assets/images/vraie/pergola-banquet-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure></div></div>
+  <div class="conteneur pied2__appel">
+    <div>
+      <p class="surtitre">À bientôt</p>
+      <h2 class="pied2__titre">À très vite, <em>aux Jardins</em></h2>
+      <p class="statut pied2__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-pied>6 Vathier Haye, 54580 Moineville</span></p>
+      <script type="application/json" data-horaires-pied>{"fuseau":"Europe/Paris","seuil_ferme_bientot":30,"regle_feries":"ouvert","feries":[{"date":"2026-11-11","nom":"Armistice"},{"date":"2026-12-25","nom":"Noël"},{"date":"2027-01-01","nom":"Jour de l'an"}],"adresses":[{"id":"restaurant","nom":"Le restaurant","adresse":"6 Vathier Haye, 54580 Moineville","telephone":"06 18 21 28 10","semaine":{"lundi":[],"mardi":[],"mercredi":["12:00-14:30"],"jeudi":["12:00-14:30"],"vendredi":["12:00-14:30","19:00-00:00"],"samedi":["19:00-00:00"],"dimanche":["12:00-16:00"]},"exceptions":[]}]}</script>
     </div>
-    <div class="pied-venir">
-      <p><strong>Venir</strong></p>
-      <p>À 19 km de Metz, 24 km de Thionville, 47 km de Luxembourg (à vol d’oiseau).</p>
+    <p class="pied2__actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une table</a> <a class="bouton bouton--contour bouton--clair" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
+  </div>
+  <div class="conteneur pied2__grille">
+    <div class="pied2__bloc">
+      <p class="pied2__t">Nous trouver</p>
+      <address class="pied2__adresse">6 Vathier Haye
+54580 Moineville</address>
+      <ul class="pied2__distances" aria-label="Distances à vol d&#39;oiseau"><li><strong>19 km</strong> Metz</li><li><strong>24 km</strong> Thionville</li><li><strong>47 km</strong> Luxembourg</li></ul>
       <p><a href="/infos-pratiques#acces" class="lien-fleche" data-libelle="Infos pratiques">Horaires et accès</a></p>
     </div>
-    <nav aria-label="Sommaire">
-      <p><strong>Sommaire</strong></p>
-      <ul><li><a href="/" data-libelle="Accueil">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Évènements" aria-current="page">Évènements</a></li><li><a href="/a-emporter" data-libelle="Traiteur">Traiteur</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li></ul>
+    <nav class="pied2__bloc" aria-label="Sommaire">
+      <p class="pied2__t">Le site</p>
+      <ul class="pied2__liens"><li><a href="/" data-libelle="Accueil">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Évènements" aria-current="page">Évènements</a></li><li><a href="/a-emporter" data-libelle="Traiteur">Traiteur</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li></ul>
     </nav>
-    <div>
-      <p><strong>Confort de lecture</strong></p>
-      <ul>
+    <div class="pied2__bloc">
+      <p class="pied2__t">Suivez-nous</p>
+      <p class="pied2__reseaux"><a class="pied2__reseau" href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener" aria-label="Instagram (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a><a class="pied2__reseau" href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener" aria-label="Facebook (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M13.4 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.6-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21z"/></svg><span>Facebook</span></a></p>
+      <p class="pied2__t pied2__t--confort">Confort de lecture</p>
+      <ul class="pied2__confort">
         <li><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></li>
-        <li><a href="#haut" data-sans-transition>Retour en haut</a></li>
+        <li><a class="pied2__haut" href="#haut" data-sans-transition><span class="pied2__haut-icone"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span>Retour en haut</a></li>
       </ul>
     </div>
   </div>
-  <div class="conteneur pied-bas"><p>Maquette : réservations, cartes cadeaux et demandes sont simulées, rien n&#39;est envoyé.</p><p>Les images marquées « Illustration générée » sont créées par IA ; toutes les autres sont des photos de la maison.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
+  <p class="pied2__marque" aria-hidden="true" data-pied-marque>Les Jardins de l&#39;Hacienda</p>
+  <div class="conteneur pied-bas pied2__bas"><p>Maquette : réservations, cartes cadeaux et demandes sont simulées, rien n&#39;est envoyé.</p><p>Les images marquées « Illustration générée » sont créées par IA ; toutes les autres sont des photos de la maison.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
 </footer>
 <div data-barre-fixe>
   <a class="bouton bouton--contour" href="tel:+33618212810">Appeler</a>

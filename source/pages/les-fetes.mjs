@@ -6,11 +6,20 @@
    L'été : la journée d'été heure par heure (journées festives, piscine, bar, pool parties). La bascule rallume la page. */
 import { html, brut } from '../../outils/gabarit.mjs';
 
-export const page = { cle: 'les-fetes', fichier: 'les-fetes', theme: 'nuit', imagePartage: 'vraie/affiche-sylvestre-960.webp', modules: ['agenda-des-dates', 'accords-mets-et-vins'] };
+export const page = { cle: 'les-fetes', fichier: 'les-fetes', theme: 'nuit', imagePartage: 'vraie/affiche-sylvestre-960.webp', modules: ['agenda-des-dates'] };
 
 export default (c) => {
   const f = c.donnees.fetes, a = c.donnees.accords, N = f.noel.plats;
   const TYPES = { 'vin-rouge': 'Vin rouge', 'vin-blanc': 'Vin blanc', petillant: 'Bulles' };
+  /* v7.5.14 · La Saint-Sylvestre en scène : un verre par type de vin (flûte, verre à blanc, à rouge, tulipe), le vin y monte. */
+  const a_ = a, VERRES = { petillant: 'flute', 'vin-blanc': 'blanc', 'vin-rouge': 'rouge' }, ROMAINS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+  const FORMES = {
+    flute: { bol: 'M84 24 C82 70 82 118 88 146 C92 160 96 166 100 168 C104 166 108 160 112 146 C118 118 118 70 116 24 Z', eclat: 'M89 40 C87 80 88 118 92 140', niveau: 58, bas: 168 },
+    blanc: { bol: 'M64 26 C60 76 64 124 80 150 C88 162 94 168 100 170 C106 168 112 162 120 150 C136 124 140 76 136 26 Z', eclat: 'M74 46 C71 86 76 120 86 142', niveau: 96, bas: 170 },
+    rouge: { bol: 'M50 30 C42 92 50 140 72 164 C82 174 92 178 100 179 C108 178 118 174 128 164 C150 140 158 92 150 30 Z', eclat: 'M62 52 C58 98 64 134 78 156', niveau: 112, bas: 179 },
+    tulipe: { bol: 'M70 30 C56 66 56 110 72 140 C82 158 92 164 100 165 C108 164 118 158 128 140 C144 110 144 66 130 30 Z', eclat: 'M78 50 C70 84 72 116 84 138', niveau: 94, bas: 165 },
+  };
+  const prixMenu = (c.s('fetes.menuPrix').match(/^(\d+\s*€)\s*(.*)$/) || []).slice(1), prixAccord = (c.s('fetes.accordPrix').match(/^(\d+\s*€)\s*(.*)$/) || []).slice(1);
   /* Jours de calendrier à Moineville, comme le compte à rebours de la page (et non des tranches de 24 h). */
   const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   const jours = Math.max(0, Math.round((Date.parse(f.sylvestre.date + 'T00:00:00Z') - Date.parse(auj + 'T00:00:00Z')) / 86400000));
@@ -104,32 +113,52 @@ export default (c) => {
   </div>
 </section>
 
-<section class="ame sylvestre" id="saint-sylvestre" data-saison-seul="hiver" data-module="accords-mets-et-vins" data-sylvestre aria-labelledby="ame-titre">
+<section class="ss" id="saint-sylvestre" data-saison-seul="hiver" data-ss data-accord="oui" aria-labelledby="ss-titre">
   <span class="sylvestre__pluie" aria-hidden="true"><span style="--x:6%;--y:12%;--d:0s"></span><span style="--x:14%;--y:70%;--d:-1.2s"></span><span style="--x:22%;--y:30%;--d:-2.1s"></span><span style="--x:31%;--y:85%;--d:-0.6s"></span><span style="--x:39%;--y:8%;--d:-1.7s"></span><span style="--x:47%;--y:55%;--d:-2.6s"></span><span style="--x:56%;--y:22%;--d:-0.3s"></span><span style="--x:63%;--y:78%;--d:-1.4s"></span><span style="--x:71%;--y:40%;--d:-2.2s"></span><span style="--x:79%;--y:10%;--d:-0.9s"></span><span style="--x:86%;--y:64%;--d:-1.9s"></span><span style="--x:93%;--y:33%;--d:-2.8s"></span><span style="--x:10%;--y:48%;--d:-3.1s"></span><span style="--x:52%;--y:92%;--d:-0.5s"></span><span style="--x:88%;--y:90%;--d:-2.4s"></span></span>
-  <div class="ame__grille socle-cadre">
-    <div class="ame__tete">
-      <p class="socle-surtitre">${c.t('fetes.sylvestreSur')}</p>
-      <h2 id="ame-titre" class="sylvestre__titre" data-anime="lignes">${c.t('fetes.sylvestreTitre')}</h2>
-      <p>${c.t('fetes.sylvestreTexte')}</p>
-      <p class="sylvestre__prix" data-prix>${[c.s('fetes.menuPrix'), c.s('fetes.accordPrix')].map((x, i) => { const m = x.match(/^(\d+\s*€)\s*(.*)$/); return html`<span class="sylvestre__medaille${i ? ' sylvestre__medaille--or' : ''}"><strong>${m ? m[1] : x}</strong> ${m ? m[2] : ''}</span>`; })}</p>
-<svg class="ame__statique" viewBox="0 0 120 200" aria-hidden="true" data-visuel><path d="M30 10 h60 c0 50 -10 78 -30 86 c-20 -8 -30 -36 -30 -86 Z M60 96 V176 M34 182 H86" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M33 40 h54 c-2 30 -10 46 -27 52 c-17 -6 -25 -22 -27 -52 Z" fill="currentColor" opacity=".55"/></svg>
-      <p class="sylvestre__dj"><span class="vinyle" aria-hidden="true"></span><span>${c.t('fetes.dj')}<br><small>${c.t('fetes.horaires')}</small></span></p>
-    </div>
-    <ul class="ame__liste" data-choisi="${a.choisi}">
-      ${a.plats.map((p) => html`<li class="ame__plat" data-plat="${p.id}" data-type="${p.accord.type}" data-couleur="${p.accord.couleur}"${p.accord.verre ? html` data-verre="${p.accord.verre}"` : ''} style="--c: ${p.accord.couleur}">
-        <span class="ame__pastille" aria-hidden="true"></span>
-        <p class="ame__moment"><span class="ame__rang" aria-hidden="true">${['I', 'II', 'III', 'IV', 'V', 'VI'][a.plats.indexOf(p)]}</span>${p.moment}</p>
-        <h3 class="ame__nom">${p.plat}</h3>
-        <p class="ame__detail">${p.detail}</p>
-        <p class="ame__accord"><span class="ame__type">${TYPES[p.accord.type]}</span> · <span class="ame__boisson">${p.accord.nom}</span> · <span class="ame__region">${p.accord.region}</span></p>
-      </li>`)}
-    </ul>
-    <div class="ame__scene">
-      <figure class="ame__verre" aria-hidden="true"></figure>
-      <div class="ame__fiche" aria-live="polite" aria-atomic="true"></div>
+  <div class="ss__collant">
+    <div class="conteneur ss__grille">
+      <div class="ss__tete">
+        <p class="surtitre">${c.t('fetes.sylvestreSur')}</p>
+        <h2 id="ss-titre" class="ss__titre" data-anime="lignes">${c.t('fetes.ssTitre')} <em>${c.t('fetes.ssTitre2')}</em></h2>
+        <p class="ss__intro">${c.t('fetes.ssIntro')}</p>
+        <div class="ss__formule">
+          <p class="ss__prix"><strong data-ss-prix data-sans="${prixMenu[0]}" data-avec="${prixAccord[0]}">${prixAccord[0]}</strong> <span data-ss-prix-detail data-sans="${prixMenu[1]}" data-avec="${prixAccord[1]}">${prixAccord[1]}</span></p>
+          <label class="ss__bascule"><input type="checkbox" data-ss-accord checked><span class="ss__interrupteur" aria-hidden="true"><span></span></span><span>${c.t('fetes.ssBascule')}</span></label>
+        </div>
+        <p class="ss__dj"><span class="vinyle" aria-hidden="true"></span><span>${c.t('fetes.dj')}<br><small>${c.t('fetes.horaires')}</small></span></p>
+        <p class="ss__actions">${c.lien('reserver', { ancre: 'formulaire', params: 'date=2026-12-31&service=soir', classe: 'bouton', texte: c.t('fetes.reserverSoiree') })}</p>
+        <p class="ss__alcool">${c.t('fetes.alcool')}</p>
+      </div>
+      <div class="ss__scene" data-effet="saint-sylvestre">
+        <ol class="ss__plats">
+          ${a_.plats.map((p, i) => html`<li class="ss-plat${i === 0 ? ' est-actif' : ''}" data-ss-plat data-couleur="${p.accord.couleur}" data-verre="${p.accord.verre || VERRES[p.accord.type]}" data-type="${TYPES[p.accord.type]}" data-vin="${p.accord.nom}" data-region="${p.accord.region}" style="--c: ${p.accord.couleur}">
+            <p class="ss-plat__rang" aria-hidden="true">${ROMAINS[i]}</p>
+            <p class="ss-plat__moment">${p.moment}</p>
+            <h3 class="ss-plat__nom">${p.plat}</h3>
+            <p class="ss-plat__detail">${p.detail}</p>
+            <p class="ss-plat__vin"><span class="ss-plat__goutte" aria-hidden="true"></span>${c.t('fetes.ssAccord')} <strong>${p.accord.nom}</strong> · ${p.accord.region}</p>
+          </li>`)}
+        </ol>
+        <div class="ss__verre" aria-hidden="true">
+          <span class="ss__halo"></span>
+          <svg class="ss-verre" viewBox="0 0 200 320">
+            <defs>${brut(Object.entries(FORMES).map(([k, d]) => `<clipPath id="ss-clip-${k}"><path d="${d.bol}"/></clipPath>`).join(''))}</defs>
+            ${brut(Object.entries(FORMES).map(([k, d]) => `<g class="ss-verre__forme${k === 'flute' ? ' est-active' : ''}" data-forme="${k}"><g clip-path="url(#ss-clip-${k})"><rect class="ss-verre__vin" x="0" y="${d.niveau}" width="200" height="${200 - d.niveau}"/><rect class="ss-verre__reflet-vin" x="0" y="${d.niveau}" width="200" height="6"/>${k === 'flute' ? '<g class="ss-verre__bulles"><circle cx="96" cy="150" r="2"/><circle cx="104" cy="140" r="1.6"/><circle cx="100" cy="128" r="1.8"/><circle cx="94" cy="116" r="1.4"/><circle cx="106" cy="104" r="1.5"/></g>' : ''}</g><path class="ss-verre__bol" d="${d.bol}"/><path class="ss-verre__eclat" d="${d.eclat}"/><path class="ss-verre__pied" d="M100 ${d.bas} V280 M66 286 Q100 278 134 286"/></g>`).join(''))}
+          </svg>
+          <div class="ss__accord">
+            <p class="ss__avec">${c.t('fetes.ssAvec')}</p>
+            <p class="ss__type"><span class="ss-plat__goutte" aria-hidden="true"></span><span data-ss-type>${TYPES[a_.plats[0].accord.type]}</span></p>
+            <p class="ss__vin" data-ss-vin>${a_.plats[0].accord.nom}</p>
+            <p class="ss__region" data-ss-region>${a_.plats[0].accord.region}</p>
+            <p class="ss__sans">${c.t('fetes.ssSans')}</p>
+          </div>
+        </div>
+        <ol class="ss__table" aria-label="${c.s('fetes.ssTable')}">
+          ${a_.plats.map((p, i) => html`<li><button type="button" class="ss__pas${i === 0 ? '' : ''}" data-ss-aller="${i}"${i === 0 ? brut(' aria-current="step"') : ''}><span class="ss__pas-rang" aria-hidden="true">${ROMAINS[i]}</span><span class="ss__pas-nom">${p.moment}</span></button></li>`)}
+        </ol>
+      </div>
     </div>
   </div>
-  <p class="socle-cadre sylvestre__actions">${c.lien('reserver', { ancre: 'formulaire', params: 'date=2026-12-31&service=soir', classe: 'bouton', texte: c.t('fetes.reserverSoiree') })} <span class="sylvestre__alcool">${c.t('fetes.alcool')}</span></p>
 </section>
 
 <section class="ete-heures" id="ete" data-saison-seul="ete" data-sans-visuel aria-labelledby="ete-titre">

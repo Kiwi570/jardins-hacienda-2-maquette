@@ -222,7 +222,7 @@ function garderAncre() {
 
 /* ---------- Statut ouvert / fermé (module horaires : mêmes données et mêmes calculs partout) ---------- */
 async function statuts() {
-  const src = $('[data-horaires-accueil]'); const cibles = $$('[data-statut-accueil], [data-statut-accueil-bis]');
+  const src = $('[data-horaires-accueil]') || $('[data-horaires-pied]'); const cibles = $$('[data-statut-accueil], [data-statut-accueil-bis], [data-statut-pied]');
   if (!src || !cibles.length) return;
   try {
     const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=7');
@@ -990,6 +990,84 @@ function carteSemaine() {
 
 /* v7.5 · À emporter : panier (un seul état, gardé dans le navigateur s'il le permet), jour et moment de retrait selon les horaires,
    pastille flottante, envol vers la commande à l'ajout, commande simulée avec récapitulatif. */
+/* v7.5.14 · Le pied de page : le nom de la maison en très grand, chaque lettre se soulève sous la main (vague douce autour
+   du pointeur), et retombe quand la main s'en va. Animations réduites ou écran tactile : rien ne bouge. */
+function piedMarque() {
+  const m = $('[data-pied-marque]'); if (!m || etat.calme || !matchMedia('(hover: hover)').matches) return;
+  const texte = m.textContent;
+  m.textContent = '';
+  const lettres = [...texte].map((ch) => { const sp = document.createElement('span'); sp.textContent = ch; if (ch === ' ') sp.className = 'espace'; m.append(sp); return sp; });
+  let centres = [], raf = 0, x = -1e4, y = -1e4;
+  const mesurer = () => { centres = lettres.map((l) => { const r = l.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }); };
+  const peindre = () => {
+    raf = 0;
+    lettres.forEach((l, i) => {
+      const [cx, cy] = centres[i] || [0, 0];
+      const d = Math.hypot((x - cx) / 1.4, (y - cy) * 1.6), k = Math.max(0, 1 - d / 220);
+      l.style.transform = k ? `translateY(${(-k * 28).toFixed(1)}px) rotate(${((x - cx) / 220 * -6 * k).toFixed(2)}deg)` : '';
+      l.style.color = k ? `color-mix(in oklab, #e9c46a ${Math.round(k * 100)}%, rgba(246, 239, 226, .1))` : '';
+    });
+  };
+  m.addEventListener('pointerenter', mesurer);
+  m.addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY; if (!raf) raf = requestAnimationFrame(peindre); });
+  m.addEventListener('pointerleave', () => { x = y = -1e4; if (!raf) raf = requestAnimationFrame(peindre); });
+  addEventListener('scroll', () => { if (centres.length) centres = []; }, { passive: true });
+  m.addEventListener('pointermove', () => { if (!centres.length) mesurer(); });
+}
+
+/* v7.5.14 · Évènements, la Saint-Sylvestre en scène : la section reste à l'écran, chaque palier de défilement sert un temps du
+   dîner (numéro, plat, détail) ; à droite, le verre prend la forme et la couleur du vin de l'accord, le vin y monte. La bascule
+   « Avec l'accord mets et vins » vide ou remplit le verre et fait passer le prix de 170 € à 120 €. La table des cinq temps, en
+   bas, mène à chacun. Téléphone, animations réduites ou sans JavaScript : les cinq plats l'un sous l'autre, chacun avec son vin. */
+function saintSylvestre() {
+  const sec = $('[data-ss]'); if (!sec) return;
+  const plats = $$('[data-ss-plat]', sec), pas = $$('[data-ss-aller]', sec), formes = $$('[data-forme]', sec), n = plats.length;
+  const typeEl = $('[data-ss-type]', sec), vinEl = $('[data-ss-vin]', sec), regionEl = $('[data-ss-region]', sec), fiche = $('.ss__accord', sec);
+  const bascule = $('[data-ss-accord]', sec), prix = $('[data-ss-prix]', sec), prixDetail = $('[data-ss-prix-detail]', sec);
+  const scene = window.matchMedia('(min-width: 861px)');
+  let actif = -1;
+  const activer = (i) => {
+    if (i === actif) return;
+    actif = i;
+    plats.forEach((p, k) => { p.classList.toggle('est-actif', k === i); p.classList.toggle('est-passe', k < i); });
+    pas.forEach((b, k) => { b.classList.toggle('est-fait', k < i); if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+    const p = plats[i];
+    sec.style.setProperty('--vin', p.dataset.couleur);
+    formes.forEach((f) => f.classList.toggle('est-active', f.dataset.forme === p.dataset.verre));
+    typeEl.textContent = p.dataset.type; vinEl.textContent = p.dataset.vin; regionEl.textContent = p.dataset.region;
+    if (!etat.calme && fiche.animate) fiche.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  };
+  const accord = () => {
+    const oui = bascule.checked;
+    sec.dataset.accord = oui ? 'oui' : 'non';
+    prix.textContent = oui ? prix.dataset.avec : prix.dataset.sans;
+    prixDetail.textContent = oui ? prixDetail.dataset.avec : prixDetail.dataset.sans;
+    if (!etat.calme && prix.animate) prix.animate([{ transform: 'scale(1.18)', color: '#fff3d4' }, { transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.2,1.4,.4,1)' });
+  };
+  bascule.addEventListener('change', accord);
+  const enScene = () => scene.matches && !etat.calme;
+  const course = () => Math.max(1, sec.offsetHeight - innerHeight);
+  let attente = false;
+  const maj = () => {
+    attente = false;
+    sec.classList.toggle('ss--scene', enScene());
+    if (!enScene()) return;
+    const p = Math.min(0.9999, Math.max(0, -sec.getBoundingClientRect().top / course()));
+    sec.style.setProperty('--ss-p', p.toFixed(4));
+    activer(Math.floor(p * n));
+  };
+  pas.forEach((b, k) => b.addEventListener('click', () => {
+    if (!enScene()) { plats[k].scrollIntoView({ behavior: etat.calme ? 'auto' : 'smooth', block: 'center' }); activer(k); return; }
+    aller(sec.getBoundingClientRect().top + scrollY + course() * ((k + 0.5) / n));
+  }));
+  addEventListener('scroll', () => { if (!attente) { attente = true; requestAnimationFrame(maj); } }, { passive: true });
+  addEventListener('resize', maj);
+  scene.addEventListener('change', maj);
+  /* Hors scène (la liste), le verre suit le plat survolé ou parcouru au clavier. */
+  plats.forEach((p, k) => { const suivre = () => { if (!enScene()) activer(k); }; p.addEventListener('pointerenter', suivre); p.addEventListener('focusin', suivre); });
+  activer(0); accord(); maj();
+}
+
 /* v7.5.13 · Évènements, « Les prochaines dates » : la photo de gauche reste à l'écran et suit la date qu'on lit (celle qui
    passe au tiers haut de l'écran) : fondu entre les photos, la date en grand et le nom de la soirée sur la photo. */
 function datesSync() {
@@ -1918,6 +1996,8 @@ demarrer({
     vitrineCloches();
     rondeHero();
     datesSync();
+    saintSylvestre();
+    piedMarque();
     domaine();
     planDomaine();
     devise();

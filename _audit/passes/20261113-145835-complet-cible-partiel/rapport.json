@@ -1,0 +1,78 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "texte coupé",
+      "detail": "le contenu dépasse de son cadre",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "1024×768",
+      "mode": "normal",
+      "selecteur": "ol.ss__table:nth-of-type(2) > li:nth-of-type(1) > button.ss__pas > span.ss__pas-nom:nth-of-type(2) « Pour commencer »",
+      "lieux": [
+        "1024×768 normal",
+        "1280×720 normal",
+        "1000×560 normal",
+        "1920×1080 normal",
+        "2560×1440 normal",
+        "1024×768 sansWebgl",
+        "1000×560 sansWebgl",
+        "1280×720 sansWebgl",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "section sans visuel",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "1024×768",
+      "mode": "calme",
+      "selecteur": "section#saint-sylvestre « JEUDI 31 DÉCEMBRE, LE SOIR Le menu de la Saint-Syl »",
+      "lieux": [
+        "1024×768 calme",
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1000×560 calme",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1366×768 calme",
+        "1366×768 sansJs",
+        "1440×900 sansJs",
+        "1440×900 calme",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "2560×1440 sansJs",
+        "2560×1440 calme"
+      ]
+    }
+  ],
+  "aRegarder": [],
+  "nonLances": [],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "mesures": 32,
+    "balayage": 1,
+    "mouvement": 2,
+    "effets du plan": 31
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=7",
+    "Journal v7 : 13 étape(s) notée(s), 532 min de travail pour 515 min de budget, 0 min d’attente de l’utilisateur.",
+    "Journal : « audit standard (deux passages) et corrections » 79 min pour 35 prévues.",
+    "Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.",
+    "Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.",
+    "Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.",
+    "Tient dans l'écran /les-fetes : aucune section épinglée ou plein écran."
+  ],
+  "grille": []
+}

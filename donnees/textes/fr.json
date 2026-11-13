@@ -30,7 +30,14 @@
     "venirT": "Venir",
     "venir": "À 19 km de Metz, 24 km de Thionville, 47 km de Luxembourg (à vol d’oiseau).",
     "venirLien": "Horaires et accès",
-    "mentionIaPied": "Les images marquées « Illustration générée » sont créées par IA ; toutes les autres sont des photos de la maison."
+    "mentionIaPied": "Les images marquées « Illustration générée » sont créées par IA ; toutes les autres sont des photos de la maison.",
+    "piedSur": "À bientôt",
+    "piedTitre": "À très vite,",
+    "piedTitre2": "aux Jardins",
+    "piedReserver": "Réserver une table",
+    "piedTrouver": "Nous trouver",
+    "piedSite": "Le site",
+    "piedSuivre": "Suivez-nous"
   },
   "pages": {
     "404": {
@@ -537,7 +544,15 @@
     "noelIntro2": "Le vendredi 25 décembre, au déjeuner : cinq temps, de la coupe de bienvenue à la coque en chocolat. Faites défiler : la carte s'ouvre.",
     "noelMenu": "Menu de Noël",
     "noelMot": "Au coin du feu, le 25 décembre",
-    "noelIndice": "Faites défiler pour ouvrir la carte"
+    "noelIndice": "Faites défiler pour ouvrir la carte",
+    "ssTitre": "Le menu de la",
+    "ssTitre2": "Saint-Sylvestre",
+    "ssIntro": "Cinq temps, cinq verres : faites défiler le dîner, chaque plat arrive avec le vin de son accord.",
+    "ssBascule": "Avec l'accord mets et vins",
+    "ssAvec": "Avec",
+    "ssSans": "Sans l'accord, le menu reste à 120 €.",
+    "ssTable": "Les cinq temps du dîner",
+    "ssAccord": "L'accord :"
   },
   "receptions": {
     "heure": "19:00",

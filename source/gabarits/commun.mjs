@@ -113,33 +113,54 @@ function entete(c) {
 </div>`;
 }
 
+/* v7.5.14 · Le pied de page : un bandeau de vraies photos qui défile, l'invitation « À très vite, aux Jardins » avec le statut
+   ouvert ou fermé en direct, réserver et appeler ; nous trouver, le site, suivez-nous et le confort ; le nom de la maison en
+   très grand, dont les lettres se soulèvent sous la main. */
+const PIED_PHOTOS = [
+  ['vraie/table-piscine', '50% 55%'], ['vraie/salle-baies', '40% 50%'], ['vraie/cepes', '50% 55%'], ['vraie/brasero', '45% 62%'],
+  ['vraie/gateaux', '50% 45%'], ['vraie/piscine-palmiers', '55% 62%'], ['vraie/salle-midi', '50% 50%'], ['vraie/pergola-banquet', '50% 50%'],
+];
+const ICONES = {
+  instagram: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>',
+  facebook: '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M13.4 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.6-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21z"/></svg>',
+  haut: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>',
+};
 function pied(c) {
-  return html`<footer class="pied" id="pied">
-  <div class="conteneur pied-grille">
-    <div class="pied-maison">
-      <img class="pied-logo" src="/assets/images/logo-clair.png" alt="" width="56" height="56" loading="lazy" decoding="async">
-      <p><strong>${c.site.nom}</strong></p>
-      <p>${c.site.contact.adresse}<br><a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a></p>
-      <p class="pied-reseaux"><a href="${c.site.contact.facebook}" target="_blank" rel="noopener" aria-label="${c.s('commun.facebook')}">Facebook <span aria-hidden="true">↗</span></a> <a href="${c.site.contact.instagram}" target="_blank" rel="noopener" aria-label="${c.s('commun.instagram')}">Instagram <span aria-hidden="true">↗</span></a></p>
+  const photos = [...PIED_PHOTOS, ...PIED_PHOTOS];
+  return html`<footer class="pied pied2" id="pied">
+  <div class="pied2__bandeau" aria-hidden="true"><div class="pied2__piste">${photos.map(([nom, cadrage], i) => c.media({ nom, cadrage, classe: `pied2__photo pied2__photo--${i % 4}`, sizes: '240px' }))}</div></div>
+  <div class="conteneur pied2__appel">
+    <div>
+      <p class="surtitre">${c.t('commun.piedSur')}</p>
+      <h2 class="pied2__titre">${c.t('commun.piedTitre')} <em>${c.t('commun.piedTitre2')}</em></h2>
+      <p class="statut pied2__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-pied>${c.site.contact.adresse}</span></p>
+      <script type="application/json" data-horaires-pied>${brut(JSON.stringify(c.donnees.horaires).replace(/<\//g, '<\\/'))}</script>
     </div>
-    <div class="pied-venir">
-      <p><strong>${c.t('commun.venirT')}</strong></p>
-      <p>${c.t('commun.venir')}</p>
+    <p class="pied2__actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('commun.piedReserver') })} <a class="bouton bouton--contour bouton--clair" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
+  </div>
+  <div class="conteneur pied2__grille">
+    <div class="pied2__bloc">
+      <p class="pied2__t">${c.t('commun.piedTrouver')}</p>
+      <address class="pied2__adresse">${c.site.contact.adresse.replace(', ', '\n')}</address>
+      <ul class="pied2__distances" aria-label="${c.s('infos.distancesTitre')}"><li><strong>19 km</strong> Metz</li><li><strong>24 km</strong> Thionville</li><li><strong>47 km</strong> Luxembourg</li></ul>
       <p>${c.lien('infos-pratiques', { ancre: 'acces', classe: 'lien-fleche', texte: c.t('commun.venirLien') })}</p>
     </div>
-    <nav aria-label="${c.s('commun.sommaire')}">
-      <p><strong>${c.t('commun.sommaire')}</strong></p>
-      <ul>${navigation(c).map((k) => html`<li>${c.lien(k)}</li>`)}<li>${c.lien('reserver', { ancre: 'formulaire' })}</li></ul>
+    <nav class="pied2__bloc" aria-label="${c.s('commun.sommaire')}">
+      <p class="pied2__t">${c.t('commun.piedSite')}</p>
+      <ul class="pied2__liens">${navigation(c).map((k) => html`<li>${c.lien(k)}</li>`)}<li>${c.lien('reserver', { ancre: 'formulaire' })}</li></ul>
     </nav>
-    <div>
-      <p><strong>${c.t('commun.confort')}</strong></p>
-      <ul>
+    <div class="pied2__bloc">
+      <p class="pied2__t">${c.t('commun.piedSuivre')}</p>
+      <p class="pied2__reseaux"><a class="pied2__reseau" href="${c.site.contact.instagram}" target="_blank" rel="noopener" aria-label="${c.s('commun.instagram')}">${brut(ICONES.instagram)}<span>Instagram</span></a><a class="pied2__reseau" href="${c.site.contact.facebook}" target="_blank" rel="noopener" aria-label="${c.s('commun.facebook')}">${brut(ICONES.facebook)}<span>Facebook</span></a></p>
+      <p class="pied2__t pied2__t--confort">${c.t('commun.confort')}</p>
+      <ul class="pied2__confort">
         <li><button type="button" class="lien" data-calme-bascule data-libelle-reduire="${c.s('commun.calmeReduire')}" data-libelle-retablir="${c.s('commun.calmeRetablir')}" data-libelle-systeme="${c.s('commun.calmeSysteme')}"><span data-libelle-bouton>${c.t('commun.calmeReduire')}</span></button></li>
-        <li><a href="#haut" data-sans-transition>${c.t('commun.retourHaut')}</a></li>
+        <li><a class="pied2__haut" href="#haut" data-sans-transition><span class="pied2__haut-icone">${brut(ICONES.haut)}</span>${c.t('commun.retourHaut')}</a></li>
       </ul>
     </div>
   </div>
-  <div class="conteneur pied-bas"><p>${c.t('commun.maquette')}</p><p>${c.t('commun.mentionIaPied')}</p><p>${c.t('commun.mentionsLegales')} · ${c.t('commun.confidentialite')}</p><p>© ${c.site.nom}</p></div>
+  <p class="pied2__marque" aria-hidden="true" data-pied-marque>${c.site.nom}</p>
+  <div class="conteneur pied-bas pied2__bas"><p>${c.t('commun.maquette')}</p><p>${c.t('commun.mentionIaPied')}</p><p>${c.t('commun.mentionsLegales')} · ${c.t('commun.confidentialite')}</p><p>© ${c.site.nom}</p></div>
 </footer>`;
 }
 
