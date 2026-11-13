@@ -1,0 +1,18 @@
+{
+ "id": "20261113-143339-complet-cible-partiel",
+ "date": "2026-11-13T14:34:46.282Z",
+ "niveau": "complet",
+ "pages": "/a-emporter",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "ecran",
+  "mouvement"
+ ],
+ "version": "7",
+ "echecs": 1,
+ "aRegarder": 0,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "échecs"
+}

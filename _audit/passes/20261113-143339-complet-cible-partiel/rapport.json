@@ -1,0 +1,64 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "section sans visuel",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1280×720",
+      "mode": "normal",
+      "selecteur": "section#commande « Ma commande Votre commande est vide : ajoutez un p »",
+      "lieux": [
+        "1280×720 normal",
+        "1366×768 normal",
+        "1000×560 normal",
+        "1024×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1920×1080 normal",
+        "1024×768 calme",
+        "2560×1440 normal",
+        "1024×768 sansWebgl",
+        "1000×560 calme",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 calme",
+        "1366×768 sansWebgl",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "2560×1440 calme",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    }
+  ],
+  "aRegarder": [],
+  "nonLances": [],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "mesures": 32,
+    "balayage": 1,
+    "mouvement": 2,
+    "effets du plan": 28
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=7",
+    "Journal v7 : 13 étape(s) notée(s), 532 min de travail pour 515 min de budget, 0 min d’attente de l’utilisateur.",
+    "Journal : « audit standard (deux passages) et corrections » 79 min pour 35 prévues.",
+    "Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.",
+    "Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.",
+    "Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.",
+    "Tient dans l'écran /a-emporter : aucune section épinglée ou plein écran."
+  ],
+  "grille": []
+}

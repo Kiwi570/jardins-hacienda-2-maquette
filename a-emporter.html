@@ -290,9 +290,12 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 </section>
 <section class="emp-commande" id="commande" aria-labelledby="commande-titre">
   <div class="conteneur emp-commande__grille">
-    <form class="emp-form" data-emp-form action="#commande" novalidate>
-      <p class="surtitre">Votre commande</p>
-      <h2 id="commande-titre" data-anime="lignes">Le retrait</h2>
+    <form class="emp-form" id="emp-commande-form" data-emp-form action="#commande" novalidate>
+      <div class="emp-form__intro">
+        <p class="surtitre">Votre commande</p>
+        <h2 id="commande-titre" data-anime="lignes">Le retrait</h2>
+      </div>
+      <div class="emp-form__etape" data-form-etape="retrait">
       <p class="emp-form__texte">Au restaurant, 6 Vathier Haye à Moineville, pendant les horaires d&#39;ouverture : le midi le mercredi, le jeudi, le vendredi et le dimanche, le soir le vendredi et le samedi. Heures exactes à confirmer.</p>
       <fieldset class="emp-calendrier" data-emp-calendrier data-visuel>
     <legend>Jour de retrait <span class="emp-calendrier__mois">décembre 2026</span></legend>
@@ -306,6 +309,8 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         <label class="puce"><input type="radio" name="moment" value="soir" disabled><span>Soir</span></label>
       </fieldset>
       <p class="emp-form__erreur" data-erreur="moment" hidden>Choisissez le midi ou le soir.</p>
+      </div>
+      <div class="emp-form__etape" data-form-etape="coordonnees">
       <fieldset class="emp-form__coord">
         <legend>Vos coordonnées</legend>
         <label><span>Prénom</span><input name="prenom" autocomplete="given-name" required></label>
@@ -315,7 +320,8 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       </fieldset>
       <p class="emp-form__note">Vos coordonnées servent uniquement à préparer votre commande. Paiement au retrait : à confirmer avec le restaurant.</p>
       <p class="emp-form__erreur" data-erreur="panier" hidden>Ajoutez au moins un produit.</p>
-      <button type="submit" class="bouton">Valider ma commande</button>
+      <button type="submit" class="bouton emp-form__envoyer">Valider ma commande</button>
+      </div>
       <div class="emp-form__merci" data-emp-merci role="status" tabindex="-1" hidden></div>
     </form>
     <aside class="emp-panier" data-emp-panier aria-labelledby="panier-titre">
@@ -332,22 +338,33 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <div class="emp-tiroir__voile" data-tiroir-fermer aria-hidden="true"></div>
   <div class="emp-tiroir__panneau">
     <div class="emp-tiroir__tete">
+      <button type="button" class="emp-tiroir__retour" data-tiroir-retour aria-label="Étape précédente"><span aria-hidden="true">←</span></button>
       <div>
-        <h2 id="tiroir-titre" class="emp-tiroir__titre">Ma commande</h2>
+        <h2 id="tiroir-titre" class="emp-tiroir__titre" tabindex="-1" data-tiroir-titre data-panier="Ma commande" data-retrait="Le retrait" data-coordonnees="Vos coordonnées" data-merci="Merci !">Ma commande</h2>
         <p class="emp-tiroir__nombre" data-tiroir-nombre></p>
       </div>
       <button type="button" class="emp-tiroir__fermer" data-tiroir-fermer autofocus aria-label="Fermer la commande"><span aria-hidden="true">×</span></button>
     </div>
+    <ol class="emp-tiroir__fil" aria-label="Étapes de la commande">
+      <li data-fil="panier"><span>1</span>Commande</li>
+      <li data-fil="retrait"><span>2</span>Retrait</li>
+      <li data-fil="coordonnees"><span>3</span>Coordonnées</li>
+    </ol>
     <p class="emp-tiroir__ajoute" data-tiroir-ajoute role="status" hidden></p>
     <div class="emp-tiroir__defile" data-defilable>
-      <ul class="emp-tiroir__lignes" data-tiroir-lignes></ul>
-      <p class="emp-tiroir__vide" data-tiroir-vide hidden>Votre commande est vide : ajoutez un produit.</p>
+      <div class="emp-tiroir__vue" data-vue="panier">
+        <ul class="emp-tiroir__lignes" data-tiroir-lignes></ul>
+        <p class="emp-tiroir__vide" data-tiroir-vide hidden>Votre commande est vide : ajoutez un produit.</p>
+      </div>
+      <div class="emp-tiroir__vue" data-vue="formulaire" data-tiroir-form></div>
     </div>
     <div class="emp-tiroir__pied">
       <p class="emp-tiroir__total"><span>Total</span><strong data-tiroir-total>0 €</strong></p>
-      <p class="emp-tiroir__retrait" data-tiroir-retrait>À retirer au restaurant, du samedi 5 décembre au jeudi 31 décembre : jour et moment à choisir à l&#39;étape suivante.</p>
-      <a class="bouton emp-tiroir__valider" href="#commande" data-tiroir-valider data-sans-transition>Choisir le jour de retrait</a>
-      <button type="button" class="emp-tiroir__continuer" data-tiroir-fermer>Continuer mes achats</button>
+      <p class="emp-tiroir__retrait" data-tiroir-retrait data-defaut="À retirer au restaurant, du samedi 5 décembre au jeudi 31 décembre : jour et moment à choisir à l&#39;étape suivante.">À retirer au restaurant, du samedi 5 décembre au jeudi 31 décembre : jour et moment à choisir à l&#39;étape suivante.</p>
+      <a class="bouton emp-tiroir__valider" href="#commande" data-tiroir-valider data-pied="panier" data-sans-transition>Choisir le jour de retrait</a>
+      <button type="button" class="bouton emp-tiroir__valider" data-tiroir-suite data-pied="retrait">Continuer</button>
+      <button type="submit" form="emp-commande-form" class="bouton emp-tiroir__valider" data-pied="coordonnees">Valider ma commande</button>
+      <button type="button" class="emp-tiroir__continuer" data-tiroir-fermer data-pied="panier merci">Continuer mes achats</button>
     </div>
   </div>
 </dialog>

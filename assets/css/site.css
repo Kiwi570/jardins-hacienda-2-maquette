@@ -2810,3 +2810,53 @@ html[data-entete-theme="nuit"] [data-nav] a::after, html[data-theme="nuit"]:not(
 .emp-vol-plat { position: fixed; z-index: 5; margin: 0; pointer-events: none; transform-origin: 50% 50%; object-fit: contain; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .35)); }
 @media (prefers-reduced-motion: reduce) { .emp-tiroir__voile, .emp-tiroir__panneau { transition: none; } .emp-tl.est-nouvelle, .emp-tiroir__ajoute { animation: none; } }
 html.calme .emp-tiroir__voile, html.calme .emp-tiroir__panneau { transition: none; }
+
+/* v7.5.12 · Le panneau en trois étapes : fil Commande · Retrait · Coordonnées, flèche de retour, et le formulaire du
+   retrait (calendrier, moment, coordonnées) en version claire dans le panneau. */
+[data-pied][hidden], .emp-tiroir__retour[hidden] { display: none !important; }
+.emp-tiroir[data-pas="panier"] [data-vue="formulaire"], .emp-tiroir:not([data-pas="panier"]) [data-vue="panier"] { display: none; }
+.emp-tiroir__retour { flex: none; width: 46px; height: 46px; display: grid; place-items: center; padding: 0; border: 1px solid rgba(28, 23, 18, .25); border-radius: 50%; background: transparent; color: #1c1712; font-size: 1.25rem; cursor: pointer; transition: background .2s, transform .25s; }
+.emp-tiroir__retour:hover { background: #1c1712; color: #f6f1e7; transform: translateX(-2px); }
+.emp-tiroir__retour:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 2px; }
+.emp-tiroir__titre:focus { outline: none; }
+.emp-tiroir__fil { list-style: none; display: flex; align-items: center; gap: 6px; margin: 0; padding: 12px 28px; border-bottom: 1px solid rgba(28, 23, 18, .1); color: #66574a; font-size: .86rem; font-weight: 600; }
+.emp-tiroir__fil li { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.emp-tiroir__fil li:not(:last-child) { flex: 1; }
+.emp-tiroir__fil li:not(:last-child)::after { content: ''; flex: 1; min-width: 10px; height: 1.5px; margin-left: 4px; border-radius: 2px; background: #dccdb4; transition: background .35s; }
+.emp-tiroir__fil span { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px #cdbb9f; font-size: .76rem; transition: background .3s, color .3s; }
+.emp-tiroir__fil li[aria-current] { color: #1c1712; }
+.emp-tiroir__fil li[aria-current] span { background: var(--rouge); color: #fff; box-shadow: none; }
+.emp-tiroir__fil li.est-fait span { background: #2f5a43; color: #fff; box-shadow: none; }
+.emp-tiroir__fil li.est-fait::after { background: #2f5a43; }
+.emp-tiroir .emp-form { color: #1c1712; padding: 4px 0 8px; }
+.emp-tiroir .emp-form__intro, .emp-tiroir .emp-form__envoyer { display: none; }
+.emp-tiroir .emp-form__texte { margin: 18px 0 20px; color: #4d4237; font-size: .95rem; line-height: 1.5; }
+.emp-tiroir .emp-form fieldset { margin-bottom: 1.2em; }
+.emp-tiroir .emp-form legend { color: #1c1712; font-size: 1.15rem; }
+.emp-tiroir .emp-calendrier__mois { color: #9a5a12; }
+.emp-tiroir .emp-calendrier__tete, .emp-tiroir .emp-calendrier__jours { max-width: none; gap: 5px; }
+.emp-tiroir .emp-calendrier__tete span { color: #66574a; }
+.emp-tiroir .emp-jour--hors, .emp-tiroir .emp-jour--ferme { color: #7d6e60; }
+.emp-tiroir label.emp-jour { background: #fff; color: #1c1712; box-shadow: inset 0 0 0 1px #dccdb4; }
+.emp-tiroir label.emp-jour:hover { background: #f3e7d3; }
+.emp-tiroir label.emp-jour:has(input:checked) { background: #1c1712; color: #fff; box-shadow: none; }
+.emp-tiroir label.emp-jour:has(input:focus-visible) { outline-color: var(--or-fonce); }
+.emp-tiroir label.emp-jour.est-passe { background: transparent; box-shadow: none; color: #7d6e60; }
+.emp-tiroir .emp-form__moment .puce span { background: #fff; color: #1c1712; box-shadow: inset 0 0 0 1px #cdbb9f; }
+.emp-tiroir .emp-form__moment .puce input:checked + span { background: #1c1712; color: #fff; box-shadow: none; }
+.emp-tiroir .emp-form__moment .puce input:focus-visible + span { outline-color: var(--or-fonce); }
+.emp-tiroir .emp-form__coord { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 14px; margin-top: 18px; }
+.emp-tiroir .emp-form__coord label { color: #1c1712; }
+.emp-tiroir .emp-form__coord input { border-color: #d6c6ab; background: #fff; color: #1c1712; border-radius: 12px; }
+.emp-tiroir .emp-form__coord input:focus-visible { outline-color: var(--rouge); }
+.emp-tiroir .emp-form__coord input[aria-invalid="true"] { border-color: #c0392b; }
+.emp-tiroir .emp-form__note { color: #66574a; font-size: .88rem; }
+.emp-tiroir .emp-form__erreur { color: #a3261f; font-weight: 600; }
+.emp-tiroir .emp-form__merci { margin-top: 20px; padding: 20px 20px 18px; border-radius: 14px; border-left: 4px solid #2f5a43; background: #fff; color: #1c1712; line-height: 1.5; }
+.emp-tiroir .emp-form__merci p { margin: 0 0 .6em; }
+.emp-tiroir .emp-form__merci p:last-child { margin: 0; color: #66574a; font-size: .92rem; }
+.emp-tiroir .emp-form__coord label { min-width: 0; }
+.emp-tiroir .emp-form__coord input { width: 100%; min-width: 0; box-sizing: border-box; }
+/* Dans le panneau, le titre dit déjà « Vos coordonnées » : la légende reste pour les lecteurs d'écran. */
+.emp-tiroir .emp-form__coord legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.emp-tiroir .emp-form__coord { margin-top: 22px; }

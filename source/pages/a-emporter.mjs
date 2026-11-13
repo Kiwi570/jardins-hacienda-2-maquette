@@ -6,7 +6,9 @@
    illustration (pas de photo détourée des produits pour l'instant), la cloche se soulève au survol, s'ouvre au toucher, et
    la vapeur monte des plats chauds. Dessins et cloche : source/gabarits/cloches.svg.
    v7.5.11 · Le tiroir de la commande : à chaque ajout (ou depuis la pastille), la commande s'ouvre dans un panneau à droite
-   (dialog modal : Échap, clic à côté, focus gardé dedans puis rendu) ; le plat s'envole de sa cloche jusqu'à sa ligne. */
+   (dialog modal : Échap, clic à côté, focus gardé dedans puis rendu) ; le plat s'envole de sa cloche jusqu'à sa ligne.
+   v7.5.12 · La commande se termine dans le panneau, en trois étapes (commande, retrait, coordonnées) : le formulaire de la
+   section « Le retrait » y est déplacé au chargement (sans JavaScript, il reste dans la page). */
 import { readFileSync, existsSync } from 'node:fs';
 import { html, brut } from '../../outils/gabarit.mjs';
 
@@ -115,9 +117,12 @@ export default (c) => {
 
 <section class="emp-commande" id="commande" aria-labelledby="commande-titre">
   <div class="conteneur emp-commande__grille">
-    <form class="emp-form" data-emp-form action="#commande" novalidate>
-      <p class="surtitre">${c.t('emporter.commandeSur')}</p>
-      <h2 id="commande-titre" data-anime="lignes">${c.t('emporter.retraitTitre')}</h2>
+    <form class="emp-form" id="emp-commande-form" data-emp-form action="#commande" novalidate>
+      <div class="emp-form__intro">
+        <p class="surtitre">${c.t('emporter.commandeSur')}</p>
+        <h2 id="commande-titre" data-anime="lignes">${c.t('emporter.retraitTitre')}</h2>
+      </div>
+      <div class="emp-form__etape" data-form-etape="retrait">
       <p class="emp-form__texte">${c.t('emporter.retraitTexte')}</p>
       ${calendrier(c, E)}
       <p class="emp-form__erreur" data-erreur="jour" hidden>${c.t('emporter.choisirJour')}</p>
@@ -127,6 +132,8 @@ export default (c) => {
         <label class="puce"><input type="radio" name="moment" value="soir" disabled><span>${c.t('emporter.soir')}</span></label>
       </fieldset>
       <p class="emp-form__erreur" data-erreur="moment" hidden>${c.t('emporter.choisirMoment')}</p>
+      </div>
+      <div class="emp-form__etape" data-form-etape="coordonnees">
       <fieldset class="emp-form__coord">
         <legend>${c.t('emporter.coordonnees')}</legend>
         <label><span>${c.t('emporter.prenom')}</span><input name="prenom" autocomplete="given-name" required></label>
@@ -136,7 +143,8 @@ export default (c) => {
       </fieldset>
       <p class="emp-form__note">${c.t('emporter.donnees')} ${c.t('emporter.paiement')}</p>
       <p class="emp-form__erreur" data-erreur="panier" hidden>${c.t('emporter.choisirProduit')}</p>
-      <button type="submit" class="bouton">${c.t('emporter.valider')}</button>
+      <button type="submit" class="bouton emp-form__envoyer">${c.t('emporter.valider')}</button>
+      </div>
       <div class="emp-form__merci" data-emp-merci role="status" tabindex="-1" hidden></div>
     </form>
     <aside class="emp-panier" data-emp-panier aria-labelledby="panier-titre">
@@ -154,22 +162,33 @@ export default (c) => {
   <div class="emp-tiroir__voile" data-tiroir-fermer aria-hidden="true"></div>
   <div class="emp-tiroir__panneau">
     <div class="emp-tiroir__tete">
+      <button type="button" class="emp-tiroir__retour" data-tiroir-retour aria-label="${c.s('emporter.tiroirRetour')}"><span aria-hidden="true">←</span></button>
       <div>
-        <h2 id="tiroir-titre" class="emp-tiroir__titre">${c.t('emporter.panierTitre')}</h2>
+        <h2 id="tiroir-titre" class="emp-tiroir__titre" tabindex="-1" data-tiroir-titre data-panier="${c.s('emporter.panierTitre')}" data-retrait="${c.s('emporter.retraitTitre')}" data-coordonnees="${c.s('emporter.coordonnees')}" data-merci="${c.s('emporter.tiroirMerciTitre')}">${c.t('emporter.panierTitre')}</h2>
         <p class="emp-tiroir__nombre" data-tiroir-nombre></p>
       </div>
       <button type="button" class="emp-tiroir__fermer" data-tiroir-fermer autofocus aria-label="${c.s('emporter.tiroirFermer')}"><span aria-hidden="true">×</span></button>
     </div>
+    <ol class="emp-tiroir__fil" aria-label="${c.s('emporter.tiroirEtapes')}">
+      <li data-fil="panier"><span>1</span>${c.t('emporter.tiroirFilCommande')}</li>
+      <li data-fil="retrait"><span>2</span>${c.t('emporter.tiroirFilRetrait')}</li>
+      <li data-fil="coordonnees"><span>3</span>${c.t('emporter.tiroirFilCoordonnees')}</li>
+    </ol>
     <p class="emp-tiroir__ajoute" data-tiroir-ajoute role="status" hidden></p>
     <div class="emp-tiroir__defile" data-defilable>
-      <ul class="emp-tiroir__lignes" data-tiroir-lignes></ul>
-      <p class="emp-tiroir__vide" data-tiroir-vide hidden>${c.t('emporter.panierVide')}</p>
+      <div class="emp-tiroir__vue" data-vue="panier">
+        <ul class="emp-tiroir__lignes" data-tiroir-lignes></ul>
+        <p class="emp-tiroir__vide" data-tiroir-vide hidden>${c.t('emporter.panierVide')}</p>
+      </div>
+      <div class="emp-tiroir__vue" data-vue="formulaire" data-tiroir-form></div>
     </div>
     <div class="emp-tiroir__pied">
       <p class="emp-tiroir__total"><span>${c.t('emporter.total')}</span><strong data-tiroir-total>0 €</strong></p>
-      <p class="emp-tiroir__retrait" data-tiroir-retrait>${c.s('emporter.tiroirRetrait', { debut: jourLong(E.debut), fin: jourLong(E.fin) })}</p>
-      <a class="bouton emp-tiroir__valider" href="#commande" data-tiroir-valider data-sans-transition>${c.t('emporter.tiroirValider')}</a>
-      <button type="button" class="emp-tiroir__continuer" data-tiroir-fermer>${c.t('emporter.tiroirContinuer')}</button>
+      <p class="emp-tiroir__retrait" data-tiroir-retrait data-defaut="${c.s('emporter.tiroirRetrait', { debut: jourLong(E.debut), fin: jourLong(E.fin) })}">${c.s('emporter.tiroirRetrait', { debut: jourLong(E.debut), fin: jourLong(E.fin) })}</p>
+      <a class="bouton emp-tiroir__valider" href="#commande" data-tiroir-valider data-pied="panier" data-sans-transition>${c.t('emporter.tiroirValider')}</a>
+      <button type="button" class="bouton emp-tiroir__valider" data-tiroir-suite data-pied="retrait">${c.t('emporter.tiroirSuite')}</button>
+      <button type="submit" form="emp-commande-form" class="bouton emp-tiroir__valider" data-pied="coordonnees">${c.t('emporter.valider')}</button>
+      <button type="button" class="emp-tiroir__continuer" data-tiroir-fermer data-pied="panier merci">${c.t('emporter.tiroirContinuer')}</button>
     </div>
   </div>
 </dialog>

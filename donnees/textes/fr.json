@@ -1002,6 +1002,14 @@
     "tiroirKg": "{prix} le kg",
     "tiroirRetrait": "À retirer au restaurant, du {debut} au {fin} : jour et moment à choisir à l'étape suivante.",
     "tiroirValider": "Choisir le jour de retrait",
-    "tiroirContinuer": "Continuer mes achats"
+    "tiroirContinuer": "Continuer mes achats",
+    "tiroirRetour": "Étape précédente",
+    "tiroirEtapes": "Étapes de la commande",
+    "tiroirFilCommande": "Commande",
+    "tiroirFilRetrait": "Retrait",
+    "tiroirFilCoordonnees": "Coordonnées",
+    "tiroirSuite": "Continuer",
+    "tiroirMerciTitre": "Merci !",
+    "tiroirRecap": "{total} · retrait {retrait}"
   }
 }

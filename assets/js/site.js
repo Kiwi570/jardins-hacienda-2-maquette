@@ -1045,7 +1045,33 @@ function emporter() {
     tVide.hidden = lignes.length > 0;
     tTotal.textContent = euros(total());
     const n = nombre(); tNombre.textContent = n === 1 ? T.tiroirNombreUn : fmt(T.tiroirNombre, { n });
-    $('[data-tiroir-valider]', tiroir).hidden = !lignes.length;
+    majPied();
+  };
+  /* v7.5.12 · Les étapes du panneau : commande, retrait (calendrier et moment), coordonnées, puis le merci. */
+  const ORDRE = ['panier', 'retrait', 'coordonnees'];
+  const titreT = dansTiroir('[data-tiroir-titre]'), retourT = dansTiroir('[data-tiroir-retour]'), tRetrait = dansTiroir('[data-tiroir-retrait]');
+  const pasActuel = () => (tiroir && tiroir.dataset.pas) || 'panier';
+  const majPied = () => {
+    if (!tiroir) return;
+    const nom = pasActuel();
+    for (const b of $$('[data-pied]', tiroir)) b.hidden = !b.dataset.pied.split(' ').includes(nom) || (nom === 'panier' && b.hasAttribute('data-tiroir-valider') && !lignes.length);
+  };
+  const etape = (nom, { focus = true } = {}) => {
+    if (!tiroir) return;
+    tiroir.dataset.pas = nom;
+    titreT.textContent = titreT.dataset[nom];
+    const k = ORDRE.indexOf(nom);
+    for (const li of $$('[data-fil]', tiroir)) {
+      const i = ORDRE.indexOf(li.dataset.fil);
+      li.classList.toggle('est-fait', nom === 'merci' || i < k);
+      if (li.dataset.fil === nom) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+    }
+    for (const d of $$('[data-form-etape]', form)) d.hidden = d.dataset.formEtape !== nom;
+    retourT.hidden = nom === 'panier' || nom === 'merci';
+    if (nom !== 'panier') tAjoute.hidden = true;
+    majPied(); retrait();
+    dansTiroir('.emp-tiroir__defile').scrollTop = 0;
+    if (focus) titreT.focus({ preventScroll: true });
   };
   /* Après un rendu, le focus revient sur le même bouton de la même ligne (ou sur la fermeture si la ligne a disparu). */
   const garderFocus = (faire) => {
@@ -1079,10 +1105,11 @@ function emporter() {
   };
   /* Ouvrir et fermer le tiroir (dialog modal : focus gardé dedans, Échap ; le défilement de la page est bloqué). */
   let declencheur = null, minuteFermeture = 0;
-  const ouvrir = (depuis) => {
+  const ouvrir = (depuis, nom) => {
     if (!tiroir) return false;
     clearTimeout(minuteFermeture);
     declencheur = depuis || document.activeElement;
+    if (nom || pasActuel() === 'merci') etape(nom || 'panier', { focus: false });
     if (!tiroir.open) {
       tiroir.showModal(); bloquerDefilement('tiroir');
       if (etat.calme) tiroir.classList.add('est-ouvert'); else requestAnimationFrame(() => requestAnimationFrame(() => tiroir.classList.add('est-ouvert')));
@@ -1099,10 +1126,19 @@ function emporter() {
   if (tiroir) {
     tiroir.addEventListener('cancel', (e) => { e.preventDefault(); fermer(); });
     for (const b of $$('[data-tiroir-fermer]', tiroir)) b.addEventListener('click', () => fermer());
-    $('[data-tiroir-valider]', tiroir).addEventListener('click', (e) => {
-      e.preventDefault();
-      fermer(() => { aller($('#commande')); const j = $('[name="jour"]:checked, [name="jour"]:not(:disabled)', form); if (j) setTimeout(() => j.focus({ preventScroll: true }), etat.calme ? 0 : 700); });
+    $('[data-tiroir-valider]', tiroir).addEventListener('click', (e) => { e.preventDefault(); if (lignes.length) etape('retrait'); });
+    retourT.addEventListener('click', () => etape(ORDRE[Math.max(0, ORDRE.indexOf(pasActuel()) - 1)]));
+    $('[data-tiroir-suite]', tiroir).addEventListener('click', () => {
+      const jour = $('[name="jour"]:checked', form), moment = $('[name="moment"]:checked', form);
+      $('[data-erreur="jour"]', form).hidden = !!jour; $('[data-erreur="moment"]', form).hidden = !!moment;
+      if (jour && moment) { etape('coordonnees'); return; }
+      const cible = !jour ? ($('[name="jour"]:not(:disabled)', form)) : $('[name="moment"]:not(:disabled)', form);
+      $(`[data-erreur="${!jour ? 'jour' : 'moment'}"]`, form).scrollIntoView({ block: 'center', behavior: etat.calme ? 'auto' : 'smooth' });
+      if (cible) cible.focus({ preventScroll: true });
     });
+    /* Le formulaire de la section « Le retrait » passe dans le panneau ; la section disparaît de la page. */
+    $('[data-tiroir-form]', tiroir).append(form);
+    $('#commande').remove();
     pastille.addEventListener('click', (e) => { e.preventDefault(); ouvrir(pastille); });
   }
   /* Le plat s'envole de sa cloche jusqu'à sa vignette dans le tiroir (qui glisse encore : on vise sa position finale). */
@@ -1141,7 +1177,7 @@ function emporter() {
     if (l) l.qte++; else lignes.push(poids ? { id, poids, qte: 1 } : { id, qte: 1 });
     nouvelle = `${id}|${poids || 0}`; const cle = nouvelle;
     garder(); rendre();
-    if (ouvrir(b)) {
+    if (ouvrir(b, 'panier')) {
       tAjoute.textContent = fmt(T.tiroirAjoute, { nom: nomLigne({ id, poids }) }); tAjoute.hidden = false;
       envolPlat(carte, cle);
     } else envol(b);
@@ -1151,7 +1187,8 @@ function emporter() {
     $('[data-erreur="panier"]', form).hidden = true;
   });
   addEventListener('storage', (e) => { if (e.key !== CLE) return; try { lignes = JSON.parse(e.newValue || '[]'); } catch { lignes = []; } rendre(); });
-  new IntersectionObserver(([e]) => { commandeVue = e.isIntersecting; rendre(); }, { threshold: 0.12 }).observe($('#commande'));
+  const sectionCommande = $('#commande');
+  if (sectionCommande) new IntersectionObserver(([e]) => { commandeVue = e.isIntersecting; rendre(); }, { threshold: 0.12 }).observe(sectionCommande);
   /* Jour et moment : jours passés grisés à la date réelle, midi ou soir selon les horaires du jour choisi. */
   const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date());
   const jours = $$('[name="jour"]', form), moments = $$('[name="moment"]', form);
@@ -1159,6 +1196,7 @@ function emporter() {
   const retrait = () => {
     const j = $('[name="jour"]:checked', form), m = $('[name="moment"]:checked', form);
     retraitEl.textContent = j && m ? fmt(T.retraitPanier, { retrait: fmt(T.retrait, { jour: j.dataset.libelle, moment: T[m.value] }) }) : T.retraitAChoisir;
+    if (tRetrait) tRetrait.textContent = pasActuel() === 'panier' ? tRetrait.dataset.defaut : retraitEl.textContent;
   };
   form.addEventListener('change', (e) => {
     if (e.target.name === 'jour') {
@@ -1168,6 +1206,8 @@ function emporter() {
       $('[data-erreur="jour"]', form).hidden = true;
     }
     if (e.target.name === 'moment') $('[data-erreur="moment"]', form).hidden = true;
+    /* Un seul moment possible ce jour-là : il est coché d'office, son message d'erreur disparaît aussi. */
+    if ($('[name="moment"]:checked', form)) $('[data-erreur="moment"]', form).hidden = true;
     retrait();
   });
   form.addEventListener('submit', (e) => {
@@ -1178,6 +1218,12 @@ function emporter() {
     let premierChamp = null;
     for (const i of $$('input[required]', form)) { const ok = !!i.value.trim(); i.setAttribute('aria-invalid', ok ? 'false' : 'true'); if (!ok && !premierChamp) premierChamp = i; }
     if (manques.length || premierChamp) {
+      if (tiroir && tiroir.open) {
+        if (manques.includes('panier')) etape('panier');
+        else if (manques.length) { etape('retrait', { focus: false }); const c = $(`[data-erreur="${manques[0]}"]`, form); c.hidden = false; c.scrollIntoView({ block: 'center' }); const i = $(manques[0] === 'jour' ? '[name="jour"]:not(:disabled)' : '[name="moment"]:not(:disabled)', form); if (i) i.focus({ preventScroll: true }); }
+        else premierChamp.focus();
+        return;
+      }
       const cible = manques.includes('panier') ? $('#produits') : manques.length ? $(`[data-erreur="${manques[0]}"]`, form) : premierChamp;
       if (cible === premierChamp) premierChamp.focus(); else amenerDansEcran(cible, true);
       return;
@@ -1187,9 +1233,10 @@ function emporter() {
     merci.innerHTML = '<p><strong></strong></p><p></p>';
     merci.querySelector('strong').textContent = fmt(T.recap, { produits, total: euros(total()), retrait: fmt(T.retrait, { jour: j.dataset.libelle, moment: T[m.value] }) });
     merci.querySelector('p + p').textContent = T.simule;
+    if (tiroir && tiroir.open) etape('merci', { focus: false });
     merci.hidden = false; merci.focus();
   });
-  rendre(); retrait();
+  rendre(); if (tiroir) etape('panier', { focus: false }); retrait();
 }
 
 /* v7.5 · Réceptions, « Ce que l'on fête ici » : le défilement par paliers de la maquette de référence (une occasion par palier). */

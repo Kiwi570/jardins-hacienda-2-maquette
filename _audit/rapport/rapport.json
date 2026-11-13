@@ -8,10 +8,12 @@
     "robots.txt": 1,
     "numéro de version": 1,
     "langues": 1,
-    "mesures": 32,
-    "balayage": 1,
-    "mouvement": 2,
-    "effets du plan": 28
+    "mesures": 64,
+    "balayage": 2,
+    "tient dans l’écran": 8,
+    "mouvement": 4,
+    "effets du plan": 28,
+    "souris immobile": 3
   },
   "infos": [
     "Numéro de version des fichiers : ?v=7",
