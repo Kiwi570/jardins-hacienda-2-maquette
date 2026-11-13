@@ -1,0 +1,560 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "escargots-480.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche.est-devant:nth-of-type(1) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "1366×768 normal",
+        "1024×768 normal",
+        "1280×720 normal",
+        "1000×560 normal",
+        "1920×1080 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1024×768 calme",
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1024×768 sansWebgl",
+        "1000×560 calme",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1366×768 sansWebgl",
+        "1440×900 calme",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "1920×1080 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "tourte-escargots-480.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche:nth-of-type(2) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "1366×768 normal",
+        "1024×768 normal",
+        "1280×720 normal",
+        "1000×560 normal",
+        "1920×1080 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1024×768 calme",
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1024×768 sansWebgl",
+        "1000×560 calme",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1366×768 sansWebgl",
+        "1440×900 calme",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "1920×1080 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "tourte-grenouilles-480.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche:nth-of-type(3) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "1366×768 normal",
+        "1024×768 normal",
+        "1280×720 normal",
+        "1000×560 normal",
+        "1920×1080 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1024×768 calme",
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1024×768 sansWebgl",
+        "1000×560 calme",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1366×768 sansWebgl",
+        "1440×900 calme",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "1920×1080 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "pate-lorrain-480.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche:nth-of-type(4) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "1366×768 normal",
+        "1024×768 normal",
+        "1280×720 normal",
+        "1000×560 normal",
+        "1920×1080 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1024×768 calme",
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1024×768 sansWebgl",
+        "1000×560 calme",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1366×768 sansWebgl",
+        "1440×900 calme",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "1920×1080 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "foie-gras-480.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche:nth-of-type(5) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "1366×768 normal",
+        "1024×768 normal",
+        "1280×720 normal",
+        "1000×560 normal",
+        "1920×1080 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1024×768 calme",
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1024×768 sansWebgl",
+        "1000×560 calme",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1366×768 sansWebgl",
+        "1440×900 calme",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "1920×1080 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "gravlax-480.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche:nth-of-type(6) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "1366×768 normal",
+        "1024×768 normal",
+        "1280×720 normal",
+        "1000×560 normal",
+        "1920×1080 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "1024×768 calme",
+        "1024×768 sansJs",
+        "1000×560 sansJs",
+        "1024×768 sansWebgl",
+        "1000×560 calme",
+        "1280×720 sansJs",
+        "1280×720 calme",
+        "1000×560 sansWebgl",
+        "1366×768 sansJs",
+        "1366×768 calme",
+        "1280×720 sansWebgl",
+        "1440×900 sansJs",
+        "1366×768 sansWebgl",
+        "1440×900 calme",
+        "1728×1000 sansJs",
+        "1728×1000 calme",
+        "1440×900 sansWebgl",
+        "1920×1080 sansJs",
+        "1920×1080 calme",
+        "1728×1000 sansWebgl",
+        "1920×1080 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche.est-devant:nth-of-type(1) > button.ronde__bouton « Escargots à la crème d'ail : voir dans la vitrine »",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-traiteur__grille > div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(2)",
+      "lieux": [
+        "1366×768 normal",
+        "1920×1080 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche.est-devant:nth-of-type(1) > button.ronde__bouton « Escargots à la crème d'ail : voir dans la vitrine »",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(2) > button.ronde__bouton « Tourte aux escargots : voir dans la vitrine »",
+      "lieux": [
+        "1366×768 normal",
+        "1920×1080 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(2) > button.ronde__bouton « Tourte aux escargots : voir dans la vitrine »",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-traiteur__grille > div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(3)",
+      "lieux": [
+        "1366×768 normal",
+        "1920×1080 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(2) > button.ronde__bouton « Tourte aux escargots : voir dans la vitrine »",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(3) > button.ronde__bouton « Tourte aux grenouilles : voir dans la vitrine »",
+      "lieux": [
+        "1366×768 normal",
+        "1920×1080 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche.est-devant:nth-of-type(1) > button.ronde__bouton « Escargots à la crème d'ail : voir dans la vitrine »",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-traiteur__grille > div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(4)",
+      "lieux": [
+        "1366×768 normal",
+        "1920×1080 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche.est-devant:nth-of-type(1) > button.ronde__bouton « Escargots à la crème d'ail : voir dans la vitrine »",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(4) > button.ronde__bouton « Pâté lorrain : voir dans la vitrine »",
+      "lieux": [
+        "1366×768 normal",
+        "1920×1080 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(6) > button.ronde__bouton « Gravlax de saumon maison : voir dans la vitrine »",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-traiteur__grille > div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(5)",
+      "lieux": [
+        "1366×768 normal",
+        "1920×1080 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(6) > button.ronde__bouton « Gravlax de saumon maison : voir dans la vitrine »",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(5) > button.ronde__bouton « Foie gras de canard maison : voir dans la vitrine »",
+      "lieux": [
+        "1366×768 normal",
+        "1920×1080 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche.est-devant:nth-of-type(1) > button.ronde__bouton « Escargots à la crème d'ail : voir dans la vitrine »",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-traiteur__grille > div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(6)",
+      "lieux": [
+        "1366×768 normal",
+        "1920×1080 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche.est-devant:nth-of-type(1) > button.ronde__bouton « Escargots à la crème d'ail : voir dans la vitrine »",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.ouv-traiteur__scene:nth-of-type(2) > div.ronde > div.ronde__cloche:nth-of-type(6) > button.ronde__bouton « Gravlax de saumon maison : voir dans la vitrine »",
+      "lieux": [
+        "1366×768 normal",
+        "1920×1080 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste sur image",
+      "detail": "1.14:1 sur les 10 % de la photo les moins favorables (minimum 3:1)",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "h1#traiteur-h1 > em « à emporter »",
+      "lieux": [
+        "1366×768 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "escargots-800.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "2560×1440",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche.est-devant:nth-of-type(1) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "2560×1440 normal",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "tourte-escargots-800.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "2560×1440",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche:nth-of-type(2) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "2560×1440 normal",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "tourte-grenouilles-800.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "2560×1440",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche:nth-of-type(3) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "2560×1440 normal",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "pate-lorrain-800.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "2560×1440",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche:nth-of-type(4) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "2560×1440 normal",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "foie-gras-800.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "2560×1440",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche:nth-of-type(5) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "2560×1440 normal",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "mention « Illustration générée » absente",
+      "detail": "gravlax-800.webp",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "2560×1440",
+      "mode": "normal",
+      "selecteur": "div.ronde > div.ronde__cloche:nth-of-type(6) > div.emp-cloche.ronde__verre > img.emp-cloche__plat.emp-cloche__plat--photo",
+      "lieux": [
+        "2560×1440 normal",
+        "2560×1440 sansJs",
+        "2560×1440 calme",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "premier écran : information clé hors de l’écran",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "1000×560",
+      "mode": "sansJs",
+      "selecteur": "section#debut > div.conteneur.ouv-traiteur__grille > div.ouv-traiteur__contenu:nth-of-type(1) > p.ouv-traiteur__info:nth-of-type(4) « Retrait du 5 au 31 décembre · 6 Vathier Haye, Moin »",
+      "lieux": [
+        "1000×560 sansJs"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "section sans effet au défilement",
+      "detail": "aucun élément data-effet (bibliothèque : data-anime=\"lignes|mots|lettres|cascade|rideau\", data-fx ; ou effet du projet marqué data-effet)",
+      "etape": "mouvement",
+      "page": "/a-emporter",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "section#debut.ouv-traiteur",
+      "lieux": [
+        "1366×768 normal",
+        "390×844 normal"
+      ]
+    }
+  ],
+  "aRegarder": [
+    {
+      "niveau": "regarder",
+      "controle": "effet qui ne bouge pas au défilement",
+      "detail": "plan-domaine : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section",
+      "etape": "mouvement",
+      "page": "/infos-pratiques",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.plan-domaine__carte",
+      "lieux": [
+        "1366×768 normal",
+        "390×844 normal"
+      ]
+    }
+  ],
+  "nonLances": [],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "mesures": 64,
+    "balayage": 2,
+    "mouvement": 4,
+    "effets du plan": 28
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=7",
+    "Journal v7 : 13 étape(s) notée(s), 532 min de travail pour 515 min de budget, 0 min d’attente de l’utilisateur.",
+    "Journal : « audit standard (deux passages) et corrections » 79 min pour 35 prévues.",
+    "Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.",
+    "Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.",
+    "Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.",
+    "Tient dans l'écran /a-emporter : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /infos-pratiques : aucune section épinglée ou plein écran."
+  ],
+  "grille": []
+}

@@ -116,31 +116,25 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
 <main id="contenu" tabindex="-1">
-<section class="ouv-infos2" id="debut" aria-labelledby="infos-h1">
-  <div class="conteneur ouv-infos2__grille">
-    <div class="ouv-infos2__texte">
+<section class="ouv-emp ouv-infos3" id="debut" aria-labelledby="infos-h1">
+  <div class="conteneur ouv-emp__grille">
+    <div class="ouv-emp__contenu">
       <p class="surtitre">Infos pratiques</p>
-      <h1 id="infos-h1" data-iris-centre>Horaires, accès et contact</h1>
-      <p class="statut ouv-infos2__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil>Horaires</span></p>
+      <h1 id="infos-h1" class="ouv-emp__titre" data-iris-centre>Venez nous voir <em>à Moineville</em></h1>
+      <p class="ouv-emp__texte">Le restaurant vous attend au 6 Vathier Haye, à 19 km de Metz, 24 km de Thionville et 47 km de Luxembourg à vol d&#39;oiseau. Les horaires de la semaine, l&#39;accès et le plan du domaine sont juste en dessous.</p>
+      <p class="ouv-emp__actions"><a class="bouton" href="tel:+33618212810" data-action-principale>Appeler 06 18 21 28 10</a> <a class="lien-fleche ouv-infos3__lien" href="#ecrire" data-sans-transition>Une question ?</a></p>
+      <p class="ouv-emp__info ouv-infos3__info" data-info-cle><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil>Horaires</span><span aria-hidden="true"> · </span><span>6 Vathier Haye, 54580 Moineville</span></p>
       <script type="application/json" data-horaires-accueil>{"fuseau":"Europe/Paris","seuil_ferme_bientot":30,"regle_feries":"ouvert","feries":[{"date":"2026-11-11","nom":"Armistice"},{"date":"2026-12-25","nom":"Noël"},{"date":"2027-01-01","nom":"Jour de l'an"}],"adresses":[{"id":"restaurant","nom":"Le restaurant","adresse":"6 Vathier Haye, 54580 Moineville","telephone":"06 18 21 28 10","semaine":{"lundi":[],"mardi":[],"mercredi":["12:00-14:30"],"jeudi":["12:00-14:30"],"vendredi":["12:00-14:30","19:00-00:00"],"samedi":["19:00-00:00"],"dimanche":["12:00-16:00"]},"exceptions":[]}]}</script>
-      <p class="ouv-infos2__adresse" data-info-cle>6 Vathier Haye, 54580 Moineville</p>
-      <ul class="ouv-infos2__distances" aria-label="Distances à vol d&#39;oiseau">
-        <li><strong>19 km</strong> Metz</li><li><strong>24 km</strong> Thionville</li><li><strong>47 km</strong> Luxembourg</li>
-      </ul>
-      <p class="ouv-infos2__actions"><a class="bouton" href="tel:+33618212810" data-action-principale>Appeler 06 18 21 28 10</a> <a class="bouton bouton--contour" href="#ecrire" data-sans-transition>Une question ?</a> <a class="lien-fleche" href="#acces" data-sans-transition>Venir</a></p>
     </div>
-    <div class="ouv-infos2__visuel" data-carte-visite>
-      <figure class="media ouv-infos2__arche" data-fx="parallaxe" data-fx-force="5" style="--cadrage:55% 72%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/enseigne-mobile-640.webp 640w, /assets/images/vraie/enseigne-mobile-1080.webp 1080w" sizes="(max-width: 760px) 80vw, 40vw">
-    <img src="/assets/images/vraie/enseigne-1280.webp" srcset="/assets/images/vraie/enseigne-640.webp 640w, /assets/images/vraie/enseigne-1280.webp 1280w, /assets/images/vraie/enseigne-1920.webp 1920w" sizes="(max-width: 760px) 80vw, 40vw" alt="L&#39;enseigne « les jardins de l&#39;hacienda » entre deux cyprès, au bord de la route, sous le ciel bleu" width="1280" height="720" fetchpriority="high" loading="eager" decoding="async">
+    <div class="ouv-emp__visuel">
+      <figure class="media ouv-emp__arche" data-fx="parallaxe" data-fx-force="5" style="--cadrage:38% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-baies-mobile-640.webp 640w, /assets/images/vraie/salle-baies-mobile-1080.webp 1080w" sizes="(max-width: 760px) 80vw, 60vw">
+    <img src="/assets/images/vraie/salle-baies-1280.webp" srcset="/assets/images/vraie/salle-baies-640.webp 640w, /assets/images/vraie/salle-baies-1280.webp 1280w, /assets/images/vraie/salle-baies-1920.webp 1920w" sizes="(max-width: 760px) 80vw, 60vw" alt="La salle du restaurant en plein jour : baies vitrées, tables rondes en verre sur pied de bois, lampe d&#39;osier" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async">
   </picture>
 </figure>
-      <div class="carte-visite" aria-hidden="true" data-superpose>
-        <span class="carte-visite__logo"></span>
-        <span class="carte-visite__nom">Les Jardins de l&#39;Hacienda</span>
-        <span class="carte-visite__ligne">6 Vathier Haye, 54580 Moineville</span>
-        <span class="carte-visite__ligne carte-visite__tel">06 18 21 28 10</span>
-        <span class="carte-visite__statut"><span class="statut__point"></span><span data-statut-accueil-bis>Horaires</span></span>
+      <div class="sceau sceau--emp" aria-hidden="true">
+        <svg class="sceau__texte" viewBox="0 0 200 200"><defs><path id="sceau-infos" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sceau-infos" textLength="470">6 Vathier Haye · Moineville · Moselle · </textPath></text></svg>
+        <span class="sceau__logo"></span>
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-v="7" data-page="a-emporter" data-theme="jour" style="--voile-page:#f6f1e7">
+<html lang="fr" data-v="7" data-page="a-emporter" data-theme="nuit" style="--voile-page:#f6f1e7;--ouverture-fond:#120c09;--ouverture-texte:#f6efe2">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -115,25 +115,66 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <p><button type="button" class="lien" data-calme-bascule data-libelle-reduire="Réduire les animations" data-libelle-retablir="Rétablir les animations" data-libelle-systeme="Animations réduites par le réglage de votre appareil"><span data-libelle-bouton>Réduire les animations</span></button></p>
 </div>
 <main id="contenu" tabindex="-1">
-<section class="ouv-emp" id="debut">
-  <div class="conteneur ouv-emp__grille">
-    <div class="ouv-emp__contenu">
-      <p class="surtitre">Traiteur</p>
-      <h1 class="ouv-emp__titre" data-iris-centre>Les incontournables <em>des fêtes</em></h1>
-      <p class="ouv-emp__texte">Les spécialités du chef Régis Clauss pour vos tables de fête : choisissez vos produits, puis le jour et le moment du retrait au restaurant, du 5 au 31 décembre.</p>
-      <p class="ouv-emp__actions"><a class="bouton" href="#produits" data-action-principale data-sans-transition>Composer ma commande</a></p>
-      <p class="ouv-emp__info" data-info-cle>Retrait du 5 au 31 décembre · 6 Vathier Haye, Moineville</p>
+<section class="ouv-traiteur" id="debut" aria-labelledby="traiteur-h1" data-ronde>
+  <div class="conteneur ouv-traiteur__grille">
+    <div class="ouv-traiteur__contenu">
+      <p class="surtitre">Traiteur · fêtes de fin d&#39;année</p>
+      <h1 id="traiteur-h1" class="ouv-traiteur__titre" data-iris-centre>Les fêtes du chef, <em>à emporter</em></h1>
+      <p class="ouv-traiteur__texte">Les spécialités du chef Régis Clauss pour vos tables de fête : choisissez vos produits, puis le jour et le moment du retrait au restaurant, du 5 au 31 décembre.</p>
+      <p class="ouv-traiteur__actions"><a class="bouton" href="#produits" data-action-principale data-sans-transition>Composer ma commande</a></p>
+      <p class="ouv-traiteur__info" data-info-cle>Retrait du 5 au 31 décembre · 6 Vathier Haye, Moineville</p>
     </div>
-    <div class="ouv-emp__visuel">
-      <figure class="media ouv-emp__arche" data-fx="parallaxe" data-fx-force="5" style="--cadrage:36% 62%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/plat-cheminee-mobile-640.webp 640w, /assets/images/vraie/plat-cheminee-mobile-1080.webp 1080w" sizes="(max-width: 760px) 80vw, 34vw">
-    <img src="/assets/images/vraie/plat-cheminee-1280.webp" srcset="/assets/images/vraie/plat-cheminee-640.webp 640w, /assets/images/vraie/plat-cheminee-1280.webp 1280w, /assets/images/vraie/plat-cheminee-1920.webp 1920w" sizes="(max-width: 760px) 80vw, 34vw" alt="Une assiette du chef sur une table de bois, devant la cheminée allumée" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async">
-  </picture>
-</figure>
-      <div class="sceau sceau--emp" aria-hidden="true">
-        <svg class="sceau__texte" viewBox="0 0 200 200"><defs><path id="sceau-emp" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sceau-emp" textLength="470">Fait maison · À emporter · Fêtes de fin d&#39;année · </textPath></text></svg>
-        <span class="sceau__logo"></span>
+    <div class="ouv-traiteur__scene" data-ronde-scene>
+      <div class="ronde" role="group" aria-roledescription="carrousel" aria-label="Les plats du chef sous leurs cloches" data-grok data-superpose data-effet="ronde">
+        <span class="mention-ia ronde__mention">Illustration générée</span>
+        <span class="ronde__halo" aria-hidden="true"></span>
+        <span class="ronde__sol" aria-hidden="true"></span>
+        <div class="ronde__cloche est-devant" data-ronde-i="0" data-id="escargots" data-nom="Escargots à la crème d&#39;ail" data-prix="18 €" data-num="01">
+          <div class="emp-cloche ronde__verre">
+            <svg class="emp-cloche__fond" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-assiette" width="400" height="430"/></svg><svg class="emp-cloche__ombre" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-pied" width="400" height="430"/></svg><svg class="emp-cloche__arriere" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-arriere" width="400" height="430"/></svg>
+            <img class="emp-cloche__plat emp-cloche__plat--photo" src="/assets/images/grok/traiteur/escargots-800.webp" srcset="/assets/images/grok/traiteur/escargots-480.webp 480w, /assets/images/grok/traiteur/escargots-800.webp 800w" sizes="(max-width: 860px) 60vw, 24vw" alt="" fetchpriority="high" decoding="async">
+            <svg class="emp-cloche__dome" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-verre" width="400" height="430"/></svg>
+          </div>
+          <button type="button" class="ronde__bouton" data-ronde-bouton aria-label="Escargots à la crème d&#39;ail : voir dans la vitrine"></button>
+        </div><div class="ronde__cloche" data-ronde-i="1" data-id="tourte-escargots" data-nom="Tourte aux escargots" data-prix="32 €" data-num="02">
+          <div class="emp-cloche ronde__verre">
+            <svg class="emp-cloche__fond" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-assiette" width="400" height="430"/></svg><svg class="emp-cloche__ombre" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-pied" width="400" height="430"/></svg><svg class="emp-cloche__arriere" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-arriere" width="400" height="430"/></svg>
+            <img class="emp-cloche__plat emp-cloche__plat--photo" src="/assets/images/grok/traiteur/tourte-escargots-800.webp" srcset="/assets/images/grok/traiteur/tourte-escargots-480.webp 480w, /assets/images/grok/traiteur/tourte-escargots-800.webp 800w" sizes="(max-width: 860px) 60vw, 24vw" alt="" loading="lazy" decoding="async">
+            <svg class="emp-cloche__dome" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-verre" width="400" height="430"/></svg>
+          </div>
+          <button type="button" class="ronde__bouton" data-ronde-bouton aria-label="Tourte aux escargots : voir dans la vitrine"></button>
+        </div><div class="ronde__cloche" data-ronde-i="2" data-id="tourte-grenouilles" data-nom="Tourte aux grenouilles" data-prix="32 €" data-num="03">
+          <div class="emp-cloche ronde__verre">
+            <svg class="emp-cloche__fond" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-assiette" width="400" height="430"/></svg><svg class="emp-cloche__ombre" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-pied" width="400" height="430"/></svg><svg class="emp-cloche__arriere" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-arriere" width="400" height="430"/></svg>
+            <img class="emp-cloche__plat emp-cloche__plat--photo" src="/assets/images/grok/traiteur/tourte-grenouilles-800.webp" srcset="/assets/images/grok/traiteur/tourte-grenouilles-480.webp 480w, /assets/images/grok/traiteur/tourte-grenouilles-800.webp 800w" sizes="(max-width: 860px) 60vw, 24vw" alt="" loading="lazy" decoding="async">
+            <svg class="emp-cloche__dome" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-verre" width="400" height="430"/></svg>
+          </div>
+          <button type="button" class="ronde__bouton" data-ronde-bouton aria-label="Tourte aux grenouilles : voir dans la vitrine"></button>
+        </div><div class="ronde__cloche" data-ronde-i="3" data-id="pate-lorrain" data-nom="Pâté lorrain" data-prix="28 € le kg" data-num="04">
+          <div class="emp-cloche ronde__verre">
+            <svg class="emp-cloche__fond" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-assiette" width="400" height="430"/></svg><svg class="emp-cloche__ombre" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-pied" width="400" height="430"/></svg><svg class="emp-cloche__arriere" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-arriere" width="400" height="430"/></svg>
+            <img class="emp-cloche__plat emp-cloche__plat--photo" src="/assets/images/grok/traiteur/pate-lorrain-800.webp" srcset="/assets/images/grok/traiteur/pate-lorrain-480.webp 480w, /assets/images/grok/traiteur/pate-lorrain-800.webp 800w" sizes="(max-width: 860px) 60vw, 24vw" alt="" loading="lazy" decoding="async">
+            <svg class="emp-cloche__dome" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-verre" width="400" height="430"/></svg>
+          </div>
+          <button type="button" class="ronde__bouton" data-ronde-bouton aria-label="Pâté lorrain : voir dans la vitrine"></button>
+        </div><div class="ronde__cloche" data-ronde-i="4" data-id="foie-gras" data-nom="Foie gras de canard maison" data-prix="36 €" data-num="05">
+          <div class="emp-cloche ronde__verre">
+            <svg class="emp-cloche__fond" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-assiette" width="400" height="430"/></svg><svg class="emp-cloche__ombre" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-pied" width="400" height="430"/></svg><svg class="emp-cloche__arriere" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-arriere" width="400" height="430"/></svg>
+            <img class="emp-cloche__plat emp-cloche__plat--photo" src="/assets/images/grok/traiteur/foie-gras-800.webp" srcset="/assets/images/grok/traiteur/foie-gras-480.webp 480w, /assets/images/grok/traiteur/foie-gras-800.webp 800w" sizes="(max-width: 860px) 60vw, 24vw" alt="" loading="lazy" decoding="async">
+            <svg class="emp-cloche__dome" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-verre" width="400" height="430"/></svg>
+          </div>
+          <button type="button" class="ronde__bouton" data-ronde-bouton aria-label="Foie gras de canard maison : voir dans la vitrine"></button>
+        </div><div class="ronde__cloche" data-ronde-i="5" data-id="gravlax" data-nom="Gravlax de saumon maison" data-prix="22 €" data-num="06">
+          <div class="emp-cloche ronde__verre">
+            <svg class="emp-cloche__fond" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-assiette" width="400" height="430"/></svg><svg class="emp-cloche__ombre" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-pied" width="400" height="430"/></svg><svg class="emp-cloche__arriere" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-arriere" width="400" height="430"/></svg>
+            <img class="emp-cloche__plat emp-cloche__plat--photo" src="/assets/images/grok/traiteur/gravlax-800.webp" srcset="/assets/images/grok/traiteur/gravlax-480.webp 480w, /assets/images/grok/traiteur/gravlax-800.webp 800w" sizes="(max-width: 860px) 60vw, 24vw" alt="" loading="lazy" decoding="async">
+            <svg class="emp-cloche__dome" viewBox="0 56 400 374" aria-hidden="true"><use href="#cl-verre" width="400" height="430"/></svg>
+          </div>
+          <button type="button" class="ronde__bouton" data-ronde-bouton aria-label="Gravlax de saumon maison : voir dans la vitrine"></button>
+        </div>
       </div>
+      <p class="ronde__legende" aria-hidden="true"><span class="ronde__num" data-ronde-num></span><span class="ronde__nom" data-ronde-nom></span><span class="ronde__prix" data-ronde-prix></span></p>
+      <p class="ronde__commandes"><button type="button" class="ronde__fleche" data-ronde-prec aria-label="Plat précédent"><span aria-hidden="true">‹</span></button><button type="button" class="ronde__fleche" data-ronde-suiv aria-label="Plat suivant"><span aria-hidden="true">›</span></button></p>
     </div>
   </div>
 </section>

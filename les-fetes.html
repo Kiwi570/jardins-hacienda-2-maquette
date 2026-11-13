@@ -170,36 +170,63 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <p class="agd__compte" data-compte aria-live="polite"></p>
     </div>
     <div class="dates__grille">
-    <figure class="media dates__photo" style="--cadrage:55% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/danse-mobile-640.webp 640w, /assets/images/vraie/danse-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 30vw">
-    <img src="/assets/images/vraie/danse-960.webp" srcset="/assets/images/vraie/danse-480.webp 480w, /assets/images/vraie/danse-640.webp 640w, /assets/images/vraie/danse-960.webp 960w" sizes="(max-width: 760px) 92vw, 30vw" alt="Un soir de fête : un couple danse sous la paillote éclairée de guirlandes" width="960" height="1280" loading="lazy" decoding="async">
+    <div class="dates__visuel" data-dates-visuel data-effet="dates-photo" aria-hidden="true">
+      <figure class="media dates__img est-active" data-dates-image="vraie/cepes" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/cepes-mobile-640.webp 640w, /assets/images/vraie/cepes-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
+    <img src="/assets/images/vraie/cepes-1280.webp" srcset="/assets/images/vraie/cepes-640.webp 640w, /assets/images/vraie/cepes-1280.webp 1280w, /assets/images/vraie/cepes-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media dates__img" data-dates-image="vraie/feu-salle" style="--cadrage:62% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/feu-salle-mobile-640.webp 640w, /assets/images/vraie/feu-salle-mobile-1040.webp 1040w" sizes="(max-width: 760px) 92vw, 34vw">
+    <img src="/assets/images/vraie/feu-salle-1280.webp" srcset="/assets/images/vraie/feu-salle-640.webp 640w, /assets/images/vraie/feu-salle-1280.webp 1280w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="729" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media dates__img" data-dates-image="vraie/salle-midi" style="--cadrage:45% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-midi-mobile-640.webp 640w, /assets/images/vraie/salle-midi-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
+    <img src="/assets/images/vraie/salle-midi-1280.webp" srcset="/assets/images/vraie/salle-midi-640.webp 640w, /assets/images/vraie/salle-midi-1280.webp 1280w, /assets/images/vraie/salle-midi-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media dates__img" data-dates-image="vraie/salle-soir" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soir-mobile-640.webp 640w, /assets/images/vraie/salle-soir-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
+    <img src="/assets/images/vraie/salle-soir-1280.webp" srcset="/assets/images/vraie/salle-soir-640.webp 640w, /assets/images/vraie/salle-soir-1280.webp 1280w, /assets/images/vraie/salle-soir-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media dates__img" data-dates-image="vraie/dessert-cheminee" style="--cadrage:45% 50%">
+  <picture>
+    <img src="/assets/images/vraie/dessert-cheminee-784.webp" srcset="/assets/images/vraie/dessert-cheminee-480.webp 480w, /assets/images/vraie/dessert-cheminee-640.webp 640w, /assets/images/vraie/dessert-cheminee-784.webp 784w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="784" height="980" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media dates__img" data-dates-image="vraie/coupe-cheminee" style="--cadrage:50% 45%">
+  <picture>
+    <img src="/assets/images/vraie/coupe-cheminee-784.webp" srcset="/assets/images/vraie/coupe-cheminee-480.webp 480w, /assets/images/vraie/coupe-cheminee-640.webp 640w, /assets/images/vraie/coupe-cheminee-784.webp 784w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="784" height="980" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media dates__img" data-dates-image="vraie/table-piscine" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
+    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="960" height="1280" loading="lazy" decoding="async">
   </picture>
 </figure>
+      <div class="dates__badge"><span class="dates__jour" data-dates-jour></span><span class="dates__mois" data-dates-mois></span><span class="dates__nom" data-dates-nom></span></div>
+    </div>
     <div class="dates__liste">
     <ol class="agd__liste">
-      <li class="agd__date" id="date-cote-de-boeuf" data-debut="2026-11-21" data-type="Soirée" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-21&amp;service=soir#formulaire">
+      <li class="agd__date" id="date-cote-de-boeuf" data-debut="2026-11-21" data-type="Soirée" data-image="vraie/cepes" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-21&amp;service=soir#formulaire">
         <h3 class="agd__titre">Soirée côte de bœuf</h3>
         <p class="agd__texte" data-prix>50 € hors boissons</p>
-      </li><li class="agd__date" id="date-raclette" data-debut="2026-11-28" data-type="Soirée" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-28&amp;service=soir#formulaire">
+      </li><li class="agd__date" id="date-raclette" data-debut="2026-11-28" data-type="Soirée" data-image="vraie/feu-salle" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-28&amp;service=soir#formulaire">
         <h3 class="agd__titre">Soirée raclette</h3>
         <p class="agd__texte" data-prix>39 € hors boissons</p>
-      </li><li class="agd__date" id="date-brunch" data-debut="2026-11-29" data-type="Brunch" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-29&amp;service=midi#formulaire">
+      </li><li class="agd__date" id="date-brunch" data-debut="2026-11-29" data-type="Brunch" data-image="vraie/salle-midi" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-29&amp;service=midi#formulaire">
         <h3 class="agd__titre">Le brunch</h3>
         <p class="agd__texte" data-prix>50 € hors boissons</p>
-      </li><li class="agd__date" id="date-libanaise" data-debut="2026-12-19" data-type="Soirée" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-19&amp;service=soir#formulaire">
+      </li><li class="agd__date" id="date-libanaise" data-debut="2026-12-19" data-type="Soirée" data-image="vraie/salle-soir" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-19&amp;service=soir#formulaire">
         <h3 class="agd__titre">Soirée libanaise</h3>
         <p class="agd__texte" data-prix>49 € hors boissons</p>
-      </li><li class="agd__date" id="date-noel" data-debut="2026-12-25" data-type="Fête" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-25&amp;service=midi#formulaire">
+      </li><li class="agd__date" id="date-noel" data-debut="2026-12-25" data-type="Fête" data-image="vraie/dessert-cheminee" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-25&amp;service=midi#formulaire">
         <h3 class="agd__titre">Le menu de Noël</h3>
         <p class="agd__texte" data-prix>79 € par personne, hors boissons</p>
         <p class="agd__texte"><a href="#noel" data-sans-transition>Voir le menu</a></p>
-      </li><li class="agd__date" id="date-saint-sylvestre" data-debut="2026-12-31" data-type="Fête" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-31&amp;service=soir#formulaire">
+      </li><li class="agd__date" id="date-saint-sylvestre" data-debut="2026-12-31" data-type="Fête" data-image="vraie/coupe-cheminee" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-31&amp;service=soir#formulaire">
         <h3 class="agd__titre">La Saint-Sylvestre</h3>
         <p class="agd__texte" data-prix>120 € le menu · 170 € avec l&#39;accord mets et vins</p>
         <p class="agd__texte"><a href="#saint-sylvestre" data-sans-transition>Voir le menu</a></p>
-      </li><li class="agd__date" id="date-libanaise-octobre" data-debut="2026-10-31" data-type="Soirée" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-10-31&amp;service=soir#formulaire">
+      </li><li class="agd__date" id="date-libanaise-octobre" data-debut="2026-10-31" data-type="Soirée" data-image="vraie/salle-soir" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-10-31&amp;service=soir#formulaire">
         <h3 class="agd__titre">Soirée libanaise</h3>
-      </li><li class="agd__date" id="date-grand-buffet" data-debut="2026-08-30" data-type="Soirée" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-08-30&amp;service=midi#formulaire">
+      </li><li class="agd__date" id="date-grand-buffet" data-debut="2026-08-30" data-type="Soirée" data-image="vraie/table-piscine" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-08-30&amp;service=midi#formulaire">
         <h3 class="agd__titre">Le Grand Buffet</h3>
         <p class="agd__texte" data-prix>Les dimanches d&#39;août</p>
       </li>

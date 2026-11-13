@@ -1,4 +1,4 @@
-/* Infos pratiques · « l'heure qu'il est à Moineville » : l'heure réelle en chiffres géants, le vrai ciel de Moineville à
+/* Infos pratiques (v7.5.13 : ouverture dans le style de celle du Traiteur, la salle aux baies vitrées en arche et le sceau rouge qui tourne) · « l'heure qu'il est à Moineville » : l'heure réelle en chiffres géants, le vrai ciel de Moineville à
    cette heure (soleil, lune, étoiles calculés : module ciel-en-direct) au-dessus de la vraie enseigne détourée ; le statut
    ouvert ou fermé et le téléphone ; puis le cadran des horaires (module horaires-ouvert-maintenant, horaires RankEat à
    confirmer), le plan d'accès (coordonnées réelles, Moselle, A31, distances à vol d'oiseau), les règles de l'été, le plan du
@@ -76,27 +76,21 @@ export default (c) => {
   const d = preparer(h);
   const json = JSON.stringify(h).replace(/<\//g, '<\\/');
   return html`
-<section class="ouv-infos2" id="debut" aria-labelledby="infos-h1">
-  <div class="conteneur ouv-infos2__grille">
-    <div class="ouv-infos2__texte">
+<section class="ouv-emp ouv-infos3" id="debut" aria-labelledby="infos-h1">
+  <div class="conteneur ouv-emp__grille">
+    <div class="ouv-emp__contenu">
       <p class="surtitre">${c.t('infos.sur')}</p>
-      <h1 id="infos-h1" data-iris-centre>${c.t('infos.titre')}</h1>
-      <p class="statut ouv-infos2__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil>${c.t('infos.horairesSur')}</span></p>
+      <h1 id="infos-h1" class="ouv-emp__titre" data-iris-centre>${c.t('infos.heroTitre')} <em>${c.t('infos.heroTitre2')}</em></h1>
+      <p class="ouv-emp__texte">${c.t('infos.heroTexte')}</p>
+      <p class="ouv-emp__actions"><a class="bouton" href="tel:${c.site.contact.telephoneLien}" data-action-principale>${c.t('commun.appeler')} ${c.site.contact.telephone}</a> <a class="lien-fleche ouv-infos3__lien" href="#ecrire" data-sans-transition>${c.t('infos.questionLien')}</a></p>
+      <p class="ouv-emp__info ouv-infos3__info" data-info-cle><span class="statut__point" aria-hidden="true"></span><span data-statut-accueil>${c.t('infos.horairesSur')}</span><span aria-hidden="true"> · </span><span>${c.site.contact.adresse}</span></p>
       <script type="application/json" data-horaires-accueil>${brut(json)}</script>
-      <p class="ouv-infos2__adresse" data-info-cle>${c.site.contact.adresse}</p>
-      <ul class="ouv-infos2__distances" aria-label="${c.s('infos.distancesTitre')}">
-        <li><strong>19 km</strong> Metz</li><li><strong>24 km</strong> Thionville</li><li><strong>47 km</strong> Luxembourg</li>
-      </ul>
-      <p class="ouv-infos2__actions"><a class="bouton" href="tel:${c.site.contact.telephoneLien}" data-action-principale>${c.t('commun.appeler')} ${c.site.contact.telephone}</a> <a class="bouton bouton--contour" href="#ecrire" data-sans-transition>${c.t('infos.questionLien')}</a> <a class="lien-fleche" href="#acces" data-sans-transition>${c.t('infos.accesLien')}</a></p>
     </div>
-    <div class="ouv-infos2__visuel" data-carte-visite>
-      ${c.media({ nom: 'vraie/enseigne', alt: c.s('infos.altEnseigneJour'), cadrage: '55% 72%', priorite: true, classe: 'ouv-infos2__arche', sizes: '(max-width: 760px) 80vw, 40vw', attrs: 'data-fx="parallaxe" data-fx-force="5"' })}
-      <div class="carte-visite" aria-hidden="true" data-superpose>
-        <span class="carte-visite__logo"></span>
-        <span class="carte-visite__nom">${c.site.nom}</span>
-        <span class="carte-visite__ligne">${c.site.contact.adresse}</span>
-        <span class="carte-visite__ligne carte-visite__tel">${c.site.contact.telephone}</span>
-        <span class="carte-visite__statut"><span class="statut__point"></span><span data-statut-accueil-bis>${c.t('infos.horairesSur')}</span></span>
+    <div class="ouv-emp__visuel">
+      ${c.media({ nom: 'vraie/salle-baies', alt: c.s('accueil.lieu.restaurantAlt'), cadrage: '38% 55%', priorite: true, classe: 'ouv-emp__arche', sizes: '(max-width: 760px) 80vw, 60vw', attrs: 'data-fx="parallaxe" data-fx-force="5"' })}
+      <div class="sceau sceau--emp" aria-hidden="true">
+        <svg class="sceau__texte" viewBox="0 0 200 200"><defs><path id="sceau-infos" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sceau-infos" textLength="470">${c.s('infos.sceau')}</textPath></text></svg>
+        <span class="sceau__logo"></span>
       </div>
     </div>
   </div>

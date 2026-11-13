@@ -934,7 +934,11 @@
     "distancesTitre": "Distances à vol d'oiseau",
     "altEnseigneJour": "L'enseigne « les jardins de l'hacienda » entre deux cyprès, au bord de la route, sous le ciel bleu",
     "semaineCurseur": "Choisir une heure de la journée",
-    "semaineConsigne": "Glissez le curseur : la semaine s'allume à l'heure choisie."
+    "semaineConsigne": "Glissez le curseur : la semaine s'allume à l'heure choisie.",
+    "heroTitre": "Venez nous voir",
+    "heroTitre2": "à Moineville",
+    "heroTexte": "Le restaurant vous attend au 6 Vathier Haye, à 19 km de Metz, 24 km de Thionville et 47 km de Luxembourg à vol d'oiseau. Les horaires de la semaine, l'accès et le plan du domaine sont juste en dessous.",
+    "sceau": "6 Vathier Haye · Moineville · Moselle · "
   },
   "emporter": {
     "sur": "Traiteur",
@@ -1010,6 +1014,14 @@
     "tiroirFilCoordonnees": "Coordonnées",
     "tiroirSuite": "Continuer",
     "tiroirMerciTitre": "Merci !",
-    "tiroirRecap": "{total} · retrait {retrait}"
+    "tiroirRecap": "{total} · retrait {retrait}",
+    "heroSur": "Traiteur · fêtes de fin d'année",
+    "heroTitre": "Les fêtes du chef,",
+    "heroTitre2": "à emporter",
+    "rondeRole": "carrousel",
+    "rondeLabel": "Les plats du chef sous leurs cloches",
+    "rondeVoir": "{nom} : voir dans la vitrine",
+    "rondePrec": "Plat précédent",
+    "rondeSuiv": "Plat suivant"
   }
 }

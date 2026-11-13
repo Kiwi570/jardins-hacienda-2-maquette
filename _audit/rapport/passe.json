@@ -1,8 +1,8 @@
 {
- "id": "20261113-143459-complet-cible-partiel",
- "date": "2026-11-13T14:38:57.826Z",
+ "id": "20261113-145126-complet-cible-partiel",
+ "date": "2026-11-13T14:53:51.629Z",
  "niveau": "complet",
- "pages": "/,/a-emporter",
+ "pages": "/les-fetes,/infos-pratiques",
  "etapes": [
   "fichiers",
   "mesures",
@@ -11,7 +11,7 @@
  ],
  "version": "7",
  "echecs": 0,
- "aRegarder": 0,
+ "aRegarder": 1,
  "nonLances": 0,
  "manquants": 0,
  "statut": "complet"

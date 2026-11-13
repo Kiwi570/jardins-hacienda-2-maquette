@@ -7,7 +7,9 @@
       "debut": "2026-11-21",
       "type": "Soirée",
       "prix": "50 € hors boissons",
-      "service": "soir"
+      "service": "soir",
+      "image": "vraie/cepes",
+      "cadrage": "50% 55%"
     },
     {
       "id": "raclette",
@@ -15,7 +17,9 @@
       "debut": "2026-11-28",
       "type": "Soirée",
       "prix": "39 € hors boissons",
-      "service": "soir"
+      "service": "soir",
+      "image": "vraie/feu-salle",
+      "cadrage": "62% 50%"
     },
     {
       "id": "brunch",
@@ -23,7 +27,9 @@
       "debut": "2026-11-29",
       "type": "Brunch",
       "prix": "50 € hors boissons",
-      "service": "midi"
+      "service": "midi",
+      "image": "vraie/salle-midi",
+      "cadrage": "45% 50%"
     },
     {
       "id": "libanaise",
@@ -31,7 +37,9 @@
       "debut": "2026-12-19",
       "type": "Soirée",
       "prix": "49 € hors boissons",
-      "service": "soir"
+      "service": "soir",
+      "image": "vraie/salle-soir",
+      "cadrage": "50% 50%"
     },
     {
       "id": "noel",
@@ -40,7 +48,9 @@
       "type": "Fête",
       "prix": "79 € par personne, hors boissons",
       "service": "midi",
-      "ancre": "noel"
+      "ancre": "noel",
+      "image": "vraie/dessert-cheminee",
+      "cadrage": "45% 50%"
     },
     {
       "id": "saint-sylvestre",
@@ -49,7 +59,9 @@
       "type": "Fête",
       "prix": "120 € le menu · 170 € avec l'accord mets et vins",
       "service": "soir",
-      "ancre": "saint-sylvestre"
+      "ancre": "saint-sylvestre",
+      "image": "vraie/coupe-cheminee",
+      "cadrage": "50% 45%"
     },
     {
       "id": "libanaise-octobre",
@@ -57,7 +69,9 @@
       "debut": "2026-10-31",
       "type": "Soirée",
       "prix": "",
-      "service": "soir"
+      "service": "soir",
+      "image": "vraie/salle-soir",
+      "cadrage": "50% 50%"
     },
     {
       "id": "grand-buffet",
@@ -65,7 +79,9 @@
       "debut": "2026-08-30",
       "type": "Soirée",
       "prix": "Les dimanches d'août",
-      "service": "midi"
+      "service": "midi",
+      "image": "vraie/table-piscine",
+      "cadrage": "50% 55%"
     }
   ]
 }

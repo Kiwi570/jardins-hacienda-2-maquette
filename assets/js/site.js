@@ -990,6 +990,107 @@ function carteSemaine() {
 
 /* v7.5 · À emporter : panier (un seul état, gardé dans le navigateur s'il le permet), jour et moment de retrait selon les horaires,
    pastille flottante, envol vers la commande à l'ajout, commande simulée avec récapitulatif. */
+/* v7.5.13 · Évènements, « Les prochaines dates » : la photo de gauche reste à l'écran et suit la date qu'on lit (celle qui
+   passe au tiers haut de l'écran) : fondu entre les photos, la date en grand et le nom de la soirée sur la photo. */
+function datesSync() {
+  const sec = $('#dates'), visuel = sec && $('[data-dates-visuel]', sec); if (!visuel) return;
+  const imgs = $$('[data-dates-image]', visuel), jour = $('[data-dates-jour]', visuel), mois = $('[data-dates-mois]', visuel), nom = $('[data-dates-nom]', visuel);
+  const badge = $('.dates__badge', visuel);
+  const fmtMois = new Intl.DateTimeFormat('fr-FR', { month: 'short', timeZone: 'UTC' });
+  let courant = null, attente = false;
+  const montrer = (li) => {
+    if (!li || li === courant) return;
+    if (courant) courant.classList.remove('est-lue');
+    courant = li; li.classList.add('est-lue');
+    imgs.forEach((im) => im.classList.toggle('est-active', im.dataset.datesImage === li.dataset.image));
+    const d = new Date(`${li.dataset.debut.slice(0, 10)}T12:00:00Z`);
+    jour.textContent = d.getUTCDate(); mois.textContent = fmtMois.format(d).replace('.', '');
+    nom.textContent = $('.agd__titre', li)?.textContent || '';
+    if (!etat.calme && badge.animate) badge.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  };
+  const choisir = () => {
+    attente = false;
+    const liste = $$('.agd__date', sec).filter((li) => !li.hidden && !li.closest('details:not([open])') && li.offsetParent);
+    if (!liste.length) return;
+    const repere = innerHeight * 0.38;
+    let meilleur = liste[0];
+    for (const li of liste) { const r = li.getBoundingClientRect(); if (r.top <= repere) meilleur = li; }
+    montrer(meilleur);
+  };
+  addEventListener('scroll', () => { if (!attente) { attente = true; requestAnimationFrame(choisir); } }, { passive: true });
+  sec.addEventListener('click', () => setTimeout(choisir, 60));
+  new MutationObserver(() => { if (!attente) { attente = true; requestAnimationFrame(choisir); } }).observe(sec, { subtree: true, attributes: true, attributeFilter: ['hidden', 'open'], childList: true });
+  choisir();
+}
+
+/* v7.5.13 · Traiteur, « la ronde des cloches » : les cloches tournent en cercle (perspective calculée : position, taille,
+   lumière et profondeur) ; celle de devant soulève son verre et donne nom et prix. Tour automatique toutes les 3,6 s quand la
+   section est visible, en pause au survol ou au clavier ; flèches ; clic sur une cloche pour la faire venir, sur celle de
+   devant pour la retrouver dans la vitrine. Animations réduites : pas de tour automatique, changement sans glissement. */
+function rondeHero() {
+  const sec = $('[data-ronde]'); if (!sec) return;
+  const scene = $('.ronde', sec), items = $$('.ronde__cloche', sec), n = items.length; if (!n) return;
+  const nomEl = $('[data-ronde-nom]', sec), prixEl = $('[data-ronde-prix]', sec), numEl = $('[data-ronde-num]', sec), legende = $('.ronde__legende', sec);
+  const pas = (Math.PI * 2) / n;
+  let phi = 0, cible = 0, actif = -1, raf = 0, survol = false, visible = true, dernier = performance.now();
+  let rx = 0, ry = 0;
+  const mesurer = () => { rx = scene.clientWidth * 0.34; ry = scene.clientHeight * 0.12; };
+  const placer = () => {
+    items.forEach((el, i) => {
+      const a = Math.PI / 2 + i * pas - phi, sin = Math.sin(a), k = (1 + sin) / 2;
+      const x = Math.cos(a) * rx, y = sin * ry, s = 0.5 + 0.5 * Math.pow(k, 1.3);
+      el.style.transform = `translate(-50%, -50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${s.toFixed(3)})`;
+      el.style.zIndex = String(Math.round(k * 100));
+      el.style.setProperty('--k', k.toFixed(3));
+    });
+    const i = ((Math.round(phi / pas) % n) + n) % n;
+    if (i !== actif) {
+      actif = i;
+      items.forEach((el, j) => { el.classList.toggle('est-devant', j === i); el.querySelector('[data-ronde-bouton]').tabIndex = j === i ? 0 : -1; });
+      const el = items[i];
+      numEl.textContent = `N° ${el.dataset.num}`; nomEl.textContent = el.dataset.nom; prixEl.textContent = el.dataset.prix;
+      if (!etat.calme && legende.animate) legende.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    }
+  };
+  const tourner = (t) => {
+    raf = 0;
+    if (!etat.calme && visible && !survol && t - dernier > 3600) { cible += pas; dernier = t; }
+    phi += (cible - phi) * (etat.calme ? 1 : 0.075);
+    if (Math.abs(cible - phi) < 0.0004) phi = cible;
+    placer();
+    if (visible && !etat.calme) raf = requestAnimationFrame(tourner);
+  };
+  const relancer = () => { if (!raf) raf = requestAnimationFrame(tourner); };
+  const aller_ = (delta) => { cible = Math.round(cible / pas) * pas + delta * pas; dernier = performance.now(); relancer(); if (etat.calme) { phi = cible; placer(); } };
+  $('[data-ronde-prec]', sec).addEventListener('click', () => aller_(-1));
+  $('[data-ronde-suiv]', sec).addEventListener('click', () => aller_(1));
+  items.forEach((el, i) => el.querySelector('[data-ronde-bouton]').addEventListener('click', () => {
+    if (i !== actif) { let d = (i - actif) % n; if (d > n / 2) d -= n; if (d < -n / 2) d += n; aller_(d); return; }
+    const carte = $(`#produits [data-produit="${el.dataset.id}"]`); if (!carte) return;
+    aller(carte);
+    const cl = $('.emp-cloche', carte);
+    setTimeout(() => { cl.classList.add('est-levee'); setTimeout(() => cl.classList.remove('est-levee'), 2600); }, etat.calme ? 0 : 900);
+  }));
+  scene.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); aller_(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); aller_(-1); } });
+  sec.addEventListener('pointerenter', () => { survol = true; });
+  sec.addEventListener('pointerleave', () => { survol = false; dernier = performance.now(); });
+  sec.addEventListener('focusin', () => { survol = true; });
+  sec.addEventListener('focusout', () => { survol = false; });
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting && !document.hidden; if (visible) { dernier = performance.now(); relancer(); } }, { threshold: 0.2 }).observe(scene);
+  document.addEventListener('visibilitychange', () => { visible = !document.hidden; if (visible) relancer(); });
+  addEventListener('resize', () => { mesurer(); placer(); });
+  /* Au défilement, la ronde tourne avec la page, puis se pose sur le plat le plus proche. */
+  let yAvant = scrollY, pose = 0;
+  addEventListener('scroll', () => {
+    const dy = scrollY - yAvant; yAvant = scrollY;
+    if (etat.calme || !visible || !dy) return;
+    cible += dy * 0.004; dernier = performance.now();
+    clearTimeout(pose); pose = setTimeout(() => { cible = Math.round(cible / pas) * pas; relancer(); }, 240);
+    relancer();
+  }, { passive: true });
+  mesurer(); placer(); relancer();
+}
+
 /* v7.5.8 · À emporter, la vitrine sous cloches : la cloche s'ouvre au toucher (ou au clavier) et se referme au second. */
 function vitrineCloches() {
   for (const cl of $$('[data-emp-cloche]')) {
@@ -1815,6 +1916,8 @@ demarrer({
     fetesDefile();
     emporter();
     vitrineCloches();
+    rondeHero();
+    datesSync();
     domaine();
     planDomaine();
     devise();

@@ -8,11 +8,14 @@
    v7.5.11 · Le tiroir de la commande : à chaque ajout (ou depuis la pastille), la commande s'ouvre dans un panneau à droite
    (dialog modal : Échap, clic à côté, focus gardé dedans puis rendu) ; le plat s'envole de sa cloche jusqu'à sa ligne.
    v7.5.12 · La commande se termine dans le panneau, en trois étapes (commande, retrait, coordonnées) : le formulaire de la
-   section « Le retrait » y est déplacé au chargement (sans JavaScript, il reste dans la page). */
+   section « Le retrait » y est déplacé au chargement (sans JavaScript, il reste dans la page).
+   v7.5.13 · Nouvelle ouverture : « la ronde des cloches ». Sur une scène sombre et dorée, les plats sous leurs cloches tournent
+   lentement en cercle ; celle de devant soulève son verre et dit le nom et le prix ; flèches, clic sur une cloche pour la faire
+   venir, clic sur celle de devant pour la retrouver dans la vitrine. Animations réduites : la ronde ne tourne pas seule. */
 import { readFileSync, existsSync } from 'node:fs';
 import { html, brut } from '../../outils/gabarit.mjs';
 
-export const page = { cle: 'a-emporter', fichier: 'a-emporter', theme: 'jour', imagePartage: 'vraie/plat-cheminee-1280.webp', modules: [] };
+export const page = { cle: 'a-emporter', fichier: 'a-emporter', theme: 'nuit', imagePartage: 'vraie/plat-cheminee-1280.webp', modules: [] };
 
 const CLOCHES = readFileSync(new URL('../gabarits/cloches.svg', import.meta.url), 'utf8');
 const CHAUDS = new Set(['escargots', 'tourte-escargots', 'tourte-grenouilles', 'pate-lorrain']);
@@ -57,23 +60,34 @@ export default (c) => {
   const E = c.donnees.emporter;
   const textes = { articles: c.s('emporter.articles'), annonce: c.s('emporter.annonce'), moins: c.s('emporter.moins'), plus: c.s('emporter.plus'), retrait: c.s('emporter.retraitResume'), retraitPanier: c.s('emporter.retraitPanier'), retraitAChoisir: c.s('emporter.retraitAChoisir'), midi: c.s('emporter.midi').toLowerCase(), soir: c.s('emporter.soir').toLowerCase(), recap: c.s('emporter.recap'), simule: c.s('emporter.simule'), ajoute: c.s('emporter.ajoute'), ajouter: c.s('emporter.ajouter'), tiroirAjoute: c.s('emporter.tiroirAjoute'), tiroirNombre: c.s('emporter.tiroirNombre'), tiroirNombreUn: c.s('emporter.tiroirNombreUn'), tiroirRetirer: c.s('emporter.tiroirRetirer'), tiroirRetirerTexte: c.s('emporter.tiroirRetirerTexte'), tiroirUnite: c.s('emporter.tiroirUnite'), tiroirKg: c.s('emporter.tiroirKg'),
     produits: Object.fromEntries(E.produits.map((p) => [p.id, { nom: p.nom, prix: p.prix, unite: p.unite, vignette: photoPlat(p.id) ? `/assets/images/grok/traiteur/${p.id}-480.webp` : null }])) };
+  const ronde = E.produits.filter((p) => photoPlat(p.id));
   const jourLong = (iso) => new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`));
   return html`
-<section class="ouv-emp" id="debut">
-  <div class="conteneur ouv-emp__grille">
-    <div class="ouv-emp__contenu">
-      <p class="surtitre">${c.t('emporter.sur')}</p>
-      <h1 class="ouv-emp__titre" data-iris-centre>${c.t('emporter.titre')} <em>${c.t('emporter.titre2')}</em></h1>
-      <p class="ouv-emp__texte">${c.t('emporter.texte')}</p>
-      <p class="ouv-emp__actions"><a class="bouton" href="#produits" data-action-principale data-sans-transition>${c.t('emporter.action')}</a></p>
-      <p class="ouv-emp__info" data-info-cle>${c.t('emporter.info')}</p>
+<section class="ouv-traiteur" id="debut" aria-labelledby="traiteur-h1" data-ronde>
+  <div class="conteneur ouv-traiteur__grille">
+    <div class="ouv-traiteur__contenu">
+      <p class="surtitre">${c.t('emporter.heroSur')}</p>
+      <h1 id="traiteur-h1" class="ouv-traiteur__titre" data-iris-centre>${c.t('emporter.heroTitre')} <em>${c.t('emporter.heroTitre2')}</em></h1>
+      <p class="ouv-traiteur__texte">${c.t('emporter.texte')}</p>
+      <p class="ouv-traiteur__actions"><a class="bouton" href="#produits" data-action-principale data-sans-transition>${c.t('emporter.action')}</a></p>
+      <p class="ouv-traiteur__info" data-info-cle>${c.t('emporter.info')}</p>
     </div>
-    <div class="ouv-emp__visuel">
-      ${c.media({ nom: 'vraie/plat-cheminee', alt: c.s('emporter.alt'), cadrage: '36% 62%', priorite: true, classe: 'ouv-emp__arche', sizes: '(max-width: 760px) 80vw, 34vw', attrs: 'data-fx="parallaxe" data-fx-force="5"' })}
-      <div class="sceau sceau--emp" aria-hidden="true">
-        <svg class="sceau__texte" viewBox="0 0 200 200"><defs><path id="sceau-emp" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sceau-emp" textLength="470">${c.s('emporter.sceau')}</textPath></text></svg>
-        <span class="sceau__logo"></span>
+    <div class="ouv-traiteur__scene" data-ronde-scene>
+      <div class="ronde" role="group" aria-roledescription="${c.s('emporter.rondeRole')}" aria-label="${c.s('emporter.rondeLabel')}" data-grok data-superpose data-effet="ronde">
+        <span class="mention-ia ronde__mention">${c.t('commun.mentionIa')}</span>
+        <span class="ronde__halo" aria-hidden="true"></span>
+        <span class="ronde__sol" aria-hidden="true"></span>
+        ${ronde.map((p, i) => html`<div class="ronde__cloche${i === 0 ? ' est-devant' : ''}" data-ronde-i="${i}" data-id="${p.id}" data-nom="${p.nom}" data-prix="${euros(p.prix)}${p.unite === 'kg' ? ' ' + c.s('emporter.parKg') : ''}" data-num="${String(E.produits.indexOf(p) + 1).padStart(2, '0')}">
+          <div class="emp-cloche ronde__verre">
+            ${brut(couche('fond', 'cl-assiette') + couche('ombre', 'cl-pied') + couche('arriere', 'cl-arriere'))}
+            <img class="emp-cloche__plat emp-cloche__plat--photo" src="/assets/images/grok/traiteur/${p.id}-800.webp" srcset="/assets/images/grok/traiteur/${p.id}-480.webp 480w, /assets/images/grok/traiteur/${p.id}-800.webp 800w" sizes="(max-width: 860px) 60vw, 24vw" alt="" ${brut(i === 0 ? 'fetchpriority="high"' : 'loading="lazy"')} decoding="async">
+            ${brut(couche('dome', 'cl-verre'))}
+          </div>
+          <button type="button" class="ronde__bouton" data-ronde-bouton aria-label="${c.s('emporter.rondeVoir', { nom: p.nom })}"></button>
+        </div>`)}
       </div>
+      <p class="ronde__legende" aria-hidden="true"><span class="ronde__num" data-ronde-num></span><span class="ronde__nom" data-ronde-nom></span><span class="ronde__prix" data-ronde-prix></span></p>
+      <p class="ronde__commandes"><button type="button" class="ronde__fleche" data-ronde-prec aria-label="${c.s('emporter.rondePrec')}"><span aria-hidden="true">‹</span></button><button type="button" class="ronde__fleche" data-ronde-suiv aria-label="${c.s('emporter.rondeSuiv')}"><span aria-hidden="true">›</span></button></p>
     </div>
   </div>
 </section>

@@ -53,10 +53,13 @@ export default (c) => {
       <p class="agd__compte" data-compte aria-live="polite"></p>
     </div>
     <div class="dates__grille">
-    ${c.media({ nom: 'vraie/danse', alt: c.s('fetes.datesPhotoAlt'), cadrage: '55% 50%', classe: 'dates__photo', sizes: '(max-width: 760px) 92vw, 30vw' })}
+    <div class="dates__visuel" data-dates-visuel data-effet="dates-photo" aria-hidden="true">
+      ${c.donnees.agenda.dates.filter((d, i, t) => t.findIndex((e) => e.image === d.image) === i).map((d, i) => c.media({ nom: d.image, alt: '', cadrage: d.cadrage, classe: `dates__img${i === 0 ? ' est-active' : ''}`, sizes: '(max-width: 760px) 92vw, 34vw', attrs: `data-dates-image="${d.image}"` }))}
+      <div class="dates__badge"><span class="dates__jour" data-dates-jour></span><span class="dates__mois" data-dates-mois></span><span class="dates__nom" data-dates-nom></span></div>
+    </div>
     <div class="dates__liste">
     <ol class="agd__liste">
-      ${c.donnees.agenda.dates.map((d) => html`<li class="agd__date" id="date-${d.id}" data-debut="${d.debut}"${d.fin ? html` data-fin="${d.fin}"` : ''} data-type="${d.type}" data-lieu="${c.s('fetes.datesLieu')}" data-reserver="${c.url('reserver', 'formulaire', `date=${d.debut.slice(0, 10)}&service=${d.service}`)}">
+      ${c.donnees.agenda.dates.map((d) => html`<li class="agd__date" id="date-${d.id}" data-debut="${d.debut}"${d.fin ? html` data-fin="${d.fin}"` : ''} data-type="${d.type}" data-image="${d.image}" data-lieu="${c.s('fetes.datesLieu')}" data-reserver="${c.url('reserver', 'formulaire', `date=${d.debut.slice(0, 10)}&service=${d.service}`)}">
         <h3 class="agd__titre">${d.titre}</h3>
         ${d.prix ? html`<p class="agd__texte" data-prix>${d.prix}</p>` : ''}
         ${d.ancre ? html`<p class="agd__texte"><a href="#${d.ancre}" data-sans-transition>${c.t('fetes.datesMenu')}</a></p>` : ''}

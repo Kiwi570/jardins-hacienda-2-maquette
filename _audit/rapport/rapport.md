@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 13/11/2026 15:38:57 · 4 min · 2 page(s) · audit complet ciblé sur /,/a-emporter (étapes : fichiers, mesures, ecran, mouvement)
+Projet : `jardins-hacienda-2-maquette` · 13/11/2026 15:53:51 · 2 min · 2 page(s) · audit complet ciblé sur /les-fetes,/infos-pratiques (étapes : fichiers, mesures, ecran, mouvement)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261113-143459-complet-cible-partiel` · version ?v=7
+- Passe : `20261113-145126-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **0**
+- À regarder : **1**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (64), balayage (2), tient dans l’écran (8), mouvement (4), effets du plan (28), souris immobile (3)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (64), balayage (2), mouvement (4), effets du plan (30)
 
 ## Passes de cette version (?v=7)
 
@@ -65,7 +65,11 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261113-141152-complet-cible-partiel | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
 | 20261113-142428-complet-cible-partiel | complet | /a-emporter | fichiers, mesures, ecran, mouvement | 0 | 0 | 0 | complet |
 | 20261113-143339-complet-cible-partiel | complet | /a-emporter | fichiers, mesures, ecran, mouvement | 1 | 0 | 0 | échecs |
-| **20261113-143459-complet-cible-partiel** (celle-ci) | complet | /,/a-emporter | fichiers, mesures, ecran, mouvement | 0 | 0 | 0 | complet |
+| 20261113-143459-complet-cible-partiel | complet | /,/a-emporter | fichiers, mesures, ecran, mouvement | 0 | 0 | 0 | complet |
+| 20261113-144446-complet-cible-partiel | complet | /a-emporter,/infos-pratiques | fichiers, mesures, ecran, mouvement | 25 | 1 | 0 | échecs |
+| 20261113-144741-complet-cible-partiel | complet | /,/a-emporter | fichiers, mesures, mouvement | 1 | 1 | 0 | échecs |
+| 20261113-145105-complet-cible-partiel | complet | /a-emporter | fichiers, mouvement | 0 | 0 | 0 | complet |
+| **20261113-145126-complet-cible-partiel** (celle-ci) | complet | /les-fetes,/infos-pratiques | fichiers, mesures, ecran, mouvement | 0 | 1 | 0 | complet |
 
 ## Échecs
 
@@ -73,7 +77,9 @@ Aucun.
 
 ## À regarder
 
-Rien.
+### effet qui ne bouge pas au défilement (1)
+
+- **effet qui ne bouge pas au défilement** — `/infos-pratiques` — div.plan-domaine__carte — plan-domaine : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section _(1366×768 normal, 390×844 normal)_
 
 ## Non lancé
 
@@ -89,7 +95,8 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Tient dans l'écran /a-emporter : aucune section épinglée ou plein écran.
+- Tient dans l'écran /infos-pratiques : aucune section épinglée ou plein écran.
+- Tient dans l'écran /les-fetes : aucune section épinglée ou plein écran.
 
 ## Fichiers
 
