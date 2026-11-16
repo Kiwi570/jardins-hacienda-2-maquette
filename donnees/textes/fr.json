@@ -37,7 +37,8 @@
     "piedReserver": "Réserver une table",
     "piedTrouver": "Nous trouver",
     "piedSite": "Le site",
-    "piedSuivre": "Suivez-nous"
+    "piedSuivre": "Suivez-nous",
+    "piedDemander": "Demander une réception"
   },
   "pages": {
     "404": {
@@ -779,7 +780,7 @@
       "titreAvant": "Ils ont dit",
       "mot": "oui",
       "titreApres": "aux Jardins",
-      "consigne": "Faites défiler : l'album passe sur le fil. Touchez une photo pour l'ouvrir en grand.",
+      "consigne": "Neuf moments de mariages aux Jardins, en vraies photos. Touchez une photo pour l'ouvrir en grand.",
       "liste": "Photos de mariages aux Jardins de l'Hacienda",
       "ouvrir": "Ouvrir la photo : {legende}",
       "album": "Album des mariages",

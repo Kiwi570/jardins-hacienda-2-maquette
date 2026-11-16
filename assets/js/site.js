@@ -885,29 +885,14 @@ function devise() {
   }, { threshold: 0.3 }).observe(sec);
 }
 
-/* v7.5 · Réceptions, « Ils ont dit oui » : le fil défile au défilement (section collée à l'écran), les photos se balancent avec la
-   vitesse ; l'album s'ouvre sur la photo touchée (flèches, clavier, Échap), avec une pluie de confettis à chaque ouverture. */
+/* v7.5.17 · Réceptions, « Ils ont dit oui » : la mosaïque apparaît en cascade quand elle arrive à l'écran (les photos se
+   posent) ; l'album s'ouvre sur la photo touchée (flèches, clavier, Échap), avec une pluie de confettis à chaque ouverture. */
 function oui() {
   const sec = $('[data-oui]'); if (!sec) return;
-  const piste = $('[data-oui-piste]', sec), progres = $('[data-oui-progres]', sec), album = $('[data-oui-album]', sec);
+  const album = $('[data-oui-album]', sec);
   let photos = [], T = {}; try { photos = JSON.parse($('[data-oui-donnees]', sec).textContent); T = JSON.parse($('[data-oui-textes]', sec).textContent); } catch {}
-  new IntersectionObserver(([e], o) => { if (e.isIntersecting) { sec.classList.add('est-vu'); o.disconnect(); } }, { threshold: 0.25 }).observe(sec);
-  /* Le fil qui défile. */
-  if (!gsap || !window.ScrollTrigger || etat.calme) sec.classList.add('oui--libre');
-  else {
-    const distance = () => Math.max(0, piste.scrollWidth - document.documentElement.clientWidth);
-    const hauteur = () => { sec.style.height = `calc(100svh + ${Math.round(distance() * 1.1)}px)`; };
-    hauteur();
-    window.ScrollTrigger.addEventListener('refreshInit', hauteur);
-    let calme = 0;
-    gsap.to(piste, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.6, invalidateOnRefresh: true,
-      onUpdate: (st) => {
-        progres.style.setProperty('--p', (0.1 + 0.9 * st.progress).toFixed(3));
-        const v = Math.max(-1, Math.min(1, st.getVelocity() / 2400));
-        piste.style.setProperty('--vent', `${(v * 7).toFixed(2)}deg`);
-        clearTimeout(calme); calme = setTimeout(() => piste.style.setProperty('--vent', '0deg'), 140);
-      } } });
-  }
+  if (etat.calme || !('IntersectionObserver' in window)) sec.classList.add('est-vu');
+  else new IntersectionObserver(([e], o) => { if (e.isIntersecting) { sec.classList.add('est-vu'); o.disconnect(); } }, { threshold: 0.12 }).observe($('.oui__grille', sec) || sec);
   /* L'album. */
   if (!album || !album.showModal || !photos.length) return;
   const img = $('[data-oui-img]', album), leg = $('[data-oui-legende]', album), compte = $('[data-oui-compte]', album);

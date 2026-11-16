@@ -11,18 +11,19 @@ export const page = { cle: 'receptions', fichier: 'receptions', theme: 'nuit', i
 /* v7.5 · « Ils ont dit oui aux Jardins » (idée de la maquette de référence du client, en plus ludique) : les vraies photos de
    mariages en polaroïds pincés sur un fil à linge ; la section reste à l'écran et le fil défile au défilement, les photos se
    balancent avec la vitesse ; une photo touchée s'ouvre en grand dans un album (flèches, clavier), avec des confettis. */
+/* v7.5.17 · « Ils ont dit oui » en grande mosaïque de vraies photos (place dans la grille : t = taille). */
 const OUI = [
-  { cle: 'lanternes', image: 'vraie/mariage-lanternes', cadrage: '50% 45%', r: -4 },
-  { cle: 'ceremonie', image: 'vraie/mariage-ceremonie', cadrage: '50% 60%', r: 3 },
-  { cle: 'danse', image: 'vraie/mariage-danse', cadrage: '62% 40%', r: -2 },
-  { cle: 'piece-montee', image: 'vraie/mariage-piece-montee', cadrage: '50% 50%', r: 4 },
-  { cle: 'table-verte', image: 'vraie/mariage-table-verte', cadrage: '50% 40%', r: -3 },
-  { cle: 'nid', image: 'vraie/mariage-nid', cadrage: '30% 50%', r: 2 },
-  { cle: 'table-piscine', image: 'vraie/mariage-table-piscine', cadrage: '50% 60%', r: -4 },
-  { cle: 'salle', image: 'vraie/mariage-salle', cadrage: '50% 55%', r: 3 },
-  { cle: 'buffet', image: 'vraie/mariage-buffet', cadrage: '50% 50%', r: -2 },
-  { cle: 'table-fleurie', image: 'vraie/mariage-table-fleurie', cadrage: '50% 55%', r: 4 },
+  { cle: 'ceremonie', image: 'vraie/mariage-ceremonie', cadrage: '50% 60%', t: 'grande' },
+  { cle: 'danse', image: 'vraie/mariage-danse', cadrage: '62% 40%', t: '' },
+  { cle: 'table-verte', image: 'vraie/mariage-table-verte', cadrage: '50% 40%', t: 'haute' },
+  { cle: 'piece-montee', image: 'vraie/mariage-piece-montee', cadrage: '50% 50%', t: '' },
+  { cle: 'table-piscine', image: 'vraie/mariage-table-piscine', cadrage: '50% 60%', t: 'large' },
+  { cle: 'nid', image: 'vraie/mariage-nid', cadrage: '30% 50%', t: '' },
+  { cle: 'salle', image: 'vraie/mariage-salle', cadrage: '50% 55%', t: '' },
+  { cle: 'table-fleurie', image: 'vraie/mariage-table-fleurie', cadrage: '50% 55%', t: 'large' },
+  { cle: 'buffet', image: 'vraie/mariage-buffet', cadrage: '50% 50%', t: 'large' },
 ];
+const ETOILES = [0, 1, 2, 3, 4].map((i) => `<span class="oui__etoile" style="--rempli:${i < 4 ? 1 : 0.5}"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg></span>`).join('');
 /* v7.5.8 · « Demander une réception » sur fond clair : chaque occasion et chaque espace a sa vraie photo ; à gauche, le carton
    d'invitation se remplit et deux polaroïds montrent l'occasion et l'espace choisis. */
 const DEMANDE_OCC = [
@@ -65,9 +66,9 @@ const DOMAINE = [
    le fond qui change de teinte), un anneau se remplit, les noms en bas à droite mènent à chaque occasion. */
 const FETES = [
   { cle: 'mariages', image: 'vraie/table-piscine', alt: 'receptions.altMariages', cadrage: '50% 55%', fond: '#f4ede1' },
-  { cle: 'anniversaires', image: 'vraie/gateaux', alt: 'receptions.altAnniversaires', cadrage: '50% 45%', fond: '#efdfc6' },
-  { cle: 'depart', image: 'recevoir-depart', alt: 'receptions.altDepart', cadrage: '55% 40%', fond: '#dde4d1' },
-  { cle: 'baptemes', image: 'recevoir-baptemes', alt: 'receptions.altBaptemes', cadrage: '55% 45%', fond: '#f1e0d6' },
+  { cle: 'anniversaires', image: 'vraie/gateaux', alt: 'receptions.altAnniversaires', cadrage: '50% 45%', fond: '#f4ede1' },
+  { cle: 'depart', image: 'recevoir-depart', alt: 'receptions.altDepart', cadrage: '55% 40%', fond: '#f4ede1' },
+  { cle: 'baptemes', image: 'recevoir-baptemes', alt: 'receptions.altBaptemes', cadrage: '55% 45%', fond: '#f4ede1' },
 ];
 /* v7.5 · L'ouverture fait défiler les occasions de « Ce que l'on fête ici » : le mot du titre et la photo de l'arche changent ensemble
    (mêmes photos que la section, dans le même ordre). */
@@ -173,6 +174,69 @@ export default (c) => {
   </div>
 </section>
 
+<section class="terrasse" id="terrasse" data-scene data-entete-cache data-grille="scene" aria-labelledby="terrasse-titre">
+  <div class="terrasse__cadre" data-collant>
+    <div class="terrasse__images" data-effet="terrasse">
+      ${c.media({ nom: 'grok/terrasse-or', alt: c.s('accueil.terrasse.alt1'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--1', sizes: '100vw' })}
+      ${c.media({ nom: 'grok/terrasse-bleue', alt: c.s('accueil.terrasse.alt2'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--2', sizes: '100vw' })}
+      ${c.media({ nom: 'grok/terrasse-nuit', alt: c.s('accueil.terrasse.alt3'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--3', sizes: '100vw' })}
+      ${brut(guirlandes(c.donnees.ampoules))}
+    </div>
+    <div class="terrasse__texte conteneur">
+      <p class="surtitre">${c.t('accueil.terrasse.surtitreHiver')}</p>
+      <h2 id="terrasse-titre">${c.t('accueil.terrasse.titre')}</h2>
+      <ol class="terrasse__etapes">
+        <li data-etape="1">${c.t('accueil.terrasse.e1')}</li>
+        <li data-etape="2">${c.t('accueil.terrasse.e2')}</li>
+        <li data-etape="3">${c.t('accueil.terrasse.e3')}</li>
+      </ol>
+      <p class="terrasse__fin">
+        <a class="bouton" href="#demande" data-sans-transition>${c.t('accueil.terrasse.action')}</a>
+        <a class="bouton bouton--contour bouton--clair" href="#espaces" data-sans-transition>${c.t('accueil.terrasse.espaces')}</a>
+      </p>
+      <p class="saison-tag saison-tag--nuit">${c.t('accueil.terrasse.saison')}</p>
+    </div>
+    <p class="indice terrasse__indice" aria-hidden="true">${c.t('accueil.terrasse.indice')}</p>
+  </div>
+</section>
+
+<section class="oui" id="ils-ont-dit-oui" data-oui aria-labelledby="oui-titre">
+  <svg class="oui__guirlande" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 10 Q300 80 600 30 T1200 20" pathLength="1"/>${brut(Array.from({ length: 13 }, (_, i) => { const x = 40 + i * 92; const y = 10 + Math.sin((i / 12) * Math.PI * 2.2) * 22 + 22; return `<circle class="oui__ampoule" cx="${x}" cy="${y.toFixed(1)}" r="6" style="--i:${i}"/>`; }).join(''))}</svg>
+  <div class="conteneur oui__tete">
+    <div>
+      <p class="surtitre">${c.t('receptions.oui.sur')}</p>
+      <h2 id="oui-titre" class="oui__titre">${c.t('receptions.oui.titreAvant')} <em class="oui__oui">${c.t('receptions.oui.mot')}<svg viewBox="0 0 120 70" aria-hidden="true"><path d="M60 64 C10 40 2 18 22 8 C38 0 54 10 60 22 C66 10 82 0 98 8 C118 18 110 40 60 64 Z" pathLength="1"/></svg></em> ${c.t('receptions.oui.titreApres')}</h2>
+      <p class="oui__consigne">${c.t('receptions.oui.consigne')}</p>
+    </div>
+    <div class="oui__note">
+      <p class="oui__chiffre">${c.t('accueil.devise.note')}</p>
+      <div>
+        <p class="oui__etoiles" role="img" aria-label="${c.s('accueil.devise.etoiles')}">${brut(ETOILES)}</p>
+        <p class="oui__sur">${c.t('accueil.devise.sur')}, <strong>${c.t('accueil.devise.avis')}</strong></p>
+      </div>
+    </div>
+  </div>
+  <ul class="conteneur oui__grille" aria-label="${c.s('receptions.oui.liste')}">
+    ${OUI.map((o, i) => html`<li class="oui__tuile${o.t ? ` oui__tuile--${o.t}` : ''}" style="--i:${i}" data-effet="oui">
+      <button type="button" class="oui__ouvrir" data-oui-ouvrir="${i}" aria-label="${c.s('receptions.oui.ouvrir', { legende: c.s(`receptions.oui.photos.${o.cle}.legende`) })}">
+        ${c.media({ nom: o.image, alt: c.s(`receptions.oui.photos.${o.cle}.alt`), cadrage: o.cadrage, classe: 'oui__image', sizes: o.t === 'grande' ? '(max-width: 760px) 92vw, 46vw' : '(max-width: 760px) 92vw, 24vw' })}
+        <span class="oui__legende">${c.t(`receptions.oui.photos.${o.cle}.legende`)}</span>
+      </button>
+    </li>`)}
+  </ul>
+  <dialog class="oui__album" data-oui-album aria-label="${c.s('receptions.oui.album')}">
+    <div class="oui__album-cadre">
+      <figure class="oui__album-photo"><img data-oui-img src="/assets/images/${OUI[0].image}-960.webp" alt="${c.s(`receptions.oui.photos.${OUI[0].cle}.alt`)}" width="960" height="640" loading="lazy" decoding="async"><figcaption><span data-oui-legende></span> <small data-oui-compte></small></figcaption></figure>
+      <button type="button" class="oui__album-btn oui__album-btn--prec" data-oui-prec aria-label="${c.s('receptions.oui.prec')}"><span aria-hidden="true">‹</span></button>
+      <button type="button" class="oui__album-btn oui__album-btn--suiv" data-oui-suiv aria-label="${c.s('receptions.oui.suiv')}"><span aria-hidden="true">›</span></button>
+      <button type="button" class="oui__album-fermer" data-oui-fermer aria-label="${c.s('receptions.oui.fermer')}"><span aria-hidden="true">×</span></button>
+      <div class="oui__album-confettis" aria-hidden="true" data-superpose>${brut(Array.from({ length: 22 }, (_, i) => `<span style="--x:${(i * 41) % 100}%;--d:${((i * 7) % 10) / 20}s;--c:${['#b8322c', '#e9cf8e', '#7f9a74', '#f2b8a0'][i % 4]};--r:${(i * 67) % 360}deg"></span>`).join(''))}</div>
+    </div>
+  </dialog>
+  <script type="application/json" data-oui-donnees>${brut(JSON.stringify(OUI.map((o) => ({ src: `/assets/images/${o.image}-960.webp`, alt: c.s(`receptions.oui.photos.${o.cle}.alt`), legende: c.s(`receptions.oui.photos.${o.cle}.legende`) }))).replace(/</g, '\\u003c'))}</script>
+  <script type="application/json" data-oui-textes>${brut(JSON.stringify({ compte: c.s('receptions.oui.compte') }))}</script>
+</section>
+
 <section class="demande" aria-labelledby="demande-titre">
   <div class="conteneur" id="demande">
     <div class="demande__tete">
@@ -247,67 +311,6 @@ export default (c) => {
       </div>
     </div>
   </div>
-</section>
-
-<section class="terrasse" id="terrasse" data-scene data-entete-cache data-grille="scene" aria-labelledby="terrasse-titre">
-  <div class="terrasse__cadre" data-collant>
-    <div class="terrasse__images" data-effet="terrasse">
-      ${c.media({ nom: 'grok/terrasse-or', alt: c.s('accueil.terrasse.alt1'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--1', sizes: '100vw' })}
-      ${c.media({ nom: 'grok/terrasse-bleue', alt: c.s('accueil.terrasse.alt2'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--2', sizes: '100vw' })}
-      ${c.media({ nom: 'grok/terrasse-nuit', alt: c.s('accueil.terrasse.alt3'), cadrage: '50% 50%', classe: 'terrasse__img terrasse__img--3', sizes: '100vw' })}
-      ${brut(guirlandes(c.donnees.ampoules))}
-    </div>
-    <div class="terrasse__texte conteneur">
-      <p class="surtitre">${c.t('accueil.terrasse.surtitreHiver')}</p>
-      <h2 id="terrasse-titre">${c.t('accueil.terrasse.titre')}</h2>
-      <ol class="terrasse__etapes">
-        <li data-etape="1">${c.t('accueil.terrasse.e1')}</li>
-        <li data-etape="2">${c.t('accueil.terrasse.e2')}</li>
-        <li data-etape="3">${c.t('accueil.terrasse.e3')}</li>
-      </ol>
-      <p class="terrasse__fin">
-        <a class="bouton" href="#demande" data-sans-transition>${c.t('accueil.terrasse.action')}</a>
-        <a class="bouton bouton--contour bouton--clair" href="#espaces" data-sans-transition>${c.t('accueil.terrasse.espaces')}</a>
-      </p>
-      <p class="saison-tag saison-tag--nuit">${c.t('accueil.terrasse.saison')}</p>
-    </div>
-    <p class="indice terrasse__indice" aria-hidden="true">${c.t('accueil.terrasse.indice')}</p>
-  </div>
-</section>
-
-<section class="oui" id="ils-ont-dit-oui" data-oui aria-labelledby="oui-titre">
-  <div class="oui__collant">
-    <svg class="oui__guirlande" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 10 Q300 80 600 30 T1200 20" pathLength="1"/>${brut(Array.from({ length: 13 }, (_, i) => { const x = 40 + i * 92; const y = 10 + Math.sin((i / 12) * Math.PI * 2.2) * 22 + 22; return `<circle class="oui__ampoule" cx="${x}" cy="${y.toFixed(1)}" r="6" style="--i:${i}"/>`; }).join(''))}</svg>
-    <div class="conteneur oui__tete">
-      <p class="surtitre">${c.t('receptions.oui.sur')}</p>
-      <h2 id="oui-titre" class="oui__titre">${c.t('receptions.oui.titreAvant')} <em class="oui__oui">${c.t('receptions.oui.mot')}<svg viewBox="0 0 120 70" aria-hidden="true"><path d="M60 64 C10 40 2 18 22 8 C38 0 54 10 60 22 C66 10 82 0 98 8 C118 18 110 40 60 64 Z" pathLength="1"/></svg></em> ${c.t('receptions.oui.titreApres')}</h2>
-      <p class="oui__consigne">${c.t('receptions.oui.consigne')}</p>
-    </div>
-    <div class="oui__fil" data-galerie>
-      <svg class="oui__corde" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 6 Q500 70 1010 6"/></svg>
-      <ul class="oui__piste" data-oui-piste data-effet="oui" aria-label="${c.s('receptions.oui.liste')}">
-        ${OUI.map((o, i) => html`<li class="oui__photo" style="--r:${o.r}deg;--i:${i}">
-          <button type="button" class="oui__polaroid" data-oui-ouvrir="${i}" aria-label="${c.s('receptions.oui.ouvrir', { legende: c.s(`receptions.oui.photos.${o.cle}.legende`) })}">
-            <span class="oui__pince" aria-hidden="true"></span>
-            ${c.media({ nom: o.image, alt: c.s(`receptions.oui.photos.${o.cle}.alt`), cadrage: o.cadrage, classe: 'oui__image', sizes: '(max-width: 760px) 62vw, 22vw' })}
-            <span class="oui__legende">${c.t(`receptions.oui.photos.${o.cle}.legende`)}</span>
-          </button>
-        </li>`)}
-      </ul>
-    </div>
-    <div class="conteneur oui__pied" aria-hidden="true"><div class="oui__progres"><span data-oui-progres></span></div></div>
-  </div>
-  <dialog class="oui__album" data-oui-album aria-label="${c.s('receptions.oui.album')}">
-    <div class="oui__album-cadre">
-      <figure class="oui__album-photo"><img data-oui-img src="/assets/images/${OUI[0].image}-960.webp" alt="${c.s(`receptions.oui.photos.${OUI[0].cle}.alt`)}" width="960" height="640" loading="lazy" decoding="async"><figcaption><span data-oui-legende></span> <small data-oui-compte></small></figcaption></figure>
-      <button type="button" class="oui__album-btn oui__album-btn--prec" data-oui-prec aria-label="${c.s('receptions.oui.prec')}"><span aria-hidden="true">‹</span></button>
-      <button type="button" class="oui__album-btn oui__album-btn--suiv" data-oui-suiv aria-label="${c.s('receptions.oui.suiv')}"><span aria-hidden="true">›</span></button>
-      <button type="button" class="oui__album-fermer" data-oui-fermer aria-label="${c.s('receptions.oui.fermer')}"><span aria-hidden="true">×</span></button>
-      <div class="oui__album-confettis" aria-hidden="true" data-superpose>${brut(Array.from({ length: 22 }, (_, i) => `<span style="--x:${(i * 41) % 100}%;--d:${((i * 7) % 10) / 20}s;--c:${['#b8322c', '#e9cf8e', '#7f9a74', '#f2b8a0'][i % 4]};--r:${(i * 67) % 360}deg"></span>`).join(''))}</div>
-    </div>
-  </dialog>
-  <script type="application/json" data-oui-donnees>${brut(JSON.stringify(OUI.map((o) => ({ src: `/assets/images/${o.image}-960.webp`, alt: c.s(`receptions.oui.photos.${o.cle}.alt`), legende: c.s(`receptions.oui.photos.${o.cle}.legende`) }))).replace(/</g, '\\u003c'))}</script>
-  <script type="application/json" data-oui-textes>${brut(JSON.stringify({ compte: c.s('receptions.oui.compte') }))}</script>
 </section>
 
 `;

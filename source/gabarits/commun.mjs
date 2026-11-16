@@ -135,7 +135,7 @@ function pied(c) {
       <p class="statut pied2__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-pied>${c.site.contact.adresse}</span></p>
       <script type="application/json" data-horaires-pied>${brut(JSON.stringify(c.donnees.horaires).replace(/<\//g, '<\\/'))}</script>
     </div>
-    <p class="pied2__actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('commun.piedReserver') })} <a class="bouton bouton--contour bouton--clair" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
+    <p class="pied2__actions">${c.page.cle === 'receptions' ? html`<a class="bouton" href="#demande" data-sans-transition>${c.t('commun.piedDemander')}</a>` : c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('commun.piedReserver') })} <a class="bouton bouton--contour bouton--clair" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
   </div>
   <div class="conteneur pied2__grille">
     <div class="pied2__bloc">

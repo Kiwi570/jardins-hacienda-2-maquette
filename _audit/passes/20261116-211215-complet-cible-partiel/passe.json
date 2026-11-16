@@ -1,0 +1,20 @@
+{
+ "id": "20261116-211215-complet-cible-partiel",
+ "date": "2026-11-16T21:16:18.363Z",
+ "niveau": "complet",
+ "pages": "/receptions",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "ecran",
+  "mouvement",
+  "parcours",
+  "fluidite"
+ ],
+ "version": "7",
+ "echecs": 17,
+ "aRegarder": 1,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "échecs"
+}
