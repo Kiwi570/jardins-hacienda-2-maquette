@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 17/11/2026 00:41:39 · 1 min · 1 page(s) · audit complet ciblé sur /la-carte (étapes : fichiers, mesures)
+Projet : `jardins-hacienda-2-maquette` · 17/11/2026 00:57:35 · 1 min · 1 page(s) · audit complet ciblé sur /la-carte (étapes : fichiers, mesures, mouvement)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261116-234054-complet-cible-partiel` · version ?v=7
+- Passe : `20261116-235631-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
 - À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (24), balayage (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (24), balayage (1), mouvement (2), effets du plan (37)
 
 ## Passes de cette version (?v=7)
 
@@ -94,7 +94,8 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261116-232750-complet-cible-partiel | complet | /la-carte,/offrir | fichiers, mesures, ecran, mouvement, parcours, fluidite | 5 | 2 | 0 | échecs |
 | 20261116-233440-complet-cible-partiel | complet | /la-carte | fichiers, mesures, mouvement | 0 | 0 | 0 | complet |
 | 20261116-233550-complet-cible-partiel | complet | /la-carte,/offrir | ecran, parcours, fluidite | 0 | 1 | 0 | complet |
-| **20261116-234054-complet-cible-partiel** (celle-ci) | complet | /la-carte | fichiers, mesures | 0 | 0 | 0 | complet |
+| 20261116-234054-complet-cible-partiel | complet | /la-carte | fichiers, mesures | 0 | 0 | 0 | complet |
+| **20261116-235631-complet-cible-partiel** (celle-ci) | complet | /la-carte | fichiers, mesures, mouvement | 0 | 0 | 0 | complet |
 
 ## Échecs
 

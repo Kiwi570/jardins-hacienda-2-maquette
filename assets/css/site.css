@@ -3592,60 +3592,7 @@ html:not(.js) .cadeau-fetes__carte, .cadeau-fetes.sans-anim .cadeau-fetes__carte
 .carte-resto__legende-liste li.est-absent { display: none; }
 .carte-resto__legende-note { flex: 1 1 100%; margin: 0; font-size: .88rem; color: rgba(246, 239, 226, .74); max-width: none; }
 
-/* v7.5.22 · La carte, composer son repas : un « + » doré au bout de chaque plat ; le carnet du serveur rangé dans la barre de
-   la carte (bouton « Votre repas » et l'addition), qui s'ouvre en petit carnet de papier crème : les plats notés à la main,
-   les portions, pour une ou deux personnes, le total ; « Réserver ce repas » et « L'offrir en carte cadeau ». */
-.carnet { position: relative; justify-self: end; }
-.carnet[hidden] { display: none; }
-.carnet__bouton { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px 0 14px; border: 0; border-radius: 999px; background: rgba(246, 239, 226, .08); box-shadow: inset 0 0 0 1px rgba(233, 207, 142, .5); color: #f6efe2; font: inherit; font-weight: 700; font-size: .92rem; cursor: pointer; transition: background .3s; }
-.carnet__bouton svg { width: 20px; height: 20px; color: #f3d98f; }
-.carnet__bouton:hover { background: rgba(246, 239, 226, .14); }
-.carnet__bouton:focus-visible { outline: 3px solid #e9cf8e; outline-offset: 2px; }
-.carnet__mini { display: inline-grid; place-items: center; min-width: 28px; height: 28px; padding: 0 8px; border-radius: 999px; background: rgba(246, 239, 226, .14); color: #f6efe2; font-variant-numeric: tabular-nums; }
-.carnet.est-rempli .carnet__mini { background: linear-gradient(180deg, #f6e3b0, #d6b066 60%, #b98f45); color: #2a1a0c; }
-.carnet__panneau { position: absolute; z-index: 6; right: 0; top: calc(100% + 10px); width: min(380px, 86vw); padding: 18px 20px 20px; border-radius: 6px 6px 16px 16px; color: #2a1d12;
-  background: repeating-linear-gradient(180deg, rgba(122, 31, 26, 0) 0 29px, rgba(122, 31, 26, .09) 29px 30px) 0 54px / 100% 100% no-repeat, linear-gradient(180deg, #fffaf1, #f4ead8);
-  box-shadow: 0 30px 60px -24px rgba(0, 0, 0, .75), 0 0 0 1px rgba(169, 130, 58, .4); transform-origin: 90% 0; animation: carnet-sort .45s cubic-bezier(.2, 1.3, .4, 1); }
-.carnet__panneau::before { content: ''; position: absolute; left: 14px; right: 14px; top: -6px; height: 10px; background: radial-gradient(circle at 6px 5px, #2a1d15 0 3px, transparent 3.5px) 0 0 / 22px 10px repeat-x; }
-.carnet__panneau[hidden] { display: none; }
-@keyframes carnet-sort { from { opacity: 0; transform: translateY(-10px) rotate(-2deg) scale(.96); } to { opacity: 1; transform: none; } }
-.carnet__tete { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.carnet__titre { margin: 0; font-family: 'Caveat', 'Segoe Print', cursive; font-size: 1.9rem; line-height: 1; color: #7a221d; }
-.carnet__fermer { display: grid; place-items: center; width: 44px; height: 44px; margin: -8px -10px -8px 0; border: 0; border-radius: 50%; background: transparent; color: #4a3b2c; font-size: 1.6rem; cursor: pointer; }
-.carnet__fermer:hover { background: rgba(42, 29, 18, .07); }
-.carnet__vide { margin: 10px 0 4px; font-size: .95rem; color: #4a3b2c; }
-.carnet__lignes { list-style: none; display: grid; gap: 0; margin: 10px 0 0; padding: 0; max-height: min(38vh, 300px); overflow-y: auto; }
-.carnet__ligne { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 6px; min-height: 30px; font-family: 'Caveat', 'Segoe Print', cursive; font-size: 1.35rem; line-height: 1.1; color: #233148; animation: carnet-ecrit .4s ease both; }
-@keyframes carnet-ecrit { from { opacity: 0; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
-.carnet__moins { display: grid; place-items: center; width: 30px; height: 30px; border: 0; border-radius: 50%; background: rgba(122, 31, 26, .1); color: #7a221d; font: 700 1rem/1 var(--police-texte); cursor: pointer; }
-.carnet__moins:hover { background: rgba(122, 31, 26, .2); }
-.carnet__q { color: #7a221d; }
-.carnet__nom { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.carnet__prix { font-variant-numeric: tabular-nums; }
-.carnet__pour { display: inline-flex; gap: 4px; margin: 14px 0 0; padding: 3px; border-radius: 999px; background: rgba(42, 29, 18, .07); }
-.carnet__pour button { min-height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent; color: #4a3b2c; font: inherit; font-weight: 700; font-size: .9rem; cursor: pointer; }
-.carnet__pour button[aria-pressed="true"] { background: #2a1d15; color: #f6efe2; }
-.carnet__total { display: flex; align-items: baseline; justify-content: space-between; margin: 12px 0 0; padding-top: 10px; border-top: 1.5px dashed rgba(42, 29, 18, .3); font-weight: 700; }
-.carnet__total output { font-family: var(--police-titres); font-size: 1.9rem; color: #7a221d; font-variant-numeric: tabular-nums; }
-.carnet__note { margin: 4px 0 0; font-size: .82rem; color: #5b4632; }
-.carnet__actions { display: grid; gap: 8px; margin: 14px 0 0; }
-.carnet__actions .bouton { justify-content: center; }
-.carnet__actions .bouton--contour { color: #2a1d12; box-shadow: inset 0 0 0 1.5px #2a1d12; background: transparent; }
-/* Le « + » de chaque plat. */
-.carnet__plus { position: relative; flex: none; display: grid; place-items: center; width: 44px; height: 44px; margin: -10px -10px -10px 2px; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
-.carnet__plus span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: #6f4a14; font: 700 1.1rem/1 var(--police-texte); background: #f6efe2; box-shadow: inset 0 0 0 1.5px rgba(169, 130, 58, .7); transition: transform .3s cubic-bezier(.2, 1.4, .4, 1), background .3s, color .3s; }
-.carnet__plus:hover span { transform: scale(1.12); background: #d6b066; color: #2a1a0c; }
-.carnet__plus:focus-visible { outline: 3px solid #7a221d; outline-offset: -4px; }
-.carte-resto__plat.est-note .carnet__plus span { background: linear-gradient(180deg, #f6e3b0, #d6b066 60%, #b98f45); color: #2a1a0c; box-shadow: none; }
-.carnet__vol { position: fixed; z-index: 80; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle at 35% 30%, #fff3c4, #d6b066 60%, #a9823a); box-shadow: 0 0 12px rgba(246, 200, 110, .9); }
-@media (min-width: 1100px) { .carte-resto__barre:has(.carnet:not([hidden])) { grid-template-columns: minmax(0, 1fr) auto auto; } }
-.carte-resto__plat-ligne:has(.carnet__plus) { grid-template-columns: auto auto minmax(16px, 1fr) auto auto; }
-.carte-resto__plat-ligne > .carnet__plus { grid-column: 5; grid-row: 1; align-self: center; }
-@media (max-width: 600px) { .carte-resto__plat-ligne:has(.carnet__plus) { grid-template-columns: minmax(0, 1fr) auto auto; } .carte-resto__plat-ligne > .carnet__plus { grid-column: 3; } }
-/* Le carnet et la note des allergènes lisibles dans les deux lumières de la page (sans JavaScript, la carte reste claire). */
-.carnet__bouton { background: #2a1d15; }
-.carnet__bouton:hover { background: #3a2a1f; }
-.carnet__mini { background: #4a3626; }
+/* La note des allergènes lisible dans les deux lumières de la page (sans JavaScript, la carte reste claire). */
 .carte-resto__legende, .carte-resto__legende-liste li, .carte-resto__legende-note { color: inherit; }
 .carte-resto__legende-titre { color: inherit; }
 .carte-resto__legende-liste li, .carte-resto__legende-note { opacity: .85; }

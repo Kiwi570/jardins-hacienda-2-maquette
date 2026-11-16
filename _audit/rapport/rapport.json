@@ -9,7 +9,9 @@
     "numéro de version": 1,
     "langues": 1,
     "mesures": 24,
-    "balayage": 1
+    "balayage": 1,
+    "mouvement": 2,
+    "effets du plan": 37
   },
   "infos": [
     "Numéro de version des fichiers : ?v=7",

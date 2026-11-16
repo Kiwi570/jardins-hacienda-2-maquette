@@ -37,22 +37,8 @@ function bandeau(c, r, i) {
   return texteBrut(html`<div class="rubrique-bande" aria-hidden="true">${c.media({ nom: v.nom, alt: '', cadrage: v.cadrage, classe: 'rubrique-bande__photo', sizes: '(max-width: 999px) 92vw, 46vw', attrs: 'data-fx="vitesse" data-fx-force="3" data-effet="carte-bande"' })}<p class="rubrique-bande__infos"><span class="rubrique-bande__num">${String(i + 1).padStart(2, '0')}</span><span class="rubrique-bande__detail">${detail}</span></p></div>`);
 }
 export default (c) => {
-  /* v7.5.22 · Composer son repas : le carnet du serveur, rangé dans la barre de la carte (les « + » des plats sont posés par
-     le script : sans JavaScript, ni carnet ni « + »). */
-  const carnet = texteBrut(html`<div class="carnet" data-carnet hidden data-mot="${c.s('carte.carnetMot')}" data-ajouter="${c.s('carte.carnetAjouter')}" data-retirer="${c.s('carte.carnetRetirer')}">
-    <button type="button" class="carnet__bouton" data-carnet-ouvrir aria-expanded="false" aria-controls="carnet-panneau"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4Z"/><path d="M9 8h6M9 11.5h6M9 15h3.5"/></svg><span>${c.t('carte.carnetBouton')}</span><span class="carnet__mini" data-carnet-mini>0</span></button>
-    <div class="carnet__panneau" id="carnet-panneau" data-carnet-panneau hidden>
-      <div class="carnet__tete"><p class="carnet__titre">${c.t('carte.carnetTitre')}</p><button type="button" class="carnet__fermer" data-carnet-fermer aria-label="${c.s('carte.carnetFermer')}">×</button></div>
-      <p class="carnet__vide" data-carnet-vide>${c.t('carte.carnetVide')}</p>
-      <ol class="carnet__lignes" data-carnet-lignes></ol>
-      <div class="carnet__pour" role="group" aria-label="${c.s('carte.carnetPour')}"><button type="button" data-carnet-pour="1" aria-pressed="true">${c.t('carte.carnetPour1')}</button><button type="button" data-carnet-pour="2" aria-pressed="false">${c.t('carte.carnetPour2')}</button></div>
-      <p class="carnet__total"><span>${c.t('carte.carnetTotal')}</span><output data-carnet-total aria-live="polite">0 €</output></p>
-      <p class="carnet__note">${c.t('carte.carnetNote')}</p>
-      <p class="carnet__actions"><a class="bouton" data-carnet-reserver href="${c.url('reserver', 'formulaire', 'service=soir')}">${c.t('carte.carnetReserver')}</a><a class="bouton bouton--contour" data-carnet-offrir href="${c.url('offrir', 'composer')}">${c.t('carte.carnetOffrir')}</a></p>
-    </div>
-  </div>`);
   let carte = rendreCarte(c.donnees.carte)
-    .replace('</div></div><div class="carte-resto__corps">', `</div>${carnet}</div><div class="carte-resto__corps carte-ouverte">`);
+    .replace('<div class="carte-resto__corps">', '<div class="carte-resto__corps carte-ouverte">');
   /* Chaque rubrique reçoit sa photo en bandeau, en tête de sa page. */
   c.donnees.carte.rubriques.forEach((r, i) => {
     carte = carte.replace(new RegExp(`(<section class="carte-resto__rubrique"[^>]*data-rubrique="${r.id}"[^>]*>)`), `$1${bandeau(c, r, i)}`);

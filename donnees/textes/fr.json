@@ -466,21 +466,7 @@
     "etape4Texte": "Carottes et tiges vertes.",
     "finAlt": "Une assiette du chef : viande rosée, cèpes et purée, sur une assiette de grès",
     "etape5Titre": "Les herbes",
-    "etape5Texte": "Sauge et jeunes pousses, à la fin.",
-    "carnetBouton": "Votre repas",
-    "carnetTitre": "Votre repas",
-    "carnetVide": "Touchez « + » à côté d'un plat : il s'écrit ici, avec l'addition.",
-    "carnetPour1": "Pour 1",
-    "carnetPour2": "Pour 2",
-    "carnetPour": "Nombre de convives",
-    "carnetTotal": "Total",
-    "carnetNote": "Hors boissons. Une planche à partager compte une fois.",
-    "carnetReserver": "Réserver ce repas",
-    "carnetOffrir": "L'offrir en carte cadeau",
-    "carnetAjouter": "Ajouter à votre repas",
-    "carnetRetirer": "Retirer",
-    "carnetFermer": "Fermer",
-    "carnetMot": "Un repas aux Jardins :"
+    "etape5Texte": "Sauge et jeunes pousses, à la fin."
   },
   "fetes": {
     "heure": "23:30",
