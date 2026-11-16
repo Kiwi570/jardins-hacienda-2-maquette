@@ -40,11 +40,13 @@
     "oui",
     "dej-semaine",
     "ronde",
-    "dates-photo",
     "saint-sylvestre",
     "carte-photo",
     "avent",
-    "affiches"
+    "affiches",
+    "billets",
+    "ephemeride",
+    "cadeau"
   ],
   "grille": {
     "dispenses": {}

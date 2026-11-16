@@ -106,6 +106,8 @@ const OPTIONS = {
   'assiette-qui-se-dresse': { longueur: 1.4 },
   'givre-webgl': { delai: 900, force: 0.9 },
   'agenda-des-dates': { fuseau: 'Europe/Paris', textes: {
+    /* v7.5.19 · billets : le bouton d'agenda est court (icône et « Agenda »), son nom complet est rendu après l'habillage. */
+    ajouter: 'Agenda', ajoute: 'Ajouté',
     prochaine: (t, q) => `Prochaine date\u00a0: ${t}, ${q}`,
     /* Jours de calendrier (comme les comptes à rebours de l'accueil) : une date sans heure commence à minuit. */
     dans: (j, h, m) => { if (j < 1 && !h && !m) return 'aujourd’hui'; const n = j + (h || m ? 1 : 0); return n <= 1 ? 'demain' : `dans ${n} jours`; },
@@ -152,6 +154,7 @@ function ardoiseDuMoment(el) {
 }
 /* Agenda : le lien « Réserver » d'une date ouvre le formulaire au bon jour (la date seule, sans l'heure). */
 function datesVersReservation(el) {
+  for (const b of $$('.agd__ics', el)) { const t = b.closest('.agd__date')?.querySelector('.agd__titre')?.textContent.trim() || ''; b.setAttribute('aria-label', `Ajouter à mon agenda : ${t}`); b.title = 'Ajouter à mon agenda'; }
   for (const a of $$('a.agd__reserver', el)) { try { const u = new URL(a.href); const d = u.searchParams.get('date'); if (d) u.searchParams.set('date', d.slice(0, 10)); u.searchParams.delete('sujet'); const li = a.closest('[id^="date-"]'); if (li) u.searchParams.set('soiree', li.id.slice(5)); a.href = u.pathname + u.search + u.hash; } catch {} }
 }
 /* Réserver : arrivée depuis une date des fêtes (?soiree=…) : la soirée est rappelée au-dessus du formulaire. */
@@ -765,6 +768,59 @@ function saisonFetes() {
   };
   poser(html.dataset.saison || 'hiver');
   for (const b of choix) b.addEventListener('click', () => { html.classList.add('transition-moment'); poser(b.dataset.saisonChoix); givreHiver(); setTimeout(() => html.classList.remove('transition-moment'), 900); rafraichir(); });
+}
+
+/* v7.5.19 · Les fêtes : l'éphéméride de la Saint-Sylvestre. Le vrai nombre de jours (jours de calendrier à Moineville) ;
+   à l'arrivée, les pages des jours déjà passés s'arrachent une à une et tombent, puis la page du jour se pose. */
+function ephemeride() {
+  const e = $('[data-ephemeride]'); if (!e) return;
+  const page = $('[data-ephem-page]', e), bloc = page.parentElement, d = e.dataset;
+  const n = joursAvant(d.ephemeride);
+  /* « Saint-Sylvestre » ne se coupe pas au trait d'union. */
+  const ecrireBas = (b, t) => { b.textContent = ''; t.split(/(Saint-Sylvestre)/).forEach((m) => { if (!m) return; if (m === 'Saint-Sylvestre') { const s = document.createElement('span'); s.className = 'insecable'; s.textContent = m; b.append(s); } else b.append(m); }); };
+  const remplir = (k, p) => {
+    const h = $('[data-ephem-haut]', p), nn = $('[data-ephem-n]', p), b = $('[data-ephem-bas]', p);
+    p.classList.toggle('ephem__page--mot', k === 0);
+    if (k > 0) { h.textContent = d.haut; nn.textContent = String(k); ecrireBas(b, k === 1 ? d.bas1 : d.bas); }
+    else if (k === 0) { h.textContent = d.ceSoirHaut; nn.textContent = d.ceSoir; ecrireBas(b, d.ceSoirBas); }
+    else { h.textContent = d.apresHaut; nn.textContent = String(+d.ephemeride.slice(0, 4) + 1); ecrireBas(b, d.apresBas); }
+  };
+  remplir(n, page);
+  if (n < 0 || etat.calme || !page.animate) return;
+  const feuilles = [];
+  for (let i = 1; i <= 6; i++) {
+    const f = page.cloneNode(true);
+    f.removeAttribute('data-ephem-page'); f.classList.add('ephem__page--vole'); f.setAttribute('aria-hidden', 'true');
+    remplir(n + i, f); bloc.append(f); feuilles.push(f);
+  }
+  let parti = false;
+  const arracher = () => {
+    if (parti) return; parti = true;
+    let t = 0;
+    feuilles.slice().reverse().forEach((f, i) => {
+      const s = i % 2 ? 1 : -1, duree = Math.max(420, 680 - i * 50);
+      f.animate([
+        { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+        { transform: `translate(${s * 3}px, -8px) rotate(${s * 3}deg)`, opacity: 1, offset: 0.18 },
+        { transform: `translate(${s * 60}px, 120px) rotate(${s * 18}deg)`, opacity: 1, offset: 0.6 },
+        { transform: `translate(${s * 130}px, ${300 + i * 14}px) rotate(${s * (34 + i * 3)}deg)`, opacity: 0 },
+      ], { duration: duree, delay: t, easing: 'cubic-bezier(.45, .05, .65, .95)', fill: 'forwards' }).onfinish = () => f.remove();
+      t += Math.max(150, 340 - i * 40);
+    });
+    page.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(-2.2deg)' }, { transform: 'rotate(1deg)' }, { transform: 'rotate(0deg)' }], { duration: 900, delay: t + 260, easing: 'ease-out' });
+  };
+  const lancer = () => {
+    if (!('IntersectionObserver' in window)) { setTimeout(arracher, 400); return; }
+    new IntersectionObserver(([x], o) => { if (x.isIntersecting) { o.disconnect(); setTimeout(arracher, 420); } }, { threshold: 0.55 }).observe(e);
+  };
+  if (etat.pret) lancer(); else quand('pret', lancer);
+}
+
+/* v7.5.19 · Les fêtes : la carte cadeau sort de son enveloppe quand la section arrive à l'écran. */
+function cadeauFetes() {
+  const sec = $('[data-cadeau-fetes]'); if (!sec) return;
+  if (etat.calme || !('IntersectionObserver' in window)) { sec.classList.add('sans-anim', 'est-vu'); return; }
+  new IntersectionObserver(([e], o) => { if (e.isIntersecting) { sec.classList.add('est-vu'); o.disconnect(); } }, { threshold: 0.4 }).observe(sec);
 }
 
 /* Réceptions : le mot de l'occasion (un tour à l'arrivée, puis au toucher), les volets des espaces, la demande. */
@@ -2240,6 +2296,8 @@ demarrer({
     statuts();
     basculeMoment();
     saisonFetes();
+    ephemeride();
+    cadeauFetes();
     motTournant();
     liensService();
     volets();

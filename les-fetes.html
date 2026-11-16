@@ -118,16 +118,25 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <span class="ouv-fetes__lueurs" aria-hidden="true"></span>
   <div class="conteneur ouv-fetes__grille">
     <div class="ouv-fetes__contenu">
-      <p class="surtitre"><span data-saison-seul="hiver">Cet hiver</span><span data-saison-seul="ete">Cet été</span></p>
+      <p class="ouv-fetes__saisons"><span class="bascule-saison bascule-saison--discret" role="group" aria-label="Saison"><button type="button" data-saison-choix="hiver">Cet hiver</button><button type="button" data-saison-choix="ete">Cet été</button></span></p>
       <h1 id="fetes-h1" data-iris-centre><span data-saison-seul="hiver">Les fêtes au coin du feu</span><span data-saison-seul="ete">L&#39;été au bord de l&#39;eau</span></h1>
-      <p class="ouv-fetes__decompte" data-saison-seul="hiver"><span class="ouv-fetes__j" data-decompte-geant="2026-12-31">J-45</span> <span>avant la Saint-Sylvestre</span></p>
-      <p class="ouv-fetes__texte"><span data-saison-seul="hiver">Des soirées à thème tout l’hiver, le menu de Noël le vendredi 25 décembre au déjeuner, la Saint-Sylvestre le jeudi 31 décembre au soir.</span><span data-saison-seul="ete">De juin à septembre : les journées festives, la piscine le dimanche, le bar sous la paillote et les pool parties.</span></p>
-      <p class="ouv-fetes__actions">
-      <span data-saison-seul="hiver"><a href="/reserver?date=2026-12-31&amp;service=soir#formulaire" class="bouton" data-libelle="Réserver" data-action-principale>Réserver la Saint-Sylvestre</a></span>
-      <span data-saison-seul="ete"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver" data-action-principale>Réserver une table</a></span>
-      <span class="bascule-saison" role="group" aria-label="Saison"><button type="button" data-saison-choix="hiver">Cet hiver</button><button type="button" data-saison-choix="ete">Cet été</button></span>
-    </p>
-      <p class="ouv-fetes__info" data-info-cle><span data-saison-seul="hiver">Saint-Sylvestre : 120 € le menu · Noël : 79 € par personne, hors boissons</span><span data-saison-seul="ete">12 h – 19 h · 14 h 30 · 15 h 30</span></p>
+      <div class="ouv-fetes__rang">
+        <div class="ephem" data-saison-seul="hiver" data-ephemeride="2026-12-31" data-effet="ephemeride" data-haut="Plus que" data-bas="jours avant la Saint-Sylvestre" data-bas1="jour avant la Saint-Sylvestre" data-ce-soir-haut="C&#39;est" data-ce-soir="ce soir" data-ce-soir-bas="la Saint-Sylvestre" data-apres-haut="Bonne année" data-apres-bas="Rendez-vous l&#39;hiver prochain">
+          <span class="ephem__reliure" aria-hidden="true"><span></span><span></span></span>
+          <div class="ephem__bloc">
+            <span class="ephem__epaisseur" aria-hidden="true"></span>
+            <p class="ephem__page" data-ephem-page><span class="ephem__haut" data-ephem-haut>Plus que</span> <span class="ephem__n" data-ephem-n>45</span> <span class="ephem__bas" data-ephem-bas>jours avant la <span class="insecable">Saint-Sylvestre</span></span></p>
+          </div>
+        </div>
+        <div class="ouv-fetes__suite">
+          <p class="ouv-fetes__texte"><span data-saison-seul="hiver">Des soirées à thème tout l’hiver, le menu de Noël le vendredi 25 décembre au déjeuner, la Saint-Sylvestre le jeudi 31 décembre au soir.</span><span data-saison-seul="ete">De juin à septembre : les journées festives, la piscine le dimanche, le bar sous la paillote et les pool parties.</span></p>
+          <p class="ouv-fetes__actions">
+            <span data-saison-seul="hiver"><a href="/reserver?date=2026-12-31&amp;service=soir#formulaire" class="bouton" data-libelle="Réserver" data-action-principale>Réserver la Saint-Sylvestre</a></span>
+            <span data-saison-seul="ete"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver" data-action-principale>Réserver une table</a></span>
+          </p>
+          <p class="ouv-fetes__info" data-info-cle><span data-saison-seul="hiver">Saint-Sylvestre : 120 € le menu · Noël : 79 € par personne, hors boissons</span><span data-saison-seul="ete">12 h – 19 h · 14 h 30 · 15 h 30</span></p>
+        </div>
+      </div>
     </div>
     <div class="ouv-fetes__visuel" data-saison-seul="hiver" data-effet="affiches" data-grille="manipuler">
       <div class="affiche affiche--noel" data-affiche>
@@ -182,7 +191,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     </div>
   </div>
 </section>
-<section class="agd dates" id="dates" data-saison-seul="hiver" data-module="agenda-des-dates" data-grille="retour" aria-labelledby="agd-titre">
+<section class="agd dates dates--billets" id="dates" data-saison-seul="hiver" data-module="agenda-des-dates" data-grille="retour" aria-labelledby="agd-titre">
   <div class="conteneur">
     <div class="agd__tete">
       <p class="surtitre">Cet hiver</p>
@@ -193,70 +202,82 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <div class="agd__filtres" role="group" aria-label="Types de dates"></div>
       <p class="agd__compte" data-compte aria-live="polite"></p>
     </div>
-    <div class="dates__grille">
-    <div class="dates__visuel" data-dates-visuel data-effet="dates-photo" aria-hidden="true">
-      <figure class="media dates__img est-active" data-dates-image="vraie/cepes" style="--cadrage:50% 55%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/cepes-mobile-640.webp 640w, /assets/images/vraie/cepes-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
-    <img src="/assets/images/vraie/cepes-1280.webp" srcset="/assets/images/vraie/cepes-640.webp 640w, /assets/images/vraie/cepes-1280.webp 1280w, /assets/images/vraie/cepes-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media dates__img" data-dates-image="vraie/feu-salle" style="--cadrage:62% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/feu-salle-mobile-640.webp 640w, /assets/images/vraie/feu-salle-mobile-1040.webp 1040w" sizes="(max-width: 760px) 92vw, 34vw">
-    <img src="/assets/images/vraie/feu-salle-1280.webp" srcset="/assets/images/vraie/feu-salle-640.webp 640w, /assets/images/vraie/feu-salle-1280.webp 1280w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="729" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media dates__img" data-dates-image="vraie/salle-midi" style="--cadrage:45% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-midi-mobile-640.webp 640w, /assets/images/vraie/salle-midi-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
-    <img src="/assets/images/vraie/salle-midi-1280.webp" srcset="/assets/images/vraie/salle-midi-640.webp 640w, /assets/images/vraie/salle-midi-1280.webp 1280w, /assets/images/vraie/salle-midi-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media dates__img" data-dates-image="vraie/salle-soir" style="--cadrage:50% 50%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soir-mobile-640.webp 640w, /assets/images/vraie/salle-soir-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
-    <img src="/assets/images/vraie/salle-soir-1280.webp" srcset="/assets/images/vraie/salle-soir-640.webp 640w, /assets/images/vraie/salle-soir-1280.webp 1280w, /assets/images/vraie/salle-soir-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media dates__img" data-dates-image="vraie/plat-cheminee" style="--cadrage:50% 72%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/plat-cheminee-mobile-640.webp 640w, /assets/images/vraie/plat-cheminee-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
-    <img src="/assets/images/vraie/plat-cheminee-1280.webp" srcset="/assets/images/vraie/plat-cheminee-640.webp 640w, /assets/images/vraie/plat-cheminee-1280.webp 1280w, /assets/images/vraie/plat-cheminee-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media dates__img" data-dates-image="vraie/coupe-cheminee" style="--cadrage:50% 45%">
-  <picture>
-    <img src="/assets/images/vraie/coupe-cheminee-784.webp" srcset="/assets/images/vraie/coupe-cheminee-480.webp 480w, /assets/images/vraie/coupe-cheminee-640.webp 640w, /assets/images/vraie/coupe-cheminee-784.webp 784w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="784" height="980" loading="lazy" decoding="async">
-  </picture>
-</figure><figure class="media dates__img" data-dates-image="vraie/table-piscine" style="--cadrage:50% 55%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 34vw">
-    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="(max-width: 760px) 92vw, 34vw" alt="" width="960" height="1280" loading="lazy" decoding="async">
+    <ol class="agd__liste">
+      <li class="agd__date billet" id="date-cote-de-boeuf" style="--i:0" data-effet="billets" data-debut="2026-11-21" data-type="Soirée" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-21&amp;service=soir#formulaire">
+        <figure class="media billet__photo" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/cepes-mobile-640.webp 640w, /assets/images/vraie/cepes-mobile-1080.webp 1080w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw">
+    <img src="/assets/images/vraie/cepes-1280.webp" srcset="/assets/images/vraie/cepes-640.webp 640w, /assets/images/vraie/cepes-1280.webp 1280w, /assets/images/vraie/cepes-1920.webp 1920w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" alt="" width="1280" height="853" loading="lazy" decoding="async">
   </picture>
 </figure>
-      <div class="dates__badge"><span class="dates__jour" data-dates-jour></span><span class="dates__mois" data-dates-mois></span><span class="dates__nom" data-dates-nom></span></div>
-    </div>
-    <div class="dates__liste">
-    <ol class="agd__liste">
-      <li class="agd__date" id="date-cote-de-boeuf" data-debut="2026-11-21" data-type="Soirée" data-image="vraie/cepes" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-21&amp;service=soir#formulaire">
+        <span class="billet__perfo" aria-hidden="true"></span>
         <h3 class="agd__titre">Soirée côte de bœuf</h3>
         <p class="agd__texte" data-prix>50 € hors boissons</p>
-      </li><li class="agd__date" id="date-raclette" data-debut="2026-11-28" data-type="Soirée" data-image="vraie/feu-salle" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-28&amp;service=soir#formulaire">
+      </li><li class="agd__date billet" id="date-raclette" style="--i:1" data-effet="billets" data-debut="2026-11-28" data-type="Soirée" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-28&amp;service=soir#formulaire">
+        <figure class="media billet__photo" style="--cadrage:62% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/feu-salle-mobile-640.webp 640w, /assets/images/vraie/feu-salle-mobile-1040.webp 1040w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw">
+    <img src="/assets/images/vraie/feu-salle-1280.webp" srcset="/assets/images/vraie/feu-salle-640.webp 640w, /assets/images/vraie/feu-salle-1280.webp 1280w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" alt="" width="1280" height="729" loading="lazy" decoding="async">
+  </picture>
+</figure>
+        <span class="billet__perfo" aria-hidden="true"></span>
         <h3 class="agd__titre">Soirée raclette</h3>
         <p class="agd__texte" data-prix>39 € hors boissons</p>
-      </li><li class="agd__date" id="date-brunch" data-debut="2026-11-29" data-type="Brunch" data-image="vraie/salle-midi" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-29&amp;service=midi#formulaire">
+      </li><li class="agd__date billet" id="date-brunch" style="--i:2" data-effet="billets" data-debut="2026-11-29" data-type="Brunch" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-11-29&amp;service=midi#formulaire">
+        <figure class="media billet__photo" style="--cadrage:45% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-midi-mobile-640.webp 640w, /assets/images/vraie/salle-midi-mobile-1080.webp 1080w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw">
+    <img src="/assets/images/vraie/salle-midi-1280.webp" srcset="/assets/images/vraie/salle-midi-640.webp 640w, /assets/images/vraie/salle-midi-1280.webp 1280w, /assets/images/vraie/salle-midi-1920.webp 1920w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
+  </picture>
+</figure>
+        <span class="billet__perfo" aria-hidden="true"></span>
         <h3 class="agd__titre">Le brunch</h3>
         <p class="agd__texte" data-prix>50 € hors boissons</p>
-      </li><li class="agd__date" id="date-libanaise" data-debut="2026-12-19" data-type="Soirée" data-image="vraie/salle-soir" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-19&amp;service=soir#formulaire">
+      </li><li class="agd__date billet" id="date-libanaise" style="--i:0" data-effet="billets" data-debut="2026-12-19" data-type="Soirée" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-19&amp;service=soir#formulaire">
+        <figure class="media billet__photo" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soir-mobile-640.webp 640w, /assets/images/vraie/salle-soir-mobile-1080.webp 1080w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw">
+    <img src="/assets/images/vraie/salle-soir-1280.webp" srcset="/assets/images/vraie/salle-soir-640.webp 640w, /assets/images/vraie/salle-soir-1280.webp 1280w, /assets/images/vraie/salle-soir-1920.webp 1920w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
+  </picture>
+</figure>
+        <span class="billet__perfo" aria-hidden="true"></span>
         <h3 class="agd__titre">Soirée libanaise</h3>
         <p class="agd__texte" data-prix>49 € hors boissons</p>
-      </li><li class="agd__date" id="date-noel" data-debut="2026-12-25" data-type="Fête" data-image="vraie/plat-cheminee" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-25&amp;service=midi#formulaire">
+      </li><li class="agd__date billet" id="date-noel" style="--i:1" data-effet="billets" data-debut="2026-12-25" data-type="Fête" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-25&amp;service=midi#formulaire">
+        <figure class="media billet__photo" style="--cadrage:50% 72%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/plat-cheminee-mobile-640.webp 640w, /assets/images/vraie/plat-cheminee-mobile-1080.webp 1080w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw">
+    <img src="/assets/images/vraie/plat-cheminee-1280.webp" srcset="/assets/images/vraie/plat-cheminee-640.webp 640w, /assets/images/vraie/plat-cheminee-1280.webp 1280w, /assets/images/vraie/plat-cheminee-1920.webp 1920w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure>
+        <span class="billet__perfo" aria-hidden="true"></span>
         <h3 class="agd__titre">Le menu de Noël</h3>
         <p class="agd__texte" data-prix>79 € par personne, hors boissons</p>
-        <p class="agd__texte"><a href="#noel" data-sans-transition>Voir le menu</a></p>
-      </li><li class="agd__date" id="date-saint-sylvestre" data-debut="2026-12-31" data-type="Fête" data-image="vraie/coupe-cheminee" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-31&amp;service=soir#formulaire">
+        <p class="agd__texte billet__menu"><a href="#noel" data-sans-transition>Voir le menu</a></p>
+      </li><li class="agd__date billet" id="date-saint-sylvestre" style="--i:2" data-effet="billets" data-debut="2026-12-31" data-type="Fête" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-12-31&amp;service=soir#formulaire">
+        <figure class="media billet__photo" style="--cadrage:50% 45%">
+  <picture>
+    <img src="/assets/images/vraie/coupe-cheminee-784.webp" srcset="/assets/images/vraie/coupe-cheminee-480.webp 480w, /assets/images/vraie/coupe-cheminee-640.webp 640w, /assets/images/vraie/coupe-cheminee-784.webp 784w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" alt="" width="784" height="980" loading="lazy" decoding="async">
+  </picture>
+</figure>
+        <span class="billet__perfo" aria-hidden="true"></span>
         <h3 class="agd__titre">La Saint-Sylvestre</h3>
         <p class="agd__texte" data-prix>120 € le menu · 170 € avec l&#39;accord mets et vins</p>
-        <p class="agd__texte"><a href="#saint-sylvestre" data-sans-transition>Voir le menu</a></p>
-      </li><li class="agd__date" id="date-libanaise-octobre" data-debut="2026-10-31" data-type="Soirée" data-image="vraie/salle-soir" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-10-31&amp;service=soir#formulaire">
+        <p class="agd__texte billet__menu"><a href="#saint-sylvestre" data-sans-transition>Voir le menu</a></p>
+      </li><li class="agd__date billet" id="date-libanaise-octobre" style="--i:0" data-effet="billets" data-debut="2026-10-31" data-type="Soirée" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-10-31&amp;service=soir#formulaire">
+        <figure class="media billet__photo" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soir-mobile-640.webp 640w, /assets/images/vraie/salle-soir-mobile-1080.webp 1080w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw">
+    <img src="/assets/images/vraie/salle-soir-1280.webp" srcset="/assets/images/vraie/salle-soir-640.webp 640w, /assets/images/vraie/salle-soir-1280.webp 1280w, /assets/images/vraie/salle-soir-1920.webp 1920w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" alt="" width="1280" height="854" loading="lazy" decoding="async">
+  </picture>
+</figure>
+        <span class="billet__perfo" aria-hidden="true"></span>
         <h3 class="agd__titre">Soirée libanaise</h3>
-      </li><li class="agd__date" id="date-grand-buffet" data-debut="2026-08-30" data-type="Soirée" data-image="vraie/table-piscine" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-08-30&amp;service=midi#formulaire">
+      </li><li class="agd__date billet" id="date-grand-buffet" style="--i:1" data-effet="billets" data-debut="2026-08-30" data-type="Soirée" data-lieu="Les Jardins de l’Hacienda, Moineville" data-reserver="/reserver?date=2026-08-30&amp;service=midi#formulaire">
+        <figure class="media billet__photo" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw">
+    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" alt="" width="960" height="1280" loading="lazy" decoding="async">
+  </picture>
+</figure>
+        <span class="billet__perfo" aria-hidden="true"></span>
         <h3 class="agd__titre">Le Grand Buffet</h3>
         <p class="agd__texte" data-prix>Les dimanches d&#39;août</p>
       </li>
     </ol>
-    </div>
-    </div>
     <p class="agd__vide" hidden>Aucune date de ce type pour le moment.</p>
     <p class="dates__source">Les soirées sont annoncées aussi sur Instagram et Facebook. Pour fêter chez nous une date à vous : <a href="/receptions#demande" class="lien-fleche" data-libelle="Réceptions">Baptême, anniversaire, mariage : demander une réception</a></p>
   </div>
@@ -284,11 +305,16 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
           <p class="noel-carte__signe"><span class="noel-carte__logo" aria-hidden="true"></span>Les Jardins de l&#39;Hacienda</p>
         </div>
         <div class="noel-carte__couverture" aria-hidden="true">
-          <div class="noel-carte__face"><figure class="media noel-carte__affiche" style="--cadrage:50% 12%">
-  <picture>
-    <img src="/assets/images/vraie/affiche-noel-1024.webp" srcset="/assets/images/vraie/affiche-noel-480.webp 480w, /assets/images/vraie/affiche-noel-640.webp 640w, /assets/images/vraie/affiche-noel-1024.webp 1024w" sizes="(max-width: 760px) 80vw, 26vw" alt="" width="1024" height="1535" loading="lazy" decoding="async">
-  </picture>
-</figure><span class="noel-carte__brillant"></span></div>
+          <div class="noel-carte__face noel-couv">
+            <span class="noel-couv__cadre"></span>
+            <span class="noel-couv__houx"><span></span><span></span><span></span></span>
+            <span class="noel-couv__logo"></span>
+            <p class="noel-couv__maison">Les Jardins de l&#39;Hacienda</p>
+            <p class="noel-couv__titre">Menu <em>de Noël</em></p>
+            <span class="noel-couv__etoile">✦</span>
+            <p class="noel-couv__date">Vendredi 25 décembre · au déjeuner</p>
+            <span class="noel-carte__brillant"></span>
+          </div>
           <div class="noel-carte__dos"><figure class="media noel-carte__photo" style="--cadrage:50% 45%">
   <picture>
     <img src="/assets/images/vraie/coupe-cheminee-784.webp" srcset="/assets/images/vraie/coupe-cheminee-480.webp 480w, /assets/images/vraie/coupe-cheminee-640.webp 640w, /assets/images/vraie/coupe-cheminee-784.webp 784w" sizes="(max-width: 760px) 80vw, 26vw" alt="" width="784" height="980" loading="lazy" decoding="async">
@@ -298,6 +324,34 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       </div>
     </div>
     <p class="indice noel-scene__indice" aria-hidden="true">Faites défiler pour ouvrir la carte</p>
+  </div>
+</section>
+<section class="cadeau-fetes" id="offrir-noel" data-saison-seul="hiver" data-cadeau-fetes aria-labelledby="cadeau-fetes-titre">
+  <div class="conteneur cadeau-fetes__grille">
+    <div class="cadeau-fetes__objet" data-carte-luxe data-visuel>
+      <span class="enveloppe__dos" aria-hidden="true"></span>
+      <div class="cadeau-fetes__carte" data-effet="cadeau">
+        <div class="carte-luxe" role="img" aria-label="La carte cadeau des Jardins de l&#39;Hacienda, vert de nuit et or, qui sort de son enveloppe rouge" data-audit-ignorer>
+          <span class="carte-luxe__reflet" aria-hidden="true"></span>
+          <span class="carte-luxe__logo" aria-hidden="true"></span>
+          <span class="carte-luxe__montant" aria-hidden="true" data-carte-montant>100 €</span>
+          <span class="carte-luxe__titre" aria-hidden="true">Carte cadeau</span>
+          <span class="carte-luxe__nom" aria-hidden="true">Les Jardins de l&#39;Hacienda</span>
+          <span class="carte-luxe__validite" aria-hidden="true">Valable 6 mois · toute la carte du chef</span>
+        </div>
+      </div>
+      <span class="enveloppe__poche" aria-hidden="true"></span>
+      <span class="enveloppe__sceau" aria-hidden="true"></span>
+    </div>
+    <div class="cadeau-fetes__texte">
+      <p class="surtitre">Pour Noël</p>
+      <h2 id="cadeau-fetes-titre" data-anime="lignes">Offrez un moment <em>aux Jardins</em></h2>
+      <p class="cadeau-fetes__intro">La carte cadeau des Jardins de l&#39;Hacienda, de 25 à 200 €, valable 6 mois sur toute la carte du chef. Choisissez un montant :</p>
+      <div class="oe-carte__montants cadeau-fetes__montants" role="group" aria-label="Montant de la carte cadeau">
+        <button type="button" class="oe-montant" data-montant="25" aria-pressed="false">25 €</button><button type="button" class="oe-montant" data-montant="50" aria-pressed="false">50 €</button><button type="button" class="oe-montant" data-montant="100" aria-pressed="true">100 €</button><button type="button" class="oe-montant" data-montant="150" aria-pressed="false">150 €</button><button type="button" class="oe-montant" data-montant="200" aria-pressed="false">200 €</button>
+      </div>
+      <p class="cadeau-fetes__actions"><a href="/offrir" class="bouton" data-libelle="Offrir">Offrir une carte cadeau</a></p>
+    </div>
   </div>
 </section>
 <section class="ss" id="saint-sylvestre" data-saison-seul="hiver" data-ss data-accord="oui" aria-labelledby="ss-titre">

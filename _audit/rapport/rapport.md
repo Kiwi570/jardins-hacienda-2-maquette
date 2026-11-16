@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 16/11/2026 22:42:07 · 4 min · 1 page(s) · audit complet ciblé sur /receptions (étapes : fichiers, mesures, ecran, mouvement, parcours, fluidite)
+Projet : `jardins-hacienda-2-maquette` · 16/11/2026 23:12:10 · 1 min · 1 page(s) · audit complet ciblé sur /les-fetes (étapes : fichiers, mesures)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261116-213806-complet-cible-partiel` · version ?v=7
+- Passe : `20261116-221119-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **1**
+- À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (24), balayage (1), intro accélérable et passable (7), menu (1), clavier (1), liens et boutons (1), liens profonds (4), liens vers la page en cours (1), changements de hauteur (1), parcours du projet (1), fluidité (2), défilement selon l’appareil (5), mouvement (2), effets du plan (34)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (24), balayage (1)
 
 ## Passes de cette version (?v=7)
 
@@ -81,7 +81,9 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261113-174741-complet-cible-partiel | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
 | 20261116-211215-complet-cible-partiel | complet | /receptions | fichiers, mesures, ecran, mouvement, parcours, fluidite | 17 | 1 | 0 | échecs |
 | 20261116-211809-complet-cible-partiel | complet | /receptions | fichiers, mesures | 0 | 0 | 0 | complet |
-| **20261116-213806-complet-cible-partiel** (celle-ci) | complet | /receptions | fichiers, mesures, ecran, mouvement, parcours, fluidite | 0 | 1 | 0 | complet |
+| 20261116-213806-complet-cible-partiel | complet | /receptions | fichiers, mesures, ecran, mouvement, parcours, fluidite | 0 | 1 | 0 | complet |
+| 20261116-220603-complet-cible-partiel | complet | /les-fetes | fichiers, mesures, ecran, mouvement, parcours, fluidite | 13 | 2 | 0 | échecs |
+| **20261116-221119-complet-cible-partiel** (celle-ci) | complet | /les-fetes | fichiers, mesures | 0 | 0 | 0 | complet |
 
 ## Échecs
 
@@ -89,9 +91,7 @@ Aucun.
 
 ## À regarder
 
-### effet qui ne bouge pas au défilement (1)
-
-- **effet qui ne bouge pas au défilement** — `/receptions` — div.invitation — invitation : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section _(1366×768 normal, 390×844 normal)_
+Rien.
 
 ## Non lancé
 
@@ -107,10 +107,6 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
-- Tient dans l'écran /receptions : aucune section épinglée ou plein écran.
-- Fluidité /receptions 1366×768 (molette) : 2 % d'images lentes sur 510, tâche la plus longue 70 ms
-- Fluidité /receptions 390×844 (doigt) : 0 % d'images lentes sur 1412, tâche la plus longue 0 ms
 
 ## Fichiers
 

@@ -48,16 +48,25 @@ export default (c) => {
   <span class="ouv-fetes__lueurs" aria-hidden="true"></span>
   <div class="conteneur ouv-fetes__grille">
     <div class="ouv-fetes__contenu">
-      <p class="surtitre"><span data-saison-seul="hiver">${c.t('fetes.surHiver')}</span><span data-saison-seul="ete">${c.t('fetes.surEte')}</span></p>
+      <p class="ouv-fetes__saisons"><span class="bascule-saison bascule-saison--discret" role="group" aria-label="${c.s('fetes.bascule')}"><button type="button" data-saison-choix="hiver">${c.t('fetes.basculeHiver')}</button><button type="button" data-saison-choix="ete">${c.t('fetes.basculeEte')}</button></span></p>
       <h1 id="fetes-h1" data-iris-centre><span data-saison-seul="hiver">${c.t('fetes.titreHiver')}</span><span data-saison-seul="ete">${c.t('fetes.titreEte')}</span></h1>
-      <p class="ouv-fetes__decompte" data-saison-seul="hiver"><span class="ouv-fetes__j" data-decompte-geant="${f.sylvestre.date}">J-${jours}</span> <span>${c.t('fetes.avantSylvestre')}</span></p>
-      <p class="ouv-fetes__texte"><span data-saison-seul="hiver">${c.t('fetes.texteHiver')}</span><span data-saison-seul="ete">${c.t('fetes.texteEte')}</span></p>
-      <p class="ouv-fetes__actions">
-      <span data-saison-seul="hiver">${c.lien('reserver', { ancre: 'formulaire', params: 'date=2026-12-31&service=soir', classe: 'bouton', texte: c.t('fetes.reserverSoiree'), attrs: 'data-action-principale' })}</span>
-      <span data-saison-seul="ete">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('fetes.reserverEte'), attrs: 'data-action-principale' })}</span>
-      <span class="bascule-saison" role="group" aria-label="${c.s('fetes.bascule')}"><button type="button" data-saison-choix="hiver">${c.t('fetes.basculeHiver')}</button><button type="button" data-saison-choix="ete">${c.t('fetes.basculeEte')}</button></span>
-    </p>
-      <p class="ouv-fetes__info" data-info-cle><span data-saison-seul="hiver">${c.t('fetes.infoSylvestre')} ${c.t('fetes.menuPrix')} · ${c.t('fetes.infoNoel')} ${c.t('fetes.noelPrix')}</span><span data-saison-seul="ete">${c.t('fetes.festivesH')} · ${c.t('fetes.piscineH')} · ${c.t('fetes.barH')}</span></p>
+      <div class="ouv-fetes__rang">
+        <div class="ephem" data-saison-seul="hiver" data-ephemeride="${f.sylvestre.date}" data-effet="ephemeride" data-haut="${c.s('fetes.ephemHaut')}" data-bas="${c.s('fetes.ephemBas')}" data-bas1="${c.s('fetes.ephemBas1')}" data-ce-soir-haut="${c.s('fetes.ephemCeSoirHaut')}" data-ce-soir="${c.s('fetes.ephemCeSoir')}" data-ce-soir-bas="${c.s('fetes.ephemBasCeSoir')}" data-apres-haut="${c.s('fetes.ephemApresHaut')}" data-apres-bas="${c.s('fetes.ephemApresBas')}">
+          <span class="ephem__reliure" aria-hidden="true"><span></span><span></span></span>
+          <div class="ephem__bloc">
+            <span class="ephem__epaisseur" aria-hidden="true"></span>
+            <p class="ephem__page" data-ephem-page><span class="ephem__haut" data-ephem-haut>${c.t('fetes.ephemHaut')}</span> <span class="ephem__n" data-ephem-n>${jours}</span> <span class="ephem__bas" data-ephem-bas>${brut((jours === 1 ? c.s('fetes.ephemBas1') : c.s('fetes.ephemBas')).replace('Saint-Sylvestre', '<span class="insecable">Saint-Sylvestre</span>'))}</span></p>
+          </div>
+        </div>
+        <div class="ouv-fetes__suite">
+          <p class="ouv-fetes__texte"><span data-saison-seul="hiver">${c.t('fetes.texteHiver')}</span><span data-saison-seul="ete">${c.t('fetes.texteEte')}</span></p>
+          <p class="ouv-fetes__actions">
+            <span data-saison-seul="hiver">${c.lien('reserver', { ancre: 'formulaire', params: 'date=2026-12-31&service=soir', classe: 'bouton', texte: c.t('fetes.reserverSoiree'), attrs: 'data-action-principale' })}</span>
+            <span data-saison-seul="ete">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('fetes.reserverEte'), attrs: 'data-action-principale' })}</span>
+          </p>
+          <p class="ouv-fetes__info" data-info-cle><span data-saison-seul="hiver">${c.t('fetes.infoSylvestre')} ${c.t('fetes.menuPrix')} · ${c.t('fetes.infoNoel')} ${c.t('fetes.noelPrix')}</span><span data-saison-seul="ete">${c.t('fetes.festivesH')} · ${c.t('fetes.piscineH')} · ${c.t('fetes.barH')}</span></p>
+        </div>
+      </div>
     </div>
     <div class="ouv-fetes__visuel" data-saison-seul="hiver" data-effet="affiches" data-grille="manipuler">
       ${affiche(c, { cle: 'noel', ancre: 'noel', label: c.s('fetes.afficheNoelLabel'), photo: c.media({ nom: 'vraie/affiche-noel', alt: '', cadrage: '50% 50%', priorite: true, classe: 'affiche__photo', sizes: '(max-width: 760px) 46vw, 26vw' }),
@@ -73,7 +82,7 @@ export default (c) => {
   </div>
 </section>
 
-<section class="agd dates" id="dates" data-saison-seul="hiver" data-module="agenda-des-dates" data-grille="retour" aria-labelledby="agd-titre">
+<section class="agd dates dates--billets" id="dates" data-saison-seul="hiver" data-module="agenda-des-dates" data-grille="retour" aria-labelledby="agd-titre">
   <div class="conteneur">
     <div class="agd__tete">
       <p class="surtitre">${c.t('fetes.datesSur')}</p>
@@ -84,21 +93,15 @@ export default (c) => {
       <div class="agd__filtres" role="group" aria-label="${c.s('fetes.datesFiltres')}"></div>
       <p class="agd__compte" data-compte aria-live="polite"></p>
     </div>
-    <div class="dates__grille">
-    <div class="dates__visuel" data-dates-visuel data-effet="dates-photo" aria-hidden="true">
-      ${c.donnees.agenda.dates.filter((d, i, t) => t.findIndex((e) => e.image === d.image) === i).map((d, i) => c.media({ nom: d.image, alt: '', cadrage: d.cadrage, classe: `dates__img${i === 0 ? ' est-active' : ''}`, sizes: '(max-width: 760px) 92vw, 34vw', attrs: `data-dates-image="${d.image}"` }))}
-      <div class="dates__badge"><span class="dates__jour" data-dates-jour></span><span class="dates__mois" data-dates-mois></span><span class="dates__nom" data-dates-nom></span></div>
-    </div>
-    <div class="dates__liste">
     <ol class="agd__liste">
-      ${c.donnees.agenda.dates.map((d) => html`<li class="agd__date" id="date-${d.id}" data-debut="${d.debut}"${d.fin ? html` data-fin="${d.fin}"` : ''} data-type="${d.type}" data-image="${d.image}" data-lieu="${c.s('fetes.datesLieu')}" data-reserver="${c.url('reserver', 'formulaire', `date=${d.debut.slice(0, 10)}&service=${d.service}`)}">
+      ${c.donnees.agenda.dates.map((d, i) => html`<li class="agd__date billet" id="date-${d.id}" style="--i:${i % 3}" data-effet="billets" data-debut="${d.debut}"${d.fin ? html` data-fin="${d.fin}"` : ''} data-type="${d.type}" data-lieu="${c.s('fetes.datesLieu')}" data-reserver="${c.url('reserver', 'formulaire', `date=${d.debut.slice(0, 10)}&service=${d.service}`)}">
+        ${c.media({ nom: d.image, alt: '', cadrage: d.cadrage, classe: 'billet__photo', sizes: '(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw' })}
+        <span class="billet__perfo" aria-hidden="true"></span>
         <h3 class="agd__titre">${d.titre}</h3>
         ${d.prix ? html`<p class="agd__texte" data-prix>${d.prix}</p>` : ''}
-        ${d.ancre ? html`<p class="agd__texte"><a href="#${d.ancre}" data-sans-transition>${c.t('fetes.datesMenu')}</a></p>` : ''}
+        ${d.ancre ? html`<p class="agd__texte billet__menu"><a href="#${d.ancre}" data-sans-transition>${c.t('fetes.datesMenu')}</a></p>` : ''}
       </li>`)}
     </ol>
-    </div>
-    </div>
     <p class="agd__vide" hidden>${c.t('fetes.datesVide')}</p>
     <p class="dates__source">${c.t('fetes.datesSource')} ${c.lien('receptions', { ancre: 'demande', classe: 'lien-fleche', texte: c.t('fetes.reception') })}</p>
   </div>
@@ -127,12 +130,50 @@ export default (c) => {
           <p class="noel-carte__signe"><span class="noel-carte__logo" aria-hidden="true"></span>${c.site.nom}</p>
         </div>
         <div class="noel-carte__couverture" aria-hidden="true">
-          <div class="noel-carte__face">${c.media({ nom: 'vraie/affiche-noel', alt: '', cadrage: '50% 12%', classe: 'noel-carte__affiche', sizes: '(max-width: 760px) 80vw, 26vw' })}<span class="noel-carte__brillant"></span></div>
+          <div class="noel-carte__face noel-couv">
+            <span class="noel-couv__cadre"></span>
+            <span class="noel-couv__houx"><span></span><span></span><span></span></span>
+            <span class="noel-couv__logo"></span>
+            <p class="noel-couv__maison">${c.site.nom}</p>
+            <p class="noel-couv__titre">${c.t('fetes.noelCouvMenu')} <em>${c.t('fetes.noelCouvNoel')}</em></p>
+            <span class="noel-couv__etoile">✦</span>
+            <p class="noel-couv__date">${f.noel.jour} · ${f.noel.moment.toLowerCase()}</p>
+            <span class="noel-carte__brillant"></span>
+          </div>
           <div class="noel-carte__dos">${c.media({ nom: 'vraie/coupe-cheminee', alt: '', cadrage: '50% 45%', classe: 'noel-carte__photo', sizes: '(max-width: 760px) 80vw, 26vw' })}<p class="noel-carte__mot">${c.t('fetes.noelMot')}</p></div>
         </div>
       </div>
     </div>
     <p class="indice noel-scene__indice" aria-hidden="true">${c.t('fetes.noelIndice')}</p>
+  </div>
+</section>
+
+<section class="cadeau-fetes" id="offrir-noel" data-saison-seul="hiver" data-cadeau-fetes aria-labelledby="cadeau-fetes-titre">
+  <div class="conteneur cadeau-fetes__grille">
+    <div class="cadeau-fetes__objet" data-carte-luxe data-visuel>
+      <span class="enveloppe__dos" aria-hidden="true"></span>
+      <div class="cadeau-fetes__carte" data-effet="cadeau">
+        <div class="carte-luxe" role="img" aria-label="${c.s('fetes.cadeauAlt')}" data-audit-ignorer>
+          <span class="carte-luxe__reflet" aria-hidden="true"></span>
+          <span class="carte-luxe__logo" aria-hidden="true"></span>
+          <span class="carte-luxe__montant" aria-hidden="true" data-carte-montant>100 €</span>
+          <span class="carte-luxe__titre" aria-hidden="true">${c.t('accueil.oe.carteTitre')}</span>
+          <span class="carte-luxe__nom" aria-hidden="true">${c.site.nom}</span>
+          <span class="carte-luxe__validite" aria-hidden="true">${c.t('accueil.oe.carteValidite')}</span>
+        </div>
+      </div>
+      <span class="enveloppe__poche" aria-hidden="true"></span>
+      <span class="enveloppe__sceau" aria-hidden="true"></span>
+    </div>
+    <div class="cadeau-fetes__texte">
+      <p class="surtitre">${c.t('fetes.cadeauSur')}</p>
+      <h2 id="cadeau-fetes-titre" data-anime="lignes">${c.t('fetes.cadeauTitre')} <em>${c.t('fetes.cadeauTitre2')}</em></h2>
+      <p class="cadeau-fetes__intro">${c.t('fetes.cadeauTexte')}</p>
+      <div class="oe-carte__montants cadeau-fetes__montants" role="group" aria-label="${c.s('accueil.oe.montants')}">
+        ${[25, 50, 100, 150, 200].map((m) => html`<button type="button" class="oe-montant" data-montant="${m}" aria-pressed="${m === 100 ? 'true' : 'false'}">${m} €</button>`)}
+      </div>
+      <p class="cadeau-fetes__actions">${c.lien('offrir', { classe: 'bouton', texte: c.t('fetes.cadeauBouton') })}</p>
+    </div>
   </div>
 </section>
 
