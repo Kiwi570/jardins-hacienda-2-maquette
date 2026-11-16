@@ -130,10 +130,8 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <div class="carte-cadeau-apercu ouv-offrir__carte" data-effet="carte-apercu" data-iris-centre data-grille="manipuler" data-cca>
       <div class="cca__objet">
         <div class="cca__face" aria-hidden="true">
-          <img src="/assets/images/logo-clair.png" alt="" width="56" height="56">
-          <p class="cca__nom">Carte cadeau</p>
+          <div class="cca__haut"><img src="/assets/images/logo-clair.png" alt="" width="56" height="56"><span class="cca__noms"><span class="cca__nom">Carte cadeau</span><span class="cca__pour">Les Jardins de l&#39;Hacienda</span><span class="cca__validite">Valable 6 mois · toute la carte</span></span></div>
           <p class="cca__montant" data-montant-tournant>100 €</p>
-          <p class="cca__pour">Les Jardins de l&#39;Hacienda</p>
           <span class="cca__brillance"></span>
         </div>
         <div class="cca__dos" data-face="dos" aria-hidden="true">
@@ -172,6 +170,25 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
       <p class="ccq__ticket" data-ccq-ticket>Une carte de 50 €</p>
     </div>
     <form class="ccq__form" action="#composer" method="get" novalidate>
+      <div class="ccq__champ idees" role="group" aria-labelledby="idees-titre">
+        <p class="ccq__libelle" id="idees-titre">Une idée ?</p>
+        <div class="idees__liste">
+          <button type="button" class="idee" data-idee-montant="50" data-idee-mot="Une planche à partager aux Jardins, au coin du feu, rien que pour vous." aria-pressed="false">
+            <img class="idee__photo" src="/assets/images/carte-partager-480.webp" alt="" width="64" height="64" loading="lazy">
+            <span class="idee__texte"><span class="idee__titre">Une planche à partager</span><span class="idee__prix">La Libanaise, la Charcuterie ou la Mer : 45 € la planche</span></span>
+            <span class="idee__montant">50 €</span>
+          </button><button type="button" class="idee" data-idee-montant="100" data-idee-mot="Un dîner pour deux au coin du feu, rien que pour vous deux." aria-pressed="false">
+            <img class="idee__photo" src="/assets/images/carte-plats-480.webp" alt="" width="64" height="64" loading="lazy">
+            <span class="idee__texte"><span class="idee__titre">Un dîner pour deux</span><span class="idee__prix">Œuf cocotte, suprême de pintade et crème brûlée : 96 € pour deux, hors boissons</span></span>
+            <span class="idee__montant">100 €</span>
+          </button><button type="button" class="idee" data-idee-montant="200" data-idee-mot="La Saint-Sylvestre aux Jardins : cinq temps, cinq verres, et minuit en musique." aria-pressed="false">
+            <img class="idee__photo" src="/assets/images/vraie/affiche-sylvestre-480.webp" alt="" width="64" height="64" loading="lazy">
+            <span class="idee__texte"><span class="idee__titre">La Saint-Sylvestre</span><span class="idee__prix">Le menu et l&#39;accord mets et vins : 170 € par personne</span></span>
+            <span class="idee__montant">200 €</span>
+          </button>
+        </div>
+        <p class="ccq__aide idees__aide">Touchez une idée : le montant se choisit et un mot s&#39;écrit sur la carte, à changer comme vous voulez.</p>
+      </div>
       <fieldset class="ccq__champ ccq__montants">
         <legend class="ccq__libelle">Montant</legend>
         <div class="ccq__puces">
@@ -203,7 +220,15 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         <button type="button" class="socle-bouton" data-ccq-reprendre hidden>Offrir une autre carte</button>
       </div>
       <p class="ccq__statut" role="status" data-ccq-statut hidden></p>
-      <p class="ccq__note">Valable 6 mois sur toute la carte proposée par le chef. À présenter à votre arrivée ; ne peut être échangée contre des espèces. Pour la recevoir, appelez-nous au 06 18 21 28 10. Achat simulé : rien n&#39;est payé ni envoyé dans cette maquette.</p>
+      <div class="ccq__recevoir">
+        <p class="ccq__libelle">Pour la recevoir</p>
+        <ol class="etapes-cadeau">
+          <li><span class="etapes-cadeau__n" aria-hidden="true">1</span><span>Composez-la ici : le montant et votre mot.</span></li>
+          <li><span class="etapes-cadeau__n" aria-hidden="true">2</span><span>Appelez-nous au <a href="tel:+33618212810">06 18 21 28 10</a> pour la recevoir.</span></li>
+          <li><span class="etapes-cadeau__n" aria-hidden="true">3</span><span>Valable 6 mois sur toute la carte du chef, à présenter à votre arrivée.</span></li>
+        </ol>
+      </div>
+      <p class="ccq__note">Ne peut être échangée contre des espèces. Achat simulé : rien n&#39;est payé ni envoyé dans cette maquette.</p>
     </form>
   </div>
 </section>

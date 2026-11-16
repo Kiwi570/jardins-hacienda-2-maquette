@@ -1,12 +1,21 @@
 /* Offrir · la carte cadeau s'écrit aux Jardins. Ouverture (v7.5.15) : la salle au soleil de midi, la carte dorée en vrai
    objet (elle se redresse au défilement, s'incline vers la souris avec un reflet qui la suit, se retourne d'un toucher :
    au dos, la place du mot écrit à la main) ; le texte change avec la saison. Puis la carte se compose
-   (module carte-cadeau-qui-se-compose, montants du site actuel) et part dans son enveloppe (code gardé de la v5). */
+   (module carte-cadeau-qui-se-compose, montants du site actuel) et part dans son enveloppe (code gardé de la v5).
+   v7.5.21 · une seule carte partout (vert de nuit et or, comme l'accueil, Les fêtes et la carte composée) ; partir d'une
+   idée ; la carte reste à l'écran pendant qu'on écrit ; « Pour la recevoir » en trois étapes ; l'enveloppe rouge et or. */
 import { html } from '../../outils/gabarit.mjs';
 
 export const page = { cle: 'offrir', fichier: 'offrir', theme: 'nuit', imagePartage: 'vraie/salle-midi-1280.webp', modules: ['carte-cadeau-qui-se-compose'] };
 
 const MONTANTS = [25, 50, 100, 150, 200];
+/* v7.5.21 · Partir d'une idée : trois moments avec les vrais prix de la carte et des fêtes ; un toucher choisit le montant
+   et écrit un mot suggéré sur la carte. */
+const IDEES = [
+  { cle: 'Planche', montant: 50, image: 'carte-partager-480' },
+  { cle: 'Diner', montant: 100, image: 'carte-plats-480' },
+  { cle: 'Sylvestre', montant: 200, image: 'vraie/affiche-sylvestre-480' },
+];
 
 export default (c) => html`
 <section class="ouv-offrir" id="debut">
@@ -21,10 +30,8 @@ export default (c) => html`
     <div class="carte-cadeau-apercu ouv-offrir__carte" data-effet="carte-apercu" data-iris-centre data-grille="manipuler" data-cca>
       <div class="cca__objet">
         <div class="cca__face" aria-hidden="true">
-          <img src="/assets/images/logo-clair.png" alt="" width="56" height="56">
-          <p class="cca__nom">${c.t('offrir.carte')}</p>
+          <div class="cca__haut"><img src="/assets/images/logo-clair.png" alt="" width="56" height="56"><span class="cca__noms"><span class="cca__nom">${c.t('offrir.carte')}</span><span class="cca__pour">${c.site.nom}</span><span class="cca__validite">${c.t('offrir.validite')}</span></span></div>
           <p class="cca__montant" data-montant-tournant>100 €</p>
-          <p class="cca__pour">${c.site.nom}</p>
           <span class="cca__brillance"></span>
         </div>
         <div class="cca__dos" data-face="dos" aria-hidden="true">
@@ -64,6 +71,17 @@ export default (c) => html`
       <p class="ccq__ticket" data-ccq-ticket>Une carte de 50 €</p>
     </div>
     <form class="ccq__form" action="#composer" method="get" novalidate>
+      <div class="ccq__champ idees" role="group" aria-labelledby="idees-titre">
+        <p class="ccq__libelle" id="idees-titre">${c.t('offrir.ideesTitre')}</p>
+        <div class="idees__liste">
+          ${IDEES.map((d) => html`<button type="button" class="idee" data-idee-montant="${d.montant}" data-idee-mot="${c.s(`offrir.idee${d.cle}Mot`)}" aria-pressed="false">
+            <img class="idee__photo" src="/assets/images/${d.image}.webp" alt="" width="64" height="64" loading="lazy">
+            <span class="idee__texte"><span class="idee__titre">${c.t(`offrir.idee${d.cle}T`)}</span><span class="idee__prix">${c.t(`offrir.idee${d.cle}P`)}</span></span>
+            <span class="idee__montant">${d.montant} €</span>
+          </button>`)}
+        </div>
+        <p class="ccq__aide idees__aide">${c.t('offrir.ideesAide')}</p>
+      </div>
       <fieldset class="ccq__champ ccq__montants">
         <legend class="ccq__libelle">Montant</legend>
         <div class="ccq__puces">
@@ -95,7 +113,15 @@ export default (c) => html`
         <button type="button" class="socle-bouton" data-ccq-reprendre hidden>Offrir une autre carte</button>
       </div>
       <p class="ccq__statut" role="status" data-ccq-statut hidden></p>
-      <p class="ccq__note">${c.t('offrir.conditions')} ${c.t('offrir.remise')} ${c.t('offrir.simule')}</p>
+      <div class="ccq__recevoir">
+        <p class="ccq__libelle">${c.t('offrir.etapesTitre')}</p>
+        <ol class="etapes-cadeau">
+          <li><span class="etapes-cadeau__n" aria-hidden="true">1</span><span>${c.t('offrir.etape1')}</span></li>
+          <li><span class="etapes-cadeau__n" aria-hidden="true">2</span><span>${c.t('offrir.etape2')} <a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a> ${c.t('offrir.etape2b')}</span></li>
+          <li><span class="etapes-cadeau__n" aria-hidden="true">3</span><span>${c.t('offrir.etape3')}</span></li>
+        </ol>
+      </div>
+      <p class="ccq__note">${c.t('offrir.note')} ${c.t('offrir.simule')}</p>
     </form>
   </div>
 </section>

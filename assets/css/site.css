@@ -3490,3 +3490,66 @@ html:not(.js) .cadeau-fetes__carte, .cadeau-fetes.sans-anim .cadeau-fetes__carte
 @media (min-width: 861px) and (max-height: 720px) { .ss__service .ss__accord .ss__region { display: none; } .ss__assiette { --a: min(100% - 64px, 100svh - 300px, 480px); } }
 /* Sans JavaScript sur ordinateur : l'assiette et le verre restent à côté de la liste des cinq plats (comme le verre avant). */
 @media (min-width: 861px) { .ss:not(.ss--scene) .ss__service { display: grid; position: sticky; top: calc(var(--entete-h) + 24px); align-self: start; } }
+
+/* v7.5.21 · Offrir. Une seule carte partout : la carte de l'ouverture est la même que celle qu'on compose (et que celles de
+   l'accueil et des Fêtes), vert de nuit et or, guilloché, double filet ; toujours inclinable, reflet qui suit, retournable.
+   Au dos, l'encre du mot passe en sépia (plus de bleu violet). */
+.ouv-offrir .cca__face { position: relative; color: #f6efe2;
+  background: url(/assets/images/guilloche.svg) center / cover no-repeat, radial-gradient(120% 90% at 0% 0%, rgba(214, 176, 102, .22), rgba(214, 176, 102, 0) 55%), radial-gradient(90% 80% at 100% 100%, rgba(0, 0, 0, .35), rgba(0, 0, 0, 0) 60%), linear-gradient(145deg, #1b3a30 0%, #11251f 46%, #0a1613 100%);
+  box-shadow: inset 0 0 0 1px rgba(214, 176, 102, .75), inset 0 1px 0 rgba(255, 255, 255, .12), 0 40px 70px -30px rgba(0, 0, 0, .85), 0 14px 26px -14px rgba(0, 0, 0, .6); }
+.ouv-offrir .cca__face::before { content: ''; position: absolute; inset: 4.5%; border: 1px solid rgba(214, 176, 102, .45); border-radius: 8px; pointer-events: none; }
+.ouv-offrir .cca__face img { position: relative; width: 52px; height: 52px; padding: 7px; border: 1px solid #d6b066; border-radius: 50%; filter: none; background: radial-gradient(circle at 35% 30%, rgba(246, 227, 176, .18), rgba(0, 0, 0, 0) 70%); }
+.ouv-offrir .cca__nom { position: relative; color: #d6b066; letter-spacing: .24em; }
+.ouv-offrir .cca__montant { position: relative; font-family: var(--police-titres); font-weight: 500; letter-spacing: -.02em; color: #f0d58f; text-shadow: 0 2px 18px rgba(214, 176, 102, .25); }
+.ouv-offrir .cca__pour { position: relative; color: #e9cf8e; }
+.ouv-offrir .cca__brillance { mix-blend-mode: screen; }
+.cca__dos-mot { color: #4a2a18; }
+.ouv-offrir .carte-cadeau-apercu::before { background: radial-gradient(closest-side, rgba(214, 176, 102, .3), rgba(214, 176, 102, 0)); }
+
+/* Partir d'une idée : trois moments en rangées (photo, titre, ce que le montant couvre, montant) ; l'idée choisie s'allume d'or. */
+.idees__liste { display: grid; gap: 8px; }
+.idee { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 8px 14px 8px 8px; border: 0; border-radius: 16px; background: rgba(246, 239, 226, .05); box-shadow: inset 0 0 0 1px rgba(246, 239, 226, .14); color: #f6efe2; font: inherit; text-align: left; cursor: pointer; transition: background .3s, box-shadow .3s, transform .3s cubic-bezier(.2, .8, .2, 1); }
+.idee:hover { background: rgba(246, 239, 226, .09); transform: translateX(4px); }
+.idee[aria-pressed="true"] { background: rgba(214, 176, 102, .14); box-shadow: inset 0 0 0 1.5px #d6b066; }
+.idee:focus-visible { outline: 3px solid #e9cf8e; outline-offset: 2px; }
+.idee__photo { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; }
+.idee__texte { display: grid; gap: 2px; min-width: 0; }
+.idee__titre { font-family: var(--police-titres); font-size: 1.12rem; line-height: 1.15; color: #fbf4e6; }
+.idee__prix { font-size: .86rem; line-height: 1.35; color: rgba(246, 239, 226, .76); }
+.idee__montant { padding: .3em .8em; border-radius: 999px; font-weight: 700; font-size: .95rem; color: #2a1a0c; background: linear-gradient(180deg, #f6e3b0, #d6b066 60%, #b98f45); }
+.idees__aide { margin: 6px 0 0; }
+
+/* La carte reste à l'écran pendant qu'on remplit le formulaire, même sur un écran bas. */
+@media (min-width: 900px) and (min-height: 540px) { .offrir-composer .ccq__scene { position: sticky; top: calc(var(--entete-h) + 12px); } }
+@media (min-width: 900px) and (max-height: 720px) { .offrir-composer .ccq__scene { padding-top: 28px; } }
+
+/* Pour la recevoir : trois étapes à côté du bouton. */
+.ccq__recevoir { margin-top: 4px; padding: 16px 18px; border-radius: 16px; background: rgba(246, 239, 226, .05); box-shadow: inset 0 0 0 1px rgba(214, 176, 102, .3); }
+.etapes-cadeau { list-style: none; display: grid; gap: 10px; margin: 8px 0 0; padding: 0; }
+.etapes-cadeau li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; line-height: 1.45; color: rgba(246, 239, 226, .9); }
+.etapes-cadeau__n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-family: var(--police-titres); font-weight: 600; color: #2a1a0c; background: linear-gradient(180deg, #f6e3b0, #d6b066 60%, #b98f45); }
+.etapes-cadeau a { display: inline-flex; align-items: center; min-height: 44px; margin-block: -10px; color: #f3d98f; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+
+/* L'enveloppe aux couleurs du site : la doublure rouge à fins filets d'or (plus de saumon). */
+.offrir-composer .ccq__rabat > .ccq__rabat-dedans { background: repeating-linear-gradient(135deg, #8f2a24 0 8px, #7a221d 8px 14px, #c9a24f 14px 15px, #7a221d 15px 20px); }
+/* La carte de l'ouverture reprend la mise en page de la carte composée : logo et noms en haut, le montant en grand en bas. */
+.ouv-offrir .cca__face { container-type: inline-size; padding: 6.5% 7.5% 6%; }
+.ouv-offrir .cca__haut { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 3.4cqi; align-items: center; }
+.ouv-offrir .cca__haut img { width: 13cqi; height: 13cqi; padding: 1.6cqi; }
+.ouv-offrir .cca__noms { display: grid; gap: .5cqi; }
+.ouv-offrir .cca__nom { font-size: max(12px, 2.8cqi); }
+.ouv-offrir .cca__pour { font-style: normal; font-size: max(13px, 5cqi); line-height: 1.1; color: #f6efe2; }
+.ouv-offrir .cca__validite { font-size: max(12px, 2.5cqi); letter-spacing: .08em; color: rgba(246, 227, 176, .72); }
+.ouv-offrir .cca__montant { font-size: 19cqi; line-height: .85; }
+/* Sur la carte vert de nuit, le reflet est un voile doré léger, posé au repos en bas à droite (loin des noms). */
+.ouv-offrir .cca__brillance { mix-blend-mode: normal; background: radial-gradient(40% 50% at var(--mx, 78%) var(--my, 76%), rgba(246, 227, 176, .26), rgba(246, 227, 176, 0) 70%), linear-gradient(115deg, rgba(255, 255, 255, 0) 30%, rgba(255, 245, 215, .12) calc(var(--mx, 78%) + 4%), rgba(255, 255, 255, 0) calc(var(--mx, 78%) + 20%)); opacity: .7; }
+.ouv-offrir .carte-cadeau-apercu:hover .cca__brillance { opacity: 1; }
+.ouv-offrir .cca__nom { color: #ecd394; }
+/* Une seule carte partout : la carte de l'accueil et des Fêtes prend la même mise en page que la carte composée sur Offrir
+   (logo et noms en haut, « Carte cadeau » en petites capitales dorées, le montant en grand en bas à gauche). */
+.carte-luxe { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr); column-gap: 3.4cqi; row-gap: .6cqi; }
+.carte-luxe__logo { grid-column: 1; grid-row: 1 / span 3; align-self: center; width: 13cqi; padding: 1.6cqi; border: 1px solid #d6b066; border-radius: 50%; background-clip: content-box; }
+.carte-luxe__titre { grid-column: 2; grid-row: 1; align-self: end; font-family: var(--police-texte); font-style: normal; font-size: max(12px, 2.8cqi); font-weight: 700; letter-spacing: .24em; text-transform: uppercase; color: #ecd394; }
+.carte-luxe__nom { grid-column: 2; grid-row: 2; font-size: max(13px, 5cqi); line-height: 1.1; color: #f6efe2; }
+.carte-luxe__validite { grid-column: 2; grid-row: 3; margin-top: 0; font-size: max(12px, 2.5cqi); font-weight: 600; letter-spacing: .08em; text-transform: none; color: rgba(246, 227, 176, .72); }
+.carte-luxe__montant { position: static; grid-column: 1 / -1; grid-row: 4; align-self: end; justify-self: start; font-size: 19cqi; line-height: .85; }

@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 16/11/2026 23:43:43 · 5 min · 1 page(s) · audit complet ciblé sur /les-fetes (étapes : fichiers, mesures, ecran, mouvement, parcours, fluidite)
+Projet : `jardins-hacienda-2-maquette` · 17/11/2026 00:15:49 · 2 min · 3 page(s) · audit complet ciblé sur /,/les-fetes,/offrir (étapes : fichiers, mesures)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261116-223849-complet-cible-partiel` · version ?v=7
+- Passe : `20261116-231329-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **2**
+- À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (24), balayage (1), intro accélérable et passable (7), menu (1), clavier (1), liens et boutons (1), liens profonds (15), liens vers la page en cours (1), changements de hauteur (1), parcours du projet (1), fluidité (2), défilement selon l’appareil (5), mouvement (2), effets du plan (37)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (72), balayage (3)
 
 ## Passes de cette version (?v=7)
 
@@ -86,7 +86,11 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261116-221119-complet-cible-partiel | complet | /les-fetes | fichiers, mesures | 0 | 0 | 0 | complet |
 | 20261116-222520-complet-cible-partiel | complet | /les-fetes | fichiers, mesures, mouvement | 1 | 0 | 0 | échecs |
 | 20261116-222642-complet-cible-partiel | complet | /les-fetes | fichiers, mesures | 0 | 0 | 0 | complet |
-| **20261116-223849-complet-cible-partiel** (celle-ci) | complet | /les-fetes | fichiers, mesures, ecran, mouvement, parcours, fluidite | 0 | 2 | 0 | complet |
+| 20261116-223849-complet-cible-partiel | complet | /les-fetes | fichiers, mesures, ecran, mouvement, parcours, fluidite | 0 | 2 | 0 | complet |
+| 20261116-230730-complet-cible-partiel | complet | /offrir | fichiers, mesures, ecran, mouvement, parcours, fluidite | 3 | 0 | 0 | échecs |
+| 20261116-231105-complet-cible-partiel | complet | /offrir | fichiers, mesures | 1 | 0 | 0 | échecs |
+| 20261116-231152-complet-cible-partiel | complet | /offrir | fichiers, mesures | 0 | 0 | 0 | complet |
+| **20261116-231329-complet-cible-partiel** (celle-ci) | complet | /,/les-fetes,/offrir | fichiers, mesures | 0 | 0 | 0 | complet |
 
 ## Échecs
 
@@ -94,10 +98,7 @@ Aucun.
 
 ## À regarder
 
-### bouton sans effet visible (2)
-
-- **bouton sans effet visible** — `/les-fetes` — IPour commencer _(1366×768)_
-- **bouton sans effet visible** — `/les-fetes` — IIEntrée _(1366×768)_
+Rien.
 
 ## Non lancé
 
@@ -113,10 +114,6 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
-- Tient dans l'écran /les-fetes : aucune section épinglée ou plein écran.
-- Fluidité /les-fetes 1366×768 (molette) : 3 % d'images lentes sur 415, tâche la plus longue 79 ms
-- Fluidité /les-fetes 390×844 (doigt) : 0 % d'images lentes sur 1426, tâche la plus longue 0 ms
 
 ## Fichiers
 

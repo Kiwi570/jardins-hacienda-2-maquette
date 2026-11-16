@@ -823,6 +823,25 @@ function cadeauFetes() {
   new IntersectionObserver(([e], o) => { if (e.isIntersecting) { sec.classList.add('est-vu'); o.disconnect(); } }, { threshold: 0.4 }).observe(sec);
 }
 
+/* v7.5.21 · Offrir : partir d'une idée. Un toucher choisit le montant et écrit un mot suggéré sur la carte (jamais par-dessus
+   un mot déjà écrit à la main) ; choisir un autre montant à la main relâche l'idée. */
+function ideesCadeau() {
+  const sec = $('#composer'), form = sec && $('form', sec); if (!form) return;
+  const idees = $$('.idee', sec), mot = $('#ccq-mot', sec); if (!idees.length) return;
+  let suggere = '';
+  const signaler = (el) => { el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); };
+  idees.forEach((b) => b.addEventListener('click', () => {
+    const r = form.querySelector(`[name="montant"][value="${b.dataset.ideeMontant}"]`);
+    if (r) { r.checked = true; signaler(r); }
+    if (mot && (!mot.value.trim() || mot.value === suggere)) { mot.value = b.dataset.ideeMot; suggere = mot.value; signaler(mot); }
+    idees.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  form.addEventListener('change', (e) => {
+    if (!e.isTrusted || e.target.name !== 'montant') return;
+    idees.forEach((x) => { if (x.dataset.ideeMontant !== e.target.value) x.setAttribute('aria-pressed', 'false'); });
+  });
+}
+
 /* Réceptions : le mot de l'occasion (un tour à l'arrivée, puis au toucher), les volets des espaces, la demande. */
 function motTournant() {
   const zone = $('.mot-tournant[data-mots]'); if (!zone) return;
@@ -2301,6 +2320,7 @@ demarrer({
     saisonFetes();
     ephemeride();
     cadeauFetes();
+    ideesCadeau();
     motTournant();
     liensService();
     volets();
