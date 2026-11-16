@@ -1141,6 +1141,8 @@ function piedMarque() {
 function saintSylvestre() {
   const sec = $('[data-ss]'); if (!sec) return;
   const plats = $$('[data-ss-plat]', sec), pas = $$('[data-ss-aller]', sec), formes = $$('[data-forme]', sec), n = plats.length;
+  /* v7.5.20 · Le plat de chaque temps : l'assiette servie glisse et s'en va, la suivante arrive à sa place. */
+  const photos = $$('[data-ss-photo]', sec);
   const typeEl = $('[data-ss-type]', sec), vinEl = $('[data-ss-vin]', sec), regionEl = $('[data-ss-region]', sec), fiche = $('.ss__accord', sec);
   const bascule = $('[data-ss-accord]', sec), prix = $('[data-ss-prix]', sec), prixDetail = $('[data-ss-prix-detail]', sec);
   const scene = window.matchMedia('(min-width: 861px)');
@@ -1149,6 +1151,7 @@ function saintSylvestre() {
     if (i === actif) return;
     actif = i;
     plats.forEach((p, k) => { p.classList.toggle('est-actif', k === i); p.classList.toggle('est-passe', k < i); });
+    photos.forEach((ph, k) => { ph.classList.toggle('est-active', k === i); ph.classList.toggle('est-passee', k < i); });
     pas.forEach((b, k) => { b.classList.toggle('est-fait', k < i); if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
     const p = plats[i];
     sec.style.setProperty('--vin', p.dataset.couleur);

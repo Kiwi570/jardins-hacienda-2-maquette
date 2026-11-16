@@ -3464,3 +3464,29 @@ html:not(.js) .cadeau-fetes__carte, .cadeau-fetes.sans-anim .cadeau-fetes__carte
 .dates--billets .dates__source { margin-top: 14px; }
 /* Le fond crème du billet est peint en dégradé : le jour doré posé sur la photo est mesuré sur l'image, pas sur le crème. */
 .dates.dates--billets .agd__date, .dates.dates--billets .agd__date.agd__date--pret { background: linear-gradient(#fffaf2, #fffaf2); }
+
+/* v7.5.20 · La Saint-Sylvestre, chaque plat à côté de son verre : à droite, l'assiette du temps en cours (image carrée,
+   même assiette et même lumière pour les cinq) et le verre de l'accord posé à côté, sur la table ; à chaque temps, l'assiette
+   servie glisse vers la gauche et s'en va, la suivante arrive de la droite ; le verre change de forme et se remplit.
+   L'accord est écrit sous l'assiette. Hors scène (téléphone) : les plats l'un sous l'autre, comme avant. */
+.ss__grille { grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); }
+.ss__titre { font-size: clamp(2rem, 1rem + 2.4vw, 4rem); }
+.ss__titre em { white-space: nowrap; }
+.ss__scene { grid-template-columns: minmax(0, .74fr) minmax(0, 1.26fr); grid-template-areas: "plats verre" "table table"; }
+.ss__service { grid-area: verre; display: grid; justify-items: start; align-content: center; gap: 14px; min-width: 0; }
+.ss__assiette { --a: min(100% - 64px, 100svh - 330px, 480px); position: relative; width: var(--a); aspect-ratio: 1; }
+.ss__photo { position: absolute; inset: 0; margin: 0; border-radius: 26px; overflow: hidden; background: #2a1d15; box-shadow: 0 44px 70px -38px rgba(0, 0, 0, .95), 0 0 0 1px rgba(233, 196, 106, .3);
+  opacity: 0; transform: translateX(16%) rotate(5deg) scale(.92); transition: opacity .7s ease, transform 1.05s cubic-bezier(.2, .8, .2, 1); }
+.ss__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.ss__photo.est-active { opacity: 1; transform: none; }
+.ss__photo.est-passee { transform: translateX(-18%) rotate(-6deg) scale(.9); }
+.ss__photo .mention-ia { left: 12px; right: auto; bottom: 12px; }
+.ss__assiette .ss__verre { position: absolute; z-index: 2; right: calc(var(--a) * -.16); bottom: calc(var(--a) * -.03); width: calc(var(--a) * .38); display: block; pointer-events: none; }
+.ss__assiette .ss-verre { width: 100%; filter: drop-shadow(0 18px 22px rgba(0, 0, 0, .7)); }
+.ss__assiette .ss__halo { width: 300%; top: 46%; opacity: .26; }
+.ss__service .ss__accord { width: var(--a, 100%); margin: 0; text-align: left; }
+.ss__service .ss__accord .ss__type { margin-top: 2px !important; }
+.ss:not(.ss--scene) .ss__service { display: none; }
+@media (min-width: 861px) and (max-height: 720px) { .ss__service .ss__accord .ss__region { display: none; } .ss__assiette { --a: min(100% - 64px, 100svh - 300px, 480px); } }
+/* Sans JavaScript sur ordinateur : l'assiette et le verre restent à côté de la liste des cinq plats (comme le verre avant). */
+@media (min-width: 861px) { .ss:not(.ss--scene) .ss__service { display: grid; position: sticky; top: calc(var(--entete-h) + 24px); align-self: start; } }

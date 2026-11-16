@@ -39,6 +39,8 @@ export default (c) => {
     rouge: { bol: 'M50 30 C42 92 50 140 72 164 C82 174 92 178 100 179 C108 178 118 174 128 164 C150 140 158 92 150 30 Z', eclat: 'M62 52 C58 98 64 134 78 156', niveau: 112, bas: 179 },
     tulipe: { bol: 'M70 30 C56 66 56 110 72 140 C82 158 92 164 100 165 C108 164 118 158 128 140 C144 110 144 66 130 30 Z', eclat: 'M78 50 C70 84 72 116 84 138', niveau: 94, bas: 165 },
   };
+  /* v7.5.20 · Le plat de chaque temps du dîner, à côté de son verre (images Grok, carrées, même assiette et même lumière). */
+  const SS_PHOTOS = ['grok/ss-1-amuse-bouche', 'grok/ss-2-foie-gras', 'grok/ss-3-esturgeon', 'grok/ss-4-filet-boeuf', 'grok/ss-5-sable-yuzu'];
   const prixMenu = (c.s('fetes.menuPrix').match(/^(\d+\s*€)\s*(.*)$/) || []).slice(1), prixAccord = (c.s('fetes.accordPrix').match(/^(\d+\s*€)\s*(.*)$/) || []).slice(1);
   /* Jours de calendrier à Moineville, comme le compte à rebours de la page (et non des tranches de 24 h). */
   const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
@@ -204,12 +206,17 @@ export default (c) => {
             <p class="ss-plat__vin"><span class="ss-plat__goutte" aria-hidden="true"></span>${c.t('fetes.ssAccord')} <strong>${p.accord.nom}</strong> · ${p.accord.region}</p>
           </li>`)}
         </ol>
+        <div class="ss__service">
+        <div class="ss__assiette" data-ss-assiette>
+          ${SS_PHOTOS.map((nom, i) => c.media({ nom, alt: '', cadrage: '50% 50%', classe: `ss__photo${i === 0 ? ' est-active' : ''}`, sizes: '(max-width: 860px) 80vw, 30vw', attrs: `data-ss-photo="${i}" data-effet="ss-assiette"` }))}
         <div class="ss__verre" aria-hidden="true">
           <span class="ss__halo"></span>
           <svg class="ss-verre" viewBox="0 0 200 320">
             <defs>${brut(Object.entries(FORMES).map(([k, d]) => `<clipPath id="ss-clip-${k}"><path d="${d.bol}"/></clipPath>`).join(''))}</defs>
             ${brut(Object.entries(FORMES).map(([k, d]) => `<g class="ss-verre__forme${k === 'flute' ? ' est-active' : ''}" data-forme="${k}"><g clip-path="url(#ss-clip-${k})"><rect class="ss-verre__vin" x="0" y="${d.niveau}" width="200" height="${200 - d.niveau}"/><rect class="ss-verre__reflet-vin" x="0" y="${d.niveau}" width="200" height="6"/>${k === 'flute' ? '<g class="ss-verre__bulles"><circle cx="96" cy="150" r="2"/><circle cx="104" cy="140" r="1.6"/><circle cx="100" cy="128" r="1.8"/><circle cx="94" cy="116" r="1.4"/><circle cx="106" cy="104" r="1.5"/></g>' : ''}</g><path class="ss-verre__bol" d="${d.bol}"/><path class="ss-verre__eclat" d="${d.eclat}"/><path class="ss-verre__pied" d="M100 ${d.bas} V280 M66 286 Q100 278 134 286"/></g>`).join(''))}
           </svg>
+        </div>
+        </div>
           <div class="ss__accord">
             <p class="ss__avec">${c.t('fetes.ssAvec')}</p>
             <p class="ss__type"><span class="ss-plat__goutte" aria-hidden="true"></span><span data-ss-type>${TYPES[a_.plats[0].accord.type]}</span></p>

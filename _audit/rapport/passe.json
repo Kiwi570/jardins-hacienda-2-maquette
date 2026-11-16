@@ -1,15 +1,19 @@
 {
- "id": "20261116-221119-complet-cible-partiel",
- "date": "2026-11-16T22:12:10.350Z",
+ "id": "20261116-223849-complet-cible-partiel",
+ "date": "2026-11-16T22:43:43.250Z",
  "niveau": "complet",
  "pages": "/les-fetes",
  "etapes": [
   "fichiers",
-  "mesures"
+  "mesures",
+  "ecran",
+  "mouvement",
+  "parcours",
+  "fluidite"
  ],
  "version": "7",
  "echecs": 0,
- "aRegarder": 0,
+ "aRegarder": 2,
  "nonLances": 0,
  "manquants": 0,
  "statut": "complet"

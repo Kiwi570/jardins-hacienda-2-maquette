@@ -46,7 +46,8 @@
     "affiches",
     "billets",
     "ephemeride",
-    "cadeau"
+    "cadeau",
+    "ss-assiette"
   ],
   "grille": {
     "dispenses": {}
