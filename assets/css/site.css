@@ -3295,3 +3295,25 @@ html.js .oui.est-vu .oui__ouvrir:hover .oui__image img { transition-delay: 0s; t
   .oui__grille { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: clamp(150px, 42vw, 240px); }
   .oui__tuile--large { grid-column: span 2; }
 }
+
+/* v7.5.18 · Réceptions, « Cinq espaces, un seul domaine » qui défile en descendant (ordinateur) : la section reste à l'écran
+   et la rangée des cinq espaces glisse de droite à gauche au rythme de la molette ; chaque photo glisse un peu moins vite
+   que sa carte (profondeur) ; le nom de l'espace se pose sur sa photo, la fiche se resserre pour tenir dans l'écran ;
+   le fil doré suit. Le script mesure et décide (classe domaine--defile) : sur téléphone, sur un écran trop bas et sans
+   JavaScript, la rangée qui se fait glisser, comme avant. */
+.domaine.domaine--defile { height: calc(100vh + var(--domaine-course, 0px)); height: calc(100svh + var(--domaine-course, 0px)); padding-block: 0; overflow: visible; }
+.domaine--defile .domaine__collant { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; padding: calc(var(--entete-h) + clamp(8px, 2.2vh, 26px)) 0 clamp(12px, 2.6vh, 30px); }
+.domaine--defile .domaine__tete { margin-bottom: clamp(14px, 2.6vh, 30px); }
+.domaine--defile .domaine__tete h2 { font-size: clamp(2rem, 1.2rem + 2.2vw, 3.6rem); }
+.domaine--defile .domaine__liste { position: relative; overflow: visible; scroll-snap-type: none; cursor: default; padding-bottom: 6px; grid-auto-columns: clamp(320px, 34vw, 580px); will-change: transform; }
+.domaine--defile .domaine__carte { grid-template-rows: auto auto; }
+.domaine--defile .domaine__photo-cadre { grid-area: 1 / 1; aspect-ratio: auto; height: var(--domaine-photo-h, 46vh); }
+.domaine--defile .domaine__photo-cadre::after { content: ''; position: absolute; z-index: 1; inset: 0; background: linear-gradient(0deg, rgba(8, 18, 14, .74) 0%, rgba(8, 18, 14, .3) 30%, rgba(8, 18, 14, 0) 56%); pointer-events: none; }
+.domaine--defile .domaine__photo { width: 114%; margin-left: -7%; will-change: transform; }
+.domaine--defile .domaine__nom { grid-area: 1 / 1; align-self: end; position: relative; z-index: 2; margin: 0; padding: 0 24px 20px; color: #fbf4e6; text-shadow: 0 2px 14px rgba(0, 0, 0, .5); pointer-events: none; }
+.domaine--defile .domaine__fiche { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 20px; row-gap: 8px; margin-top: clamp(10px, 1.8vh, 18px); }
+.domaine--defile .domaine__fiche > div { grid-template-columns: minmax(0, 1fr); gap: 2px; padding-top: 8px; }
+.domaine--defile .domaine__fiche > div:nth-child(3) { grid-column: 1 / -1; }
+.domaine--defile .domaine__fiche dt { font-size: .82rem; letter-spacing: .02em; }
+.domaine--defile .domaine__pied { margin-top: clamp(10px, 2vh, 22px); }
+.domaine--defile .domaine__fil span { transition: none; }

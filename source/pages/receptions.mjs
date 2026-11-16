@@ -146,7 +146,8 @@ export default (c) => {
   </div>
 </section>
 
-<section class="domaine" id="espaces" aria-labelledby="espaces-titre">
+<section class="domaine" id="espaces" data-domaine-scene aria-labelledby="espaces-titre">
+  <div class="domaine__collant">
   <div class="conteneur domaine__tete">
     <div>
       <p class="surtitre">${c.t('receptions.espacesSur')}</p>
@@ -171,6 +172,7 @@ export default (c) => {
   <div class="conteneur domaine__pied">
     <div class="domaine__fil" aria-hidden="true"><span data-domaine-fil></span></div>
     <p class="domaine__info">${c.t('receptions.domaineInfo')}</p>
+  </div>
   </div>
 </section>
 

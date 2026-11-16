@@ -832,32 +832,102 @@ function volets() {
   if (etat.calme || !window.ScrollTrigger) return;
   window.ScrollTrigger.create({ trigger: zone, start: 'top 70%', end: 'bottom 40%', onUpdate: (st) => { if (touche) return; const o = ordre(); ouvrir(o[Math.min(o.length - 1, Math.floor(st.progress * o.length))]); } });
 }
-/* v7.5 · Réceptions, « Cinq espaces, un seul domaine » : flèches carte par carte, glisser à la souris, molette verticale qui fait
-   défiler la rangée tant qu'elle n'est pas au bout, fil de progression, cartes qui arrivent en cascade. */
+/* v7.5 · Réceptions, « Cinq espaces, un seul domaine » : flèches carte par carte, glisser à la souris, fil de progression,
+   cartes qui arrivent en cascade.
+   v7.5.18 · sur ordinateur, la section reste à l'écran et la rangée glisse de droite à gauche en descendant (le défilement
+   vertical mène la rangée, adouci) ; chaque photo glisse un peu moins vite que sa carte ; les flèches et le clavier font
+   descendre la page jusqu'à l'espace suivant. Si l'écran est trop bas pour tout montrer, la rangée qui se fait glisser. */
 function domaine() {
   const sec = $('.domaine'), l = sec && $('[data-domaine]', sec); if (!l) return;
   const prec = $('[data-domaine-prec]', sec), suiv = $('[data-domaine-suiv]', sec), fil = $('[data-domaine-fil]', sec);
-  const pas = () => { const c = l.querySelector('.domaine__carte'); return c ? c.getBoundingClientRect().width + parseFloat(getComputedStyle(l).columnGap || 0) : l.clientWidth * 0.8; };
+  const collant = $('.domaine__collant', sec), tete = $('.domaine__tete', sec), pied = $('.domaine__pied', sec);
+  const cartes = $$('.domaine__carte', l), photos = cartes.map((c) => $('.domaine__photo', c));
+  const ordinateur = matchMedia('(min-width: 901px)');
+  let defile = false, distance = 0, course = 0, debut = 0, fin = 0, largeur = 0, origine = 0, x = 0, cible = 0, boucle = 0, places = [];
+  const pas = () => { const c = cartes[0]; return c ? c.offsetWidth + parseFloat(getComputedStyle(l).columnGap || 0) : l.clientWidth * 0.8; };
   const maj = () => {
+    if (defile) {
+      prec.disabled = cible <= 2; suiv.disabled = cible >= distance - 2;
+      fil.parentElement.style.setProperty('--domaine-vu', String(Math.min(1, (largeur + x) / (largeur + distance))));
+      return;
+    }
     const max = l.scrollWidth - l.clientWidth;
     prec.disabled = l.scrollLeft <= 2; suiv.disabled = l.scrollLeft >= max - 2;
     fil.parentElement.style.setProperty('--domaine-vu', String(Math.min(1, (l.clientWidth + l.scrollLeft) / l.scrollWidth)));
   };
+  const avancement = () => Math.min(1, Math.max(0, (-sec.getBoundingClientRect().top - debut) / Math.max(1, course - debut - fin)));
+  const poser = () => {
+    l.style.transform = `translate3d(${(-x).toFixed(1)}px, 0, 0)`;
+    const demi = innerWidth / 2;
+    places.forEach((p, i) => {
+      if (!photos[i]) return;
+      const rel = Math.max(-1, Math.min(1, (origine + p.g + p.w / 2 - x - demi) / (demi + p.w / 2)));
+      photos[i].style.transform = `translate3d(${(-rel * p.w * 0.065).toFixed(1)}px, 0, 0)`;
+    });
+    maj();
+  };
+  const suivre = (immediat) => {
+    cancelAnimationFrame(boucle); boucle = 0;
+    const image = () => {
+      cible = avancement() * distance;
+      x += (cible - x) * 0.18;
+      if (immediat === true || Math.abs(cible - x) < 0.4) x = cible;
+      poser();
+      boucle = x === cible ? 0 : requestAnimationFrame(image);
+    };
+    image();
+  };
+  const quitter = () => {
+    defile = false; sec.classList.remove('domaine--defile'); sec.style.removeProperty('--domaine-course'); sec.style.removeProperty('--domaine-photo-h');
+    l.style.transform = ''; photos.forEach((p) => p && (p.style.transform = '')); x = cible = 0;
+  };
+  const mesurer = () => {
+    cancelAnimationFrame(boucle); boucle = 0;
+    if (!ordinateur.matches || etat.calme) { if (defile) { quitter(); rafraichir(); } maj(); return; }
+    const avant = defile;
+    defile = true; sec.classList.add('domaine--defile');
+    /* La photo prend la hauteur qui reste une fois le titre, la fiche et le fil posés (mesurés avec une photo de 200 px). */
+    sec.style.setProperty('--domaine-photo-h', '200px');
+    const cs = getComputedStyle(collant);
+    const autre = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) + (pied.getBoundingClientRect().bottom - tete.getBoundingClientRect().top) - 200;
+    largeur = l.clientWidth;
+    const reste = innerHeight - autre;
+    if (reste < 190) { quitter(); if (avant) rafraichir(); maj(); return; }
+    sec.style.setProperty('--domaine-photo-h', `${Math.round(Math.min(reste, cartes[0].offsetWidth * 0.8))}px`);
+    const der = cartes[cartes.length - 1];
+    distance = Math.max(0, der.offsetLeft + der.offsetWidth + (parseFloat(getComputedStyle(l).paddingRight) || 0) - largeur);
+    debut = innerHeight * 0.1; fin = innerHeight * 0.2;
+    course = Math.round(distance * 1.15 + debut + fin);
+    sec.style.setProperty('--domaine-course', `${course}px`);
+    places = cartes.map((c) => ({ g: c.offsetLeft, w: c.offsetWidth }));
+    origine = l.getBoundingClientRect().left + x;
+    rafraichir();
+    suivre(true);
+  };
+  /* Les flèches font descendre la page jusqu'à la carte voulue (sur ordinateur) ou glisser la rangée (sinon). */
+  const allerA = (t) => {
+    const haut = sec.getBoundingClientRect().top + scrollY;
+    aller(Math.round(haut + debut + (Math.max(0, Math.min(distance, t)) / Math.max(1, distance)) * (course - debut - fin)));
+  };
   const comportement = () => (etat.calme ? 'auto' : 'smooth');
-  prec.addEventListener('click', () => l.scrollBy({ left: -pas(), behavior: comportement() }));
-  suiv.addEventListener('click', () => l.scrollBy({ left: pas(), behavior: comportement() }));
-  l.addEventListener('scroll', () => requestAnimationFrame(maj), { passive: true });
-  addEventListener('resize', maj);
+  prec.addEventListener('click', () => { if (defile) { const p = pas(); allerA((Math.ceil(cible / p - 0.05) - 1) * p); } else l.scrollBy({ left: -pas(), behavior: comportement() }); });
+  suiv.addEventListener('click', () => { if (defile) { const p = pas(); allerA(Math.min(distance, (Math.floor(cible / p + 0.05) + 1) * p)); } else l.scrollBy({ left: pas(), behavior: comportement() }); });
+  l.addEventListener('scroll', () => { if (!defile) requestAnimationFrame(maj); }, { passive: true });
+  addEventListener('scroll', () => { if (defile && !boucle) boucle = requestAnimationFrame(() => suivre()); }, { passive: true });
+  let attente = 0;
+  addEventListener('resize', () => { clearTimeout(attente); attente = setTimeout(mesurer, 120); });
+  addEventListener('load', mesurer);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(mesurer);
   l.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); suiv.click(); } if (e.key === 'ArrowLeft') { e.preventDefault(); prec.click(); } });
-  /* Glisser à la souris (le tactile défile déjà tout seul). */
+  /* Glisser à la souris quand la rangée se fait glisser (le tactile défile déjà tout seul). */
   let x0 = 0, s0 = 0, saisi = false, bouge = false;
-  l.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse' || e.button !== 0) return; saisi = true; bouge = false; x0 = e.clientX; s0 = l.scrollLeft; });
+  l.addEventListener('pointerdown', (e) => { if (defile || e.pointerType !== 'mouse' || e.button !== 0) return; saisi = true; bouge = false; x0 = e.clientX; s0 = l.scrollLeft; });
   addEventListener('pointermove', (e) => { if (!saisi) return; const dx = e.clientX - x0; if (Math.abs(dx) > 4) { bouge = true; l.classList.add('est-saisi'); } if (bouge) l.scrollLeft = s0 - dx; });
   addEventListener('pointerup', () => { if (!saisi) return; saisi = false; l.classList.remove('est-saisi'); if (bouge) { const p = pas(); l.scrollTo({ left: Math.round(l.scrollLeft / p) * p, behavior: comportement() }); } });
   l.addEventListener('click', (e) => { if (bouge) { e.preventDefault(); e.stopPropagation(); bouge = false; } }, true);
   l.addEventListener('dragstart', (e) => e.preventDefault());
-  new IntersectionObserver(([e], o) => { if (e.isIntersecting) { sec.classList.add('est-vu'); o.disconnect(); } }, { threshold: 0.2 }).observe(sec);
-  maj();
+  new IntersectionObserver(([e], o) => { if (e.isIntersecting) { sec.classList.add('est-vu'); o.disconnect(); } }, { threshold: 0.15 }).observe(l);
+  mesurer();
 }
 
 /* v7.5 · Réceptions, « Le plan du domaine » : un point touché montre la fiche du lieu (une seule fiche visible). */

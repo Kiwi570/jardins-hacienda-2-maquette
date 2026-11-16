@@ -236,7 +236,8 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <nav class="fetes-defile__points" aria-label="Aller à une occasion"><ol><li><button type="button" data-fete-aller="0" aria-current="true">Mariages</button></li><li><button type="button" data-fete-aller="1" aria-current="false">Anniversaires</button></li><li><button type="button" data-fete-aller="2" aria-current="false">Pots de départ</button></li><li><button type="button" data-fete-aller="3" aria-current="false">Baptêmes</button></li></ol></nav>
   </div>
 </section>
-<section class="domaine" id="espaces" aria-labelledby="espaces-titre">
+<section class="domaine" id="espaces" data-domaine-scene aria-labelledby="espaces-titre">
+  <div class="domaine__collant">
   <div class="conteneur domaine__tete">
     <div>
       <p class="surtitre">Les espaces</p>
@@ -323,6 +324,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <div class="conteneur domaine__pied">
     <div class="domaine__fil" aria-hidden="true"><span data-domaine-fil></span></div>
     <p class="domaine__info">Capacités indiquées par l&#39;établissement ; menus de groupe sur demande, au 06 18 21 28 10.</p>
+  </div>
   </div>
 </section>
 <section class="terrasse" id="terrasse" data-scene data-entete-cache data-grille="scene" aria-labelledby="terrasse-titre">
