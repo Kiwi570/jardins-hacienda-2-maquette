@@ -830,6 +830,10 @@ function ideesCadeau() {
   const idees = $$('.idee', sec), mot = $('#ccq-mot', sec); if (!idees.length) return;
   let suggere = '';
   const signaler = (el) => { el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); };
+  /* v7.5.22 · Arrivée depuis La carte (« L'offrir en carte cadeau ») : le montant et le repas en petit mot sont déjà posés. */
+  const q = new URLSearchParams(location.search), qm = q.get('montant'), qmot = q.get('mot');
+  if (qm) { const r = form.querySelector(`[name="montant"][value="${CSS.escape(qm)}"]`); if (r) { r.checked = true; signaler(r); } }
+  if (qmot && mot && !mot.value) { mot.value = qmot.slice(0, 120); suggere = mot.value; signaler(mot); }
   idees.forEach((b) => b.addEventListener('click', () => {
     const r = form.querySelector(`[name="montant"][value="${b.dataset.ideeMontant}"]`);
     if (r) { r.checked = true; signaler(r); }
@@ -840,6 +844,73 @@ function ideesCadeau() {
     if (!e.isTrusted || e.target.name !== 'montant') return;
     idees.forEach((x) => { if (x.dataset.ideeMontant !== e.target.value) x.setAttribute('aria-pressed', 'false'); });
   });
+}
+
+/* v7.5.22 · La carte, composer son repas : un « + » sur chaque plat qui a un prix ; le carnet du serveur, rangé dans la barre
+   de la carte, note les plats et les portions et fait l'addition, pour une ou deux personnes (une planche à partager compte
+   une fois). « Réserver ce repas » ouvre la réservation au dîner pour le bon nombre ; « L'offrir en carte cadeau » ouvre Offrir
+   avec le montant juste au-dessus du total et le repas écrit en petit mot. */
+function carnetRepas() {
+  const zone = $('[data-carnet]'); if (!zone) return;
+  const sec = zone.closest('.carte-resto'), bouton = $('[data-carnet-ouvrir]', zone), panneau = $('[data-carnet-panneau]', zone);
+  const lignesEl = $('[data-carnet-lignes]', zone), vide = $('[data-carnet-vide]', zone), totalEl = $('[data-carnet-total]', zone), mini = $('[data-carnet-mini]', zone);
+  const pours = $$('[data-carnet-pour]', zone), reserver = $('[data-carnet-reserver]', zone), offrir = $('[data-carnet-offrir]', zone);
+  const choix = new Map(); let pour = 1;
+  const euros = (n) => `${Number.isInteger(n) ? n : n.toFixed(2).replace('.', ',')}\u00a0€`;
+  const ouvrir = (oui) => { panneau.hidden = !oui; bouton.setAttribute('aria-expanded', String(oui)); };
+  const total = () => [...choix.values()].reduce((s, x) => s + x.prix * x.n * (x.partage ? 1 : pour), 0);
+  const lien = (a, f) => { try { const u = new URL(a.href, location.href); f(u.searchParams); a.href = u.pathname + u.search + u.hash; } catch {} };
+  const maj = (bump) => {
+    lignesEl.replaceChildren(...[...choix.entries()].map(([id, x]) => {
+      const li = document.createElement('li'), q = x.n * (x.partage ? 1 : pour);
+      li.className = 'carnet__ligne';
+      const r = document.createElement('button'); r.type = 'button'; r.className = 'carnet__moins'; r.textContent = '−'; r.setAttribute('aria-label', `${zone.dataset.retirer} : ${x.nom}`);
+      r.addEventListener('click', () => { x.n -= 1; if (x.n <= 0) { choix.delete(id); x.li.classList.remove('est-note'); } maj(); });
+      const qt = document.createElement('span'); qt.className = 'carnet__q'; qt.textContent = `${q} ×`;
+      const nm = document.createElement('span'); nm.className = 'carnet__nom'; nm.textContent = x.nom; nm.title = x.nom;
+      const px = document.createElement('span'); px.className = 'carnet__prix'; px.textContent = euros(x.prix * q);
+      li.append(r, qt, nm, px); return li;
+    }));
+    const t = total(), n = [...choix.values()].reduce((s, x) => s + x.n, 0);
+    vide.hidden = n > 0; totalEl.textContent = euros(t); mini.textContent = n ? euros(t) : '0';
+    zone.classList.toggle('est-rempli', n > 0);
+    lien(reserver, (p) => p.set('couverts', String(pour)));
+    const montant = [25, 50, 100, 150, 200].find((v) => v >= t) || 200;
+    let mot = `${zone.dataset.mot} ${[...choix.values()].map((x) => x.nom).join(', ')}.`;
+    if (mot.length > 120) mot = mot.slice(0, 118).replace(/[ ,]+[^ ,]*$/, '') + '…';
+    lien(offrir, (p) => { p.set('montant', String(montant)); if (n) p.set('mot', mot); else p.delete('mot'); });
+    if (bump && mini.animate && !etat.calme) mini.animate([{ transform: 'scale(1.4)' }, { transform: 'none' }], { duration: 450, easing: 'cubic-bezier(.2,1.4,.4,1)' });
+  };
+  const voler = (de) => {
+    if (etat.calme || !document.body.animate) return;
+    const a = de.getBoundingClientRect(), b = bouton.getBoundingClientRect();
+    const x0 = a.left + a.width / 2, y0 = a.top + a.height / 2, dx = b.left + b.width - 24 - x0, dy = b.top + b.height / 2 - y0;
+    const p = document.createElement('span'); p.className = 'carnet__vol'; p.style.left = `${x0}px`; p.style.top = `${y0}px`; document.body.append(p);
+    p.animate([{ transform: 'translate(0, 0) scale(1)' }, { transform: `translate(${dx * 0.55}px, ${Math.min(dy, 0) - 70}px) scale(1.25)`, offset: 0.5 }, { transform: `translate(${dx}px, ${dy}px) scale(.45)`, opacity: 0.4 }], { duration: 700, easing: 'cubic-bezier(.45, 0, .55, 1)' }).onfinish = () => p.remove();
+  };
+  $$('.carte-resto__plat', sec).forEach((li, k) => {
+    const ligne = $('.carte-resto__plat-ligne', li), prixEl = ligne && $('.carte-resto__prix', ligne), nom = ligne && $('.carte-resto__plat-nom', ligne)?.textContent.trim();
+    const prix = parseFloat((prixEl?.textContent || '').replace(/[^0-9,.]/g, '').replace(',', '.'));
+    if (!nom || !Number.isFinite(prix)) return;
+    const id = `p${k}`, partage = li.closest('[data-rubrique]')?.dataset.rubrique === 'partager';
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'carnet__plus'; b.setAttribute('aria-label', `${zone.dataset.ajouter} : ${nom}`);
+    b.innerHTML = '<span aria-hidden="true">+</span>';
+    ligne.append(b);
+    b.addEventListener('click', () => {
+      const x = choix.get(id) || { nom, prix, partage, n: 0, li }; x.n += 1; choix.set(id, x); li.classList.add('est-note');
+      voler(b); maj(true);
+      if (!zone.dataset.vu) { zone.dataset.vu = '1'; setTimeout(() => ouvrir(true), etat.calme ? 0 : 560); }
+    });
+  });
+  zone.hidden = false;
+  bouton.addEventListener('click', () => ouvrir(panneau.hidden));
+  $('[data-carnet-fermer]', zone).addEventListener('click', () => { ouvrir(false); bouton.focus(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panneau.hidden) { ouvrir(false); bouton.focus(); } });
+  document.addEventListener('click', (e) => { if (!panneau.hidden && !zone.contains(e.target) && !e.target.closest('.carnet__plus')) ouvrir(false); });
+  pours.forEach((b) => b.addEventListener('click', () => { pour = +b.dataset.carnetPour; pours.forEach((x) => x.setAttribute('aria-pressed', String(x === b))); maj(); }));
+  /* Le carnet se referme quand on quitte la carte (il ne déborde jamais sur la passe ou le pied de page). */
+  if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { if (!e.isIntersecting && !panneau.hidden) ouvrir(false); }, { rootMargin: '-30% 0px -30% 0px' }).observe($('.carte-resto__corps', sec) || sec);
+  maj();
 }
 
 /* Réceptions : le mot de l'occasion (un tour à l'arrivée, puis au toucher), les volets des espaces, la demande. */
@@ -2321,6 +2392,7 @@ demarrer({
     ephemeride();
     cadeauFetes();
     ideesCadeau();
+    carnetRepas();
     motTournant();
     liensService();
     volets();

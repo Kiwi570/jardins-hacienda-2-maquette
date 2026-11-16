@@ -21,28 +21,42 @@ const COUCHES = [
 ];
 const TRAIT = '<svg class="ardoise__trait" viewBox="0 0 400 24" preserveAspectRatio="none" aria-hidden="true"><path d="M4 16 C 90 6, 200 22, 396 10" pathLength="1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
 
-/* v7.5.15 · « Toute la carte » : une grande photo fixée à gauche qui change à chaque rubrique (fondu et léger zoom), le numéro,
-   le nom, la fourchette de prix et le nombre de plats posés dessus. Les petites photos des rubriques restent pour le téléphone. */
+/* v7.5.22 · « La carte ouverte » : les quatre rubriques en deux doubles pages crème (entrées | plats, à partager | desserts),
+   chacune avec sa photo en bandeau (numéro, fourchette de prix, nombre de plats posés dessus). Entrées : la vraie assiette du
+   restaurant (foie gras, briochette et verre de blanc) ; à partager : la planche « La Libanaise » (image Grok, même lumière). */
 const VISUELS = {
-  entrees: { nom: 'vraie/foie-gras-maison', cadrage: '50% 55%' },
+  entrees: { nom: 'carte-entrees', cadrage: '50% 92%' },
   plats: { nom: 'carte-plats', cadrage: '50% 50%' },
-  partager: { nom: 'carte-partager', cadrage: '50% 50%' },
-  desserts: { nom: 'vraie/coupe-cheminee', cadrage: '45% 40%' },
+  partager: { nom: 'grok/carte-libanaise', cadrage: '50% 58%' },
+  desserts: { nom: 'vraie/coupe-cheminee', cadrage: '45% 30%' },
 };
-function visuelCarte(c) {
-  const rub = c.donnees.carte.rubriques.filter((r) => VISUELS[r.id]);
-  const fourchette = (r) => { const v = r.plats.filter((x) => !/^menu/i.test(x.nom)).map((x) => x.prix).filter((x) => typeof x === 'number'); return v.length ? (Math.min(...v) === Math.max(...v) ? `${Math.min(...v)} €` : `de ${Math.min(...v)} à ${Math.max(...v)} €`) : ''; };
-  return html`<aside class="carte-synchro__visuel" data-carte-visuel data-effet="carte-photo" aria-hidden="true">
-    ${rub.map((r, i) => html`<div class="carte-synchro__img${i ? '' : ' est-active'}" data-carte-image="${r.id}" data-numero="${String(i + 1).padStart(2, '0')}" data-titre="${r.titre}" data-detail="${[fourchette(r), `${r.plats.length} ${r.plats.length > 1 ? 'propositions' : 'proposition'}`].filter(Boolean).join(' · ')}">${c.media({ nom: VISUELS[r.id].nom, alt: '', cadrage: VISUELS[r.id].cadrage, sizes: '(max-width: 1100px) 1px, 40vw' })}</div>`)}
-    <p class="carte-synchro__badge"><span class="carte-synchro__num" data-carte-num>01</span><span class="carte-synchro__nom" data-carte-nom>${rub[0].titre}</span><span class="carte-synchro__detail" data-carte-detail></span></p>
-  </aside>`;
+const fourchette = (r) => { const v = r.plats.filter((x) => !/^menu/i.test(x.nom)).map((x) => x.prix).filter((x) => typeof x === 'number'); return v.length ? (Math.min(...v) === Math.max(...v) ? `${Math.min(...v)} €` : `de ${Math.min(...v)} à ${Math.max(...v)} €`) : ''; };
+function bandeau(c, r, i) {
+  const v = VISUELS[r.id]; if (!v) return '';
+  const detail = [fourchette(r), `${r.plats.length} ${r.plats.length > 1 ? 'propositions' : 'proposition'}`].filter(Boolean).join(' · ');
+  return texteBrut(html`<div class="rubrique-bande" aria-hidden="true">${c.media({ nom: v.nom, alt: '', cadrage: v.cadrage, classe: 'rubrique-bande__photo', sizes: '(max-width: 999px) 92vw, 46vw', attrs: 'data-fx="vitesse" data-fx-force="3" data-effet="carte-bande"' })}<p class="rubrique-bande__infos"><span class="rubrique-bande__num">${String(i + 1).padStart(2, '0')}</span><span class="rubrique-bande__detail">${detail}</span></p></div>`);
 }
-
 export default (c) => {
-  const carte = rendreCarte(c.donnees.carte).replace(/<figure class="carte-resto__photo">/g, '<figure class="carte-resto__photo" data-fx="vitesse" data-fx-force="3">')
-    .replace('<div class="carte-resto__corps">', `<div class="carte-resto__corps carte-synchro">${texteBrut(visuelCarte(c))}`)
-    /* La grande photo de gauche sert de visuel à toutes les rubriques sur grand écran (leurs petites photos restent au téléphone). */
-    .replace(/<section class="carte-resto__rubrique"/g, '<section class="carte-resto__rubrique" data-sans-visuel');
+  /* v7.5.22 · Composer son repas : le carnet du serveur, rangé dans la barre de la carte (les « + » des plats sont posés par
+     le script : sans JavaScript, ni carnet ni « + »). */
+  const carnet = texteBrut(html`<div class="carnet" data-carnet hidden data-mot="${c.s('carte.carnetMot')}" data-ajouter="${c.s('carte.carnetAjouter')}" data-retirer="${c.s('carte.carnetRetirer')}">
+    <button type="button" class="carnet__bouton" data-carnet-ouvrir aria-expanded="false" aria-controls="carnet-panneau"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4Z"/><path d="M9 8h6M9 11.5h6M9 15h3.5"/></svg><span>${c.t('carte.carnetBouton')}</span><span class="carnet__mini" data-carnet-mini>0</span></button>
+    <div class="carnet__panneau" id="carnet-panneau" data-carnet-panneau hidden>
+      <div class="carnet__tete"><p class="carnet__titre">${c.t('carte.carnetTitre')}</p><button type="button" class="carnet__fermer" data-carnet-fermer aria-label="${c.s('carte.carnetFermer')}">×</button></div>
+      <p class="carnet__vide" data-carnet-vide>${c.t('carte.carnetVide')}</p>
+      <ol class="carnet__lignes" data-carnet-lignes></ol>
+      <div class="carnet__pour" role="group" aria-label="${c.s('carte.carnetPour')}"><button type="button" data-carnet-pour="1" aria-pressed="true">${c.t('carte.carnetPour1')}</button><button type="button" data-carnet-pour="2" aria-pressed="false">${c.t('carte.carnetPour2')}</button></div>
+      <p class="carnet__total"><span>${c.t('carte.carnetTotal')}</span><output data-carnet-total aria-live="polite">0 €</output></p>
+      <p class="carnet__note">${c.t('carte.carnetNote')}</p>
+      <p class="carnet__actions"><a class="bouton" data-carnet-reserver href="${c.url('reserver', 'formulaire', 'service=soir')}">${c.t('carte.carnetReserver')}</a><a class="bouton bouton--contour" data-carnet-offrir href="${c.url('offrir', 'composer')}">${c.t('carte.carnetOffrir')}</a></p>
+    </div>
+  </div>`);
+  let carte = rendreCarte(c.donnees.carte)
+    .replace('</div></div><div class="carte-resto__corps">', `</div>${carnet}</div><div class="carte-resto__corps carte-ouverte">`);
+  /* Chaque rubrique reçoit sa photo en bandeau, en tête de sa page. */
+  c.donnees.carte.rubriques.forEach((r, i) => {
+    carte = carte.replace(new RegExp(`(<section class="carte-resto__rubrique"[^>]*data-rubrique="${r.id}"[^>]*>)`), `$1${bandeau(c, r, i)}`);
+  });
   const a = c.donnees.ardoise, j = a.jour;
   const etapes = ['1', '2', '3', '4', '5'].map((n, i) => ({ de: [0, 0.18, 0.36, 0.54, 0.72][i], titre: c.s(`carte.etape${n}Titre`), texte: c.s(`carte.etape${n}Texte`) }));
   return html`
