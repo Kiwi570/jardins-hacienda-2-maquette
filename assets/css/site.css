@@ -3597,3 +3597,17 @@ html:not(.js) .cadeau-fetes__carte, .cadeau-fetes.sans-anim .cadeau-fetes__carte
 .carte-resto__legende-titre { color: inherit; }
 .carte-resto__legende-liste li, .carte-resto__legende-note { opacity: .85; }
 .rubrique-bande .mention-ia { left: auto; right: 10px; top: 10px; bottom: auto; }
+
+/* v7.5.24 · Réserver, le plan de la salle : un parquet de chêne clair et un dallage crème (plus de sol rosé). */
+.pds { --pds-parquet: #e6d3b3; --pds-dalle: #efe6d5; }
+/* v7.5.24 · Infos pratiques, « Venir à Moineville » : les règles de l'été serrées en haut de la colonne, puis la vraie photo de la
+   piscine et de la pergola (plus de grands vides entre les lignes). */
+.acces__droite { display: grid; align-content: start; gap: clamp(22px, 3vh, 34px); }
+.acces__droite .acces__regles { align-content: start; }
+.acces__photo { margin: 0; aspect-ratio: 4 / 3; border-radius: 20px; overflow: hidden; box-shadow: 0 34px 60px -36px rgba(0, 0, 0, .8); }
+.acces__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+/* v7.5.24 · Traiteur, la ronde des cloches sur un écran bas : les cloches suivent la hauteur, la légende ne passe plus sur le plat. */
+@media (min-width: 761px) and (max-height: 760px) { .ronde__cloche { width: min(50%, 40svh); } .ronde__legende { margin-top: 10px; } }
+
+/* v7.5.24 · Accueil le soir : la case de la photo attend dans le noir chaud (retour arrière sans éclair clair avant la photo). */
+html[data-moment="soir"] #midi .midi__photo, #midi .midi__photo--hiver-soir, #midi .midi__photo--ete-soir { background: #1a120d; }

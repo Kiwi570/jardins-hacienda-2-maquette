@@ -134,11 +134,14 @@ export default (c) => {
       ${brut(carteAcces(c))}
       <p><a class="bouton bouton--contour" href="https://www.google.com/maps/search/?api=1&amp;query=6+Vathier+Haye+54580+Moineville" target="_blank" rel="noopener">${brut(c.s('infos.itineraire').replace(' (nouvel onglet)', '<span class="visuellement-cache"> (nouvel onglet)</span> <span aria-hidden="true">↗</span>'))}</a></p>
     </div>
+    <div class="acces__droite">
     <dl class="acces__regles" data-anime="cascade">
       <div><dt>${c.t('infos.festivesTitre')}</dt><dd>${c.t('infos.festivesTexte')}</dd></div>
       <div><dt>${c.t('infos.piscineTitre')}</dt><dd>${c.t('infos.piscineTexte')}</dd></div>
       <div><dt>${c.t('infos.barTitre')}</dt><dd>${c.t('infos.barTexte')}</dd></div>
     </dl>
+    ${c.media({ nom: 'vraie/piscine-pergola', alt: c.s('infos.accesPhotoAlt'), cadrage: '50% 55%', classe: 'acces__photo', sizes: '(max-width: 760px) 92vw, 46vw', attrs: 'data-fx="parallaxe" data-fx-force="4"' })}
+    </div>
   </div>
 </section>
 
@@ -179,7 +182,7 @@ export default (c) => {
       <p class="surtitre">${c.t('infos.ecrireSur')}</p>
       <h2 id="ecrire-titre" data-anime="lignes">${c.t('infos.ecrireTitre')}</h2>
       <p>${c.t('infos.ecrireTexte')} ${c.lien('receptions', { ancre: 'demande', classe: 'lien-fleche', texte: c.t('infos.receptions') })}</p>
-      ${c.media({ nom: 'vraie/buffet-nuit', alt: c.s('infos.ecrirePhotoAlt'), cadrage: '40% 55%', classe: 'ecrire__photo', sizes: '(max-width: 760px) 100vw, 36vw', attrs: 'data-anime="rideau"' })}
+      ${c.media({ nom: 'vraie/table-piscine', alt: c.s('infos.ecrirePhotoAlt'), cadrage: '50% 55%', classe: 'ecrire__photo', sizes: '(max-width: 760px) 100vw, 36vw', attrs: 'data-anime="rideau"' })}
     </div>
     <div class="fpe__carton">
       <form class="fpe__form" action="#ecrire" novalidate>

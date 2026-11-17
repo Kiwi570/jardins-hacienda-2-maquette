@@ -38,7 +38,9 @@
     "piedTrouver": "Nous trouver",
     "piedSite": "Le site",
     "piedSuivre": "Suivez-nous",
-    "piedDemander": "Demander une réception"
+    "piedDemander": "Demander une réception",
+    "piedCommander": "Composer ma commande",
+    "piedOffrir": "Composer la carte cadeau"
   },
   "pages": {
     "404": {
@@ -576,7 +578,8 @@
     "cadeauTitre2": "aux Jardins",
     "cadeauTexte": "La carte cadeau des Jardins de l'Hacienda, de 25 à 200 €, valable 6 mois sur toute la carte du chef. Choisissez un montant :",
     "cadeauBouton": "Offrir une carte cadeau",
-    "cadeauAlt": "La carte cadeau des Jardins de l'Hacienda, vert de nuit et or, qui sort de son enveloppe rouge"
+    "cadeauAlt": "La carte cadeau des Jardins de l'Hacienda, vert de nuit et or, qui sort de son enveloppe rouge",
+    "altBarPaillote": "Le comptoir de bois sous la paillote, les plantes et le soleil de l'après-midi"
   },
   "receptions": {
     "heure": "19:00",
@@ -966,7 +969,7 @@
     "cielNuit": "Nuit",
     "cielMaintenant": "Maintenant",
     "carteNote": "Distances à vol d’oiseau · tracés simplifiés",
-    "ecrirePhotoAlt": "Le soir d’une réception : la pièce montée et le buffet de desserts au bord de la piscine",
+    "ecrirePhotoAlt": "La grande table dressée au bord de la piscine, sous le soleil, pour une réception",
     "etapeSujet": "Sujet",
     "etapeMessage": "Message",
     "etapeCoordonnees": "Coordonnées",
@@ -1000,7 +1003,8 @@
     "heroTitre": "Venez nous voir",
     "heroTitre2": "à Moineville",
     "heroTexte": "Le restaurant vous attend au 6 Vathier Haye, à 19 km de Metz, 24 km de Thionville et 47 km de Luxembourg à vol d'oiseau. Les horaires de la semaine, l'accès et le plan du domaine sont juste en dessous.",
-    "sceau": "6 Vathier Haye · Moineville · Moselle · "
+    "sceau": "6 Vathier Haye · Moineville · Moselle · ",
+    "accesPhotoAlt": "La piscine sous les palmiers et la grande pergola de paille, l'été"
   },
   "emporter": {
     "sur": "Traiteur",

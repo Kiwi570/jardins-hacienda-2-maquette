@@ -3,6 +3,13 @@
    habillée de la couleur et des chiffres de l'heure d'arrivée), panneau d'intro (le monogramme de la maison).
    Les conventions data-* sont celles que lisent le socle JavaScript et l'audit (voir le README du socle). */
 import { html, brut } from '../../outils/gabarit.mjs';
+/* v7.5.24 · Le bouton du pied de page suit l'action de la page : demander une réception, composer sa commande, composer la
+   carte cadeau ; ailleurs, réserver une table. */
+const PIED_ACTION = {
+  receptions: { ancre: 'demande', texte: 'commun.piedDemander' },
+  'a-emporter': { ancre: 'produits', texte: 'commun.piedCommander' },
+  offrir: { ancre: 'composer', texte: 'commun.piedOffrir' },
+};
 
 const navigation = (c) => c.site.navigation.filter((cle) => c.pages[cle] && (c.pages[cle].langues || c.langues).includes(c.l));
 
@@ -135,7 +142,7 @@ function pied(c) {
       <p class="statut pied2__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-pied>${c.site.contact.adresse}</span></p>
       <script type="application/json" data-horaires-pied>${brut(JSON.stringify(c.donnees.horaires).replace(/<\//g, '<\\/'))}</script>
     </div>
-    <p class="pied2__actions">${c.page.cle === 'receptions' ? html`<a class="bouton" href="#demande" data-sans-transition>${c.t('commun.piedDemander')}</a>` : c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('commun.piedReserver') })} <a class="bouton bouton--contour bouton--clair" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
+    <p class="pied2__actions">${PIED_ACTION[c.page.cle] ? html`<a class="bouton" href="#${PIED_ACTION[c.page.cle].ancre}" data-sans-transition>${c.t(PIED_ACTION[c.page.cle].texte)}</a>` : c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('commun.piedReserver') })} <a class="bouton bouton--contour bouton--clair" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
   </div>
   <div class="conteneur pied2__grille">
     <div class="pied2__bloc">

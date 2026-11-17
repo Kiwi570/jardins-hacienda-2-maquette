@@ -1,0 +1,491 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "premier écran : titre h1 invisible",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/404",
+      "taille": "1920×1080",
+      "mode": "normal",
+      "selecteur": "h1#lum-titre « Cette page a fermé à minuit. »",
+      "lieux": [
+        "1920×1080 normal"
+      ]
+    }
+  ],
+  "aRegarder": [
+    {
+      "niveau": "regarder",
+      "controle": "grille : aucun titre ne fait l’événement (point 5)",
+      "detail": "absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille=\"typo\"",
+      "etape": "grille",
+      "page": "/a-emporter",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : aucun titre ne fait l’événement (point 5)",
+      "detail": "absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille=\"typo\"",
+      "etape": "grille",
+      "page": "/",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : aucun titre ne fait l’événement (point 5)",
+      "detail": "absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille=\"typo\"",
+      "etape": "grille",
+      "page": "/infos-pratiques",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : aucun titre ne fait l’événement (point 5)",
+      "detail": "absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille=\"typo\"",
+      "etape": "grille",
+      "page": "/les-fetes",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : aucun titre ne fait l’événement (point 5)",
+      "detail": "absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille=\"typo\"",
+      "etape": "grille",
+      "page": "/reserver",
+      "lieux": [
+        ""
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : objet d’ouverture hors du premier écran",
+      "detail": "335 × 40 px visibles : l’intro et le voile s’ouvrent depuis le centre de l’écran à cette taille",
+      "etape": "grille",
+      "page": "/la-carte",
+      "taille": "390×844",
+      "lieux": [
+        "390×844"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : objet d’ouverture hors du premier écran",
+      "detail": "358 × 40 px visibles : l’intro et le voile s’ouvrent depuis le centre de l’écran à cette taille",
+      "etape": "grille",
+      "page": "/les-fetes",
+      "taille": "390×844",
+      "lieux": [
+        "390×844"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "grille : objet d’ouverture hors du premier écran",
+      "detail": "358 × 52 px visibles : l’intro et le voile s’ouvrent depuis le centre de l’écran à cette taille",
+      "etape": "grille",
+      "page": "/reserver",
+      "taille": "390×844",
+      "lieux": [
+        "390×844"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1469 ms (différence 23 %) (films/transition-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/ → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1513 ms (différence 22 %) (films/transition-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/ → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "retour arrière : changement brusque",
+      "detail": "à 382 ms (différence 28 %) (films/retour-arrière-1366.png)",
+      "etape": "films",
+      "page": "/",
+      "taille": "1366×768",
+      "mode": "retour arrière",
+      "lieux": [
+        "1366×768 retour arrière"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1369 ms (différence 22 %) (films/transition-a-emporter-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/a-emporter → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1318 ms (différence 23 %) (films/transition-infos-pratiques-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/infos-pratiques → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1384 ms (différence 28 %) (films/transition-infos-pratiques-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/infos-pratiques → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1402 ms (différence 21 %) (films/transition-les-fetes-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/les-fetes → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1477 ms (différence 29 %) (films/transition-les-fetes-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/les-fetes → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1415 ms (différence 29 %) (films/transition-offrir-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/offrir → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1477 ms (différence 22 %) (films/transition-offrir-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/offrir → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1444 ms (différence 33 %) (films/transition-receptions-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/receptions → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "transition : changement brusque",
+      "detail": "à 1317 ms (différence 21 %) (films/transition-reserver-vers-la-carte-1366.png)",
+      "etape": "films",
+      "page": "/reserver → /la-carte",
+      "taille": "1366×768",
+      "mode": "film",
+      "lieux": [
+        "1366×768 film"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "bouton sans effet visible",
+      "detail": "",
+      "etape": "parcours",
+      "page": "/les-fetes",
+      "taille": "1366×768",
+      "selecteur": "IPour commencer",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "bouton sans effet visible",
+      "detail": "",
+      "etape": "parcours",
+      "page": "/les-fetes",
+      "taille": "1366×768",
+      "selecteur": "IIEntrée",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "rechargement au milieu de la page",
+      "detail": "écran différent à la même position après rechargement (8.5 %), voir comparaisons/rechargement-infos-pratiques-*.png",
+      "etape": "parcours",
+      "page": "/infos-pratiques",
+      "taille": "1366×768",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "rechargement au milieu de la page",
+      "detail": "écran différent à la même position après rechargement (43.0 %), voir comparaisons/rechargement-la-carte-*.png",
+      "etape": "parcours",
+      "page": "/la-carte",
+      "taille": "1366×768",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "rechargement au milieu de la page",
+      "detail": "écran différent à la même position après rechargement (5.4 %), voir comparaisons/rechargement-reserver-*.png",
+      "etape": "parcours",
+      "page": "/reserver",
+      "taille": "1366×768",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "effet qui ne bouge pas au défilement",
+      "detail": "plan-domaine : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section",
+      "etape": "mouvement",
+      "page": "/infos-pratiques",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.plan-domaine__carte",
+      "lieux": [
+        "1366×768 normal",
+        "390×844 normal"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "effet qui ne bouge pas au défilement",
+      "detail": "invitation : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section",
+      "etape": "mouvement",
+      "page": "/receptions",
+      "taille": "1366×768",
+      "mode": "normal",
+      "selecteur": "div.invitation",
+      "lieux": [
+        "1366×768 normal",
+        "390×844 normal"
+      ]
+    }
+  ],
+  "nonLances": [
+    {
+      "controle": "souris immobile / soleil",
+      "raison": "page.screenshot: Target page, context or browser has been closed",
+      "etape": "mouvement"
+    },
+    {
+      "controle": "souris immobile / magnetique",
+      "raison": "page.evaluate: Target page, context or browser has been closed",
+      "etape": "mouvement"
+    },
+    {
+      "controle": "souris immobile / braises",
+      "raison": "page.evaluate: Target page, context or browser has been closed",
+      "etape": "mouvement"
+    },
+    {
+      "controle": "mouvement",
+      "raison": "browser.newContext: Target page, context or browser has been closed",
+      "etape": "mouvement"
+    },
+    {
+      "controle": "vitesse",
+      "raison": "browser.newContext: Target page, context or browser has been closed",
+      "etape": "vitesse"
+    },
+    {
+      "controle": "captures",
+      "raison": "browser.newContext: Target page, context or browser has been closed",
+      "etape": "captures"
+    },
+    {
+      "controle": "Safari (WebKit)",
+      "raison": "WebKit ne peut pas s’installer ici : vérification à faire dans Safari sur le Mac (liste dans le rapport)",
+      "etape": "safari"
+    }
+  ],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "grille wouahou": 6,
+    "mesures": 216,
+    "balayage": 8,
+    "films d’ouverture": 16,
+    "films de transition": 16,
+    "bords de l’écran": 9,
+    "intro accélérable et passable": 7,
+    "menu": 1,
+    "clavier": 9,
+    "liens et boutons": 9,
+    "liens profonds": 16,
+    "liens vers la page en cours": 8,
+    "changements de hauteur": 7,
+    "parcours du projet": 1,
+    "tient dans l’écran": 8,
+    "fluidité": 16,
+    "défilement selon l’appareil": 5,
+    "mouvement": 16,
+    "effets du plan": 37
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=7",
+    "Journal v7 : 13 étape(s) notée(s), 532 min de travail pour 515 min de budget, 0 min d’attente de l’utilisateur.",
+    "Journal : « audit standard (deux passages) et corrections » 79 min pour 35 prévues.",
+    "Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.",
+    "Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.",
+    "Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.",
+    "Ouverture / (1366×768) : 2645 ms depuis le premier octet",
+    "Ouverture /a-emporter (1366×768) : 2470 ms depuis le premier octet",
+    "Ouverture /infos-pratiques (1366×768) : 2439 ms depuis le premier octet",
+    "Ouverture /la-carte (1366×768) : 2389 ms depuis le premier octet",
+    "Ouverture /les-fetes (1366×768) : 2544 ms depuis le premier octet",
+    "film de l'ouverture /les-fetes 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)",
+    "Ouverture /offrir (1366×768) : 2491 ms depuis le premier octet",
+    "Ouverture /receptions (1366×768) : 2558 ms depuis le premier octet",
+    "Ouverture /reserver (1366×768) : 2434 ms depuis le premier octet",
+    "Ouverture / (390×844) : 2527 ms depuis le premier octet",
+    "Ouverture /a-emporter (390×844) : 2479 ms depuis le premier octet",
+    "Ouverture /infos-pratiques (390×844) : 2436 ms depuis le premier octet",
+    "Ouverture /la-carte (390×844) : 2877 ms depuis le premier octet",
+    "Ouverture /les-fetes (390×844) : 2519 ms depuis le premier octet",
+    "Ouverture /offrir (390×844) : 2471 ms depuis le premier octet",
+    "Ouverture /receptions (390×844) : 2495 ms depuis le premier octet",
+    "Ouverture /reserver (390×844) : 2452 ms depuis le premier octet",
+    "bords de l’écran /infos-pratiques 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)",
+    "Bords de l’écran : 662 images d’intro, 23 de voile et 260 de menu jugées (panneau immobile couvrant tout l’écran), barre de défilement classique de 15 px.",
+    "Changements de hauteur /a-emporter : aucun effet ScrollTrigger, rien à recalculer.",
+    "Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.",
+    "Tient dans l'écran /a-emporter : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /infos-pratiques : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /la-carte : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /les-fetes : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /offrir : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /receptions : aucune section épinglée ou plein écran.",
+    "Tient dans l'écran /reserver : aucune section épinglée ou plein écran.",
+    "Fluidité / 1366×768 (molette) : 2 % d'images lentes sur 555, tâche la plus longue 117 ms",
+    "Fluidité /a-emporter 1366×768 (molette) : 0 % d'images lentes sur 226, tâche la plus longue 58 ms",
+    "Fluidité /infos-pratiques 1366×768 (molette) : 0 % d'images lentes sur 278, tâche la plus longue 0 ms",
+    "Fluidité /la-carte 1366×768 (molette) : 1 % d'images lentes sur 318, tâche la plus longue 0 ms",
+    "Fluidité /les-fetes 1366×768 (molette) : 1 % d'images lentes sur 418, tâche la plus longue 82 ms",
+    "Fluidité /offrir 1366×768 (molette) : 1 % d'images lentes sur 178, tâche la plus longue 0 ms",
+    "Fluidité /receptions 1366×768 (molette) : 1 % d'images lentes sur 516, tâche la plus longue 56 ms",
+    "Fluidité /reserver 1366×768 (molette) : 0 % d'images lentes sur 212, tâche la plus longue 0 ms",
+    "Fluidité / 390×844 (doigt) : 0 % d'images lentes sur 1425, tâche la plus longue 0 ms",
+    "Fluidité /a-emporter 390×844 (doigt) : 0 % d'images lentes sur 1433, tâche la plus longue 82 ms",
+    "Fluidité /infos-pratiques 390×844 (doigt) : 0 % d'images lentes sur 1423, tâche la plus longue 0 ms",
+    "Fluidité /la-carte 390×844 (doigt) : 0 % d'images lentes sur 1344, tâche la plus longue 0 ms",
+    "Fluidité /les-fetes 390×844 (doigt) : 0 % d'images lentes sur 1406, tâche la plus longue 0 ms",
+    "Fluidité /offrir 390×844 (doigt) : 0 % d'images lentes sur 1404, tâche la plus longue 0 ms",
+    "Fluidité /receptions 390×844 (doigt) : 0 % d'images lentes sur 1422, tâche la plus longue 0 ms",
+    "Fluidité /reserver 390×844 (doigt) : 0 % d'images lentes sur 1334, tâche la plus longue 0 ms"
+  ],
+  "grille": [
+    {
+      "cle": "manipuler",
+      "nom": "1. L’effet signature se manipule",
+      "statut": "présent",
+      "detail": "accueil et 2 autre(s) page(s)"
+    },
+    {
+      "cle": "intro",
+      "nom": "2. L’intro devient la page",
+      "statut": "présent",
+      "detail": "objet d’ouverture sur 8 page(s), versObjet dans l’intro"
+    },
+    {
+      "cle": "voile",
+      "nom": "3. La transition reprend le motif",
+      "statut": "présent",
+      "detail": "voile en cloche"
+    },
+    {
+      "cle": "fil",
+      "nom": "4. Quelque chose relie les sections et les pages",
+      "statut": "présent",
+      "detail": "sur les 8 page(s)"
+    },
+    {
+      "cle": "typo",
+      "nom": "5. Un titre fait l’événement sur chaque page",
+      "statut": "à regarder",
+      "detail": "présent sur /la-carte, /offrir, /receptions ; absent sur /a-emporter, /, /infos-pratiques, /les-fetes, /reserver"
+    },
+    {
+      "cle": "scene",
+      "nom": "6. La scène est un geste du métier",
+      "statut": "présent",
+      "detail": "geste du métier sur /la-carte, /receptions"
+    },
+    {
+      "cle": "retour",
+      "nom": "7. L’action principale a un retour physique",
+      "statut": "présent",
+      "detail": "sur /, /les-fetes, /offrir, /receptions, /reserver"
+    }
+  ]
+}

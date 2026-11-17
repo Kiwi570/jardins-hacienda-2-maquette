@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 17/11/2026 00:57:35 · 1 min · 1 page(s) · audit complet ciblé sur /la-carte (étapes : fichiers, mesures, mouvement)
+Projet : `jardins-hacienda-2-maquette` · 17/11/2026 02:31:42 · 1 min · 1 page(s) · audit complet ciblé sur / (étapes : fichiers, films)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261116-235631-complet-cible-partiel` · version ?v=7
+- Passe : `20261117-013107-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
 - À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (24), balayage (1), mouvement (2), effets du plan (37)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), films d’ouverture (2), films de transition (2)
 
 ## Passes de cette version (?v=7)
 
@@ -95,7 +95,10 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261116-233440-complet-cible-partiel | complet | /la-carte | fichiers, mesures, mouvement | 0 | 0 | 0 | complet |
 | 20261116-233550-complet-cible-partiel | complet | /la-carte,/offrir | ecran, parcours, fluidite | 0 | 1 | 0 | complet |
 | 20261116-234054-complet-cible-partiel | complet | /la-carte | fichiers, mesures | 0 | 0 | 0 | complet |
-| **20261116-235631-complet-cible-partiel** (celle-ci) | complet | /la-carte | fichiers, mesures, mouvement | 0 | 0 | 0 | complet |
+| 20261116-235631-complet-cible-partiel | complet | /la-carte | fichiers, mesures, mouvement | 0 | 0 | 0 | complet |
+| 20261117-003653-complet | complet | toutes | toutes | 1 | 27 | 7 | échecs |
+| 20261117-011258-complet-partiel | complet | toutes | fichiers, mesures, films, mouvement, vitesse, captures | 0 | 4 | 0 | complet |
+| **20261117-013107-complet-cible-partiel** (celle-ci) | complet | / | fichiers, films | 0 | 0 | 0 | complet |
 
 ## Échecs
 
@@ -119,6 +122,8 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
+- Ouverture / (1366×768) : 2620 ms depuis le premier octet
+- Ouverture / (390×844) : 2530 ms depuis le premier octet
 
 ## Fichiers
 

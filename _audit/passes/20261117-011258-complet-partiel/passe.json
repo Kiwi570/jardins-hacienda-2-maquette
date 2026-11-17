@@ -1,0 +1,20 @@
+{
+ "id": "20261117-011258-complet-partiel",
+ "date": "2026-11-17T01:30:42.535Z",
+ "niveau": "complet",
+ "pages": "toutes",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "films",
+  "mouvement",
+  "vitesse",
+  "captures"
+ ],
+ "version": "7",
+ "echecs": 0,
+ "aRegarder": 4,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "complet"
+}

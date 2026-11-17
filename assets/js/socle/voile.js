@@ -16,7 +16,7 @@ import { html, etat } from './etat.js?v=7';
 export const FORMES = ['glisse', 'iris', 'vague', 'rideau', 'cloche'];
 const COURBE = 'cubic-bezier(.65,0,.35,1)';
 /* Durées par défaut en ms : [couvrir, découvrir]. */
-const DUREES = { glisse: [450, 520], iris: [550, 800], vague: [700, 850], rideau: [600, 700], cloche: [480, 580] };
+const DUREES = { glisse: [450, 520], iris: [550, 800], vague: [700, 850], rideau: [600, 700], cloche: [480, 660] };
 
 export function voile() { return document.querySelector('[data-voile]'); }
 export function forme() {
@@ -171,6 +171,8 @@ export function decouvrir(o = {}) {
       return { clipPath: `ellipse(${(R * 0.75 * Math.max(k, 0.001)).toFixed(1)}px ${(R * 1.02 * k).toFixed(1)}px at 50% 0px)` };
     });
     fin = v.animate(cles, { ...opts, easing: 'linear' }).finished;
+    /* v7.5.24 : la cloche s'efface en se soulevant (sur une page sombre, plus d'à-coup de la crème au noir). */
+    v.animate([{ opacity: 1 }, { opacity: 1, offset: 0.35 }, { opacity: 0 }], { duration: duree, easing: 'ease-in', fill: 'forwards' });
   } else if (f === 'vague') {
     const vague = v.querySelector('.voile-vague--bas');
     const hv = vague ? vague.getBoundingClientRect().height : 0;

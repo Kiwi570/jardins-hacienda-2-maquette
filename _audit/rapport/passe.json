@@ -1,12 +1,11 @@
 {
- "id": "20261116-235631-complet-cible-partiel",
- "date": "2026-11-16T23:57:35.814Z",
+ "id": "20261117-013107-complet-cible-partiel",
+ "date": "2026-11-17T01:31:42.679Z",
  "niveau": "complet",
- "pages": "/la-carte",
+ "pages": "/",
  "etapes": [
   "fichiers",
-  "mesures",
-  "mouvement"
+  "films"
  ],
  "version": "7",
  "echecs": 0,
