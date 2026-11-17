@@ -3,7 +3,7 @@
    bibliothèque (dossier modules/) sont chargés ici, page par page, et réglés sans être réécrits.
    Effets propres (data-effet) : heure (horloge de l'en-tête), axes (chiffres variables), heure-section, eau (WebGL),
    passe, vraies, apres-midi, terrasse, guirlandes, carton, braises, decompte, carte-apercu. */
-import { demarrer, boucle, etat, versObjet, quand, aller, partir, bloquerDefilement, debloquerDefilement } from './socle/index.js?v=7';
+import { demarrer, boucle, etat, versObjet, quand, aller, partir, bloquerDefilement, debloquerDefilement, revelerMaintenant } from './socle/index.js?v=7';
 
 const gsap = window.gsap;
 const $ = (s, r = document) => r.querySelector(s);
@@ -1216,7 +1216,8 @@ function saintSylvestre() {
     sec.classList.toggle('ss--scene', enScene());
     if (!enScene()) return;
     const p = Math.min(0.9999, Math.max(0, -sec.getBoundingClientRect().top / course()));
-    sec.style.setProperty('--ss-p', p.toFixed(4));
+    /* v7.5.25 : plus de variable --ss-p posée sur la section à chaque image (aucun style ne la lisait, et elle forçait
+       le recalcul de toute la scène pendant le défilement). */
     activer(Math.floor(p * n));
   };
   pas.forEach((b, k) => b.addEventListener('click', () => {
@@ -2246,10 +2247,12 @@ function offrirEmporter() {
 /* Les fêtes : la carte de Noël s'ouvre au défilement (cadre collant ; --p de 0 à 1 lu par le CSS). */
 function noelScene() {
   const sec = $('[data-effet="noel"]'); if (!sec) return;
-  if (etat.calme || !gsap || !window.ScrollTrigger) { sec.style.setProperty('--p', '1'); return; }
+  /* v7.5.25 : --p est posé sur la carte elle-même (seule à le lire), plus sur toute la section : moins de recalcul par image. */
+  const cible = $('.noel-carte', sec) || sec;
+  if (etat.calme || !gsap || !window.ScrollTrigger) { cible.style.setProperty('--p', '1'); return; }
   const indice = $('.noel-scene__indice', sec);
   window.ScrollTrigger.create({ trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.4, invalidateOnRefresh: true,
-    onUpdate: (st) => { sec.style.setProperty('--p', st.progress.toFixed(3)); if (indice) indice.style.opacity = String(Math.max(0, 1 - st.progress * 5)); } });
+    onUpdate: (st) => { cible.style.setProperty('--p', st.progress.toFixed(3)); if (indice) indice.style.opacity = String(Math.max(0, 1 - st.progress * 5)); } });
 }
 
 /* La Saint-Sylvestre : la lueur de la salle prend la couleur du vin du plat choisi. */
@@ -2369,6 +2372,9 @@ demarrer({
     tl.fromTo('.ouverture-nom, .ouverture-ligne', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out' }, 0.3);
     tl.to('.ouverture-nom, .ouverture-ligne', { opacity: 0, duration: 0.25, ease: 'power1.out' }, 1.0 + pause);
     versObjet(tl, { a: 1.1 + pause, duree: 0.4, ouverture: 0.75, echelleMin: 1, echelleMax: 1 });
+    /* v7.5.25 : le titre sur lequel l'écran s'ouvre se lève pendant l'ouverture, à heure fixe (avant : à la fin de l'intro,
+       parfois juste après sur une machine chargée, la 404 restait un instant sans titre). */
+    tl.call(() => document.querySelectorAll('[data-iris-centre][data-anime]:not([data-anime="gsap"])').forEach(revelerMaintenant), null, 1.35 + pause);
     if ($('.heros__actions')) {
       tl.call(() => {
         $$('.heros [data-anime="gsap"]').forEach((e) => e.classList.add('vu'));

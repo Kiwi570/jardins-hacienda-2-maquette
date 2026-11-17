@@ -1,0 +1,18 @@
+{
+ "id": "20261117-195317-complet-cible-partiel",
+ "date": "2026-11-17T20:06:44.220Z",
+ "niveau": "complet",
+ "pages": "/,/404,/la-carte,/receptions,/offrir,/les-fetes,/a-emporter,/infos-pratiques,/reserver",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "films",
+  "mouvement"
+ ],
+ "version": "7",
+ "echecs": 0,
+ "aRegarder": 2,
+ "nonLances": 1,
+ "manquants": 1,
+ "statut": "INCOMPLET"
+}

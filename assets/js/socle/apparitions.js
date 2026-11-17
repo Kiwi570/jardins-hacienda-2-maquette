@@ -32,6 +32,9 @@ function reveler(el, delai = 0) {
   else el.classList.add('vu');
 }
 
+/* v7.5.25 · Révéler tout de suite (le titre sur lequel l'intro s'ouvre apparaît pendant l'ouverture, à heure fixe). */
+export function revelerMaintenant(el) { if (el) reveler(el); }
+
 export function demarrerApparitions() {
   if (io) return;
   /* Les textes à venir sont découpés à l'avance, pendant les temps morts, pas pendant le défilement. */

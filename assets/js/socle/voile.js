@@ -128,6 +128,8 @@ export function couvrir(o = {}) {
       return { transform: 'none', clipPath: `ellipse(${(R * 1.25 * k).toFixed(1)}px ${(R * k).toFixed(1)}px at ${x}px ${y}px)` };
     });
     a = v.animate(cles, { ...opts, easing: 'linear' });
+    /* v7.5.25 : la cloche se pose en fondu (depuis une page sombre, plus d'à-coup du noir à la crème). */
+    v.animate([{ opacity: 0.2 }, { opacity: 1, offset: 0.75 }, { opacity: 1 }], { duration: opts.duration, easing: 'linear', fill: 'forwards' });
   } else if (f === 'vague') {
     const vague = v.querySelector('.voile-vague--haut');
     const hv = vague ? vague.getBoundingClientRect().height : 0;
@@ -172,7 +174,7 @@ export function decouvrir(o = {}) {
     });
     fin = v.animate(cles, { ...opts, easing: 'linear' }).finished;
     /* v7.5.24 : la cloche s'efface en se soulevant (sur une page sombre, plus d'à-coup de la crème au noir). */
-    v.animate([{ opacity: 1 }, { opacity: 1, offset: 0.35 }, { opacity: 0 }], { duration: duree, easing: 'ease-in', fill: 'forwards' });
+    v.animate([{ opacity: 1 }, { opacity: 1, offset: 0.2 }, { opacity: 0 }], { duration: duree, easing: 'linear', fill: 'forwards' });
   } else if (f === 'vague') {
     const vague = v.querySelector('.voile-vague--bas');
     const hv = vague ? vague.getBoundingClientRect().height : 0;

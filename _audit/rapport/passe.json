@@ -1,15 +1,16 @@
 {
- "id": "20261117-013107-complet-cible-partiel",
- "date": "2026-11-17T01:31:42.679Z",
+ "id": "20261117-201136-complet-cible-partiel",
+ "date": "2026-11-17T20:13:52.227Z",
  "niveau": "complet",
- "pages": "/",
+ "pages": "/les-fetes,/receptions",
  "etapes": [
   "fichiers",
-  "films"
+  "mouvement",
+  "fluidite"
  ],
  "version": "7",
  "echecs": 0,
- "aRegarder": 0,
+ "aRegarder": 1,
  "nonLances": 0,
  "manquants": 0,
  "statut": "complet"

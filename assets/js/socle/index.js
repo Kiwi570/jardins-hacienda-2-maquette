@@ -33,6 +33,7 @@ export { allerAncre, partir } from './transitions.js?v=7';
 export { quand, emettre } from './etat.js?v=7';
 export { suivre, lacher } from './gouttiere.js?v=7';
 export { versObjet } from './vers-objet.js?v=7';
+export { revelerMaintenant } from './apparitions.js?v=7';
 export { centreOuverture, forme as formeVoile, ouvrirTrou } from './voile.js?v=7';
 
 export async function demarrer(o = {}) {

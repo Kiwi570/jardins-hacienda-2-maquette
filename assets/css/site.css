@@ -1082,7 +1082,7 @@ html[data-moment="soir"] .ouv-carte__heure { color: var(--braise-claire); }
 .introuvable.lum { grid-template-columns: minmax(0, 1fr); justify-content: stretch; justify-items: stretch; }
 
 /* v7 · La mention « Illustration générée » reste, plus discrète (une ligne du pied de page l'explique). */
-.mention-ia { font-size: 10.5px !important; letter-spacing: .02em; padding: 3px 8px !important; opacity: .82; background: rgba(18, 12, 9, .42) !important; backdrop-filter: blur(4px); }
+.mention-ia { font-size: 10.5px !important; letter-spacing: .02em; padding: 3px 8px !important; opacity: .82; background: rgba(18, 12, 9, .6) !important; } /* v7.5.25 : sans flou d'arrière-plan (défilement plus léger sur les pages riches en illustrations) */
 .pied-venir p { margin: 0 0 .5em; }
 /* La passe : les étapes sans cadre, un trait qui s'allume. */
 .passe-chef .assiette__etapes li { border: 0; border-left: 2px solid var(--couleur-ligne); border-radius: 0; background: none; padding: 8px 0 8px 16px; }
@@ -3611,3 +3611,12 @@ html:not(.js) .cadeau-fetes__carte, .cadeau-fetes.sans-anim .cadeau-fetes__carte
 
 /* v7.5.24 · Accueil le soir : la case de la photo attend dans le noir chaud (retour arrière sans éclair clair avant la photo). */
 html[data-moment="soir"] #midi .midi__photo, #midi .midi__photo--hiver-soir, #midi .midi__photo--ete-soir { background: #1a120d; }
+
+/* v7.5.25 · Accueil, « Carte de la semaine » : les cases encore vides portent leur numéro à la craie (01, 02…), on voit
+   tout de suite qu'une carte se remplit, au lieu de cadres vides. */
+@media (min-width: 861px) {
+  html.js:not(.calme) .dej-cats { counter-reset: dej-cat; }
+  html.js:not(.calme) .dej-cat { position: relative; counter-increment: dej-cat; }
+  html.js:not(.calme) .dej-cat::before { content: '0' counter(dej-cat); position: absolute; left: 19px; top: 50%; transform: translateY(-50%); font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: .9rem; font-weight: 700; color: rgba(246, 239, 226, .3); transition: opacity .3s; pointer-events: none; }
+  html.js:not(.calme) .dej-cat.est-pose::before { opacity: 0; }
+}

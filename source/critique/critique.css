@@ -66,3 +66,6 @@ html.voile-depart:not(.calme) .voile-trait { animation: voile-trait .6s cubic-be
 .voile-heure { margin: 0; font-family: 'Manrope', 'Manrope Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(4rem, 16vw, 11rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 html:not([data-moment="soir"]) [data-moment-seul="soir"], html[data-moment="soir"] [data-moment-seul="jour"] { display: none !important; }
 html:not([data-saison="ete"]) [data-saison-seul="ete"], html[data-saison="ete"] [data-saison-seul="hiver"] { display: none !important; }
+/* v7.5.25 · L'intro part d'un panneau vide : le monogramme et le nom apparaissent une seule fois (plus de clignement
+   entre le premier affichage et le départ de l'animation). */
+html.js[data-arrivee="intro"] .ouverture-panneau :is(.ouverture-nom, .ouverture-ligne, [data-ouverture-objet]) { opacity: 0; }
