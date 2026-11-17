@@ -199,6 +199,7 @@ export default (c) => {
       <div class="ss__scene" data-effet="saint-sylvestre">
         <ol class="ss__plats">
           ${a_.plats.map((p, i) => html`<li class="ss-plat${i === 0 ? ' est-actif' : ''}" data-ss-plat data-couleur="${p.accord.couleur}" data-verre="${p.accord.verre || VERRES[p.accord.type]}" data-type="${TYPES[p.accord.type]}" data-vin="${p.accord.nom}" data-region="${p.accord.region}" style="--c: ${p.accord.couleur}">
+            ${c.media({ nom: SS_PHOTOS[i], alt: '', cadrage: '50% 50%', classe: 'ss-plat__photo', sizes: '(max-width: 860px) 92vw, 1px' })}
             <p class="ss-plat__rang" aria-hidden="true">${ROMAINS[i]}</p>
             <p class="ss-plat__moment">${p.moment}</p>
             <h3 class="ss-plat__nom">${p.plat}</h3>

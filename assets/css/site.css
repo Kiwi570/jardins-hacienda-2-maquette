@@ -3469,10 +3469,10 @@ html:not(.js) .cadeau-fetes__carte, .cadeau-fetes.sans-anim .cadeau-fetes__carte
    même assiette et même lumière pour les cinq) et le verre de l'accord posé à côté, sur la table ; à chaque temps, l'assiette
    servie glisse vers la gauche et s'en va, la suivante arrive de la droite ; le verre change de forme et se remplit.
    L'accord est écrit sous l'assiette. Hors scène (téléphone) : les plats l'un sous l'autre, comme avant. */
-.ss__grille { grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); }
+@media (min-width: 861px) { .ss__grille { grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); } } /* v7.5.25 : ordinateur seulement (le téléphone garde une colonne) */
 .ss__titre { font-size: clamp(2rem, 1rem + 2.4vw, 4rem); }
 .ss__titre em { white-space: nowrap; }
-.ss__scene { grid-template-columns: minmax(0, .74fr) minmax(0, 1.26fr); grid-template-areas: "plats verre" "table table"; }
+@media (min-width: 861px) { .ss__scene { grid-template-columns: minmax(0, .74fr) minmax(0, 1.26fr); grid-template-areas: "plats verre" "table table"; } }
 .ss__service { grid-area: verre; display: grid; justify-items: start; align-content: center; gap: 14px; min-width: 0; }
 .ss__assiette { --a: min(100% - 64px, 100svh - 330px, 480px); position: relative; width: var(--a); aspect-ratio: 1; }
 .ss__photo { position: absolute; inset: 0; margin: 0; border-radius: 26px; overflow: hidden; background: #2a1d15; box-shadow: 0 44px 70px -38px rgba(0, 0, 0, .95), 0 0 0 1px rgba(233, 196, 106, .3);
@@ -3620,3 +3620,92 @@ html[data-moment="soir"] #midi .midi__photo, #midi .midi__photo--hiver-soir, #mi
   html.js:not(.calme) .dej-cat::before { content: '0' counter(dej-cat); position: absolute; left: 19px; top: 50%; transform: translateY(-50%); font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: .9rem; font-weight: 700; color: rgba(246, 239, 226, .3); transition: opacity .3s; pointer-events: none; }
   html.js:not(.calme) .dej-cat.est-pose::before { opacity: 0; }
 }
+
+/* v7.5.25 · Téléphone et tablette : les assiettes de la nappe n'existent qu'en scène (ordinateur) ; sans cette règle,
+   elles s'affichaient en quatre grandes photos à la suite sous l'assiette fumante. */
+@media (max-width: 860px) { .dej-plats { display: none; } }
+
+/* v7.5.25 · Saint-Sylvestre sur téléphone et tablette : chaque plat montre sa photo au-dessus de son nom (sur ordinateur,
+   la grande assiette à côté de la liste suffit ; ces photos-là restent cachées et ne se chargent pas). */
+.ss-plat__photo { display: none; }
+@media (max-width: 860px) {
+  .ss-plat__photo { display: block; position: relative; margin: 0 0 16px; aspect-ratio: 16 / 10; border-radius: 18px; overflow: hidden; background: #2a1d15; box-shadow: 0 30px 50px -30px rgba(0, 0, 0, .95), 0 0 0 1px rgba(233, 196, 106, .28); }
+  .ss-plat__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+  .ss-plat__photo .mention-ia { left: 10px; right: auto; bottom: 10px; }
+}
+
+/* v7.5.25 · Infos pratiques sur téléphone : une seule colonne (le texte coulait sur 190 px à côté de l'arche, le titre
+   cassé en quatre lignes et le bouton d'appel sur deux) ; l'arche et son sceau suivent, centrés. */
+@media (max-width: 760px) {
+  .ouv-emp__grille { grid-template-columns: minmax(0, 1fr); min-height: 0; gap: 34px; padding-bottom: 48px; }
+  .ouv-emp__visuel { width: min(78%, 330px); }
+}
+
+/* v7.5.25 · Premier écran sur téléphone : le titre, le bouton principal et l'information clé passent avant le paragraphe
+   (qui suit juste en dessous) ; Réceptions garde son arche en tête mais plus petite ; Les fêtes ouvre sur le titre et
+   l'éphéméride, les affiches suivent. */
+@media (max-width: 760px) {
+  .ouv-recep .ouv-recep__contenu, .ouv-emp__contenu, .ouv-traiteur__contenu, .ouv-fetes__suite { display: flex; flex-direction: column; }
+  .ouv-recep__texte, .ouv-emp__texte, .ouv-traiteur__texte, .ouv-fetes .ouv-fetes__suite .ouv-fetes__texte { order: 9; margin: 1em 0 0; }
+  .ouv-recep__visuel { width: min(58vw, calc(34svh * .8)); }
+  .ouv-recep__fil { gap: 2px; margin-top: 10px; }
+  .ouv-recep__puce { flex: none; width: 44px; }
+  .ouv-recep__pause { flex: none; margin-left: 4px; }
+  .ouv-fetes__visuel { order: 0; }
+}
+@media (min-width: 761px) and (max-height: 500px) { .ouv-emp__texte { display: none; } }
+@media (max-width: 760px) and (max-height: 600px) { .ouv-recep__visuel { width: calc(27svh * .8); } .ouv-recep__grille { gap: 10px; } .ouv-recep__fil { margin-top: 4px; } }
+@media (min-width: 761px) and (max-height: 500px) { .ouv-fetes__grille { grid-template-columns: minmax(0, 1.5fr) minmax(0, .5fr); } }
+
+/* v7.5.25 · Dos du polaroïd (l'ardoise) sur une petite carte (petit téléphone, tablette) : la date et le mot du bas
+   s'effacent, le titre et les plats tiennent dans l'ardoise au lieu d'être coupés. */
+.polaroid__face--dos { container-type: inline-size; }
+@container (max-width: 225px) {
+  .ardoise-dos__date, .ardoise-dos__mot { display: none; }
+  .ardoise-dos__titre { font-size: 1.6rem; }
+}
+/* La devise sur une colonne (tablette, téléphone) : les cartes restent droites, une large carte inclinée faisait
+   chevaucher son titre et son texte. */
+@media (max-width: 860px) { .devise__themes li { transform: none; } }
+
+/* v7.5.25 · Téléphone à l'horizontale : la carte de Noël ne tient pas dans un écran de 390 px de haut ; la scène se
+   déroule à plat (pas d'épinglage) et la carte est déjà ouverte, à sa taille de lecture. */
+@media (min-width: 761px) and (max-height: 500px) {
+  .noel-scene { height: auto; }
+  .noel-scene__cadre { position: relative; height: auto; padding-block: 24px 56px; }
+  .noel-carte { --p: 1 !important; --page: min(33vw, 290px); }
+  .noel-scene__indice { display: none; }
+}
+.noel-couv__etoile { font-size: max(12px, calc(var(--page) * .06)); }
+/* Sans scène (animations réduites, sans JavaScript) sur téléphone : la carte de Noël ouverte prend la largeur de lecture. */
+@media (max-width: 760px) { :is(html.calme, html.secours, html:not(.js)) .noel-carte { --page: min(86vw, 330px); } }
+/* Scène de Noël sur un petit téléphone : la carte garde les noms des plats, les précisions en italique s'effacent
+   (elles débordaient du papier en haut et en bas). */
+@media (max-width: 760px) and (max-height: 700px) { html.js:not(.calme):not(.secours) .noel-carte__detail { display: none; } }
+/* Réceptions, « Ce que l'on fête ici », téléphone à l'horizontale : le mot et le texte à gauche, la photo à droite
+   (en colonne, le texte sortait de l'écran de 390 px de haut). */
+@media (max-width: 860px) and (max-height: 500px) {
+  .occ__cadre { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); grid-template-areas: "mot image" "texte image"; column-gap: 28px; }
+  .occ__mot { font-size: 2.4rem; }
+  html.js:not(.calme) .occ { padding-top: calc(var(--entete-h) + 56px); padding-bottom: 16px; align-items: center; }
+  html.js:not(.calme) .occ .occ__image { height: 56svh; width: auto; max-width: 100%; justify-self: end; }
+}
+/* Le cœur tracé autour du « oui » ne touche plus le surtitre (tablette). */
+.oui__titre { margin-top: .5em; }
+/* Plan du domaine : l'étiquette cachée d'un point ne capte plus le toucher destiné au point voisin (sur téléphone,
+   l'étiquette invisible de la grande table recouvrait « La terrasse »). */
+.plan-domaine__point span { pointer-events: none; }
+/* Téléphone à l'horizontale : Réceptions donne plus de place au texte (les deux boutons sur une ligne, l'appel visible) ;
+   les tirets du diaporama gardent 44 px ; aux Fêtes, l'indice des affiches s'efface (la colonne est étroite). */
+@media (min-width: 761px) and (max-height: 500px) {
+  .ouv-recep__grille { grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); }
+  .ouv-recep__fil { gap: 2px; }
+  .ouv-recep__puce { flex: none; width: 44px; }
+  .ouv-recep__pause { flex: none; margin-left: 4px; }
+  .affiches__indice, .ouv-fetes__indice { display: none; }
+}
+/* Traiteur sur téléphone : la légende de la cloche (numéro, nom, prix) passe sous le plat, plus sur la photo. */
+@media (max-width: 760px) { .ronde__legende { margin-top: 10px; } }
+.plan-domaine__point span { visibility: hidden; }
+.plan-domaine__point:hover span, .plan-domaine__point:focus-visible span { visibility: visible; }
+.plan-domaine__point span { transition: opacity .2s, transform .2s, visibility .2s; }

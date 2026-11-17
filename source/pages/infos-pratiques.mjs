@@ -17,7 +17,7 @@ const PLAN = [
   { cle: 'restaurant', x: 18, y: 15.5, image: 'vraie/salle-soleil', cadrage: '50% 55%' },
   { cle: 'salon', x: 38.5, y: 15.5, image: 'vraie/salle-pierre', cadrage: '60% 55%' },
   { cle: 'reception', x: 73.5, y: 14.5, image: 'vraie/pergola-banquet', cadrage: '50% 50%' },
-  { cle: 'terrasse', x: 44, y: 74, image: 'vraie/brasero', cadrage: '45% 62%', ete: true },
+  { cle: 'terrasse', x: 44, y: 72, image: 'vraie/brasero', cadrage: '45% 62%', ete: true },
   { cle: 'piscine', x: 86, y: 53, image: 'vraie/piscine-palmiers', cadrage: '55% 62%', ete: true },
   { cle: 'bar', x: 88, y: 87.5, image: 'vraie/bar-paillote', cadrage: '50% 55%', ete: true },
   { cle: 'parking', x: 37, y: 93, image: 'vraie/enseigne', cadrage: '55% 72%' },

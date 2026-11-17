@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 17/11/2026 21:13:52 · 2 min · 2 page(s) · audit complet ciblé sur /les-fetes,/receptions (étapes : fichiers, mouvement, fluidite)
+Projet : `jardins-hacienda-2-maquette` · 17/11/2026 22:52:08 · 9 min · 5 page(s) · audit complet ciblé sur /,/a-emporter,/infos-pratiques,/les-fetes,/receptions (étapes : fichiers, mouvement, parcours, ecran)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261117-201136-complet-cible-partiel` · version ?v=7
+- Passe : `20261117-214329-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **1**
+- À regarder : **5**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), fluidité (4), défilement selon l’appareil (5), mouvement (4), effets du plan (37)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), intro accélérable et passable (7), menu (1), clavier (5), liens et boutons (5), liens profonds (16), liens vers la page en cours (5), changements de hauteur (4), parcours du projet (1), tient dans l’écran (8), mouvement (10), effets du plan (37), souris immobile (3)
 
 ## Passes de cette version (?v=7)
 
@@ -103,7 +103,12 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261117-195317-complet-cible-partiel | complet | /,/404,/la-carte,/receptions,/offrir,/les-fetes,/a-emporter,/infos-pratiques,/reserver | fichiers, mesures, films, mouvement | 0 | 2 | 1 | INCOMPLET |
 | 20261117-200655-complet-cible-partiel | complet | /offrir | fichiers, films | 0 | 0 | 0 | complet |
 | 20261117-200744-complet-cible-partiel | complet | /les-fetes,/receptions | fichiers, fluidite | 0 | 2 | 0 | complet |
-| **20261117-201136-complet-cible-partiel** (celle-ci) | complet | /les-fetes,/receptions | fichiers, mouvement, fluidite | 0 | 1 | 0 | complet |
+| 20261117-201136-complet-cible-partiel | complet | /les-fetes,/receptions | fichiers, mouvement, fluidite | 0 | 1 | 0 | complet |
+| 20261117-203829-complet | complet | toutes | toutes | 25 | 17 | 1 | échecs |
+| 20261117-212657-complet-cible-partiel | complet | /,/a-emporter,/infos-pratiques,/les-fetes,/receptions | fichiers, mesures | 11 | 0 | 0 | échecs |
+| 20261117-213426-complet-cible-partiel | complet | /,/a-emporter,/infos-pratiques,/les-fetes,/receptions | fichiers, mesures | 1 | 0 | 0 | échecs |
+| 20261117-214049-complet-cible-partiel | complet | /,/infos-pratiques | fichiers, mesures | 0 | 0 | 0 | complet |
+| **20261117-214329-complet-cible-partiel** (celle-ci) | complet | /,/a-emporter,/infos-pratiques,/les-fetes,/receptions | fichiers, mouvement, parcours, ecran | 0 | 5 | 0 | complet |
 
 ## Échecs
 
@@ -111,8 +116,18 @@ Aucun.
 
 ## À regarder
 
-### effet qui ne bouge pas au défilement (1)
+### bouton sans effet visible (2)
 
+- **bouton sans effet visible** — `/les-fetes` — IPour commencer _(1366×768)_
+- **bouton sans effet visible** — `/les-fetes` — IIEntrée _(1366×768)_
+
+### rechargement au milieu de la page (1)
+
+- **rechargement au milieu de la page** — `/infos-pratiques` — écran différent à la même position après rechargement (8.5 %), voir comparaisons/rechargement-infos-pratiques-*.png _(1366×768)_
+
+### effet qui ne bouge pas au défilement (2)
+
+- **effet qui ne bouge pas au défilement** — `/infos-pratiques` — div.plan-domaine__carte — plan-domaine : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section _(1366×768 normal, 390×844 normal)_
 - **effet qui ne bouge pas au défilement** — `/receptions` — div.invitation — invitation : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section _(1366×768 normal, 390×844 normal)_
 
 ## Non lancé
@@ -129,10 +144,12 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Fluidité /les-fetes 1366×768 (molette) : 2 % d'images lentes sur 426, tâche la plus longue 66 ms
-- Fluidité /receptions 1366×768 (molette) : 2 % d'images lentes sur 521, tâche la plus longue 80 ms
-- Fluidité /les-fetes 390×844 (doigt) : 0 % d'images lentes sur 1434, tâche la plus longue 0 ms
-- Fluidité /receptions 390×844 (doigt) : 0 % d'images lentes sur 1425, tâche la plus longue 0 ms
+- Changements de hauteur /a-emporter : aucun effet ScrollTrigger, rien à recalculer.
+- Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
+- Tient dans l'écran /a-emporter : aucune section épinglée ou plein écran.
+- Tient dans l'écran /infos-pratiques : aucune section épinglée ou plein écran.
+- Tient dans l'écran /les-fetes : aucune section épinglée ou plein écran.
+- Tient dans l'écran /receptions : aucune section épinglée ou plein écran.
 
 ## Fichiers
 

@@ -1,0 +1,176 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec section#chef > div.conteneur.chef__grille > div.chef__texte:nth-of-type(2) > p.chef__signature:nth-of-type(2) « Une signature culinaire entre tradition et créativ »",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "1728×1000",
+      "mode": "sansWebgl",
+      "selecteur": "h2#chef-titre > div.fx-ligne-mask:nth-of-type(2) > div.fx-ligne « de notre cuisine »",
+      "lieux": [
+        "1728×1000 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "contraste sur image",
+      "detail": "3.20:1 sur les 10 % de la photo les moins favorables (minimum 4.5:1)",
+      "etape": "mesures",
+      "page": "/a-emporter",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-traiteur__grille > div.ouv-traiteur__scene:nth-of-type(2) > p.ronde__legende:nth-of-type(1) > span.ronde__num:nth-of-type(1) « N° 02 »",
+      "lieux": [
+        "390×844 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.plan-domaine__carte:nth-of-type(1) > div.plan-domaine__points > button.plan-domaine__point:nth-of-type(7) > span « Le parking »",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.plan-domaine__zone:nth-of-type(2) > div.plan-domaine__carte:nth-of-type(1) > div.plan-domaine__points > button.plan-domaine__point:nth-of-type(4) « La terrasse »",
+      "lieux": [
+        "390×844 normal"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte coupé",
+      "detail": "coupé par section#debut « CET HIVER CET ÉTÉ Les fêtes au coin du feu PLUS QU »",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-fetes__grille > div.ouv-fetes__visuel:nth-of-type(2) > p.indice.affiches__indice > span.indice--doigt:nth-of-type(2) « TOUCHEZ UNE AFFICHE POUR LA RETOURNER »",
+      "lieux": [
+        "844×390 normal",
+        "844×390 sansJs",
+        "844×390 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "avec div.conteneur.ouv-fetes__grille > div.ouv-fetes__visuel:nth-of-type(2) > p.indice.affiches__indice > span.indice--doigt:nth-of-type(2) « TOUCHEZ UNE AFFICHE POUR LA RETOURNER »",
+      "etape": "mesures",
+      "page": "/les-fetes",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.ouv-fetes__rang > div.ouv-fetes__suite:nth-of-type(2) > p.ouv-fetes__info:nth-of-type(3) > span:nth-of-type(1) « Saint-Sylvestre : 120 € le menu · Noël : 79 € par  »",
+      "lieux": [
+        "844×390 normal",
+        "844×390 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "39 × 44 px",
+      "etape": "mesures",
+      "page": "/receptions",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-recep__grille > div.ouv-recep__visuel:nth-of-type(2) > div.ouv-recep__fil:nth-of-type(2) > button.ouv-recep__puce.est-active:nth-of-type(1) « Mariages »",
+      "lieux": [
+        "844×390 normal",
+        "844×390 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "39 × 44 px",
+      "etape": "mesures",
+      "page": "/receptions",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-recep__grille > div.ouv-recep__visuel:nth-of-type(2) > div.ouv-recep__fil:nth-of-type(2) > button.ouv-recep__puce:nth-of-type(2) « Anniversaires »",
+      "lieux": [
+        "844×390 normal",
+        "844×390 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "39 × 44 px",
+      "etape": "mesures",
+      "page": "/receptions",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-recep__grille > div.ouv-recep__visuel:nth-of-type(2) > div.ouv-recep__fil:nth-of-type(2) > button.ouv-recep__puce:nth-of-type(3) « Pots de départ »",
+      "lieux": [
+        "844×390 normal",
+        "844×390 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "39 × 44 px",
+      "etape": "mesures",
+      "page": "/receptions",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-recep__grille > div.ouv-recep__visuel:nth-of-type(2) > div.ouv-recep__fil:nth-of-type(2) > button.ouv-recep__puce:nth-of-type(4) « Baptêmes »",
+      "lieux": [
+        "844×390 normal",
+        "844×390 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "33 × 44 px",
+      "etape": "mesures",
+      "page": "/receptions",
+      "taille": "844×390",
+      "mode": "normal",
+      "selecteur": "div.conteneur.ouv-recep__grille > div.ouv-recep__visuel:nth-of-type(2) > div.ouv-recep__fil:nth-of-type(2) > button.ouv-recep__pause:nth-of-type(5) « Mettre en pause le défilement des occasions »",
+      "lieux": [
+        "844×390 normal",
+        "844×390 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "premier écran : information clé hors de l’écran",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/receptions",
+      "taille": "844×390",
+      "mode": "sansJs",
+      "selecteur": "section#debut > div.conteneur.ouv-recep__grille > div.ouv-recep__contenu:nth-of-type(1) > p.ouv-recep__info:nth-of-type(4) « Appeler 06 18 21 28 10 »",
+      "lieux": [
+        "844×390 sansJs"
+      ]
+    }
+  ],
+  "aRegarder": [],
+  "nonLances": [],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "mesures": 195,
+    "balayage": 5
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=7",
+    "Journal v7 : 13 étape(s) notée(s), 532 min de travail pour 515 min de budget, 0 min d’attente de l’utilisateur.",
+    "Journal : « audit standard (deux passages) et corrections » 79 min pour 35 prévues.",
+    "Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.",
+    "Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.",
+    "Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés."
+  ],
+  "grille": []
+}

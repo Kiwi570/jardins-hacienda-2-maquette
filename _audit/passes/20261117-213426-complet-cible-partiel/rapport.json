@@ -1,0 +1,38 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "élément recouvert",
+      "detail": "par div.plan-domaine__carte:nth-of-type(1) > div.plan-domaine__points > button.plan-domaine__point:nth-of-type(7) > span « Le parking »",
+      "etape": "mesures",
+      "page": "/infos-pratiques",
+      "taille": "390×844",
+      "mode": "normal",
+      "selecteur": "div.plan-domaine__zone:nth-of-type(2) > div.plan-domaine__carte:nth-of-type(1) > div.plan-domaine__points > button.plan-domaine__point:nth-of-type(4) « La terrasse »",
+      "lieux": [
+        "390×844 normal"
+      ]
+    }
+  ],
+  "aRegarder": [],
+  "nonLances": [],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "mesures": 195,
+    "balayage": 5
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=7",
+    "Journal v7 : 13 étape(s) notée(s), 532 min de travail pour 515 min de budget, 0 min d’attente de l’utilisateur.",
+    "Journal : « audit standard (deux passages) et corrections » 79 min pour 35 prévues.",
+    "Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.",
+    "Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.",
+    "Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés."
+  ],
+  "grille": []
+}
