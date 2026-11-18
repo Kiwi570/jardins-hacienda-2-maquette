@@ -45,13 +45,14 @@ const TEXTES = [
   { cle: 'accueil.venir.texte', page: 'accueil', ancre: 'venir', lieu: 'Accueil · venir', libelle: 'Où nous trouver', long: true },
 ];
 
-/* Les rubriques : identifiant, nom, nom court (barre du bas, sur téléphone), icône. */
+/* Les rubriques : identifiant, nom, nom court (barre du bas, sur téléphone), icône. v7.7.2 : cinq rubriques ; « Site » regroupe
+   en onglets les soirées, l'annonce et les horaires, les textes, les messages et les photos (dessinés par espace.js). */
 const VUES = [
   ['jour', 'Aujourd\'hui', 'Jour', '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></svg>'],
+  ['demandes', 'Demandes', 'Demandes', '<svg viewBox="0 0 24 24"><path d="M4 13.5V6.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7M4 13.5h4.5l1.2 2.5h4.6l1.2-2.5H20M4 13.5v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>'],
   ['resas', 'Réservations', 'Agenda', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.6h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 17h2"/></svg>'],
-  ['evenements', 'Événements', 'Soirées', '<svg viewBox="0 0 24 24"><path d="M4 8.5V6a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 20 6v2.5a2.5 2.5 0 0 0 0 5V18a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18v-4.5a2.5 2.5 0 0 0 0-5Z"/><path d="M14.5 5v14" stroke-dasharray="2 2.2"/></svg>'],
-  ['textes', 'Textes et horaires', 'Textes', '<svg viewBox="0 0 24 24"><path d="M5 6.5h14M5 11h14M5 15.5h9"/><circle cx="18" cy="17.5" r="3"/><path d="M18 16v1.6l1 .8"/></svg>'],
-  ['photos', 'Photos', 'Photos', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><circle cx="9" cy="10.5" r="1.8"/><path d="M4 17l5-4.5 3.5 3 3-2.5 4.5 4"/></svg>'],
+  ['carte', 'Carte', 'Carte', '<svg viewBox="0 0 24 24"><path d="M6 3.5h9.5L19 7v13.5H6zM15 3.5V7.5h4M9 11.5h6.5M9 14.8h6.5M9 18h4"/></svg>'],
+  ['site', 'Site', 'Site', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M3.5 9h17M6.5 7h.1M9 7h.1M7 13h6M7 16h10"/></svg>'],
 ];
 const ICO_LOUPE = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
 const ICO_PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
@@ -66,6 +67,9 @@ export default (c) => {
     photos: PHOTOS.map((p) => ({ ...p, l: T[p.nom.split('/')[1]] || [640], url: c.url(p.page, p.ancre) })),
     textes: TEXTES.map((t) => ({ ...t, defaut: c.s(t.cle), url: c.url(t.page, t.ancre) })),
     phototheque: phototheque(T),
+    /* v7.7.2 : les produits de la page Traiteur (demandes de démonstration) et le téléphone du restaurant (messages aux clients). */
+    produits: D.emporter.produits.map((p) => ({ nom: p.nom, prix: p.prix })),
+    telephone: c.site.contact.telephone,
     pages: { fetes: c.url('les-fetes', 'dates'), carte: c.url('la-carte'), accueil: c.url('accueil'), reserver: c.url('reserver', 'formulaire'), infos: c.url('infos-pratiques') },
   };
   return html`
@@ -121,6 +125,7 @@ export default (c) => {
     <div class="esp-toast" data-esp-toast>
       <p class="esp-toast__texte" role="status" aria-live="polite" data-esp-toast-texte></p>
       <a class="esp-toast__lien" data-esp-toast-lien href="${c.url('accueil')}" hidden>Voir sur le site</a>
+      <button type="button" class="esp-toast__annuler esp-toast__action" data-esp-toast-action hidden>Voir</button>
       <button type="button" class="esp-toast__annuler" data-esp-annuler hidden>Annuler</button>
     </div>
   </div>

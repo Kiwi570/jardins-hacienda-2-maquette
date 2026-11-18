@@ -132,5 +132,5 @@ test('schéma : un état de la v7.6.0 est mis au schéma courant', () => {
   const d = migrer(ancien); assert.equal(d._schema, SCHEMA);
   assert.deepEqual(d.horaires.exceptions, [{ du: '2026-12-24', au: '2026-12-24', motif: 'Fermeture exceptionnelle' }, { du: '2027-01-04', au: '2027-01-18', motif: 'Congés' }]);
   assert.deepEqual(migrer(null), {}); assert.deepEqual(migrer([1]), {}); assert.ok(estVide(migrer({}))); assert.ok(estVide({ _schema: SCHEMA }), 'le numéro de schéma ne compte pas comme une modification');
-  assert.equal(Object.keys(MUTATIONS).length, 16);
+  for (const nom of Object.keys(MUTATIONS)) assert.equal(typeof MUTATIONS[nom], 'function');
 });

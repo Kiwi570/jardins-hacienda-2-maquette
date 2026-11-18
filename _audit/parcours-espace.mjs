@@ -6,6 +6,9 @@
    1 bis (v7.7.1). La barre « Que voulez-vous faire ? » : « fermer samedi soir » ferme le service et s'annule,
       « ajouter une soirée raclette le 12 » ouvre le billet créé, un exemple touché remplit le champ sans rien lancer,
       Échap rend le focus ; puis la petite fête quand la dernière demande a sa réponse.
+   1 ter (v7.7.2). Tout arrive ici : la demande de réception, la commande traiteur, la carte cadeau et la question
+      faites sur le site arrivent dans « Demandes » ; une demande faite dans un autre onglet s'affiche en direct, « Voir »
+      l'ouvre ; une réception avance d'étape et s'annule ; le message au client suit le modèle retouché.
    2. Chaque rubrique (et l'éditeur d'événement, l'ajout d'une réservation, la photothèque, la barre), à cinq tailles : les
       mesures de l'audit (débordement, textes sous 12 px, cibles de 44 px, textes coupés, contrastes, noms
       accessibles, typographie), axe-core, les recouvrements, puis un balayage de 320 à 1920 px.
@@ -13,7 +16,8 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { installerOutils, defilerTout, mesurer, mesurerRecouvrements } from './page.mjs';
 
-const VUES = ['jour', 'resas', 'evenements', 'textes', 'photos'];
+/* Les écrans à mesurer : les cinq rubriques, et pour « Site » chacun de ses onglets (v7.7.2). */
+const VUES = ['jour', 'demandes', 'resas', 'carte', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
 const P = '/espace';
 
 export default async function ({ contexte, attendrePret, attendre, BASE, R, T }) {
@@ -23,7 +27,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     if (await page.locator('[data-esp-app]').isHidden()) await page.locator('[data-esp-connexion] button[type="submit"]').click();
     await page.locator('[data-esp-app]').waitFor({ state: 'visible', timeout: 5000 }); await attendre(500);
   };
-  const aller = async (page, v) => { await page.locator(`[data-esp-vue="${v}"]`).click(); await attendre(450); };
+  const aller = async (page, vue) => { const [v, onglet] = vue.split(':'); await page.locator(`[data-esp-vue="${v}"]`).click(); await attendre(400); if (onglet) { await page.locator(`[role="tab"][data-onglet="${onglet}"]`).click(); await attendre(350); } };
 
   /* ---------- 1. Réserver sur le site, puis confirmer dans l'espace ---------- */
   {
@@ -47,7 +51,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       const vue = await ligne.innerText().catch(() => '');
       if (!/Claire Essai/.test(vue) || !/Depuis le site/.test(vue) || !/À confirmer/.test(vue)) R.echec('espace : réserver puis confirmer', `la demande n’attend pas dans « Aujourd’hui » (« ${vue.replace(/\s+/g, ' ').slice(0, 90)} »)`, lieu);
       const statut = () => page.evaluate((id) => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').resa?.statuts?.[id] || '', demande.id);
-      const badge = () => page.locator('[data-esp-badge="resas"]').innerText().then(Number).catch(() => 0);
+      const badge = () => page.locator('[data-esp-badge="demandes"]').innerText().then(Number).catch(() => 0);
       const avant = await badge();
       await ligne.locator('[data-statut="confirmee"]').click(); await attendre(500);
       if (await statut() !== 'confirmee' || await badge() !== avant - 1) R.echec('espace : réserver puis confirmer', `« Confirmer » : statut « ${await statut()} », demandes en attente ${avant} → ${await badge()}`, lieu);
@@ -126,11 +130,73 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (!fin.ferme || !fin.focus || fin.bloque) R.echec('espace : barre', `Échap : barre fermée ${fin.ferme}, focus rendu ${fin.focus}, page encore bloquée ${fin.bloque}`, lieu);
       /* La fête : la dernière demande reçoit sa réponse. */
       await aller(page, 'jour'); let fete = false;
-      for (let i = 0; i < 20 && await page.locator('[data-esp-rendu="jour"] [data-statut="confirmee"]').count(); i++) { await page.locator('[data-esp-rendu="jour"] [data-statut="confirmee"]').first().click(); await attendre(150); fete = fete || !!(await page.locator('.esp-fete').count()); }
-      const tout = await page.locator('.esp-vide--fete').innerText().catch(() => '');
+      for (let i = 0; i < 30 && await page.locator('[data-esp-rendu="jour"] [data-repondre]').count(); i++) { await page.locator('[data-esp-rendu="jour"] [data-repondre]').first().click(); await attendre(150); fete = fete || !!(await page.locator('.esp-fete').count()); }
+      const tout = await page.locator('[data-esp-rendu="jour"] .esp-vide--fete').innerText().catch(() => '');
       if (!/Tout a une réponse/.test(tout) || !fete) R.echec('espace : tout a une réponse', `message « ${tout.slice(0, 60)} », fête lancée ${fete}`, lieu);
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
       R.ok('espace : barre « Que voulez-vous faire ? »');
+    } finally { await ctx.close(); }
+  }
+
+  /* ---------- 1 ter. Tout arrive ici : les cinq formulaires du site, l'arrivée en direct, les étapes, le message ---------- */
+  {
+    const taille = T('1366×768'), lieu = { page: P, taille: taille.nom };
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      await entrer(page);
+      const genres = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace-demandes:v1') || '[]').map((d) => d.genre));
+      const avant = await page.locator('[data-esp-badge="demandes"]').innerText().then(Number).catch(() => 0);
+      /* Dans un autre onglet du même navigateur : une demande de réception, faite comme un visiteur. */
+      const site = await ctx.newPage();
+      await site.goto(BASE + '/receptions#demande', { waitUntil: 'load' }); await attendrePret(site);
+      const f = site.locator('[data-demande]');
+      await f.locator('[name="occasion"][data-un="Un baptême"]').check({ force: true }); await attendre(100);
+      await f.locator('[data-etape="1"] [data-suivant]').click(); await attendre(200);
+      await f.locator('[name="periode"]').selectOption({ index: 2 }); await f.locator('[name="invites"]').fill('40');
+      await f.locator('[data-etape="2"] [data-suivant]').click(); await attendre(200);
+      await f.locator('[name="prenom"]').fill('Claire'); await f.locator('[name="nom"]').fill('Essai'); await f.locator('[name="telephone"]').fill('06 12 34 56 78');
+      await f.locator('[type="submit"]').click(); await attendre(700);
+      /* L'espace, resté ouvert, l'annonce aussitôt ; « Voir » ouvre la demande. */
+      await page.bringToFront(); await attendre(400);
+      const direct = await page.evaluate(() => ({ texte: document.querySelector('[data-esp-toast-texte]').textContent, voir: !document.querySelector('[data-esp-toast-action]').hidden }));
+      if (!/Nouvelle demande depuis le site/.test(direct.texte) || !/Claire Essai/.test(direct.texte) || !direct.voir) R.echec('espace : arrivée en direct', `message « ${direct.texte.slice(0, 80)} », bouton « Voir » ${direct.voir}`, lieu);
+      if (await page.locator('[data-esp-badge="demandes"]').innerText().then(Number).catch(() => 0) !== avant + 1) R.echec('espace : arrivée en direct', 'le nombre de demandes à traiter n’augmente pas quand une demande arrive', lieu);
+      await page.locator('[data-esp-toast-action]').click(); await attendre(500);
+      const ouverte = await page.locator('[data-esp-rendu="demandes"] .esp-dem.est-ouverte').innerText().catch(() => '');
+      if (!/Claire Essai/.test(ouverte) || !/Depuis le site/.test(ouverte) || !/40 invités/.test(ouverte) || !/Le message au client/.test(ouverte)) R.echec('espace : demandes', `« Voir » n’ouvre pas la demande arrivée (« ${ouverte.replace(/\s+/g, ' ').slice(0, 90)} »)`, lieu);
+      /* Une réception avance d'étape, d'un geste, et s'annule. */
+      const id = await page.locator('[data-esp-rendu="demandes"] .esp-dem.est-ouverte').getAttribute('data-demande');
+      const etape = () => page.evaluate((i) => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').demandes?.statuts?.[i] || '', id);
+      await page.locator(`[data-esp-rendu="demandes"] [data-demande="${id}"] [data-repondre]`).click(); await attendre(400);
+      if (await etape() !== 'rappele') R.echec('espace : demandes', `« J’ai rappelé » enregistre l’étape « ${await etape()} »`, lieu);
+      await page.locator('[data-esp-annuler]').click(); await attendre(400);
+      if (await etape() !== '') R.echec('espace : demandes', '« Annuler » ne remet pas la réception à « Nouvelle »', lieu);
+      /* Le message au client suit le modèle retouché dans Site > Messages. */
+      await aller(page, 'site:messages'); await page.locator('#mo-confirmation').fill('Merci {prénom}, à {jour} !'); await attendre(900);
+      const apercu = await page.locator('[data-apercu-modele="confirmation"]').innerText();
+      await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="table"]').click(); await attendre(250);
+      const message = await page.locator('.esp-resa__message .esp-bulle__texte').first().textContent().catch(() => '');
+      if (!/^Merci Claire, à samedi 21 novembre\s!$/.test(apercu) || !/^Merci \S+.*, à \S+ \d+ \S+\s!$/.test(message)) R.echec('espace : messages', `aperçu « ${apercu} », message d’une table « ${message} »`, lieu);
+      /* Les trois autres formulaires : la commande traiteur (faite comme un visiteur), la carte cadeau et la question (à l'envoi du module). */
+      await site.bringToFront();
+      await site.goto(BASE + '/a-emporter', { waitUntil: 'load' }); await attendrePret(site);
+      await site.locator('[data-ajouter]').first().click({ force: true }); await attendre(500);
+      await site.evaluate(() => { const fo = document.querySelector('[data-emp-form]'); const j = fo.querySelector('[name="jour"]:not(:disabled)'); j.checked = true; j.dispatchEvent(new Event('change', { bubbles: true })); });
+      await attendre(250);
+      await site.evaluate(() => { const fo = document.querySelector('[data-emp-form]'); const m = fo.querySelector('[name="moment"]:not(:disabled)'); if (m) { m.checked = true; m.dispatchEvent(new Event('change', { bubbles: true })); } for (const i of fo.querySelectorAll('input[required]')) if (!['radio', 'checkbox'].includes(i.type) && !i.value) i.value = i.type === 'email' ? 'claire@exemple.fr' : i.type === 'tel' ? '06 12 34 56 78' : 'Essai'; fo.requestSubmit(); });
+      await attendre(500);
+      await site.goto(BASE + '/offrir', { waitUntil: 'load' }); await attendrePret(site);
+      await site.evaluate(() => document.querySelector('[data-module="carte-cadeau-qui-se-compose"]').dispatchEvent(new CustomEvent('ccq:valide', { bubbles: true, detail: { montant: 50, quantite: 1, total: 50, pour: 'Léa', de: 'Claire', mot: '' } })));
+      await site.goto(BASE + '/infos-pratiques', { waitUntil: 'load' }); await attendrePret(site);
+      await site.evaluate(() => document.querySelector('[data-module="formulaire-par-etapes"]').dispatchEvent(new CustomEvent('formulaire:envoye', { bubbles: true, detail: { valeurs: { sujet: 'autre', message: 'Avez-vous une chaise haute ?', prenom: 'Claire', nom: 'Essai', email: 'claire@exemple.fr' }, resume: [{ champs: [{ nom: 'sujet', valeur: 'Autre chose' }] }] } })));
+      await attendre(300);
+      const recus = (await genres()).sort().join(', ');
+      if (recus !== 'cadeau, question, reception, traiteur') R.echec('espace : tout arrive ici', `demandes venues du site : ${recus || 'aucune'} (attendu : réception, traiteur, carte cadeau, question)`, lieu);
+      await site.close(); await page.bringToFront(); await page.locator('[data-filtre-demandes="tout"]').click(); await attendre(300);
+      const liste = await page.locator('[data-esp-rendu="demandes"]').innerText();
+      for (const [mot, quoi] of [[/Traiteur · 1 produit/, 'la commande traiteur'], [/Carte cadeau · 1 carte de 50 € pour Léa/, 'la carte cadeau'], [/Question · Autre chose/, 'la question']]) if (!mot.test(liste)) R.echec('espace : tout arrive ici', `${quoi} n’apparaît pas dans « Demandes »`, lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok('espace : tout arrive ici');
     } finally { await ctx.close(); }
   }
 
@@ -158,7 +224,9 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       for (const v of VUES) { await aller(page, v); await mesurerEcran(page, taille, `rubrique ${v}`, complet); }
       /* L'ajout d'une réservation, l'éditeur d'événement, la photothèque, le message « Annuler », le menu. */
       await aller(page, 'resas'); await page.locator('[data-ajouter]').first().click(); await attendre(350); await mesurerEcran(page, taille, 'ajout d’une réservation', complet);
-      await aller(page, 'evenements'); await page.locator('.esp-ev [data-editer]').first().click(); await attendre(450); await mesurerEcran(page, taille, 'éditeur d’événement', complet);
+      await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(250); await page.locator('[data-esp-rendu="demandes"] [data-ouvrir-demande]').first().click(); await attendre(400); await mesurerEcran(page, taille, 'demande de réception ouverte', complet);
+      await page.locator('[data-filtre-demandes="table"]').click(); await attendre(250); await page.locator('.esp-resa__message summary').first().click(); await attendre(250); await mesurerEcran(page, taille, 'tables à confirmer et message', false);
+      await aller(page, 'site:soirees'); await page.locator('.esp-ev [data-editer]').first().click(); await attendre(450); await mesurerEcran(page, taille, 'éditeur d’événement', complet);
       await page.locator('[data-choisir-photo="ev"]').click(); await attendre(500); await mesurerEcran(page, taille, 'photothèque', complet);
       await page.keyboard.press('Escape'); await attendre(250);
       await aller(page, 'jour'); await page.locator('[data-statut="refusee"]').first().click(); await attendre(700); await mesurerEcran(page, taille, 'message « Annuler »', false);

@@ -2,7 +2,8 @@
    - MUTATIONS : chaque geste du restaurateur est une action nommée, une fonction pure qui modifie une copie de l'état
      (testées par `node --test _audit/tests/*.test.mjs`).
    - creerDepot(stockage) : garde l'état en mémoire, applique une action, l'enregistre par le stockage (espace-stock.js
-     aujourd'hui, une API demain : même contrat lire / ecrire / vider / resasSite / ecrireResasSite), prévient les
+     aujourd'hui, une API demain : même contrat lire / ecrire / vider / resasSite / ecrireResasSite / demandesSite /
+     ecrireDemandesSite / ecouter), prévient les
      abonnés, et sait revenir en arrière (« Annuler »).
    Pour passer au réel : remplacer le stockage ; les écrans et les actions ne changent pas. */
 import * as stockLocal from './espace-stock.js?v=7';
@@ -30,6 +31,11 @@ export const MUTATIONS = {
   ardoise(S, { ardoise }) { S.ardoise = ardoise; },
   /* Les textes sont gardés avec la typographie française ; le texte d'origine (ou un champ vidé) ne laisse rien. */
   texte(S, { cle, valeur, defaut }) { S.textes ||= {}; const v = typo((valeur || '').trim()); if (!v || v === typo(defaut || '')) delete S.textes[cle]; else S.textes[cle] = v; sansVide(S, 'textes'); },
+  /* Demandes (réceptions, traiteur, cartes cadeaux, questions) : l'étape où elles en sont, une note du restaurant */
+  etapeDemande(S, { id, statut }) { ((S.demandes ||= {}).statuts ||= {})[id] = statut; },
+  noteDemande(S, { id, note }) { const n = ((S.demandes ||= {}).notes ||= {}), v = (note || '').trim(); if (v) n[id] = v; else delete n[id]; sansVide(S.demandes, 'notes'); sansVide(S, 'demandes'); },
+  /* Les messages aux clients : un modèle retouché ; le texte d'origine (ou un champ vidé) ne laisse rien */
+  modeleMessage(S, { cle, texte, defaut }) { S.messages ||= {}; const v = typo((texte || '').trim()); if (!v || v === typo(defaut || '')) delete S.messages[cle]; else S.messages[cle] = v; sansVide(S, 'messages'); },
   /* Photos */
   photo(S, { emplacement, photo }) { (S.photos ||= {})[emplacement] = { ...(S.photos[emplacement] || {}), nom: photo.nom || null, l: photo.l || null, src: photo.src || null }; },
   cadrage(S, { emplacement, cadrage, origine }) { (S.photos ||= {})[emplacement] = { ...origine, ...(S.photos[emplacement] || {}), cadrage }; },
@@ -71,6 +77,9 @@ export function creerDepot(stockage = stockLocal, horloge = () => Date.now()) {
     /** L'état courant (ne pas le modifier : passer par agir). */
     etat: () => etat,
     resasSite: () => stockage.resasSite(),
+    demandesSite: () => stockage.demandesSite?.() || [],
+    /** Recharge l'état quand il a changé ailleurs (autre onglet) et prévient ; renvoie de quoi arrêter l'écoute. */
+    ecouter(f) { return stockage.ecouter ? stockage.ecouter((quoi) => { if (quoi === 'etat') etat = stockage.lire(); f(quoi); }) : () => {}; },
     abonner(f) { abonnes.add(f); return () => abonnes.delete(f); },
     /** Applique une action et l'enregistre. Renvoie false si le stockage refuse (rien n'est changé). */
     agir(nom, args, meta) {
@@ -81,7 +90,7 @@ export function creerDepot(stockage = stockLocal, horloge = () => Date.now()) {
     },
     /** Efface tout ce que l'espace a changé et les demandes venues du site (« Tout remettre comme livré »). */
     toutEffacer(meta) {
-      retenir({ etat, site: stockage.resasSite() }, meta); stockage.vider(); etat = {}; prevenir({ type: 'action', nom: 'toutEffacer', t: horloge() });
+      retenir({ etat, site: stockage.resasSite(), demandes: stockage.demandesSite?.() || [] }, meta); stockage.vider(); etat = {}; prevenir({ type: 'action', nom: 'toutEffacer', t: horloge() });
     },
     peutAnnuler: () => pile.length > 0,
     /** Revient à l'état d'avant la dernière action. Renvoie son libellé, ou false s'il n'y a rien à annuler. */
@@ -89,6 +98,7 @@ export function creerDepot(stockage = stockLocal, horloge = () => Date.now()) {
       const p = pile.pop(); if (!p) return false;
       if (!stockage.ecrire(p.etat)) { pile.push(p); prevenir({ type: 'refus', nom: 'annuler' }); return false; }
       if (p.site) stockage.ecrireResasSite(p.site);
+      if (p.demandes) stockage.ecrireDemandesSite?.(p.demandes);
       etat = p.etat; prevenir({ type: 'annulation', t: horloge() });
       return p.libelle || true;
     },

@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 18/11/2026 17:21:35 · 9 min · 1 page(s) · audit complet ciblé sur /espace
+Projet : `jardins-hacienda-2-maquette` · 18/11/2026 18:08:55 · 11 min · 1 page(s) · audit complet ciblé sur /espace
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261118-161244-complet-cible` · version ?v=7
+- Passe : `20261118-165744-complet-cible` · version ?v=7
 - Échecs : **0**
-- À regarder : **7**
+- À regarder : **8**
 - Non lancé : **1**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), grille wouahou (6), mesures (39), balayage (1), films d’ouverture (2), films de transition (2), bords de l’écran (2), intro accélérable et passable (7), menu (1), clavier (1), liens et boutons (1), liens profonds (4), liens vers la page en cours (1), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : mesures (5), espace : balayage (1), parcours du projet (1), fluidité (2), défilement selon l’appareil (5), mouvement (2), effets du plan (37), vitesse (1), captures (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), grille wouahou (6), mesures (39), balayage (1), films d’ouverture (2), films de transition (2), bords de l’écran (2), intro accélérable et passable (7), menu (1), clavier (1), liens et boutons (1), liens profonds (4), liens vers la page en cours (1), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : mesures (5), espace : balayage (1), parcours du projet (1), fluidité (2), défilement selon l’appareil (5), mouvement (2), effets du plan (37), vitesse (1), captures (1)
 
 ## Grille wouahou
 
@@ -143,7 +143,10 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261118-153534-complet-cible-partiel | complet | /espace | parcours | 0 | 0 | 0 | complet |
 | 20261118-154029-complet-cible | complet | /espace | toutes | 0 | 6 | 1 | complet |
 | 20261118-160628-complet-cible-partiel | complet | /espace | parcours | 0 | 2 | 0 | complet |
-| **20261118-161244-complet-cible** (celle-ci) | complet | /espace | toutes | 0 | 7 | 1 | complet |
+| 20261118-161244-complet-cible | complet | /espace | toutes | 0 | 7 | 1 | complet |
+| 20261118-164648-complet-cible-partiel | complet | /espace | parcours | 0 | 0 | 1 | INCOMPLET |
+| 20261118-164935-complet-cible-partiel | complet | /espace | parcours | 0 | 5 | 0 | complet |
+| **20261118-165744-complet-cible** (celle-ci) | complet | /espace | toutes | 0 | 8 | 1 | complet |
 
 ## Échecs
 
@@ -161,8 +164,12 @@ Aucun.
 
 ### retour arrière : changement brusque (2)
 
-- **retour arrière : changement brusque** — `/espace` — à 82 ms (différence 77 %) (films/retour-arrière-1366.png) _(1366×768 retour arrière)_
-- **retour arrière : changement brusque** — `/espace` — à 79 ms (différence 66 %) (films/retour-arrière-390.png) _(390×844 retour arrière)_
+- **retour arrière : changement brusque** — `/espace` — à 84 ms (différence 77 %) (films/retour-arrière-1366.png) _(1366×768 retour arrière)_
+- **retour arrière : changement brusque** — `/espace` — à 65 ms (différence 66 %) (films/retour-arrière-390.png) _(390×844 retour arrière)_
+
+### retour avant : changement brusque (1)
+
+- **retour avant : changement brusque** — `/la-carte` — à 89 ms (différence 68 %) (films/retour-avant-390.png) _(390×844 retour avant)_
 
 ## Non lancé
 
@@ -185,15 +192,16 @@ Aucun.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Ouverture /espace (1366×768) : 2407 ms depuis le premier octet
-- Ouverture /espace (390×844) : 2392 ms depuis le premier octet
-- Bords de l’écran : 128 images d’intro, 6 de voile et 54 de menu jugées (panneau immobile couvrant tout l’écran), barre de défilement classique de 15 px.
+- Ouverture /espace (1366×768) : 2385 ms depuis le premier octet
+- Ouverture /espace (390×844) : 2402 ms depuis le premier octet
+- bords de l’écran /espace 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
+- Bords de l’écran : 139 images d’intro, 4 de voile et 55 de menu jugées (panneau immobile couvrant tout l’écran), barre de défilement classique de 15 px.
 - Changements de hauteur /espace : aucun effet ScrollTrigger, rien à recalculer.
 - Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
 - Tient dans l'écran /espace : aucune section épinglée ou plein écran.
 - Fluidité /espace 1366×768 (molette) : 0 % d'images lentes sur 174, tâche la plus longue 0 ms
-- Fluidité /espace 390×844 (doigt) : 0 % d'images lentes sur 1350, tâche la plus longue 0 ms
-- Vitesse /espace : 0.29 s de calcul au chargement (téléphone ralenti).
+- Fluidité /espace 390×844 (doigt) : 0 % d'images lentes sur 1354, tâche la plus longue 0 ms
+- Vitesse /espace : 0.26 s de calcul au chargement (téléphone ralenti).
 
 ## Fichiers
 

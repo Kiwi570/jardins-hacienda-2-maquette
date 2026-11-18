@@ -8,10 +8,15 @@
    pendant dix secondes ; l'état de l'enregistrement est toujours visible. Les règles (horaires, réservations de
    démonstration) sont dans espace-regles.js. Ce fichier ne fait que dessiner et écouter.
    v7.7.1 : la barre « Que voulez-vous faire ? » (espace-barre.js, phrases comprises par espace-commandes.js), une petite
-   fête quand la dernière demande a sa réponse, des états vides qui disent quoi faire. */
+   fête quand la dernière demande a sa réponse, des états vides qui disent quoi faire.
+   v7.7.2 : cinq rubriques (Aujourd'hui, Demandes, Réservations, Carte, Site) ; « Site » a ses onglets (soirées, annonce
+   et horaires, textes, messages, photos) ; les demandes de tout le site arrivent dans « Demandes » (espace-vue-demandes.js)
+   et s'affichent en direct quand elles sont faites dans un autre onglet. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
 import { comprendre } from './espace-commandes.js?v=7';
 import { installerBarre } from './espace-barre.js?v=7';
+import { creerDemandes } from './espace-vue-demandes.js?v=7';
+import { normaliser, GENRES } from './espace-demandes.js?v=7';
 import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe } from './espace-regles.js?v=7';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -33,7 +38,7 @@ export function init(root) {
   const S = () => depot.etat();
   /* Le contexte des règles (réglages du site, jour, demandes venues du site) : relu à chaque rendu. */
   let contexte = null;
-  const ctx = () => (contexte ||= { R, auj: A.iso, site: depot.resasSite(), exceptions: D.horaires.exceptions || [] });
+  const ctx = () => (contexte ||= { R, auj: A.iso, site: depot.resasSite(), demandes: depot.demandesSite(), produits: D.produits || [], exceptions: D.horaires.exceptions || [] });
   const services = servicesDe(R);
   const ouv = (iso, sv) => ouvert(ctx(), S(), iso, sv);
   const plein = (iso, sv) => estComplet(S(), iso, sv);
@@ -43,17 +48,18 @@ export function init(root) {
   const evenements = () => evenementsDe(D.agenda, S());
 
   // ---------- Le message du bas : ce qui vient d'être fait, « Annuler » pendant dix secondes ----------
-  const toast = $('[data-esp-toast]', root), toastTexte = $('[data-esp-toast-texte]', toast), toastLien = $('[data-esp-toast-lien]', toast), toastAnnuler = $('[data-esp-annuler]', toast);
-  let minuteurToast;
-  function dire(msg, { lien = '', annuler = false } = {}) {
+  const toast = $('[data-esp-toast]', root), toastTexte = $('[data-esp-toast-texte]', toast), toastLien = $('[data-esp-toast-lien]', toast), toastAnnuler = $('[data-esp-annuler]', toast), toastAction = $('[data-esp-toast-action]', toast);
+  let minuteurToast, actionToast = null;
+  function dire(msg, { lien = '', annuler = false, action = null } = {}) {
     toastTexte.textContent = typo(msg);
     toastLien.hidden = !lien; if (lien) toastLien.href = lien;
     toastAnnuler.hidden = !annuler;
-    const duree = annuler ? DUREE_ANNULER : DUREE_MESSAGE;
+    actionToast = action; toastAction.hidden = !action; if (action) toastAction.textContent = action.libelle;
+    const duree = annuler || action ? DUREE_ANNULER : DUREE_MESSAGE;
     toast.style.setProperty('--duree', `${duree}ms`);
-    toast.classList.remove('est-visible', 'est-compte'); void toast.offsetWidth; toast.classList.add('est-visible'); toast.classList.toggle('est-compte', annuler);
+    toast.classList.remove('est-visible', 'est-compte'); void toast.offsetWidth; toast.classList.add('est-visible'); toast.classList.toggle('est-compte', annuler || !!action);
     clearTimeout(minuteurToast);
-    const cacher = () => { if (toast.contains(document.activeElement)) { minuteurToast = setTimeout(cacher, 2000); return; } toast.classList.remove('est-visible', 'est-compte'); toastAnnuler.hidden = true; };
+    const cacher = () => { if (toast.contains(document.activeElement)) { minuteurToast = setTimeout(cacher, 2000); return; } toast.classList.remove('est-visible', 'est-compte'); toastAnnuler.hidden = true; toastAction.hidden = true; };
     minuteurToast = setTimeout(cacher, duree);
   }
   /** Fait une action nommée (espace-donnees.js), l'enregistre et le dit, avec « Annuler ». */
@@ -66,9 +72,10 @@ export function init(root) {
   function annuler() {
     if (!depot.annuler()) return;
     contexte = null; dire('Annulé : tout est revenu comme avant.'); rendre();
-    const t = $(`#vue-${vue}`, root); t?.setAttribute('tabindex', '-1'); t?.focus({ preventScroll: true });
+    const t = $(`#vue-${etat.vue}`, root); t?.setAttribute('tabindex', '-1'); t?.focus({ preventScroll: true });
   }
   toastAnnuler.addEventListener('click', annuler);
+  toastAction.addEventListener('click', () => { const a = actionToast; actionToast = null; toast.classList.remove('est-visible', 'est-compte'); toastAction.hidden = true; a?.faire(); });
 
   // ---------- L'état de l'enregistrement, toujours visible ----------
   const sauve = $('[data-esp-sauve]', root);
@@ -82,7 +89,7 @@ export function init(root) {
   // ---------- Rendu des réservations ----------
   const assiettes = (n) => `<span class="esp-assiettes" aria-hidden="true">${'<i></i>'.repeat(Math.min(n, 10))}</span>`;
   function ligneResa(r, avecJour) {
-    const actions = r.statut === 'a-confirmer' ? `<button type="button" class="esp-bouton esp-bouton--ok" data-statut="confirmee" data-id="${e(r.id)}">Confirmer</button><button type="button" class="esp-bouton esp-bouton--non" data-statut="refusee" data-id="${e(r.id)}">Refuser</button>`
+    const actions = r.statut === 'a-confirmer' ? `<button type="button" class="esp-bouton esp-bouton--ok" data-statut="confirmee" data-id="${e(r.id)}" data-repondre>Confirmer</button><button type="button" class="esp-bouton esp-bouton--non" data-statut="refusee" data-id="${e(r.id)}">Refuser</button>`
       : r.statut === 'confirmee' && r.date === A.iso ? `<button type="button" class="esp-bouton" data-statut="arrivee" data-id="${e(r.id)}">Arrivés</button>`
       : '';
     const src = r.source === 'site' ? '<span class="esp-source esp-source--site">Depuis le site</span>' : r.source === 'telephone' ? '<span class="esp-source">Au téléphone</span>' : '';
@@ -102,26 +109,33 @@ export function init(root) {
   const vignette = (nom) => { const l = largeurs(nom); return `/assets/images/${nom}-${l.find((w) => w >= 480) || l[l.length - 1]}.webp`; };
 
   // ---------- Vues ----------
-  let vue = 'jour', jourChoisi = A.iso, evEdite = null, ajoutOuvert = false;
-  const corps = (v) => $(`[data-esp-rendu="${v}"]`, root);
+  /* L'état des écrans, partagé avec les rubriques écrites dans d'autres fichiers (espace-vue-*.js). */
+  const etat = { vue: 'jour', jour: A.iso, evEdite: null, ajoutOuvert: false, onglet: 'soirees', filtreDemandes: 'tout', demandeOuverte: null };
+  /* Où chaque écran se dessine : sa rubrique, ou le panneau de l'onglet ouvert dans « Site ». */
+  const corps = (v) => (['evenements', 'soirees', 'horaires', 'textes', 'messages', 'photos'].includes(v) ? $('[data-esp-panneau]', root) : $(`[data-esp-rendu="${v}"]`, root));
+  function enAttenteTotal() { const a = vDemandes.attente(); return a.tables.length + a.autres.length; }
+  const X = { root, $, $$, e, S, A, D, ctx, etat, agir, dire, corps, ligneResa, rendre, allerVue, viser, feter, enAttenteTotal, plusTard: (f) => plus_tard(f) };
+  const vDemandes = creerDemandes(X);
 
   function rendreJour() {
-    const l = resas(A.iso), midi = l.filter((r) => r.service === 'midi'), soir = l.filter((r) => r.service === 'soir'), att = enAttente();
+    const l = resas(A.iso), midi = l.filter((r) => r.service === 'midi'), soir = l.filter((r) => r.service === 'soir'), att = enAttente(), autres = vDemandes.attente().autres, total = att.length + autres.length;
     const prochain = evenements().find((x) => !x.masque && x.debut >= A.iso);
     const s = S(), nb = actives(l).length;
     const tuile = (titre, valeur, detail, cls = '', style = '') => `<div class="esp-tuile ${cls}"${style ? ` style="${style}"` : ''}><p class="esp-tuile__titre">${titre}</p><p class="esp-tuile__valeur">${valeur}</p><p class="esp-tuile__detail">${detail}</p></div>`;
     const sv = (id, lst) => !ouv(A.iso, id) ? tuile(id === 'midi' ? 'Ce midi' : 'Ce soir', 'Fermé', 'Pas de service aujourd\'hui')
       : tuile(id === 'midi' ? 'Ce midi' : 'Ce soir', `${couverts(lst)}<small> / ${CAPACITE}</small>`, `${pluriel(actives(lst).length, 'table')}${plein(A.iso, id) ? ' · complet' : ''}`, 'esp-tuile--jauge', `--jauge:${Math.min(1, couverts(lst) / CAPACITE)}`);
     corps('jour').innerHTML = `
-      <p class="esp-bonjour">${e(maj(fmt(A.iso)))} : ${pluriel(nb, 'réservation')} aujourd'hui${att.length ? `, ${pluriel(att.length, 'demande')} à confirmer` : ''}.</p>
+      <p class="esp-bonjour">${e(maj(fmt(A.iso)))} : ${pluriel(nb, 'réservation')} aujourd'hui${total ? `, ${pluriel(total, 'demande')} à traiter` : ''}.</p>
       <div class="esp-tuiles">
         ${tuile('Aujourd\'hui', nb, `${pluriel(nb, 'réservation').replace(/^\d+ /, '')} · ${pluriel(couverts(l), 'couvert')}`)}
         ${sv('midi', midi)}${sv('soir', soir)}
-        ${tuile('À confirmer', att.length, att.length ? `demande${att.length > 1 ? 's' : ''} en attente` : 'tout est à jour', att.length ? 'esp-tuile--alerte' : '')}
+        ${tuile('À traiter', total, total ? [att.length ? pluriel(att.length, 'table') : '', autres.length ? `${autres.length} autre${autres.length > 1 ? 's' : ''}` : ''].filter(Boolean).join(' · ') : 'tout est à jour', total ? 'esp-tuile--alerte' : '')}
       </div>
       <div class="esp-grille esp-grille--jour">
         <article class="esp-carte esp-carte--large" aria-labelledby="t-attente"><h3 id="t-attente">Ce qui attend une réponse</h3>
-          ${att.length ? `<ul class="esp-resas">${att.slice(0, 6).map((r) => ligneResa(r, true)).join('')}</ul>${att.length > 6 ? `<p class="esp-plus"><button type="button" class="esp-lien" data-aller="resas">Voir les ${att.length} demandes</button></p>` : ''}` : '<p class="esp-vide esp-vide--fete"><span class="esp-vide__sceau" aria-hidden="true"></span><span><b>Tout a une réponse.</b> Les prochaines demandes faites sur le site arriveront ici.</span></p>'}
+          ${total ? `${att.length ? `<ul class="esp-resas">${att.slice(0, 4).map((r) => ligneResa(r, true)).join('')}</ul>` : ''}${autres.length ? `<ul class="esp-dems">${autres.slice(0, 4).map((d) => vDemandes.carte(d, { compacte: true })).join('')}</ul>` : ''}`
+            : '<p class="esp-vide esp-vide--fete"><span class="esp-vide__sceau" aria-hidden="true"></span><span><b>Tout a une réponse.</b> Les prochaines demandes faites sur le site arriveront ici.</span></p>'}
+          <p class="esp-plus"><button type="button" class="esp-lien" data-aller="demandes">${total > Math.min(att.length, 4) + Math.min(autres.length, 4) ? `Voir les ${total} demandes` : 'Ouvrir les demandes'}</button></p>
         </article>
         <article class="esp-carte" aria-labelledby="t-service"><h3 id="t-service">Le service d'aujourd'hui</h3>
           ${nb ? `<ul class="esp-resas esp-resas--court">${actives(l).slice(0, 6).map((r) => ligneResa(r)).join('')}</ul>` : '<p class="esp-vide">Aucune réservation aujourd\'hui.</p>'}
@@ -129,43 +143,43 @@ export function init(root) {
         </article>
         ${prochain ? `<article class="esp-carte esp-carte--ev" aria-labelledby="t-ev"><h3 id="t-ev">Prochain événement</h3>
           <div class="esp-ev-mini"><img src="${e(imgSrc(prochain))}" alt="" style="object-position:${e(prochain.cadrage || '50% 50%')}" loading="lazy"><div><p class="esp-ev-mini__type">${e(prochain.type)} · ${e(maj(fmt(prochain.debut.slice(0, 10))))}</p><p class="esp-ev-mini__titre">${e(prochain.titre)}</p><p class="esp-ev-mini__prix">${e(prochain.prix)}</p></div></div>
-          <p class="esp-plus"><button type="button" class="esp-lien" data-aller="evenements" data-editer="${e(prochain.id)}">Modifier</button></p></article>` : ''}
+          <p class="esp-plus"><button type="button" class="esp-lien" data-aller="site" data-onglet="soirees" data-editer="${e(prochain.id)}">Modifier</button></p></article>` : ''}
         <article class="esp-carte" aria-labelledby="t-site"><h3 id="t-site">Sur le site en ce moment</h3>
           <ul class="esp-etat">
             <li><span class="esp-etat__point${s.annonce?.active ? ' est-on' : ''}"></span>${s.annonce?.active ? `Annonce affichée : « ${e(s.annonce.texte)} »` : 'Pas d\'annonce affichée'}</li>
             <li><span class="esp-etat__point${ouv(A.iso, 'midi') || ouv(A.iso, 'soir') ? ' est-on' : ''}"></span>${ouv(A.iso, 'midi') || ouv(A.iso, 'soir') ? `Ouvert aujourd'hui : ${['midi', 'soir'].filter((x) => ouv(A.iso, x)).join(' et ')}` : 'Fermé aujourd\'hui'}</li>
             <li><span class="esp-etat__point${estVide(s) ? '' : ' est-on'}"></span>${estVide(s) ? 'Le site est tel que livré' : 'Vos modifications sont visibles sur le site (dans ce navigateur)'}</li>
           </ul>
-          <p class="esp-plus"><button type="button" class="esp-lien" data-aller="textes">Annonce et horaires</button></p>
+          <p class="esp-plus"><button type="button" class="esp-lien" data-aller="site" data-onglet="horaires">Annonce et horaires</button></p>
         </article>
       </div>`;
   }
 
   function rendreResas() {
-    const lundi = ajouter(jourChoisi, -((jourDe(jourChoisi) + 6) % 7));
+    const lundi = ajouter(etat.jour, -((jourDe(etat.jour) + 6) % 7));
     const jours = Array.from({ length: 7 }, (_, k) => ajouter(lundi, k));
-    const l = resas(jourChoisi);
+    const l = resas(etat.jour);
     const colonne = (s) => {
-      const lst = l.filter((r) => r.service === s.id), o = ouv(jourChoisi, s.id), fermeIci = (S().resa?.fermes?.[jourChoisi] || []).includes(s.id), p = plein(jourChoisi, s.id), passe = jourChoisi < A.iso;
+      const lst = l.filter((r) => r.service === s.id), o = ouv(etat.jour, s.id), fermeIci = (S().resa?.fermes?.[etat.jour] || []).includes(s.id), p = plein(etat.jour, s.id), passe = etat.jour < A.iso;
       return `<section class="esp-service${o ? '' : ' est-ferme'}" aria-labelledby="sv-${s.id}">
         <header class="esp-service__tete"><span class="esp-ico-sv" aria-hidden="true">${ICO[s.id]}</span><h4 id="sv-${s.id}">${s.libelle} <small>${heure(hhmm(s.d))} – ${heure(hhmm(s.f))}</small></h4>
           <p class="esp-service__jauge" style="--jauge:${Math.min(1, couverts(lst) / CAPACITE)}"><span>${couverts(lst)} / ${CAPACITE} couverts</span></p></header>
         ${passe ? '' : `<p class="esp-bascules">${o || fermeIci ? `<button type="button" class="esp-bascule" aria-pressed="${p}" data-complet="${s.id}" ${o ? '' : 'disabled'}><span class="esp-bascule__rail" aria-hidden="true"></span>Complet</button><button type="button" class="esp-bascule" aria-pressed="${fermeIci}" data-fermer="${s.id}"><span class="esp-bascule__rail" aria-hidden="true"></span>Fermé ce jour</button>` : '<span class="esp-note">Fermé d\'après vos horaires</span>'}</p>`}
-        ${lst.length ? `<ul class="esp-resas">${lst.map((r) => ligneResa(r)).join('')}</ul>` : `<p class="esp-vide">${o ? `Pas encore de réservation.${passe || ajoutOuvert ? '' : ' <button type="button" class="esp-lien" data-ajouter>Noter une réservation prise au téléphone</button>'}` : 'Pas de service.'}</p>`}
+        ${lst.length ? `<ul class="esp-resas">${lst.map((r) => ligneResa(r)).join('')}</ul>` : `<p class="esp-vide">${o ? `Pas encore de réservation.${passe || etat.ajoutOuvert ? '' : ' <button type="button" class="esp-lien" data-ajouter>Noter une réservation prise au téléphone</button>'}` : 'Pas de service.'}</p>`}
       </section>`;
     };
     corps('resas').innerHTML = `
       <div class="esp-semaine">
         <button type="button" class="esp-rond" data-semaine="-7" aria-label="Semaine précédente"><span aria-hidden="true">‹</span><span class="esp-semaine__mot" aria-hidden="true">Semaine précédente</span></button>
-        <ol class="esp-semaine__jours">${jours.map((iso) => { const lj = resas(iso), n = couverts(lj), att = lj.filter((r) => r.statut === 'a-confirmer').length; return `<li><button type="button" class="esp-jour${iso === A.iso ? ' est-auj' : ''}" data-jour="${iso}" aria-pressed="${iso === jourChoisi}"><span class="esp-jour__nom">${e(fmt(iso, { weekday: 'short' }).replace('.', ''))}</span><b>${+iso.slice(8)}</b><span class="esp-jour__n">${n ? `${n} couv.` : '—'}</span>${att ? `<span class="esp-jour__att" aria-label="${att} à confirmer">${att}</span>` : ''}</button></li>`; }).join('')}</ol>
+        <ol class="esp-semaine__jours">${jours.map((iso) => { const lj = resas(iso), n = couverts(lj), att = lj.filter((r) => r.statut === 'a-confirmer').length; return `<li><button type="button" class="esp-jour${iso === A.iso ? ' est-auj' : ''}" data-jour="${iso}" aria-pressed="${iso === etat.jour}"><span class="esp-jour__nom">${e(fmt(iso, { weekday: 'short' }).replace('.', ''))}</span><b>${+iso.slice(8)}</b><span class="esp-jour__n">${n ? `${n} couv.` : '—'}</span>${att ? `<span class="esp-jour__att" aria-label="${att} à confirmer">${att}</span>` : ''}</button></li>`; }).join('')}</ol>
         <button type="button" class="esp-rond" data-semaine="7" aria-label="Semaine suivante"><span aria-hidden="true">›</span><span class="esp-semaine__mot" aria-hidden="true">Semaine suivante</span></button>
       </div>
-      <div class="esp-jourtete"><h3>${e(maj(fmt(jourChoisi)))}${jourChoisi === A.iso ? ' <span class="esp-pastille">Aujourd\'hui</span>' : ''}</h3>
-        <button type="button" class="bouton esp-ajouter" data-ajouter aria-expanded="${ajoutOuvert}">${ICO.plus}<span>Ajouter une réservation</span></button></div>
-      ${ajoutOuvert ? `<form class="esp-carte esp-form-ajout" data-form-ajout aria-label="Nouvelle réservation prise au téléphone">
+      <div class="esp-jourtete"><h3>${e(maj(fmt(etat.jour)))}${etat.jour === A.iso ? ' <span class="esp-pastille">Aujourd\'hui</span>' : ''}</h3>
+        <button type="button" class="bouton esp-ajouter" data-ajouter aria-expanded="${etat.ajoutOuvert}">${ICO.plus}<span>Ajouter une réservation</span></button></div>
+      ${etat.ajoutOuvert ? `<form class="esp-carte esp-form-ajout" data-form-ajout aria-label="Nouvelle réservation prise au téléphone">
         <p class="esp-champ"><label for="aj-nom">Nom</label><input id="aj-nom" name="nom" required autocomplete="off"></p>
         <p class="esp-champ"><label for="aj-tel">Téléphone</label><input id="aj-tel" name="telephone" type="tel" autocomplete="off"></p>
-        <p class="esp-champ"><label for="aj-sv">Service</label><select id="aj-sv" name="service">${services.map((s) => `<option value="${s.id}"${ouv(jourChoisi, s.id) ? '' : ' disabled'}>${s.libelle}</option>`).join('')}</select></p>
+        <p class="esp-champ"><label for="aj-sv">Service</label><select id="aj-sv" name="service">${services.map((s) => `<option value="${s.id}"${ouv(etat.jour, s.id) ? '' : ' disabled'}>${s.libelle}</option>`).join('')}</select></p>
         <p class="esp-champ"><label for="aj-h">Heure</label><select id="aj-h" name="heure">${services.map((s) => creneaux(s.id).map((t) => `<option value="${t}" data-sv="${s.id}">${heure(t)}</option>`).join('')).join('')}</select></p>
         <p class="esp-champ"><label for="aj-c">Couverts</label><input id="aj-c" name="couverts" type="number" inputmode="numeric" min="1" max="30" value="2"></p>
         <p class="esp-champ esp-champ--large"><label for="aj-d">Note</label><input id="aj-d" name="demande" placeholder="Anniversaire, chaise haute…" autocomplete="off"></p>
@@ -181,7 +195,7 @@ export function init(root) {
 
   function rendreEvenements() {
     const l = evenements();
-    if (evEdite) return rendreEditeur(l.find((x) => x.id === evEdite) || { id: evEdite, titre: '', debut: ajouter(A.iso, 14), type: 'Soirée', prix: '', service: 'soir', image: 'vraie/salle-pierre', l: largeurs('vraie/salle-pierre'), cadrage: '50% 50%', nouveau: true });
+    if (etat.evEdite) return rendreEditeur(l.find((x) => x.id === etat.evEdite) || { id: etat.evEdite, titre: '', debut: ajouter(A.iso, 14), type: 'Soirée', prix: '', service: 'soir', image: 'vraie/salle-pierre', l: largeurs('vraie/salle-pierre'), cadrage: '50% 50%', nouveau: true });
     const venir = l.filter((x) => x.debut.slice(0, 10) >= A.iso), passes = l.filter((x) => x.debut.slice(0, 10) < A.iso);
     const carte = (x) => `<li class="esp-ev${x.masque ? ' est-masque' : ''}"><img class="esp-ev__photo" src="${e(imgSrc(x))}" alt="" style="object-position:${e(x.cadrage || '50% 50%')}" loading="lazy">
       <div class="esp-ev__texte"><p class="esp-ev__type">${e(x.type)}${x.debut.slice(0, 10) < A.iso ? ' · passé' : ''}${x.nouveau ? ' · <span class="esp-pastille">Nouveau</span>' : ''}${x.masque ? ' · <span class="esp-pastille esp-pastille--refusee">Masqué</span>' : ''}</p><h4 class="esp-ev__titre">${e(x.titre)}</h4><p class="esp-ev__date">${e(maj(fmt(x.debut.slice(0, 10))))} · ${x.service === 'midi' ? 'midi' : 'soir'}</p>${x.prix ? `<p class="esp-ev__prix">${e(x.prix)}</p>` : ''}</div>
@@ -221,7 +235,8 @@ export function init(root) {
     const [fx, fy] = p.cadrage.split(' '); const c = $('[data-cadreur]', f); c.style.setProperty('--fx', fx); c.style.setProperty('--fy', fy);
   }
 
-  function rendreTextes() {
+  /** Les cartes de l'annonce, des fermetures, des horaires, de l'ardoise et des textes : chacune va dans son écran. */
+  function cartesSite() {
     const s = S(), an = s.annonce || {}, sem = s.horaires?.semaine || D.horaires.semaine, exc = [...(s.horaires?.exceptions || [])];
     const ard = { jour: s.ardoise?.jour || D.ardoise.jour, soir: s.ardoise?.soir || D.ardoise.soir };
     const plage = (j, sv) => (sem[j] || []).find((c) => svDe(c) === sv);
@@ -232,25 +247,37 @@ export function init(root) {
       <ol class="esp-ardoise__lignes">${ard[k].lignes.map((l, i) => `<li><input name="plat" value="${e(l.plat)}" aria-label="Plat ${i + 1}"><input name="prix" value="${e(l.prix)}" aria-label="Prix du plat ${i + 1}" class="esp-prix"><button type="button" class="esp-rond esp-rond--petit" data-retirer-plat aria-label="Retirer ce plat">×</button></li>`).join('')}</ol>
       <p><button type="button" class="esp-bouton" data-ajouter-plat>${ICO.plus}<span>Ajouter un plat</span></button></p>
       <p class="esp-champ"><label for="ar-${k}-m">Le mot du chef</label><input id="ar-${k}-m" name="mot" value="${e(ard[k].mot)}"></p></fieldset>`;
-    corps('textes').innerHTML = `<div class="esp-grille esp-grille--textes">
-      <article class="esp-carte" aria-labelledby="t-annonce"><h3 id="t-annonce">L'annonce</h3><p class="esp-aide">Un petit mot qui apparaît sur toutes les pages : une fermeture, une soirée complète, le menu de la Saint-Valentin…</p>
+    return {
+      annonce: `<article class="esp-carte" aria-labelledby="t-annonce"><h3 id="t-annonce">L'annonce</h3><p class="esp-aide">Un petit mot qui apparaît sur toutes les pages : une fermeture, une soirée complète, le menu de la Saint-Valentin…</p>
         <form data-form-annonce><p><button type="button" class="esp-bascule" aria-pressed="${!!an.active}" data-annonce-active><span class="esp-bascule__rail" aria-hidden="true"></span>Afficher l'annonce</button></p>
         <p class="esp-champ esp-champ--large"><label for="an-texte">Texte <small data-compte>${(an.texte || '').length} / 160</small></label><textarea id="an-texte" name="texte" maxlength="160" rows="3" placeholder="Fermeture annuelle du 4 au 18 janvier : à très vite !">${e(an.texte || '')}</textarea></p></form>
         <div class="esp-annonce-apercu" aria-hidden="true"><p class="annonce-site__sur">Annonce</p><p data-annonce-apercu>${e(an.texte || 'Fermeture annuelle du 4 au 18 janvier : à très vite !')}</p></div>
-      </article>
-      <article class="esp-carte" aria-labelledby="t-fermetures"><h3 id="t-fermetures">Fermetures exceptionnelles</h3><p class="esp-aide">Le site affiche « fermé » ces jours-là et la réservation ne les propose plus.</p>
+      </article>`,
+      fermetures: `<article class="esp-carte" aria-labelledby="t-fermetures"><h3 id="t-fermetures">Fermetures exceptionnelles</h3><p class="esp-aide">Le site affiche « fermé » ces jours-là et la réservation ne les propose plus.</p>
         <ul class="esp-fermetures">${exc.map((x, i) => `<li><span><b>${e(x.du === x.au ? maj(fmt(x.du)) : `Du ${fmt(x.du, { day: 'numeric', month: 'long' })} au ${fmt(x.au, { day: 'numeric', month: 'long' })}`)}</b>${x.motif ? ` · ${e(x.motif)}` : ''}</span><button type="button" class="esp-bouton esp-bouton--discret" data-retirer-fermeture="${i}">Retirer</button></li>`).join('') || '<li class="esp-vide">Aucune fermeture prévue. Pour vos congés, donnez les dates ci-dessous.</li>'}</ul>
         <form class="esp-form-fermeture" data-form-fermeture><p class="esp-champ"><label for="fe-du">Du</label><input id="fe-du" name="du" type="date" min="${A.iso}" required></p><p class="esp-champ"><label for="fe-au">Au</label><input id="fe-au" name="au" type="date" min="${A.iso}"></p><p class="esp-champ esp-champ--large"><label for="fe-motif">Motif (affiché)</label><input id="fe-motif" name="motif" placeholder="Congés annuels"></p><p><button type="submit" class="bouton">Ajouter la fermeture</button></p></form>
-      </article>
-      <article class="esp-carte esp-carte--large" aria-labelledby="t-horaires"><h3 id="t-horaires">Horaires de la semaine</h3><p class="esp-aide">Le statut « ouvert maintenant » du site et les services proposés à la réservation suivent ces horaires.</p>
+      </article>`,
+      horaires: `<article class="esp-carte esp-carte--large" aria-labelledby="t-horaires"><h3 id="t-horaires">Horaires de la semaine</h3><p class="esp-aide">Le statut « ouvert maintenant » du site et les services proposés à la réservation suivent ces horaires.</p>
         <form data-form-horaires><div class="esp-table-defile" tabindex="0" role="group" aria-label="Horaires de la semaine, à faire défiler"><table class="esp-horaires"><caption class="visuellement-cache">Horaires du midi et du soir, jour par jour</caption><thead><tr><th scope="col">Jour</th><th scope="col">Midi</th><th scope="col">Soir</th></tr></thead><tbody>${SEMAINE.map(ligneH).join('')}</tbody></table></div></form>
-      </article>
-      <article class="esp-carte esp-carte--large" aria-labelledby="t-ardoise"><h3 id="t-ardoise">L'ardoise de la semaine</h3><p class="esp-aide">Elle s'affiche sur La carte et au dos de la photo du chef, à l'accueil.</p>
+      </article>`,
+      ardoise: `<article class="esp-carte esp-carte--large" aria-labelledby="t-ardoise"><h3 id="t-ardoise">L'ardoise de la semaine</h3><p class="esp-aide">Elle s'affiche sur La carte et au dos de la photo du chef, à l'accueil.</p>
         <form class="esp-ardoises" data-form-ardoise>${ardoise('jour', 'Le midi')}${ardoise('soir', 'Le soir')}</form>
-      </article>
-      <article class="esp-carte esp-carte--large" aria-labelledby="t-textes"><h3 id="t-textes">Les textes du site</h3>
+      </article>`,
+      textes: `<article class="esp-carte esp-carte--large" aria-labelledby="t-textes"><h3 id="t-textes">Les textes du site</h3>
         <form class="esp-textes" data-form-textes>${D.textes.map((t, i) => `<div class="esp-texte"><p class="esp-texte__lieu">${e(t.lieu)} <a href="${e(t.url)}" class="esp-voir">${ICO.oeil}<span>Voir</span></a></p><p class="esp-champ esp-champ--large"><label for="tx-${i}">${e(t.libelle)}</label>${t.long ? `<textarea id="tx-${i}" name="${e(t.cle)}" rows="3">${e(typo(s.textes?.[t.cle] || t.defaut))}</textarea>` : `<input id="tx-${i}" name="${e(t.cle)}" value="${e(typo(s.textes?.[t.cle] || t.defaut))}">`}</p>${s.textes?.[t.cle] ? `<p><button type="button" class="esp-lien" data-retablir-texte="${e(t.cle)}">Revenir au texte d'origine</button></p>` : ''}</div>`).join('')}</form>
-      </article></div>`;
+      </article>`,
+    };
+  }
+  function rendreHoraires() { const c = cartesSite(); corps('horaires').innerHTML = `<div class="esp-grille esp-grille--textes">${c.annonce}${c.fermetures}${c.horaires}</div>`; }
+  function rendreTextesSite() { corps('textes').innerHTML = cartesSite().textes; }
+  function rendreCarte() { corps('carte').innerHTML = `<div class="esp-grille esp-grille--textes">${cartesSite().ardoise}</div>`; }
+  /* « Site » : ce que le restaurant change sur son site, en onglets. */
+  const ONGLETS = [['soirees', 'Soirées'], ['horaires', 'Annonce et horaires'], ['textes', 'Textes'], ['messages', 'Messages'], ['photos', 'Photos']];
+  function rendreSite() {
+    if (!ONGLETS.some(([id]) => id === etat.onglet)) etat.onglet = 'soirees';
+    corps('site').innerHTML = `<div class="esp-onglets" role="tablist" aria-label="Ce que vous changez sur le site">${ONGLETS.map(([id, nom]) => `<button type="button" class="esp-onglet" role="tab" id="onglet-${id}" aria-selected="${id === etat.onglet}" aria-controls="panneau-site" tabindex="${id === etat.onglet ? 0 : -1}" data-onglet="${id}">${nom}</button>`).join('')}</div>
+      <div class="esp-panneau" id="panneau-site" role="tabpanel" aria-labelledby="onglet-${etat.onglet}" data-esp-panneau></div>`;
+    ({ soirees: rendreEvenements, horaires: rendreHoraires, textes: rendreTextesSite, messages: vDemandes.rendreMessages, photos: rendrePhotos })[etat.onglet]();
   }
 
   function rendrePhotos() {
@@ -264,12 +291,12 @@ export function init(root) {
 
   function rendre() {
     contexte = null;
-    ({ jour: rendreJour, resas: rendreResas, evenements: rendreEvenements, textes: rendreTextes, photos: rendrePhotos })[vue]();
-    const n = enAttente().length;
-    for (const b of $$('[data-esp-badge="resas"]', root)) { b.hidden = !n; b.textContent = n; b.setAttribute('aria-label', `${n} à confirmer`); }
+    ({ jour: rendreJour, demandes: vDemandes.rendre, resas: rendreResas, carte: rendreCarte, site: rendreSite })[etat.vue]();
+    const n = enAttenteTotal();
+    for (const b of $$('[data-esp-badge]', root)) { const on = b.dataset.espBadge === 'demandes' && n > 0; b.hidden = !on; if (on) { b.textContent = n; b.setAttribute('aria-label', `${n} à traiter`); } }
   }
   function allerVue(v, focus = true) {
-    vue = v; try { sessionStorage.setItem('jh-espace-vue', v); } catch { /* rien */ }
+    etat.vue = v; try { sessionStorage.setItem('jh-espace-vue', v); } catch { /* rien */ }
     for (const s of $$('.esp-vue', root)) s.hidden = s.dataset.vue !== v;
     for (const b of $$('[data-esp-vue]', root)) { if (b.dataset.espVue === v) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); }
     rendre();
@@ -324,6 +351,8 @@ export function init(root) {
     const r = btn.getBoundingClientRect(); cadrer(btn, ((ev.clientX - r.left) / r.width) * 100, ((ev.clientY - r.top) / r.height) * 100);
   });
   root.addEventListener('keydown', (ev) => {
+    const tab = ev.target.closest('[role="tab"][data-onglet]');
+    if (tab && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(ev.key)) { ev.preventDefault(); const l = ONGLETS.map(([id]) => id), i = l.indexOf(tab.dataset.onglet); etat.onglet = ev.key === 'Home' ? l[0] : ev.key === 'End' ? l[l.length - 1] : l[(i + (ev.key === 'ArrowRight' ? 1 : -1) + l.length) % l.length]; etat.evEdite = null; rendre(); $(`#onglet-${etat.onglet}`, root)?.focus(); return; }
     const btn = ev.target.closest('[data-cadreur], [data-cadreur-slot]'); if (!btn || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(ev.key)) return;
     ev.preventDefault(); const x = parseFloat(btn.style.getPropertyValue('--fx')) || 50, y = parseFloat(btn.style.getPropertyValue('--fy')) || 50, d = 5;
     cadrer(btn, Math.max(0, Math.min(100, x + (ev.key === 'ArrowRight' ? d : ev.key === 'ArrowLeft' ? -d : 0))), Math.max(0, Math.min(100, y + (ev.key === 'ArrowDown' ? d : ev.key === 'ArrowUp' ? -d : 0))));
@@ -343,11 +372,12 @@ export function init(root) {
       ok = agir(p.action.nom, args, { msg: p.action.msg, lien: p.action.lien });
     }
     const a = p.aller; if (!a?.vue) { rendre(); return; }
-    if (a.jour) jourChoisi = a.jour; evEdite = ok && a.editer ? a.editer : null; ajoutOuvert = false;
+    if (a.jour) etat.jour = a.jour; if (a.onglet) etat.onglet = a.onglet; if (a.filtre) etat.filtreDemandes = a.filtre;
+    etat.evEdite = ok && a.editer ? a.editer : null; etat.ajoutOuvert = false;
     allerVue(a.vue);
     if (resa) viser($(`[data-resa="${CSS.escape(resa)}"]`, corps(a.vue)), 'center');
     else if (a.ancre) viser(document.getElementById(a.ancre)?.closest('.esp-carte'));
-    else if (a.editer && evEdite) $('#ev-prix', root)?.focus({ preventScroll: true });
+    else if (a.editer && etat.evEdite) $('#ev-prix', root)?.focus({ preventScroll: true });
   }
   installerBarre(root, { comprendre: (texte) => comprendre(texte, { auj: A.iso, R, S: S(), exceptions: D.horaires.exceptions || [], pages: D.pages, resas: prochaines() }), executer, actif: () => root.classList.contains('est-connecte') });
 
@@ -376,26 +406,28 @@ export function init(root) {
   });
 
   // ---------- Les clics : un geste, une action ----------
-  const basculeService = (nom, sv, on, msgOn, msgOff, sel) => { agir(nom, { date: jourChoisi, service: sv, actif: on }, { msg: on ? msgOn : msgOff, lien: D.pages.reserver }); rendre(); $(`[${sel}="${sv}"]`, root)?.focus(); };
+  const basculeService = (nom, sv, on, msgOn, msgOff, sel) => { agir(nom, { date: etat.jour, service: sv, actif: on }, { msg: on ? msgOn : msgOff, lien: D.pages.reserver }); rendre(); $(`[${sel}="${sv}"]`, root)?.focus(); };
   root.addEventListener('click', (ev) => {
     const t = ev.target;
     if (t.closest('[data-esp-plus]')) { ouvrirPlus(panneauPlus.hidden); return; }
-    const nav = t.closest('[data-esp-vue]'); if (nav) { evEdite = null; allerVue(nav.dataset.espVue); return; }
-    const al = t.closest('[data-aller]'); if (al) { if (al.dataset.editer) evEdite = al.dataset.editer; allerVue(al.dataset.aller); return; }
-    const st = t.closest('[data-statut]'); if (st) { const id = st.dataset.id, s = st.dataset.statut, restait = enAttente().length, repond = ['confirmee', 'refusee'].includes(s);
+    const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; allerVue(nav.dataset.espVue); return; }
+    const al = t.closest('[data-aller]'); if (al) { if (al.dataset.onglet) etat.onglet = al.dataset.onglet; etat.evEdite = al.dataset.editer || null; allerVue(al.dataset.aller); if (al.dataset.modele) viser(document.getElementById(`modele-${al.dataset.modele}`)); return; }
+    const og = t.closest('[role="tab"][data-onglet]'); if (og) { etat.onglet = og.dataset.onglet; etat.evEdite = null; rendre(); $(`#onglet-${etat.onglet}`, root)?.focus(); return; }
+    if (vDemandes.clic(t)) return;
+    const st = t.closest('[data-statut]'); if (st) { const id = st.dataset.id, s = st.dataset.statut, restait = enAttenteTotal(), repond = ['confirmee', 'refusee'].includes(s);
       const ok = agir('statut', { id, statut: s }, { msg: MSG_STATUT[s] || 'Enregistré.' }); rendre();
-      if (ok && repond && restait > 0 && !enAttente().length) { dire(`${MSG_STATUT[s].split(' : ')[0]}. Tout a une réponse : bon service !`, { annuler: true }); feter(); } ($(`[data-resa="${CSS.escape(id)}"] button`, root) || $(`#vue-${vue}`, root))?.focus({ preventScroll: true }); return; }
-    const j = t.closest('[data-jour]'); if (j) { jourChoisi = j.dataset.jour; rendre(); $(`[data-jour="${jourChoisi}"]`, root)?.focus(); return; }
-    const sm = t.closest('[data-semaine]'); if (sm) { jourChoisi = ajouter(jourChoisi, +sm.dataset.semaine); rendre(); $(`[data-semaine="${sm.dataset.semaine}"]`, root)?.focus(); return; }
-    const aj = t.closest('[data-ajouter]'); if (aj) { ajoutOuvert = !ajoutOuvert; rendre(); (ajoutOuvert ? $('#aj-nom', root) : $('[data-ajouter]', root))?.focus(); return; }
+      if (ok && repond && restait > 0 && !enAttenteTotal()) { dire(`${MSG_STATUT[s].split(' : ')[0]}. Tout a une réponse : bon service !`, { annuler: true }); feter(); } ($(`[data-resa="${CSS.escape(id)}"] button`, root) || $(`#vue-${etat.vue}`, root))?.focus({ preventScroll: true }); return; }
+    const j = t.closest('[data-jour]'); if (j) { etat.jour = j.dataset.jour; rendre(); $(`[data-jour="${etat.jour}"]`, root)?.focus(); return; }
+    const sm = t.closest('[data-semaine]'); if (sm) { etat.jour = ajouter(etat.jour, +sm.dataset.semaine); rendre(); $(`[data-semaine="${sm.dataset.semaine}"]`, root)?.focus(); return; }
+    const aj = t.closest('[data-ajouter]'); if (aj) { etat.ajoutOuvert = !etat.ajoutOuvert; rendre(); (etat.ajoutOuvert ? $('#aj-nom', root) : $('[data-ajouter]', root))?.focus(); return; }
     const cp = t.closest('[data-complet]'); if (cp) { basculeService('complet', cp.dataset.complet, cp.getAttribute('aria-pressed') !== 'true', 'Service complet : la réservation en ligne ne le propose plus.', 'Le service est de nouveau proposé.', 'data-complet'); return; }
     const fm = t.closest('[data-fermer]'); if (fm) { basculeService('fermer', fm.dataset.fermer, fm.getAttribute('aria-pressed') !== 'true', 'Service fermé ce jour-là : plus de réservation en ligne.', 'Service rouvert.', 'data-fermer'); return; }
     // Événements
-    const ed = t.closest('[data-editer]'); if (ed) { evEdite = ed.dataset.editer; rendre(); scrollTo({ top: 0, behavior: 'instant' }); $('#ev-titre', root)?.focus(); return; }
-    if (t.closest('[data-nouvel-ev]')) { evEdite = 'ev-' + Date.now().toString(36); rendre(); scrollTo({ top: 0, behavior: 'instant' }); $('#ev-titre', root)?.focus(); return; }
-    if (t.closest('[data-fermer-ev]')) { const id = evEdite; evEdite = null; rendre(); ($(`[data-editer="${CSS.escape(id)}"]`, root) || $('[data-nouvel-ev]', root))?.focus(); return; }
+    const ed = t.closest('[data-editer]'); if (ed) { etat.evEdite = ed.dataset.editer; rendre(); scrollTo({ top: 0, behavior: 'instant' }); $('#ev-titre', root)?.focus(); return; }
+    if (t.closest('[data-nouvel-ev]')) { etat.evEdite = 'ev-' + Date.now().toString(36); rendre(); scrollTo({ top: 0, behavior: 'instant' }); $('#ev-titre', root)?.focus(); return; }
+    if (t.closest('[data-fermer-ev]')) { const id = etat.evEdite; etat.evEdite = null; rendre(); ($(`[data-editer="${CSS.escape(id)}"]`, root) || $('[data-nouvel-ev]', root))?.focus(); return; }
     const vis = t.closest('[data-visible]'); if (vis) { const id = vis.dataset.visible, on = vis.getAttribute('aria-pressed') !== 'true'; agir('visibilite', { id, visible: on, agenda: D.agenda }, { msg: on ? 'Événement affiché sur le site.' : 'Événement masqué sur le site.', lien: D.pages.fetes }); rendre(); $(`[data-visible="${CSS.escape(id)}"]`, root)?.focus(); return; }
-    if (t.closest('[data-supprimer-ev]')) { const id = evEdite; agir('supprimerEvenement', { id, agenda: D.agenda }, { msg: 'Événement supprimé.' }); evEdite = null; rendre(); $('[data-nouvel-ev]', root)?.focus(); return; }
+    if (t.closest('[data-supprimer-ev]')) { const id = etat.evEdite; agir('supprimerEvenement', { id, agenda: D.agenda }, { msg: 'Événement supprimé.' }); etat.evEdite = null; rendre(); $('[data-nouvel-ev]', root)?.focus(); return; }
     const cph = t.closest('[data-choisir-photo]'); if (cph) { ouvrirModale(cph.dataset.choisirPhoto, cph); return; }
     const rph = t.closest('[data-retablir-photo]'); if (rph) { const id = rph.dataset.retablirPhoto; agir('retablirPhoto', { emplacement: id }, { msg: 'Photo d\'origine rétablie.' }); rendre(); $(`[data-choisir-photo="${id}"]`, root)?.focus(); return; }
     // Textes et horaires
@@ -405,7 +437,7 @@ export function init(root) {
     if (t.closest('[data-retirer-plat]')) { const li = t.closest('li'), fs = li.closest('[data-ardoise]'); li.remove(); sauverArdoise('Plat retiré de l\'ardoise.'); $('[data-ajouter-plat]', fs)?.focus(); return; }
     const rt = t.closest('[data-retablir-texte]'); if (rt) { const cle = rt.dataset.retablirTexte; agir('texte', { cle, valeur: '' }, { msg: 'Texte d\'origine rétabli.', lien: D.textes.find((x) => x.cle === cle)?.url }); rendre(); $(`[name="${CSS.escape(cle)}"]`, root)?.focus(); return; }
     if (t.closest('[data-esp-quitter]')) { try { sessionStorage.removeItem('jh-espace-session'); } catch { /* rien */ } ouvrirPlus(false, false); montrer(false); return; }
-    if (t.closest('[data-tout-effacer]')) { ouvrirPlus(false, false); depot.toutEffacer({ libelle: 'Tout remettre comme livré' }); contexte = null; evEdite = null; dire('Tout est revenu comme à la livraison.', { annuler: true }); rendre(); $(`#vue-${vue}`, root)?.focus({ preventScroll: true }); }
+    if (t.closest('[data-tout-effacer]')) { ouvrirPlus(false, false); depot.toutEffacer({ libelle: 'Tout remettre comme livré' }); contexte = null; etat.evEdite = null; dire('Tout est revenu comme à la livraison.', { annuler: true }); rendre(); $(`#vue-${etat.vue}`, root)?.focus({ preventScroll: true }); }
   });
 
   // ---------- Saisie : enregistrée au fil de l'eau ----------
@@ -424,6 +456,7 @@ export function init(root) {
   }
   root.addEventListener('input', (ev) => {
     const t = ev.target;
+    if (vDemandes.saisie(t)) return;
     if (t.id === 'an-texte') { $('[data-compte]', root).textContent = `${t.value.length} / 160`; $('[data-annonce-apercu]', root).textContent = t.value || '…'; plus_tard(() => agir('annonce', { texte: t.value.trim() }, { msg: 'Annonce enregistrée.', lien: D.pages.accueil, groupe: 'annonce-texte' })); return; }
     if (t.closest('[data-form-ardoise]')) { plus_tard(() => sauverArdoise()); return; }
     if (t.closest('[data-form-textes]')) { const cle = t.name, x = D.textes.find((y) => y.cle === cle); plus_tard(() => agir('texte', { cle, valeur: t.value, defaut: x?.defaut }, { msg: 'Texte enregistré : visible sur le site, dans ce navigateur.', lien: x?.url, groupe: `texte-${cle}` })); return; }
@@ -435,8 +468,8 @@ export function init(root) {
     if (f.matches('[data-esp-connexion]')) { try { sessionStorage.setItem('jh-espace-session', '1'); } catch { /* rien */ } montrer(true); return; }
     if (f.matches('[data-form-ajout]')) {
       const v = Object.fromEntries(new FormData(f)); if (!v.nom.trim()) { f.elements.nom.focus(); return; }
-      agir('ajouterResa', { resa: { id: 'tel-' + Date.now().toString(36), date: jourChoisi, service: v.service, heure: v.heure, couverts: Math.max(1, +v.couverts || 2), nom: v.nom.trim(), telephone: v.telephone.trim(), demande: v.demande.trim(), espace: 'salle', statut: 'confirmee', source: 'telephone' } }, { msg: 'Réservation ajoutée à l\'agenda.' });
-      ajoutOuvert = false; rendre(); $('[data-ajouter]', root)?.focus(); return;
+      agir('ajouterResa', { resa: { id: 'tel-' + Date.now().toString(36), date: etat.jour, service: v.service, heure: v.heure, couverts: Math.max(1, +v.couverts || 2), nom: v.nom.trim(), telephone: v.telephone.trim(), demande: v.demande.trim(), espace: 'salle', statut: 'confirmee', source: 'telephone' } }, { msg: 'Réservation ajoutée à l\'agenda.' });
+      etat.ajoutOuvert = false; rendre(); $('[data-ajouter]', root)?.focus(); return;
     }
     if (f.matches('[data-form-fermeture]')) {
       const du = f.elements.du.value; if (!du) return;
@@ -447,7 +480,7 @@ export function init(root) {
       const v = Object.fromEntries(new FormData(f)); if (!v.titre.trim()) { f.elements.titre.focus(); return; }
       const id = f.dataset.id, p = f._photo, base = D.agenda.find((x) => x.id === id);
       const champs = { titre: v.titre.trim(), type: v.type, debut: v.debut, service: v.service, prix: v.prix.trim(), image: p.image || base?.image || 'vraie/salle-pierre', l: p.l, src: p.src || null, cadrage: p.cadrage };
-      if (agir('evenement', { id, champs, agenda: D.agenda }, { msg: 'Événement enregistré : visible sur la page Les fêtes.', lien: D.pages.fetes })) { evEdite = null; rendre(); $(`[data-editer="${CSS.escape(id)}"]`, root)?.focus(); }
+      if (agir('evenement', { id, champs, agenda: D.agenda }, { msg: 'Événement enregistré : visible sur la page Les fêtes.', lien: D.pages.fetes })) { etat.evEdite = null; rendre(); $(`[data-editer="${CSS.escape(id)}"]`, root)?.focus(); }
     }
   });
 
@@ -455,9 +488,22 @@ export function init(root) {
   function montrer(dedans) {
     $('[data-esp-connexion]', root).hidden = dedans; $('[data-esp-app]', root).hidden = !dedans; $('[data-esp-outils]', root).hidden = !dedans;
     root.classList.toggle('est-connecte', dedans); document.documentElement.classList.toggle('esp-dedans', dedans);
-    if (dedans) { let v = 'jour'; try { v = sessionStorage.getItem('jh-espace-vue') || 'jour'; } catch { /* rien */ } if (!corps(v)) v = 'jour'; allerVue(v, false); $('[data-esp-vue][aria-current]', root)?.focus({ preventScroll: true }); }
+    if (dedans) { let v = 'jour'; try { v = sessionStorage.getItem('jh-espace-vue') || 'jour'; } catch { /* rien */ } if (!$(`[data-vue="${v}"]`, root)) v = 'jour'; allerVue(v, false); $('[data-esp-vue][aria-current]', root)?.focus({ preventScroll: true }); }
     else { scrollTo({ top: 0, behavior: 'instant' }); $('#esp-id', root)?.focus({ preventScroll: true }); }
   }
+  // ---------- En direct : une demande faite sur le site dans un autre onglet arrive pendant que l'espace est ouvert ----------
+  const idsSite = () => [...depot.resasSite(), ...depot.demandesSite()].map((x) => x.id);
+  let connus = new Set(idsSite());
+  depot.ecouter(() => {
+    contexte = null; const neufs = idsSite().filter((id) => !connus.has(id)); connus = new Set(idsSite());
+    if (!root.classList.contains('est-connecte')) return;
+    rendre(); if (!neufs.length) return;
+    const id = neufs[neufs.length - 1], r = depot.resasSite().find((x) => x.id === id), d = r ? null : normaliser(depot.demandesSite().find((x) => x.id === id));
+    const quoi = r ? `${[r.prenom, r.nom].filter(Boolean).join(' ') || 'Une table'}, ${pluriel(+r.couverts || 2, 'couvert')}, ${fmt(r.date)} à ${heure(r.heure)}` : `${d.qui}, ${GENRES[d.genre].nom.toLowerCase()} : ${d.titre}`;
+    dire(`Nouvelle demande depuis le site : ${quoi}.`, { action: { libelle: 'Voir', faire: () => { etat.filtreDemandes = 'tout'; etat.demandeOuverte = d ? id : null; allerVue('demandes'); viser($(`[data-resa="${CSS.escape(id)}"], [data-demande="${CSS.escape(id)}"]`, root), 'center'); } } });
+    for (const b of $$('[data-esp-badge="demandes"]', root)) { b.classList.remove('est-neuf'); void b.offsetWidth; b.classList.add('est-neuf'); }
+  });
+
   let session = false; try { session = sessionStorage.getItem('jh-espace-session') === '1'; } catch { /* rien */ }
   if (session) montrer(true); else document.documentElement.classList.remove('esp-dedans');
 }

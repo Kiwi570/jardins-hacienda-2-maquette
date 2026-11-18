@@ -56,7 +56,7 @@ test('« ajouter une soirée raclette le 12 » crée le billet', () => {
   const p = un('ajouter une soirée raclette le 12');
   assert.equal(p.titre, 'Créer « Soirée raclette », samedi 12 décembre au soir'); assert.equal(p.action.nom, 'evenement');
   assert.deepEqual({ ...p.action.args.champs }, { titre: 'Soirée raclette', type: 'Soirée', debut: '2026-12-12', service: 'soir', prix: '', image: 'vraie/salle-pierre', cadrage: '50% 50%' });
-  assert.deepEqual(p.aller, { vue: 'evenements', editer: p.action.args.id });
+  assert.deepEqual(p.aller, { vue: 'site', onglet: 'soirees', editer: p.action.args.id });
   const S = appliquer({}, 'evenement', { ...p.action.args, agenda: AGENDA }); assert.equal(S.evenements.ajouts[0].titre, 'Soirée raclette');
   assert.equal(un('Brunch de Noël dimanche 20 décembre').action.args.champs.type, 'Brunch'); assert.equal(un('brunch de noël dimanche 20 décembre').action.args.champs.service, 'midi');
   assert.equal(un('créer un concert jazz samedi').action.args.champs.titre, 'Concert jazz');
@@ -90,7 +90,8 @@ test('une réservation prise au téléphone', () => {
 });
 
 test('ouvrir une rubrique, retrouver un client, ne rien inventer', () => {
-  assert.deepEqual(un('horaires').aller, { vue: 'textes', ancre: 't-horaires' }); assert.equal(un('ardoise').aller.ancre, 't-ardoise'); assert.equal(un('photos').aller.vue, 'photos');
+  assert.deepEqual(un('horaires').aller, { vue: 'site', ancre: 't-horaires', onglet: 'horaires' }); assert.deepEqual(un('ardoise').aller, { vue: 'carte', ancre: 't-ardoise' }); assert.deepEqual(un('photos').aller, { vue: 'site', onglet: 'photos' });
+  assert.deepEqual(un('mariages').aller, { vue: 'demandes', filtre: 'reception' }); assert.deepEqual(un('commandes traiteur').aller, { vue: 'demandes', filtre: 'traiteur' }); assert.deepEqual(un('messages').aller, { vue: 'site', onglet: 'messages' });
   assert.deepEqual(un('samedi').aller, { vue: 'resas', jour: '2026-11-21' });
   const resas = Array.from({ length: 12 }, (_, k) => resasDuJour({ R, auj: AUJ, site: [] }, {}, ajouter(AUJ, k))).flat();
   const nom = resas[0].nom.split(/[ .]/)[0]; const c = comprendre(nom.toLowerCase(), ctx({}, { resas })).filter((p) => p.genre === 'client');

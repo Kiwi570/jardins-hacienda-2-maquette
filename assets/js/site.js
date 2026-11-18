@@ -5,6 +5,8 @@
    passe, vraies, apres-midi, terrasse, guirlandes, carton, braises, decompte, carte-apercu. */
 /* v7.6.0 · L'aperçu des modifications de l'espace restaurateur passe avant tout (textes, photos, horaires, événements). */
 import './espace-apercu.js?v=7';
+/* v7.7.2 · Les demandes faites sur le site (réception, traiteur, carte cadeau, question) arrivent dans l'espace restaurateur. */
+import { ajouterDemandeSite } from './espace-stock.js?v=7';
 import { demarrer, boucle, etat, versObjet, quand, aller, partir, bloquerDefilement, debloquerDefilement, revelerMaintenant } from './socle/index.js?v=7';
 
 const gsap = window.gsap;
@@ -168,6 +170,8 @@ function rappelSoiree() {
   el.textContent = `Pour\u00a0: ${x.t}, ${jour}${x.p ? ` · ${x.p}` : ''}.`; el.hidden = false;
 }
 /* Une question (Infos pratiques) : après l'envoi, le message de fin revient à l'écran. */
+document.addEventListener('formulaire:envoye', (e) => { const v = e.detail?.valeurs || e.detail || {}; ajouterDemandeSite({ genre: 'question', sujet: String((e.detail?.resume || []).flatMap((g) => g.champs || []).find((c) => c.nom === 'sujet')?.valeur || v.sujet || ''), message: v.message || '', date: v.date || '', prenom: v.prenom || '', nom: v.nom || '', telephone: v.telephone || '', email: v.email || '' }); });
+document.addEventListener('ccq:valide', (e) => { const d = e.detail || {}; ajouterDemandeSite({ genre: 'cadeau', montant: d.montant, quantite: d.quantite, total: d.total, pour: d.pour || '', de: d.de || '', mot: d.mot || '' }); });
 document.addEventListener('formulaire:envoye', (e) => { const fin = e.target.closest('[data-module="formulaire-par-etapes"]')?.querySelector('.fpe__fin'); if (fin) setTimeout(() => amenerDansEcran(fin, true), 120); });
 let givreEnAttente = null;
 function givreAuRepos() {
@@ -1737,6 +1741,8 @@ function emporter() {
     }
     const j = $('[name="jour"]:checked', form), m = $('[name="moment"]:checked', form);
     const produits = lignes.map((l) => `${l.qte} × ${nomLigne(l)}`).join(', ');
+    /* Démonstration (v7.7.2) : la commande arrive dans l'espace restaurateur de ce navigateur. */
+    ajouterDemandeSite({ genre: 'traiteur', produits: lignes.map((l) => ({ nom: nomLigne(l), qte: l.qte })), total: total(), jour: j.value, jourLibelle: j.dataset.libelle, moment: m.value, prenom: form.elements.prenom?.value.trim() || '', nom: form.elements.nom?.value.trim() || '', telephone: form.elements.tel?.value.trim() || '', email: form.elements.email?.value.trim() || '' });
     merci.innerHTML = '<p><strong></strong></p><p></p>';
     merci.querySelector('strong').textContent = fmt(T.recap, { produits, total: euros(total()), retrait: fmt(T.retrait, { jour: j.dataset.libelle, moment: T[m.value] }) });
     merci.querySelector('p + p').textContent = T.simule;
@@ -1867,6 +1873,8 @@ function demande() {
   f.addEventListener('submit', (e) => {
     e.preventDefault(); if (envoye || !valide(etapes[k])) return;
     envoye = true; recap();
+    /* Démonstration (v7.7.2) : la demande de réception arrive dans l'espace restaurateur de ce navigateur. */
+    { const d = new FormData(f); ajouterDemandeSite({ genre: 'reception', occasion: $('[name="occasion"]:checked', f)?.dataset.un || d.get('occasion') || '', date: d.get('date') || '', periode: d.get('date') ? '' : d.get('periode') || '', invites: d.get('invites') || '', espace: d.get('espace') || '', message: (d.get('message') || '').trim(), prenom: (d.get('prenom') || '').trim(), nom: (d.get('nom') || '').trim(), telephone: (d.get('telephone') || '').trim(), email: (d.get('email') || '').trim() }); }
     $$('button', f).forEach((b) => { b.disabled = true; });
     inv.classList.add('est-tamponnee');
     msg.hidden = false; msg.focus({ preventScroll: true });

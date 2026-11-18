@@ -1,0 +1,15 @@
+{
+ "id": "20261118-164648-complet-cible-partiel",
+ "date": "2026-11-18T16:49:23.267Z",
+ "niveau": "complet",
+ "pages": "/espace",
+ "etapes": [
+  "parcours"
+ ],
+ "version": "7",
+ "echecs": 0,
+ "aRegarder": 0,
+ "nonLances": 1,
+ "manquants": 1,
+ "statut": "INCOMPLET"
+}

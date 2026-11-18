@@ -1,5 +1,5 @@
 /* Le stockage de l'espace restaurateur (démonstration) : le SEUL fichier qui touche à la mémoire du navigateur.
-   Aujourd'hui : deux entrées du localStorage. Demain : ce fichier se remplace par des appels à une API (ou GitHub pour
+   Aujourd'hui : trois entrées du localStorage (l'état de l'espace, les réservations et les autres demandes venues du site). Demain : ce fichier se remplace par des appels à une API (ou GitHub pour
    le contenu et une base de données pour les réservations) sans toucher au reste : l'espace passe par espace-donnees.js,
    le site par espace-apercu.js, la page Réserver par ajouterResaSite().
    Toute lecture ou écriture est protégée : stockage plein, bloqué ou navigation privée, la page reste juste.
@@ -12,9 +12,11 @@
      horaires  { semaine: { lundi: ['12:00-14:30'], … }, exceptions: [{ du, au, motif }] }
      resa      { statuts: { [id]: statut }, complets: { [date]: [service] }, fermes: { [date]: [service] }, ajouts: [réservation] }
      evenements{ modifs: { [id]: champs }, ajouts: [événement], liste: [résumé pour l'accueil et Réserver] }
+     demandes  { statuts: { [id]: étape }, notes: { [id]: texte } }   (v7.7.2 : réceptions, traiteur, cartes cadeaux, questions)
+     messages  { [modèle]: texte }                                    (v7.7.2 : les messages envoyés aux clients)
    Les clés qui commencent par « _ » sont de l'intendance : elles ne comptent pas comme une modification du site. */
 export const SCHEMA = 2;
-const CLE = 'jh-espace:v1', CLE_RESAS = 'jh-espace-resas:v1';
+const CLE = 'jh-espace:v1', CLE_RESAS = 'jh-espace-resas:v1', CLE_DEMANDES = 'jh-espace-demandes:v1';
 
 /** Met un objet lu au schéma courant (fonction pure : ne touche pas au stockage).
     1 → 2 : chaque fermeture exceptionnelle a toujours une fin (`au`) et un motif. */
@@ -38,10 +40,28 @@ export function ecrire(d) {
 }
 /** Lit, change (f reçoit l'objet), enregistre ; renvoie false si l'enregistrement a échoué (et ne change rien). */
 export function changer(f) { const d = lire(); f(d); return ecrire(d); }
-export function vider() { try { localStorage.removeItem(CLE); localStorage.removeItem(CLE_RESAS); } catch { /* rien */ } }
+export function vider() { try { localStorage.removeItem(CLE); localStorage.removeItem(CLE_RESAS); localStorage.removeItem(CLE_DEMANDES); } catch { /* rien */ } }
 export const estVide = (d) => !d || !Object.keys(d).some((k) => !k.startsWith('_') && d[k] && (typeof d[k] !== 'object' || Object.keys(d[k]).length));
 
 /* Les réservations faites sur la page Réserver de ce navigateur : elles arrivent dans l'agenda de l'espace. */
 export function resasSite() { try { const l = JSON.parse(localStorage.getItem(CLE_RESAS) || '[]'); return Array.isArray(l) ? l : []; } catch { return []; } }
 export function ecrireResasSite(l) { try { if (l?.length) localStorage.setItem(CLE_RESAS, JSON.stringify(l.slice(-80))); else localStorage.removeItem(CLE_RESAS); return true; } catch { return false; } }
 export function ajouterResaSite(r) { const l = resasSite().filter((x) => x.id !== r.id); l.push(r); return ecrireResasSite(l); }
+
+/* Les autres demandes faites sur le site de ce navigateur (v7.7.2) : réception, commande traiteur, carte cadeau, question.
+   Chacune porte son genre, un identifiant et l'heure de sa création. */
+const liste = (cle) => { try { const l = JSON.parse(localStorage.getItem(cle) || '[]'); return Array.isArray(l) ? l : []; } catch { return []; } };
+export const demandesSite = () => liste(CLE_DEMANDES);
+export function ecrireDemandesSite(l) { try { if (l?.length) localStorage.setItem(CLE_DEMANDES, JSON.stringify(l.slice(-80))); else localStorage.removeItem(CLE_DEMANDES); return true; } catch { return false; } }
+export function ajouterDemandeSite(d) {
+  const maintenant = new Date();
+  return ecrireDemandesSite([...demandesSite(), { id: `${(d.genre || 'demande').charAt(0).toUpperCase()}-${maintenant.getTime().toString(36)}`, cree: maintenant.toISOString(), ...d }]);
+}
+
+/** Prévient quand le stockage change ailleurs (un autre onglet de ce navigateur : une demande arrive pendant que l'espace
+    est ouvert). Demain : un abonnement au serveur. Renvoie de quoi arrêter l'écoute. */
+export function ecouter(f) {
+  const sur = (ev) => { const quoi = ev.key === CLE_RESAS ? 'resas' : ev.key === CLE_DEMANDES ? 'demandes' : ev.key === CLE || ev.key === null ? 'etat' : null; if (quoi) f(quoi); };
+  try { addEventListener('storage', sur); } catch { return () => {}; }
+  return () => removeEventListener('storage', sur);
+}

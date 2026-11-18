@@ -4,7 +4,8 @@
    date entière, et l'action nommée de espace-donnees.js à lancer (ou la rubrique à ouvrir). Rien n'est fait ici :
    l'écran (espace.js) lance l'action choisie, qui reste annulable comme les autres.
    Phrases comprises : fermer ou rouvrir un service, le dire complet, ajouter une soirée, poser une fermeture (du … au …),
-   afficher ou retirer l'annonce, noter une réservation prise au téléphone, ouvrir une rubrique, retrouver un client. */
+   afficher ou retirer l'annonce, noter une réservation prise au téléphone, ouvrir une rubrique, retrouver un client.
+   v7.7.2 : les rubriques sont Aujourd'hui, Demandes, Réservations, Carte et Site (avec ses onglets). */
 import { JOURS, ajouter, jourDe, fmt, maj, heure, hhmm, enMin, typo, pluriel, servicesDe, creneaux, ouvert, complet } from './espace-regles.js?v=7';
 
 const MOIS = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'];
@@ -54,13 +55,21 @@ const propre = (t) => maj(String(t || '').replace(/\s+/g, ' ').trim());
 const RUBRIQUES = [
   [/\b(aujourd'?hui|accueil|tableau|jour)\b/, 'jour', 'Ouvrir « Aujourd\'hui »', 'Le service du jour et les demandes en attente.'],
   [/\b(agenda|reservations?|resas?|planning|semaine)\b/, 'resas', 'Ouvrir les réservations', 'L\'agenda de la semaine, midi et soir.'],
-  [/\b(evenements?|soirees?|fetes?|billets?)\b/, 'evenements', 'Ouvrir les événements', 'Modifier, masquer ou créer une soirée.'],
-  [/\b(horaires?|ouverture)\b/, 'textes', 'Ouvrir les horaires de la semaine', 'Le statut « ouvert maintenant » et la réservation les suivent.', 't-horaires'],
-  [/\b(ardoise|plats? du jour|suggestions?)\b/, 'textes', 'Ouvrir l\'ardoise de la semaine', 'Le midi et le soir, plat par plat.', 't-ardoise'],
-  [/\b(annonce|bandeau)\b/, 'textes', 'Ouvrir l\'annonce', 'Un petit mot sur toutes les pages du site.', 't-annonce'],
-  [/\b(textes?|ecrire|phrase)\b/, 'textes', 'Ouvrir les textes du site', 'Six textes de l\'accueil.', 't-textes'],
-  [/\b(photos?|images?|phototheque)\b/, 'photos', 'Ouvrir les photos', 'Remplacer et cadrer six photos du site.'],
+  [/\b(demandes?|boite|a traiter)\b/, 'demandes', 'Ouvrir les demandes', 'Tout ce que le site envoie : tables, réceptions, traiteur, cartes cadeaux, questions.', null, null, 'tout'],
+  [/\b(receptions?|mariages?|bapteme|anniversaires?|seminaires?)\b/, 'demandes', 'Ouvrir les demandes de réception', 'Mariages, anniversaires, baptêmes : où en est chacune.', null, null, 'reception'],
+  [/\b(traiteur|commandes?|emporter)\b/, 'demandes', 'Ouvrir les commandes traiteur', 'À confirmer, à préparer, à remettre.', null, null, 'traiteur'],
+  [/\b(cadeaux?|cartes? cadeaux?)\b/, 'demandes', 'Ouvrir les cartes cadeaux', 'Celles qui attendent d\'être envoyées.', null, null, 'cadeau'],
+  [/\b(questions?)\b/, 'demandes', 'Ouvrir les questions', 'Celles qui attendent une réponse.', null, null, 'question'],
+  [/\b(evenements?|soirees?|fetes?|billets?)\b/, 'site', 'Ouvrir les soirées', 'Modifier, masquer ou créer une soirée.', null, 'soirees'],
+  [/\b(horaires?|ouverture)\b/, 'site', 'Ouvrir les horaires de la semaine', 'Le statut « ouvert maintenant » et la réservation les suivent.', 't-horaires', 'horaires'],
+  [/\b(ardoise|plats? du jour|suggestions?)\b/, 'carte', 'Ouvrir l\'ardoise de la semaine', 'Le midi et le soir, plat par plat.', 't-ardoise'],
+  [/\b(annonce|bandeau)\b/, 'site', 'Ouvrir l\'annonce', 'Un petit mot sur toutes les pages du site.', 't-annonce', 'horaires'],
+  [/\b(messages?|sms|modeles?)\b/, 'site', 'Ouvrir les messages aux clients', 'Le texte que reçoit le client quand vous répondez.', null, 'messages'],
+  [/\b(textes?|ecrire|phrase)\b/, 'site', 'Ouvrir les textes du site', 'Six textes de l\'accueil.', null, 'textes'],
+  [/\b(photos?|images?|phototheque)\b/, 'site', 'Ouvrir les photos', 'Remplacer et cadrer six photos du site.', null, 'photos'],
 ];
+/** Où aller : la rubrique, et s'il y a lieu l'onglet de « Site », la carte à repérer, le filtre des demandes. */
+const vers = (vue, ancre, onglet, filtre) => ({ vue, ...(ancre ? { ancre } : {}), ...(onglet ? { onglet } : {}), ...(filtre ? { filtre } : {}) });
 export const EXEMPLES = ['fermer samedi soir', 'ajouter une soirée raclette le 12', 'complet demain midi', 'annonce : complet ce soir, merci !', 'congés du 4 au 18 janvier', 'table pour 4 vendredi 20 h au nom de Martin'];
 
 /**
@@ -85,13 +94,13 @@ export function comprendre(texte, ctx) {
   else if (periode && /\b(fermeture|ferme|fermer|conges?|vacances|travaux)\b/.test(n)) {
     const motif = /\bconges?|vacances\b/.test(n) ? 'Congés annuels' : /\btravaux\b/.test(n) ? 'Travaux' : 'Fermeture exceptionnelle';
     out.push({ genre: 'fermeture', titre: `Fermer du ${fmt(periode.du, { day: 'numeric', month: 'long' })} au ${fmt(periode.au, { day: 'numeric', month: 'long', year: 'numeric' })}`, detail: `${motif} : le site affichera « fermé » et la réservation ne proposera plus ces jours.`,
-      action: { nom: 'ajouterFermeture', args: { ...periode, motif }, msg: 'Fermeture ajoutée : le site affichera « fermé » ces jours-là.', lien: pages.infos }, aller: { vue: 'textes', ancre: 't-fermetures' } });
+      action: { nom: 'ajouterFermeture', args: { ...periode, motif }, msg: 'Fermeture ajoutée : le site affichera « fermé » ces jours-là.', lien: pages.infos }, aller: vers('site', 't-fermetures', 'horaires') });
   }
   /* Rouvrir, fermer, complet : un jour, un service (ou les deux). */
   else if (date && /^(rouvrir|reouvrir|ouvrir|rouvre)\b/.test(n)) {
     const fermes = (sv ? [sv] : tous).filter((s) => (S.resa?.fermes?.[date] || []).includes(s));
     out.push(fermes.length ? { genre: 'ouvrir', titre: `Rouvrir ${quand(date, fermes)}`, detail: 'La réservation en ligne proposera de nouveau ce service.', action: { nom: 'fermer', args: { date, services: fermes, actif: false }, msg: 'Service rouvert.', lien: pages.reserver }, aller: { vue: 'resas', jour: date } }
-      : { genre: 'ouvrir', titre: `Rien à rouvrir ${quand(date, sv ? [sv] : tous)}`, detail: 'Ce service n\'a pas été fermé depuis l\'agenda. Pour un jour habituellement fermé, changez les horaires de la semaine.', aller: { vue: 'textes', ancre: 't-horaires' } });
+      : { genre: 'ouvrir', titre: `Rien à rouvrir ${quand(date, sv ? [sv] : tous)}`, detail: 'Ce service n\'a pas été fermé depuis l\'agenda. Pour un jour habituellement fermé, changez les horaires de la semaine.', aller: vers('site', 't-horaires', 'horaires') });
   } else if (date && /\b(fermer|ferme|fermeture|fermons)\b/.test(n)) {
     const l = ouverts(date, sv ? [sv] : tous);
     out.push(l.length ? { genre: 'fermer', titre: `Fermer ${quand(date, l)}`, detail: 'Plus de réservation en ligne pour ce service ; les réservations déjà prises restent dans l\'agenda.', action: { nom: 'fermer', args: { date, services: l, actif: true }, msg: 'Service fermé ce jour-là : plus de réservation en ligne.', lien: pages.reserver }, aller: { vue: 'resas', jour: date } }
@@ -108,11 +117,11 @@ export function comprendre(texte, ctx) {
     const type = /brunch/i.test(titre) ? 'Brunch' : /concert/i.test(titre) ? 'Concert' : /atelier/i.test(titre) ? 'Atelier' : /f[êe]te/i.test(titre) ? 'Fête' : 'Soirée', service = type === 'Brunch' || sv === 'midi' ? 'midi' : 'soir';
     const id = `ev-${date}-${simplifier(titre).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24)}`;
     if (titre.length > 2) out.push({ genre: 'evenement', titre: `Créer « ${titre} », ${dateLongue(date)}${service === 'midi' ? ' au déjeuner' : ' au soir'}`, detail: 'Le billet s\'ajoute sur la page Les fêtes ; vous complétez ensuite le prix et la photo.',
-      action: { nom: 'evenement', args: { id, champs: { titre, type, debut: date, service, prix: '', image: 'vraie/salle-pierre', cadrage: '50% 50%' } }, msg: `« ${titre} » est sur le site : ajoutez le prix et la photo.`, lien: pages.fetes }, aller: { vue: 'evenements', editer: id } });
+      action: { nom: 'evenement', args: { id, champs: { titre, type, debut: date, service, prix: '', image: 'vraie/salle-pierre', cadrage: '50% 50%' } }, msg: `« ${titre} » est sur le site : ajoutez le prix et la photo.`, lien: pages.fetes }, aller: { vue: 'site', onglet: 'soirees', editer: id } });
   }
-  if (retirerAnnonce) out.push(S.annonce?.active ? { genre: 'annonce', titre: 'Retirer l\'annonce du site', detail: `« ${S.annonce.texte} »`, action: { nom: 'annonce', args: { active: false }, msg: 'Annonce retirée.', lien: pages.accueil }, aller: { vue: 'textes', ancre: 't-annonce' } }
-    : { genre: 'annonce', titre: 'Aucune annonce n\'est affichée', detail: 'Rien à retirer.', aller: { vue: 'textes', ancre: 't-annonce' }, inactif: true });
-  else if (an) { const t = typo(propre(an[1])).slice(0, 160); out.push({ genre: 'annonce', titre: 'Afficher cette annonce sur tout le site', detail: `« ${t} »`, action: { nom: 'annonce', args: { active: true, texte: t }, msg: 'Annonce affichée sur toutes les pages.', lien: pages.accueil }, aller: { vue: 'textes', ancre: 't-annonce' } }); }
+  if (retirerAnnonce) out.push(S.annonce?.active ? { genre: 'annonce', titre: 'Retirer l\'annonce du site', detail: `« ${S.annonce.texte} »`, action: { nom: 'annonce', args: { active: false }, msg: 'Annonce retirée.', lien: pages.accueil }, aller: vers('site', 't-annonce', 'horaires') }
+    : { genre: 'annonce', titre: 'Aucune annonce n\'est affichée', detail: 'Rien à retirer.', aller: vers('site', 't-annonce', 'horaires'), inactif: true });
+  else if (an) { const t = typo(propre(an[1])).slice(0, 160); out.push({ genre: 'annonce', titre: 'Afficher cette annonce sur tout le site', detail: `« ${t} »`, action: { nom: 'annonce', args: { active: true, texte: t }, msg: 'Annonce affichée sur toutes les pages.', lien: pages.accueil }, aller: vers('site', 't-annonce', 'horaires') }); }
   /* Une réservation prise au téléphone : « table pour 4 vendredi 20 h au nom de Martin ». */
   if (!out.length && /^(reserver|reserve|reservation|resa|table|noter|ajouter une (reservation|table|resa))\b/.test(n)) {
     const c = n.match(/\bpour (\d{1,2})\b(?! ?h)/) || n.match(/\b(\d{1,2}) ?(?:personnes?|couverts?|pers|pax|p)\b/), nb = c ? Math.max(1, Math.min(30, +c[1])) : 2;
@@ -127,7 +136,7 @@ export function comprendre(texte, ctx) {
       action: { nom: 'ajouterResa', args: { resa: { date: d, service: svr, heure: h, couverts: nb, nom: nom ? propre(nom) : 'Sans nom', telephone: '', demande: '', espace: 'salle', statut: 'confirmee', source: 'telephone' } }, msg: 'Réservation ajoutée à l\'agenda.' }, aller: { vue: 'resas', jour: d } });
   }
   /* Ouvrir une rubrique. */
-  if (!out.length || out.every((p) => p.inactif)) for (const [re, vue, titre, detail, ancre] of RUBRIQUES) if (re.test(n) && !out.some((p) => p.aller?.vue === vue && p.aller?.ancre === ancre)) out.push({ genre: 'aller', titre, detail, aller: { vue, ancre } });
+  if (!out.length || out.every((p) => p.inactif)) for (const [re, vue, titre, detail, ancre, onglet, filtre] of RUBRIQUES) if (re.test(n) && !out.some((p) => p.titre === titre)) out.push({ genre: 'aller', titre, detail, aller: vers(vue, ancre, onglet, filtre) });
   if (/\b(voir|ouvrir) le site\b|^site$/.test(n)) out.push({ genre: 'site', titre: 'Voir le site', detail: 'Avec vos modifications, dans ce navigateur.', aller: { url: pages.accueil || '/' } });
   if (date && !out.some((p) => p.action || p.aller?.jour)) out.push({ genre: 'aller', titre: `Ouvrir l'agenda du ${dateLongue(date)}`, detail: 'Les réservations du midi et du soir.', aller: { vue: 'resas', jour: date } });
   /* Retrouver un client par son nom, dans les quatre semaines qui viennent. */
