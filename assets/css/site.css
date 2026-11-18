@@ -3890,3 +3890,249 @@ html[data-saison="ete"] .feu--resto .feu__braises { display: none; }
 /* Chaque rang se fait aussi glisser au doigt (et le texte des cartes à moitié sorties n'est pas « coupé »). */
 .avis-defile__rang { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; }
 .avis-defile__rang::-webkit-scrollbar { display: none; }
+
+/* =====================================================================================================================
+   v7.5.31 · Réserver, une étape à la fois : 1 Quand (cartes de calendrier, « Plus tard » et le mois), 2 Combien (les
+   assiettes autour de la table) et l'heure (une frise, la ligne d'or), 3 Où, 4 Vous ; à côté, le carton de table qui se
+   remplit, le tampon de l'heure, puis « Réservé ». L'or marque partout ce qui est choisi ; le rouge reste aux boutons.
+   ===================================================================================================================== */
+.resa { --resa-or: var(--or); --resa-sur-or: #1c1712; --resa-plateau: color-mix(in oklab, var(--couleur-texte) 4%, var(--couleur-fond));
+  --resa-carte: color-mix(in oklab, var(--couleur-texte) 8%, var(--couleur-fond)); --resa-bande: #c9452a; --resa-ombre: rgba(0, 0, 0, .55); }
+html[data-service="midi"] .resa { --resa-or: var(--or-fonce); --resa-sur-or: #fff; --resa-plateau: #fbf7ef; --resa-carte: #fff; --resa-bande: var(--rouge); --resa-ombre: rgba(28, 23, 18, .22); }
+@media (min-width: 980px) { .resa .resa__grille { grid-template-columns: minmax(0, 1.55fr) minmax(320px, .9fr); } }
+.resa__form.est-etapes { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+.resa__etape { display: grid; gap: clamp(22px, 2.8vw, 32px); min-width: 0; }
+.resa__form.est-etapes .resa__etape { padding: clamp(18px, 2.4vw, 30px); border-radius: 22px; background: var(--resa-plateau); border: 1px solid var(--couleur-ligne); box-shadow: 0 24px 50px -40px var(--resa-ombre); }
+.resa__etape.est-entre { animation: resa-entre .5s cubic-bezier(.2, .8, .2, 1) both; }
+.resa__etape.est-entre.est-retour { animation-name: resa-revient; }
+@keyframes resa-entre { from { opacity: 0; transform: translateX(32px); } }
+@keyframes resa-revient { from { opacity: 0; transform: translateX(-32px); } }
+.resa__form.est-etapes :is(legend, .resa__libelle) { font-family: var(--police-titres); font-style: italic; font-weight: 500; font-size: clamp(1.3rem, 1.1rem + .6vw, 1.65rem); line-height: 1.15; margin-bottom: 14px; }
+.resa__form.est-etapes .resa__plus legend { font-size: 1rem; }
+.resa.est-actif .resa__date--jour { display: none; }
+
+/* La frise des étapes */
+.resa__progression { --avance: 0; position: relative; list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.resa__progression::before, .resa__progression::after { content: ""; position: absolute; top: 21px; left: 12.5%; width: 75%; height: 2px; border-radius: 2px; background: var(--couleur-ligne); }
+.resa__progression::after { width: calc(75% * var(--avance)); background: var(--resa-or); transition: width .7s cubic-bezier(.3, .8, .3, 1); }
+.resa__progression li { position: relative; z-index: 1; display: flex; justify-content: center; }
+.resa__pas { display: grid; justify-items: center; gap: 6px; padding: 0 2px; border: 0; background: none; color: var(--couleur-texte-doux); font: inherit; cursor: pointer; }
+.resa__pas-n { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--couleur-ligne); background: var(--couleur-fond); font-family: var(--police-titres); font-size: 1.15rem; font-weight: 600; transition: background .35s, border-color .35s, color .35s, transform .35s, box-shadow .35s; }
+.resa__pas-t { font-size: max(12px, .76rem); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.resa__pas:hover .resa__pas-n { border-color: var(--resa-or); }
+.est-courant > .resa__pas, .est-fait > .resa__pas { color: var(--couleur-texte); }
+.est-courant .resa__pas-n { border-color: var(--resa-or); background: var(--resa-or); color: var(--resa-sur-or); transform: scale(1.08); box-shadow: 0 0 0 6px color-mix(in oklab, var(--resa-or) 22%, transparent); }
+.est-fait .resa__pas-n { border-color: var(--resa-or); color: var(--resa-or); font-size: 0; }
+.est-fait .resa__pas-n::before { content: ""; width: 18px; height: 18px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4.5 12.5l5 5L19.5 7' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4.5 12.5l5 5L19.5 7' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+.resa__pas:disabled { cursor: default; }
+
+/* 1 · Les jours en cartes de calendrier */
+.resa .resa__jours { display: grid; grid-auto-flow: row; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; overflow: visible; padding: 2px 0 6px; }
+@media (max-width: 1240px) { .resa .resa__jours { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; } }
+.resa .resa__jour { position: relative; display: grid; justify-items: center; align-content: start; gap: 0; min-height: 0; padding: 0 0 9px; border: 1px solid var(--couleur-ligne); border-radius: 12px; background: var(--resa-carte); color: var(--couleur-texte); overflow: hidden; box-shadow: 0 10px 20px -16px var(--resa-ombre); transition: transform .3s cubic-bezier(.3, 1.4, .5, 1), box-shadow .3s, border-color .3s; }
+.resa .resa__jour-mois { justify-self: stretch; padding: 4px 0 3px; background: var(--resa-bande); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; text-align: center; transition: background .3s, color .3s; }
+.resa .resa__jour-n { margin-top: 5px; font-family: var(--police-titres); font-size: clamp(1.7rem, 1.3rem + .9vw, 2.15rem); font-weight: 600; line-height: 1.05; color: var(--couleur-texte); font-variant-numeric: lining-nums; }
+.resa .resa__jour-nom { font-size: max(12px, .74rem); font-weight: 700; color: var(--couleur-texte-doux); white-space: nowrap; }
+.resa .resa__jour-dispo { display: flex; align-items: center; gap: 5px; min-height: 18px; margin-top: 6px; }
+.resa .resa__jour small { font-size: 11px; font-weight: 700; color: var(--couleur-texte-doux); }
+.resa__dispo { display: block; width: 17px; height: 17px; opacity: .3; }
+.resa__dispo.est-libre { opacity: 1; color: var(--resa-or); }
+.resa__dispo svg, .resa__ico svg, .resa__jour-ico svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.resa .resa__jour:not(:disabled):hover { transform: translateY(-3px); background: var(--resa-carte); border-color: color-mix(in oklab, var(--resa-or) 55%, var(--couleur-ligne)); }
+.resa .resa__jour[aria-pressed="true"] { transform: translateY(-4px) rotate(-1.5deg); border-color: var(--resa-or); background: var(--resa-carte); color: var(--couleur-texte); box-shadow: 0 0 0 2px var(--resa-or), 0 18px 28px -16px var(--resa-ombre); }
+.resa .resa__jour[aria-pressed="true"] .resa__jour-mois { background: var(--resa-or); color: var(--resa-sur-or); }
+.resa .resa__jour[aria-pressed="true"] .resa__jour-n { color: var(--couleur-texte); }
+.resa .resa__jour:disabled { opacity: .5; background: transparent; border-style: dashed; box-shadow: none; }
+.resa .resa__jour:disabled .resa__jour-mois { background: var(--couleur-ligne); color: var(--couleur-texte); }
+.resa .resa__jour--plus { align-content: center; gap: 6px; padding: 10px 4px; border-style: dashed; background: transparent; box-shadow: none; }
+.resa__jour-ico { width: 28px; height: 28px; color: var(--resa-or); }
+.resa .resa__jour--plus .resa__jour-nom { color: var(--couleur-texte); }
+.resa .resa__jour--plus[aria-expanded="true"] { border-style: solid; border-color: var(--resa-or); }
+.resa__cal { max-width: 440px; margin-top: 12px; padding: 14px; border-radius: 18px; border: 1px solid var(--couleur-ligne); background: var(--resa-carte); box-shadow: 0 20px 40px -26px var(--resa-ombre); }
+.resa__cal.est-ouvert { animation: resa-cal .4s cubic-bezier(.2, .8, .2, 1) both; transform-origin: 80% 0; }
+@keyframes resa-cal { from { opacity: 0; transform: translateY(-10px) scale(.97); } }
+.resa__cal-tete { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.resa__cal-titre { margin: 0; font-family: var(--police-titres); font-size: 1.2rem; font-weight: 600; }
+.resa__cal-nav { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--couleur-ligne); background: transparent; color: inherit; font-size: 1.4rem; line-height: 1; cursor: pointer; }
+.resa__cal-nav:not(:disabled):hover { border-color: var(--resa-or); }
+.resa__cal-nav:disabled { opacity: .3; cursor: default; }
+.resa__cal-noms, .resa__cal-grille { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; text-align: center; }
+.resa__cal-noms span { padding: 4px 0; font-size: 12px; font-weight: 800; color: var(--couleur-texte-doux); }
+.resa__cal-j { min-height: 42px; border: 0; border-radius: 50%; background: transparent; color: inherit; font: inherit; font-weight: 700; font-variant-numeric: tabular-nums; cursor: pointer; transition: background .2s, transform .2s; }
+.resa__cal-j:not(:disabled):hover { background: var(--couleur-surface); transform: scale(1.06); }
+.resa__cal-j:disabled { opacity: .3; cursor: default; font-weight: 500; }
+.resa__cal-j.est-auj { box-shadow: inset 0 0 0 1px var(--couleur-ligne); }
+.resa__cal-j[aria-pressed="true"] { background: var(--resa-or); color: var(--resa-sur-or); }
+
+/* 1 · Midi ou soir */
+.resa .resa__puce--service { flex: 1 1 200px; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; justify-content: start; gap: 0 14px; min-height: 72px; padding: 12px 18px; border-radius: 18px; text-align: left; border: 1px solid var(--couleur-ligne); background: var(--resa-carte); }
+.resa__puce--service .resa__ico { grid-row: 1 / span 3; width: 32px; height: 32px; color: var(--couleur-texte-doux); transition: color .3s, transform .5s cubic-bezier(.3, 1.4, .5, 1); }
+.resa__puce--service > span { font-family: var(--police-titres); font-size: 1.3rem; font-weight: 600; line-height: 1.1; }
+.resa__puce--service small { grid-column: 2; }
+.resa__puce--service small:empty { display: none; }
+.resa .resa__puce--service:hover { background: var(--resa-carte); border-color: color-mix(in oklab, var(--resa-or) 55%, var(--couleur-ligne)); }
+.resa .resa__puce--service:has(input:checked) { background: var(--resa-carte); color: var(--couleur-texte); border-color: var(--resa-or); box-shadow: 0 0 0 1px var(--resa-or); }
+.resa .resa__puce--service:has(input:checked) small { color: var(--couleur-texte-doux); }
+.resa__puce--service:has(input:checked) .resa__ico { color: var(--resa-or); transform: rotate(-18deg) scale(1.12); }
+.resa .resa__puce--service:has(input:disabled) { background: transparent; border-style: dashed; }
+
+/* 2 · Les assiettes autour de la table */
+.resa__couverts-scene { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 36px; }
+.resa__table { --n: 2; --p: 46px; --t: calc(86px + var(--n) * 8px); --r: calc(var(--t) / 2 + var(--p) * .6); position: relative; flex: none; width: 272px; height: 272px; }
+.resa__table:empty { display: none; }
+.resa__nappe { position: absolute; left: 50%; top: 50%; width: var(--t); height: var(--t); translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle at 34% 28%, #7a5639, #3e2a1c 72%); box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .06), 0 14px 26px -10px rgba(0, 0, 0, .75); transition: width .55s cubic-bezier(.3, 1.3, .5, 1), height .55s cubic-bezier(.3, 1.3, .5, 1); }
+html[data-service="midi"] .resa__nappe { background: radial-gradient(circle at 34% 28%, #fff, #eee4d2 74%); box-shadow: inset 0 0 0 1px rgba(28, 23, 18, .1), 0 14px 26px -12px rgba(28, 23, 18, .35); }
+.resa__centre { position: absolute; left: 50%; top: 50%; width: 12px; height: 12px; translate: -50% -50%; border-radius: 50%; background: #fff4d8; box-shadow: 0 0 10px 4px rgba(255, 190, 90, .55), 0 0 32px 14px rgba(255, 150, 60, .22); animation: resa-bougie 2.2s ease-in-out infinite alternate; }
+@keyframes resa-bougie { to { box-shadow: 0 0 14px 6px rgba(255, 196, 100, .7), 0 0 40px 18px rgba(255, 150, 60, .3); } }
+html[data-service="midi"] .resa__centre { width: 18px; height: 18px; background: radial-gradient(circle, #f2b84e 0 32%, #fff 35%); box-shadow: 0 0 0 3px #fff, 0 2px 6px rgba(28, 23, 18, .25); animation: none; }
+.resa__assiette { position: absolute; left: 50%; top: 50%; width: var(--p); height: var(--p); margin: calc(var(--p) / -2) 0 0 calc(var(--p) / -2); border-radius: 50%;
+  background: radial-gradient(circle, #fffdf8 0 46%, #d7b47a 47.5% 50%, #fffaf0 51.5% 100%); box-shadow: 0 4px 9px -3px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(28, 23, 18, .08);
+  opacity: 0; transform: rotate(var(--a, 270deg)) translateY(calc(-1 * var(--r))) rotate(calc(-1 * var(--a, 270deg))) scale(.2); transition: transform .6s cubic-bezier(.3, 1.25, .5, 1), opacity .3s; }
+.resa__assiette::after { content: ""; position: absolute; right: -5px; top: -5px; width: 11px; height: 11px; border-radius: 50%; background: rgba(205, 232, 240, .45); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .85), 0 1px 2px rgba(0, 0, 0, .2); }
+.resa__assiette.est-mise { opacity: 1; transform: rotate(var(--a)) translateY(calc(-1 * var(--r))) rotate(calc(-1 * var(--a))) scale(1); }
+.resa__couverts-cote { display: grid; justify-items: start; gap: 6px; }
+.resa .resa__compteur { gap: 10px; }
+.resa .resa__compteur button { width: 52px; height: 52px; border-color: var(--couleur-ligne); color: inherit; transition: border-color .2s, transform .2s, background .2s; }
+.resa .resa__compteur button:not(:disabled):hover { border-color: var(--resa-or); background: var(--couleur-surface); transform: scale(1.06); }
+.resa .resa__compteur input { width: 82px; font-family: var(--police-titres); font-size: 2.6rem; font-weight: 600; }
+.resa__couverts-mot { margin: 0; font-family: var(--police-titres); font-style: italic; font-size: 1.2rem; color: var(--couleur-texte-doux); }
+@media (max-width: 560px) {
+  .resa__couverts-scene { justify-content: center; }
+  .resa__table { --p: 34px; --t: calc(64px + var(--n) * 6px); width: 210px; height: 210px; }
+  .resa__couverts-cote { justify-items: center; width: 100%; }
+}
+
+/* 2 · Les heures sur une frise */
+.resa .resa__creneaux { min-height: 0; }
+.resa__frise { --k: 0; position: relative; }
+.resa__frise-piste { position: relative; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; scroll-snap-type: x proximity; padding: 2px 0 4px; }
+.resa__frise-piste::-webkit-scrollbar { display: none; }
+.resa__frise-rail { position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(58px, 1fr)); min-width: calc(var(--n) * 58px); }
+.resa__frise-ligne { position: absolute; top: 23px; left: calc(50% / var(--n)); right: calc(50% / var(--n)); height: 2px; border-radius: 2px; background: var(--couleur-ligne); }
+.resa__frise-or { position: absolute; inset: 0 auto 0 0; width: calc(var(--k) / max(1, var(--n) - 1) * 100%); border-radius: inherit; background: linear-gradient(90deg, color-mix(in oklab, var(--resa-or) 35%, transparent), var(--resa-or)); box-shadow: 0 0 10px color-mix(in oklab, var(--resa-or) 55%, transparent); transition: width .7s cubic-bezier(.3, .8, .3, 1); }
+.resa__frise:not(.est-choisie) .resa__frise-or { width: 0; }
+.resa .resa__creneau { position: relative; display: grid; justify-items: center; align-content: start; gap: 5px; min-height: 70px; padding: 16px 2px 4px; border: 0; border-radius: 12px; background: transparent; color: var(--couleur-texte); scroll-snap-align: center; }
+.resa .resa__creneau:hover, .resa .resa__creneau:has(input:checked), .resa .resa__creneau:has(input:disabled) { background: transparent; color: var(--couleur-texte); }
+.resa__point { position: relative; z-index: 1; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--couleur-texte-doux); background: var(--resa-plateau); transition: transform .35s cubic-bezier(.3, 1.4, .5, 1), background .3s, border-color .3s, box-shadow .3s; }
+.resa__creneau > span { font-size: max(13px, .8rem); font-weight: 600; color: var(--couleur-texte-doux); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.resa__creneau.est-pleine > span { font-size: max(15px, .95rem); font-weight: 800; color: var(--couleur-texte); }
+.resa__creneau.est-passe .resa__point { border-color: var(--resa-or); background: color-mix(in oklab, var(--resa-or) 40%, var(--resa-plateau)); }
+.resa__creneau:not(.est-complet):hover .resa__point { border-color: var(--resa-or); transform: scale(1.18); }
+.resa__creneau:has(input:checked) .resa__point { border-color: var(--resa-or); background: var(--resa-or); transform: scale(1.4); box-shadow: 0 0 0 5px color-mix(in oklab, var(--resa-or) 24%, transparent), 0 0 18px color-mix(in oklab, var(--resa-or) 70%, transparent); }
+.resa .resa__creneau:has(input:checked) > span { color: var(--couleur-texte); font-weight: 800; }
+.resa__creneau.est-complet .resa__point { border-style: dashed; opacity: .55; }
+.resa__creneau.est-complet > span { text-decoration: line-through; }
+.resa .resa__creneau small { font-size: 11px; line-height: 1; }
+.resa .resa__creneau:has(input:focus-visible) { outline: 2px solid var(--resa-or); outline-offset: -2px; }
+
+/* 3 · Où : la salle ou la terrasse, en photo */
+.resa .resa__puces--lieux { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.resa .resa__puce--lieu { display: grid; grid-template-columns: minmax(0, 1fr); justify-content: stretch; justify-items: start; align-content: start; gap: 2px; min-height: 0; padding: 0 0 14px; border: 1px solid var(--couleur-ligne); border-radius: 18px; background: var(--resa-carte); color: var(--couleur-texte); overflow: hidden; text-align: left; }
+.resa__lieu-photo { display: block; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; margin-bottom: 10px; }
+.resa__lieu-photo img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2, .8, .2, 1), filter .4s; }
+.resa__puce--lieu > span:not(.resa__lieu-photo), .resa__puce--lieu > small { padding-inline: 16px; }
+.resa__puce--lieu > span:not(.resa__lieu-photo) { font-family: var(--police-titres); font-size: 1.3rem; font-weight: 600; }
+.resa__puce--lieu > small:empty { display: none; }
+.resa .resa__puce--lieu:hover { background: var(--resa-carte); border-color: color-mix(in oklab, var(--resa-or) 55%, var(--couleur-ligne)); }
+.resa__puce--lieu:not(:has(input:disabled)):hover img { transform: scale(1.05); }
+.resa .resa__puce--lieu:has(input:checked) { background: var(--resa-carte); color: var(--couleur-texte); border-color: var(--resa-or); box-shadow: 0 0 0 1px var(--resa-or); }
+.resa .resa__puce--lieu:has(input:checked) small { color: var(--couleur-texte-doux); }
+.resa__puce--lieu:has(input:checked)::after { content: ""; position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border-radius: 50%; pointer-events: none; background: var(--resa-or) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='%231c1712' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 15px no-repeat; box-shadow: 0 4px 10px rgba(0, 0, 0, .3); }
+.resa .resa__puce--lieu:has(input:disabled) { background: transparent; border-style: dashed; }
+.resa__puce--lieu:has(input:disabled) img { filter: grayscale(1) opacity(.5); }
+.resa .resa__puce--lieu:has(input:disabled) > span:not(.resa__lieu-photo) { text-decoration: line-through; }
+.resa__vers-plan { margin: 2px 0 0; font-size: max(14px, .92rem); color: var(--couleur-texte-doux); }
+.resa__vers-plan a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; color: var(--couleur-texte); text-underline-offset: .22em; }
+.resa__vers-plan [data-resa-table-choisie] { font-weight: 700; color: var(--couleur-texte); }
+
+/* Retour, Continuer */
+.resa__nav { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.resa__retour { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 22px; border-radius: 999px; border: 1px solid var(--couleur-ligne); background: transparent; color: inherit; font: inherit; font-weight: 700; cursor: pointer; transition: border-color .2s; }
+.resa__retour::before { content: "←"; transition: transform .25s; }
+.resa__retour:hover { border-color: var(--couleur-texte-doux); }
+.resa__retour:hover::before { transform: translateX(-3px); }
+.resa__nav .resa__bouton { margin-left: auto; }
+.resa__suivant::after { content: "→"; margin-left: 10px; transition: transform .25s; }
+.resa__suivant:hover::after { transform: translateX(4px); }
+
+/* Le carton de table */
+.resa .resa__recap { isolation: isolate; }
+.resa .resa__recap::before { content: ""; position: absolute; inset: -60px -30px; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, rgba(240, 138, 75, .2), transparent); }
+html[data-service="midi"] .resa .resa__recap::before { background: radial-gradient(closest-side, rgba(233, 162, 59, .16), transparent); }
+.resa .resa__recap-corps.carton { position: relative; display: grid; gap: 10px; padding: 14px clamp(16px, 2vw, 26px) clamp(22px, 2.6vw, 30px); border-radius: 8px; text-align: center; -webkit-mask: none; mask: none;
+  background: linear-gradient(180deg, #efe4d1, #f4ecdf) 0 0 / 100% 44px no-repeat, linear-gradient(180deg, rgba(28, 23, 18, .07), transparent 12px) 0 44px / 100% 12px no-repeat, #fbf6ec;
+  box-shadow: 0 34px 60px -34px rgba(0, 0, 0, .75), 0 3px 8px rgba(0, 0, 0, .16); transition: box-shadow .4s, transform .4s; }
+.carton::before { content: ""; position: absolute; left: 0; right: 0; top: 44px; height: 1px; background: rgba(28, 23, 18, .14); }
+.carton__maison { margin: 0 0 16px; min-height: 16px; font-size: 11px; font-weight: 800; letter-spacing: .26em; text-transform: uppercase; color: #8a3b22; }
+.resa .carton__sur { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0; font-family: var(--police-texte); font-size: 12px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: #8a3b22; }
+.carton__sur::before, .carton__sur::after { content: ""; width: 26px; height: 1px; background: currentColor; opacity: .5; }
+.carton__lignes { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.carton__modifier { position: relative; display: grid; justify-items: center; gap: 2px; width: 100%; min-height: 44px; padding: 8px 40px; border: 0; border-radius: 10px; background: transparent; color: #1c1712; font: inherit; cursor: pointer; transition: background .2s; }
+.carton__modifier:hover, .carton__modifier:focus-visible { background: rgba(28, 23, 18, .05); }
+.carton__modifier:disabled { cursor: default; }
+.carton__lib { font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #5b4e42; }
+.carton__val { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 8px; font-size: max(15px, .98rem); font-weight: 600; overflow-wrap: anywhere; }
+.carton__blanc { font-style: italic; font-weight: 500; color: #5b4e42; border-bottom: 1px dotted currentColor; }
+.carton__crayon { position: absolute; right: 8px; top: 50%; translate: 0 -50%; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: #5b4e42; opacity: 0; transition: opacity .2s; }
+.carton__crayon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
+.carton__modifier:is(:hover, :focus-visible) .carton__crayon { opacity: 1; }
+@media (hover: none) { .carton__crayon { opacity: .5; } }
+.carton__date { flex-basis: 100%; font-family: var(--police-titres); font-style: italic; font-weight: 500; font-size: clamp(1.6rem, 1.25rem + 1vw, 2.15rem); line-height: 1.1; color: #1c1712; }
+.carton__service { font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #8a3b22; }
+.carton__tampon { display: inline-block; margin: 4px 0; padding: 4px 16px 3px; border: 2.5px solid #b8322c; border-radius: 8px; outline: 1px solid rgba(184, 50, 44, .45); outline-offset: 3px; color: #b8322c; font-family: var(--police-titres); font-size: 1.75rem; font-weight: 700; line-height: 1.15; rotate: -4deg; }
+.carton__assiettes { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 3px; max-width: 100%; }
+.carton__assiettes i { width: 17px; height: 17px; border-radius: 50%; background: radial-gradient(circle, #fff 0 42%, #b0874a 45% 53%, #fff 56%); box-shadow: 0 1px 3px rgba(0, 0, 0, .3), 0 0 0 1px rgba(28, 23, 18, .12); }
+.carton__ligne.est-neuf .carton__date { animation: carton-encre .9s cubic-bezier(.4, 0, .2, 1) both; }
+.carton__ligne.est-neuf .carton__tampon { animation: carton-tampon .55s cubic-bezier(.2, 1.4, .4, 1) both; }
+.carton__ligne.est-neuf:not(.carton__ligne--date):not(.carton__ligne--heure) .carton__val { animation: carton-pose .5s ease-out both; }
+.carton__ligne--couverts.est-neuf .carton__assiettes i:last-child { animation: carton-assiette .45s cubic-bezier(.3, 1.5, .5, 1) both; }
+@keyframes carton-encre { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes carton-tampon { 0% { opacity: 0; transform: scale(1.9); } 65% { opacity: 1; transform: scale(.94); } 100% { transform: scale(1); } }
+@keyframes carton-pose { from { opacity: 0; transform: translateY(5px); } }
+@keyframes carton-assiette { from { transform: scale(0); } }
+.resa .carton.est-verif { box-shadow: 0 0 0 3px var(--resa-or), 0 34px 60px -34px rgba(0, 0, 0, .75); }
+.resa .carton .resa__bouton { justify-self: center; margin-top: 6px; }
+.resa .carton .resa__simule { margin: 0; color: #5b4e42; }
+.carton__reserve { position: absolute; left: 64%; top: 47%; z-index: 2; margin: 0; pointer-events: none; translate: -50% -50%; rotate: -12deg; white-space: nowrap; }
+.carton__reserve span { display: block; padding: .08em .45em; border: 4px solid currentColor; border-radius: 12px; outline: 1.5px solid currentColor; outline-offset: 4px; color: rgba(184, 50, 44, .9); font-family: var(--police-titres); font-size: clamp(1.7rem, 1.3rem + 1.2vw, 2.4rem); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; mix-blend-mode: multiply; opacity: .9; animation: carton-reserve .6s cubic-bezier(.2, 1.4, .4, 1) .15s both; }
+@keyframes carton-reserve { 0% { opacity: 0; transform: scale(2.4); } 70% { opacity: 1; transform: scale(.93); } 100% { transform: scale(1); } }
+.carton__ref { margin: 0; font-size: 14px; color: #1c1712; }
+.resa .placement__voir { margin-top: 14px; text-align: center; }
+:is(html.calme, .resa.est-calme) :is(.resa__etape, .resa__cal, .carton__date, .carton__tampon, .carton__val, .carton__reserve span, .carton__assiettes i, .resa__centre) { animation: none !important; }
+@media (max-width: 979px) { .resa .resa__recap { max-width: 520px; width: 100%; justify-self: center; } }
+@media (max-width: 600px) {
+  .resa__form.est-etapes .resa__etape { padding: 16px 14px; border-radius: 18px; }
+  .resa__pas-t { font-size: 11px; letter-spacing: .08em; }
+  .resa .resa__puces--lieux { gap: 10px; }
+  .resa__puce--lieu > span:not(.resa__lieu-photo) { font-size: 1.12rem; }
+  .resa__puce--lieu > span:not(.resa__lieu-photo), .resa__puce--lieu > small { padding-inline: 12px; }
+  .resa .resa__puce--service { flex-basis: 140px; padding: 10px 14px; gap: 0 10px; }
+}
+.resa .resa__recap { position: relative; }
+@media (min-width: 980px) and (min-height: 760px) { .resa .resa__recap { position: sticky; top: calc(var(--entete-h) + 24px); } }
+.resa .carton.est-envoye .carton__sur { color: #8a3b22; }
+.resa.est-envoye .resa__form { opacity: 1; }
+.resa.est-envoye :is(.resa__etape, .resa__nav, .resa__progression) { opacity: .5; transition: opacity .6s; }
+@media (max-width: 560px) { .resa__table { --p: 36px; --t: calc(66px + var(--n) * 6px); width: 216px; height: 216px; } }
+.resa .resa__puce--service:has(input:disabled), .resa .resa__puce--lieu:has(input:disabled) { border-color: var(--couleur-ligne); }
+.resa__couverts-scene { justify-content: center; }
+/* Téléphone : la table et le compteur côte à côte (le compteur debout, + en haut), la phrase dessous. */
+@media (max-width: 560px) {
+  .resa__couverts-scene { display: grid; grid-template-columns: auto auto; justify-content: center; align-items: center; gap: 4px 18px; }
+  .resa__table { --p: 32px; --t: calc(56px + var(--n) * 5px); width: 180px; height: 180px; }
+  .resa__couverts-cote { display: contents; }
+  .resa .resa__compteur { flex-direction: column-reverse; gap: 8px; }
+  .resa .resa__compteur button { width: 46px; height: 46px; }
+  .resa .resa__compteur input { width: 64px; min-height: 52px; font-size: 2.3rem; }
+  .resa__couverts-mot { grid-column: 1 / -1; text-align: center; }
+}
+/* Aucun texte sous 12 px ; « Aujourd'hui » devient « Auj. » sur une carte étroite. */
+.resa .resa__jour-mois, .resa .resa__jour small, .carton__maison, .carton__lib, .resa .resa__creneau small { font-size: 12px; }
+@media (max-width: 600px) { .resa__pas-t { font-size: 12px; letter-spacing: .04em; } }
+.resa .resa__jour { container-type: inline-size; }
+.resa__nom-court { display: none; }
+@container (max-width: 76px) { .resa__nom-long { display: none; } .resa__nom-court { display: inline; } }
+.resa .resa__jour--plus .resa__jour-nom { white-space: normal; text-align: center; line-height: 1.15; }
+/* Avant le démarrage du module : la première étape seule et la place de la frise gardée (pas de saut au chargement). */
+html.js:not(.secours) .resa__form:not(.est-etapes) .resa__etape:not([data-etape="1"]) { display: none; }
+html.js:not(.secours) .resa__progression[hidden] { display: grid !important; visibility: hidden; }

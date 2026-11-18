@@ -898,7 +898,8 @@
     "planTitre": "Choisir ma table (facultatif)",
     "planTexte": "Plan indicatif de la salle, d'après les photos. Les tables indisponibles sont simulées pour la maquette.",
     "planPhotoAlt": "La salle au soleil de midi : tables rondes en verre, fauteuils crème et baies vitrées",
-    "voirTable": "Voir votre table allumée sur le plan"
+    "voirTable": "Voir votre table allumée sur le plan",
+    "versPlan": "Une table précise ? Choisissez-la sur le plan"
   },
   "offrir": {
     "heure": "00:00",

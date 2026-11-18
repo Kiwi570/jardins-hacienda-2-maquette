@@ -113,7 +113,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <div id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu">
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
   <ul><li style="--i:0"><span class="menu-heure" aria-hidden="true">12:00</span><a href="/" class="menu-lien" data-libelle="Accueil">Accueil</a></li><li style="--i:1"><span class="menu-heure" aria-hidden="true">12:30</span><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><span class="menu-heure" aria-hidden="true">19:00</span><a href="/receptions" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><span class="menu-heure" aria-hidden="true">23:30</span><a href="/les-fetes" class="menu-lien" data-libelle="Évènements">Évènements</a></li><li style="--i:4"><span class="menu-heure" aria-hidden="true">18:00</span><a href="/a-emporter" class="menu-lien" data-libelle="Traiteur">Traiteur</a></li><li style="--i:5"><span class="menu-heure" aria-hidden="true">00:00</span><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:6"><span class="menu-heure" aria-hidden="true">Maintenant</span><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
-  <p class="menu-actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une table</a> <a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
+  <p class="menu-actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver" aria-current="page">Réserver une table</a> <a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
 </div>
 <main id="contenu" tabindex="-1">
 <section class="ouv-resa" id="debut" data-effet="service">
@@ -142,35 +142,43 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <div class="resa__grille socle-cadre">
     <form class="resa__form" data-resa-form action="#" novalidate aria-labelledby="resa-titre">
       <header class="resa__tete">
-        <figure class="media resa__bandeau" style="--cadrage:50% 34%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-soleil-mobile-640.webp 640w, /assets/images/vraie/salle-soleil-mobile-1080.webp 1080w" sizes="(max-width: 760px) 92vw, 50vw">
-    <img src="/assets/images/vraie/salle-soleil-1280.webp" srcset="/assets/images/vraie/salle-soleil-640.webp 640w, /assets/images/vraie/salle-soleil-1280.webp 1280w, /assets/images/vraie/salle-soleil-1920.webp 1920w" sizes="(max-width: 760px) 92vw, 50vw" alt="La salle au soleil de midi : tables rondes en verre, fauteuils crème et baies vitrées" width="1280" height="853" loading="lazy" decoding="async">
-  </picture>
-</figure>
         <p class="socle-surtitre">Une table pour vous</p>
         <h2 id="resa-titre" data-anime="lignes">Le jour, l&#39;heure, les couverts</h2>
         <p class="resa__soiree" data-soiree hidden></p>
         <script type="application/json" data-agenda>[{"id":"cote-de-boeuf","t":"Soirée côte de bœuf","d":"2026-11-21","p":"50 € hors boissons"},{"id":"raclette","t":"Soirée raclette","d":"2026-11-28","p":"39 € hors boissons"},{"id":"brunch","t":"Le brunch","d":"2026-11-29","p":"50 € hors boissons"},{"id":"libanaise","t":"Soirée libanaise","d":"2026-12-19","p":"49 € hors boissons"},{"id":"noel","t":"Le menu de Noël","d":"2026-12-25","p":"79 € par personne, hors boissons"},{"id":"saint-sylvestre","t":"La Saint-Sylvestre","d":"2026-12-31","p":"120 € le menu · 170 € avec l'accord mets et vins"},{"id":"libanaise-octobre","t":"Soirée libanaise","d":"2026-10-31","p":""},{"id":"grand-buffet","t":"Le Grand Buffet","d":"2026-08-30","p":"Les dimanches d'août"}]</script>
-        <p>Le midi du mercredi au dimanche (sauf le samedi), le soir le vendredi et le samedi. Réservation simulée dans cette maquette.</p>
+        <p class="resa__intro">Le midi du mercredi au dimanche (sauf le samedi), le soir le vendredi et le samedi. Réservation simulée dans cette maquette.</p>
+        <ol class="resa__progression" data-resa-progression hidden>
+          <li><button type="button" class="resa__pas" data-aller-etape="1"><span class="resa__pas-n" aria-hidden="true">1</span><span class="resa__pas-t">Quand</span></button></li><li><button type="button" class="resa__pas" data-aller-etape="2"><span class="resa__pas-n" aria-hidden="true">2</span><span class="resa__pas-t">Combien</span></button></li><li><button type="button" class="resa__pas" data-aller-etape="3"><span class="resa__pas-n" aria-hidden="true">3</span><span class="resa__pas-t">Où</span></button></li><li><button type="button" class="resa__pas" data-aller-etape="4"><span class="resa__pas-n" aria-hidden="true">4</span><span class="resa__pas-t">Vous</span></button></li>
+        </ol>
       </header>
+      <div class="resa__etape" data-etape="1" role="group" aria-label="Étape 1 sur 4 : quand">
       <fieldset class="resa__champ" data-champ="date">
         <legend>Quel jour&#8239;?</legend>
-        <div class="resa__jours" data-resa-jours aria-label="Les sept prochains jours"></div>
-        <label class="resa__date"><span>Ou une autre date</span><input type="date" id="resa-date" name="date" required></label>
+        <div class="resa__jours" data-resa-jours aria-label="Les sept prochains jours" hidden></div>
+        <div class="resa__cal" id="resa-cal" data-resa-cal hidden></div>
+        <label class="resa__date resa__date--jour"><span>Ou une autre date</span><input type="date" id="resa-date" name="date" required></label>
       </fieldset>
       <fieldset class="resa__champ" data-champ="service">
         <legend>Quel service&#8239;?</legend>
         <div class="resa__puces">
-          <label class="resa__puce"><input type="radio" name="service" value="midi"><span>Midi</span><small data-note></small></label>
-          <label class="resa__puce"><input type="radio" name="service" value="soir" checked><span>Soir</span><small data-note></small></label>
+          <label class="resa__puce resa__puce--service"><input type="radio" name="service" value="midi"><i class="resa__ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.5M12 18.9v2.5M2.6 12h2.5M18.9 12h2.5M5.4 5.4l1.8 1.8M16.8 16.8l1.8 1.8M5.4 18.6l1.8-1.8M16.8 7.2l1.8-1.8"/></svg></i><span>Midi</span><small class="resa__puce-h">12 h – 13 h 30</small><small data-note></small></label>
+          <label class="resa__puce resa__puce--service"><input type="radio" name="service" value="soir" checked><i class="resa__ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M19.4 14.7A7.9 7.9 0 1 1 9.3 4.6a6.3 6.3 0 0 0 10.1 10.1Z"/></svg></i><span>Soir</span><small class="resa__puce-h">19 h – 21 h 30</small><small data-note></small></label>
         </div>
       </fieldset>
+      </div>
+      <div class="resa__etape" data-etape="2" role="group" aria-label="Étape 2 sur 4 : combien, à quelle heure">
       <div class="resa__champ" data-champ="couverts">
         <label class="resa__libelle" for="resa-couverts">Combien de personnes&#8239;?</label>
-        <div class="resa__compteur">
-          <button type="button" data-moins aria-label="Une personne de moins">−</button>
-          <input type="number" id="resa-couverts" name="couverts" min="1" max="10" value="2" inputmode="numeric">
-          <button type="button" data-plus aria-label="Une personne de plus">+</button>
+        <div class="resa__couverts-scene">
+          <div class="resa__table" data-resa-table aria-hidden="true"></div>
+          <div class="resa__couverts-cote">
+            <div class="resa__compteur">
+              <button type="button" data-moins aria-label="Une personne de moins">−</button>
+              <input type="number" id="resa-couverts" name="couverts" min="1" max="10" value="2" inputmode="numeric">
+              <button type="button" data-plus aria-label="Une personne de plus">+</button>
+            </div>
+            <p class="resa__couverts-mot" data-resa-couverts-mot hidden></p>
+          </div>
         </div>
         <p class="resa__aide" data-resa-groupe hidden>Au-delà de 10 personnes, <a href="/receptions#demande" data-libelle="Réceptions">demandez une réception</a> ou appelez-nous au <a href="tel:+33618212810">06 18 21 28 10</a>.</p>
       </div>
@@ -181,12 +189,15 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         </div>
         <p class="resa__aide" data-resa-creneaux-aide aria-live="polite"></p>
       </fieldset>
+      </div>
+      <div class="resa__etape" data-etape="3" role="group" aria-label="Étape 3 sur 4 : où">
       <fieldset class="resa__champ" data-champ="espace">
         <legend>Où souhaitez-vous vous installer&#8239;?</legend>
-        <div class="resa__puces">
-          <label class="resa__puce"><input type="radio" name="espace" value="salle" checked><span>En salle</span><small data-note></small></label>
-          <label class="resa__puce"><input type="radio" name="espace" value="terrasse"><span>En terrasse</span><small data-note></small></label>
+        <div class="resa__puces resa__puces--lieux">
+          <label class="resa__puce resa__puce--lieu"><input type="radio" name="espace" value="salle" checked><span class="resa__lieu-photo" aria-hidden="true"><img src="/assets/images/vraie/salle-pierre-640.webp" srcset="/assets/images/vraie/salle-pierre-640.webp 640w, /assets/images/vraie/salle-pierre-1280.webp 1280w" sizes="(max-width: 760px) 46vw, 240px" alt="" loading="lazy" decoding="async" style="object-position:50% 62%"></span><span>En salle</span><small data-note></small></label>
+          <label class="resa__puce resa__puce--lieu"><input type="radio" name="espace" value="terrasse"><span class="resa__lieu-photo" aria-hidden="true"><img src="/assets/images/vraie/piscine-pergola-640.webp" srcset="/assets/images/vraie/piscine-pergola-640.webp 640w, /assets/images/vraie/piscine-pergola-1280.webp 1280w" sizes="(max-width: 760px) 46vw, 240px" alt="" loading="lazy" decoding="async" style="object-position:50% 60%"></span><span>En terrasse</span><small data-note></small></label>
         </div>
+        <p class="resa__vers-plan"><span data-resa-table-choisie hidden></span> <a href="#plan" data-sans-transition>Une table précise ? Choisissez-la sur le plan</a></p>
       </fieldset>
       <details class="resa__plus">
       <summary>Une demande particulière&#8239;? <span class="resa__facultatif">(facultatif)</span></summary>
@@ -200,6 +211,8 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         <label class="resa__date resa__date--large"><span>Précisez si besoin</span><textarea name="message" id="resa-message" rows="3"></textarea></label>
       </fieldset>
       </details>
+      </div>
+      <div class="resa__etape" data-etape="4" role="group" aria-label="Étape 4 sur 4 : vous">
       <fieldset class="resa__champ" data-champ="contact">
         <legend>Vos coordonnées</legend>
         <div class="resa__contact">
@@ -210,9 +223,14 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         </div>
       </fieldset>
       <p class="resa__mention">Vos coordonnées servent seulement à confirmer la réservation. Disponibilités simulées pour la maquette.</p>
-      <button type="submit" class="resa__bouton">Vérifier ma réservation</button>
+      </div>
+      <div class="resa__nav" data-resa-nav>
+        <button type="button" class="resa__retour" data-etape-retour hidden>Retour</button>
+        <button type="button" class="resa__bouton resa__suivant" data-etape-suivante hidden>Continuer</button>
+        <button type="submit" class="resa__bouton resa__envoi">Vérifier ma réservation</button>
+      </div>
     </form>
-    <aside class="resa__recap" data-resa-recap aria-label="Récapitulatif de la réservation"></aside>
+    <aside class="resa__recap" data-resa-recap data-visuel aria-label="Récapitulatif de la réservation"></aside>
   </div>
 </section>
 <section class="pds" id="plan" data-module="plan-de-salle" data-reservation="/reserver#formulaire" data-effet="plan-3d" aria-labelledby="pds-titre">

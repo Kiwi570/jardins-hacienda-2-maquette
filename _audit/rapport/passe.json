@@ -1,6 +1,6 @@
 {
- "id": "20261118-101831-complet-cible-partiel",
- "date": "2026-11-18T10:20:00.866Z",
+ "id": "20261118-110021-complet-cible-partiel",
+ "date": "2026-11-18T11:01:49.535Z",
  "niveau": "complet",
  "pages": "/",
  "etapes": [
@@ -8,9 +8,9 @@
   "mesures"
  ],
  "version": "7",
- "echecs": 0,
+ "echecs": 1,
  "aRegarder": 0,
  "nonLances": 0,
  "manquants": 0,
- "statut": "complet"
+ "statut": "échecs"
 }

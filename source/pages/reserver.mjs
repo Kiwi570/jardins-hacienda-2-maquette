@@ -6,6 +6,12 @@ import { html, brut } from '../../outils/gabarit.mjs';
 
 export const page = { cle: 'reserver', fichier: 'reserver', theme: 'nuit', imagePartage: 'grok/terrasse-nuit-1280.webp', modules: ['plan-de-salle', 'reservation-de-table', 'envol-vers-le-panier'] };
 
+const ETAPES = ['Quand', 'Combien', 'Où', 'Vous'];
+const ICO_MIDI = '<svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.5M12 18.9v2.5M2.6 12h2.5M18.9 12h2.5M5.4 5.4l1.8 1.8M16.8 16.8l1.8 1.8M5.4 18.6l1.8-1.8M16.8 7.2l1.8-1.8"/></svg>';
+const ICO_SOIR = '<svg viewBox="0 0 24 24" focusable="false"><path d="M19.4 14.7A7.9 7.9 0 1 1 9.3 4.6a6.3 6.3 0 0 0 10.1 10.1Z"/></svg>';
+/* Photo d'une installation, dans la puce (contenu de phrase : une image seule, sans figure). */
+const photoLieu = (nom, cadrage) => `<span class="resa__lieu-photo" aria-hidden="true"><img src="/assets/images/${nom}-640.webp" srcset="/assets/images/${nom}-640.webp 640w, /assets/images/${nom}-1280.webp 1280w" sizes="(max-width: 760px) 46vw, 240px" alt="" loading="lazy" decoding="async" style="object-position:${cadrage}"></span>`;
+
 const DECOR = `<svg class="pds__svg" viewBox="0 0 1000 640" aria-hidden="true" focusable="false">
   <defs>
     <pattern id="pds-parquet" width="66" height="20" patternUnits="userSpaceOnUse"><rect class="pds__lame" width="66" height="20"/><path class="pds__joint" d="M0 19.5H66M24 0V20"/></pattern>
@@ -42,6 +48,8 @@ const DECOR = `<svg class="pds__svg" viewBox="0 0 1000 640" aria-hidden="true" f
 export default (c) => {
   const s = c.donnees.salle;
   const reglages = JSON.stringify(c.donnees.reservation).replace(/</g, '\\u003c');
+  const R = c.donnees.reservation.services, h = (t) => { const [a, m] = t.split(':').map(Number); return `${a}\u00a0h${m ? '\u00a0' + String(m).padStart(2, '0') : ''}`; };
+  const plage = (sv) => `${h(R[sv].debut)} – ${h(R[sv].fin)}`;
   const lien = (t) => c.url('reserver', 'formulaire', `table=${t.id}&couverts=${t.places}&espace=${t.zone === 'terrasse' ? 'terrasse' : 'salle'}`);
   return html`
 <section class="ouv-resa" id="debut" data-effet="service">
@@ -63,31 +71,43 @@ export default (c) => {
   <div class="resa__grille socle-cadre">
     <form class="resa__form" data-resa-form action="#" novalidate aria-labelledby="resa-titre">
       <header class="resa__tete">
-        ${c.media({ nom: 'vraie/salle-soleil', alt: c.s('reserver.planPhotoAlt'), cadrage: '50% 34%', classe: 'resa__bandeau', sizes: '(max-width: 760px) 92vw, 50vw' })}
         <p class="socle-surtitre">${c.t('reserver.formSur')}</p>
         <h2 id="resa-titre" data-anime="lignes">${c.t('reserver.formTitre')}</h2>
         <p class="resa__soiree" data-soiree hidden></p>
         <script type="application/json" data-agenda>${brut(JSON.stringify(c.donnees.agenda.dates.map((d) => ({ id: d.id, t: d.titre, d: d.debut, p: d.prix }))).replace(/<\//g, '<\\/'))}</script>
-        <p>${c.t('reserver.formTexte')}</p>
+        <p class="resa__intro">${c.t('reserver.formTexte')}</p>
+        <ol class="resa__progression" data-resa-progression hidden>
+          ${ETAPES.map((e, k) => html`<li><button type="button" class="resa__pas" data-aller-etape="${k + 1}"><span class="resa__pas-n" aria-hidden="true">${k + 1}</span><span class="resa__pas-t">${e}</span></button></li>`)}
+        </ol>
       </header>
+      <div class="resa__etape" data-etape="1" role="group" aria-label="Étape 1 sur 4 : quand">
       <fieldset class="resa__champ" data-champ="date">
         <legend>Quel jour&#8239;?</legend>
-        <div class="resa__jours" data-resa-jours aria-label="Les sept prochains jours"></div>
-        <label class="resa__date"><span>Ou une autre date</span><input type="date" id="resa-date" name="date" required></label>
+        <div class="resa__jours" data-resa-jours aria-label="Les sept prochains jours" hidden></div>
+        <div class="resa__cal" id="resa-cal" data-resa-cal hidden></div>
+        <label class="resa__date resa__date--jour"><span>Ou une autre date</span><input type="date" id="resa-date" name="date" required></label>
       </fieldset>
       <fieldset class="resa__champ" data-champ="service">
         <legend>Quel service&#8239;?</legend>
         <div class="resa__puces">
-          <label class="resa__puce"><input type="radio" name="service" value="midi"><span>Midi</span><small data-note></small></label>
-          <label class="resa__puce"><input type="radio" name="service" value="soir" checked><span>Soir</span><small data-note></small></label>
+          <label class="resa__puce resa__puce--service"><input type="radio" name="service" value="midi"><i class="resa__ico" aria-hidden="true">${brut(ICO_MIDI)}</i><span>Midi</span><small class="resa__puce-h">${plage('midi')}</small><small data-note></small></label>
+          <label class="resa__puce resa__puce--service"><input type="radio" name="service" value="soir" checked><i class="resa__ico" aria-hidden="true">${brut(ICO_SOIR)}</i><span>Soir</span><small class="resa__puce-h">${plage('soir')}</small><small data-note></small></label>
         </div>
       </fieldset>
+      </div>
+      <div class="resa__etape" data-etape="2" role="group" aria-label="Étape 2 sur 4 : combien, à quelle heure">
       <div class="resa__champ" data-champ="couverts">
         <label class="resa__libelle" for="resa-couverts">Combien de personnes&#8239;?</label>
-        <div class="resa__compteur">
-          <button type="button" data-moins aria-label="Une personne de moins">−</button>
-          <input type="number" id="resa-couverts" name="couverts" min="1" max="10" value="2" inputmode="numeric">
-          <button type="button" data-plus aria-label="Une personne de plus">+</button>
+        <div class="resa__couverts-scene">
+          <div class="resa__table" data-resa-table aria-hidden="true"></div>
+          <div class="resa__couverts-cote">
+            <div class="resa__compteur">
+              <button type="button" data-moins aria-label="Une personne de moins">−</button>
+              <input type="number" id="resa-couverts" name="couverts" min="1" max="10" value="2" inputmode="numeric">
+              <button type="button" data-plus aria-label="Une personne de plus">+</button>
+            </div>
+            <p class="resa__couverts-mot" data-resa-couverts-mot hidden></p>
+          </div>
         </div>
         <p class="resa__aide" data-resa-groupe hidden>Au-delà de 10 personnes, ${c.lien('receptions', { ancre: 'demande', texte: 'demandez une réception' })} ou appelez-nous au <a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a>.</p>
       </div>
@@ -98,12 +118,15 @@ export default (c) => {
         </div>
         <p class="resa__aide" data-resa-creneaux-aide aria-live="polite"></p>
       </fieldset>
+      </div>
+      <div class="resa__etape" data-etape="3" role="group" aria-label="Étape 3 sur 4 : où">
       <fieldset class="resa__champ" data-champ="espace">
         <legend>Où souhaitez-vous vous installer&#8239;?</legend>
-        <div class="resa__puces">
-          <label class="resa__puce"><input type="radio" name="espace" value="salle" checked><span>En salle</span><small data-note></small></label>
-          <label class="resa__puce"><input type="radio" name="espace" value="terrasse"><span>En terrasse</span><small data-note></small></label>
+        <div class="resa__puces resa__puces--lieux">
+          <label class="resa__puce resa__puce--lieu"><input type="radio" name="espace" value="salle" checked>${brut(photoLieu('vraie/salle-pierre', '50% 62%'))}<span>En salle</span><small data-note></small></label>
+          <label class="resa__puce resa__puce--lieu"><input type="radio" name="espace" value="terrasse">${brut(photoLieu('vraie/piscine-pergola', '50% 60%'))}<span>En terrasse</span><small data-note></small></label>
         </div>
+        <p class="resa__vers-plan"><span data-resa-table-choisie hidden></span> <a href="#plan" data-sans-transition>${c.t('reserver.versPlan')}</a></p>
       </fieldset>
       <details class="resa__plus">
       <summary>Une demande particulière&#8239;? <span class="resa__facultatif">(facultatif)</span></summary>
@@ -117,6 +140,8 @@ export default (c) => {
         <label class="resa__date resa__date--large"><span>Précisez si besoin</span><textarea name="message" id="resa-message" rows="3"></textarea></label>
       </fieldset>
       </details>
+      </div>
+      <div class="resa__etape" data-etape="4" role="group" aria-label="Étape 4 sur 4 : vous">
       <fieldset class="resa__champ" data-champ="contact">
         <legend>Vos coordonnées</legend>
         <div class="resa__contact">
@@ -127,9 +152,14 @@ export default (c) => {
         </div>
       </fieldset>
       <p class="resa__mention">Vos coordonnées servent seulement à confirmer la réservation. Disponibilités simulées pour la maquette.</p>
-      <button type="submit" class="resa__bouton">Vérifier ma réservation</button>
+      </div>
+      <div class="resa__nav" data-resa-nav>
+        <button type="button" class="resa__retour" data-etape-retour hidden>Retour</button>
+        <button type="button" class="resa__bouton resa__suivant" data-etape-suivante hidden>Continuer</button>
+        <button type="submit" class="resa__bouton resa__envoi">Vérifier ma réservation</button>
+      </div>
     </form>
-    <aside class="resa__recap" data-resa-recap aria-label="Récapitulatif de la réservation"></aside>
+    <aside class="resa__recap" data-resa-recap data-visuel aria-label="Récapitulatif de la réservation"></aside>
   </div>
 </section>
 

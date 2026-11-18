@@ -1957,10 +1957,15 @@ function reservationPlacement() {
     const heure = d.heure ? d.heure.replace(':00', ' h').replace(':', ' h ') : '';
     const n = +d.couverts || 0;
     recap.querySelector('.placement')?.remove(); recap.querySelector('.placement__voir')?.remove();
-    const carte = document.createElement('div'); carte.className = 'placement'; carte.setAttribute('aria-hidden', 'true'); carte.dataset.effet = 'placement';
-    const f = $('[data-resa-form]', resa), qui = f ? [f.elements.prenom?.value, f.elements.nom?.value].filter(Boolean).join(' ').trim() : '';
-    carte.innerHTML = `<p class="placement__carton"><span>Réservé</span>${qui ? `<em>${qui.replace(/[<>&"]/g, '')}</em>` : ''}<strong>${jour}${heure ? ' · ' + heure : ''}</strong><span>${n} couvert${n > 1 ? 's' : ''}${d.table ? ' · table ' + d.table : ''}</span></p><svg class="placement__cloche" viewBox="0 0 120 70"><path d="M8 62 Q 10 14 60 12 Q 110 14 112 62 Z" fill="#e9a23b"/><path d="M4 62 H116" stroke="#9a5a12" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="9" r="6" fill="#9a5a12"/></svg>`;
-    recap.prepend(carte);
+    /* v7.5.31 · Le carton de table du module porte déjà le tampon « Réservé » : la carte de placement ne sert plus qu'aux anciens récapitulatifs. */
+    const carton = recap.querySelector('.carton');
+    let carte = carton;
+    if (!carton) {
+      carte = document.createElement('div'); carte.className = 'placement'; carte.setAttribute('aria-hidden', 'true'); carte.dataset.effet = 'placement';
+      const f = $('[data-resa-form]', resa), qui = f ? [f.elements.prenom?.value, f.elements.nom?.value].filter(Boolean).join(' ').trim() : '';
+      carte.innerHTML = `<p class="placement__carton"><span>Réservé</span>${qui ? `<em>${qui.replace(/[<>&"]/g, '')}</em>` : ''}<strong>${jour}${heure ? ' · ' + heure : ''}</strong><span>${n} couvert${n > 1 ? 's' : ''}${d.table ? ' · table ' + d.table : ''}</span></p><svg class="placement__cloche" viewBox="0 0 120 70"><path d="M8 62 Q 10 14 60 12 Q 110 14 112 62 Z" fill="#e9a23b"/><path d="M4 62 H116" stroke="#9a5a12" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="9" r="6" fill="#9a5a12"/></svg>`;
+      recap.prepend(carte);
+    }
     const rep = d.table && $('.pds__repere');
     /* v7.5.15 · La table s'allume : sur le plan, la salle baisse la lumière, la table choisie garde la sienne, une bougie
        s'allume sous le carton « Réservé » ; un lien du récapitulatif y mène. */
@@ -1972,7 +1977,7 @@ function reservationPlacement() {
       lien.append(a); carte.after(lien);
     }
     if (rep && !rep.hidden) { rep.classList.add('est-reserve'); rep.querySelector('b').textContent = 'Réservé'; const jc = d.date ? new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(d.date + 'T12:00:00Z')) : ''; rep.querySelector('.pds__repere-etiquette > span').textContent = `${jc}${heure ? ' · ' + heure : ''} · ${n} couvert${n > 1 ? 's' : ''}`; }
-    if (etat.calme) carte.classList.add('est-pose'); else requestAnimationFrame(() => requestAnimationFrame(() => carte.classList.add('est-pose')));
+    if (!carton) { if (etat.calme) carte.classList.add('est-pose'); else requestAnimationFrame(() => requestAnimationFrame(() => carte.classList.add('est-pose'))); }
     setTimeout(() => { const el = $('[data-resa-recap]', resa); if (!el) return; const eh = parseFloat(getComputedStyle(html).getPropertyValue('--entete-h')) || 0, r = el.getBoundingClientRect(); const libre = innerHeight - eh, dy = r.height < libre - 32 ? r.top - eh - (libre - r.height) / 2 : r.top - eh - 16; if (Math.abs(dy) > 4) aller(scrollY + dy); }, 450);
   });
   /* Arrivée avec une table choisie sur le plan : son carton file jusqu'au récapitulatif. */

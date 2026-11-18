@@ -115,7 +115,7 @@ function entete(c) {
 <div id="menu" data-menu role="dialog" aria-modal="true" aria-label="${c.s('commun.menu')}">
   <p class="menu-sansjs-fermer"><a href="#menu-ferme">${c.t('commun.fermer')}</a></p>
   <ul>${navigation(c).map((k, i) => html`<li style="--i:${i}"><span class="menu-heure" aria-hidden="true">${(HEURES[k] || {}).reelle ? c.s('commun.maintenant') : `${HEURES[k].h}:${HEURES[k].m}`}</span>${c.lien(k, { classe: 'menu-lien' })}</li>`)}</ul>
-  <p class="menu-actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('commun.actionMenu') })} <a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
+  <p class="menu-actions">${c.lien('reserver', { ancre: 'formulaire', classe: 'bouton', texte: c.t('commun.actionMenu'), attrs: c.page.cle === 'reserver' ? 'aria-current="page"' : '' })} <a class="bouton bouton--contour" href="tel:${c.site.contact.telephoneLien}">${c.t('commun.appeler')} ${c.site.contact.telephone}</a></p>
 </div>`;
 }
 
