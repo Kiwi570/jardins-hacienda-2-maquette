@@ -3,6 +3,10 @@
   "delai_minutes": 60,
   "jours_a_l_avance": 60,
   "couverts_max": 10,
+  "derniere_arrivee_avant_fermeture": {
+    "midi": 60,
+    "soir": 150
+  },
   "telephone": "06 18 21 28 10",
   "services": {
     "midi": {
@@ -58,7 +62,7 @@
     }
   ],
   "complets": {},
-  "complets_simules": true,
+  "complets_simules": false,
   "message_simule": "Réservation simulée : rien n'est envoyé dans cette maquette.",
   "ouvertures_exceptionnelles": [
     {

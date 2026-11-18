@@ -9,6 +9,8 @@
 // Sans JavaScript : un formulaire ordinaire d'un seul tenant (calendrier, liste d'heures, nombre). Mode calme : sans transition.
 import { pret } from '../../socle/socle.js?v=7';
 import { ajouterResaSite } from '../../espace-stock.js?v=7';
+// v7.8.0 : ouvertures, heures d'arrivée et « complet » viennent des règles communes au site et à l'espace.
+import { etatService, arrivees } from '../../disponibilites.js?v=7';
 
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -61,10 +63,12 @@ export async function init(root, options = {}) {
   if (s.calme) root.classList.add('est-calme');
 
   // ---------- Disponibilités ----------
-  const ouvert = (iso, sid) => !(F.jours || []).includes(JOURS[jourDe(iso)]) && !(F.dates || []).includes(iso) && !((F.services || {})[JOURS[jourDe(iso)]] || []).includes(sid) && !((F.par_date || {})[iso] || []).includes(sid);
-  function estComplet(iso, t, couverts) {
-    if (o.complet) return !!o.complet(iso, t, couverts);
+  const ouvert = (iso, sid) => etatService(R, iso, sid).ouvert;
+  function estComplet(iso, t, couverts, sid) {
+    /* Ce que le restaurant a dit complet l'emporte toujours ; ensuite la disponibilité réelle (option), puis le JSON et la simulation. */
+    if (sid && etatService(R, iso, sid).complet) return true;
     if ((R.complets?.[iso] || []).includes(t)) return true;
+    if (o.complet) return !!o.complet(iso, t, couverts);
     if (!R.complets_simules) return false;
     const m = enMin(t), pointe = (m >= 1200 && m <= 1245) || (m >= 750 && m <= 795), weekend = [5, 6].includes(jourDe(iso));
     return hache(iso + t) < (pointe ? 48 : 14) + (weekend ? 14 : 0) + Math.max(0, couverts - 4) * 6 - (ajouter(maintenant(fuseau).iso, 7) < iso ? 20 : 0);
@@ -73,9 +77,9 @@ export async function init(root, options = {}) {
   function creneaux(iso, sid, couverts) {
     const sv = services.find((x) => x.id === sid); if (!sv || !ouvert(iso, sid)) return [];
     const n = maintenant(fuseau), out = [];
-    for (let m = sv.d; m <= sv.f; m += sv.pas) {
-      if (iso === n.iso && m < n.min + delai) continue;
-      const t = hhmm(m); out.push({ t, libelle: heure(m), etat: estComplet(iso, t, couverts) ? 'complet' : 'libre' });
+    for (const t of arrivees(R, iso, sid)) {
+      const m = enMin(t); if (iso === n.iso && m < n.min + delai) continue;
+      out.push({ t, libelle: heure(m), etat: estComplet(iso, t, couverts, sid) ? 'complet' : 'libre' });
     }
     return out;
   }

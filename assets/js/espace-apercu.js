@@ -3,15 +3,10 @@
    horaires et fermetures (les JSON que lisent le statut et la réservation), événements, la carte (v7.7.3), puis l'annonce et une
    petite pastille « Aperçu de vos modifications ». Ne fait rien si l'espace n'a rien changé. */
 import { lire, estVide } from './espace-stock.js?v=7';
+import { equipeDe } from './disponibilites.js?v=7';
 
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-const jourDe = (iso) => { const [a, m, j] = iso.split('-').map(Number); return new Date(Date.UTC(a, m - 1, j)).getUTCDay(); };
-const ajouter = (iso, n) => { const [a, m, j] = iso.split('-').map(Number); return new Date(Date.UTC(a, m - 1, j + n)).toISOString().slice(0, 10); };
-const enMin = (t) => { const [h, m] = String(t).split(':').map(Number); return h * 60 + (m || 0); };
-const hhmm = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const svDe = (creneau) => (enMin(creneau.split('-')[0]) < 17 * 60 ? 'midi' : 'soir');
 const sur = (f) => { try { f(); } catch (e) { console.warn('aperçu espace', e); } };
 const json = (sc, f) => sur(() => { const d = JSON.parse(sc.textContent); const r = f(d) || d; sc.textContent = JSON.stringify(r); });
 
@@ -105,23 +100,10 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
     });
   });
 
-  /* La réservation : services fermés ou complets ce jour-là, fermetures, jours de la semaine sans service. */
-  const sr = document.querySelector('script[data-reservation]');
-  if (sr && (S.resa || sem || exc.length)) json(sr, (R) => {
-    const F = R.fermetures ||= {}; F.dates ||= []; F.services ||= {}; F.par_date ||= {}; R.complets ||= {};
-    for (const e of exc) for (let iso = e.du; iso <= e.au; iso = ajouter(iso, 1)) F.dates.push(iso);
-    for (const [iso, l] of Object.entries(S.resa?.fermes || {})) F.par_date[iso] = [...(F.par_date[iso] || []), ...l];
-    for (const [iso, l] of Object.entries(S.resa?.complets || {})) for (const sv of l) {
-      const s = R.services?.[sv]; if (!s) continue;
-      for (let m = enMin(s.debut); m <= enMin(s.fin); m += s.pas || 15) (R.complets[iso] ||= []).push(hhmm(m));
-    }
-    if (sem) {
-      F.jours = JOURS.filter((j) => !(sem[j] || []).length);
-      F.services = Object.fromEntries(JOURS.map((j) => [j, ['midi', 'soir'].filter((sv) => !(sem[j] || []).some((c) => svDe(c) === sv))]).filter(([, l]) => l.length));
-      R.ouvertures_exceptionnelles = [];
-    }
-    return R;
-  });
+  /* La réservation (v7.8.0) : ce que le restaurant a changé est posé tel quel dans les réglages de la page (`equipe`) ;
+     la page Réserver, la mini-réservation et l'espace lisent ensuite les mêmes règles (disponibilites.js). Rien n'est
+     recalculé ici : horaires déplacés, fermetures, services fermés ou complets, ouvertures exceptionnelles. */
+  if (S.resa || sem || exc.length) for (const sr of $$('script[data-reservation], script[data-reservation-accueil], script[data-reservation-globale]')) json(sr, (R) => { R.equipe = equipeDe(S); return R; });
 
   /* Les événements : les billets de la page Les fêtes, la prochaine soirée de l'accueil, l'agenda de Réserver. */
   if (S.evenements) sur(() => {
@@ -155,6 +137,9 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
     const L = (S.evenements.liste || []).filter((e) => !e.masque);
     const ps = document.querySelector('[data-prochaine-soiree] script');
     if (ps && L.length) json(ps, () => L.filter((e) => e.type !== 'Fête').map((e) => ({ t: e.titre, d: e.debut, p: e.prix })));
+    /* Le prochain rendez-vous annoncé en haut de l'accueil lit la même liste (v7.8.0 : il gardait l'ancien titre). */
+    const hr = document.querySelector('script[data-heros-agenda]');
+    if (hr && L.length) json(hr, (base) => { const ancre = Object.fromEntries((base || []).map((x) => [x.id, x.a])); return L.map((e) => ({ id: e.id, t: e.titre, d: e.debut.slice(0, 10), a: ancre[e.id] || 'dates' })); });
     const ag = document.querySelector('script[data-agenda]');
     if (ag && L.length) json(ag, () => L.map((e) => ({ id: e.id, t: e.titre, d: e.debut, p: e.prix })));
   });

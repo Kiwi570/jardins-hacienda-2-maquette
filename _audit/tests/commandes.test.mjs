@@ -81,11 +81,17 @@ test('une réservation prise au téléphone', () => {
   assert.deepEqual({ date: r.date, service: r.service, heure: r.heure, couverts: r.couverts, nom: r.nom, statut: r.statut, source: r.source }, { date: '2026-11-20', service: 'soir', heure: '20:00', couverts: 4, nom: 'Martin', statut: 'confirmee', source: 'telephone' });
   const S = appliquer({}, 'ajouterResa', { resa: { ...r, id: 'tel-x' } });
   assert.ok(resasDuJour({ R, auj: AUJ, site: [] }, S, '2026-11-20').some((x) => x.id === 'tel-x'));
-  assert.equal(un('réserver Dupont 2 personnes dimanche midi').action.args.resa.nom, 'Dupont', 'le nom juste après le verbe');
-  assert.equal(un('Table pour Famille Weber samedi 20h').action.args.resa.nom, 'Famille Weber');
+  /* v7.8.0 : l'heure manque : la barre la demande et propose les arrivées du service, sans en valider une d'office. */
+  const sansHeure = comprendre('réserver Dupont 2 personnes dimanche midi', ctx());
+  assert.equal(sansHeure[0].genre, 'erreur'); assert.equal(sansHeure[0].aChoisir, true); assert.match(sansHeure[0].titre, /À quelle heure/);
+  assert.deepEqual(sansHeure.slice(1).map((x) => x.action.args.resa.heure), ['12:00', '12:30', '13:00', '13:30']); assert.ok(sansHeure.slice(1).every((x) => x.action.args.resa.nom === 'Dupont'), 'le nom juste après le verbe');
+  assert.equal(un('Table pour 2 au nom de Famille Weber samedi 20h').action.args.resa.nom, 'Famille Weber');
+  assert.equal(un('Table pour Famille Weber samedi 20h').genre, 'erreur', 'le nombre de couverts manque : il est demandé');
   assert.equal(comprendre('ajouter une soirée raclette le 12', ctx()).length, 1, 'une action comprise : pas de proposition en plus');
   assert.equal(un('résa 6 personnes demain 12h30').action.args.resa.couverts, 6); assert.equal(un('résa 6 personnes demain 12h30').action.args.resa.heure, '12:30');
-  assert.match(un('réserver pour 2 samedi 23 h').detail, /créneau le plus proche de 23 h/, 'une heure hors service prend le créneau le plus proche');
+  /* Une heure hors service : expliquée, avec les arrivées les plus proches à choisir. */
+  const hors = comprendre('réserver pour 2 samedi 23 h', ctx());
+  assert.equal(hors[0].genre, 'erreur'); assert.match(hors[0].titre, /23 h n'est pas une heure d'arrivée/); assert.deepEqual(hors.slice(1).map((x) => x.action.args.resa.heure), ['21:15', '21:30']);
   assert.equal(un('table pour 2 ce soir').inactif, true, 'pas de service le mercredi soir');
 });
 

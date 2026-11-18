@@ -17,7 +17,9 @@
    (espace-vue-propose.js) ; la dictée dans la barre ; l'installation sur l'écran d'accueil.
    v7.7.5 : l'onglet « Service » de Réservations (espace-vue-service.js) : la frise, arrivés, absent, modifier, la feuille.
    v7.7.6 : l'onglet « Salle » (espace-vue-salle.js) : le plan, placer une réservation ; la fiche client
-   (espace-vue-client.js), ouverte en touchant un nom. */
+   (espace-vue-client.js), ouverte en touchant un nom.
+   v7.8.0 : le garde-fou métier du dépôt (une réservation impossible n'entre pas dans l'agenda), les heures d'arrivée du
+   jour, l'ouverture exceptionnelle, l'annulation ciblée, les écritures différées jamais perdues. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
 import { comprendre } from './espace-commandes.js?v=7';
 import { installerBarre } from './espace-barre.js?v=7';
@@ -28,7 +30,7 @@ import { creerService } from './espace-vue-service.js?v=7';
 import { creerSalle } from './espace-vue-salle.js?v=7';
 import { creerClient } from './espace-vue-client.js?v=7';
 import { normaliser, GENRES } from './espace-demandes.js?v=7';
-import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe } from './espace-regles.js?v=7';
+import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe, etatDuService, creneauxDuJour, verifierResa, gardeMetier } from './espace-regles.js?v=7';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -45,7 +47,9 @@ const REFUS = 'Ce navigateur refuse d\'enregistrer (mémoire pleine ou stockage 
 
 export function init(root) {
   let D; try { D = JSON.parse($('script[data-esp-donnees]', root).textContent); } catch { return; }
-  const R = D.reservation, A = aujourdhui(), depot = creerDepot();
+  const R = D.reservation, A = aujourdhui();
+  /* Le garde-fou : avant d'enregistrer, le dépôt demande aux règles si l'action est possible (d'où qu'elle vienne). */
+  const depot = creerDepot(undefined, undefined, { garde: (nom, args, frais) => gardeMetier({ R, auj: A.iso, site: depot.resasSite(), exceptions: D.horaires.exceptions || [] }, frais, nom, args) });
   const S = () => depot.etat();
   /* Le contexte des règles (réglages du site, jour, demandes venues du site) : relu à chaque rendu. */
   let contexte = null;
@@ -53,7 +57,17 @@ export function init(root) {
   const services = servicesDe(R);
   const ouv = (iso, sv) => ouvert(ctx(), S(), iso, sv);
   const plein = (iso, sv) => estComplet(S(), iso, sv);
-  const creneaux = (sv) => creneauxDe(R, sv);
+  /* Les heures d'arrivée d'un service le jour choisi : horaires déplacés et ouvertures exceptionnelles compris. */
+  const creneaux = (sv) => creneauxDuJour(ctx(), S(), etat.jour, sv);
+  /* Les écritures différées (saisie au fil de l'eau) : une par champ, jamais écrasée par la saisie d'un autre champ, et
+     toutes enregistrées avant de redessiner, de changer de rubrique ou de quitter la page (v7.8.0). */
+  const ecritures = new Map();
+  function viderEcritures() { for (const [k, x] of [...ecritures]) { clearTimeout(x.t); ecritures.delete(k); x.f(); } }
+  function plus_tard(f, cle = 'saisie') {
+    etatSauve('cours', 'En cours…'); const deja = ecritures.get(cle); if (deja) clearTimeout(deja.t);
+    ecritures.set(cle, { f, t: setTimeout(() => { ecritures.delete(cle); f(); }, 500) });
+  }
+  addEventListener('pagehide', viderEcritures); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') viderEcritures(); });
   const resas = (iso) => resasDuJour(ctx(), S(), iso);
   const enAttente = () => aConfirmer(ctx(), S());
   const evenements = () => evenementsDe(D.agenda, S());
@@ -77,12 +91,13 @@ export function init(root) {
   function agir(nom, args, { msg = 'Enregistré : visible sur le site, dans ce navigateur.', lien = '', groupe = '' } = {}) {
     const ok = depot.agir(nom, args, { libelle: msg, groupe });
     contexte = null;
-    if (ok) dire(msg, { lien, annuler: true }); else dire(REFUS);
+    if (ok) dire(msg, { lien, annuler: true }); else dire(depot.raisonRefus() || REFUS);
     return ok;
   }
   function annuler() {
     if (!depot.annuler()) return;
-    contexte = null; dire('Annulé : tout est revenu comme avant.'); rendre();
+    const n = depot.conflitsAnnulation();
+    contexte = null; dire(n ? `Annulé en partie : ${n > 1 ? `${n} éléments ont été modifiés` : 'un élément a été modifié'} ailleurs depuis, ${n > 1 ? 'ils sont gardés' : 'il est gardé'} tel quel.` : 'Annulé : tout est revenu comme avant.'); rendre();
     const t = $(`#vue-${etat.vue}`, root); t?.setAttribute('tabindex', '-1'); t?.focus({ preventScroll: true });
   }
   toastAnnuler.addEventListener('click', annuler);
@@ -126,7 +141,7 @@ export function init(root) {
   /* Où chaque écran se dessine : sa rubrique, ou le panneau de l'onglet ouvert dans « Site ». */
   const corps = (v) => (['evenements', 'soirees', 'horaires', 'textes', 'messages', 'photos'].includes(v) ? $('[data-esp-panneau]', root) : $(`[data-esp-rendu="${v}"]`, root));
   function enAttenteTotal() { const a = vDemandes.attente(); return a.tables.length + a.autres.length; }
-  const X = { root, $, $$, e, S, A, D, ctx, etat, agir, dire, corps, ligneResa, rendre, allerVue, viser, feter, enAttenteTotal, plusTard: (f) => plus_tard(f) };
+  const X = { root, $, $$, e, S, A, D, ctx, etat, agir, dire, corps, ligneResa, rendre, allerVue, viser, feter, enAttenteTotal, plusTard: (f, cle) => plus_tard(f, cle) };
   const vDemandes = creerDemandes(X);
   X.ardoiseHtml = () => cartesSite().ardoise;
   const vCarte = creerCarte(X);
@@ -187,11 +202,14 @@ export function init(root) {
     const jours = Array.from({ length: 7 }, (_, k) => ajouter(lundi, k));
     const l = resas(etat.jour);
     const colonne = (s) => {
-      const lst = l.filter((r) => r.service === s.id), o = ouv(etat.jour, s.id), fermeIci = (S().resa?.fermes?.[etat.jour] || []).includes(s.id), p = plein(etat.jour, s.id), passe = etat.jour < A.iso;
+      const es = etatDuService(ctx(), S(), etat.jour, s.id), excIci = (S().resa?.ouvertures || []).some((x) => x.date === etat.jour && x.service === s.id);
+      const lst = l.filter((r) => r.service === s.id), o = es.ouvert, fermeIci = (S().resa?.fermes?.[etat.jour] || []).includes(s.id), p = plein(etat.jour, s.id), passe = etat.jour < A.iso;
       return `<section class="esp-service${o ? '' : ' est-ferme'}" aria-labelledby="sv-${s.id}">
-        <header class="esp-service__tete"><span class="esp-ico-sv" aria-hidden="true">${ICO[s.id]}</span><h4 id="sv-${s.id}">${s.libelle} <small>${heure(hhmm(s.d))} – ${heure(hhmm(s.f))}</small></h4>
+        <header class="esp-service__tete"><span class="esp-ico-sv" aria-hidden="true">${ICO[s.id]}</span><h4 id="sv-${s.id}">${s.libelle} <small>${o ? `<span class="esp-insecable">arrivées de ${heure(hhmm(es.debut))} à ${heure(hhmm(es.fin))}</span>` : e(es.motif || 'Fermé')}</small>${es.exceptionnel ? ` <span class="esp-pastille esp-pastille--a-confirmer">Ouverture exceptionnelle${es.note ? ` · ${e(es.note)}` : ''}</span>` : ''}</h4>
           <p class="esp-service__jauge" style="--jauge:${Math.min(1, couverts(lst) / CAPACITE)}"><span>${couverts(lst)} / ${CAPACITE} couverts</span></p></header>
-        ${passe ? '' : `<p class="esp-bascules">${o || fermeIci ? `<button type="button" class="esp-bascule" aria-pressed="${p}" data-complet="${s.id}" ${o ? '' : 'disabled'}><span class="esp-bascule__rail" aria-hidden="true"></span>Complet</button><button type="button" class="esp-bascule" aria-pressed="${fermeIci}" data-fermer="${s.id}"><span class="esp-bascule__rail" aria-hidden="true"></span>Fermé ce jour</button>` : '<span class="esp-note">Fermé d\'après vos horaires</span>'}</p>`}
+        ${passe ? '' : `<p class="esp-bascules">${o || fermeIci ? `<button type="button" class="esp-bascule" aria-pressed="${p}" data-complet="${s.id}" ${o ? '' : 'disabled'}><span class="esp-bascule__rail" aria-hidden="true"></span>Complet</button><button type="button" class="esp-bascule" aria-pressed="${fermeIci}" data-fermer="${s.id}"><span class="esp-bascule__rail" aria-hidden="true"></span>Fermé ce jour</button>${excIci ? `<button type="button" class="esp-bascule" aria-pressed="true" data-ouvrir-exc="${s.id}"><span class="esp-bascule__rail" aria-hidden="true"></span>Ouverture exceptionnelle</button>` : ''}`
+          : es.raison === 'semaine' ? `<button type="button" class="esp-bascule" aria-pressed="false" data-ouvrir-exc="${s.id}"><span class="esp-bascule__rail" aria-hidden="true"></span>Ouverture exceptionnelle</button>`
+          : `<span class="esp-note">${e(es.motif || 'Fermé')}${es.raison === 'fermeture' ? ' : à retirer dans Site, Horaires' : ''}</span>`}</p>`}
         ${lst.length ? `<ul class="esp-resas">${lst.map((r) => ligneResa(r)).join('')}</ul>` : `<p class="esp-vide">${o ? `Pas encore de réservation.${passe || etat.ajoutOuvert ? '' : ' <button type="button" class="esp-lien" data-ajouter>Noter une réservation prise au téléphone</button>'}` : 'Pas de service.'}</p>`}
       </section>`;
     };
@@ -208,7 +226,7 @@ export function init(root) {
         <p class="esp-champ"><label for="aj-tel">Téléphone</label><input id="aj-tel" name="telephone" type="tel" autocomplete="off"></p>
         <p class="esp-champ"><label for="aj-sv">Service</label><select id="aj-sv" name="service">${services.map((s) => `<option value="${s.id}"${ouv(etat.jour, s.id) ? '' : ' disabled'}>${s.libelle}</option>`).join('')}</select></p>
         <p class="esp-champ"><label for="aj-h">Heure</label><select id="aj-h" name="heure">${services.map((s) => creneaux(s.id).map((t) => `<option value="${t}" data-sv="${s.id}">${heure(t)}</option>`).join('')).join('')}</select></p>
-        <p class="esp-champ"><label for="aj-c">Couverts</label><input id="aj-c" name="couverts" type="number" inputmode="numeric" min="1" max="30" value="2"></p>
+        <p class="esp-champ"><label for="aj-c">Couverts</label><input id="aj-c" name="couverts" type="number" inputmode="numeric" min="1" max="${CAPACITE}" value="2"></p>
         <p class="esp-champ esp-champ--large"><label for="aj-d">Note</label><input id="aj-d" name="demande" placeholder="Anniversaire, chaise haute…" autocomplete="off"></p>
         <p class="esp-form-ajout__actions"><button type="submit" class="bouton">Enregistrer</button><button type="button" class="esp-bouton esp-bouton--discret" data-ajouter>Fermer</button></p>
       </form>` : ''}
@@ -316,6 +334,7 @@ export function init(root) {
   }
 
   function rendre() {
+    viderEcritures();
     contexte = null;
     ({ jour: rendreJour, demandes: vDemandes.rendre, resas: rendreResas, carte: vCarte.rendre, site: rendreSite })[etat.vue]();
     const n = enAttenteTotal();
@@ -489,6 +508,7 @@ export function init(root) {
     const sm = t.closest('[data-semaine]'); if (sm) { etat.jour = ajouter(etat.jour, +sm.dataset.semaine); rendre(); $(`[data-semaine="${sm.dataset.semaine}"]`, root)?.focus(); return; }
     const aj = t.closest('[data-ajouter]'); if (aj) { etat.ajoutOuvert = !etat.ajoutOuvert; rendre(); (etat.ajoutOuvert ? $('#aj-nom', root) : $('[data-ajouter]', root))?.focus(); return; }
     const cp = t.closest('[data-complet]'); if (cp) { basculeService('complet', cp.dataset.complet, cp.getAttribute('aria-pressed') !== 'true', 'Service complet : la réservation en ligne ne le propose plus.', 'Le service est de nouveau proposé.', 'data-complet'); return; }
+    const oe = t.closest('[data-ouvrir-exc]'); if (oe) { const sv = oe.dataset.ouvrirExc, on = oe.getAttribute('aria-pressed') !== 'true'; agir('ouvertureExceptionnelle', { date: etat.jour, service: sv, actif: on }, { msg: on ? 'Ouverture exceptionnelle : la réservation en ligne propose ce service ce jour-là.' : 'Ouverture exceptionnelle retirée.', lien: D.pages.reserver }); rendre(); $(`[data-ouvrir-exc="${sv}"]`, root)?.focus(); return; }
     const fm = t.closest('[data-fermer]'); if (fm) { basculeService('fermer', fm.dataset.fermer, fm.getAttribute('aria-pressed') !== 'true', 'Service fermé ce jour-là : plus de réservation en ligne.', 'Service rouvert.', 'data-fermer'); return; }
     // Événements
     const ed = t.closest('[data-editer]'); if (ed) { etat.evEdite = ed.dataset.editer; rendre(); scrollTo({ top: 0, behavior: 'instant' }); $('#ev-titre', root)?.focus(); return; }
@@ -499,7 +519,7 @@ export function init(root) {
     const cph = t.closest('[data-choisir-photo]'); if (cph) { ouvrirModale(cph.dataset.choisirPhoto, cph); return; }
     const rph = t.closest('[data-retablir-photo]'); if (rph) { const id = rph.dataset.retablirPhoto; agir('retablirPhoto', { emplacement: id }, { msg: 'Photo d\'origine rétablie.' }); rendre(); $(`[data-choisir-photo="${id}"]`, root)?.focus(); return; }
     // Textes et horaires
-    const ann = t.closest('[data-annonce-active]'); if (ann) { const on = ann.getAttribute('aria-pressed') !== 'true', champ = $('#an-texte', root), txt = champ.value.trim() || 'Fermeture annuelle du 4 au 18 janvier : à très vite !'; agir('annonce', { active: on, texte: txt }, { msg: on ? 'Annonce affichée sur toutes les pages.' : 'Annonce retirée.', lien: D.pages.accueil }); ann.setAttribute('aria-pressed', String(on)); if (on && !champ.value.trim()) champ.value = txt; return; }
+    const ann = t.closest('[data-annonce-active]'); if (ann) { const on = ann.getAttribute('aria-pressed') !== 'true', champ = $('#an-texte', root), txt = champ.value.trim() || 'Fermeture annuelle du 4 au 18 janvier : à très vite !'; if (!agir('annonce', { active: on, texte: txt }, { msg: on ? 'Annonce affichée sur toutes les pages.' : 'Annonce retirée.', lien: D.pages.accueil })) return; /* refusé : la bascule ne bouge pas */ ann.setAttribute('aria-pressed', String(on)); if (on && !champ.value.trim()) champ.value = txt; return; }
     const rf = t.closest('[data-retirer-fermeture]'); if (rf) { agir('retirerFermeture', { index: +rf.dataset.retirerFermeture }, { msg: 'Fermeture retirée.', lien: D.pages.infos }); rendre(); $('#fe-du', root)?.focus(); return; }
     if (t.closest('[data-ajouter-plat]')) { const ol = $('.esp-ardoise__lignes', t.closest('[data-ardoise]')), n = ol.children.length + 1; ol.insertAdjacentHTML('beforeend', `<li><input name="plat" aria-label="Plat ${n}" placeholder="Nouveau plat"><input name="prix" aria-label="Prix du plat ${n}" class="esp-prix" placeholder="00 €"><button type="button" class="esp-rond esp-rond--petit" data-retirer-plat aria-label="Retirer ce plat">×</button></li>`); ol.lastElementChild.querySelector('input').focus(); return; }
     if (t.closest('[data-retirer-plat]')) { const li = t.closest('li'), fs = li.closest('[data-ardoise]'); li.remove(); sauverArdoise('Plat retiré de l\'ardoise.'); $('[data-ajouter-plat]', fs)?.focus(); return; }
@@ -509,8 +529,6 @@ export function init(root) {
   });
 
   // ---------- Saisie : enregistrée au fil de l'eau ----------
-  let minuteur;
-  const plus_tard = (f) => { etatSauve('cours', 'En cours…'); clearTimeout(minuteur); minuteur = setTimeout(f, 500); };
   function sauverArdoise(msg = 'Ardoise enregistrée.') {
     const f = $('[data-form-ardoise]', root); if (!f) return;
     const lire1 = (k) => { const fs = $(`[data-ardoise="${k}"]`, f); return { titre: fs.querySelector('[name="titre"]').value, lignes: $$('.esp-ardoise__lignes li', fs).map((li) => ({ plat: li.querySelector('[name="plat"]').value.trim(), prix: li.querySelector('[name="prix"]').value.trim() })).filter((l) => l.plat || l.prix), mot: fs.querySelector('[name="mot"]').value }; };
@@ -525,9 +543,9 @@ export function init(root) {
   root.addEventListener('input', (ev) => {
     const t = ev.target;
     if (vDemandes.saisie(t) || vCarte.saisie(t)) return;
-    if (t.id === 'an-texte') { $('[data-compte]', root).textContent = `${t.value.length} / 160`; $('[data-annonce-apercu]', root).textContent = t.value || '…'; plus_tard(() => agir('annonce', { texte: t.value.trim() }, { msg: 'Annonce enregistrée.', lien: D.pages.accueil, groupe: 'annonce-texte' })); return; }
-    if (t.closest('[data-form-ardoise]')) { plus_tard(() => sauverArdoise()); return; }
-    if (t.closest('[data-form-textes]')) { const cle = t.name, x = D.textes.find((y) => y.cle === cle); plus_tard(() => agir('texte', { cle, valeur: t.value, defaut: x?.defaut }, { msg: 'Texte enregistré : visible sur le site, dans ce navigateur.', lien: x?.url, groupe: `texte-${cle}` })); return; }
+    if (t.id === 'an-texte') { $('[data-compte]', root).textContent = `${t.value.length} / 160`; $('[data-annonce-apercu]', root).textContent = t.value || '…'; plus_tard(() => agir('annonce', { texte: t.value.trim() }, { msg: 'Annonce enregistrée.', lien: D.pages.accueil, groupe: 'annonce-texte' }), 'annonce'); return; }
+    if (t.closest('[data-form-ardoise]')) { plus_tard(() => sauverArdoise(), 'ardoise'); return; }
+    if (t.closest('[data-form-textes]')) { const cle = t.name, x = D.textes.find((y) => y.cle === cle); plus_tard(() => agir('texte', { cle, valeur: t.value, defaut: x?.defaut }, { msg: 'Texte enregistré : visible sur le site, dans ce navigateur.', lien: x?.url, groupe: `texte-${cle}` }), `texte-${cle}`); return; }
     if (t.closest('[data-editeur]')) apercuBillet(t.closest('[data-editeur]'));
   });
   root.addEventListener('change', (ev) => { if (ev.target.closest('[data-form-horaires]')) sauverHoraires(); });
@@ -537,7 +555,9 @@ export function init(root) {
     if (f.matches('[data-esp-connexion]')) { try { sessionStorage.setItem('jh-espace-session', '1'); } catch { /* rien */ } montrer(true); return; }
     if (f.matches('[data-form-ajout]')) {
       const v = Object.fromEntries(new FormData(f)); if (!v.nom.trim()) { f.elements.nom.focus(); return; }
-      agir('ajouterResa', { resa: { id: 'tel-' + Date.now().toString(36), date: etat.jour, service: v.service, heure: v.heure, couverts: Math.max(1, +v.couverts || 2), nom: v.nom.trim(), telephone: v.telephone.trim(), demande: v.demande.trim(), espace: 'salle', statut: 'confirmee', source: 'telephone' } }, { msg: 'Réservation ajoutée à l\'agenda.' });
+      /* Les règles disent si c'est possible (fermé, heure hors service, couverts hors limites) : sinon rien n'est noté et le formulaire reste ouvert. */
+      const resa = { id: 'tel-' + Date.now().toString(36), date: etat.jour, service: v.service, heure: v.heure, couverts: Math.round(+v.couverts), nom: v.nom.trim(), telephone: v.telephone.trim(), demande: v.demande.trim(), espace: 'salle', statut: 'confirmee', source: 'telephone' }, verdict = verifierResa(ctx(), S(), resa);
+      if (!agir('ajouterResa', { resa }, { msg: verdict.alerte === 'complet' ? 'Réservation ajoutée. Ce service est dit complet : elle s\'ajoute en plus, à votre décision.' : 'Réservation ajoutée à l\'agenda.' })) return;
       etat.ajoutOuvert = false; rendre(); $('[data-ajouter]', root)?.focus(); return;
     }
     if (f.matches('[data-form-fermeture]')) {

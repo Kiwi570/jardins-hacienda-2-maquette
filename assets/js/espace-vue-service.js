@@ -6,6 +6,7 @@
    Les règles sont dans espace-service.js (fonctions pures). */
 import { serviceDuJour, serviceCourant, gestes, heuresPossibles, dureeDe } from './espace-service.js?v=7';
 import { STATUTS, fmt, maj, heure, hhmm, pluriel, typo, servicesDe } from './espace-regles.js?v=7';
+import { tableApres } from './espace-salle.js?v=7';
 
 const ICO_IMPR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5V4h10v4.5M7 17.5H5a1.5 1.5 0 0 1-1.5-1.5v-6A1.5 1.5 0 0 1 5 8.5h14a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5h-2M7 14h10v6H7z"/></svg>';
 
@@ -89,7 +90,10 @@ export function creerService(X) {
     if (!f.matches('[data-form-resa]')) return false;
     const id = f.dataset.formResa, v = Object.fromEntries(new FormData(f)), svChoisi = f.elements.heure.selectedOptions[0]?.dataset.sv;
     const champs = { heure: v.heure, couverts: v.couverts, nom: v.nom, telephone: v.telephone, demande: v.demande, ...(svChoisi ? { service: svChoisi } : {}) };
-    if (agir('modifierResa', { id, champs }, { msg: 'Réservation modifiée.' })) { etat.resaEditee = null; if (svChoisi) etat.serviceVu = svChoisi; }
+    /* La table ne convient plus après la modification (trop petite, prise à la nouvelle heure) : elle est retirée, et dit. */
+    const r = servicesDe(D.reservation).flatMap((s) => serviceDuJour(ctx(), S(), etat.jour, s.id).resas).find((x) => x.id === id), ta = r ? tableApres(ctx(), S(), D.salle, r, champs) : { convient: true };
+    if (!ta.convient) champs.table = '';
+    if (agir('modifierResa', { id, champs }, { msg: ta.convient ? 'Réservation modifiée.' : `Réservation modifiée. La table ${ta.table} ne convient plus (${ta.raison}) : elle est à replacer.` })) { etat.resaEditee = null; if (svChoisi) etat.serviceVu = svChoisi; }
     X.rendre(); X.viser($(`[data-esp-panneau-resas] [data-resa="${CSS.escape(id)}"]`, root), 'center'); $(`[data-esp-panneau-resas] [data-resa="${CSS.escape(id)}"] [data-modifier-resa]`, root)?.focus({ preventScroll: true });
     return true;
   }

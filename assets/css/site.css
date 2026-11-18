@@ -4895,6 +4895,9 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 .esp-fiche__histo { display: grid; margin: 0; padding: 0; list-style: none; }
 .esp-fiche__histo li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 6px 12px; padding: 8px 0; border-top: 1px solid var(--couleur-ligne); font-size: 15px; }
 @media (max-width: 480px) { .esp-fiche__histo li { grid-template-columns: minmax(0, 1fr) auto; } .esp-fiche__quand { grid-column: 1 / -1; } }
+/* v7.8.0 · l'agenda dit les heures d'arrivée du jour, ou pourquoi le service est fermé */
+.esp-insecable { white-space: nowrap; }
+.esp-service__tete h4 .esp-pastille { margin-top: 4px; white-space: normal; }
 .esp-bonjour { margin: -8px 0 18px; font-size: clamp(1rem, .96rem + .2vw, 1.12rem); color: var(--couleur-texte-doux); }
 /* Sur téléphone, les réponses à une demande sont de gros boutons, côte à côte. */
 @media (max-width: 720px) { .esp-resa__actions .esp-bouton { flex: 1 1 0; min-height: 48px; font-size: 16px; } }

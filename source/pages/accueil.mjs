@@ -145,7 +145,7 @@ export default (c) => {
   const f = c.donnees.fetes;
   /* Prochain rendez-vous : calculé ici au jour de la génération, recalculé au jour réel dans la page. */
   const auj = new Date().toISOString().slice(0, 10);
-  const agenda = c.donnees.agenda.dates.map((d) => ({ t: d.titre, d: d.debut.slice(0, 10), a: d.ancre || 'dates' })).sort((a, b) => a.d.localeCompare(b.d));
+  const agenda = c.donnees.agenda.dates.map((d) => ({ id: d.id, t: d.titre, d: d.debut.slice(0, 10), a: d.ancre || 'dates' })).sort((a, b) => a.d.localeCompare(b.d));
   const rdv = agenda.find((d) => d.d >= auj);
   const ardoise = c.donnees.ardoise.jour;
   return html`

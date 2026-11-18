@@ -22,6 +22,12 @@
       est assise, « Annuler » la relève ; « Placer tout seul » assoit tout le monde sans deux tablées à la même table ;
       la table dit qui s'y assoit, « Retirer de la table » la libère ; la fiche client s'ouvre au nom, « Habitué » et
       une allergie s'y notent, se voient sur la réservation et sur la feuille de service ; Échap rend le focus.
+   1 octies (v7.8.0, lot A). La cohérence : les mêmes règles pour le site et l'équipe. Une ouverture déplacée à 13 h ne
+      laisse plus proposer midi sur Réserver ; la Saint-Sylvestre reste ouverte quand les horaires changent ; un mardi
+      ouvert exceptionnellement depuis l'agenda se réserve sur le site ; la barre refuse une table un jour fermé, une date
+      qui n'existe pas, et demande l'heure quand elle n'est pas une arrivée, sans rien valider d'office ; deux onglets :
+      « Annuler » ne défait que son propre geste ; deux champs saisis coup sur coup sont tous deux enregistrés ; un
+      enregistrement refusé par le navigateur le dit et ne confirme rien.
    2. Chaque rubrique (et l'éditeur d'événement, l'ajout d'une réservation, la photothèque, la barre), à cinq tailles : les
       mesures de l'audit (débordement, textes sous 12 px, cibles de 44 px, textes coupés, contrastes, noms
       accessibles, typographie), axe-core, les recouvrements, puis un balayage de 320 à 1920 px.
@@ -81,9 +87,11 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       const agenda = await page.locator(`[data-esp-rendu="resas"] [data-resa="${demande.id}"]`).innerText().catch(() => '');
       if (!/Confirmée/.test(agenda)) R.echec('espace : réserver puis confirmer', `dans l’agenda du ${demande.date}, la demande n’est pas « Confirmée »`, lieu);
       await page.locator(`[data-complet="${demande.service}"]`).click(); await attendre(400);
-      await page.goto(BASE + '/reserver#formulaire', { waitUntil: 'load' }); await attendrePret(page); await attendre(400);
-      const complets = await page.evaluate((d) => (JSON.parse(document.querySelector('script[data-reservation]').textContent).complets?.[d] || []).length, demande.date);
-      if (!complets) R.echec('espace : complet', 'le service dit « Complet » dans l’espace est encore proposé sur la page Réserver', { page: '/reserver', taille: taille.nom });
+      /* v7.8.0 : on regarde ce que voit le visiteur (le service désactivé, noté « complet »), plus seulement les données de la page :
+         l'ancien contrôle lisait le JSON et passait alors que le service restait proposé. */
+      await page.goto(`${BASE}/reserver?date=${demande.date}&service=${demande.service}#formulaire`, { waitUntil: 'load' }); await attendrePret(page); await attendre(600);
+      const vu = await page.evaluate((sv) => { const f = document.querySelector('[data-resa-form]'), r = f?.querySelector(`[name="service"][value="${sv}"]`); return { date: f?.elements.date?.value, desactive: !!r?.disabled, note: r?.closest('label')?.querySelector('[data-note]')?.textContent || '', libres: [...(f?.querySelectorAll('input[name="heure"]:not(:disabled)') || [])].length, choisi: f?.querySelector('[name="service"]:checked')?.value || '' }; }, demande.service);
+      if (vu.date !== demande.date || !vu.desactive || vu.note !== 'complet' || vu.choisi === demande.service) R.echec('espace : complet', `le service dit « Complet » dans l’espace est encore proposé sur la page Réserver (${JSON.stringify(vu)})`, { page: '/reserver', taille: taille.nom });
       if (!(await page.locator('.apercu-espace').count())) R.echec('espace : aperçu', 'la pastille « Aperçu de vos modifications » manque sur le site', { page: '/reserver', taille: taille.nom });
 
       /* Tout remettre comme livré : tout s'efface ; « Annuler » rend tout. */
@@ -413,6 +421,89 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (!(await page.locator('[role="tab"][data-onglet="salle"][aria-selected="true"]').isVisible().catch(() => false))) R.echec('espace : plan de salle', 'la barre n’ouvre pas l’onglet « Salle » pour « plan de salle »', lieu);
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
       R.ok('espace : plan de salle et fiche client');
+    } finally { await ctx.close(); }
+  }
+
+  /* ---------- 1 octies. La cohérence (lot A) ---------- */
+  {
+    const taille = T('1366×768'), lieu = { page: P, taille: taille.nom };
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      await entrer(page);
+      const etat = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'));
+      const poser = (S) => page.evaluate((x) => { if (x) localStorage.setItem('jh-espace:v1', JSON.stringify({ ...x, _schema: 2 })); else localStorage.removeItem('jh-espace:v1'); }, S);
+      const jours = await page.evaluate(() => { const iso = (k) => { const d = new Date(Date.now() + k * 864e5); return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(d); }; const l = Array.from({ length: 14 }, (_, k) => iso(k + 2)), j = (x) => new Date(x + 'T12:00:00Z').getUTCDay(); return { mercredi: l.find((x) => j(x) === 3), mardi: l.find((x) => j(x) === 2), vendredi: l.find((x) => j(x) === 5) }; });
+      const publique = async (date, service) => { await page.goto(`${BASE}/reserver?date=${date}&service=${service}#formulaire`, { waitUntil: 'load' }); await attendrePret(page); await attendre(600);
+        return page.evaluate((sv) => { const f = document.querySelector('[data-resa-form]'), r = f?.querySelector(`[name="service"][value="${sv}"]`); return { date: f?.elements.date?.value, ouvert: !!r && !r.disabled, note: r?.closest('label')?.querySelector('[data-note]')?.textContent || '', heures: f?.querySelector('[name="service"]:checked')?.value === sv ? [...f.querySelectorAll('input[name="heure"]')].map((x) => x.value) : [] }; }, service); };
+      const SEM = { lundi: [], mardi: [], mercredi: ['13:00-14:30'], jeudi: ['12:00-14:30'], vendredi: ['12:00-14:30', '19:00-00:00'], samedi: ['19:00-00:00'], dimanche: ['12:00-16:00'] };
+      /* Horaires déplacés à 13 h le mercredi : le site ne propose plus midi ; la Saint-Sylvestre reste ouverte. */
+      await poser({ horaires: { semaine: SEM } });
+      const mer = await publique(jours.mercredi, 'midi');
+      if (!mer.ouvert || mer.heures[0] !== '13:00' || mer.heures.some((h) => h < '13:00')) R.echec('cohérence : ouverture à 13 h', `la page Réserver propose encore ${mer.heures.slice(0, 3).join(', ')} un mercredi qui ouvre à 13 h`, { page: '/reserver', taille: taille.nom });
+      const an = new Date().getFullYear(), syl = [`${an}-12-31`, `${an + 1}-12-31`].find((d) => d === '2026-12-31');
+      if (syl && Date.now() < Date.parse('2026-11-02')) R.regarder('cohérence : Saint-Sylvestre', 'la date est au-delà de l’horizon de réservation : non vérifiée dans la page', lieu);
+      else if (syl && Date.now() < Date.parse('2026-12-31')) { const s = await publique(syl, 'soir'); if (!s.ouvert || !s.heures.length) R.echec('cohérence : Saint-Sylvestre', `le soir du 31 décembre n’est plus proposé sur Réserver quand les horaires de la semaine ont été modifiés (${JSON.stringify(s)})`, { page: '/reserver', taille: taille.nom }); }
+      /* Dans l'espace, le même mercredi : l'ajout au téléphone ne propose pas midi non plus. */
+      await entrer(page); await aller(page, 'resas:agenda');
+      for (let i = 0; i < 3 && !(await page.locator(`[data-jour="${jours.mercredi}"]`).count()); i++) { await page.locator('[data-semaine="7"]').click({ force: true }); await attendre(250); }
+      await page.locator(`[data-jour="${jours.mercredi}"]`).click(); await attendre(300); await page.locator('[data-ajouter]').first().click(); await attendre(300);
+      const heuresEspace = await page.evaluate(() => [...document.querySelectorAll('#aj-h option[data-sv="midi"]')].map((o) => o.value));
+      if (heuresEspace[0] !== '13:00' || heuresEspace.join() !== mer.heures.join()) R.echec('cohérence : ouverture à 13 h', `l’espace propose ${heuresEspace.join(', ')} et le site ${mer.heures.join(', ')}`, lieu);
+      /* Un mardi ouvert exceptionnellement depuis l'agenda : réservable sur le site ; retiré, il ne l'est plus. */
+      await poser(null); await entrer(page); await aller(page, 'resas:agenda');
+      for (let i = 0; i < 3 && !(await page.locator(`[data-jour="${jours.mardi}"]`).count()); i++) { await page.locator('[data-semaine="7"]').click({ force: true }); await attendre(250); }
+      await page.locator(`[data-jour="${jours.mardi}"]`).click(); await attendre(300);
+      await page.locator('[data-ouvrir-exc="soir"]').click(); await attendre(400);
+      const colonne = (await page.locator('#sv-soir').innerText().catch(() => '')).replace(/\s+/g, ' ');
+      if (!/Ouverture exceptionnelle/.test(colonne) || !/arrivées de 19 h à 21 h 30/.test(colonne) || ((await etat()).resa?.ouvertures || []).length !== 1) R.echec('cohérence : ouverture exceptionnelle', `l’agenda ne montre pas le service ouvert (« ${colonne} »)`, lieu);
+      const mar = await publique(jours.mardi, 'soir');
+      if (!mar.ouvert || mar.heures[0] !== '19:00') R.echec('cohérence : ouverture exceptionnelle', `le mardi soir ouvert depuis l’agenda n’est pas réservable sur le site (${JSON.stringify(mar)})`, { page: '/reserver', taille: taille.nom });
+      await entrer(page);
+      /* La barre : un jour fermé, une date qui n'existe pas, une heure qui n'est pas une arrivée. Rien n'est noté d'office. */
+      const dire = async (phrase, entree = true) => { await page.keyboard.press('Control+k'); await attendre(300); await page.locator('#barre-champ').fill(phrase); await attendre(250);
+        const l = await page.evaluate(() => [...document.querySelectorAll('#barre-liste [data-option]')].map((li) => ({ titre: li.querySelector('b')?.textContent || '', inactive: li.classList.contains('est-inactive'), choisie: li.getAttribute('aria-selected') === 'true' })));
+        if (entree) { await page.keyboard.press('Enter'); await attendre(350); } const ouverte = await page.locator('#barre-champ').isVisible(); if (ouverte) { await page.keyboard.press('Escape'); await attendre(250); } return { l, ouverte }; };
+      await poser(null); await entrer(page);
+      const nb = async () => ((await etat()).resa?.ajouts || []).length;
+      const ferme = await dire('table pour 4 lundi 20 h au nom de Essai');
+      if (!/Pas de service/.test(ferme.l[0]?.titre || '') || await nb()) R.echec('cohérence : barre', `un lundi, fermé : « ${ferme.l[0]?.titre} », ${await nb()} réservation(s) notée(s)`, lieu);
+      const fev = await dire('fermer le 31 février');
+      if (!/n'existe pas/.test(fev.l[0]?.titre || '') || !fev.ouverte || Object.keys((await etat()).resa?.fermes || {}).length) R.echec('cohérence : barre', `« fermer le 31 février » : « ${fev.l[0]?.titre} », barre restée ouverte ${fev.ouverte}`, lieu);
+      const h = await dire('table pour 4 vendredi 20 h 10 au nom de Essai');
+      if (!/n'est pas une heure d'arrivée/.test(h.l[0]?.titre || '') || h.l.length < 3 || h.l.some((x) => x.choisie) || await nb() || !h.ouverte) R.echec('cohérence : barre', `une heure qui n’est pas une arrivée : « ${h.l.map((x) => x.titre).join(' | ').slice(0, 120)} », choix d’office ${h.l.some((x) => x.choisie)}, ${await nb()} notée(s)`, lieu);
+      /* Le choix fait à la main, lui, est noté. */
+      await page.keyboard.press('Control+k'); await attendre(300); await page.locator('#barre-champ').fill('table pour 4 vendredi 20 h 10 au nom de Essai'); await attendre(250);
+      await page.keyboard.press('ArrowDown'); await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter'); await attendre(450);
+      const notee = ((await etat()).resa?.ajouts || [])[0];
+      if (!notee || !['20:00', '20:15'].includes(notee.heure) || +notee.couverts !== 4) R.echec('cohérence : barre', `le choix fait aux flèches n’est pas noté (${JSON.stringify(notee)})`, lieu);
+      /* Deux onglets : « Annuler » dans le premier ne défait pas ce que le second a fait ensuite. */
+      const autre = await ctx.newPage(); await autre.goto(BASE + P, { waitUntil: 'load' }); await attendrePret(autre);
+      await aller(page, 'site:horaires'); await page.locator('[data-annonce-active]').click(); await attendre(350);
+      await autre.evaluate(() => { const S = JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'); (S.resa ||= {}).fermes = { '2027-01-05': ['midi'] }; localStorage.setItem('jh-espace:v1', JSON.stringify(S)); }); await attendre(350);
+      await page.locator('[data-esp-annuler]').click(); await attendre(450);
+      const apres = await etat();
+      if (apres.annonce?.active || apres.resa?.fermes?.['2027-01-05']?.join() !== 'midi' || !(apres.resa?.ajouts || []).length) R.echec('cohérence : annuler', `« Annuler » a défait autre chose que son geste : annonce ${JSON.stringify(apres.annonce)}, fermeture posée ailleurs ${JSON.stringify(apres.resa?.fermes)}`, lieu);
+      await autre.close();
+      /* Deux champs saisis coup sur coup (moins d'une demi-seconde) : les deux sont enregistrés. */
+      await aller(page, 'site:textes');
+      const champs = await page.evaluate(() => [...document.querySelectorAll('[data-form-textes] textarea, [data-form-textes] input[type="text"], [data-form-textes] input:not([type])')].slice(0, 2).map((c) => c.name));
+      if (champs.length === 2) {
+        await page.locator(`[data-form-textes] [name="${champs[0]}"]`).fill('Premier texte du lot A'); await page.locator(`[data-form-textes] [name="${champs[1]}"]`).fill('Second texte du lot A'); await attendre(900);
+        const t = (await etat()).textes || {};
+        if (t[champs[0]] !== 'Premier texte du lot A' || t[champs[1]] !== 'Second texte du lot A') R.echec('cohérence : saisie', `deux champs saisis coup sur coup : enregistrés ${JSON.stringify(t)}`, lieu);
+        /* Un champ saisi puis la rubrique quittée aussitôt : enregistré quand même. */
+        await page.locator(`[data-form-textes] [name="${champs[0]}"]`).fill('Texte quitté aussitôt'); await page.locator('[data-esp-vue="jour"]').click(); await attendre(200);
+        if (((await etat()).textes || {})[champs[0]] !== 'Texte quitté aussitôt') R.echec('cohérence : saisie', 'un champ saisi puis la rubrique quittée aussitôt n’est pas enregistré', lieu);
+      } else R.regarder('cohérence : saisie', 'moins de deux textes modifiables : saisie rapide non vérifiée', lieu);
+      /* Le navigateur refuse d'enregistrer : c'est dit, rien n'est confirmé, l'écran ne change pas. */
+      await aller(page, 'site:horaires');
+      await page.evaluate(() => { Storage.prototype.setItem = function () { throw new DOMException('plein', 'QuotaExceededError'); }; });
+      const pressee = await page.locator('[data-annonce-active]').getAttribute('aria-pressed');
+      await page.locator('[data-annonce-active]').click(); await attendre(450);
+      const refus = await page.evaluate(() => ({ message: document.querySelector('[data-esp-toast-texte]')?.textContent || '', statut: document.querySelector('[data-esp-sauve]')?.dataset.etat || '', annulable: !document.querySelector('[data-esp-annuler]')?.hidden }));
+      if (!/refuse d'enregistrer/.test(refus.message) || refus.statut !== 'refus' || refus.annulable || /Annonce (affichée|retirée)/.test(refus.message)) R.echec('cohérence : refus', `enregistrement refusé : message « ${refus.message.slice(0, 70)} », statut ${refus.statut}, « Annuler » proposé ${refus.annulable} (bascule ${pressee})`, lieu);
+      [...new Set(erreurs)].filter((x) => !/QuotaExceeded|plein/.test(x)).forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok('cohérence : mêmes règles pour le site et l’équipe');
     } finally { await ctx.close(); }
   }
 

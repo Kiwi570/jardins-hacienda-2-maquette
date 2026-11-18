@@ -1,12 +1,12 @@
 {
- "id": "20261118-191449-complet-cible",
- "date": "2026-11-18T19:31:01.183Z",
+ "id": "20261118-202124-complet",
+ "date": "2026-11-18T21:14:40.464Z",
  "niveau": "complet",
- "pages": "/espace",
+ "pages": "toutes",
  "etapes": "toutes",
  "version": "7",
  "echecs": 0,
- "aRegarder": 7,
+ "aRegarder": 22,
  "nonLances": 1,
  "manquants": 0,
  "statut": "complet"

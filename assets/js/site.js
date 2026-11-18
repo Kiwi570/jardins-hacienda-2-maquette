@@ -7,6 +7,8 @@
 import './espace-apercu.js?v=7';
 /* v7.7.2 · Les demandes faites sur le site (réception, traiteur, carte cadeau, question) arrivent dans l'espace restaurateur. */
 import { ajouterDemandeSite } from './espace-stock.js?v=7';
+/* v7.8.0 · Les règles de disponibilité communes au site et à l'espace (ouvertures, dernière arrivée, complet). */
+import { etatService, JOURS as JOURS_SEMAINE, ajouter as ajouterJours } from './disponibilites.js?v=7';
 import { demarrer, boucle, etat, versObjet, quand, aller, partir, bloquerDefilement, debloquerDefilement, revelerMaintenant } from './socle/index.js?v=7';
 
 const gsap = window.gsap;
@@ -128,22 +130,11 @@ const OPTIONS = {
   } },
 };
 const apis = {};
-/* Soirées d'exception (Saint-Sylvestre : jeudi 31 décembre au soir) : le module ne connaît que des fermetures par jour
-   de la semaine ; le service fermé ce jour-là s'ouvre dans les réglages, ses autres dates restent sans créneau libre. */
-function reglagesResa(el) {
-  let R = null; try { R = JSON.parse(el.querySelector('script[data-reservation]')?.textContent || 'null'); } catch {}
-  const ex = (R && R.ouvertures_exceptionnelles) || [];
-  if (!ex.length) return {};
-  const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-  const jour = (iso) => JOURS[new Date(iso + 'T12:00:00Z').getUTCDay()];
-  const F = R.fermetures || {}, S = { ...(F.services || {}) }, rouverts = [];
-  for (const e of ex) { const j = jour(e.date); if ((S[j] || []).includes(e.service)) { S[j] = S[j].filter((x) => x !== e.service); rouverts.push([j, e.service]); } }
-  const serviceDe = (t) => { const m = +t.slice(0, 2) * 60 + +t.slice(3, 5); return Object.entries(R.services || {}).find(([, v]) => { const d = +v.debut.slice(0, 2) * 60 + +v.debut.slice(3, 5), f = +v.fin.slice(0, 2) * 60 + +v.fin.slice(3, 5); return m >= d && m <= f; })?.[0]; };
-  return {
-    reglages: { ...R, fermetures: { ...F, services: S } },
-    complet: (iso, t) => { const sv = serviceDe(t); return rouverts.some(([j, s2]) => j === jour(iso) && s2 === sv) && !ex.some((e) => e.date === iso && e.service === sv); },
-  };
-}
+/* Soirées d'exception (Saint-Sylvestre : jeudi 31 décembre au soir) : depuis la v7.8.0, le module lit les règles communes
+   (disponibilites.js), qui connaissent les ouvertures exceptionnelles. Il n'y a plus rien à lui régler ici : l'ancien
+   contournement (ouvrir le jeudi soir puis dire « complet » les autres jeudis) cachait aussi les services que le
+   restaurant déclare complets depuis son espace. */
+function reglagesResa() { return {}; }
 /* L'ardoise de La carte : celle du midi ou celle du soir, selon l'heure de la page (avant que le module l'écrive). */
 function contenuArdoise(el, mo) {
   let A = null; try { A = JSON.parse($('script[data-ardoise]', el)?.textContent || 'null'); } catch {}
@@ -481,20 +472,16 @@ function panorama() {
 
 /* ---------- 21 h · réserver dans la page : prochains services ouverts, carte de placement qui s'envole ---------- */
 function prochainsServices(R, nb = 6) {
-  const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map((x) => [x.type, x.value]));
   const auj = `${p.year}-${p.month}-${p.day}`, mnt = +p.hour * 60 + +p.minute;
-  const ajouter = (iso, n) => { const [a, m, j] = iso.split('-').map(Number); return new Date(Date.UTC(a, m - 1, j + n)).toISOString().slice(0, 10); };
-  const ex = R.ouvertures_exceptionnelles || [];
   const sortie = [];
+  /* v7.8.0 : ouvert, complet et dernière arrivée viennent des règles communes au site et à l'espace (disponibilites.js). */
   for (let k = 0; k < 21 && sortie.length < nb; k++) {
-    const iso = ajouter(auj, k), j = JOURS[new Date(iso + 'T12:00:00Z').getUTCDay()];
+    const iso = ajouterJours(auj, k), j = JOURS_SEMAINE[new Date(iso + 'T12:00:00Z').getUTCDay()];
     for (const sv of ['midi', 'soir']) {
-      const exc = ex.some((e) => e.date === iso && e.service === sv);
-      const ferme = !exc && ((R.fermetures.jours || []).includes(j) || (R.fermetures.services[j] || []).includes(sv) || (R.fermetures.dates || []).includes(iso));
-      if (ferme) continue;
-      const fin = enMinutes(R.services[sv].fin);
-      if (k === 0 && mnt + (R.delai_minutes || 0) > fin) continue;
+      const e = etatService(R, iso, sv);
+      if (!e.ouvert || e.complet) continue;
+      if (k === 0 && mnt + (R.delai_minutes || 0) > e.fin) continue;
       sortie.push({ iso, sv, j });
       if (sortie.length >= nb) break;
     }

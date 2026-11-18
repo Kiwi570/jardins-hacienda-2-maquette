@@ -5,7 +5,7 @@
    quelle heure tombe le coup de feu. Et ce qu'on peut faire d'une réservation pendant le service : arrivés, absent,
    la modifier (heure, couverts, note, nom, téléphone), l'annuler.
    La durée d'un repas est une valeur indicative (1 h 30 le midi, 2 h le soir), à régler avec le restaurant. */
-import { enMin, hhmm, servicesDe, creneaux, ouvert, complet, resasDuJour, actives, couverts } from './espace-regles.js?v=7';
+import { enMin, hhmm, servicesDe, creneauxDuJour, ouvert, complet, resasDuJour, actives, couverts } from './espace-regles.js?v=7';
 
 export const DUREES = { midi: 90, soir: 120 };
 /** La durée d'un repas pour un service, en minutes. */
@@ -43,8 +43,7 @@ export function gestes(r, auj) {
 }
 /** Les heures où l'on peut déplacer une réservation, le même jour : les créneaux des services ouverts. */
 export function heuresPossibles(ctx, S, iso) {
-  const regles = { R: ctx.R, exceptions: ctx.exceptions || [] };
-  return servicesDe(ctx.R).filter((s) => ouvert(regles, S, iso, s.id)).flatMap((s) => creneaux(ctx.R, s.id).map((h) => ({ heure: h, service: s.id })));
+  return servicesDe(ctx.R).flatMap((s) => creneauxDuJour(ctx, S, iso, s.id).map((h) => ({ heure: h, service: s.id })));
 }
 
 export const MUTATIONS_SERVICE = {
@@ -54,5 +53,7 @@ export const MUTATIONS_SERVICE = {
     for (const k of ['heure', 'service', 'nom', 'telephone', 'demande']) if (k in champs) m[k] = String(champs[k] ?? '').trim();
     if ('couverts' in champs) m.couverts = Math.max(1, Math.min(60, Math.round(+champs.couverts) || 1));
     if (m.heure) m.heure = hhmm(enMin(m.heure));
+    /* La table ne convient plus (trop petite, ou prise à la nouvelle heure) : la réservation est à replacer (v7.8.0). */
+    if ('table' in champs) ((S.resa.tables ||= {}))[id] = String(champs.table || '');
   },
 };

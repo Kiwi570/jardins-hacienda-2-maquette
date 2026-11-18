@@ -63,7 +63,9 @@ export default (c) => {
     agenda: D.agenda.dates,
     ardoise: D.ardoise,
     horaires: { semaine: h.semaine, exceptions: h.exceptions || [] },
-    reservation: { services: D.reservation.services, fermetures: D.reservation.fermetures, couverts_max: D.reservation.couverts_max, espaces: D.reservation.espaces.map((e) => ({ id: e.id, libelle: e.libelle })), jours_a_l_avance: D.reservation.jours_a_l_avance },
+    reservation: { services: D.reservation.services, fermetures: D.reservation.fermetures, couverts_max: D.reservation.couverts_max, espaces: D.reservation.espaces.map((e) => ({ id: e.id, libelle: e.libelle })), jours_a_l_avance: D.reservation.jours_a_l_avance,
+      /* v7.8.0 : tout ce que lisent les règles communes (disponibilites.js), comme sur la page Réserver. */
+      ouvertures_exceptionnelles: D.reservation.ouvertures_exceptionnelles || [], derniere_arrivee_avant_fermeture: D.reservation.derniere_arrivee_avant_fermeture || {}, delai_minutes: D.reservation.delai_minutes },
     photos: PHOTOS.map((p) => ({ ...p, l: T[p.nom.split('/')[1]] || [640], url: c.url(p.page, p.ancre) })),
     textes: TEXTES.map((t) => ({ ...t, defaut: c.s(t.cle), url: c.url(t.page, t.ancre) })),
     phototheque: phototheque(T),

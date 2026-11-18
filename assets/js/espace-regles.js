@@ -1,18 +1,17 @@
 /* Les règles de l'espace restaurateur (v7.7.0) : des fonctions pures, sans page ni stockage, testées par
    `node --test _audit/tests/*.test.mjs`. Dates, horaires et ouvertures (les mêmes règles que la page Réserver), réservations
-   de démonstration tirées des vrais horaires, réservations du jour, événements. */
-export const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+   de démonstration tirées des vrais horaires, réservations du jour, événements.
+   v7.8.0 : les ouvertures, les heures d'arrivée et la faisabilité d'une réservation viennent de `disponibilites.js`,
+   le fichier que lit aussi la page Réserver : une seule logique pour le site et pour l'équipe. */
+import { JOURS, enMin, hhmm, ajouter, jourDe, svDe, servicesDe, etatService, arrivees, faisabilite, equipeDe } from './disponibilites.js?v=7';
+export { JOURS, enMin, hhmm, ajouter, jourDe, svDe, servicesDe, etatService, equipeDe };
 export const SEMAINE = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
 export const STATUTS = { 'a-confirmer': 'À confirmer', confirmee: 'Confirmée', arrivee: 'Arrivés', absente: 'Absents', refusee: 'Refusée', annulee: 'Annulée' };
 /* Couverts par service : valeur de démonstration pour la jauge, à remplacer par la capacité donnée par le restaurant. */
 export const CAPACITE = 60;
 
-export const enMin = (t) => { const [h, m] = String(t).split(':').map(Number); return h * 60 + (m || 0); };
-export const hhmm = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
 /** « 12:30 » → « 12 h 30 », « 19:00 » → « 19 h ». */
 export const heure = (t) => { const m = enMin(t), h = Math.floor(m / 60) % 24, r = m % 60; return `${h} h${r ? ' ' + String(r).padStart(2, '0') : ''}`; };
-export const ajouter = (iso, n) => { const [a, m, j] = iso.split('-').map(Number); return new Date(Date.UTC(a, m - 1, j + n)).toISOString().slice(0, 10); };
-export const jourDe = (iso) => { const [a, m, j] = iso.split('-').map(Number); return new Date(Date.UTC(a, m - 1, j)).getUTCDay(); };
 export const fmt = (iso, o = { weekday: 'long', day: 'numeric', month: 'long' }) => { const [a, m, j] = iso.split('-').map(Number); return new Intl.DateTimeFormat('fr-FR', { ...o, timeZone: 'UTC' }).format(new Date(Date.UTC(a, m - 1, j))); };
 export const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 export const hache = (t) => { let h = 2166136261; for (const c of t) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -20,7 +19,6 @@ export const hache = (t) => { let h = 2166136261; for (const c of t) { h ^= c.ch
 export const typo = (t) => String(t).replace(/ ([:;!?»])/g, ' $1').replace(/« /g, '« ');
 /** Minuscules, sans accents, apostrophes droites, espaces simples : pour reconnaître les mots. */
 export const simplifier = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[’`]/g, '\'').replace(/\s+/g, ' ').trim();
-export const svDe = (creneau) => (enMin(creneau.split('-')[0]) < 17 * 60 ? 'midi' : 'soir');
 export const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? 's' : ''}`;
 /** Le jour et la minute qu'il est à Moineville. */
 export function aujourdhui(maintenant = new Date()) {
@@ -28,22 +26,23 @@ export function aujourdhui(maintenant = new Date()) {
   return { iso: `${p.year}-${p.month}-${p.day}`, min: +p.hour * 60 + +p.minute };
 }
 
-/** Les services de la réservation, dans l'ordre : [{ id, d, f, pas, libelle }]. */
-export const servicesDe = (R) => Object.entries(R.services).map(([id, s]) => ({ id, d: enMin(s.debut), f: enMin(s.fin), pas: s.pas || 15, libelle: id === 'midi' ? 'Midi' : 'Soir' }));
+/** Les heures d'arrivée d'un service telles que les réglages les publient, sans regarder le jour (v7.7.0). Pour un jour précis : creneauxDuJour. */
 export function creneaux(R, sv) { const s = servicesDe(R).find((x) => x.id === sv); const l = []; if (s) for (let m = s.d; m <= s.f; m += s.pas) l.push(hhmm(m)); return l; }
 
-/** Les règles du site seul (jours, dates et services fermés), sans rien de l'espace. */
-export function ouvertSite(R, iso, sv) {
-  const F = R.fermetures || {}, j = JOURS[jourDe(iso)];
-  return !(F.jours || []).includes(j) && !(F.dates || []).includes(iso) && !((F.services || {})[j] || []).includes(sv);
-}
+/** Les règles du site seul (semaine, dates fermées, ouvertures exceptionnelles), sans rien de l'espace. */
+export const ouvertSite = (R, iso, sv) => etatService(R, iso, sv, {}).ouvert;
+/** L'état d'un service ce jour-là, avec ce que l'espace a changé : { ouvert, raison, motif, exceptionnel, note, complet, debut, fin, pas }. */
+export const etatDuService = ({ R, exceptions = [] }, S, iso, sv) => etatService(R, iso, sv, equipeDe(S, exceptions));
 /** Le service est-il ouvert ce jour-là ? Règles du site, plus ce que l'espace a changé (S). */
-export function ouvert({ R, exceptions = [] }, S, iso, sv) {
-  if ([...exceptions, ...(S.horaires?.exceptions || [])].some((x) => (x.du || x.date) <= iso && iso <= (x.au || x.du || x.date))) return false;
-  if ((S.resa?.fermes?.[iso] || []).includes(sv)) return false;
-  if (S.horaires?.semaine) return (S.horaires.semaine[JOURS[jourDe(iso)]] || []).some((c) => svDe(c) === sv);
-  return ouvertSite(R, iso, sv);
-}
+export const ouvert = (regles, S, iso, sv) => etatDuService(regles, S, iso, sv).ouvert;
+/** Les heures d'arrivée possibles ce jour-là (horaires déplacés et ouvertures exceptionnelles compris) ; vide si le service est fermé. */
+export const creneauxDuJour = ({ R, exceptions = [] }, S, iso, sv) => arrivees(R, iso, sv, equipeDe(S, exceptions));
+/**
+ * Une réservation notée par l'équipe est-elle possible ? { ok, raison, message, alerte, service, propositions }.
+ * Fermé, heure hors service, date passée ou impossible, couverts hors limites : refusé. Service dit complet : possible,
+ * avec l'alerte « complet » (l'équipe déroge, en le sachant).
+ */
+export const verifierResa = ({ R, exceptions = [], auj }, S, resa) => faisabilite(R, resa, { auj, equipe: equipeDe(S, exceptions), couvertsMax: CAPACITE });
 export const complet = (S, iso, sv) => (S.resa?.complets?.[iso] || []).includes(sv);
 
 /* Démonstration : des réservations tirées des vrais horaires, avec des noms inventés ; aucune n'est réelle. */
@@ -81,7 +80,46 @@ export function resasDuJour({ R, auj, site = [] }, S, iso) {
 export const actives = (l) => l.filter((r) => !['refusee', 'annulee', 'absente'].includes(r.statut));
 export const couverts = (l) => actives(l).reduce((n, r) => n + (+r.couverts || 0), 0);
 /** Les demandes sans réponse, d'aujourd'hui à dans quatre semaines. */
-export function aConfirmer(ctx, S) { const l = []; for (let k = 0; k <= 28; k++) l.push(...resasDuJour(ctx, S, ajouter(ctx.auj, k)).filter((r) => r.statut === 'a-confirmer')); return l; }
+/** Jusqu'où l'espace regarde : l'horizon de la réservation en ligne (60 jours aujourd'hui), jamais moins de quatre semaines. */
+export const horizonDe = (R) => Math.max(28, +R?.jours_a_l_avance || 0);
+/**
+ * Les demandes sans réponse, d'aujourd'hui jusqu'à l'horizon de la réservation en ligne ; une demande venue du site ou
+ * notée par l'équipe pour plus tard encore n'est jamais oubliée (v7.8.0 : avant, rien au-delà de 28 jours).
+ */
+export function aConfirmer(ctx, S) {
+  const l = [], h = horizonDe(ctx.R), fin = ajouter(ctx.auj, h);
+  for (let k = 0; k <= h; k++) l.push(...resasDuJour(ctx, S, ajouter(ctx.auj, k)).filter((r) => r.statut === 'a-confirmer'));
+  const loin = [...new Set([...(ctx.site || []), ...(S.resa?.ajouts || [])].map((r) => r.date).filter((d) => d > fin))].sort();
+  for (const d of loin) l.push(...resasDuJour(ctx, S, d).filter((r) => r.statut === 'a-confirmer'));
+  return l;
+}
+/** Retrouve une réservation par son identifiant, où qu'elle soit : notée par l'équipe, venue du site, ou d'exemple. */
+export function trouverResa(ctx, S, id) {
+  const brute = (S.resa?.ajouts || []).find((r) => r.id === id) || (ctx.site || []).find((r) => r.id === id);
+  const iso = brute?.date || (/^demo-(\d{4}-\d{2}-\d{2})-/.exec(String(id)) || [])[1];
+  return iso ? resasDuJour(ctx, S, iso).find((r) => r.id === id) || null : null;
+}
+/**
+ * Le garde-fou des actions sur les réservations : '' si l'action est possible, sinon la phrase qui dit pourquoi.
+ * Le dépôt l'appelle avant d'enregistrer, d'où que vienne l'action (formulaire, barre, suggestion) : une réservation
+ * impossible ne peut pas entrer dans l'agenda, ni être confirmée.
+ */
+export function gardeMetier(ctx, S, nom, args = {}) {
+  if (nom === 'ajouterResa') { const v = verifierResa(ctx, S, args.resa || {}); return v.ok ? '' : `Réservation impossible : ${v.message}`; }
+  if (nom === 'modifierResa') {
+    const r = trouverResa(ctx, S, args.id), c = args.champs || {}; if (!r) return 'Cette réservation est introuvable : elle a peut-être été supprimée ailleurs.';
+    const bouge = ('heure' in c && c.heure !== r.heure) || ('service' in c && c.service !== r.service), n = 'couverts' in c ? Math.round(+c.couverts) : +r.couverts;
+    if (!Number.isFinite(n) || n < 1 || n > CAPACITE) return `Modification impossible : ${n > CAPACITE ? `${n} couverts, c'est plus que la salle (${CAPACITE}).` : 'il faut au moins un couvert.'}`;
+    if (bouge) { const v = verifierResa(ctx, S, { ...r, ...c, couverts: n }); if (!v.ok) return `Modification impossible : ${v.message}`; }
+    return '';
+  }
+  if (nom === 'statut' && args.statut === 'confirmee') {
+    const r = trouverResa(ctx, S, args.id); if (!r || r.date < ctx.auj) return '';
+    const e = etatDuService(ctx, S, r.date, r.service);
+    return e.ouvert ? '' : `Confirmation impossible : ${(e.motif || 'le service est fermé').toLowerCase()}. Rouvrez le service, ou refusez la demande.`;
+  }
+  return '';
+}
 
 /** Les événements tels que l'espace les a laissés : ceux du site modifiés ou masqués, et les nouveaux. */
 export function evenements(base, S) {

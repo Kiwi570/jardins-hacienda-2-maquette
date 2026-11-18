@@ -14,6 +14,7 @@ const ICONES = {
   fermeture: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.6h17M8 3v4M16 3v4M9.5 13l5 5M14.5 13l-5 5"/>',
   evenement: '<path d="M4 8.5V6a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 20 6v2.5a2.5 2.5 0 0 0 0 5V18a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18v-4.5a2.5 2.5 0 0 0 0-5Z"/><path d="M12 9v6M9 12h6"/>',
   annonce: '<path d="M4 10v4h3l6 4V6l-6 4H4ZM16.5 9a4 4 0 0 1 0 6"/>', resa: '<path d="M6.6 3.5h2.6l1.5 4-2 1.3a11 11 0 0 0 6.5 6.5l1.3-2 4 1.5v2.6a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2Z"/>',
+  erreur: '<circle cx="12" cy="12" r="8.6"/><path d="M12 7.6v5.2M12 16.2v.2"/>',
   client: '<circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/>', aller: '<path d="M5 12h13M13 6.5l5.5 5.5-5.5 5.5"/>', site: '<path d="M8 16L16 8M9.5 8H16v6.5"/>',
   loupe: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
   micro: '<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5M8.5 20.5h7"/>',
@@ -49,11 +50,12 @@ export function installerBarre(root, { comprendre, executer, actif }) {
   function rendre() {
     const texte = champ.value.trim();
     props = texte.length >= 2 ? comprendre(texte) : [];
-    choisi = props.length ? Math.max(0, props.findIndex((p) => !p.inactif)) : -1;
+    /* Des choix à faire (une précision demandée) : aucun n'est retenu d'office, Entrée ne valide rien tant qu'on n'a pas choisi. */
+    choisi = !props.length || props.some((p) => p.aChoisir) ? -1 : Math.max(0, props.findIndex((p) => !p.inactif));
     liste.hidden = !props.length; champ.setAttribute('aria-expanded', String(!!props.length));
     liste.innerHTML = props.map((p, i) => `<li class="esp-cmd__option${p.inactif ? ' est-inactive' : ''}${p.action ? ' est-action' : ''}" role="option" id="barre-o-${i}" data-option="${i}" aria-selected="${i === choisi}">
       <span class="esp-cmd__ico">${ico(p.genre)}</span><span class="esp-cmd__quoi"><b>${e(p.titre)}</b><small>${e(p.detail)}</small></span>
-      <span class="esp-cmd__entree" aria-hidden="true">${p.action ? 'Faire' : 'Ouvrir'}</span></li>`).join('');
+      ${p.action || p.aller ? `<span class="esp-cmd__entree" aria-hidden="true">${p.action ? 'Faire' : 'Ouvrir'}</span>` : ''}</li>`).join('');
     if (choisi >= 0) champ.setAttribute('aria-activedescendant', `barre-o-${choisi}`); else champ.removeAttribute('aria-activedescendant');
     exemples.hidden = texte.length >= 2;
     aide.hidden = !(texte.length >= 2 && !props.length);
@@ -89,7 +91,8 @@ export function installerBarre(root, { comprendre, executer, actif }) {
   }
   if (Parole) micro.hidden = false;
 
-  function lancer(i = choisi) { const p = props[i]; if (!p) return; fermer(false); executer(p); }
+  /* Une ligne d'explication (ni action ni rubrique) ne ferme pas la barre : on corrige sa phrase. */
+  function lancer(i = choisi) { const p = props[i]; if (!p || (!p.action && !p.aller)) return; fermer(false); executer(p); }
 
   champ.addEventListener('input', rendre);
   el.addEventListener('click', (ev) => {

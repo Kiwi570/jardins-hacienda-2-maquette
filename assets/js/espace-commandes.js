@@ -6,8 +6,12 @@
    Phrases comprises : fermer ou rouvrir un service, le dire complet, ajouter une soirée, poser une fermeture (du … au …),
    afficher ou retirer l'annonce, noter une réservation prise au téléphone, ouvrir une rubrique, retrouver un client.
    v7.7.2 : les rubriques sont Aujourd'hui, Demandes, Réservations, Carte et Site (avec ses onglets).
-   v7.7.3 : la carte. « épuisé : côte de bœuf », « plus de foie gras », « foie gras à 23 € ». */
-import { JOURS, ajouter, jourDe, fmt, maj, heure, hhmm, enMin, typo, pluriel, simplifier, servicesDe, creneaux, ouvert, complet } from './espace-regles.js?v=7';
+   v7.7.3 : la carte. « épuisé : côte de bœuf », « plus de foie gras », « foie gras à 23 € ».
+   v7.8.0 : rien n'est remplacé en silence. Une date qui n'existe pas, une heure impossible, un nombre de couverts hors
+   limites, une phrase négative ou une réservation impossible donnent une ligne d'explication (genre « erreur ») ; quand
+   il manque une précision (l'heure, le nombre de couverts) ou que l'heure dite n'est pas une heure d'arrivée, la barre
+   propose des choix (`aChoisir`) et n'en valide aucun d'office. La faisabilité vient des règles communes. */
+import { JOURS, CAPACITE, ajouter, jourDe, fmt, maj, heure, hhmm, enMin, typo, pluriel, simplifier, servicesDe, ouvert, complet, verifierResa } from './espace-regles.js?v=7';
 import { carteDe, trouverPlat, prixTexte, lirePrix } from './espace-carte.js?v=7';
 export { simplifier };
 
@@ -22,6 +26,15 @@ function prochainQuantieme(j, auj) {
 }
 const jourMois = (j, mois, annee, auj) => { const m = MOIS.indexOf(mois) + 1, a = +auj.slice(0, 4); if (annee) return iso(+annee, m, j); const d = iso(a, m, j); return d && d >= auj ? d : iso(a + 1, m, j); };
 
+/**
+ * La date dite, et si elle est impossible : { date, erreur }. erreur : le morceau de phrase qui ressemble à une date mais
+ * n'existe pas (« 31 février », « 12/13 », « le 32 ») ; la barre le dit au lieu de prendre un autre jour.
+ */
+export function lireDateDetail(n, auj) {
+  const date = lireDate(n, auj); if (date) return { date, erreur: '' };
+  const m = n.match(new RegExp(`\\b\\d{1,2}(?:er)? (?:${RE_MOIS})(?: \\d{4})?\\b`)) || n.match(/\b\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\b/) || n.match(/\ble (\d{1,2})(?:er)?\b(?! ?(?:h|:|heures?|personnes?|couverts?|pers)\b)/);
+  return { date: null, erreur: m ? m[0] : '' };
+}
 /** La date dite dans une phrase (déjà simplifiée), à partir d'aujourd'hui : « demain », « samedi », « le 12 », « 24 décembre », « 12/12 ». */
 export function lireDate(n, auj) {
   let m;
@@ -44,11 +57,25 @@ export function lirePeriode(n, auj) {
   return du && au && du <= au ? { du, au } : null;
 }
 export const lireService = (n) => (/\b(midi|dejeuner|brunch)\b/.test(n) ? 'midi' : /\b(soir|soiree|diner|nuit)\b/.test(n) ? 'soir' : null);
-/** « 20h », « 20 h 30 », « 12:30 », « midi et demi » → « 20:00 ». */
-export function lireHeure(n) {
-  const m = n.match(/\b(\d{1,2}) ?(?:h|:|heures?) ?(\d{2})?\b/); if (m && +m[1] < 24) return hhmm(+m[1] * 60 + (+m[2] || 0));
-  return null;
+/**
+ * L'heure dite, et si elle est impossible : { heure, erreur }.
+ * « 20h », « 20 h 30 », « 12:30 », « 20 h et demie », « 20 h et quart », « 20 h moins le quart », « à midi », « midi et demi »,
+ * « midi et quart », « minuit ». « demain midi » seul désigne le service, pas une heure. erreur : « 25 h », « 20 h 75 ».
+ */
+export function lireHeureDetail(n) {
+  const plus = (base, reste) => (/^ ?et demie?\b/.test(reste) ? base + 30 : /^ ?et quart\b/.test(reste) ? base + 15 : /^ ?moins le quart\b/.test(reste) ? base - 15 : /^ ?moins (\d{1,2})\b/.test(reste) ? base - +reste.match(/moins (\d{1,2})/)[1] : base);
+  let m = n.match(/\b(\d{1,2}) ?(?:h|:|heures?) ?(\d{2})?\b/);
+  if (m) {
+    if (+m[1] > 23 || +(m[2] || 0) > 59) return { heure: null, erreur: m[0].trim() };
+    return { heure: hhmm((plus(+m[1] * 60 + (+m[2] || 0), m[2] ? '' : n.slice(m.index + m[0].length)) + 1440) % 1440), erreur: '' };
+  }
+  if ((m = n.match(/\bmidi( et demie?| et quart| moins le quart)\b/))) return { heure: hhmm(plus(720, m[1])), erreur: '' };
+  if (/\b(?:a|vers|pour) midi\b/.test(n)) return { heure: '12:00', erreur: '' };
+  if (/\bminuit\b/.test(n)) return { heure: '00:00', erreur: '' };
+  return { heure: null, erreur: '' };
 }
+/** « 20h », « 20 h 30 », « 12:30 », « midi et demi » → « 20:00 » ; null si aucune heure n'est dite (ou si elle est impossible). */
+export const lireHeure = (n) => lireHeureDetail(n).heure;
 const dateLongue = (d) => fmt(d);
 const quand = (d, svs) => `${dateLongue(d)}${svs.length === 1 ? (svs[0] === 'midi' ? ' à midi' : ' au soir') : ''}`;
 const propre = (t) => maj(String(t || '').replace(/\s+/g, ' ').trim());
@@ -87,8 +114,23 @@ export function comprendre(texte, ctx) {
   const brut = String(texte || '').trim(), n = simplifier(brut), out = [];
   if (n.length < 2) return out;
   const { auj, R, S = {}, pages = {} } = ctx, regles = { R, exceptions: ctx.exceptions || [] };
-  const date = lireDate(n, auj), sv = lireService(n), tous = servicesDe(R).map((s) => s.id);
+  const dd = lireDateDetail(n, auj), date = dd.date, hd = lireHeureDetail(n), sv = lireService(n), tous = servicesDe(R).map((s) => s.id);
   const ouverts = (d, l) => l.filter((s) => ouvert(regles, S, d, s));
+  const erreur = (titre, detail, plus = {}) => ({ genre: 'erreur', titre, detail, inactif: true, ...plus });
+  const estAnnonce = /^(?:annonce[rz]?|affiche[rz]?|message|bandeau)\b/.test(n);
+  /* Une date ou une heure écrite mais impossible : on le dit, on ne prend rien d'autre à la place. */
+  /* Le morceau fautif est repris tel qu'il a été écrit (avec ses accents), pas sous sa forme simplifiée. */
+  const telEcrit = (f) => { try { return (brut.match(new RegExp(f.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&').replace(/a/g, '[aàâä]').replace(/e/g, '[eéèêë]').replace(/i/g, '[iîï]').replace(/o/g, '[oôö]').replace(/u/g, '[uùûü]').replace(/c/g, '[cç]').replace(/ /g, '\\s+'), 'i')) || [f])[0]; } catch { return f; } };
+  if (!estAnnonce && dd.erreur) return [erreur(`« ${telEcrit(dd.erreur)} » : cette date n'existe pas`, 'Rien n\'est changé. Écrivez une date du calendrier, par exemple « le 28 février » ou « samedi ».')];
+  if (!estAnnonce && hd.erreur) return [erreur(`« ${telEcrit(hd.erreur)} » : cette heure n'existe pas`, 'Rien n\'est changé. Écrivez l\'heure comme « 20 h », « 20 h 30 » ou « midi et demi ».')];
+  /* Une phrase négative (« ne ferme pas samedi », « le foie gras n'est pas épuisé ») : rien n'est fait à l'envers. */
+  const negative = /\bne pas\b|\b(?:ne|n') ?[a-z']+ (?:pas|plus|jamais)\b|^pas d[e']\b|^surtout pas\b/.test(n);
+  if (!estAnnonce && negative && !/\bcomplete?s?\b/.test(n) && /\b(ferm|epuis|reserv|table|resa|note|ajout|ouvr|rouvr|cree|supprim|annul)/.test(n)) {
+    const l = [erreur('Phrase négative : rien n\'est changé', 'Dites ce qu\'il faut faire, par exemple « rouvrir samedi soir », « il reste du foie gras » ou « fermer samedi midi ».')];
+    const fermes = date && /\bferm/.test(n) ? (sv ? [sv] : tous).filter((s) => (S.resa?.fermes?.[date] || []).includes(s)) : [];
+    if (fermes.length) l.push({ genre: 'ouvrir', titre: `Rouvrir ${quand(date, fermes)}`, detail: 'Ce service a été fermé depuis l\'agenda. La réservation en ligne le proposera de nouveau.', action: { nom: 'fermer', args: { date, services: fermes, actif: false }, msg: 'Service rouvert.', lien: pages.reserver }, aller: { vue: 'resas', jour: date } });
+    l[0].aChoisir = true; return l;
+  }
 
   /* L'annonce d'abord (« annonce : complet ce soir ») : sa phrase peut contenir « complet », « fermé » ou une date. */
   const an = brut.match(/^(?:annonce[rz]?|affiche[rz]?|message|bandeau)\s*:?\s+(.{3,})$/i);
@@ -143,18 +185,31 @@ export function comprendre(texte, ctx) {
   if (retirerAnnonce) out.push(S.annonce?.active ? { genre: 'annonce', titre: 'Retirer l\'annonce du site', detail: `« ${S.annonce.texte} »`, action: { nom: 'annonce', args: { active: false }, msg: 'Annonce retirée.', lien: pages.accueil }, aller: vers('site', 't-annonce', 'horaires') }
     : { genre: 'annonce', titre: 'Aucune annonce n\'est affichée', detail: 'Rien à retirer.', aller: vers('site', 't-annonce', 'horaires'), inactif: true });
   else if (an) { const t = typo(propre(an[1])).slice(0, 160); out.push({ genre: 'annonce', titre: 'Afficher cette annonce sur tout le site', detail: `« ${t} »`, action: { nom: 'annonce', args: { active: true, texte: t }, msg: 'Annonce affichée sur toutes les pages.', lien: pages.accueil }, aller: vers('site', 't-annonce', 'horaires') }); }
-  /* Une réservation prise au téléphone : « table pour 4 vendredi 20 h au nom de Martin ». */
+  /* Une réservation prise au téléphone : « table pour 4 vendredi 20 h au nom de Martin ». Les règles communes disent si
+     elle est possible ; ce qui manque ou ne va pas est dit, avec des choix, sans rien remplacer d'office. */
   if (!out.length && /^(reserver|reserve|reservation|resa|table|noter|ajouter une (reservation|table|resa))\b/.test(n)) {
-    const c = n.match(/\bpour (\d{1,2})\b(?! ?h)/) || n.match(/\b(\d{1,2}) ?(?:personnes?|couverts?|pers|pax|p)\b/), nb = c ? Math.max(1, Math.min(30, +c[1])) : 2;
-    const nom = (brut.match(/\bau nom de\s+(.+?)(?:\s+(?:pour|le|à|a|vers)\s|$)/i) || brut.match(/\b(?:pour|de)\s+((?:M\.|Mme|Monsieur|Madame|Famille)\s+\p{Lu}[\p{L}'-]+)/u)
+    const c = n.match(/\bpour (\d{1,3})\b(?! ?h)/) || n.match(/\b(\d{1,3}) ?(?:personnes?|couverts?|pers|pax|p)\b/), nb = c ? +c[1] : null;
+    const nom = (brut.match(new RegExp(`\\bau nom de\\s+(.+?)(?=\\s+(?:pour|le|à|a|vers|ce|demain|apr[èe]s[- ]demain|aujourd'?hui|${RE_JOURS}|midi|soir|\\d)(?:\\s|$)|\\s+\\d|$)`, 'i')) || brut.match(/\b(?:pour|de)\s+((?:M\.|Mme|Monsieur|Madame|Famille)\s+\p{Lu}[\p{L}'-]+)/u)
       /* ou le nom écrit juste après le verbe, avec sa majuscule : « réserver Dupont 2 personnes dimanche midi » */
       || brut.match(/^\S+\s+(?:une\s+table\s+)?(?:pour\s+)?((?:(?:M\.|Mme|Famille)\s+)?\p{Lu}[\p{Ll}'-]+(?:\s\p{Lu}[\p{Ll}'-]+)?)(?=\s|$)/u) || [])[1];
-    const d = date || auj, h0 = lireHeure(n), svr = h0 ? (enMin(h0) < 17 * 60 ? 'midi' : 'soir') : sv || ouverts(d, tous)[0] || tous[0], cr = creneaux(R, svr);
-    /* L'heure dite si elle est dans le service, sinon le créneau le plus proche (ou le premier). */
-    const h = h0 ? cr.reduce((a, b) => (Math.abs(enMin(b) - enMin(h0)) < Math.abs(enMin(a) - enMin(h0)) ? b : a), cr[0]) : cr[0];
-    if (!ouvert(regles, S, d, svr)) out.push({ genre: 'resa', titre: `Pas de service ${quand(d, [svr])}`, detail: 'Choisissez un autre jour, ou rouvrez ce service dans l\'agenda.', aller: { vue: 'resas', jour: d }, inactif: true });
-    else out.push({ genre: 'resa', titre: `Noter ${nom ? propre(nom) : 'une table'}, ${pluriel(nb, 'couvert')}, ${dateLongue(d)} à ${heure(h)}`, detail: `${nom ? '' : 'Sans nom pour l\'instant. '}Réservation prise au téléphone, confirmée d'office${h0 && h !== h0 ? ` (créneau le plus proche de ${heure(h0)})` : ''}.`,
-      action: { nom: 'ajouterResa', args: { resa: { date: d, service: svr, heure: h, couverts: nb, nom: nom ? propre(nom) : 'Sans nom', telephone: '', demande: '', espace: 'salle', statut: 'confirmee', source: 'telephone' } }, msg: 'Réservation ajoutée à l\'agenda.' }, aller: { vue: 'resas', jour: d } });
+    const d = date || auj, h0 = hd.heure, svr = h0 ? (enMin(h0) < 17 * 60 ? 'midi' : 'soir') : sv || ouverts(d, tous)[0] || tous[0];
+    const resa = (h) => ({ date: d, service: svr, heure: h, couverts: nb, nom: nom ? propre(nom) : 'Sans nom', telephone: '', demande: '', espace: 'salle', statut: 'confirmee', source: 'telephone' });
+    const noter = (h, v, note = '') => ({ genre: 'resa', titre: `Noter ${nom ? propre(nom) : 'une table'}, ${pluriel(nb, 'couvert')}, ${dateLongue(d)} à ${heure(h)}`,
+      detail: `${nom ? '' : 'Sans nom pour l\'instant. '}Réservation prise au téléphone, confirmée d'office.${date ? '' : ' Aucun jour n\'est dit : aujourd\'hui.'}${v.alerte === 'complet' ? ' Ce service est dit complet : la table s\'ajoute en plus, à votre décision.' : ''}${note}`,
+      action: { nom: 'ajouterResa', args: { resa: resa(h) }, msg: v.alerte === 'complet' ? 'Réservation ajoutée. Ce service est dit complet : elle s\'ajoute en plus, à votre décision.' : 'Réservation ajoutée à l\'agenda.' }, aller: { vue: 'resas', jour: d } });
+    const regle = { ...regles, auj };
+    if (nb === null) out.push(erreur('Pour combien de personnes ?', 'Ajoutez le nombre de couverts, par exemple « pour 4 ». Rien n\'est noté.'));
+    else if (nb < 1 || nb > CAPACITE) out.push(erreur(`${nb} couverts : ce n'est pas une table`, nb < 1 ? 'Il faut au moins un couvert. Rien n\'est noté.' : `Au-delà de ${CAPACITE} couverts, c'est une réception : passez par « Demandes ». Rien n'est noté.`, nb > CAPACITE ? { aller: { vue: 'demandes', filtre: 'reception' }, inactif: false } : {}));
+    else {
+      const v = verifierResa(regle, S, resa(h0 || ''));
+      if (v.ok) out.push(noter(h0, v));
+      else if (v.raison === 'heure' && v.propositions.length) {
+        /* L'heure manque, ou n'est pas une heure d'arrivée : des choix, aucun n'est validé d'office. */
+        const choix = h0 ? v.propositions : v.propositions.filter((t) => enMin(t) % 30 === 0).slice(0, 6);
+        out.push(erreur(h0 ? `${heure(h0)} n'est pas une heure d'arrivée ${quand(d, [svr])}` : `À quelle heure, ${quand(d, [svr])} ?`, h0 ? `${v.message} Choisissez l'heure la plus proche, ou écrivez-en une autre. Rien n'est noté.` : 'Choisissez une heure d\'arrivée, ou écrivez-la (« à 20 h »). Rien n\'est noté.', { aChoisir: true }));
+        for (const t of choix) out.push(noter(t, verifierResa(regle, S, resa(t))));
+      } else out.push(erreur(v.raison === 'ferme' ? `Pas de service ${quand(d, [svr])}` : 'Réservation impossible', `${v.message} ${v.raison === 'ferme' ? 'Choisissez un autre jour, ou rouvrez ce service dans l\'agenda.' : 'Rien n\'est noté.'}`, { aller: { vue: 'resas', jour: d } }));
+    }
   }
   /* Ouvrir une rubrique. */
   if (!out.length || out.every((p) => p.inactif)) for (const [re, vue, titre, detail, ancre, onglet, filtre] of RUBRIQUES) if (re.test(n) && !out.some((p) => p.titre === titre)) out.push({ genre: 'aller', titre, detail, aller: vers(vue, ancre, onglet, filtre) });
@@ -166,5 +221,5 @@ export function comprendre(texte, ctx) {
     for (const r of ctx.resas.filter((x) => mots.some((w) => simplifier(x.nom).split(/[ .]/).some((p) => p.startsWith(w)))).slice(0, 4))
       out.push({ genre: 'client', titre: `${r.nom} · ${dateLongue(r.date)} à ${heure(r.heure)}`, detail: `${pluriel(+r.couverts, 'couvert')}${r.demande ? ` · ${r.demande}` : ''} · ${r.statut === 'a-confirmer' ? 'à confirmer' : r.statut === 'confirmee' ? 'confirmée' : r.statut === 'arrivee' ? 'arrivés' : 'refusée'}`, aller: { vue: 'resas', jour: r.date, resa: r.id } });
   }
-  return out.slice(0, 6);
+  return out.slice(0, 8);
 }

@@ -4,8 +4,8 @@
    site arrive déjà placé. Une table porte les réservations du service qui y sont assises ; elle est libre pour une
    réservation si personne n'y est entre son arrivée et la fin de son repas (durées de `espace-service.js`).
    La terrasse n'ouvre que de juin à septembre, comme sur le site. */
-import { actives } from './espace-regles.js?v=7';
-import { serviceDuJour } from './espace-service.js?v=7';
+import { actives, enMin } from './espace-regles.js?v=7';
+import { serviceDuJour, dureeDe } from './espace-service.js?v=7';
 
 /** La terrasse est-elle ouverte ce jour-là ? De juin à septembre. */
 export const terrasseOuverte = (iso) => { const m = +String(iso).slice(5, 7); return m >= 6 && m <= 9; };
@@ -49,6 +49,19 @@ export function placerTout(plan) {
     if (t) { places[r.id] = t.id; t.resas.push(r); } else restes.push(r);
   }
   return { places, restes };
+}
+
+/**
+ * Après une modification (heure, service, couverts), la table de la réservation convient-elle encore ? (v7.8.0)
+ * Trop petite, prise à la nouvelle heure, ou fermée : la réservation est à replacer.
+ * @returns {{ table: string, convient: boolean, raison: string }}
+ */
+export function tableApres(ctx, S, salle, r, champs = {}) {
+  const table = String(r.table || ''); if (!table) return { table: '', convient: true, raison: '' };
+  const f = { ...r, ...champs }, n = Math.round(+f.couverts) || 1; f.debutMin = enMin(f.heure); f.finMin = f.debutMin + dureeDe(f.service);
+  const t = planDuService(ctx, S, salle, r.date, f.service).tables.find((x) => x.id === table);
+  const raison = !t ? 'elle n\'est plus sur le plan' : t.fermee ? 'la terrasse est fermée' : t.places < n ? `${t.places} places pour ${n} couverts` : !libre(t, f) ? 'elle est prise à cette heure-là' : '';
+  return { table, convient: !raison, raison };
 }
 
 export const MUTATIONS_SALLE = {

@@ -12,7 +12,8 @@
      horaires  { semaine: { lundi: ['12:00-14:30'], … }, exceptions: [{ du, au, motif }] }
      resa      { statuts: { [id]: statut }, complets: { [date]: [service] }, fermes: { [date]: [service] }, ajouts: [réservation],
                  modifs: { [id]: { heure, service, couverts, nom, telephone, demande } },   (modifs : v7.7.5)
-                 tables: { [id]: table } }   (la table où chaque réservation est assise ; '' : retirée ; v7.7.6)
+                 tables: { [id]: table },
+                 ouvertures: [{ date, service, note }] }   (ouvertures exceptionnelles posées par le restaurant ; v7.8.0)   (la table où chaque réservation est assise ; '' : retirée ; v7.7.6)
      clients   { [clé]: { habitue, allergies: [nom], note } }   (clé : téléphone, à défaut nom ; v7.7.6)
      evenements{ modifs: { [id]: champs }, ajouts: [événement], liste: [résumé pour l'accueil et Réserver] }
      demandes  { statuts: { [id]: étape }, notes: { [id]: texte } }   (v7.7.2 : réceptions, traiteur, cartes cadeaux, questions)
@@ -48,16 +49,18 @@ export function changer(f) { const d = lire(); f(d); return ecrire(d); }
 export function vider() { try { localStorage.removeItem(CLE); localStorage.removeItem(CLE_RESAS); localStorage.removeItem(CLE_DEMANDES); } catch { /* rien */ } }
 export const estVide = (d) => !d || !Object.keys(d).some((k) => !k.startsWith('_') && d[k] && (typeof d[k] !== 'object' || Object.keys(d[k]).length));
 
-/* Les réservations faites sur la page Réserver de ce navigateur : elles arrivent dans l'agenda de l'espace. */
+/* Les réservations faites sur la page Réserver de ce navigateur : elles arrivent dans l'agenda de l'espace.
+   v7.8.0 : plus de limite à 80 entrées (les plus anciennes étaient effacées sans rien dire) ; si la mémoire du navigateur
+   est pleine, l'écriture échoue et le dit (false), elle ne jette plus de données. */
 export function resasSite() { try { const l = JSON.parse(localStorage.getItem(CLE_RESAS) || '[]'); return Array.isArray(l) ? l : []; } catch { return []; } }
-export function ecrireResasSite(l) { try { if (l?.length) localStorage.setItem(CLE_RESAS, JSON.stringify(l.slice(-80))); else localStorage.removeItem(CLE_RESAS); return true; } catch { return false; } }
+export function ecrireResasSite(l) { try { if (l?.length) localStorage.setItem(CLE_RESAS, JSON.stringify(l)); else localStorage.removeItem(CLE_RESAS); return true; } catch { return false; } }
 export function ajouterResaSite(r) { const l = resasSite().filter((x) => x.id !== r.id); l.push(r); return ecrireResasSite(l); }
 
 /* Les autres demandes faites sur le site de ce navigateur (v7.7.2) : réception, commande traiteur, carte cadeau, question.
    Chacune porte son genre, un identifiant et l'heure de sa création. */
 const liste = (cle) => { try { const l = JSON.parse(localStorage.getItem(cle) || '[]'); return Array.isArray(l) ? l : []; } catch { return []; } };
 export const demandesSite = () => liste(CLE_DEMANDES);
-export function ecrireDemandesSite(l) { try { if (l?.length) localStorage.setItem(CLE_DEMANDES, JSON.stringify(l.slice(-80))); else localStorage.removeItem(CLE_DEMANDES); return true; } catch { return false; } }
+export function ecrireDemandesSite(l) { try { if (l?.length) localStorage.setItem(CLE_DEMANDES, JSON.stringify(l)); else localStorage.removeItem(CLE_DEMANDES); return true; } catch { return false; } }
 export function ajouterDemandeSite(d) {
   const maintenant = new Date();
   return ecrireDemandesSite([...demandesSite(), { id: `${(d.genre || 'demande').charAt(0).toUpperCase()}-${maintenant.getTime().toString(36)}`, cree: maintenant.toISOString(), ...d }]);
