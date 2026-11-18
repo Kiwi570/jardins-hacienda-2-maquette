@@ -11,7 +11,9 @@
      ardoise   { jour: { titre, lignes: [{ plat, prix }], mot }, soir: … }
      horaires  { semaine: { lundi: ['12:00-14:30'], … }, exceptions: [{ du, au, motif }] }
      resa      { statuts: { [id]: statut }, complets: { [date]: [service] }, fermes: { [date]: [service] }, ajouts: [réservation],
-                 modifs: { [id]: { heure, service, couverts, nom, telephone, demande } } }   (modifs : v7.7.5)
+                 modifs: { [id]: { heure, service, couverts, nom, telephone, demande } },   (modifs : v7.7.5)
+                 tables: { [id]: table } }   (la table où chaque réservation est assise ; '' : retirée ; v7.7.6)
+     clients   { [clé]: { habitue, allergies: [nom], note } }   (clé : téléphone, à défaut nom ; v7.7.6)
      evenements{ modifs: { [id]: champs }, ajouts: [événement], liste: [résumé pour l'accueil et Réserver] }
      demandes  { statuts: { [id]: étape }, notes: { [id]: texte } }   (v7.7.2 : réceptions, traiteur, cartes cadeaux, questions)
      messages  { [modèle]: texte }                                    (v7.7.2 : les messages envoyés aux clients)

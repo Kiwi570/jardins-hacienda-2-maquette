@@ -4796,6 +4796,105 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 }
 .esp-origines__absents { margin: 0 0 12px; }
 .esp-plus .esp-lien + .esp-lien { margin-left: 18px; }
+/* ---------- v7.7.6 · Le plan de salle et la fiche client ---------- */
+.esp-salle-carte { container-type: inline-size; margin-bottom: 16px; }
+.esp-salle-carte > h3 { margin: 0 0 12px; font-family: var(--police-titres); font-size: 1.25rem; font-weight: 600; }
+.esp-salle__resas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.esp-etiquette { display: inline-grid; grid-template-columns: auto auto; align-items: baseline; column-gap: 8px; min-height: 48px; padding: 6px 14px; border: 1px solid var(--couleur-ligne); border-radius: 14px; background: #fff; color: var(--couleur-texte); font: inherit; font-size: 14px; text-align: left; cursor: pointer; }
+.esp-etiquette[draggable="true"] { cursor: grab; }
+.esp-etiquette b { font-family: var(--police-titres); font-size: 1.05rem; font-weight: 600; font-variant-numeric: lining-nums; }
+.esp-etiquette span { font-weight: 700; }
+.esp-etiquette small { grid-column: 1 / -1; font-size: 12px; font-weight: 800; color: #9b2a24; }
+.esp-etiquette.est-placee small { color: var(--esp-vert); }
+.esp-etiquette:hover { border-color: var(--couleur-texte); }
+.esp-etiquette[aria-pressed="true"] { border-color: var(--or-fonce); background: var(--esp-attente-clair); box-shadow: inset 0 0 0 1px var(--or-fonce); }
+.esp-etiquette:focus-visible, .esp-table:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 3px; }
+.esp-salle__consigne { margin: 0 0 14px; font-weight: 700; }
+
+/* Sur téléphone : les tables rangées par zone. */
+.esp-salle { display: grid; gap: 16px; }
+.esp-salle__fond { display: none; }
+.esp-salle__zone h4 { margin: 0 0 8px; font-family: var(--police-texte); font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--couleur-texte-doux); }
+.esp-salle__tables { display: grid; grid-template-columns: repeat(auto-fill, minmax(136px, 1fr)); gap: 10px; }
+.esp-table { position: relative; display: grid; grid-template-columns: auto 1fr; align-items: baseline; column-gap: 8px; min-height: 64px; padding: 8px 12px; border: 1.5px solid var(--couleur-ligne); border-radius: 14px; background: #fff; color: var(--couleur-texte); font: inherit; text-align: left; cursor: pointer; }
+.esp-table b { font-family: var(--police-titres); font-size: 1.3rem; font-weight: 600; line-height: 1.1; font-variant-numeric: lining-nums; }
+.esp-table small { font-size: 12px; font-weight: 700; color: var(--couleur-texte-doux); }
+.esp-table__qui { grid-column: 1 / -1; font-size: 13px; font-weight: 700; }
+.esp-table.est-prise { background: var(--esp-attente-clair); border-color: var(--or-fonce); }
+.esp-table.est-attente { border: 1.5px dashed var(--or-fonce); }
+.esp-table.est-arrivee { background: var(--esp-vert-clair); border-color: var(--esp-vert); }
+.esp-table.est-fermee { background: transparent; border-style: dashed; cursor: default; }
+.esp-table.est-fermee :is(b, .esp-table__qui) { color: var(--couleur-texte-doux); }
+.esp-table.est-conflit { border-color: var(--rouge); box-shadow: inset 0 0 0 1px var(--rouge); }
+.esp-table.est-possible { outline: 2px dashed var(--or-fonce); outline-offset: 2px; }
+.esp-table.est-proposee { outline: 3px solid var(--or); outline-offset: 2px; }
+.esp-table.est-vue { box-shadow: 0 0 0 3px var(--couleur-texte); }
+.esp-table__badge { position: absolute; top: -11px; right: 8px; z-index: 1; padding: 1px 8px; border-radius: 999px; background: var(--or-fonce); color: #fff; font-size: 12px; font-style: normal; font-weight: 800; white-space: nowrap; }
+
+/* Sur écran large : chaque table à sa place sur le plan. */
+@container (min-width: 620px) {
+  .esp-salle { display: block; position: relative; aspect-ratio: 1000 / 640; margin-bottom: 6px; }
+  .esp-salle__fond { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+  .esp-salle__zone, .esp-salle__tables { display: contents; }
+  .esp-salle__zone h4 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .esp-table { position: absolute; left: var(--x); top: var(--y); translate: -50% -50%; display: grid; grid-template-columns: none; place-content: center; justify-items: center; gap: 1px; width: var(--l); min-width: 44px; min-height: 44px; aspect-ratio: 1; padding: 0; border-radius: 12px; text-align: center; }
+  .esp-table--ronde { border-radius: 50%; }
+  .esp-table--longue { aspect-ratio: auto; height: var(--ht); border-radius: 16px; }
+  .esp-table b { font-size: 1.05rem; line-height: 1; }
+  .esp-table small { line-height: 1; }
+  .esp-table__qui { position: absolute; left: 50%; top: calc(100% + 4px); translate: -50% 0; grid-column: auto; font-size: 12px; white-space: nowrap; }
+  .esp-table__nom { display: none; }
+  .esp-table__badge { top: -13px; right: auto; left: 50%; translate: -50% 0; }
+}
+.esp-salle__sol { fill: #fffdf8; }
+.esp-salle__dehors { fill: color-mix(in oklab, var(--esp-vert) 9%, #fffdf8); }
+.esp-salle__eau { fill: #d6e6ec; }
+.esp-salle__zones rect { fill: color-mix(in oklab, var(--or) 9%, transparent); }
+.esp-salle__feu { fill: var(--or-fonce); }
+.esp-salle__bar { fill: color-mix(in oklab, var(--couleur-texte) 16%, transparent); }
+.esp-salle__mur { fill: none; stroke: var(--couleur-texte); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.esp-salle__vitre { fill: none; stroke: #7fa9ba; stroke-width: 5; stroke-linecap: round; }
+.esp-salle__noms text { font: 800 20px var(--police-texte); letter-spacing: .1em; fill: var(--couleur-texte-doux); }
+.esp-salle__legende { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 0 12px; padding: 0; list-style: none; font-size: 13px; font-weight: 700; }
+.esp-salle__legende li { display: inline-flex; align-items: center; gap: 6px; }
+.esp-salle__legende li::before { content: ""; width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid var(--couleur-ligne); background: #fff; }
+.esp-salle__legende .est-prise::before { background: var(--esp-attente-clair); border-color: var(--or-fonce); }
+.esp-salle__legende .est-arrivee::before { background: var(--esp-vert-clair); border-color: var(--esp-vert); }
+.esp-salle__legende .est-fermee::before { background: transparent; border-style: dashed; }
+.esp-salle__fiche { margin: 4px 0 14px; padding: 14px 16px; border: 1px solid var(--or); border-radius: 16px; background: #fff; }
+.esp-salle__fiche h4 { margin: 0 0 10px; font-family: var(--police-titres); font-size: 1.25rem; font-weight: 600; }
+.esp-salle__fiche h4 small { margin-left: 6px; font-family: var(--police-texte); font-size: 14px; font-weight: 600; color: var(--couleur-texte-doux); }
+.esp-salle__fiche p { margin: 0 0 10px; }
+.esp-salle__fiche p:last-child { margin-bottom: 0; }
+.esp-salle__assis { display: grid; gap: 8px; margin: 0 0 12px; padding: 0; list-style: none; }
+.esp-salle__assis li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.esp-salle__serre { font-size: 13px; font-weight: 800; color: #9b2a24; }
+.esp-salle__asseoir { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.esp-salle__asseoir > span { font-weight: 800; }
+
+/* Le nom d'un client ouvre sa fiche. */
+.esp-client { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; margin: -12px 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; font-weight: 800; text-align: left; text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--or-fonce) 55%, transparent); text-decoration-thickness: 2px; text-underline-offset: 4px; cursor: pointer; }
+.esp-client:hover { text-decoration-color: var(--or-fonce); }
+.esp-client:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 2px; border-radius: 6px; }
+.esp-habitue { display: inline-block; padding: 1px 8px; border-radius: 999px; background: var(--or-fonce); color: #fff; font-family: var(--police-texte); font-size: 12px; font-weight: 800; vertical-align: 2px; }
+.esp-resa__allergie { font-weight: 800; color: #9b2a24; }
+.esp-modale--fiche .esp-modale__boite { width: min(100%, 640px); }
+.esp-fiche { display: grid; align-content: start; gap: 14px; min-height: 0; padding-right: 4px; overflow: auto; overscroll-behavior: contain; }
+.esp-fiche > * { margin: 0; }
+.esp-fiche__contact a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 800; }
+.esp-fiche__chiffres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0; list-style: none; }
+.esp-fiche__chiffres li { padding: 10px 12px; border-radius: 14px; background: var(--couleur-surface); font-size: 14px; font-weight: 700; }
+.esp-fiche__chiffres b { display: block; font-family: var(--police-titres); font-size: 1.6rem; font-weight: 600; line-height: 1.1; font-variant-numeric: lining-nums; }
+.esp-fiche__form { display: grid; gap: 12px; }
+.esp-fiche__form p { margin: 0; }
+.esp-fiche__form fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.esp-fiche__form legend { margin-bottom: 8px; padding: 0; font-weight: 800; }
+.esp-fiche__form legend small { display: block; font-size: 13px; font-weight: 600; color: var(--couleur-texte-doux); }
+.esp-fiche__etat { min-height: 1.5em; font-size: 14px; font-weight: 800; color: var(--esp-vert); }
+.esp-fiche h3 { font-family: var(--police-titres); font-size: 1.25rem; font-weight: 600; }
+.esp-fiche__histo { display: grid; margin: 0; padding: 0; list-style: none; }
+.esp-fiche__histo li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 6px 12px; padding: 8px 0; border-top: 1px solid var(--couleur-ligne); font-size: 15px; }
+@media (max-width: 480px) { .esp-fiche__histo li { grid-template-columns: minmax(0, 1fr) auto; } .esp-fiche__quand { grid-column: 1 / -1; } }
 .esp-bonjour { margin: -8px 0 18px; font-size: clamp(1rem, .96rem + .2vw, 1.12rem); color: var(--couleur-texte-doux); }
 /* Sur téléphone, les réponses à une demande sont de gros boutons, côte à côte. */
 @media (max-width: 720px) { .esp-resa__actions .esp-bouton { flex: 1 1 0; min-height: 48px; font-size: 16px; } }

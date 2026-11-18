@@ -1,0 +1,90 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "espace : fiche client",
+      "detail": "la feuille de service ne porte pas l’allergie ou la table (« Les Jardins de l'HaciendaFeuille de serviceSamedi 21 novembre 2026, soir · 36 couverts · 10 tables · coup de feu à 20 h 45 HeureNomCouv.NoteTéléphoneTableArrivé »)",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "1366×768",
+      "lieux": [
+        "1366×768"
+      ]
+    }
+  ],
+  "aRegarder": [
+    {
+      "niveau": "regarder",
+      "controle": "typographie française",
+      "detail": "rubrique resas:salle : espace insécable manquante avant ou après « : »",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "1366×768",
+      "selecteur": "div#panneau-resas > article.esp-carte.esp-salle-carte > p.esp-aide:nth-of-type(2) « Les tables sont celles du plan de la page Réserver »",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "typographie française",
+      "detail": "fiche client : espace insécable manquante avant ou après « : »",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "1366×768",
+      "selecteur": "div.esp-modale.esp-modale--petite:nth-of-type(4) > div.esp-modale__boite:nth-of-type(2) > div.esp-fiche > p.esp-aide:nth-of-type(2) « Démonstration : l'agenda couvre la semaine passée  »",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "typographie française",
+      "detail": "plan de salle : une réservation choisie : espace insécable manquante avant ou après « : »",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "1366×768",
+      "selecteur": "div#panneau-resas > article.esp-carte.esp-salle-carte > p.esp-aide:nth-of-type(2) « Les tables sont celles du plan de la page Réserver »",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "typographie française",
+      "detail": "plan de salle : une table ouverte : espace insécable manquante avant ou après « : »",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "1366×768",
+      "selecteur": "div#panneau-resas > article.esp-carte.esp-salle-carte > p.esp-aide:nth-of-type(2) « Les tables sont celles du plan de la page Réserver »",
+      "lieux": [
+        "1366×768"
+      ]
+    }
+  ],
+  "nonLances": [],
+  "oks": {
+    "intro accélérable et passable": 7,
+    "menu": 1,
+    "clavier": 1,
+    "liens et boutons": 1,
+    "liens profonds": 4,
+    "liens vers la page en cours": 1,
+    "espace : réserver puis confirmer": 1,
+    "espace : barre « Que voulez-vous faire ? »": 2,
+    "espace : tout arrive ici": 1,
+    "espace : la carte en main": 1,
+    "espace : suggestions, bilan, écran d’accueil": 1,
+    "espace : service": 1,
+    "espace : plan de salle et fiche client": 1,
+    "espace : mesures": 5,
+    "espace : balayage": 1,
+    "parcours du projet": 1
+  },
+  "infos": [
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.",
+    "Changements de hauteur /espace : aucun effet ScrollTrigger, rien à recalculer.",
+    "Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet."
+  ],
+  "grille": []
+}

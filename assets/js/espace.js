@@ -15,7 +15,9 @@
    v7.7.3 : « Carte » (espace-vue-carte.js) porte la carte du site (plats, prix, allergènes, épuisé aujourd'hui) et l'ardoise.
    v7.7.4 : « L'espace vous propose » en tête d'Aujourd'hui et le bilan de la semaine dans Réservations
    (espace-vue-propose.js) ; la dictée dans la barre ; l'installation sur l'écran d'accueil.
-   v7.7.5 : l'onglet « Service » de Réservations (espace-vue-service.js) : la frise, arrivés, absent, modifier, la feuille. */
+   v7.7.5 : l'onglet « Service » de Réservations (espace-vue-service.js) : la frise, arrivés, absent, modifier, la feuille.
+   v7.7.6 : l'onglet « Salle » (espace-vue-salle.js) : le plan, placer une réservation ; la fiche client
+   (espace-vue-client.js), ouverte en touchant un nom. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
 import { comprendre } from './espace-commandes.js?v=7';
 import { installerBarre } from './espace-barre.js?v=7';
@@ -23,6 +25,8 @@ import { creerDemandes } from './espace-vue-demandes.js?v=7';
 import { creerCarte } from './espace-vue-carte.js?v=7';
 import { creerPropose } from './espace-vue-propose.js?v=7';
 import { creerService } from './espace-vue-service.js?v=7';
+import { creerSalle } from './espace-vue-salle.js?v=7';
+import { creerClient } from './espace-vue-client.js?v=7';
 import { normaliser, GENRES } from './espace-demandes.js?v=7';
 import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe } from './espace-regles.js?v=7';
 
@@ -102,7 +106,7 @@ export function init(root) {
     const src = r.source === 'site' ? '<span class="esp-source esp-source--site">Depuis le site</span>' : r.source === 'telephone' ? '<span class="esp-source">Au téléphone</span>' : '';
     return `<li class="esp-resa est-${r.statut}" data-resa="${e(r.id)}">
       <p class="esp-resa__heure">${avecJour ? `<small>${e(maj(fmt(r.date, { weekday: 'short', day: 'numeric', month: 'short' })))}</small>` : ''}${heure(r.heure)}</p>
-      <div class="esp-resa__qui"><p class="esp-resa__nom">${e(r.nom || 'Sans nom')} ${src}</p><p class="esp-resa__detail">${assiettes(+r.couverts)}<span>${pluriel(+r.couverts, 'couvert')}</span>${r.table ? `<span>· table ${e(r.table)}</span>` : ''}${r.espace === 'terrasse' ? '<span>· terrasse</span>' : ''}${r.demande ? `<span class="esp-resa__demande">· ${e(r.demande)}</span>` : ''}</p>
+      <div class="esp-resa__qui"><p class="esp-resa__nom">${vClient.nom(r)} ${src}</p><p class="esp-resa__detail">${assiettes(+r.couverts)}<span>${pluriel(+r.couverts, 'couvert')}</span>${r.table ? `<span>· table ${e(r.table)}</span>` : ''}${r.espace === 'terrasse' ? '<span>· terrasse</span>' : ''}${r.demande ? `<span class="esp-resa__demande">· ${e(r.demande)}</span>` : ''}${vClient.allergies(r) ? `<span class="esp-resa__allergie">· ${e(vClient.allergies(r))}</span>` : ''}</p>
         ${r.telephone ? `<p class="esp-resa__tel"><a href="tel:${e(r.telephone.replace(/\s/g, ''))}">${ICO.tel}<span>${e(r.telephone)}</span></a></p>` : ''}</div>
       <p class="esp-resa__statut"><span class="esp-pastille esp-pastille--${r.statut}">${STATUTS[r.statut]}</span></p>
       <div class="esp-resa__actions">${actions}</div>
@@ -118,7 +122,7 @@ export function init(root) {
 
   // ---------- Vues ----------
   /* L'état des écrans, partagé avec les rubriques écrites dans d'autres fichiers (espace-vue-*.js). */
-  const etat = { vue: 'jour', jour: A.iso, evEdite: null, ajoutOuvert: false, onglet: 'soirees', filtreDemandes: 'tout', demandeOuverte: null, ongletCarte: 'carte', platEdite: null, ongletResas: 'agenda', serviceVu: null, resaEditee: null };
+  const etat = { vue: 'jour', jour: A.iso, evEdite: null, ajoutOuvert: false, onglet: 'soirees', filtreDemandes: 'tout', demandeOuverte: null, ongletCarte: 'carte', platEdite: null, ongletResas: 'agenda', serviceVu: null, resaEditee: null, resaAPlacer: null, tableVue: null };
   /* Où chaque écran se dessine : sa rubrique, ou le panneau de l'onglet ouvert dans « Site ». */
   const corps = (v) => (['evenements', 'soirees', 'horaires', 'textes', 'messages', 'photos'].includes(v) ? $('[data-esp-panneau]', root) : $(`[data-esp-rendu="${v}"]`, root));
   function enAttenteTotal() { const a = vDemandes.attente(); return a.tables.length + a.autres.length; }
@@ -129,6 +133,10 @@ export function init(root) {
   X.executer = (p) => executer(p);
   const vPropose = creerPropose(X);
   const vService = creerService(X);
+  X.serviceVu = vService.serviceVu;
+  const vSalle = creerSalle(X);
+  const vClient = creerClient(X);
+  X.nomClient = vClient.nom; X.allergiesClient = vClient.allergies;
 
   function rendreJour() {
     const l = resas(A.iso), midi = l.filter((r) => r.service === 'midi'), soir = l.filter((r) => r.service === 'soir'), att = enAttente(), autres = vDemandes.attente().autres, total = att.length + autres.length;
@@ -171,8 +179,9 @@ export function init(root) {
 
   function rendreResas() {
     const og = (id, nom) => `<button type="button" class="esp-onglet" role="tab" id="onglet-resas-${id}" aria-selected="${id === etat.ongletResas}" aria-controls="panneau-resas" tabindex="${id === etat.ongletResas ? 0 : -1}" data-onglet="${id}" data-onglets-resas>${nom}</button>`;
-    const onglets = `<div class="esp-onglets" role="tablist" aria-label="L'agenda, le service et le bilan de la semaine">${og('agenda', 'Agenda')}${og('service', 'Service')}${og('bilan', 'Bilan de la semaine')}</div>`;
+    const onglets = `<div class="esp-onglets" role="tablist" aria-label="L'agenda, le service, la salle et le bilan de la semaine">${og('agenda', 'Agenda')}${og('service', 'Service')}${og('salle', 'Salle')}${og('bilan', 'Bilan')}</div>`;
     if (etat.ongletResas === 'bilan') { corps('resas').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-resas" role="tabpanel" aria-labelledby="onglet-resas-bilan" data-esp-panneau-resas data-bilan></div>`; vPropose.rendreBilan($('[data-bilan]', root)); return; }
+    if (etat.ongletResas === 'salle') { corps('resas').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-resas" role="tabpanel" aria-labelledby="onglet-resas-salle" data-esp-panneau-resas data-plan-salle></div>`; vSalle.rendre($('[data-plan-salle]', root)); return; }
     if (etat.ongletResas === 'service') { corps('resas').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-resas" role="tabpanel" aria-labelledby="onglet-resas-service" data-esp-panneau-resas data-service></div>`; vService.rendre($('[data-service]', root)); return; }
     const lundi = ajouter(etat.jour, -((jourDe(etat.jour) + 6) % 7));
     const jours = Array.from({ length: 7 }, (_, k) => ajouter(lundi, k));
@@ -465,9 +474,10 @@ export function init(root) {
     if (t.closest('[data-esp-plus]')) { ouvrirPlus(panneauPlus.hidden); return; }
     const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; allerVue(nav.dataset.espVue); return; }
     const al = t.closest('[data-aller]'); if (al) { if (al.dataset.onglet) etat.onglet = al.dataset.onglet; if (al.dataset.aller === 'resas') etat.ongletResas = al.dataset.ongletResas || 'agenda'; etat.evEdite = al.dataset.editer || null; allerVue(al.dataset.aller); if (al.dataset.modele) viser(document.getElementById(`modele-${al.dataset.modele}`)); return; }
-    const ogr = t.closest('[data-onglets-resas]'); if (ogr) { etat.ongletResas = ogr.dataset.onglet; etat.ajoutOuvert = false; rendre(); $(`#onglet-resas-${etat.ongletResas}`, root)?.focus(); return; }
+    if (vClient.clic(t)) return;
+    const ogr = t.closest('[data-onglets-resas]'); if (ogr) { etat.ongletResas = ogr.dataset.onglet; etat.ajoutOuvert = false; etat.resaAPlacer = null; etat.tableVue = null; rendre(); $(`#onglet-resas-${etat.ongletResas}`, root)?.focus(); return; }
     if (t.closest('[data-esp-installer]')) { ouvrirPlus(false, false); ouvrirInstaller(btnPlus); return; }
-    if (vCarte.clic(t) || vPropose.clic(t) || vService.clic(t)) return;
+    if (vCarte.clic(t) || vPropose.clic(t) || vService.clic(t) || vSalle.clic(t)) return;
     const og = t.closest('[role="tab"][data-onglet]'); if (og) { etat.onglet = og.dataset.onglet; etat.evEdite = null; rendre(); $(`#onglet-${etat.onglet}`, root)?.focus(); return; }
     if (vDemandes.clic(t)) return;
     const st = t.closest('[data-statut]'); if (st) { const id = st.dataset.id, s = st.dataset.statut, restait = enAttenteTotal(), repond = ['confirmee', 'refusee'].includes(s);

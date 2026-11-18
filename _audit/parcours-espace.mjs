@@ -18,6 +18,10 @@
       dans le résumé et le coup de feu ; « Modifier » change les couverts et la note, et s'annule ; « Annuler la
       réservation » (ou « Absent » le jour même) retire ses couverts, « Remettre » les rend ; la feuille de service
       s'imprime avec elle ; la barre comprend « feuille de service ».
+   1 septies (v7.7.6). Le plan de salle et la fiche client : une réservation touchée puis la table proposée, elle y
+      est assise, « Annuler » la relève ; « Placer tout seul » assoit tout le monde sans deux tablées à la même table ;
+      la table dit qui s'y assoit, « Retirer de la table » la libère ; la fiche client s'ouvre au nom, « Habitué » et
+      une allergie s'y notent, se voient sur la réservation et sur la feuille de service ; Échap rend le focus.
    2. Chaque rubrique (et l'éditeur d'événement, l'ajout d'une réservation, la photothèque, la barre), à cinq tailles : les
       mesures de l'audit (débordement, textes sous 12 px, cibles de 44 px, textes coupés, contrastes, noms
       accessibles, typographie), axe-core, les recouvrements, puis un balayage de 320 à 1920 px.
@@ -26,7 +30,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { installerOutils, defilerTout, mesurer, mesurerRecouvrements } from './page.mjs';
 
 /* Les écrans à mesurer : les cinq rubriques, et pour « Site » chacun de ses onglets (v7.7.2). */
-const VUES = ['jour', 'demandes', 'resas:agenda', 'resas:service', 'resas:bilan', 'carte:carte', 'carte:ardoise', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
+const VUES = ['jour', 'demandes', 'resas:agenda', 'resas:service', 'resas:salle', 'resas:bilan', 'carte:carte', 'carte:ardoise', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
 const P = '/espace';
 
 export default async function ({ contexte, attendrePret, attendre, BASE, R, T }) {
@@ -345,6 +349,73 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     } finally { await ctx.close(); }
   }
 
+  /* ---------- 1 septies. Le plan de salle et la fiche client ---------- */
+  {
+    const taille = T('1366×768'), lieu = { page: P, taille: taille.nom };
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      await entrer(page);
+      const etat = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'));
+      await page.keyboard.press('Control+k'); await attendre(350);
+      await page.locator('#barre-champ').fill('table pour 4 samedi 20 h au nom de Salle Essai'); await attendre(250); await page.keyboard.press('Enter'); await attendre(500);
+      const r = ((await etat()).resa?.ajouts || []).at(-1);
+      if (!r) { R.echec('espace : plan de salle', 'la réservation notée par la barre n’est pas enregistrée', lieu); return; }
+      await aller(page, 'resas:agenda'); await page.locator(`[data-jour="${r.date}"]`).click().catch(() => {}); await attendre(250); await aller(page, 'resas:salle');
+      await page.locator('[data-service-vu="soir"]').click().catch(() => {}); await attendre(350);
+      const Pn = '[data-esp-panneau-resas]', chip = page.locator(`${Pn} [data-choisir-resa="${r.id}"]`);
+      const lire = () => page.evaluate(() => ({ aPlacer: [...document.querySelectorAll('[data-esp-panneau-resas] [data-choisir-resa] small')].filter((x) => /à placer/.test(x.textContent)).length, etiquettes: document.querySelectorAll('[data-esp-panneau-resas] [data-choisir-resa]').length, conflits: document.querySelectorAll('.esp-table.est-conflit').length, resume: document.querySelector('.esp-service-tete__resume')?.textContent || '' }));
+      /* Une réservation touchée : une seule table proposée, assez grande, en salle. */
+      await chip.click(); await attendre(350);
+      const prop = await page.evaluate(() => { const l = [...document.querySelectorAll('.esp-table.est-proposee')]; return { n: l.length, id: l[0]?.dataset.table, dit: l[0]?.getAttribute('aria-label') || '', consigne: document.querySelector('.esp-salle__consigne')?.textContent || '', choisie: document.querySelector('[data-choisir-resa][aria-pressed="true"]')?.dataset.choisirResa }; });
+      const places = +(prop.dit.match(/(\d+) places/) || [0, 0])[1];
+      if (prop.n !== 1 || places < 4 || /Terrasse/.test(prop.dit) || !/Salle Essai/.test(prop.consigne) || prop.choisie !== r.id) R.echec('espace : plan de salle', `table proposée : ${prop.n} (« ${prop.dit.slice(0, 70)} »), consigne « ${prop.consigne.slice(0, 70)} »`, lieu);
+      await page.locator(`${Pn} [data-table="${prop.id}"]`).click(); await attendre(450);
+      const assise = await page.evaluate((id) => document.querySelector(`[data-table="${id}"]`)?.getAttribute('aria-label') || '', prop.id);
+      if ((await etat()).resa?.tables?.[r.id] !== prop.id || !/Salle Essai/.test(assise) || !new RegExp(`table\\s${prop.id}`).test(await chip.innerText())) R.echec('espace : plan de salle', `la réservation n’est pas assise à la table ${prop.id} (enregistré ${JSON.stringify((await etat()).resa?.tables)}, table « ${assise.slice(0, 80)} »)`, lieu);
+      await page.locator('[data-esp-annuler]').click(); await attendre(400);
+      if ((await etat()).resa?.tables?.[r.id] || !/à placer/.test(await chip.innerText())) R.echec('espace : plan de salle', '« Annuler » ne relève pas la réservation de sa table', lieu);
+      /* Placer tout seul : tout le monde assis (ou dit sans table), jamais deux tablées ensemble. */
+      const avant = await lire();
+      await page.locator('[data-placer-tout]').click(); await attendre(500);
+      const apres = await lire(), tables = (await etat()).resa?.tables || {}, toast = await page.locator('[data-esp-toast-texte]').innerText().catch(() => '');
+      if (!avant.aPlacer || apres.conflits || Object.keys(tables).length + apres.aPlacer !== avant.aPlacer || (apres.aPlacer ? !/Sans table/.test(toast) : !/toutes placées|placée/.test(apres.resume))) R.echec('espace : plan de salle', `« Placer tout seul » : ${avant.aPlacer} à placer avant, ${Object.keys(tables).length} assises, ${apres.aPlacer} restent, ${apres.conflits} conflit(s), résumé « ${apres.resume} », message « ${toast.slice(0, 60)} »`, lieu);
+      const table = tables[r.id];
+      /* L'onglet « Service » et la feuille portent la table. */
+      await aller(page, 'resas:service'); await page.locator('[data-service-vu="soir"]').click().catch(() => {}); await attendre(350);
+      const ligne = (await page.locator(`${Pn} [data-resa="${r.id}"]`).innerText().catch(() => '')).replace(/\s+/g, ' ');
+      if (table && !new RegExp(`table ${table}\\b`).test(ligne)) R.echec('espace : plan de salle', `la frise ne dit pas la table (« ${ligne.slice(0, 90)} »)`, lieu);
+      /* La fiche client : ouverte au nom, « Habitué » et une allergie notés, visibles sur la réservation et la feuille. */
+      await page.locator(`${Pn} [data-resa="${r.id}"] [data-client]`).click(); await attendre(450);
+      const fen = await page.evaluate(() => { const d = document.querySelector('.esp-modale--fiche [role="dialog"]'); return { ouverte: !!d && !d.closest('.esp-modale').hidden, titre: d?.querySelector('h2')?.textContent || '', focus: document.activeElement?.matches('[data-fermer-client]') }; });
+      if (!fen.ouverte || !/Salle Essai/.test(fen.titre) || !fen.focus) R.echec('espace : fiche client', `fenêtre ouverte ${fen.ouverte}, titre « ${fen.titre} », focus sur « Fermer » ${fen.focus}`, lieu);
+      await page.locator('[data-form-client] input[name="habitue"]').check(); await attendre(200);
+      await page.locator('[data-form-client] input[value="Gluten"]').check(); await attendre(300);
+      const note = Object.values((await etat()).clients || {})[0];
+      if (!note?.habitue || (note.allergies || []).join() !== 'Gluten' || !/Enregistré/.test(await page.locator('[data-client-etat]').innerText())) R.echec('espace : fiche client', `ce qui est noté n’est pas enregistré (${JSON.stringify(note)})`, lieu);
+      await page.keyboard.press('Escape'); await attendre(450);
+      const fin = await page.evaluate((sel) => ({ fermee: document.querySelector('.esp-modale--fiche').hidden, focus: document.activeElement?.matches('.esp-client'), ligne: (document.querySelector(sel)?.innerText || '').replace(/\s+/g, ' ') }), `${Pn} [data-resa="${r.id}"]`);
+      if (!fin.fermee || !fin.focus || !/Habitué/.test(fin.ligne) || !/Allergies : gluten/.test(fin.ligne)) R.echec('espace : fiche client', `fermée à Échap ${fin.fermee}, focus rendu ${fin.focus}, ligne « ${fin.ligne.slice(0, 110)} »`, lieu);
+      await page.evaluate(() => { window.print = () => { window.__feuille = [...document.querySelectorAll('.esp-feuille tbody tr')].map((tr) => [...tr.cells].map((td) => td.textContent.replace(/\s+/g, ' ').trim())); }; });
+      await page.locator('[data-imprimer-service]').click(); await attendre(250); await page.evaluate(() => dispatchEvent(new Event('afterprint'))); await attendre(150);
+      const rang = (await page.evaluate(() => window.__feuille || [])).find((c) => /Salle Essai/.test(c[1] || '')) || [];
+      if (!/Allergies : gluten/.test(rang[3] || '') || (table && rang[5] !== table)) R.echec('espace : fiche client', `la feuille de service ne porte pas l’allergie ou la table (${JSON.stringify(rang)})`, lieu);
+      /* La table dit qui s'y assoit ; « Retirer de la table » la libère. */
+      await aller(page, 'resas:salle'); await page.locator('[data-service-vu="soir"]').click().catch(() => {}); await attendre(350);
+      if (table) {
+        await page.locator(`${Pn} [data-table="${table}"]`).click(); await attendre(400);
+        const fiche = (await page.locator('[data-fiche-table]').innerText().catch(() => '')).replace(/\s+/g, ' ');
+        await page.locator(`[data-fiche-table] [data-retirer-table="${r.id}"]`).click(); await attendre(450);
+        if (!/Salle Essai/.test(fiche) || (await etat()).resa?.tables?.[r.id] !== '' || !/à placer/.test(await chip.innerText())) R.echec('espace : plan de salle', `fiche de la table « ${fiche.slice(0, 80)} », après « Retirer » : ${JSON.stringify((await etat()).resa?.tables?.[r.id])}`, lieu);
+      }
+      /* La barre comprend « plan de salle ». */
+      await aller(page, 'jour'); await page.keyboard.press('Control+k'); await attendre(350);
+      await page.locator('#barre-champ').fill('plan de salle'); await attendre(250); await page.keyboard.press('Enter'); await attendre(500);
+      if (!(await page.locator('[role="tab"][data-onglet="salle"][aria-selected="true"]').isVisible().catch(() => false))) R.echec('espace : plan de salle', 'la barre n’ouvre pas l’onglet « Salle » pour « plan de salle »', lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok('espace : plan de salle et fiche client');
+    } finally { await ctx.close(); }
+  }
+
   /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */
   const noter = (liste, taille, ou) => liste.filter((x) => x.controle !== 'section sans visuel').forEach((x) => R.ajouter(x.niveau || 'echec', x.controle, `${ou} : ${x.detail}`, { page: P, taille: taille.nom, selecteur: x.selecteur }));
   async function mesurerEcran(page, taille, ou, complet) {
@@ -372,7 +443,12 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       /* L'onglet « Service » un jour où il y a du monde, puis son formulaire « Modifier ». */
       { const jours = await page.evaluate(() => [...document.querySelectorAll('[data-esp-rendu="resas"] [data-jour]')].map((b) => b.dataset.jour)); let trouve = false;
         for (const j of jours) { await aller(page, 'resas:agenda'); await page.locator(`[data-esp-rendu="resas"] [data-jour="${j}"]`).first().click().catch(() => {}); await attendre(200); await aller(page, 'resas:service'); if (await page.locator('[data-esp-panneau-resas] [data-modifier-resa]').count()) { trouve = true; break; } }
-        if (trouve) { await mesurerEcran(page, taille, 'service : la frise', complet); await page.locator('[data-esp-panneau-resas] [data-modifier-resa]').first().click(); await attendre(350); await mesurerEcran(page, taille, 'service : modifier une réservation', complet); await page.locator('[data-form-resa] [data-modifier-resa]').click(); await attendre(200); }
+        if (trouve) { await mesurerEcran(page, taille, 'service : la frise', complet); await page.locator('[data-esp-panneau-resas] [data-modifier-resa]').first().click(); await attendre(350); await mesurerEcran(page, taille, 'service : modifier une réservation', complet); await page.locator('[data-form-resa] [data-modifier-resa]').click(); await attendre(200);
+          /* La fiche client, puis le plan de salle : une réservation choisie, tout le monde placé, une table ouverte. */
+          await page.locator('[data-esp-panneau-resas] [data-client]').first().click(); await attendre(450); await mesurerEcran(page, taille, 'fiche client', complet); await page.keyboard.press('Escape'); await attendre(300);
+          await aller(page, 'resas:salle'); await page.locator('[data-esp-panneau-resas] [data-choisir-resa]').first().click(); await attendre(350); await mesurerEcran(page, taille, 'plan de salle : une réservation choisie', complet);
+          await page.locator('[data-placer-tout]').click(); await attendre(450); await page.locator('[data-esp-panneau-resas] .esp-table:is(.est-prise, .est-attente, .est-arrivee)').first().click(); await attendre(450); await mesurerEcran(page, taille, 'plan de salle : une table ouverte', complet);
+          await page.locator('[data-fermer-table]').click(); await attendre(200); }
         else R.regarder('espace : service', 'aucun jour de la semaine n’a de réservation à montrer : la frise n’a pas été mesurée', { page: P, taille: taille.nom }); }
       await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(250); await page.locator('[data-esp-rendu="demandes"] [data-ouvrir-demande]').first().click(); await attendre(400); await mesurerEcran(page, taille, 'demande de réception ouverte', complet);
       await page.locator('[data-filtre-demandes="table"]').click(); await attendre(250); await page.locator('.esp-resa__message summary').first().click(); await attendre(250); await mesurerEcran(page, taille, 'tables à confirmer et message', false);

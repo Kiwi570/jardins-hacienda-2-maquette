@@ -32,8 +32,8 @@ export function creerService(X) {
   function ligne(r, sv) {
     const g = gestes(r, A.iso), ouverte = etat.resaEditee === r.id, hors = ['refusee', 'annulee', 'absente'].includes(r.statut);
     return `<li class="esp-frise__ligne est-${r.statut}${ouverte ? ' est-ouverte' : ''}" data-resa="${e(r.id)}">
-      <div class="esp-frise__qui"><p class="esp-frise__heure">${heure(r.heure)}</p><div><p class="esp-frise__nom">${e(r.nom || 'Sans nom')} <span class="esp-pastille esp-pastille--${r.statut}">${STATUTS[r.statut]}</span></p>
-        <p class="esp-frise__detail">${pluriel(+r.couverts, 'couvert')}${r.table ? ` · table ${e(r.table)}` : ''}${r.demande ? ` · <span class="esp-resa__demande">${e(r.demande)}</span>` : ''}</p></div></div>
+      <div class="esp-frise__qui"><p class="esp-frise__heure">${heure(r.heure)}</p><div><p class="esp-frise__nom">${X.nomClient(r)} <span class="esp-pastille esp-pastille--${r.statut}">${STATUTS[r.statut]}</span></p>
+        <p class="esp-frise__detail">${pluriel(+r.couverts, 'couvert')}${r.table ? ` · table ${e(r.table)}` : ''}${r.demande ? ` · <span class="esp-resa__demande">${e(r.demande)}</span>` : ''}${X.allergiesClient(r) ? ` · <span class="esp-resa__allergie">${e(X.allergiesClient(r))}</span>` : ''}</p></div></div>
       <div class="esp-frise__piste" aria-hidden="true">${hors ? '' : `<span class="esp-frise__bloc" style="--d:${part(sv, r.debutMin)};--l:${(((r.finMin - r.debutMin) / (sv.fin - sv.debut)) * 100).toFixed(2)}%"><b>${+r.couverts}</b></span>`}</div>
       <p class="esp-frise__actions">${g.map((x) => `<button type="button" class="esp-bouton${x.genre === 'ok' ? ' esp-bouton--ok' : x.genre === 'non' ? ' esp-bouton--non' : ''}" data-statut="${x.statut}" data-id="${e(r.id)}">${x.libelle}</button>`).join('')}<button type="button" class="esp-bouton esp-bouton--discret" data-modifier-resa="${e(r.id)}" aria-expanded="${ouverte}">Modifier</button></p>
       ${ouverte ? editeur(r) : ''}</li>`;
@@ -67,7 +67,7 @@ export function creerService(X) {
     const id = svVu(), sv = serviceDuJour(ctx(), S(), etat.jour, id), l = sv.resas.filter((r) => !['refusee', 'annulee'].includes(r.statut));
     return `<header><p class="esp-feuille__maison">Les Jardins de l'Hacienda</p><h1>Feuille de service</h1><p class="esp-feuille__quand">${e(maj(fmt(etat.jour, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })))}, ${id === 'midi' ? 'midi' : 'soir'} · ${pluriel(sv.couverts, 'couvert')} · ${pluriel(sv.tables, 'table')}${sv.pic?.couverts ? ` · coup de feu à ${heure(hhmm(sv.pic.t))}` : ''}</p></header>
       <table><thead><tr><th>Heure</th><th>Nom</th><th>Couv.</th><th>Note</th><th>Téléphone</th><th>Table</th><th>Arrivés</th></tr></thead>
-      <tbody>${l.map((r) => `<tr><td>${heure(r.heure)}</td><td>${e(r.nom || 'Sans nom')}${r.statut === 'a-confirmer' ? ' <em>(à confirmer)</em>' : r.statut === 'absente' ? ' <em>(absent)</em>' : ''}</td><td>${+r.couverts}</td><td>${e(typo(r.demande || ''))}</td><td>${e(r.telephone || '')}</td><td>${e(r.table || '')}</td><td><span class="esp-feuille__case${r.statut === 'arrivee' ? ' est-cochee' : ''}"></span></td></tr>`).join('') || '<tr><td colspan="7">Aucune réservation.</td></tr>'}</tbody></table>
+      <tbody>${l.map((r) => `<tr><td>${heure(r.heure)}</td><td>${e(r.nom || 'Sans nom')}${r.statut === 'a-confirmer' ? ' <em>(à confirmer)</em>' : r.statut === 'absente' ? ' <em>(absent)</em>' : ''}</td><td>${+r.couverts}</td><td>${e(typo([r.demande, X.allergiesClient(r)].filter(Boolean).join(' · ')))}</td><td>${e(r.telephone || '')}</td><td>${e(r.table || '')}</td><td><span class="esp-feuille__case${r.statut === 'arrivee' ? ' est-cochee' : ''}"></span></td></tr>`).join('') || '<tr><td colspan="7">Aucune réservation.</td></tr>'}</tbody></table>
       <footer><p>Démonstration : réservations d'exemple, noms inventés.</p></footer>`;
   }
   function imprimer() {
@@ -93,5 +93,5 @@ export function creerService(X) {
     X.rendre(); X.viser($(`[data-esp-panneau-resas] [data-resa="${CSS.escape(id)}"]`, root), 'center'); $(`[data-esp-panneau-resas] [data-resa="${CSS.escape(id)}"] [data-modifier-resa]`, root)?.focus({ preventScroll: true });
     return true;
   }
-  return { rendre, clic, envoi, feuille };
+  return { rendre, clic, envoi, feuille, serviceVu: svVu };
 }

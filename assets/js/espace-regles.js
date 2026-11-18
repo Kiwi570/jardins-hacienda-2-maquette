@@ -57,8 +57,10 @@ export function demo(R, auj, iso, sv) {
     const k = hache(iso + sv + i), t = cr[(k >>> 3) % cr.length];
     // Quelques demandes en attente seulement, dans les jours qui viennent (comme un vrai lundi matin).
     const statut = iso < auj ? 'arrivee' : iso > auj && iso <= ajouter(auj, 6) && k % 13 === 0 ? 'a-confirmer' : 'confirmee';
-    out.push({ id: `demo-${iso}-${sv}-${i}`, date: iso, service: sv, heure: t, couverts: 2 + (k % 5) - (k % 7 === 0 ? 1 : 0), nom: NOMS[(k + i * 7) % NOMS.length],
-      telephone: `06 ${String(10 + (k % 89)).padStart(2, '0')} ${String(k % 97).padStart(2, '0')} ${String((k >>> 4) % 99).padStart(2, '0')} ${String((k >>> 8) % 99).padStart(2, '0')}`,
+    /* Un client d'exemple garde le même téléphone d'une réservation à l'autre : sa fiche le reconnaît (v7.7.6). */
+    const qui = (k + i * 7) % NOMS.length, n = hache(`tel-${NOMS[qui]}`);
+    out.push({ id: `demo-${iso}-${sv}-${i}`, date: iso, service: sv, heure: t, couverts: 2 + (k % 5) - (k % 7 === 0 ? 1 : 0), nom: NOMS[qui],
+      telephone: `06 ${String(10 + (n % 89)).padStart(2, '0')} ${String(n % 97).padStart(2, '0')} ${String((n >>> 4) % 99).padStart(2, '0')} ${String((n >>> 8) % 99).padStart(2, '0')}`,
       demande: DEMANDES[(k >>> 5) % DEMANDES.length], espace: 'salle', statut, source: 'demo' });
   }
   return out;
@@ -70,10 +72,10 @@ export const depuisSite = (r) => ({ id: r.id, date: r.date, service: r.service, 
 
 /** Les réservations d'un jour, triées par heure : démonstration, ajoutées au téléphone, venues du site, avec le statut choisi dans l'espace. */
 export function resasDuJour({ R, auj, site = [] }, S, iso) {
-  const st = S.resa?.statuts || {}, mod = S.resa?.modifs || {};
+  const st = S.resa?.statuts || {}, mod = S.resa?.modifs || {}, tab = S.resa?.tables || {};
   return [...servicesDe(R).flatMap((s) => demo(R, auj, iso, s.id)), ...(S.resa?.ajouts || []).filter((r) => r.date === iso), ...site.filter((r) => r.date === iso).map(depuisSite)]
-    /* Ce que le restaurant a modifié (heure, service, couverts, nom, téléphone, note ; v7.7.5), puis le statut choisi. */
-    .map((r) => ({ ...r, ...(mod[r.id] || {}), statut: st[r.id] || r.statut })).sort((a, b) => a.heure.localeCompare(b.heure));
+    /* Ce que le restaurant a modifié (heure, service, couverts, nom, téléphone, note ; v7.7.5), la table où il l'a assise (v7.7.6), puis le statut choisi. */
+    .map((r) => ({ ...r, ...(mod[r.id] || {}), ...(r.id in tab ? { table: tab[r.id] } : {}), statut: st[r.id] || r.statut })).sort((a, b) => a.heure.localeCompare(b.heure));
 }
 /** Les réservations qui comptent : ni refusées, ni annulées, ni absentes. */
 export const actives = (l) => l.filter((r) => !['refusee', 'annulee', 'absente'].includes(r.statut));
