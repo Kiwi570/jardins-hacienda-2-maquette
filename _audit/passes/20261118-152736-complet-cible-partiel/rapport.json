@@ -1,0 +1,312 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "menu",
+      "detail": "la page en cours n’est pas signalée (aria-current)",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "390×844",
+      "mode": "menu",
+      "lieux": [
+        "390×844 menu"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique jour : 113 × 32 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "li.esp-resa.est-a-confirmer:nth-of-type(1) > div.esp-resa__qui:nth-of-type(1) > p.esp-resa__tel:nth-of-type(3) > a « 06 87 25 28 38 »",
+      "lieux": [
+        "320×568",
+        "390×844",
+        "768×1024"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique jour : 115 × 32 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "li.esp-resa.est-a-confirmer:nth-of-type(2) > div.esp-resa__qui:nth-of-type(1) > p.esp-resa__tel:nth-of-type(3) > a « 06 83 69 54 03 »",
+      "lieux": [
+        "320×568",
+        "390×844",
+        "768×1024"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique jour : 112 × 32 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "li.esp-resa.est-a-confirmer:nth-of-type(3) > div.esp-resa__qui:nth-of-type(1) > p.esp-resa__tel:nth-of-type(3) > a « 06 52 56 41 58 »",
+      "lieux": [
+        "320×568",
+        "390×844",
+        "768×1024"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique jour : 111 × 32 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "li.esp-resa.est-confirmee:nth-of-type(1) > div.esp-resa__qui:nth-of-type(1) > p.esp-resa__tel:nth-of-type(3) > a « 06 73 16 39 45 »",
+      "lieux": [
+        "320×568",
+        "390×844",
+        "768×1024"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique jour : 114 × 32 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "li.esp-resa.est-confirmee:nth-of-type(2) > div.esp-resa__qui:nth-of-type(1) > p.esp-resa__tel:nth-of-type(3) > a « 06 35 30 32 45 »",
+      "lieux": [
+        "320×568",
+        "390×844",
+        "768×1024"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique jour : 116 × 32 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "li.esp-resa.est-confirmee:nth-of-type(3) > div.esp-resa__qui:nth-of-type(1) > p.esp-resa__tel:nth-of-type(3) > a « 06 22 02 46 46 »",
+      "lieux": [
+        "320×568",
+        "390×844",
+        "768×1024"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique resas : 35 × 66 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "div.esp-semaine:nth-of-type(1) > ol.esp-semaine__jours > li:nth-of-type(1) > button.esp-jour « LUN 16 »",
+      "lieux": [
+        "320×568"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique resas : 35 × 66 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "div.esp-semaine:nth-of-type(1) > ol.esp-semaine__jours > li:nth-of-type(2) > button.esp-jour « MAR 17 »",
+      "lieux": [
+        "320×568"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique resas : 35 × 66 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "div.esp-semaine:nth-of-type(1) > ol.esp-semaine__jours > li:nth-of-type(3) > button.esp-jour.est-auj « MER 18 »",
+      "lieux": [
+        "320×568"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique resas : 35 × 66 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "div.esp-semaine:nth-of-type(1) > ol.esp-semaine__jours > li:nth-of-type(4) > button.esp-jour « JEU 19 1 »",
+      "lieux": [
+        "320×568"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique resas : 35 × 66 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "div.esp-semaine:nth-of-type(1) > ol.esp-semaine__jours > li:nth-of-type(5) > button.esp-jour « VEN 20 1 »",
+      "lieux": [
+        "320×568"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique resas : 35 × 66 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "div.esp-semaine:nth-of-type(1) > ol.esp-semaine__jours > li:nth-of-type(6) > button.esp-jour « SAM 21 1 »",
+      "lieux": [
+        "320×568"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "rubrique resas : 35 × 66 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "div.esp-semaine:nth-of-type(1) > ol.esp-semaine__jours > li:nth-of-type(7) > button.esp-jour « DIM 22 »",
+      "lieux": [
+        "320×568"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "rubrique textes : 11.7 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "form > p.esp-champ.esp-champ--large:nth-of-type(2) > label > small « 0 / 160 »",
+      "lieux": [
+        "320×568",
+        "390×844",
+        "768×1024",
+        "1366×768",
+        "1920×1080"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "texte sous 12 px",
+      "detail": "éditeur d’événement : 11.7 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "div.esp-editeur__champs.esp-carte:nth-of-type(1) > div.esp-champ.esp-champ--large > p.esp-champ__titre:nth-of-type(1) > small « (touchez la photo pour choisir le point à garder a »",
+      "lieux": [
+        "320×568",
+        "390×844",
+        "768×1024",
+        "1366×768",
+        "1920×1080"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "message « Annuler » : 115 × 32 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "li.esp-resa.est-a-confirmer:nth-of-type(1) > div.esp-resa__qui:nth-of-type(1) > p.esp-resa__tel:nth-of-type(3) > a « 06 83 69 54 03 »",
+      "lieux": [
+        "320×568",
+        "390×844",
+        "768×1024"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "zone tactile sous 44 px",
+      "detail": "message « Annuler » : 112 × 32 px",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "320×568",
+      "selecteur": "li.esp-resa.est-a-confirmer:nth-of-type(2) > div.esp-resa__qui:nth-of-type(1) > p.esp-resa__tel:nth-of-type(3) > a « 06 52 56 41 58 »",
+      "lieux": [
+        "320×568",
+        "390×844",
+        "768×1024"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "espace : menu",
+      "detail": "le menu « Plus d’actions » sort de l’écran",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "768×1024",
+      "lieux": [
+        "768×1024"
+      ]
+    }
+  ],
+  "aRegarder": [
+    {
+      "niveau": "regarder",
+      "controle": "typographie française",
+      "detail": "rubrique textes : espace insécable manquante avant ou après « : »",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "1366×768",
+      "selecteur": "textarea#tx-3",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "typographie française",
+      "detail": "rubrique textes : espace insécable manquante avant ou après « : »",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "1366×768",
+      "selecteur": "textarea#tx-4",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "typographie française",
+      "detail": "rubrique textes : espace insécable manquante avant ou après « : »",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "1366×768",
+      "selecteur": "textarea#tx-5",
+      "lieux": [
+        "1366×768"
+      ]
+    }
+  ],
+  "nonLances": [],
+  "oks": {
+    "intro accélérable et passable": 7,
+    "menu": 1,
+    "clavier": 1,
+    "liens et boutons": 1,
+    "liens profonds": 4,
+    "liens vers la page en cours": 1,
+    "espace : réserver puis confirmer": 1,
+    "espace : mesures": 5,
+    "espace : balayage": 1,
+    "parcours du projet": 1
+  },
+  "infos": [
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.",
+    "Changements de hauteur /espace : aucun effet ScrollTrigger, rien à recalculer.",
+    "Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet."
+  ],
+  "grille": []
+}

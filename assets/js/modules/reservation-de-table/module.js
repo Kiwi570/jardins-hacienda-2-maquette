@@ -8,6 +8,7 @@
 // et de pizzalyght-maquette/panier (créneaux calculés à l'heure du lieu avec un délai, état relu, focus rendu après rendu).
 // Sans JavaScript : un formulaire ordinaire d'un seul tenant (calendrier, liste d'heures, nombre). Mode calme : sans transition.
 import { pret } from '../../socle/socle.js?v=7';
+import { ajouterResaSite } from '../../espace-stock.js?v=7';
 
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -414,8 +415,8 @@ export async function init(root, options = {}) {
       prog?.querySelectorAll('button').forEach((x) => { x.disabled = true; });
       try { sessionStorage.removeItem(CLE); } catch { /* rien */ }
       rendreRecap(); recap.querySelector('[data-resa-focus]')?.focus({ preventScroll: true }); montrer();
-      // Démonstration (v7.6.0) : la demande arrive dans l'agenda de l'espace restaurateur de ce navigateur.
-      try { const cle = 'jh-espace-resas:v1', l = JSON.parse(localStorage.getItem(cle) || '[]'); l.push({ id: reference, ...v, cree: new Date().toISOString() }); localStorage.setItem(cle, JSON.stringify(l.slice(-80))); } catch { /* stockage indisponible */ }
+      // Démonstration (v7.6.0) : la demande arrive dans l'agenda de l'espace restaurateur de ce navigateur (par le stockage, v7.7.0).
+      ajouterResaSite({ id: reference, ...v, cree: new Date().toISOString() });
       root.dispatchEvent(new CustomEvent('reservation:envoyee', { detail: { ...v, reference }, bubbles: true }));
       return;
     }

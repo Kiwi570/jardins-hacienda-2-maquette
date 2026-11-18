@@ -1,6 +1,14 @@
 /* Parcours propres aux Jardins de l'Hacienda (2) : carte cadeau (total), filtre végétarien de la carte,
    table choisie sur le plan qui passe à la réservation, statut « ouvert maintenant », comptes à rebours. */
-export default async function ({ contexte, attendrePret, attendre, BASE, R, T }) {
+import parcoursEspace from './parcours-espace.mjs';
+
+export default async function (outils) {
+  await parcoursSite(outils);
+  /* v7.7.0 : l'espace restaurateur, de l'intérieur (réserver puis confirmer, chaque rubrique mesurée). */
+  await parcoursEspace(outils);
+}
+
+async function parcoursSite({ contexte, attendrePret, attendre, BASE, R, T }) {
   const { ctx, page } = await contexte({ taille: T('390×844') });
   try {
     /* Carte cadeau : 100 € × 2 = 200 €. */

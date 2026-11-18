@@ -780,6 +780,9 @@ await tache('parcours:menu', async () => {
     const lien = page.locator('[data-menu] a[href]:not([aria-current]):not([href^="tel:"]):not([href^="mailto:"]):not([data-langue]):not([href^="#"])').first();
     if (await lien.count()) {
       await lien.click();
+      /* v7.7.0 : le changement de page passe par le voile ; on attend la nouvelle adresse, sinon la mesure se fait encore
+         sur la page de départ (échec à tort depuis une page absente du menu, comme /espace). */
+      await page.waitForURL((u) => u.pathname !== p.url, { timeout: 8000 }).catch(() => {});
       await page.waitForLoadState('load');
       await attendrePret(page);
       const apres = await page.evaluate(() => {

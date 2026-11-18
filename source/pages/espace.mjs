@@ -1,8 +1,10 @@
-/* Espace restaurateur (v7.6.0) : la démonstration de l'outil que le restaurant aurait pour gérer son site.
+/* Espace restaurateur (v7.6.0, application en v7.7.0) : la démonstration de l'outil que le restaurant aurait pour gérer son site.
    Connexion fictive, puis cinq rubriques : Aujourd'hui, Réservations (agenda, confirmer, refuser, fermer un service),
    Événements, Textes et horaires (annonce, horaires, fermetures, ardoise, textes), Photos (remplacer, cadrer).
    Tout est enregistré dans ce navigateur (localStorage) et s'affiche sur le site grâce à assets/js/espace-apercu.js ;
-   une réservation faite sur /reserver arrive dans l'agenda. Le contenu des rubriques est rendu par assets/js/espace.js. */
+   une réservation faite sur /reserver arrive dans l'agenda. Le contenu des rubriques est rendu par assets/js/espace.js.
+   v7.7.0 : une fois connecté, l'en-tête de l'espace devient la barre de l'application (état de l'enregistrement, voir le
+   site, plus d'actions) ; les rubriques passent en bas de l'écran sur téléphone ; le message du bas porte « Annuler ». */
 import { readdirSync } from 'node:fs';
 import { html, brut } from '../../outils/gabarit.mjs';
 
@@ -42,13 +44,15 @@ const TEXTES = [
   { cle: 'accueil.venir.texte', page: 'accueil', ancre: 'venir', lieu: 'Accueil · venir', libelle: 'Où nous trouver', long: true },
 ];
 
+/* Les rubriques : identifiant, nom, nom court (barre du bas, sur téléphone), icône. */
 const VUES = [
-  ['jour', 'Aujourd\'hui', '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></svg>'],
-  ['resas', 'Réservations', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.6h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 17h2"/></svg>'],
-  ['evenements', 'Événements', '<svg viewBox="0 0 24 24"><path d="M4 8.5V6a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 20 6v2.5a2.5 2.5 0 0 0 0 5V18a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18v-4.5a2.5 2.5 0 0 0 0-5Z"/><path d="M14.5 5v14" stroke-dasharray="2 2.2"/></svg>'],
-  ['textes', 'Textes et horaires', '<svg viewBox="0 0 24 24"><path d="M5 6.5h14M5 11h14M5 15.5h9"/><circle cx="18" cy="17.5" r="3"/><path d="M18 16v1.6l1 .8"/></svg>'],
-  ['photos', 'Photos', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><circle cx="9" cy="10.5" r="1.8"/><path d="M4 17l5-4.5 3.5 3 3-2.5 4.5 4"/></svg>'],
+  ['jour', 'Aujourd\'hui', 'Jour', '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></svg>'],
+  ['resas', 'Réservations', 'Agenda', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.6h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 17h2"/></svg>'],
+  ['evenements', 'Événements', 'Soirées', '<svg viewBox="0 0 24 24"><path d="M4 8.5V6a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 20 6v2.5a2.5 2.5 0 0 0 0 5V18a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18v-4.5a2.5 2.5 0 0 0 0-5Z"/><path d="M14.5 5v14" stroke-dasharray="2 2.2"/></svg>'],
+  ['textes', 'Textes et horaires', 'Textes', '<svg viewBox="0 0 24 24"><path d="M5 6.5h14M5 11h14M5 15.5h9"/><circle cx="18" cy="17.5" r="3"/><path d="M18 16v1.6l1 .8"/></svg>'],
+  ['photos', 'Photos', 'Photos', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><circle cx="9" cy="10.5" r="1.8"/><path d="M4 17l5-4.5 3.5 3 3-2.5 4.5 4"/></svg>'],
 ];
+const ICO_PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
 
 export default (c) => {
   const D = c.donnees, h = D.horaires.adresses[0], T = tailles();
@@ -64,11 +68,24 @@ export default (c) => {
   };
   return html`
 <section class="espace" id="espace" data-espace aria-labelledby="espace-titre">
+  ${brut(`<script>try{if(sessionStorage.getItem('jh-espace-session')==='1')document.documentElement.classList.add('esp-dedans')}catch(e){}</script>`)}
   <div class="conteneur espace__cadre">
     <header class="esp-tete">
-      <p class="esp-tete__sur"><span class="esp-demo">Démonstration</span> <span>Les Jardins de l'Hacienda</span></p>
+      <p class="esp-tete__sur"><span class="esp-demo"><span class="esp-long">Démonstration</span><span class="esp-court">Démo</span></span> <span class="esp-tete__maison">Les Jardins de l'Hacienda</span></p>
       <h1 id="espace-titre" class="esp-tete__titre">Votre <em>espace</em></h1>
-      <p class="esp-tete__texte" data-esp-bonjour>Réservations, événements, textes, horaires et photos&nbsp;: le restaurant gère son site d'ici, sans toucher au code.</p>
+      <p class="esp-tete__texte">Réservations, événements, textes, horaires et photos&nbsp;: le restaurant gère son site d'ici, sans toucher au code.</p>
+      <div class="esp-outils" data-esp-outils hidden>
+        <p class="esp-sauve" data-esp-sauve data-etat="ok"><span class="esp-sauve__point" aria-hidden="true"></span><span data-esp-sauve-texte>Tout est enregistré</span></p>
+        <a class="esp-outils__site" href="${c.url('accueil')}">Voir le site <span aria-hidden="true">↗</span></a>
+        <div class="esp-menu">
+          <button type="button" class="esp-rond esp-menu__bouton" data-esp-plus aria-expanded="false" aria-controls="esp-menu-panneau" aria-label="Plus d'actions">${brut(ICO_PLUS)}</button>
+          <div class="esp-menu__panneau" id="esp-menu-panneau" data-esp-plus-panneau hidden>
+            <a href="${c.url('accueil')}">Voir le site <span aria-hidden="true">↗</span></a>
+            <button type="button" data-esp-quitter>Se déconnecter</button>
+            <button type="button" class="esp-menu__danger" data-tout-effacer>Tout remettre comme livré</button>
+          </div>
+        </div>
+      </div>
     </header>
 
     <form class="esp-connexion" data-esp-connexion action="#" aria-labelledby="esp-connexion-titre">
@@ -87,19 +104,21 @@ export default (c) => {
     <div class="esp-app" data-esp-app hidden>
       <nav class="esp-nav" aria-label="Rubriques de l'espace">
         <ul class="esp-nav__liste">
-          ${VUES.map(([id, nom, ico], i) => html`<li><button type="button" class="esp-nav__lien" data-esp-vue="${id}"${i === 0 ? brut(' aria-current="page"') : ''}><span class="esp-ico" aria-hidden="true">${brut(ico)}</span><span>${nom}</span><span class="esp-nav__badge" data-esp-badge="${id}" hidden></span></button></li>`)}
+          ${VUES.map(([id, nom, court, ico], i) => html`<li><button type="button" class="esp-nav__lien" data-esp-vue="${id}"${i === 0 ? brut(' aria-current="page"') : ''}><span class="esp-ico" aria-hidden="true">${brut(ico)}</span><span class="esp-long">${nom}</span><span class="esp-court">${court}</span><span class="esp-nav__badge" data-esp-badge="${id}" hidden></span></button></li>`)}
         </ul>
-        <p class="esp-nav__pied"><a class="esp-nav__site" href="${c.url('accueil')}">Voir le site <span aria-hidden="true">↗</span></a><button type="button" class="esp-nav__quitter" data-esp-quitter>Se déconnecter</button></p>
-        <p class="esp-nav__reset"><button type="button" class="esp-lien" data-tout-effacer>Tout remettre comme livré</button></p>
       </nav>
       <div class="esp-vues">
         ${VUES.map(([id, nom], i) => html`<section class="esp-vue" data-vue="${id}" aria-labelledby="vue-${id}"${i ? brut(' hidden') : ''}>
-          <h2 class="esp-vue__titre" id="vue-${id}">${nom}</h2>
+          <h2 class="esp-vue__titre" id="vue-${id}" tabindex="-1">${nom}</h2>
           <div class="esp-vue__corps" data-esp-rendu="${id}"></div>
         </section>`)}
       </div>
     </div>
-    <p class="esp-toast" data-esp-toast role="status" aria-live="polite"></p>
+    <div class="esp-toast" data-esp-toast>
+      <p class="esp-toast__texte" role="status" aria-live="polite" data-esp-toast-texte></p>
+      <a class="esp-toast__lien" data-esp-toast-lien href="${c.url('accueil')}" hidden>Voir sur le site</a>
+      <button type="button" class="esp-toast__annuler" data-esp-annuler hidden>Annuler</button>
+    </div>
   </div>
   <script type="application/json" data-esp-donnees>${brut(JSON.stringify(donnees).replace(/<\//g, '<\\/'))}</script>
 </section>
