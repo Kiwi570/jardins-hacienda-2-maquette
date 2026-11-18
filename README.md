@@ -16,7 +16,7 @@ les guirlandes, l'hiver à midi la vraie salle aux baies vitrées, l'hiver le so
 `?saison=ete|hiver` et `?moment=jour|soir` forcent l'un ou l'autre pour la présentation.
 Ensuite : le chef (polaroïd de Régis Clauss qui se retourne, étiquettes à déplacer), le déjeuner (la carte en cartes qui
 défilent, l'assiette qui fume collée à côté), le lieu (cinq cartes qui filent au défilement), l'été le panorama de la
-piscine, le coin du feu (la vraie cheminée animée ; la réservation arrive après l'ouverture du titre), « En ce moment »
+piscine, « Le Restaurant » (la vraie salle le soir qui s'ouvre en plein écran, le titre qui glisse à gauche avec les repères et les services de la semaine, la photo du coin du feu animée d'où partent les braises, puis la réservation ; v7.5.27), « En ce moment »
 (vraies affiches de Noël et de la Saint-Sylvestre, soirées à thème), « Offrir & emporter » (incontournables des fêtes,
 carte cadeau) et « Venir » (plan des distances). La terrasse du soir est sur la page Réceptions.
 Polices (v7.5, référence du client) : Fraunces pour les titres, Manrope pour le texte.

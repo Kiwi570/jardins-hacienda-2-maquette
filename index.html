@@ -435,46 +435,80 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
     <p class="indice panorama__indice" aria-hidden="true">Faites défiler : l’après-midi avance, la lumière dore</p>
   </div>
 </section>
-<section class="feu" id="feu" data-heure="19:00" data-lumiere="feu" data-fx="plein-ecran" data-fx-depart="inset(16% 22% 16% 22% round 18px)" style="--fx-longueur:290svh" aria-labelledby="feu-titre">
+<section class="feu feu--resto" id="feu" data-heure="19:00" data-lumiere="feu" data-fx="plein-ecran" data-fx-depart="inset(14% 20% 14% 20% round 22px)" style="--fx-longueur:280svh" aria-labelledby="feu-titre">
   <div class="feu__cadre" data-collant>
-    <figure class="media feu__photo" data-foyer=".7 .06 1 .8" data-foyer-mobile=".62 .03 1 .47" style="--cadrage:62% 40%;--cadrage-mobile:60% 30%">
-  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/feu-salle-mobile-640.webp 640w, /assets/images/vraie/feu-salle-mobile-1040.webp 1040w" sizes="100vw">
-    <img src="/assets/images/vraie/feu-salle-1280.webp" srcset="/assets/images/vraie/feu-salle-640.webp 640w, /assets/images/vraie/feu-salle-1280.webp 1280w" sizes="100vw" alt="Le feu dans la cheminée de la salle, deux verres de vin et un dessert sur la table de bois, un plaid de fourrure" width="1280" height="729" loading="lazy" decoding="async">
+    <figure class="media feu__photo" style="--cadrage:46% 58%;--cadrage-mobile:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-resto-mobile-640.webp 640w, /assets/images/vraie/salle-resto-mobile-1024.webp 1024w" sizes="100vw">
+    <img src="/assets/images/vraie/salle-resto-1280.webp" srcset="/assets/images/vraie/salle-resto-640.webp 640w, /assets/images/vraie/salle-resto-1280.webp 1280w, /assets/images/vraie/salle-resto-1738.webp 1738w" sizes="100vw" alt="La salle le soir : la table ronde en bois flotté, les fauteuils crème, le mur de pierre et ses bûches" width="1280" height="943" loading="lazy" decoding="async">
   </picture>
 </figure>
     <canvas class="feu__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
-    <div class="feu__tete" data-feu-tete>
-      <p class="feu__sous" data-fx-apres>Au creux de la cheminée</p>
-      <h2 class="feu__titre" id="feu-titre"><span data-fx-ecarte="g">Au coin</span> <span data-fx-ecarte="d">du feu</span></h2>
-      <p class="feu__legende" data-fx-apres>L&#39;hiver, la salle se resserre autour de la cheminée. C&#39;est là que l&#39;on fête la fin de l&#39;année.</p>
-    </div>
-    <form class="mini-resa feu__resa" data-mini-resa data-feu-resa data-services-nombre="4" action="/reserver#formulaire" method="get" aria-labelledby="feu-resa-titre">
-      <div class="feu__resa-haut">
-        <p class="feu__resa-titre" id="feu-resa-titre">Votre table au coin du feu</p>
-        <p class="mini-resa__groupe"><a href="/receptions#demande" data-libelle="Réceptions">Plus de 10 personnes ? Demandez une réception.</a></p>
-      </div>
-      <fieldset class="mini-resa__services">
-        <legend>Quel service ?</legend>
-        <div class="mini-resa__puces" data-services>
-          <label class="puce"><input type="radio" name="service" value="soir" checked><span>Vendredi soir</span></label>
-          <label class="puce"><input type="radio" name="service" value="soir"><span>Samedi soir</span></label>
-          <label class="puce"><input type="radio" name="service" value="midi"><span>Dimanche midi</span></label>
+    <div class="resto">
+      <div class="resto__texte">
+        <div class="resto__tete" data-feu-tete>
+          <p class="resto__sous"><span data-saison-seul="hiver">Au coin du feu</span><span data-saison-seul="ete">Aux beaux jours</span></p>
+          <h2 class="resto__titre" id="feu-titre" data-anime="lignes">Le <em>Restaurant</em></h2>
         </div>
-        <input type="hidden" name="date" value="">
-      </fieldset>
-      <div class="feu__resa-bas">
-        <div class="mini-resa__couverts">
-          <span class="mini-resa__libelle" id="mini-couverts">Combien serez-vous ?</span>
-          <div class="compteur" role="group" aria-labelledby="mini-couverts">
-            <button type="button" data-moins aria-label="Une personne de moins">−</button>
-            <input type="number" name="couverts" min="1" max="10" value="2" inputmode="numeric" aria-labelledby="mini-couverts">
-            <button type="button" data-plus aria-label="Une personne de plus">+</button>
+        <div class="resto__infos" data-resto-infos>
+          <p class="resto__legende"><span data-saison-seul="hiver">L&#39;hiver, la salle se resserre autour de la cheminée : bois blond, fauteuils crème, lumière basse. C&#39;est là que l&#39;on fête la fin de l&#39;année.</span><span data-saison-seul="ete">L&#39;été, les grandes baies s&#39;ouvrent sur la terrasse et la piscine, sous les palmiers : bois blond, fauteuils crème et lumière du soir.</span></p>
+          <ul class="resto__reperes">
+            <li><svg viewBox="0 0 40 40" aria-hidden="true"><path pathLength="1" d="M12 27v6h16v-6M12 27c-4-1-6-4-6-7 0-4 4-7 8-6 1-4 4-6 6-6s5 2 6 6c4-1 8 2 8 6 0 3-2 6-6 7H12z"/><path pathLength="1" d="M15 31h10"/></svg><span>La cuisine de saison du chef Régis Clauss</span></li>
+            <li><svg viewBox="0 0 40 40" aria-hidden="true"><path pathLength="1" d="M7 9h26v20H7zM14 33l2-4m10 4-2-4"/><path pathLength="1" d="M11 15h12m-12 4h16m-16 4h9"/></svg><span>Une nouvelle carte chaque semaine</span></li>
+            <li data-saison-seul="hiver"><svg viewBox="0 0 40 40" aria-hidden="true"><path class="icone-flamme" pathLength="1" d="M20 35c-6 0-10-4-10-9 0-6 5-8 6-14 3 2 4 5 4 8 2-1 3-3 3-6 4 3 7 7 7 12 0 5-4 9-10 9z"/><path pathLength="1" d="M20 35c-2 0-4-2-4-4 0-3 3-4 4-7 2 2 4 4 4 7 0 2-2 4-4 4z"/></svg><span>Les tables près de la cheminée, l&#39;hiver</span></li>
+            <li data-saison-seul="ete"><svg viewBox="0 0 40 40" aria-hidden="true"><circle pathLength="1" cx="20" cy="20" r="7"/><path class="icone-rayons" pathLength="1" d="M20 5v5m0 20v5M5 20h5m20 0h5M9.4 9.4l3.5 3.5m14.2 14.2 3.5 3.5M9.4 30.6l3.5-3.5m14.2-14.2 3.5-3.5"/></svg><span>La terrasse au bord de la piscine, l&#39;été</span></li>
+          </ul>
+          <div class="resto__horaires">
+            <p class="resto__services"><span><strong>Midi</strong> mercredi, jeudi, vendredi et dimanche</span><span><strong>Soir</strong> vendredi et samedi</span></p>
+            <p class="statut resto__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-resto>Le midi du mercredi au dimanche (sauf le samedi), le soir le vendredi et le samedi</span></p>
           </div>
         </div>
-        <p class="mini-resa__envoi"><button type="submit" class="bouton" data-grille="retour" data-effet="carton">Réserver cette table</button></p>
       </div>
-    </form>
-    <p class="indice feu__indice" aria-hidden="true">Passez la main sur les braises</p>
+      <div class="resto__droite" data-feu-resa>
+        <figure class="resto__vignette" data-saison-seul="hiver">
+          <figure class="media feu__photo-vignette" data-foyer=".7 .06 1 .8" data-foyer-mobile=".7 .06 1 .8" style="--cadrage:62% 40%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/feu-salle-mobile-640.webp 640w, /assets/images/vraie/feu-salle-mobile-1040.webp 1040w" sizes="220px">
+    <img src="/assets/images/vraie/feu-salle-1280.webp" srcset="/assets/images/vraie/feu-salle-640.webp 640w, /assets/images/vraie/feu-salle-1280.webp 1280w" sizes="220px" alt="Le feu dans la cheminée de la salle, deux verres de vin et un dessert sur la table de bois, un plaid de fourrure" width="1280" height="729" loading="lazy" decoding="async">
+  </picture>
+</figure>
+          <figcaption>Le coin du feu</figcaption>
+        </figure>
+        <figure class="resto__vignette" data-saison-seul="ete">
+          <figure class="media " style="--cadrage:50% 60%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/piscine-palmiers-mobile-640.webp 640w, /assets/images/vraie/piscine-palmiers-mobile-1080.webp 1080w" sizes="220px">
+    <img src="/assets/images/vraie/piscine-palmiers-1280.webp" srcset="/assets/images/vraie/piscine-palmiers-640.webp 640w, /assets/images/vraie/piscine-palmiers-1280.webp 1280w, /assets/images/vraie/piscine-palmiers-1920.webp 1920w" sizes="220px" alt="La piscine des Jardins sous les palmiers, l&#39;été" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure>
+          <figcaption>La piscine, l&#39;été</figcaption>
+        </figure>
+        <form class="mini-resa feu__resa" data-mini-resa data-services-nombre="4" action="/reserver#formulaire" method="get" aria-labelledby="feu-resa-titre">
+          <div class="feu__resa-haut">
+            <p class="feu__resa-titre" id="feu-resa-titre"><span data-saison-seul="hiver">Votre table au coin du feu</span><span data-saison-seul="ete">Votre table aux Jardins</span></p>
+            <p class="mini-resa__groupe"><a href="/receptions#demande" data-libelle="Réceptions">Plus de 10 personnes ? Demandez une réception.</a></p>
+          </div>
+          <fieldset class="mini-resa__services">
+            <legend>Quel service ?</legend>
+            <div class="mini-resa__puces" data-services>
+              <label class="puce"><input type="radio" name="service" value="soir" checked><span>Vendredi soir</span></label>
+              <label class="puce"><input type="radio" name="service" value="soir"><span>Samedi soir</span></label>
+              <label class="puce"><input type="radio" name="service" value="midi"><span>Dimanche midi</span></label>
+            </div>
+            <input type="hidden" name="date" value="">
+          </fieldset>
+          <div class="feu__resa-bas">
+            <div class="mini-resa__couverts">
+              <span class="mini-resa__libelle" id="mini-couverts">Combien serez-vous ?</span>
+              <div class="compteur" role="group" aria-labelledby="mini-couverts">
+                <button type="button" data-moins aria-label="Une personne de moins">−</button>
+                <input type="number" name="couverts" min="1" max="10" value="2" inputmode="numeric" aria-labelledby="mini-couverts">
+                <button type="button" data-plus aria-label="Une personne de plus">+</button>
+              </div>
+            </div>
+            <p class="mini-resa__envoi"><button type="submit" class="bouton" data-grille="retour" data-effet="carton">Réserver cette table</button></p>
+          </div>
+        </form>
+      </div>
+    </div>
+    <p class="indice feu__indice" aria-hidden="true" data-saison-seul="hiver">Passez la main sur les braises</p>
   </div>
 </section>
 <section class="moment" id="fetes" data-heure="21:00" data-lumiere="moment" aria-labelledby="moment-titre">

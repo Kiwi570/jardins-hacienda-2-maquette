@@ -225,7 +225,7 @@ function garderAncre() {
 
 /* ---------- Statut ouvert / fermé (module horaires : mêmes données et mêmes calculs partout) ---------- */
 async function statuts() {
-  const src = $('[data-horaires-accueil]') || $('[data-horaires-pied]'); const cibles = $$('[data-statut-accueil], [data-statut-accueil-bis], [data-statut-pied]');
+  const src = $('[data-horaires-accueil]') || $('[data-horaires-pied]'); const cibles = $$('[data-statut-accueil], [data-statut-accueil-bis], [data-statut-pied], [data-statut-resto]');
   if (!src || !cibles.length) return;
   try {
     const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=7');
@@ -554,7 +554,7 @@ const foyer = { x: 0.5, y: 0.62, l: 0.22 };
    qui monte), la lueur vacille sur la salle, les braises partent du foyer. Tout se mesure dans le repère de la photo
    (object-fit: cover, recadrage réel) ; 30 images par seconde au plus, arrêté hors écran (boucle du socle). */
 function feuVivant() {
-  const fig = $('.feu__photo[data-foyer]'), img = fig && $('img', fig);
+  const fig = $('#feu [data-foyer]'), img = fig && $('img', fig);
   if (!img || etat.calme) return;
   const cv = document.createElement('canvas'); cv.className = 'feu__flammes'; cv.setAttribute('aria-hidden', 'true');
   const lueur = document.createElement('span'); lueur.className = 'feu__lueur'; lueur.setAttribute('aria-hidden', 'true');
@@ -573,7 +573,11 @@ function feuVivant() {
     z = { sx: zone[0] * iw, sy: zone[1] * ih, sw: (zone[2] - zone[0]) * iw, sh: (zone[3] - zone[1]) * ih, cw: Math.max(1, Math.round(w * k)), ch: Math.max(1, Math.round(h * k)) };
     cv.width = z.cw; cv.height = z.ch;
     cv.style.cssText = `left:${x0.toFixed(1)}px;top:${y0.toFixed(1)}px;width:${w.toFixed(1)}px;height:${h.toFixed(1)}px`;
-    foyer.x = (x0 + w * 0.42) / W; foyer.y = (y0 + h * 0.6) / H; foyer.l = Math.min(0.22, (w / W) * 0.6);
+    /* v7.5.27 : le foyer peut être une vignette ; les braises partent de sa place dans le cadre de la section. */
+    const cadre = fig.closest('[data-collant]') || fig.parentElement; let fx = 0, fy = 0;
+    for (let e = fig; e && e !== cadre; e = e.offsetParent) { fx += e.offsetLeft; fy += e.offsetTop; if (!cadre.contains(e.offsetParent)) break; }
+    const CW = cadre.clientWidth || W, CH = cadre.clientHeight || H;
+    foyer.x = (fx + x0 + w * 0.42) / CW; foyer.y = (fy + y0 + h * 0.6) / CH; foyer.l = Math.min(0.22, (w / CW) * 0.6);
     fig.style.setProperty('--foyer-x', `${(foyer.x * 100).toFixed(1)}%`); fig.style.setProperty('--foyer-y', `${(((y0 + h * 0.45) / H) * 100).toFixed(1)}%`);
   };
   if (img.complete) mesurer(); else img.addEventListener('load', mesurer, { once: true });
@@ -2193,25 +2197,27 @@ function lieuDefile() {
 /* Au coin du feu : la scène plein écran du socle ouvre la photo et écarte les mots ; ensuite le titre remonte et se resserre,
    et le petit module de réservation arrive du bas. */
 function feuResa() {
-  const sec = $('#feu'), tete = sec && $('[data-feu-tete]', sec), resa = sec && $('[data-feu-resa]', sec);
-  if (!tete || !resa || etat.calme || !gsap || !window.ScrollTrigger) return;
+  /* v7.5.27 · « Le Restaurant » : pendant que la photo s'ouvre, le titre est au centre ; ensuite il glisse à sa place,
+     à gauche, le texte, les repères et les services montent, la vignette et la réservation arrivent de la droite.
+     Sur tablette et téléphone, tout est déjà en place : les repères se dessinent quand la section arrive. */
+  const sec = $('#feu.feu--resto'); if (!sec) return;
+  const marquer = () => sec.classList.add('est-resto');
+  const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { marquer(); io.disconnect(); } }, { threshold: 0.25 });
+  const tete = $('[data-feu-tete]', sec), infos = $('[data-resto-infos]', sec), droite = $('[data-feu-resa]', sec), cadre = $('.feu__cadre', sec), indice = $('.feu__indice', sec);
+  const ordi = matchMedia('(min-width: 1000px)').matches;
+  if (!tete || !infos || !droite || etat.calme || !gsap || !window.ScrollTrigger || !ordi) { io.observe(infos || sec); return; }
   const brancher = (tl) => {
     if (!tl || sec.dataset.suite) return; sec.dataset.suite = '1';
-    const cadre = $('.feu__cadre', sec), titre = $('.feu__titre', tete), mots = $$('[data-fx-ecarte]', tete);
-    const sous = $('.feu__sous', tete), leg = $('.feu__legende', tete), indice = $('.feu__indice', sec);
-    const s = () => (telephone() ? 0.9 : 0.68);
-    const rentre = () => titre.offsetHeight * (1 - s()) / 2;
-    const dy = () => {
-      const H = cadre.clientHeight, bas = H - resa.offsetHeight - parseFloat(getComputedStyle(resa).bottom || '0') - 12;
-      return Math.max(bas * 0.5, 130) - H / 2;
-    };
-    tl.to(tete, { y: dy, ease: 'power2.inOut', duration: 0.5 }, 1.05);
-    tl.to(titre, { scale: s, ease: 'power2.inOut', duration: 0.5 }, 1.05);
-    if (sous) tl.to(sous, { y: rentre, ease: 'power2.inOut', duration: 0.5 }, 1.05);
-    if (leg) tl.to(leg, { y: () => -rentre(), ease: 'power2.inOut', duration: 0.5 }, 1.05);
-    tl.to(mots, { xPercent: (i, el) => (el.dataset.fxEcarte === 'g' ? -12 : 12), ease: 'power2.inOut', duration: 0.5 }, 1.05);
-    if (indice) tl.to(indice, { autoAlpha: 0, duration: 0.2 }, 1.05);
-    tl.fromTo(resa, { y: 80, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: 'power3.out', duration: 0.4 }, 1.22);
+    const place = () => { let x = 0, y = 0; for (let e = tete; e && e !== cadre; e = e.offsetParent) { x += e.offsetLeft; y += e.offsetTop; if (!cadre.contains(e.offsetParent)) break; } return { x, y }; };
+    const S = 1.3;
+    const dx = () => cadre.clientWidth / 2 - (place().x + tete.offsetWidth / 2);
+    const dy = () => cadre.clientHeight / 2 - (place().y + tete.offsetHeight / 2);
+    tl.fromTo(tete, { x: dx, y: dy, scale: S }, { x: 0, y: 0, scale: 1, ease: 'power2.inOut', duration: 0.5, immediateRender: true }, 1.02);
+    gsap.set(infos.children, { y: 30, autoAlpha: 0 });
+    tl.fromTo(infos.children, { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: 'power2.out', duration: 0.28, stagger: 0.07 }, 1.24);
+    tl.fromTo(droite, { x: 90, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: 'power3.out', duration: 0.4, immediateRender: true }, 1.16);
+    tl.call(marquer, null, 1.3);
+    if (indice) tl.to(indice, { autoAlpha: 0, duration: 0.2 }, 1.02);
     tl.to({}, { duration: 0.35 });
     window.ScrollTrigger.refresh();
   };

@@ -3709,3 +3709,87 @@ html[data-moment="soir"] #midi .midi__photo, #midi .midi__photo--hiver-soir, #mi
 .plan-domaine__point span { visibility: hidden; }
 .plan-domaine__point:hover span, .plan-domaine__point:focus-visible span { visibility: visible; }
 .plan-domaine__point span { transition: opacity .2s, transform .2s, visibility .2s; }
+
+/* ================================================================================================================
+   v7.5.27 · Accueil, « Le Restaurant » (ancien « Au coin du feu ») : la vraie salle le soir, nette, en plein écran ;
+   le titre au centre de la photo qui s'ouvre, puis il glisse à gauche avec le texte, trois repères dessinés au trait
+   et les services de la semaine (avec l'état ouvert/fermé réel) ; à droite, la vignette du coin du feu (ses flammes
+   vivent, les braises en partent) et la carte de réservation.
+   ================================================================================================================ */
+#feu.feu--resto .feu__cadre { display: block; }
+.feu--resto .feu__photo::after { background:
+  linear-gradient(90deg, rgba(18, 12, 9, .86) 0%, rgba(18, 12, 9, .6) 30%, rgba(18, 12, 9, .1) 58%, rgba(18, 12, 9, .06) 100%),
+  linear-gradient(0deg, rgba(18, 12, 9, .5) 0%, rgba(18, 12, 9, 0) 30%); }
+.resto { position: absolute; inset: 0; z-index: 3; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 480px); align-items: center; gap: clamp(32px, 5vw, 96px);
+  width: min(100%, 1400px); margin: 0 auto; padding: calc(var(--entete-h) + clamp(12px, 3vh, 36px)) var(--gouttiere) clamp(18px, 4vh, 44px); }
+.resto__texte { max-width: 600px; color: var(--cendre); }
+.resto__tete { width: fit-content; transform-origin: 50% 50%; will-change: transform; }
+.resto__sous { margin: 0 0 .15em; font-family: var(--police-titres); font-style: italic; font-weight: 450; font-size: clamp(1.15rem, .95rem + .8vw, 1.7rem); color: #ffcf9e; text-shadow: 0 2px 10px rgba(0, 0, 0, .7); }
+.resto__titre { margin: 0; font-size: clamp(3.2rem, min(7.4vw, 13vh), 7.4rem); line-height: .95; letter-spacing: -.01em; color: #ffe2bf; text-shadow: 0 2px 8px rgba(0, 0, 0, .6), 0 0 46px rgba(0, 0, 0, .6); }
+.resto__titre em { font-style: italic; color: #ffcf9e; }
+.resto__legende { margin: clamp(12px, 2vh, 20px) 0 0; max-width: 34em; font-size: clamp(1rem, .95rem + .2vw, 1.12rem); line-height: 1.55; text-shadow: 0 1px 8px rgba(0, 0, 0, .7); }
+.resto__reperes { list-style: none; margin: clamp(14px, 2.4vh, 24px) 0 0; padding: 0; display: grid; gap: clamp(6px, 1.2vh, 12px); }
+.resto__reperes li { display: flex; align-items: center; gap: 14px; font-weight: 600; text-shadow: 0 1px 8px rgba(0, 0, 0, .7); }
+.resto__reperes svg { width: 34px; height: 34px; flex: none; padding: 5px; border-radius: 50%; background: rgba(18, 12, 9, .55); box-shadow: inset 0 0 0 1px rgba(233, 196, 106, .35);
+  fill: none; stroke: #e9c46a; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+html.js:not(.calme) .resto__reperes svg :is(path, circle) { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.1s cubic-bezier(.4, 0, .2, 1); }
+html.js:not(.calme) .resto__reperes li:nth-child(2) svg :is(path, circle) { transition-delay: .18s; }
+html.js:not(.calme) .resto__reperes li:nth-child(n+3) svg :is(path, circle) { transition-delay: .36s; }
+html.js:not(.calme) .feu--resto.est-resto .resto__reperes svg :is(path, circle) { stroke-dashoffset: 0; }
+.icone-flamme { transform-box: fill-box; transform-origin: 50% 100%; }
+.icone-rayons { transform-box: view-box; transform-origin: 50% 50%; }
+html.js:not(.calme) .feu--resto.est-resto .icone-flamme { animation: resto-flamme 1.8s ease-in-out 1.2s infinite; }
+html.js:not(.calme) .feu--resto.est-resto .icone-rayons { animation: resto-soleil 14s linear infinite; }
+@keyframes resto-flamme { 0%, 100% { transform: scale(1, 1) skewX(0); } 35% { transform: scale(.96, 1.07) skewX(-3deg); } 70% { transform: scale(1.03, .97) skewX(2deg); } }
+@keyframes resto-soleil { to { transform: rotate(360deg); } }
+.resto__horaires { margin-top: clamp(14px, 2.4vh, 22px); padding-top: clamp(10px, 1.8vh, 16px); border-top: 1px solid rgba(233, 196, 106, .3); display: grid; gap: 8px; }
+.resto__services { display: flex; flex-wrap: wrap; gap: 4px 22px; margin: 0; text-shadow: 0 1px 8px rgba(0, 0, 0, .7); }
+.resto__services strong { margin-right: .45em; font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #e9c46a; }
+.resto__statut { font-size: .95rem; color: var(--cendre); }
+.resto__droite { position: relative; padding-top: clamp(84px, 15vh, 130px); }
+.resto__vignette { position: absolute; z-index: 2; top: 0; right: clamp(8px, 2vw, 28px); width: clamp(150px, 15vw, 210px); margin: 0; padding: 8px 8px 0; border-radius: 6px; background: #f6efe2; transform: rotate(4deg);
+  box-shadow: 0 26px 46px -20px rgba(0, 0, 0, .85); }
+.resto__vignette .media { position: relative; aspect-ratio: 4 / 3; border-radius: 3px; overflow: hidden; background: #2a1d15; }
+.resto__vignette .media img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
+.resto__vignette figcaption { padding: 6px 2px 9px; text-align: center; font-family: 'Caveat', 'Segoe Print', cursive; font-size: 1.3rem; line-height: 1; color: #3a2c22; }
+.feu--resto .feu__resa { position: relative; inset: auto; width: auto; margin: 0; }
+.feu--resto .feu__resa .mini-resa__groupe { flex-basis: 100%; margin-left: 0; }
+.feu--resto .feu__resa-haut { display: grid; gap: 4px; }
+.feu--resto .feu__indice { top: auto; bottom: 14px; }
+html[data-saison="ete"] .feu--resto .feu__braises { display: none; }
+@media (min-width: 1000px) and (max-height: 700px) {
+  .resto__legende { font-size: .98rem; }
+  .resto__reperes li { font-size: .95rem; }
+  .resto__reperes svg { width: 30px; height: 30px; }
+  .resto__droite { padding-top: 92px; }
+  .resto__vignette { width: 150px; }
+}
+/* Tablette et téléphone : la scène se déroule à plat ; la photo en tête, le titre posé sur son bas, puis le texte,
+   les repères, les services, la vignette et la carte de réservation. */
+@media (max-width: 999px) {
+  html.js:not(.calme):not(.secours) #feu.feu--resto { height: auto; }
+  #feu.feu--resto > .feu__cadre { position: relative; height: auto; overflow: hidden; padding-bottom: clamp(32px, 6vw, 56px); }
+  .feu--resto .feu__photo { position: relative; inset: auto; height: auto; aspect-ratio: 16 / 10; clip-path: none !important; }
+  .feu--resto .feu__photo::after { background: linear-gradient(0deg, #120c09 0%, rgba(18, 12, 9, .55) 28%, rgba(18, 12, 9, 0) 60%); }
+  .resto { position: relative; inset: auto; grid-template-columns: minmax(0, 1fr); gap: 34px; margin-top: clamp(-150px, -16vw, -80px); padding-top: 0; padding-bottom: 0; }
+  .resto__tete { transform: none !important; }
+  .resto__droite { padding-top: 0; display: grid; justify-items: start; gap: 0; }
+  .resto__vignette { position: relative; top: auto; right: auto; justify-self: end; margin: 0 14px -34px 0; width: min(46vw, 210px); }
+  .feu--resto .feu__resa { width: 100%; }
+}
+@media (max-width: 760px) {
+  .feu--resto .feu__photo { aspect-ratio: 4 / 5; }
+  .resto { margin-top: -38vw; }
+  .resto__titre { font-size: clamp(3rem, 14vw, 4.2rem); }
+}
+:is(html.calme, html:not(.js), html.secours) #feu.feu--resto .feu__cadre { padding-block: 0; }
+/* Vignette au-dessus de la carte, qui ne mord que sur son bord (rien de caché, ni la légende ni le titre de la carte). */
+.resto { --vig-w: clamp(150px, 14vw, 200px); }
+.resto__vignette { z-index: 5; width: var(--vig-w); }
+.resto__droite { padding-top: calc(var(--vig-w) * .75 + 26px); }
+@media (min-width: 1000px) and (max-height: 700px) { .resto { --vig-w: 128px; } .resto__droite { padding-top: calc(var(--vig-w) * .75 + 26px); } .resto__vignette { width: var(--vig-w); } .resto__vignette figcaption { font-size: 1.1rem; padding-block: 4px 6px; } }
+@media (max-width: 999px) { .resto__droite { padding-top: 0; } .resto__vignette { width: min(46vw, 210px); } }
+@media (max-width: 999px) {
+  #feu.feu--resto > .feu__cadre { background: #120c09; }
+  .resto__vignette { margin: 0 12px 18px 0; }
+}

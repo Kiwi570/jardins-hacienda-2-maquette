@@ -54,6 +54,23 @@ const ETIQUETTES = [
 
 /* Venir : les vraies positions projetées (x = (lon − 5,55) × 300, y = (49,75 − lat) × 455), les distances à vol d'oiseau
    calculées depuis Moineville (49,204 N 5,946 E). Les traits se dessinent à l'arrivée, une lueur file vers Moineville. */
+/* v7.5.27 · « Le Restaurant » : les services de la semaine tirés de donnees/horaires.json (midi : ouverture avant 17 h). */
+const JOURS_ORDRE = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+const enLigne = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} et ${l[l.length - 1]}` : l[0] || '');
+function services(h) {
+  const sem = h.adresses[0].semaine;
+  const midi = JOURS_ORDRE.filter((j) => (sem[j] || []).some((p) => +p.slice(0, 2) < 17));
+  const soir = JOURS_ORDRE.filter((j) => (sem[j] || []).some((p) => +p.slice(0, 2) >= 17));
+  return { midi: enLigne(midi), soir: enLigne(soir) };
+}
+/* Petites icônes au trait (dessinées à l'arrivée) : toque, ardoise, flamme (hiver) ou soleil (été). */
+const ICONES = {
+  toque: '<svg viewBox="0 0 40 40" aria-hidden="true"><path pathLength="1" d="M12 27v6h16v-6M12 27c-4-1-6-4-6-7 0-4 4-7 8-6 1-4 4-6 6-6s5 2 6 6c4-1 8 2 8 6 0 3-2 6-6 7H12z"/><path pathLength="1" d="M15 31h10"/></svg>',
+  ardoise: '<svg viewBox="0 0 40 40" aria-hidden="true"><path pathLength="1" d="M7 9h26v20H7zM14 33l2-4m10 4-2-4"/><path pathLength="1" d="M11 15h12m-12 4h16m-16 4h9"/></svg>',
+  flamme: '<svg viewBox="0 0 40 40" aria-hidden="true"><path class="icone-flamme" pathLength="1" d="M20 35c-6 0-10-4-10-9 0-6 5-8 6-14 3 2 4 5 4 8 2-1 3-3 3-6 4 3 7 7 7 12 0 5-4 9-10 9z"/><path pathLength="1" d="M20 35c-2 0-4-2-4-4 0-3 3-4 4-7 2 2 4 4 4 7 0 2-2 4-4 4z"/></svg>',
+  soleil: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle pathLength="1" cx="20" cy="20" r="7"/><path class="icone-rayons" pathLength="1" d="M20 5v5m0 20v5M5 20h5m20 0h5M9.4 9.4l3.5 3.5m14.2 14.2 3.5 3.5M9.4 30.6l3.5-3.5m14.2-14.2 3.5-3.5"/></svg>',
+};
+
 const PV = (lat, lon) => [Math.round((lon - 5.55) * 300), Math.round((49.75 - lat) * 455)];
 const cheminV = (pts) => 'M' + pts.map(([la, lo]) => PV(la, lo).join(' ')).join(' L ');
 function carteVenir(c) {
@@ -297,42 +314,68 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
   </div>
 </section>
 
-<section class="feu" id="feu" data-heure="19:00" data-lumiere="feu" data-fx="plein-ecran" data-fx-depart="inset(16% 22% 16% 22% round 18px)" style="--fx-longueur:290svh" aria-labelledby="feu-titre">
+<section class="feu feu--resto" id="feu" data-heure="19:00" data-lumiere="feu" data-fx="plein-ecran" data-fx-depart="inset(14% 20% 14% 20% round 22px)" style="--fx-longueur:280svh" aria-labelledby="feu-titre">
   <div class="feu__cadre" data-collant>
-    ${c.media({ nom: 'vraie/feu-salle', alt: c.s('accueil.feu.altVraie'), cadrage: '62% 40%', cadrageMobile: '60% 30%', classe: 'feu__photo', sizes: '100vw', attrs: 'data-foyer=".7 .06 1 .8" data-foyer-mobile=".62 .03 1 .47"' })}
+    ${c.media({ nom: 'vraie/salle-resto', alt: c.s('accueil.feu.altSalle'), cadrage: '46% 58%', cadrageMobile: '50% 55%', classe: 'feu__photo', sizes: '100vw' })}
     <canvas class="feu__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
-    <div class="feu__tete" data-feu-tete>
-      <p class="feu__sous" data-fx-apres>${c.t('accueil.feu.sous')}</p>
-      <h2 class="feu__titre" id="feu-titre"><span data-fx-ecarte="g">${c.t('accueil.feu.motG')}</span> <span data-fx-ecarte="d">${c.t('accueil.feu.motD')}</span></h2>
-      <p class="feu__legende" data-fx-apres>${c.t('accueil.feu.texte')}</p>
-    </div>
-    <form class="mini-resa feu__resa" data-mini-resa data-feu-resa data-services-nombre="4" action="${c.url('reserver', 'formulaire')}" method="get" aria-labelledby="feu-resa-titre">
-      <div class="feu__resa-haut">
-        <p class="feu__resa-titre" id="feu-resa-titre">${c.t('accueil.feu.resaTitre')}</p>
-        <p class="mini-resa__groupe">${c.lien('receptions', { ancre: 'demande', texte: c.t('accueil.diner.groupe') })}</p>
-      </div>
-      <fieldset class="mini-resa__services">
-        <legend>${c.t('accueil.diner.jour')}</legend>
-        <div class="mini-resa__puces" data-services>
-          <label class="puce"><input type="radio" name="service" value="soir" checked><span>Vendredi soir</span></label>
-          <label class="puce"><input type="radio" name="service" value="soir"><span>Samedi soir</span></label>
-          <label class="puce"><input type="radio" name="service" value="midi"><span>Dimanche midi</span></label>
+    <div class="resto">
+      <div class="resto__texte">
+        <div class="resto__tete" data-feu-tete>
+          <p class="resto__sous"><span data-saison-seul="hiver">${c.t('accueil.feu.sousHiver')}</span><span data-saison-seul="ete">${c.t('accueil.feu.sousEte')}</span></p>
+          <h2 class="resto__titre" id="feu-titre" data-anime="lignes">${c.t('accueil.feu.titreA')} <em>${c.t('accueil.feu.titreB')}</em></h2>
         </div>
-        <input type="hidden" name="date" value="">
-      </fieldset>
-      <div class="feu__resa-bas">
-        <div class="mini-resa__couverts">
-          <span class="mini-resa__libelle" id="mini-couverts">${c.t('accueil.diner.couverts')}</span>
-          <div class="compteur" role="group" aria-labelledby="mini-couverts">
-            <button type="button" data-moins aria-label="${c.s('accueil.diner.moins')}">−</button>
-            <input type="number" name="couverts" min="1" max="10" value="2" inputmode="numeric" aria-labelledby="mini-couverts">
-            <button type="button" data-plus aria-label="${c.s('accueil.diner.plus')}">+</button>
+        <div class="resto__infos" data-resto-infos>
+          <p class="resto__legende"><span data-saison-seul="hiver">${c.t('accueil.feu.texteHiver')}</span><span data-saison-seul="ete">${c.t('accueil.feu.texteEte')}</span></p>
+          <ul class="resto__reperes">
+            <li>${brut(ICONES.toque)}<span>${c.t('accueil.feu.repere1')}</span></li>
+            <li>${brut(ICONES.ardoise)}<span>${c.t('accueil.feu.repere2')}</span></li>
+            <li data-saison-seul="hiver">${brut(ICONES.flamme)}<span>${c.t('accueil.feu.repere3Hiver')}</span></li>
+            <li data-saison-seul="ete">${brut(ICONES.soleil)}<span>${c.t('accueil.feu.repere3Ete')}</span></li>
+          </ul>
+          <div class="resto__horaires">
+            <p class="resto__services"><span><strong>${c.t('accueil.feu.horairesMidi')}</strong> ${services(c.donnees.horaires).midi}</span><span><strong>${c.t('accueil.feu.horairesSoir')}</strong> ${services(c.donnees.horaires).soir}</span></p>
+            <p class="statut resto__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-resto>${c.t('accueil.midi.statutSansJs')}</span></p>
           </div>
         </div>
-        <p class="mini-resa__envoi"><button type="submit" class="bouton" data-grille="retour" data-effet="carton">${c.t('accueil.diner.action')}</button></p>
       </div>
-    </form>
-    <p class="indice feu__indice" aria-hidden="true">${c.t('accueil.feu.indice')}</p>
+      <div class="resto__droite" data-feu-resa>
+        <figure class="resto__vignette" data-saison-seul="hiver">
+          ${c.media({ nom: 'vraie/feu-salle', alt: c.s('accueil.feu.altVraie'), cadrage: '62% 40%', classe: 'feu__photo-vignette', sizes: '220px', attrs: 'data-foyer=".7 .06 1 .8" data-foyer-mobile=".7 .06 1 .8"' })}
+          <figcaption>${c.t('accueil.feu.vignetteHiver')}</figcaption>
+        </figure>
+        <figure class="resto__vignette" data-saison-seul="ete">
+          ${c.media({ nom: 'vraie/piscine-palmiers', alt: c.s('accueil.feu.altVignetteEte'), cadrage: '50% 60%', sizes: '220px' })}
+          <figcaption>${c.t('accueil.feu.vignetteEte')}</figcaption>
+        </figure>
+        <form class="mini-resa feu__resa" data-mini-resa data-services-nombre="4" action="${c.url('reserver', 'formulaire')}" method="get" aria-labelledby="feu-resa-titre">
+          <div class="feu__resa-haut">
+            <p class="feu__resa-titre" id="feu-resa-titre"><span data-saison-seul="hiver">${c.t('accueil.feu.resaTitre')}</span><span data-saison-seul="ete">${c.t('accueil.feu.resaTitreEte')}</span></p>
+            <p class="mini-resa__groupe">${c.lien('receptions', { ancre: 'demande', texte: c.t('accueil.diner.groupe') })}</p>
+          </div>
+          <fieldset class="mini-resa__services">
+            <legend>${c.t('accueil.diner.jour')}</legend>
+            <div class="mini-resa__puces" data-services>
+              <label class="puce"><input type="radio" name="service" value="soir" checked><span>Vendredi soir</span></label>
+              <label class="puce"><input type="radio" name="service" value="soir"><span>Samedi soir</span></label>
+              <label class="puce"><input type="radio" name="service" value="midi"><span>Dimanche midi</span></label>
+            </div>
+            <input type="hidden" name="date" value="">
+          </fieldset>
+          <div class="feu__resa-bas">
+            <div class="mini-resa__couverts">
+              <span class="mini-resa__libelle" id="mini-couverts">${c.t('accueil.diner.couverts')}</span>
+              <div class="compteur" role="group" aria-labelledby="mini-couverts">
+                <button type="button" data-moins aria-label="${c.s('accueil.diner.moins')}">−</button>
+                <input type="number" name="couverts" min="1" max="10" value="2" inputmode="numeric" aria-labelledby="mini-couverts">
+                <button type="button" data-plus aria-label="${c.s('accueil.diner.plus')}">+</button>
+              </div>
+            </div>
+            <p class="mini-resa__envoi"><button type="submit" class="bouton" data-grille="retour" data-effet="carton">${c.t('accueil.diner.action')}</button></p>
+          </div>
+        </form>
+      </div>
+    </div>
+    <p class="indice feu__indice" aria-hidden="true" data-saison-seul="hiver">${c.t('accueil.feu.indice')}</p>
   </div>
 </section>
 
