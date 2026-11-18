@@ -1,11 +1,11 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 18/11/2026 10:46:25 · 1 min · 1 page(s) · audit complet ciblé sur / (étapes : fichiers, mesures)
+Projet : `jardins-hacienda-2-maquette` · 18/11/2026 10:58:28 · 2 min · 1 page(s) · audit complet ciblé sur / (étapes : fichiers, mesures)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261118-094456-complet-cible-partiel` · version ?v=7
+- Passe : `20261118-095658-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
 - À regarder : **0**
 - Non lancé : **0**
@@ -110,7 +110,9 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261117-214049-complet-cible-partiel | complet | /,/infos-pratiques | fichiers, mesures | 0 | 0 | 0 | complet |
 | 20261117-214329-complet-cible-partiel | complet | /,/a-emporter,/infos-pratiques,/les-fetes,/receptions | fichiers, mouvement, parcours, ecran | 0 | 5 | 0 | complet |
 | 20261118-094136-complet-cible-partiel | complet | / | fichiers, mesures, mouvement, ecran | 1 | 1 | 0 | échecs |
-| **20261118-094456-complet-cible-partiel** (celle-ci) | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
+| 20261118-094456-complet-cible-partiel | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
+| 20261118-095509-complet-cible-partiel | complet | / | fichiers, mesures | 25 | 0 | 0 | échecs |
+| **20261118-095658-complet-cible-partiel** (celle-ci) | complet | / | fichiers, mesures | 0 | 0 | 0 | complet |
 
 ## Échecs
 
