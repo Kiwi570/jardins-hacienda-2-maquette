@@ -1,0 +1,20 @@
+{
+  "releve": "2026-11-18",
+  "sources": {
+    "mariages": { "nom": "Mariages.net", "url": "https://www.mariages.net/domaine-mariage/les-jardins-de-lhacienda--e159066" },
+    "bridebook": { "nom": "Bridebook", "url": "https://bridebook.com/fr/wedding-venues/les-jardins-de-l-hacienda-moineville-meurthe-et-moselle-frR8BLKRga" },
+    "google": { "nom": "Google", "url": "https://wanderlog.com/place/details/3211746" }
+  },
+  "avis": [
+    { "texte": "La nourriture était à tomber par terre, tous nos convives nous ont complimentés là dessus.", "auteur": "Charlotte", "date": "2022-09-14", "note": 5, "source": "mariages" },
+    { "texte": "Les meilleures asperges que j'aie goûtées de ma vie, blanchies dans une bière blonde et en crème.", "auteur": "Zeev S.", "date": "2024-04-14", "note": 5, "source": "google", "traduit": true },
+    { "texte": "Un cadre exceptionnel, une décoration magnifique, une cuisine délicieuse, un service très professionnel.", "auteur": "Capelle", "date": "2021-09-14", "note": 5, "source": "mariages" },
+    { "texte": "Un lieu magnifique, un personnel très agréable, aux petits soins pour petits et grands, une cuisine très savoureuse.", "auteur": "Joëlle L.", "date": "2023-01-19", "source": "bridebook" },
+    { "texte": "Du professionnalisme, un personnel sympathique souriant et très pro, aux petits soins.", "auteur": "Clementine", "date": "2024-09-10", "note": 5, "source": "mariages" },
+    { "texte": "Le repas était très bon, les serveurs étaient top, le lieu évidemment parfait.", "auteur": "Hélène", "date": "2022-09-24", "note": 5, "source": "mariages" },
+    { "texte": "Un super endroit dans l'ensemble. La cuisine était parfaite. Le service, excellent.", "auteur": "Silviu D.", "date": "2023-05-07", "note": 5, "source": "google", "traduit": true },
+    { "texte": "Nous avons vécu un moment hors du temps.", "auteur": "Isabelle", "date": "2021-10-03", "note": 4.8, "source": "mariages" },
+    { "texte": "Toute l'équipe a été au top. Ils ont été aux petits soins avec nous et nos proches.", "auteur": "Latifa N.", "date": "2023-01-19", "source": "bridebook" },
+    { "texte": "Une soirée à la hauteur de notre espérance, tout était parfait, du cadre aux personnels.", "auteur": "Lebon", "date": "2021-10-05", "note": 5, "source": "mariages" }
+  ]
+}
