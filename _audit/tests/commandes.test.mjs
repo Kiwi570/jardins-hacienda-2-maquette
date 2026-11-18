@@ -8,9 +8,9 @@ import { appliquer, MUTATIONS } from '../../assets/js/espace-donnees.js';
 import { resasDuJour, ajouter, ouvert, complet } from '../../assets/js/espace-regles.js';
 
 const lireJson = (f) => JSON.parse(readFileSync(new URL(`../../donnees/${f}`, import.meta.url), 'utf8'));
-const R = lireJson('reservation.json'), AGENDA = lireJson('agenda.json').dates;
+const R = lireJson('reservation.json'), AGENDA = lireJson('agenda.json').dates, CARTE = lireJson('carte.json').rubriques;
 const AUJ = '2026-11-18'; /* un mercredi */
-const ctx = (S = {}, plus = {}) => ({ auj: AUJ, R, S, exceptions: [], pages: { reserver: '/reserver' }, ...plus });
+const ctx = (S = {}, plus = {}) => ({ auj: AUJ, R, S, exceptions: [], pages: { reserver: '/reserver', carte: '/la-carte' }, carte: CARTE, ...plus });
 const un = (t, S, plus) => comprendre(t, ctx(S, plus))[0];
 const d = (t) => lireDate(simplifier(t), AUJ);
 
@@ -90,7 +90,7 @@ test('une réservation prise au téléphone', () => {
 });
 
 test('ouvrir une rubrique, retrouver un client, ne rien inventer', () => {
-  assert.deepEqual(un('horaires').aller, { vue: 'site', ancre: 't-horaires', onglet: 'horaires' }); assert.deepEqual(un('ardoise').aller, { vue: 'carte', ancre: 't-ardoise' }); assert.deepEqual(un('photos').aller, { vue: 'site', onglet: 'photos' });
+  assert.deepEqual(un('horaires').aller, { vue: 'site', ancre: 't-horaires', onglet: 'horaires' }); assert.deepEqual(un('ardoise').aller, { vue: 'carte', ancre: 't-ardoise', onglet: 'ardoise' }); assert.deepEqual(un('la carte').aller, { vue: 'carte', onglet: 'carte' }); assert.deepEqual(un('photos').aller, { vue: 'site', onglet: 'photos' });
   assert.deepEqual(un('mariages').aller, { vue: 'demandes', filtre: 'reception' }); assert.deepEqual(un('commandes traiteur').aller, { vue: 'demandes', filtre: 'traiteur' }); assert.deepEqual(un('messages').aller, { vue: 'site', onglet: 'messages' });
   assert.deepEqual(un('samedi').aller, { vue: 'resas', jour: '2026-11-21' });
   const resas = Array.from({ length: 12 }, (_, k) => resasDuJour({ R, auj: AUJ, site: [] }, {}, ajouter(AUJ, k))).flat();
@@ -99,6 +99,17 @@ test('ouvrir une rubrique, retrouver un client, ne rien inventer', () => {
   assert.deepEqual(comprendre('', ctx()), []); assert.deepEqual(comprendre('a', ctx()), []); assert.deepEqual(comprendre('xyzzy quux', ctx()), []);
 });
 
+test('la carte : épuisé aujourd\'hui, de nouveau proposé, un prix', () => {
+  const p = un('épuisé : foie gras'); assert.equal(p.titre, 'Dire « Foie gras de canard maison » épuisé aujourd\'hui');
+  assert.deepEqual(p.action, { nom: 'epuise', args: { cle: 'entrees/0', date: AUJ, actif: true }, msg: p.action.msg, lien: '/la-carte' }); assert.deepEqual(p.aller, { vue: 'carte', onglet: 'carte', plat: 'entrees/0' });
+  const S = appliquer({}, 'epuise', p.action.args);
+  assert.equal(un('plus de foie gras', S).inactif, true, 'déjà épuisé'); assert.equal(un('il reste du foie gras', S).action.args.actif, false); assert.equal(un('il reste du foie gras').inactif, true);
+  assert.equal(un('épuisé : os à moelle').action.args.cle, 'entrees/3'); assert.equal(un('plus de licorne rôtie'), undefined, 'un plat inconnu n\'est pas inventé');
+  const prix = un('foie gras à 23 €'); assert.equal(prix.titre, 'Passer « Foie gras de canard maison » à 23 €'); assert.deepEqual(prix.action.args, { cle: 'entrees/0', champs: { prix: 23 } });
+  assert.equal(un('prix du foie gras : 24,50').action.args.champs.prix, 24.5);
+  assert.equal(appliquer({}, 'plat', { ...prix.action.args, base: CARTE }).carte.modifs['entrees/0'].prix, 23);
+});
+
 test('chaque exemple proposé est compris et lance une action connue', () => {
-  for (const ex of EXEMPLES) { const p = un(ex); assert.ok(p?.action, `« ${ex} » n'est pas compris`); assert.ok(MUTATIONS[p.action.nom], p.action.nom); assert.doesNotThrow(() => appliquer({}, p.action.nom, { ...p.action.args, agenda: AGENDA })); }
+  for (const ex of EXEMPLES) { const p = un(ex); assert.ok(p?.action, `« ${ex} » n'est pas compris`); assert.ok(MUTATIONS[p.action.nom], p.action.nom); assert.doesNotThrow(() => appliquer({}, p.action.nom, { ...p.action.args, agenda: AGENDA, base: CARTE })); }
 });

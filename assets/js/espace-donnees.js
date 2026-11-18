@@ -8,6 +8,7 @@
    Pour passer au réel : remplacer le stockage ; les écrans et les actions ne changent pas. */
 import * as stockLocal from './espace-stock.js?v=7';
 import { listeEvenements, typo } from './espace-regles.js?v=7';
+import { MUTATIONS_CARTE } from './espace-carte.js?v=7';
 export { estVide } from './espace-stock.js?v=7';
 
 const basculer = (liste = [], valeur, actif) => [...new Set([...liste.filter((x) => x !== valeur), ...(actif ? [valeur] : [])])];
@@ -36,6 +37,8 @@ export const MUTATIONS = {
   noteDemande(S, { id, note }) { const n = ((S.demandes ||= {}).notes ||= {}), v = (note || '').trim(); if (v) n[id] = v; else delete n[id]; sansVide(S.demandes, 'notes'); sansVide(S, 'demandes'); },
   /* Les messages aux clients : un modèle retouché ; le texte d'origine (ou un champ vidé) ne laisse rien */
   modeleMessage(S, { cle, texte, defaut }) { S.messages ||= {}; const v = typo((texte || '').trim()); if (!v || v === typo(defaut || '')) delete S.messages[cle]; else S.messages[cle] = v; sansVide(S, 'messages'); },
+  /* La carte (v7.7.3) : plat, ajouterPlat, platVisible, epuise (espace-carte.js) */
+  ...MUTATIONS_CARTE,
   /* Photos */
   photo(S, { emplacement, photo }) { (S.photos ||= {})[emplacement] = { ...(S.photos[emplacement] || {}), nom: photo.nom || null, l: photo.l || null, src: photo.src || null }; },
   cadrage(S, { emplacement, cadrage, origine }) { (S.photos ||= {})[emplacement] = { ...origine, ...(S.photos[emplacement] || {}), cadrage }; },

@@ -9,6 +9,8 @@
    1 ter (v7.7.2). Tout arrive ici : la demande de réception, la commande traiteur, la carte cadeau et la question
       faites sur le site arrivent dans « Demandes » ; une demande faite dans un autre onglet s'affiche en direct, « Voir »
       l'ouvre ; une réception avance d'étape et s'annule ; le message au client suit le modèle retouché.
+   1 quater (v7.7.3). La carte en main : « Épuisé aujourd'hui » se voit sur la carte du site ; un prix et des allergènes
+      modifiés aussi ; un plat ajouté apparaît en fin de rubrique ; la barre comprend « épuisé : foie gras ».
    2. Chaque rubrique (et l'éditeur d'événement, l'ajout d'une réservation, la photothèque, la barre), à cinq tailles : les
       mesures de l'audit (débordement, textes sous 12 px, cibles de 44 px, textes coupés, contrastes, noms
       accessibles, typographie), axe-core, les recouvrements, puis un balayage de 320 à 1920 px.
@@ -17,7 +19,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { installerOutils, defilerTout, mesurer, mesurerRecouvrements } from './page.mjs';
 
 /* Les écrans à mesurer : les cinq rubriques, et pour « Site » chacun de ses onglets (v7.7.2). */
-const VUES = ['jour', 'demandes', 'resas', 'carte', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
+const VUES = ['jour', 'demandes', 'resas', 'carte:carte', 'carte:ardoise', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
 const P = '/espace';
 
 export default async function ({ contexte, attendrePret, attendre, BASE, R, T }) {
@@ -200,6 +202,46 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     } finally { await ctx.close(); }
   }
 
+  /* ---------- 1 quater. La carte en main : épuisé aujourd'hui, prix, allergènes, plat ajouté ; la carte du site suit ---------- */
+  {
+    const taille = T('390×844'), lieu = { page: P, taille: taille.nom };
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      await entrer(page); await aller(page, 'carte:carte');
+      const carte = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').carte || {});
+      const nomPlat = (await page.locator('[data-plat="plats/1"] [data-plat-nom]').innerText()).trim();
+      await page.locator('[data-epuise="plats/1"]').click(); await attendre(400);
+      const jour = Object.values((await carte()).epuises || {})[0];
+      if (!/^\d{4}-\d\d-\d\d$/.test(jour || '') || !(await page.locator('[data-plat="plats/1"].est-epuise').count())) R.echec('espace : carte', `« Épuisé aujourd’hui » : date enregistrée « ${jour} », plat marqué ${await page.locator('[data-plat="plats/1"].est-epuise').count()}`, lieu);
+      /* Un prix et des allergènes ; un plat ajouté. */
+      await page.locator('[data-plat="entrees/0"] [data-editer-plat]').click(); await attendre(300);
+      await page.locator('#pl-prix').fill('23,50'); await page.locator('[name="allergene"][value="Gluten"]').check(); await attendre(800);
+      await page.locator('[data-ajouter-plat-carte="desserts"]').click(); await attendre(300);
+      await page.locator('#pl-nom').fill('Tarte aux mirabelles'); await page.locator('#pl-prix').fill('9'); await attendre(800);
+      const c = await carte();
+      if (c.modifs?.['entrees/0']?.prix !== 23.5 || c.modifs['entrees/0'].allergenes?.join() !== 'Gluten' || c.ajouts?.[0]?.nom !== 'Tarte aux mirabelles') R.echec('espace : carte', `après les modifications : ${JSON.stringify(c).slice(0, 160)}`, lieu);
+      /* La carte du site suit. */
+      await page.goto(BASE + '/la-carte', { waitUntil: 'load' }); await attendrePret(page); await attendre(300);
+      const site = await page.evaluate(() => ({ prix: document.querySelector('#carte-entrees .carte-resto__prix')?.textContent, allergenes: document.querySelector('#carte-entrees .carte-resto__plat .carte-resto__allergenes')?.textContent || '',
+        epuise: [...document.querySelectorAll('#carte-plats .carte-resto__plat.est-epuise .carte-resto__plat-nom')].map((x) => x.textContent), ajout: [...document.querySelectorAll('#carte-desserts .carte-resto__plat')].at(-1)?.textContent || '', detail: document.querySelector('#carte-entrees .rubrique-bande__detail')?.textContent || '' }));
+      if (site.prix !== '23,50 €' || !/Allergènes\s: gluten/.test(site.allergenes)) R.echec('espace : carte', `sur le site, le premier plat : prix « ${site.prix} », « ${site.allergenes} »`, { page: '/la-carte', taille: taille.nom });
+      if (site.epuise.join() !== nomPlat) R.echec('espace : carte', `sur le site, épuisé aujourd’hui : ${site.epuise.join(', ') || 'aucun plat'} (attendu : ${nomPlat})`, { page: '/la-carte', taille: taille.nom });
+      if (!/Tarte aux mirabelles/.test(site.ajout) || !/9 €/.test(site.ajout)) R.echec('espace : carte', `sur le site, le plat ajouté n’est pas en fin de desserts (« ${site.ajout.slice(0, 60)} »)`, { page: '/la-carte', taille: taille.nom });
+      if (!/à 23,5 €/.test(site.detail)) R.echec('espace : carte', `sur le site, l’en-tête des entrées ne suit pas le prix (« ${site.detail} »)`, { page: '/la-carte', taille: taille.nom });
+      /* Demain, le plat épuisé revient : la date enregistrée n'est plus celle du jour. */
+      await page.evaluate(() => { const d = JSON.parse(localStorage.getItem('jh-espace:v1')); for (const k of Object.keys(d.carte.epuises)) d.carte.epuises[k] = '2000-01-01'; localStorage.setItem('jh-espace:v1', JSON.stringify(d)); });
+      await page.reload({ waitUntil: 'load' }); await attendrePret(page); await attendre(300);
+      if (await page.locator('.carte-resto__plat.est-epuise').count()) R.echec('espace : carte', 'un plat épuisé un autre jour reste indiqué épuisé sur le site', { page: '/la-carte', taille: taille.nom });
+      /* La barre : « épuisé : foie gras ». */
+      await entrer(page); await page.locator('.esp-fab').click(); await attendre(350);
+      await page.locator('#barre-champ').fill('épuisé : foie gras'); await attendre(250); await page.keyboard.press('Enter'); await attendre(500);
+      const apres = await page.evaluate(() => ({ ep: Object.keys(JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').carte?.epuises || {}).filter((k) => k === 'entrees/0').length, vue: !document.querySelector('[data-vue="carte"]').hidden }));
+      if (!apres.ep || !apres.vue) R.echec('espace : carte', `« épuisé : foie gras » dans la barre : enregistré ${apres.ep}, rubrique Carte ouverte ${apres.vue}`, lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok('espace : la carte en main');
+    } finally { await ctx.close(); }
+  }
+
   /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */
   const noter = (liste, taille, ou) => liste.filter((x) => x.controle !== 'section sans visuel').forEach((x) => R.ajouter(x.niveau || 'echec', x.controle, `${ou} : ${x.detail}`, { page: P, taille: taille.nom, selecteur: x.selecteur }));
   async function mesurerEcran(page, taille, ou, complet) {
@@ -226,6 +268,8 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       await aller(page, 'resas'); await page.locator('[data-ajouter]').first().click(); await attendre(350); await mesurerEcran(page, taille, 'ajout d’une réservation', complet);
       await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(250); await page.locator('[data-esp-rendu="demandes"] [data-ouvrir-demande]').first().click(); await attendre(400); await mesurerEcran(page, taille, 'demande de réception ouverte', complet);
       await page.locator('[data-filtre-demandes="table"]').click(); await attendre(250); await page.locator('.esp-resa__message summary').first().click(); await attendre(250); await mesurerEcran(page, taille, 'tables à confirmer et message', false);
+      await aller(page, 'carte:carte'); await page.locator('[data-plat="entrees/0"] [data-editer-plat]').click(); await attendre(400); await mesurerEcran(page, taille, 'éditeur de plat', complet);
+      await page.locator('[data-plat="entrees/0"] [data-editer-plat]').first().click(); await attendre(200);
       await aller(page, 'site:soirees'); await page.locator('.esp-ev [data-editer]').first().click(); await attendre(450); await mesurerEcran(page, taille, 'éditeur d’événement', complet);
       await page.locator('[data-choisir-photo="ev"]').click(); await attendre(500); await mesurerEcran(page, taille, 'photothèque', complet);
       await page.keyboard.press('Escape'); await attendre(250);

@@ -18,6 +18,8 @@ export const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 export const hache = (t) => { let h = 2166136261; for (const c of t) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 /** Typographie française des messages : espace insécable devant : ; ! ? et dans les guillemets. */
 export const typo = (t) => String(t).replace(/ ([:;!?»])/g, ' $1').replace(/« /g, '« ');
+/** Minuscules, sans accents, apostrophes droites, espaces simples : pour reconnaître les mots. */
+export const simplifier = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[’`]/g, '\'').replace(/\s+/g, ' ').trim();
 export const svDe = (creneau) => (enMin(creneau.split('-')[0]) < 17 * 60 ? 'midi' : 'soir');
 export const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? 's' : ''}`;
 /** Le jour et la minute qu'il est à Moineville. */

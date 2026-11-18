@@ -11,11 +11,13 @@
    fête quand la dernière demande a sa réponse, des états vides qui disent quoi faire.
    v7.7.2 : cinq rubriques (Aujourd'hui, Demandes, Réservations, Carte, Site) ; « Site » a ses onglets (soirées, annonce
    et horaires, textes, messages, photos) ; les demandes de tout le site arrivent dans « Demandes » (espace-vue-demandes.js)
-   et s'affichent en direct quand elles sont faites dans un autre onglet. */
+   et s'affichent en direct quand elles sont faites dans un autre onglet.
+   v7.7.3 : « Carte » (espace-vue-carte.js) porte la carte du site (plats, prix, allergènes, épuisé aujourd'hui) et l'ardoise. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
 import { comprendre } from './espace-commandes.js?v=7';
 import { installerBarre } from './espace-barre.js?v=7';
 import { creerDemandes } from './espace-vue-demandes.js?v=7';
+import { creerCarte } from './espace-vue-carte.js?v=7';
 import { normaliser, GENRES } from './espace-demandes.js?v=7';
 import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe } from './espace-regles.js?v=7';
 
@@ -110,12 +112,14 @@ export function init(root) {
 
   // ---------- Vues ----------
   /* L'état des écrans, partagé avec les rubriques écrites dans d'autres fichiers (espace-vue-*.js). */
-  const etat = { vue: 'jour', jour: A.iso, evEdite: null, ajoutOuvert: false, onglet: 'soirees', filtreDemandes: 'tout', demandeOuverte: null };
+  const etat = { vue: 'jour', jour: A.iso, evEdite: null, ajoutOuvert: false, onglet: 'soirees', filtreDemandes: 'tout', demandeOuverte: null, ongletCarte: 'carte', platEdite: null };
   /* Où chaque écran se dessine : sa rubrique, ou le panneau de l'onglet ouvert dans « Site ». */
   const corps = (v) => (['evenements', 'soirees', 'horaires', 'textes', 'messages', 'photos'].includes(v) ? $('[data-esp-panneau]', root) : $(`[data-esp-rendu="${v}"]`, root));
   function enAttenteTotal() { const a = vDemandes.attente(); return a.tables.length + a.autres.length; }
   const X = { root, $, $$, e, S, A, D, ctx, etat, agir, dire, corps, ligneResa, rendre, allerVue, viser, feter, enAttenteTotal, plusTard: (f) => plus_tard(f) };
   const vDemandes = creerDemandes(X);
+  X.ardoiseHtml = () => cartesSite().ardoise;
+  const vCarte = creerCarte(X);
 
   function rendreJour() {
     const l = resas(A.iso), midi = l.filter((r) => r.service === 'midi'), soir = l.filter((r) => r.service === 'soir'), att = enAttente(), autres = vDemandes.attente().autres, total = att.length + autres.length;
@@ -270,7 +274,6 @@ export function init(root) {
   }
   function rendreHoraires() { const c = cartesSite(); corps('horaires').innerHTML = `<div class="esp-grille esp-grille--textes">${c.annonce}${c.fermetures}${c.horaires}</div>`; }
   function rendreTextesSite() { corps('textes').innerHTML = cartesSite().textes; }
-  function rendreCarte() { corps('carte').innerHTML = `<div class="esp-grille esp-grille--textes">${cartesSite().ardoise}</div>`; }
   /* « Site » : ce que le restaurant change sur son site, en onglets. */
   const ONGLETS = [['soirees', 'Soirées'], ['horaires', 'Annonce et horaires'], ['textes', 'Textes'], ['messages', 'Messages'], ['photos', 'Photos']];
   function rendreSite() {
@@ -291,7 +294,7 @@ export function init(root) {
 
   function rendre() {
     contexte = null;
-    ({ jour: rendreJour, demandes: vDemandes.rendre, resas: rendreResas, carte: rendreCarte, site: rendreSite })[etat.vue]();
+    ({ jour: rendreJour, demandes: vDemandes.rendre, resas: rendreResas, carte: vCarte.rendre, site: rendreSite })[etat.vue]();
     const n = enAttenteTotal();
     for (const b of $$('[data-esp-badge]', root)) { const on = b.dataset.espBadge === 'demandes' && n > 0; b.hidden = !on; if (on) { b.textContent = n; b.setAttribute('aria-label', `${n} à traiter`); } }
   }
@@ -352,7 +355,7 @@ export function init(root) {
   });
   root.addEventListener('keydown', (ev) => {
     const tab = ev.target.closest('[role="tab"][data-onglet]');
-    if (tab && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(ev.key)) { ev.preventDefault(); const l = ONGLETS.map(([id]) => id), i = l.indexOf(tab.dataset.onglet); etat.onglet = ev.key === 'Home' ? l[0] : ev.key === 'End' ? l[l.length - 1] : l[(i + (ev.key === 'ArrowRight' ? 1 : -1) + l.length) % l.length]; etat.evEdite = null; rendre(); $(`#onglet-${etat.onglet}`, root)?.focus(); return; }
+    if (tab && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(ev.key)) { ev.preventDefault(); const l = $$('[role="tab"]', tab.parentElement), i = l.indexOf(tab); (ev.key === 'Home' ? l[0] : ev.key === 'End' ? l[l.length - 1] : l[(i + (ev.key === 'ArrowRight' ? 1 : -1) + l.length) % l.length]).click(); return; }
     const btn = ev.target.closest('[data-cadreur], [data-cadreur-slot]'); if (!btn || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(ev.key)) return;
     ev.preventDefault(); const x = parseFloat(btn.style.getPropertyValue('--fx')) || 50, y = parseFloat(btn.style.getPropertyValue('--fy')) || 50, d = 5;
     cadrer(btn, Math.max(0, Math.min(100, x + (ev.key === 'ArrowRight' ? d : ev.key === 'ArrowLeft' ? -d : 0))), Math.max(0, Math.min(100, y + (ev.key === 'ArrowDown' ? d : ev.key === 'ArrowUp' ? -d : 0))));
@@ -368,18 +371,21 @@ export function init(root) {
     if (p.action) {
       const args = { ...p.action.args };
       if (p.action.nom === 'evenement') { args.agenda = D.agenda; args.champs = { ...args.champs, l: largeurs(args.champs.image) }; }
+      if (p.action.nom === 'plat') args.base = D.carte;
       if (p.action.nom === 'ajouterResa') { resa = 'tel-' + Date.now().toString(36); args.resa = { ...args.resa, id: resa }; }
       ok = agir(p.action.nom, args, { msg: p.action.msg, lien: p.action.lien });
     }
     const a = p.aller; if (!a?.vue) { rendre(); return; }
-    if (a.jour) etat.jour = a.jour; if (a.onglet) etat.onglet = a.onglet; if (a.filtre) etat.filtreDemandes = a.filtre;
+    if (a.jour) etat.jour = a.jour; if (a.onglet) { if (a.vue === 'carte') etat.ongletCarte = a.onglet; else etat.onglet = a.onglet; } if (a.filtre) etat.filtreDemandes = a.filtre;
+    if (a.vue === 'carte') etat.platEdite = null;
     etat.evEdite = ok && a.editer ? a.editer : null; etat.ajoutOuvert = false;
     allerVue(a.vue);
     if (resa) viser($(`[data-resa="${CSS.escape(resa)}"]`, corps(a.vue)), 'center');
+    else if (a.plat) viser($(`[data-plat="${CSS.escape(a.plat)}"]`, root), 'center');
     else if (a.ancre) viser(document.getElementById(a.ancre)?.closest('.esp-carte'));
     else if (a.editer && etat.evEdite) $('#ev-prix', root)?.focus({ preventScroll: true });
   }
-  installerBarre(root, { comprendre: (texte) => comprendre(texte, { auj: A.iso, R, S: S(), exceptions: D.horaires.exceptions || [], pages: D.pages, resas: prochaines() }), executer, actif: () => root.classList.contains('est-connecte') });
+  installerBarre(root, { comprendre: (texte) => comprendre(texte, { auj: A.iso, R, S: S(), exceptions: D.horaires.exceptions || [], pages: D.pages, carte: D.carte, resas: prochaines() }), executer, actif: () => root.classList.contains('est-connecte') });
 
   /** Une petite fête quand la dernière demande a sa réponse : des assiettes dorées s'envolent de la tuile « À confirmer ». */
   function feter() {
@@ -412,6 +418,7 @@ export function init(root) {
     if (t.closest('[data-esp-plus]')) { ouvrirPlus(panneauPlus.hidden); return; }
     const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; allerVue(nav.dataset.espVue); return; }
     const al = t.closest('[data-aller]'); if (al) { if (al.dataset.onglet) etat.onglet = al.dataset.onglet; etat.evEdite = al.dataset.editer || null; allerVue(al.dataset.aller); if (al.dataset.modele) viser(document.getElementById(`modele-${al.dataset.modele}`)); return; }
+    if (vCarte.clic(t)) return;
     const og = t.closest('[role="tab"][data-onglet]'); if (og) { etat.onglet = og.dataset.onglet; etat.evEdite = null; rendre(); $(`#onglet-${etat.onglet}`, root)?.focus(); return; }
     if (vDemandes.clic(t)) return;
     const st = t.closest('[data-statut]'); if (st) { const id = st.dataset.id, s = st.dataset.statut, restait = enAttenteTotal(), repond = ['confirmee', 'refusee'].includes(s);
@@ -456,7 +463,7 @@ export function init(root) {
   }
   root.addEventListener('input', (ev) => {
     const t = ev.target;
-    if (vDemandes.saisie(t)) return;
+    if (vDemandes.saisie(t) || vCarte.saisie(t)) return;
     if (t.id === 'an-texte') { $('[data-compte]', root).textContent = `${t.value.length} / 160`; $('[data-annonce-apercu]', root).textContent = t.value || '…'; plus_tard(() => agir('annonce', { texte: t.value.trim() }, { msg: 'Annonce enregistrée.', lien: D.pages.accueil, groupe: 'annonce-texte' })); return; }
     if (t.closest('[data-form-ardoise]')) { plus_tard(() => sauverArdoise()); return; }
     if (t.closest('[data-form-textes]')) { const cle = t.name, x = D.textes.find((y) => y.cle === cle); plus_tard(() => agir('texte', { cle, valeur: t.value, defaut: x?.defaut }, { msg: 'Texte enregistré : visible sur le site, dans ce navigateur.', lien: x?.url, groupe: `texte-${cle}` })); return; }

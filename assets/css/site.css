@@ -4609,12 +4609,67 @@ html.esp-modale-ouverte { overflow: hidden; }
 }
 @media (max-width: 420px) { .esp-coche { flex: 1 0 100%; } }
 :is(html.calme, html[data-calme]) :is(.esp-dem__corps, .esp-nav__badge) { animation: none !important; }
+/* v7.7.3 · La rubrique « Carte » : les plats du site, rubrique par rubrique. Un plat : son nom, son prix, « Épuisé
+   aujourd'hui » d'un toucher, « Modifier » qui ouvre le reste. Et l'ardoise, écrite à la craie. */
+.esp-bonjour .esp-voir { min-height: 0; display: inline; white-space: nowrap; }
+.esp-rubrique { margin-top: 26px; scroll-margin-top: calc(var(--esp-barre-h, 68px) + 16px); border-radius: 22px; }
+.esp-rubrique__tete { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 10px; }
+.esp-rubrique__tete h3 { margin: 0; font-family: var(--police-titres); font-size: clamp(1.4rem, 1.2rem + .8vw, 1.8rem); font-weight: 600; }
+.esp-rubrique__tete h3 small { margin-left: 6px; font-family: var(--police-texte); font-size: 14px; font-weight: 600; color: var(--couleur-texte-doux); }
+.esp-plats { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.esp-plat { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 6px 18px; padding: 12px 14px 12px 18px; border-radius: 16px; background: #fff; border: 1px solid var(--couleur-ligne); scroll-margin-top: calc(var(--esp-barre-h, 68px) + 16px); }
+.esp-plat p { margin: 0; }
+.esp-plat__nom { font-family: var(--police-titres); font-size: 1.15rem; font-weight: 600; line-height: 1.25; }
+.esp-plat__nom .esp-pastille { margin-left: 4px; vertical-align: 2px; }
+.esp-plat__desc, .esp-plat__plus { font-size: 14px; line-height: 1.4; color: var(--couleur-texte-doux); }
+.esp-plat__plus { font-weight: 700; color: var(--or-fonce); }
+.esp-plat__prix { font-family: var(--police-titres); font-size: 1.2rem; font-weight: 600; font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; text-align: right; }
+.esp-plat__actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px 14px; }
+.esp-plat.est-epuise { background: #fbf1ef; border-color: color-mix(in oklab, var(--rouge) 35%, transparent); }
+.esp-plat.est-epuise [data-plat-nom] { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.esp-plat.est-masque { background: transparent; border-style: dashed; }
+.esp-plat.est-masque :is([data-plat-nom], .esp-plat__desc, .esp-plat__prix) { color: var(--couleur-texte-doux); }
+.esp-plat.est-ouvert { border-color: var(--or); box-shadow: inset 0 0 0 1px var(--or); }
+.esp-plat .esp-bascule[aria-pressed="true"] .esp-bascule__rail { background: var(--rouge); }
+.esp-plat__form .esp-bascule[aria-pressed="true"] .esp-bascule__rail { background: var(--esp-vert); }
+.esp-plat__form { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 14px; margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--couleur-ligne); animation: esp-entre .3s cubic-bezier(.2, .8, .2, 1) both; }
+.esp-plat__vege { align-content: end; }
+.esp-allergenes { grid-column: 1 / -1; min-width: 0; margin: 0; padding: 0; border: 0; }
+.esp-allergenes legend { padding: 0; margin-bottom: 8px; font-size: 14px; font-weight: 700; }
+.esp-allergenes legend small { display: block; margin-top: 2px; font-size: 13px; font-weight: 500; line-height: 1.4; color: var(--couleur-texte-doux); }
+.esp-puces { display: flex; flex-wrap: wrap; gap: 6px; }
+.esp-puce { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 10px; border: 1px solid var(--couleur-ligne); border-radius: 999px; background: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
+.esp-puce input { width: 20px; height: 20px; margin: 0; accent-color: var(--or-fonce); }
+.esp-puce:has(input:checked) { background: var(--esp-attente-clair); border-color: var(--or); }
+.esp-puce:focus-within { outline: 2px solid var(--or-fonce); outline-offset: 2px; }
+.esp-plat__form-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+@media (max-width: 720px) {
+  .esp-plat { grid-template-columns: minmax(0, 1fr) auto; padding: 12px 12px 10px 14px; }
+  .esp-plat__actions { grid-column: 1 / -1; justify-content: space-between; }
+}
+/* L'ardoise, écrite à la craie : plus de cadres autour des champs, l'écriture de la maison, un trait sous la ligne. */
+.esp-ardoise { background: radial-gradient(120% 90% at 20% 10%, #37403d, #2a302e 70%); box-shadow: inset 0 0 0 10px #7a5231, inset 0 0 0 11px rgba(0, 0, 0, .35), inset 0 0 40px rgba(0, 0, 0, .35); padding: 26px 24px 24px; }
+.esp-ardoise legend { font-family: 'Caveat', 'Segoe Print', cursive; font-size: 2.1rem; font-style: normal; font-weight: 700; line-height: 1; }
+.esp-ardoise .esp-champ label { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(243, 238, 228, .72); }
+.espace .esp-ardoise input:not([type="checkbox"]):not([type="file"]) { min-height: 46px; padding: 2px 4px; border: 0 !important; border-bottom: 1px dashed rgba(243, 238, 228, .32) !important; border-radius: 0; background: transparent !important; font-family: 'Caveat', 'Segoe Print', cursive; font-size: 1.55rem; line-height: 1.1; }
+.espace .esp-ardoise input:not([type="checkbox"])::placeholder { color: rgba(243, 238, 228, .6); }
+.espace .esp-ardoise input:not([type="checkbox"]):not([type="file"]):focus-visible { outline: 2px solid var(--or); outline-offset: 2px; border-bottom-color: transparent !important; }
+.esp-ardoise .esp-prix { text-align: right; }
+.esp-ardoise__lignes li { grid-template-columns: minmax(0, 1fr) 4.6em 44px; }
+.esp-ardoise .esp-bouton { font-family: 'Caveat', 'Segoe Print', cursive; font-size: 1.35rem; border-style: dashed; }
+/* Sur téléphone : le nom du plat sur toute la largeur (il se lit en entier), le prix et la croix dessous. */
+@media (max-width: 600px) { .esp-ardoise { padding: 22px 18px 20px; } .esp-ardoise__lignes li { grid-template-columns: minmax(0, 1fr) 44px; gap: 0 6px; } .esp-ardoise__lignes input[name="plat"] { grid-column: 1 / -1; } .esp-ardoise__lignes li + li { margin-top: 6px; } }
+:is(html.calme, html[data-calme]) .esp-plat__form { animation: none !important; }
 .esp-bonjour { margin: -8px 0 18px; font-size: clamp(1rem, .96rem + .2vw, 1.12rem); color: var(--couleur-texte-doux); }
 /* Sur téléphone, les réponses à une demande sont de gros boutons, côte à côte. */
 @media (max-width: 720px) { .esp-resa__actions .esp-bouton { flex: 1 1 0; min-height: 48px; font-size: 16px; } }
 :is(html.calme, html[data-calme]) :is(.esp-vue__corps, .esp-modale__boite, .esp-menu__panneau, .esp-sauve__point, .esp-cmd__boite, .est-vise) { animation: none !important; }
 
 /* Sur le site : l'annonce du restaurant et la pastille d'aperçu */
+/* v7.7.3 · Sur la carte du site : ce que le restaurant a indiqué dans son espace (allergènes, « épuisé aujourd'hui »). */
+.carte-resto__allergenes { margin: 4px 0 0; font-size: 13px; font-weight: 700; color: var(--couleur-texte-doux); }
+.carte-resto__epuise { display: inline-block; margin-left: 10px; padding: 2px 10px; border-radius: 999px; background: #b8322c; color: #fff; font-family: var(--police-texte); font-size: 12px; font-weight: 800; letter-spacing: .02em; white-space: nowrap; vertical-align: 3px; }
+.carte-resto__plat.est-epuise .carte-resto__plat-nom { text-decoration: line-through; text-decoration-thickness: 1.5px; }
 .apercu-pile { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 770; display: grid; justify-items: start; gap: 8px; max-width: min(380px, calc(100vw - 32px)); opacity: 0; translate: 0 16px; transition: opacity .5s, translate .6s cubic-bezier(.2, 1.2, .4, 1); pointer-events: none; }
 .apercu-pile.est-visible { opacity: 1; translate: 0 0; pointer-events: auto; }
 @media (max-width: 760px) { .apercu-pile { bottom: calc(80px + env(safe-area-inset-bottom)); } }

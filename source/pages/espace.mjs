@@ -69,6 +69,8 @@ export default (c) => {
     phototheque: phototheque(T),
     /* v7.7.2 : les produits de la page Traiteur (demandes de démonstration) et le téléphone du restaurant (messages aux clients). */
     produits: D.emporter.produits.map((p) => ({ nom: p.nom, prix: p.prix })),
+    /* v7.7.3 : la carte du site (rubriques et plats), que l'espace modifie sans toucher au fichier. */
+    carte: D.carte.rubriques.map((r) => ({ id: r.id, titre: r.titre, plats: r.plats.map((p) => ({ nom: p.nom, description: p.description || '', prix: p.prix ?? '', vegetarien: !!p.vegetarien })) })),
     telephone: c.site.contact.telephone,
     pages: { fetes: c.url('les-fetes', 'dates'), carte: c.url('la-carte'), accueil: c.url('accueil'), reserver: c.url('reserver', 'formulaire'), infos: c.url('infos-pratiques') },
   };

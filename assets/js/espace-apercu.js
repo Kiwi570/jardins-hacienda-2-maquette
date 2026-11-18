@@ -1,6 +1,6 @@
 /* L'aperçu des modifications de l'espace restaurateur (démonstration, v7.6.0), sur chaque page du site.
    Chargé avant tout le reste (premier import de site.js) : textes [data-edit], photos [data-edit-photo], ardoise,
-   horaires et fermetures (les JSON que lisent le statut et la réservation), événements, puis l'annonce et une
+   horaires et fermetures (les JSON que lisent le statut et la réservation), événements, la carte (v7.7.3), puis l'annonce et une
    petite pastille « Aperçu de vos modifications ». Ne fait rien si l'espace n'a rien changé. */
 import { lire, estVide } from './espace-stock.js?v=7';
 
@@ -55,6 +55,42 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
         surf.querySelector('.ardoise__liste').innerHTML = j.lignes.filter((l) => l.plat).map((l) => `<li><span class="ardoise__plat">${echap(l.plat)}</span><span class="ardoise__prix" data-prix>${echap(l.prix)}</span></li>`).join('');
         surf.querySelector('.ardoise__mot span').textContent = j.mot;
       }
+    }
+  });
+
+  /* La carte (v7.7.3) : plats modifiés, retirés, ajoutés, allergènes, « épuisé aujourd'hui » ; l'en-tête de chaque
+     rubrique (fourchette de prix, nombre de propositions) suit. Clé d'un plat : « rubrique/rang ». */
+  if (S.carte && document.querySelector('[data-rubrique] .carte-resto__plat')) sur(() => {
+    const c = S.carte, m = c.modifs || {}, ep = c.epuises || {};
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).map((x) => [x.type, x.value])), auj = `${p.year}-${p.month}-${p.day}`;
+    const prix = (v) => { if (v == null || v === '') return ''; const n = typeof v === 'number' ? v : /^\s*\d+(?:[.,]\d{1,2})?\s*$/.test(String(v)) ? parseFloat(String(v).replace(',', '.')) : null; return n == null ? String(v) : `${Number.isInteger(n) ? n : n.toFixed(2).replace('.', ',')} €`; };
+    const ecrire = (li, x) => {
+      li.removeAttribute('data-texte'); /* la recherche de la carte relit le texte affiché */
+      if ('nom' in x) li.querySelector('.carte-resto__plat-nom').textContent = x.nom;
+      if ('prix' in x) { const el = li.querySelector('.carte-resto__prix'); el.className = 'carte-resto__prix'; el.textContent = prix(x.prix); el.dataset.prix = typeof x.prix === 'number' ? x.prix : ''; }
+      if ('description' in x) { let d = li.querySelector('.carte-resto__desc'); if (x.description) { if (!d) { d = document.createElement('p'); d.className = 'carte-resto__desc'; li.querySelector('.carte-resto__plat-ligne').after(d); } d.textContent = x.description; } else d?.remove(); }
+      if ('vegetarien' in x) {
+        li.dataset.filtres = [...new Set([...(li.dataset.filtres || '').split(' ').filter((f) => f && f !== 'vegetarien'), ...(x.vegetarien ? ['vegetarien'] : [])])].join(' ');
+        const r = li.querySelector('.carte-resto__regime[title="Végétarien"]');
+        if (x.vegetarien && !r) { let ul = li.querySelector('.carte-resto__etiquettes'); if (!ul) { ul = document.createElement('ul'); ul.className = 'carte-resto__etiquettes'; ul.setAttribute('aria-label', 'Régime et allergènes'); li.append(ul); } ul.insertAdjacentHTML('afterbegin', '<li class="carte-resto__regime" title="Végétarien"><svg class="carte-resto__picto" aria-hidden="true" focusable="false"><use href="#carte-vegetarien"></use></svg><span class="carte-resto__sr">Végétarien</span></li>'); }
+        if (!x.vegetarien && r) { const ul = r.parentElement; r.remove(); if (!ul.children.length) ul.remove(); }
+      }
+      if ('allergenes' in x) { li.querySelector('.carte-resto__allergenes')?.remove(); if (x.allergenes?.length) { const a = document.createElement('p'); a.className = 'carte-resto__allergenes'; a.textContent = `Allergènes\u00a0: ${x.allergenes.join(', ').toLowerCase()}`; (li.querySelector('.carte-resto__desc') || li.querySelector('.carte-resto__plat-ligne')).after(a); } }
+    };
+    const epuiser = (li) => { li.classList.add('est-epuise'); li.querySelector('.carte-resto__plat-nom').insertAdjacentHTML('afterend', '<span class="carte-resto__epuise">Épuisé aujourd\'hui</span>'); };
+    for (const sec of $$('[data-rubrique]')) {
+      const rub = sec.dataset.rubrique, ul = sec.querySelector('.carte-resto__plats'), lis = $$('.carte-resto__plat', sec), modele = lis[0];
+      lis.forEach((li, i) => { const cle = `${rub}/${i}`, x = m[cle]; if (x?.masque) { li.remove(); return; } if (x) ecrire(li, x); if (ep[cle] === auj) epuiser(li); });
+      for (const a of (c.ajouts || []).filter((x) => x.rubrique === rub)) {
+        if (!modele || !ul) continue;
+        const li = modele.cloneNode(true); li.classList.remove('est-epuise'); li.dataset.filtres = ''; li.querySelector('.carte-resto__epuise')?.remove(); li.querySelector('.carte-resto__etiquettes')?.remove(); li.querySelector('.carte-resto__allergenes')?.remove();
+        ecrire(li, { nom: a.nom, prix: a.prix, description: a.description, vegetarien: a.vegetarien, allergenes: a.allergenes }); ul.append(li);
+        if (ep[`${rub}/+${a.id}`] === auj) epuiser(li);
+      }
+      /* L'en-tête de la rubrique, si elle a changé : « de 18 à 26 € · 6 propositions » (même règle que la page : sans les menus). */
+      const change = Object.keys(m).some((k) => k.startsWith(`${rub}/`)) || (c.ajouts || []).some((x) => x.rubrique === rub);
+      const detail = change && sec.querySelector('.rubrique-bande__detail'), reste = $$('.carte-resto__plat', sec);
+      if (detail) { const n = reste.filter((li) => !/^menu/i.test(li.querySelector('.carte-resto__plat-nom')?.textContent || '')).map((li) => parseFloat((li.querySelector('.carte-resto__prix')?.textContent || '').replace(',', '.'))).filter((v) => Number.isFinite(v)), court = (v) => String(v).replace('.', ','); detail.textContent = `${n.length ? (Math.min(...n) === Math.max(...n) ? `${court(n[0])} €` : `de ${court(Math.min(...n))} à ${court(Math.max(...n))} €`) + ' · ' : ''}${reste.length} proposition${reste.length > 1 ? 's' : ''}`; }
     }
   });
 

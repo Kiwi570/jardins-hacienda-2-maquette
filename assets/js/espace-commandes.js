@@ -5,13 +5,14 @@
    l'écran (espace.js) lance l'action choisie, qui reste annulable comme les autres.
    Phrases comprises : fermer ou rouvrir un service, le dire complet, ajouter une soirée, poser une fermeture (du … au …),
    afficher ou retirer l'annonce, noter une réservation prise au téléphone, ouvrir une rubrique, retrouver un client.
-   v7.7.2 : les rubriques sont Aujourd'hui, Demandes, Réservations, Carte et Site (avec ses onglets). */
-import { JOURS, ajouter, jourDe, fmt, maj, heure, hhmm, enMin, typo, pluriel, servicesDe, creneaux, ouvert, complet } from './espace-regles.js?v=7';
+   v7.7.2 : les rubriques sont Aujourd'hui, Demandes, Réservations, Carte et Site (avec ses onglets).
+   v7.7.3 : la carte. « épuisé : côte de bœuf », « plus de foie gras », « foie gras à 23 € ». */
+import { JOURS, ajouter, jourDe, fmt, maj, heure, hhmm, enMin, typo, pluriel, simplifier, servicesDe, creneaux, ouvert, complet } from './espace-regles.js?v=7';
+import { carteDe, trouverPlat, prixTexte, lirePrix } from './espace-carte.js?v=7';
+export { simplifier };
 
 const MOIS = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'];
 const RE_MOIS = MOIS.join('|'), RE_JOURS = JOURS.join('|');
-/** Minuscules, sans accents, apostrophes droites, espaces simples : pour reconnaître les mots. */
-export const simplifier = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[’`]/g, '\'').replace(/\s+/g, ' ').trim();
 const iso = (a, m, j) => { const d = new Date(Date.UTC(a, m - 1, j)); return d.getUTCMonth() === m - 1 && d.getUTCDate() === j ? d.toISOString().slice(0, 10) : null; };
 /** Le prochain jour à ce quantième : ce mois-ci s'il n'est pas passé, sinon le mois suivant. */
 function prochainQuantieme(j, auj) {
@@ -62,7 +63,8 @@ const RUBRIQUES = [
   [/\b(questions?)\b/, 'demandes', 'Ouvrir les questions', 'Celles qui attendent une réponse.', null, null, 'question'],
   [/\b(evenements?|soirees?|fetes?|billets?)\b/, 'site', 'Ouvrir les soirées', 'Modifier, masquer ou créer une soirée.', null, 'soirees'],
   [/\b(horaires?|ouverture)\b/, 'site', 'Ouvrir les horaires de la semaine', 'Le statut « ouvert maintenant » et la réservation les suivent.', 't-horaires', 'horaires'],
-  [/\b(ardoise|plats? du jour|suggestions?)\b/, 'carte', 'Ouvrir l\'ardoise de la semaine', 'Le midi et le soir, plat par plat.', 't-ardoise'],
+  [/\b(ardoise|plats? du jour|suggestions?)\b/, 'carte', 'Ouvrir l\'ardoise de la semaine', 'Le midi et le soir, plat par plat.', 't-ardoise', 'ardoise'],
+  [/\b(carte|menu|plats?|prix|allergenes?)\b/, 'carte', 'Ouvrir la carte', 'Plats, prix, allergènes, « épuisé aujourd\'hui ».', null, 'carte'],
   [/\b(annonce|bandeau)\b/, 'site', 'Ouvrir l\'annonce', 'Un petit mot sur toutes les pages du site.', 't-annonce', 'horaires'],
   [/\b(messages?|sms|modeles?)\b/, 'site', 'Ouvrir les messages aux clients', 'Le texte que reçoit le client quand vous répondez.', null, 'messages'],
   [/\b(textes?|ecrire|phrase)\b/, 'site', 'Ouvrir les textes du site', 'Six textes de l\'accueil.', null, 'textes'],
@@ -70,7 +72,7 @@ const RUBRIQUES = [
 ];
 /** Où aller : la rubrique, et s'il y a lieu l'onglet de « Site », la carte à repérer, le filtre des demandes. */
 const vers = (vue, ancre, onglet, filtre) => ({ vue, ...(ancre ? { ancre } : {}), ...(onglet ? { onglet } : {}), ...(filtre ? { filtre } : {}) });
-export const EXEMPLES = ['fermer samedi soir', 'ajouter une soirée raclette le 12', 'complet demain midi', 'annonce : complet ce soir, merci !', 'congés du 4 au 18 janvier', 'table pour 4 vendredi 20 h au nom de Martin'];
+export const EXEMPLES = ['fermer samedi soir', 'ajouter une soirée raclette le 12', 'épuisé : foie gras', 'complet demain midi', 'annonce : complet ce soir, merci !', 'congés du 4 au 18 janvier', 'table pour 4 vendredi 20 h au nom de Martin'];
 
 /**
  * @param {string} texte  ce que le restaurateur a écrit
@@ -109,6 +111,22 @@ export function comprendre(texte, ctx) {
     const plus = /\b(plus|pas|rouvrir|liberer|de nouveau)\b/.test(n), l = ouverts(date, sv ? [sv] : tous).filter((s) => complet(S, date, s) === plus);
     out.push(l.length ? { genre: 'complet', titre: plus ? `Proposer de nouveau ${quand(date, l)}` : `Dire complet ${quand(date, l)}`, detail: plus ? 'La réservation en ligne proposera de nouveau ce service.' : 'La réservation en ligne ne proposera plus ce service ; le restaurant reste ouvert.', action: { nom: 'complet', args: { date, services: l, actif: !plus }, msg: plus ? 'Le service est de nouveau proposé.' : 'Service complet : la réservation en ligne ne le propose plus.', lien: pages.reserver }, aller: { vue: 'resas', jour: date } }
       : { genre: 'complet', titre: plus ? `Aucun service complet ${quand(date, sv ? [sv] : tous)}` : `Rien à dire complet ${quand(date, sv ? [sv] : tous)}`, detail: plus ? 'Rien à changer.' : 'Le service est fermé ce jour-là, ou déjà complet.', aller: { vue: 'resas', jour: date }, inactif: true });
+  }
+  /* La carte (v7.7.3) : « épuisé : côte de bœuf », « plus de foie gras », « il reste du foie gras », « foie gras à 23 € ». */
+  if (ctx.carte && !out.length && !an && !retirerAnnonce) {
+    const carte = carteDe(ctx.carte, S, auj), allerCarte = (cle) => ({ vue: 'carte', onglet: 'carte', plat: cle });
+    const ep = n.match(/^(?:epuisee?s?|rupture(?: de)?|plus d[e']|il n'y a plus d[e']|termine|fini)\s*:?\s*(.+)$/), remis = n.match(/^(?:il reste|de nouveau|remettre|encore)\s*:?\s*(?:du |de la |des |de l'|le |la |les )?(.+)$/);
+    const px = brut.match(/^(?:prix\s+(?:du |de la |des |de l'|de )?)?(.+?)\s+(?:à|a|:|=|passe à|passe a)\s*(\d+(?:[.,]\d{1,2})?)\s*(?:€|euros?)?$/i);
+    if (ep || remis) {
+      const p = trouverPlat(carte, (ep || remis)[1]);
+      if (p) out.push(ep ? (p.epuise ? { genre: 'carte', titre: `« ${p.nom} » est déjà épuisé aujourd'hui`, detail: 'Il reviendra tout seul demain.', aller: allerCarte(p.cle), inactif: true }
+          : { genre: 'carte', titre: `Dire « ${p.nom} » épuisé aujourd'hui`, detail: 'La carte du site l\'indique aussitôt ; demain, le plat revient tout seul.', action: { nom: 'epuise', args: { cle: p.cle, date: auj, actif: true }, msg: `« ${p.nom} » : épuisé aujourd'hui, la carte du site l'indique.`, lien: pages.carte }, aller: allerCarte(p.cle) })
+        : (p.epuise ? { genre: 'carte', titre: `Remettre « ${p.nom} » à la carte dès maintenant`, detail: 'Il n\'est plus indiqué épuisé sur le site.', action: { nom: 'epuise', args: { cle: p.cle, date: auj, actif: false }, msg: `« ${p.nom} » est de nouveau proposé.`, lien: pages.carte }, aller: allerCarte(p.cle) }
+          : { genre: 'carte', titre: `« ${p.nom} » n'est pas épuisé`, detail: 'Rien à changer.', aller: allerCarte(p.cle), inactif: true }));
+    } else if (px) {
+      const p = trouverPlat(carte, px[1]), v = lirePrix(px[2]);
+      if (p && !date) out.push({ genre: 'carte', titre: `Passer « ${p.nom} » à ${prixTexte(v)}`, detail: `Aujourd'hui : ${prixTexte(p.prix) || 'sans prix'}. La carte du site suit aussitôt.`, action: { nom: 'plat', args: { cle: p.cle, champs: { prix: v } }, msg: `« ${p.nom} » : ${prixTexte(v)} sur la carte.`, lien: pages.carte }, aller: allerCarte(p.cle) });
+    }
   }
   /* Une soirée : « ajouter une soirée raclette le 12 ». */
   const ev = brut.match(/^(?:(?:ajoute[rz]?|cr[ée]e[rz]?|nouvel(?:le)?|nouveau|programme[rz]?|organise[rz]?|pr[ée]voir)\s+)?(?:une?\s+|le\s+|la\s+)?((?:soir[ée]e|brunch|concert|atelier|f[êe]te|d[îi]ner|d[ée]jeuner|[ée]v[ée]nement)\b.*)$/i);
