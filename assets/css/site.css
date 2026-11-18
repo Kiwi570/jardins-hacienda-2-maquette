@@ -4196,7 +4196,7 @@ html.esp-dedans .espace { padding-top: 0; }
 .esp-menu__panneau :is(a, button) { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 14px; border: 0; border-radius: 12px; background: none; color: var(--couleur-texte); font: inherit; font-weight: 700; text-align: left; text-decoration: none; cursor: pointer; }
 .esp-menu__panneau :is(a, button):hover { background: var(--couleur-surface); }
 .esp-menu__panneau .esp-menu__danger { color: #9b2a24; }
-@media (max-width: 999px) { .espace.est-connecte .esp-tete__maison { display: none; } }
+@media (max-width: 1279px) { .espace.est-connecte .esp-tete__maison { display: none; } }
 @media (max-width: 759px) { .esp-outils__site { display: none; } }
 @media (max-width: 599px) { .espace.est-connecte .esp-demo .esp-long { display: none; } .espace.est-connecte .esp-demo .esp-court { display: inline; } .espace.est-connecte { --esp-barre-h: 60px; } }
 @media (max-width: 399px) { .esp-sauve { font-size: 12px; gap: 7px; } .esp-outils { gap: 6px; } .espace.est-connecte .esp-tete { gap: 6px; } .espace.est-connecte .esp-tete__titre { font-size: 1.08rem; } .espace.est-connecte .esp-demo { padding: 4px 8px; letter-spacing: .06em; } }
@@ -4462,10 +4462,66 @@ html.esp-modale-ouverte { overflow: hidden; }
 .esp-toast.est-compte::after { animation: esp-compte var(--duree, 10s) linear both; }
 @keyframes esp-compte { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 @media (max-width: 999px) { .esp-toast { bottom: calc(82px + env(safe-area-inset-bottom)); } }
+/* v7.7.1 · La barre « Que voulez-vous faire ? » : son bouton dans la barre du haut (ordinateur), son bouton rond au-dessus
+   des rubriques (téléphone), puis la fenêtre : un champ, ce que l'espace a compris, des exemples à toucher. */
+.esp-quoi { display: none; align-items: center; gap: 10px; min-height: 44px; padding: 0 8px 0 14px; border: 1px solid var(--couleur-ligne); border-radius: 999px; background: var(--esp-carte); color: var(--couleur-texte-doux); font: inherit; font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: border-color .2s, color .2s, box-shadow .2s; }
+.esp-quoi:hover { border-color: var(--couleur-texte); color: var(--couleur-texte); box-shadow: 0 10px 20px -14px rgba(28, 23, 18, .5); }
+.esp-quoi__ico, .esp-fab span, .esp-cmd__loupe, .esp-cmd__ico { display: block; flex: none; width: 20px; height: 20px; }
+:is(.esp-quoi__ico, .esp-fab span, .esp-cmd__loupe, .esp-cmd__ico) svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.esp-quoi__touche { display: none; padding: 3px 8px; border-radius: 8px; background: var(--couleur-surface); color: var(--couleur-texte-doux); font: inherit; font-size: 12px; font-weight: 800; letter-spacing: .04em; }
+@media (min-width: 1000px) { .esp-quoi { display: inline-flex; padding-right: 16px; } }
+@media (min-width: 1100px) { .esp-quoi { padding-right: 8px; } .esp-quoi__touche { display: block; } }
+.esp-fab { position: fixed; right: max(14px, env(safe-area-inset-right)); bottom: calc(84px + env(safe-area-inset-bottom)); z-index: 45; display: grid; place-items: center; width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%; background: var(--rouge); color: #fff; box-shadow: 0 16px 28px -12px rgba(184, 50, 44, .7), 0 0 0 4px var(--couleur-fond); cursor: pointer; transition: transform .25s cubic-bezier(.3, 1.4, .5, 1), opacity .2s; }
+.esp-fab span { width: 24px; height: 24px; }
+.esp-fab:hover { transform: scale(1.06); }
+.esp-fab:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 3px; }
+@media (min-width: 1000px) { .esp-fab { display: none; } }
+/* Le message du bas passe devant : le bouton rond s'efface le temps qu'il est là. */
+.espace:has(.esp-toast.est-visible) .esp-fab { transform: scale(.6); opacity: 0; pointer-events: none; }
+.esp-cmd { position: fixed; inset: 0; z-index: 920; display: grid; align-items: start; justify-items: center; padding: clamp(10px, 9vh, 96px) 12px 12px; }
+.esp-cmd[hidden] { display: none; }
+.esp-cmd__fond { position: absolute; inset: 0; background: rgba(28, 23, 18, .55); }
+.esp-cmd__boite { position: relative; display: grid; grid-template-rows: auto minmax(0, 1fr); width: min(100%, 660px); max-height: min(100%, 640px); border-radius: 24px; background: var(--couleur-fond); color: var(--couleur-texte); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .65); overflow: hidden; animation: esp-modale .3s cubic-bezier(.2, .8, .2, 1) both; }
+.esp-cmd__champ { display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 18px; border-bottom: 1px solid var(--couleur-ligne); background: var(--esp-carte); }
+.esp-cmd__loupe { color: var(--or-fonce); }
+.espace .esp-cmd__champ input#barre-champ { flex: 1; min-width: 0; min-height: 48px; padding: 0 4px; border: 0; border-radius: 8px; background: transparent; font-size: clamp(1.05rem, 1rem + .3vw, 1.25rem); font-weight: 600; }
+.espace .esp-cmd__champ input#barre-champ:focus-visible { outline: none; }
+.esp-cmd__champ:focus-within { box-shadow: inset 0 -2px 0 var(--or); }
+.esp-cmd__liste, .esp-cmd__exemples ul { list-style: none; margin: 0; padding: 0; }
+.esp-cmd__liste { display: grid; gap: 4px; padding: 8px; overflow-y: auto; }
+.esp-cmd__option { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 60px; padding: 8px 12px; border-radius: 16px; cursor: pointer; }
+.esp-cmd__ico { display: grid; place-items: center; width: 40px; height: 40px; padding: 10px; border-radius: 12px; background: var(--couleur-surface); color: var(--couleur-texte); }
+.esp-cmd__option.est-action .esp-cmd__ico { background: var(--esp-attente-clair); color: var(--esp-attente); }
+.esp-cmd__quoi { display: grid; gap: 1px; min-width: 0; }
+.esp-cmd__quoi b { font-family: var(--police-titres); font-size: 1.12rem; font-weight: 600; line-height: 1.2; }
+.esp-cmd__quoi small { font-size: 14px; line-height: 1.35; color: var(--couleur-texte-doux); }
+.esp-cmd__entree { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--couleur-ligne); font-size: 13px; font-weight: 800; color: var(--couleur-texte-doux); }
+.esp-cmd__option[aria-selected="true"] { background: var(--esp-carte); box-shadow: inset 0 0 0 2px var(--or); }
+.esp-cmd__option.est-action[aria-selected="true"] .esp-cmd__entree { background: var(--rouge); border-color: var(--rouge); color: #fff; }
+.esp-cmd__option.est-inactive .esp-cmd__quoi b { color: var(--couleur-texte-doux); }
+.esp-cmd__aide { margin: 0; padding: 16px 18px 18px; color: var(--couleur-texte-doux); }
+.esp-cmd__exemples { padding: 14px 16px 18px; overflow-y: auto; }
+.esp-cmd__sur { margin: 0 2px 10px; font-size: 14px; color: var(--couleur-texte-doux); }
+.esp-cmd__exemples ul { display: flex; flex-wrap: wrap; gap: 8px; }
+.esp-cmd__exemple { min-height: 44px; padding: 0 16px; border: 1px solid var(--couleur-ligne); border-radius: 999px; background: var(--esp-carte); color: var(--couleur-texte); font: inherit; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer; transition: border-color .2s, transform .2s; }
+.esp-cmd__exemple:hover { border-color: var(--couleur-texte); transform: translateY(-1px); }
+@media (max-width: 599px) { .esp-cmd { padding: 8px; } .esp-cmd__boite { border-radius: 20px; } .esp-cmd__entree { display: none; } .esp-cmd__option { grid-template-columns: auto minmax(0, 1fr); } }
+/* Ce que la barre vient d'ouvrir ou de créer : un liseré d'or, le temps de le repérer. */
+.esp-carte, .esp-resa { scroll-margin-top: calc(var(--esp-barre-h, 68px) + 16px); }
+.est-vise { animation: esp-vise 2.4s ease-out both; }
+@keyframes esp-vise { 0%, 55% { box-shadow: 0 0 0 3px var(--or), 0 0 0 9px color-mix(in oklab, var(--or) 28%, transparent); } 100% { box-shadow: 0 0 0 3px transparent, 0 0 0 9px transparent; } }
+/* Tout a une réponse : le sceau, et les assiettes dorées qui s'envolent une fois. */
+.esp-vide--fete { display: flex; align-items: center; gap: 14px; background: var(--esp-vert-clair); color: var(--couleur-texte); }
+.esp-vide__sceau { position: relative; flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--esp-vert); box-shadow: 0 0 0 4px #fff, 0 0 0 5px var(--esp-vert); }
+.esp-vide__sceau::after { content: ""; position: absolute; left: 13px; top: 9px; width: 11px; height: 18px; border: solid #fff; border-width: 0 3px 3px 0; rotate: 42deg; }
+.esp-vide .esp-lien { margin-left: 6px; }
+.esp-fete { position: fixed; z-index: 960; width: 0; height: 0; pointer-events: none; }
+.esp-fete i { position: absolute; left: 0; top: 0; width: var(--s, 12px); height: var(--s, 12px); margin: calc(var(--s, 12px) / -2); border-radius: 50%; background: radial-gradient(circle, #fff 0 38%, var(--or) 42% 58%, #fff 62%); box-shadow: 0 0 0 1px rgba(154, 90, 18, .45); opacity: 0; animation: esp-fete 1.25s cubic-bezier(.15, .8, .3, 1) var(--t, 0ms) both; }
+@keyframes esp-fete { 0% { opacity: 0; transform: rotate(var(--a)) translateY(0) scale(.3); } 12% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; transform: rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(1.1); } }
 .esp-bonjour { margin: -8px 0 18px; font-size: clamp(1rem, .96rem + .2vw, 1.12rem); color: var(--couleur-texte-doux); }
 /* Sur téléphone, les réponses à une demande sont de gros boutons, côte à côte. */
 @media (max-width: 720px) { .esp-resa__actions .esp-bouton { flex: 1 1 0; min-height: 48px; font-size: 16px; } }
-:is(html.calme, html[data-calme]) :is(.esp-vue__corps, .esp-modale__boite, .esp-menu__panneau, .esp-sauve__point) { animation: none !important; }
+:is(html.calme, html[data-calme]) :is(.esp-vue__corps, .esp-modale__boite, .esp-menu__panneau, .esp-sauve__point, .esp-cmd__boite, .est-vise) { animation: none !important; }
 
 /* Sur le site : l'annonce du restaurant et la pastille d'aperçu */
 .apercu-pile { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 770; display: grid; justify-items: start; gap: 8px; max-width: min(380px, calc(100vw - 32px)); opacity: 0; translate: 0 16px; transition: opacity .5s, translate .6s cubic-bezier(.2, 1.2, .4, 1); pointer-events: none; }

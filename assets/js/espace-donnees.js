@@ -15,8 +15,9 @@ const sansVide = (o, k) => { if (o[k] && !Object.keys(o[k]).length) delete o[k];
 export const MUTATIONS = {
   /* Réservations */
   statut(S, { id, statut }) { ((S.resa ||= {}).statuts ||= {})[id] = statut; },
-  complet(S, { date, service, actif }) { const c = ((S.resa ||= {}).complets ||= {}); c[date] = basculer(c[date], service, actif); if (!c[date].length) delete c[date]; },
-  fermer(S, { date, service, actif }) { const c = ((S.resa ||= {}).fermes ||= {}); c[date] = basculer(c[date], service, actif); if (!c[date].length) delete c[date]; },
+  /* Un service (`service`) ou plusieurs d'un coup (`services`), pour un jour. */
+  complet(S, { date, service, services, actif }) { const c = ((S.resa ||= {}).complets ||= {}); for (const sv of services || [service]) c[date] = basculer(c[date], sv, actif); if (!c[date].length) delete c[date]; },
+  fermer(S, { date, service, services, actif }) { const c = ((S.resa ||= {}).fermes ||= {}); for (const sv of services || [service]) c[date] = basculer(c[date], sv, actif); if (!c[date].length) delete c[date]; },
   ajouterResa(S, { resa }) { ((S.resa ||= {}).ajouts ||= []).push(resa); },
   /* Annonce, fermetures, horaires, ardoise, textes */
   annonce(S, { active, texte }) { S.annonce = { active: active ?? !!S.annonce?.active, texte: texte ?? S.annonce?.texte ?? '' }; },

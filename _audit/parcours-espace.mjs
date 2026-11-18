@@ -3,7 +3,10 @@
    1. Réserver sur le site, puis confirmer dans l'espace : la demande arrive « Depuis le site », se confirme d'un
       geste, « Annuler » la remet en attente, « Complet » ferme le service sur la page Réserver, « Tout remettre comme
       livré » efface tout et s'annule.
-   2. Chaque rubrique (et l'éditeur d'événement, l'ajout d'une réservation, la photothèque), à cinq tailles : les
+   1 bis (v7.7.1). La barre « Que voulez-vous faire ? » : « fermer samedi soir » ferme le service et s'annule,
+      « ajouter une soirée raclette le 12 » ouvre le billet créé, un exemple touché remplit le champ sans rien lancer,
+      Échap rend le focus ; puis la petite fête quand la dernière demande a sa réponse.
+   2. Chaque rubrique (et l'éditeur d'événement, l'ajout d'une réservation, la photothèque, la barre), à cinq tailles : les
       mesures de l'audit (débordement, textes sous 12 px, cibles de 44 px, textes coupés, contrastes, noms
       accessibles, typographie), axe-core, les recouvrements, puis un balayage de 320 à 1920 px.
    « Section sans visuel » n'est pas retenu ici : une rubrique d'outil n'est pas une section du site. */
@@ -83,6 +86,54 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     } finally { await ctx.close(); }
   }
 
+  /* ---------- 1 bis. La barre « Que voulez-vous faire ? », au doigt puis au clavier ; la fête ---------- */
+  for (const taille of ['390×844', '1366×768'].map(T)) {
+    const lieu = { page: P, taille: taille.nom }, tel = taille.w < 1000;
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      await entrer(page);
+      const ouvrir = async () => { if (tel) await page.locator('.esp-fab').click(); else await page.keyboard.press('Control+k'); await attendre(350); };
+      const memoire = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'));
+      const ecrire = async (t) => { await page.locator('#barre-champ').fill(t); await attendre(250); };
+      await ouvrir();
+      if (!(await page.evaluate(() => document.activeElement?.id === 'barre-champ'))) R.echec('espace : barre', `${tel ? 'le bouton rond' : 'Ctrl + K'} n’ouvre pas la barre sur son champ`, lieu);
+      /* Un exemple touché remplit le champ et montre ce qui est compris, sans rien lancer. */
+      await page.locator('[data-exemple]').first().click(); await attendre(250);
+      const ex = await page.evaluate(() => ({ champ: document.querySelector('#barre-champ').value, n: document.querySelectorAll('[data-option]').length, vide: !localStorage.getItem('jh-espace:v1') }));
+      if (!ex.champ || !ex.n || !ex.vide) R.echec('espace : barre', `un exemple touché : champ « ${ex.champ} », ${ex.n} proposition(s), rien de lancé ${ex.vide}`, lieu);
+      /* « fermer samedi soir » : la proposition dit la date entière ; Entrée ferme le service ; « Annuler » le rouvre. */
+      await ecrire('fermer samedi soir');
+      const prop = await page.locator('[data-option][aria-selected="true"]').innerText().catch(() => '');
+      if (!/Fermer samedi \d{1,2} \S+ au soir/.test(prop)) R.echec('espace : barre', `« fermer samedi soir » compris comme « ${prop.replace(/\s+/g, ' ').slice(0, 80)} »`, lieu);
+      await page.keyboard.press('Enter'); await attendre(500);
+      const f = (await memoire()).resa?.fermes || {}, jour = Object.keys(f)[0];
+      if (Object.keys(f).length !== 1 || f[jour].join() !== 'soir' || new Date(jour + 'T12:00:00Z').getUTCDay() !== 6) R.echec('espace : barre', `« fermer samedi soir » a enregistré ${JSON.stringify(f)}`, lieu);
+      const agenda = await page.evaluate((j) => ({ vue: !document.querySelector('[data-vue="resas"]').hidden, jour: document.querySelector(`[data-jour="${j}"]`)?.getAttribute('aria-pressed'), barre: document.querySelector('.esp-cmd').hidden }), jour);
+      if (!agenda.vue || agenda.jour !== 'true' || !agenda.barre) R.echec('espace : barre', `après l’action : agenda ouvert ${agenda.vue}, jour choisi ${agenda.jour}, barre fermée ${agenda.barre}`, lieu);
+      await page.locator('[data-esp-annuler]').click(); await attendre(400);
+      if (Object.keys((await memoire()).resa?.fermes || {}).length) R.echec('espace : barre', '« Annuler » ne rouvre pas le service fermé depuis la barre', lieu);
+      /* « ajouter une soirée raclette le 12 » : le billet est créé et s'ouvre pour le prix et la photo. */
+      await ouvrir(); await ecrire('ajouter une soirée raclette le 12'); await page.keyboard.press('Enter'); await attendre(600);
+      const ev = await page.evaluate(() => ({ titre: document.querySelector('#ev-titre')?.value, date: document.querySelector('#ev-date')?.value, n: (JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').evenements?.ajouts || []).length }));
+      if (ev.titre !== 'Soirée raclette' || !/-12$/.test(ev.date || '') || ev.n !== 1) R.echec('espace : barre', `« ajouter une soirée raclette le 12 » : titre « ${ev.titre} », date ${ev.date}, ${ev.n} événement(s) créé(s)`, lieu);
+      await page.locator('[data-esp-annuler]').click(); await attendre(400);
+      if (((await memoire()).evenements?.ajouts || []).length) R.echec('espace : barre', '« Annuler » ne retire pas la soirée créée depuis la barre', lieu);
+      /* Une phrase inconnue le dit ; Échap ferme et rend le focus. */
+      await ouvrir(); await ecrire('xyzzy quux');
+      if (!/Pas compris/.test(await page.locator('[data-barre-aide]').innerText().catch(() => ''))) R.echec('espace : barre', 'une phrase inconnue ne dit pas « Pas compris »', lieu);
+      await page.keyboard.press('Escape'); await attendre(250);
+      const fin = await page.evaluate(() => ({ ferme: document.querySelector('.esp-cmd').hidden, focus: document.activeElement && document.activeElement !== document.body, bloque: document.documentElement.classList.contains('esp-modale-ouverte') }));
+      if (!fin.ferme || !fin.focus || fin.bloque) R.echec('espace : barre', `Échap : barre fermée ${fin.ferme}, focus rendu ${fin.focus}, page encore bloquée ${fin.bloque}`, lieu);
+      /* La fête : la dernière demande reçoit sa réponse. */
+      await aller(page, 'jour'); let fete = false;
+      for (let i = 0; i < 20 && await page.locator('[data-esp-rendu="jour"] [data-statut="confirmee"]').count(); i++) { await page.locator('[data-esp-rendu="jour"] [data-statut="confirmee"]').first().click(); await attendre(150); fete = fete || !!(await page.locator('.esp-fete').count()); }
+      const tout = await page.locator('.esp-vide--fete').innerText().catch(() => '');
+      if (!/Tout a une réponse/.test(tout) || !fete) R.echec('espace : tout a une réponse', `message « ${tout.slice(0, 60)} », fête lancée ${fete}`, lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok('espace : barre « Que voulez-vous faire ? »');
+    } finally { await ctx.close(); }
+  }
+
   /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */
   const noter = (liste, taille, ou) => liste.filter((x) => x.controle !== 'section sans visuel').forEach((x) => R.ajouter(x.niveau || 'echec', x.controle, `${ou} : ${x.detail}`, { page: P, taille: taille.nom, selecteur: x.selecteur }));
   async function mesurerEcran(page, taille, ou, complet) {
@@ -117,6 +168,12 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       await page.locator('[data-esp-plus]').click(); await attendre(300); await mesurerEcran(page, taille, 'menu « Plus d’actions »', false);
       const pan = await page.evaluate(() => { const r = document.querySelector('[data-esp-plus-panneau]').getBoundingClientRect(); return r.left < 0 || r.right > document.documentElement.clientWidth + 1; });
       if (pan) R.echec('espace : menu', 'le menu « Plus d’actions » sort de l’écran', { page: P, taille: taille.nom });
+      await page.keyboard.press('Escape'); await attendre(200);
+      /* La barre : les exemples, puis une proposition. */
+      await page.locator('[data-esp-quoi]:visible').first().click(); await attendre(400); await mesurerEcran(page, taille, 'barre : exemples', complet);
+      await page.locator('#barre-champ').fill('table pour 4 vendredi 20 h au nom de Martin'); await attendre(300); await mesurerEcran(page, taille, 'barre : proposition', false);
+      const cmd = await page.evaluate(() => { const r = document.querySelector('.esp-cmd__boite').getBoundingClientRect(); return r.left < 0 || r.right > document.documentElement.clientWidth + 1 || r.bottom > innerHeight + 1; });
+      if (cmd) R.echec('espace : barre', 'la barre sort de l’écran', { page: P, taille: taille.nom });
       await page.keyboard.press('Escape');
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, { page: P, taille: taille.nom }));
       R.ok('espace : mesures');

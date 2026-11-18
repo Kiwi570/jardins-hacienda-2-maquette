@@ -4,7 +4,8 @@
    Tout est enregistré dans ce navigateur (localStorage) et s'affiche sur le site grâce à assets/js/espace-apercu.js ;
    une réservation faite sur /reserver arrive dans l'agenda. Le contenu des rubriques est rendu par assets/js/espace.js.
    v7.7.0 : une fois connecté, l'en-tête de l'espace devient la barre de l'application (état de l'enregistrement, voir le
-   site, plus d'actions) ; les rubriques passent en bas de l'écran sur téléphone ; le message du bas porte « Annuler ». */
+   site, plus d'actions) ; les rubriques passent en bas de l'écran sur téléphone ; le message du bas porte « Annuler ».
+   v7.7.1 : la barre « Que voulez-vous faire ? » (bouton de la barre du haut, bouton rond sur téléphone, Cmd ou Ctrl + K). */
 import { readdirSync } from 'node:fs';
 import { html, brut } from '../../outils/gabarit.mjs';
 
@@ -52,6 +53,7 @@ const VUES = [
   ['textes', 'Textes et horaires', 'Textes', '<svg viewBox="0 0 24 24"><path d="M5 6.5h14M5 11h14M5 15.5h9"/><circle cx="18" cy="17.5" r="3"/><path d="M18 16v1.6l1 .8"/></svg>'],
   ['photos', 'Photos', 'Photos', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><circle cx="9" cy="10.5" r="1.8"/><path d="M4 17l5-4.5 3.5 3 3-2.5 4.5 4"/></svg>'],
 ];
+const ICO_LOUPE = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
 const ICO_PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
 
 export default (c) => {
@@ -75,6 +77,7 @@ export default (c) => {
       <h1 id="espace-titre" class="esp-tete__titre">Votre <em>espace</em></h1>
       <p class="esp-tete__texte">Réservations, événements, textes, horaires et photos&nbsp;: le restaurant gère son site d'ici, sans toucher au code.</p>
       <div class="esp-outils" data-esp-outils hidden>
+        <button type="button" class="esp-quoi" data-esp-quoi><span class="esp-quoi__ico" aria-hidden="true">${brut(ICO_LOUPE)}</span><span>Que voulez-vous faire&nbsp;?</span><kbd class="esp-quoi__touche" data-esp-quoi-touche aria-hidden="true">Ctrl K</kbd></button>
         <p class="esp-sauve" data-esp-sauve data-etat="ok"><span class="esp-sauve__point" aria-hidden="true"></span><span data-esp-sauve-texte>Tout est enregistré</span></p>
         <a class="esp-outils__site" href="${c.url('accueil')}">Voir le site <span aria-hidden="true">↗</span></a>
         <div class="esp-menu">
@@ -107,6 +110,7 @@ export default (c) => {
           ${VUES.map(([id, nom, court, ico], i) => html`<li><button type="button" class="esp-nav__lien" data-esp-vue="${id}"${i === 0 ? brut(' aria-current="page"') : ''}><span class="esp-ico" aria-hidden="true">${brut(ico)}</span><span class="esp-long">${nom}</span><span class="esp-court">${court}</span><span class="esp-nav__badge" data-esp-badge="${id}" hidden></span></button></li>`)}
         </ul>
       </nav>
+      <button type="button" class="esp-fab" data-esp-quoi aria-label="Que voulez-vous faire ?"><span aria-hidden="true">${brut(ICO_LOUPE)}</span></button>
       <div class="esp-vues">
         ${VUES.map(([id, nom], i) => html`<section class="esp-vue" data-vue="${id}" aria-labelledby="vue-${id}"${i ? brut(' hidden') : ''}>
           <h2 class="esp-vue__titre" id="vue-${id}" tabindex="-1">${nom}</h2>

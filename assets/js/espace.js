@@ -6,8 +6,12 @@
    v7.7.0 : une fois connecté, l'espace est une application (plus d'en-tête ni de pied du site ; les rubriques en bas
    sur téléphone) ; chaque geste est une action nommée de espace-donnees.js, enregistrée aussitôt, avec « Annuler »
    pendant dix secondes ; l'état de l'enregistrement est toujours visible. Les règles (horaires, réservations de
-   démonstration) sont dans espace-regles.js. Ce fichier ne fait que dessiner et écouter. */
+   démonstration) sont dans espace-regles.js. Ce fichier ne fait que dessiner et écouter.
+   v7.7.1 : la barre « Que voulez-vous faire ? » (espace-barre.js, phrases comprises par espace-commandes.js), une petite
+   fête quand la dernière demande a sa réponse, des états vides qui disent quoi faire. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
+import { comprendre } from './espace-commandes.js?v=7';
+import { installerBarre } from './espace-barre.js?v=7';
 import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe } from './espace-regles.js?v=7';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -117,7 +121,7 @@ export function init(root) {
       </div>
       <div class="esp-grille esp-grille--jour">
         <article class="esp-carte esp-carte--large" aria-labelledby="t-attente"><h3 id="t-attente">Ce qui attend une réponse</h3>
-          ${att.length ? `<ul class="esp-resas">${att.slice(0, 6).map((r) => ligneResa(r, true)).join('')}</ul>${att.length > 6 ? `<p class="esp-plus"><button type="button" class="esp-lien" data-aller="resas">Voir les ${att.length} demandes</button></p>` : ''}` : '<p class="esp-vide">Rien en attente : toutes les demandes ont une réponse.</p>'}
+          ${att.length ? `<ul class="esp-resas">${att.slice(0, 6).map((r) => ligneResa(r, true)).join('')}</ul>${att.length > 6 ? `<p class="esp-plus"><button type="button" class="esp-lien" data-aller="resas">Voir les ${att.length} demandes</button></p>` : ''}` : '<p class="esp-vide esp-vide--fete"><span class="esp-vide__sceau" aria-hidden="true"></span><span><b>Tout a une réponse.</b> Les prochaines demandes faites sur le site arriveront ici.</span></p>'}
         </article>
         <article class="esp-carte" aria-labelledby="t-service"><h3 id="t-service">Le service d'aujourd'hui</h3>
           ${nb ? `<ul class="esp-resas esp-resas--court">${actives(l).slice(0, 6).map((r) => ligneResa(r)).join('')}</ul>` : '<p class="esp-vide">Aucune réservation aujourd\'hui.</p>'}
@@ -147,7 +151,7 @@ export function init(root) {
         <header class="esp-service__tete"><span class="esp-ico-sv" aria-hidden="true">${ICO[s.id]}</span><h4 id="sv-${s.id}">${s.libelle} <small>${heure(hhmm(s.d))} – ${heure(hhmm(s.f))}</small></h4>
           <p class="esp-service__jauge" style="--jauge:${Math.min(1, couverts(lst) / CAPACITE)}"><span>${couverts(lst)} / ${CAPACITE} couverts</span></p></header>
         ${passe ? '' : `<p class="esp-bascules">${o || fermeIci ? `<button type="button" class="esp-bascule" aria-pressed="${p}" data-complet="${s.id}" ${o ? '' : 'disabled'}><span class="esp-bascule__rail" aria-hidden="true"></span>Complet</button><button type="button" class="esp-bascule" aria-pressed="${fermeIci}" data-fermer="${s.id}"><span class="esp-bascule__rail" aria-hidden="true"></span>Fermé ce jour</button>` : '<span class="esp-note">Fermé d\'après vos horaires</span>'}</p>`}
-        ${lst.length ? `<ul class="esp-resas">${lst.map((r) => ligneResa(r)).join('')}</ul>` : `<p class="esp-vide">${o ? 'Pas encore de réservation.' : 'Pas de service.'}</p>`}
+        ${lst.length ? `<ul class="esp-resas">${lst.map((r) => ligneResa(r)).join('')}</ul>` : `<p class="esp-vide">${o ? `Pas encore de réservation.${passe || ajoutOuvert ? '' : ' <button type="button" class="esp-lien" data-ajouter>Noter une réservation prise au téléphone</button>'}` : 'Pas de service.'}</p>`}
       </section>`;
     };
     corps('resas').innerHTML = `
@@ -183,7 +187,7 @@ export function init(root) {
       <div class="esp-ev__texte"><p class="esp-ev__type">${e(x.type)}${x.debut.slice(0, 10) < A.iso ? ' · passé' : ''}${x.nouveau ? ' · <span class="esp-pastille">Nouveau</span>' : ''}${x.masque ? ' · <span class="esp-pastille esp-pastille--refusee">Masqué</span>' : ''}</p><h4 class="esp-ev__titre">${e(x.titre)}</h4><p class="esp-ev__date">${e(maj(fmt(x.debut.slice(0, 10))))} · ${x.service === 'midi' ? 'midi' : 'soir'}</p>${x.prix ? `<p class="esp-ev__prix">${e(x.prix)}</p>` : ''}</div>
       <p class="esp-ev__actions"><button type="button" class="esp-bouton" data-editer="${e(x.id)}">Modifier</button><button type="button" class="esp-bascule" aria-pressed="${!x.masque}" data-visible="${e(x.id)}"><span class="esp-bascule__rail" aria-hidden="true"></span>Sur le site</button></p></li>`;
     corps('evenements').innerHTML = `<div class="esp-barre"><p class="esp-barre__texte">Ils s'affichent sur la page Les fêtes, dans « Prochaine soirée » de l'accueil et dans le choix des dates de la réservation.</p><button type="button" class="bouton esp-ajouter" data-nouvel-ev>${ICO.plus}<span>Nouvel événement</span></button></div>
-      <h3 class="esp-sous">À venir</h3><ul class="esp-evs">${venir.map(carte).join('') || '<li class="esp-vide">Aucun événement à venir.</li>'}</ul>
+      <h3 class="esp-sous">À venir</h3><ul class="esp-evs">${venir.map(carte).join('') || '<li class="esp-vide">Aucun événement à venir. <button type="button" class="esp-lien" data-nouvel-ev>Créer une soirée</button></li>'}</ul>
       ${passes.length ? `<h3 class="esp-sous">Passés</h3><ul class="esp-evs esp-evs--passes">${passes.map(carte).join('')}</ul>` : ''}`;
   }
   function rendreEditeur(x) {
@@ -235,7 +239,7 @@ export function init(root) {
         <div class="esp-annonce-apercu" aria-hidden="true"><p class="annonce-site__sur">Annonce</p><p data-annonce-apercu>${e(an.texte || 'Fermeture annuelle du 4 au 18 janvier : à très vite !')}</p></div>
       </article>
       <article class="esp-carte" aria-labelledby="t-fermetures"><h3 id="t-fermetures">Fermetures exceptionnelles</h3><p class="esp-aide">Le site affiche « fermé » ces jours-là et la réservation ne les propose plus.</p>
-        <ul class="esp-fermetures">${exc.map((x, i) => `<li><span><b>${e(x.du === x.au ? maj(fmt(x.du)) : `Du ${fmt(x.du, { day: 'numeric', month: 'long' })} au ${fmt(x.au, { day: 'numeric', month: 'long' })}`)}</b>${x.motif ? ` · ${e(x.motif)}` : ''}</span><button type="button" class="esp-bouton esp-bouton--discret" data-retirer-fermeture="${i}">Retirer</button></li>`).join('') || '<li class="esp-vide">Aucune fermeture prévue.</li>'}</ul>
+        <ul class="esp-fermetures">${exc.map((x, i) => `<li><span><b>${e(x.du === x.au ? maj(fmt(x.du)) : `Du ${fmt(x.du, { day: 'numeric', month: 'long' })} au ${fmt(x.au, { day: 'numeric', month: 'long' })}`)}</b>${x.motif ? ` · ${e(x.motif)}` : ''}</span><button type="button" class="esp-bouton esp-bouton--discret" data-retirer-fermeture="${i}">Retirer</button></li>`).join('') || '<li class="esp-vide">Aucune fermeture prévue. Pour vos congés, donnez les dates ci-dessous.</li>'}</ul>
         <form class="esp-form-fermeture" data-form-fermeture><p class="esp-champ"><label for="fe-du">Du</label><input id="fe-du" name="du" type="date" min="${A.iso}" required></p><p class="esp-champ"><label for="fe-au">Au</label><input id="fe-au" name="au" type="date" min="${A.iso}"></p><p class="esp-champ esp-champ--large"><label for="fe-motif">Motif (affiché)</label><input id="fe-motif" name="motif" placeholder="Congés annuels"></p><p><button type="submit" class="bouton">Ajouter la fermeture</button></p></form>
       </article>
       <article class="esp-carte esp-carte--large" aria-labelledby="t-horaires"><h3 id="t-horaires">Horaires de la semaine</h3><p class="esp-aide">Le statut « ouvert maintenant » du site et les services proposés à la réservation suivent ces horaires.</p>
@@ -325,6 +329,38 @@ export function init(root) {
     cadrer(btn, Math.max(0, Math.min(100, x + (ev.key === 'ArrowRight' ? d : ev.key === 'ArrowLeft' ? -d : 0))), Math.max(0, Math.min(100, y + (ev.key === 'ArrowDown' ? d : ev.key === 'ArrowUp' ? -d : 0))));
   });
 
+  // ---------- La barre « Que voulez-vous faire ? » : la phrase comprise, puis l'action lancée et la rubrique ouverte ----------
+  /** Les réservations des quatre semaines qui viennent, pour retrouver un client par son nom. */
+  const prochaines = () => (ctx().prochaines ||= Array.from({ length: 29 }, (_, k) => resas(ajouter(A.iso, k))).flat());
+  function viser(el, bloc = 'start') { if (!el) return; el.scrollIntoView({ block: bloc, behavior: 'instant' }); el.classList.add('est-vise'); setTimeout(() => el.classList.remove('est-vise'), 2400); }
+  function executer(p) {
+    if (p.aller?.url) { location.assign(p.aller.url); return; }
+    let ok = true, resa = p.aller?.resa;
+    if (p.action) {
+      const args = { ...p.action.args };
+      if (p.action.nom === 'evenement') { args.agenda = D.agenda; args.champs = { ...args.champs, l: largeurs(args.champs.image) }; }
+      if (p.action.nom === 'ajouterResa') { resa = 'tel-' + Date.now().toString(36); args.resa = { ...args.resa, id: resa }; }
+      ok = agir(p.action.nom, args, { msg: p.action.msg, lien: p.action.lien });
+    }
+    const a = p.aller; if (!a?.vue) { rendre(); return; }
+    if (a.jour) jourChoisi = a.jour; evEdite = ok && a.editer ? a.editer : null; ajoutOuvert = false;
+    allerVue(a.vue);
+    if (resa) viser($(`[data-resa="${CSS.escape(resa)}"]`, corps(a.vue)), 'center');
+    else if (a.ancre) viser(document.getElementById(a.ancre)?.closest('.esp-carte'));
+    else if (a.editer && evEdite) $('#ev-prix', root)?.focus({ preventScroll: true });
+  }
+  installerBarre(root, { comprendre: (texte) => comprendre(texte, { auj: A.iso, R, S: S(), exceptions: D.horaires.exceptions || [], pages: D.pages, resas: prochaines() }), executer, actif: () => root.classList.contains('est-connecte') });
+
+  /** Une petite fête quand la dernière demande a sa réponse : des assiettes dorées s'envolent de la tuile « À confirmer ». */
+  function feter() {
+    if (document.documentElement.matches('.calme, [data-calme]')) return;
+    const r = ($('.esp-vide--fete', root) || $('.esp-tuiles', root) || root).getBoundingClientRect(), f = document.createElement('div');
+    f.className = 'esp-fete'; f.setAttribute('aria-hidden', 'true');
+    f.style.left = `${Math.round(Math.min(innerWidth - 40, Math.max(40, r.left + Math.min(r.width / 2, 160))))}px`; f.style.top = `${Math.round(Math.min(innerHeight - 120, Math.max(120, r.top + r.height / 2)))}px`;
+    f.innerHTML = Array.from({ length: 16 }, (_, i) => `<i style="--a:${i * 22.5 + (i % 3) * 9}deg;--d:${64 + ((i * 37) % 80)}px;--t:${(i % 4) * 45}ms;--s:${10 + (i % 3) * 4}px"></i>`).join('');
+    document.body.append(f); setTimeout(() => f.remove(), 1900);
+  }
+
   // ---------- Le menu « Plus d'actions » (voir le site, se déconnecter, tout remettre comme livré) ----------
   const btnPlus = $('[data-esp-plus]', root), panneauPlus = $('[data-esp-plus-panneau]', root);
   function ouvrirPlus(on, rendreFocus = true) {
@@ -346,7 +382,9 @@ export function init(root) {
     if (t.closest('[data-esp-plus]')) { ouvrirPlus(panneauPlus.hidden); return; }
     const nav = t.closest('[data-esp-vue]'); if (nav) { evEdite = null; allerVue(nav.dataset.espVue); return; }
     const al = t.closest('[data-aller]'); if (al) { if (al.dataset.editer) evEdite = al.dataset.editer; allerVue(al.dataset.aller); return; }
-    const st = t.closest('[data-statut]'); if (st) { const id = st.dataset.id, s = st.dataset.statut; agir('statut', { id, statut: s }, { msg: MSG_STATUT[s] || 'Enregistré.' }); rendre(); ($(`[data-resa="${CSS.escape(id)}"] button`, root) || $(`#vue-${vue}`, root))?.focus({ preventScroll: true }); return; }
+    const st = t.closest('[data-statut]'); if (st) { const id = st.dataset.id, s = st.dataset.statut, restait = enAttente().length, repond = ['confirmee', 'refusee'].includes(s);
+      const ok = agir('statut', { id, statut: s }, { msg: MSG_STATUT[s] || 'Enregistré.' }); rendre();
+      if (ok && repond && restait > 0 && !enAttente().length) { dire(`${MSG_STATUT[s].split(' : ')[0]}. Tout a une réponse : bon service !`, { annuler: true }); feter(); } ($(`[data-resa="${CSS.escape(id)}"] button`, root) || $(`#vue-${vue}`, root))?.focus({ preventScroll: true }); return; }
     const j = t.closest('[data-jour]'); if (j) { jourChoisi = j.dataset.jour; rendre(); $(`[data-jour="${jourChoisi}"]`, root)?.focus(); return; }
     const sm = t.closest('[data-semaine]'); if (sm) { jourChoisi = ajouter(jourChoisi, +sm.dataset.semaine); rendre(); $(`[data-semaine="${sm.dataset.semaine}"]`, root)?.focus(); return; }
     const aj = t.closest('[data-ajouter]'); if (aj) { ajoutOuvert = !ajoutOuvert; rendre(); (ajoutOuvert ? $('#aj-nom', root) : $('[data-ajouter]', root))?.focus(); return; }
