@@ -78,7 +78,7 @@ export default (c) => {
       <p class="indice affiches__indice" aria-hidden="true"><span class="indice--souris">${c.t('fetes.afficheIndice')}</span><span class="indice--doigt">${c.t('fetes.afficheIndiceTactile')}</span></p>
     </div>
     <div class="ouv-fetes__visuel ouv-fetes__visuel--ete" data-saison-seul="ete">
-      ${c.media({ nom: 'vraie/piscine-paillotes', alt: c.s('fetes.altEte'), cadrage: '50% 55%', classe: 'ouv-fetes__arche', sizes: '(max-width: 760px) 80vw, 40vw', attrs: 'data-fx="parallaxe" data-fx-force="5"' })}
+      ${c.media({ nom: 'vraie/piscine-paillotes', alt: c.s('fetes.altEte'), cadrage: '50% 55%', classe: 'ouv-fetes__arche', sizes: '(max-width: 760px) 80vw, 40vw', attrs: 'data-fx="parallaxe" data-fx-force="5" data-edit-photo="fetes-ouverture"' })}
       ${c.media({ nom: 'vraie/bar-paillote', alt: c.s('fetes.altBarPaillote'), cadrage: '50% 45%', classe: 'ouv-fetes__rond', sizes: '(max-width: 760px) 34vw, 16vw' })}
     </div>
   </div>

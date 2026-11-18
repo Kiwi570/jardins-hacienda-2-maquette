@@ -149,7 +149,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   </div>
   <button type="button" class="heros__pause" data-heros-pause aria-pressed="false" aria-label="Mettre en pause les animations de l&#39;ouverture" data-pause="Mettre en pause les animations de l&#39;ouverture" data-reprendre="Relancer les animations de l&#39;ouverture"><span class="heros__pause-icone" aria-hidden="true"></span></button>
   <div class="heros__texte conteneur">
-    <p class="heros__lieu" data-anime="gsap">Restaurant &amp; lieu de réception à Moineville, à 19 km de Metz</p>
+    <p class="heros__lieu" data-anime="gsap" data-edit="accueil.heros.lieu">Restaurant &amp; lieu de réception à Moineville, à 19 km de Metz</p>
     <h1 class="heros__titre" id="heros-titre" data-iris-centre><span class="heros__l1">Les Jardins</span> <em class="heros__l2">de l&#39;Hacienda</em></h1>
     <p class="heros__intro" data-anime="gsap" data-t-ete-jour="La cuisine de saison du chef Régis Clauss, servie au bord de la piscine, sous les palmiers, et des journées festives tout l&#39;été." data-t-hiver-soir="La cuisine de saison du chef Régis Clauss, servie le soir à la lueur des lampes, et des soirées pour finir l&#39;année en beauté." data-t-ete-soir="La cuisine de saison du chef Régis Clauss, servie le soir sur la terrasse, et des pool parties tout l&#39;été.">La cuisine de saison du chef Régis Clauss, servie au coin du feu, et des soirées pour finir l&#39;année en beauté.</p>
     <p class="heros__actions" data-anime="gsap">
@@ -176,7 +176,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
       <div class="polaroid" data-polaroid>
         <div class="polaroid__carte">
           <div class="polaroid__face polaroid__face--avant">
-            <figure class="media polaroid__photo" style="--cadrage:50% 40%">
+            <figure class="media polaroid__photo" data-edit-photo="accueil-chef" style="--cadrage:50% 40%">
   <picture>
     <img src="/assets/images/vraie/chef-768.webp" srcset="/assets/images/vraie/chef-480.webp 480w, /assets/images/vraie/chef-768.webp 768w" sizes="(max-width: 760px) 64vw, 360px" alt="Le chef Régis Clauss, chemise blanche et barbe blanche, souriant au bord de la piscine, un jour d&#39;été" width="768" height="960" loading="lazy" decoding="async">
   </picture>
@@ -212,10 +212,10 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
     </div>
     <div class="chef__texte">
       <p class="surtitre">Le chef</p>
-      <h2 id="chef-titre" data-anime="lignes">Régis Clauss, l&#39;âme de notre cuisine</h2>
+      <h2 id="chef-titre" data-anime="lignes" data-edit="accueil.chef.titre">Régis Clauss, l&#39;âme de notre cuisine</h2>
       <p class="chef__signature" data-anime>Une signature culinaire entre tradition et créativité</p>
-      <p data-anime>À la tête du restaurant, Régis Clauss met en valeur les produits de saison. Chaque semaine, il renouvelle sa carte, et les suggestions du moment s&#39;annoncent de vive voix, à table.</p>
-      <p data-anime>Laissez-vous surprendre, et venez partager un moment dans un cadre convivial : toute l&#39;équipe des Jardins de l&#39;Hacienda vous attend.</p>
+      <p data-anime data-edit="accueil.chef.texte1">À la tête du restaurant, Régis Clauss met en valeur les produits de saison. Chaque semaine, il renouvelle sa carte, et les suggestions du moment s&#39;annoncent de vive voix, à table.</p>
+      <p data-anime data-edit="accueil.chef.texte2">Laissez-vous surprendre, et venez partager un moment dans un cadre convivial : toute l&#39;équipe des Jardins de l&#39;Hacienda vous attend.</p>
       <p class="chef__actions">
         <a href="/la-carte" class="bouton bouton--creme" data-libelle="La carte">La carte de la semaine</a>
         <a class="bouton bouton--contour bouton--clair" href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener">Les suggestions sur Instagram<span class="visuellement-cache"> (s&#39;ouvre dans un nouvel onglet)</span></a>
@@ -437,7 +437,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
 </section>
 <section class="feu feu--resto" id="feu" data-heure="19:00" data-lumiere="feu" data-fx="plein-ecran" data-fx-depart="inset(14% 20% 14% 20% round 22px)" style="--fx-longueur:280svh" aria-labelledby="feu-titre">
   <div class="feu__cadre" data-collant>
-    <figure class="media feu__photo" style="--cadrage:46% 58%;--cadrage-mobile:50% 55%">
+    <figure class="media feu__photo" data-edit-photo="accueil-restaurant" style="--cadrage:46% 58%;--cadrage-mobile:50% 55%">
   <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-resto-mobile-640.webp 640w, /assets/images/vraie/salle-resto-mobile-1024.webp 1024w" sizes="100vw">
     <img src="/assets/images/vraie/salle-resto-1280.webp" srcset="/assets/images/vraie/salle-resto-640.webp 640w, /assets/images/vraie/salle-resto-1280.webp 1280w, /assets/images/vraie/salle-resto-1738.webp 1738w" sizes="100vw" alt="La salle le soir : la table ronde en bois flotté, les fauteuils crème, le mur de pierre et ses bûches" width="1280" height="943" loading="lazy" decoding="async">
   </picture>
@@ -450,7 +450,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
           <h2 class="resto__titre" id="feu-titre" data-anime="lignes">Le <em>Restaurant</em></h2>
         </div>
         <div class="resto__infos" data-resto-infos>
-          <p class="resto__legende"><span data-saison-seul="hiver">L&#39;hiver, la salle se resserre autour de la cheminée : bois blond, fauteuils crème, lumière basse. C&#39;est là que l&#39;on fête la fin de l&#39;année.</span><span data-saison-seul="ete">L&#39;été, les grandes baies s&#39;ouvrent sur la terrasse et la piscine, sous les palmiers : bois blond, fauteuils crème et lumière du soir.</span></p>
+          <p class="resto__legende"><span data-saison-seul="hiver" data-edit="accueil.feu.texteHiver">L&#39;hiver, la salle se resserre autour de la cheminée : bois blond, fauteuils crème, lumière basse. C&#39;est là que l&#39;on fête la fin de l&#39;année.</span><span data-saison-seul="ete">L&#39;été, les grandes baies s&#39;ouvrent sur la terrasse et la piscine, sous les palmiers : bois blond, fauteuils crème et lumière du soir.</span></p>
           <ul class="resto__reperes">
             <li><svg viewBox="0 0 40 40" aria-hidden="true"><path pathLength="1" d="M12 27v6h16v-6M12 27c-4-1-6-4-6-7 0-4 4-7 8-6 1-4 4-6 6-6s5 2 6 6c4-1 8 2 8 6 0 3-2 6-6 7H12z"/><path pathLength="1" d="M15 31h10"/></svg><span>La cuisine de saison du chef Régis Clauss</span></li>
             <li><svg viewBox="0 0 40 40" aria-hidden="true"><path pathLength="1" d="M7 9h26v20H7zM14 33l2-4m10 4-2-4"/><path pathLength="1" d="M11 15h12m-12 4h16m-16 4h9"/></svg><span>Une nouvelle carte chaque semaine</span></li>
@@ -572,7 +572,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
   <div class="conteneur devise__grille">
     <div class="devise__visuel">
       <span class="devise__scotch devise__scotch--g" aria-hidden="true"></span><span class="devise__scotch devise__scotch--d" aria-hidden="true"></span>
-      <figure class="media devise__photo" style="--cadrage:42% 50%">
+      <figure class="media devise__photo" data-edit-photo="accueil-devise" style="--cadrage:42% 50%">
   <picture>
     <img src="/assets/images/vraie/pancarte-bar-1600.webp" srcset="/assets/images/vraie/pancarte-bar-640.webp 640w, /assets/images/vraie/pancarte-bar-960.webp 960w, /assets/images/vraie/pancarte-bar-1600.webp 1600w" sizes="(max-width: 860px) 92vw, 44vw" alt="La pancarte rouge du bar, accrochée à une poutre : « Ici on aime rire, s&#39;embrasser, faire la fête, manger, boire, vivre quoi ! »" width="1600" height="1067" loading="lazy" decoding="async">
   </picture>
@@ -643,7 +643,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
     <div class="venir__texte">
       <p class="surtitre">Venir</p>
       <h2 id="venir-titre" data-anime="lignes">En pleine nature, à 19 km de Metz</h2>
-      <p data-anime>À Moineville, entre Metz, Thionville, Nancy et le Luxembourg : le restaurant, sa terrasse et ses jardins.</p>
+      <p data-anime data-edit="accueil.venir.texte">À Moineville, entre Metz, Thionville, Nancy et le Luxembourg : le restaurant, sa terrasse et ses jardins.</p>
       <address class="venir__adresse">
         <strong>Les Jardins de l&#39;Hacienda</strong><br>6 Vathier Haye, 54580 Moineville<br>
         <a href="tel:+33618212810">06 18 21 28 10</a>
@@ -753,7 +753,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
     </div>
     <nav class="pied2__bloc" aria-label="Sommaire">
       <p class="pied2__t">Le site</p>
-      <ul class="pied2__liens"><li><a href="/" data-libelle="Accueil" aria-current="page">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Évènements">Évènements</a></li><li><a href="/a-emporter" data-libelle="Traiteur">Traiteur</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li></ul>
+      <ul class="pied2__liens"><li><a href="/" data-libelle="Accueil" aria-current="page">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Évènements">Évènements</a></li><li><a href="/a-emporter" data-libelle="Traiteur">Traiteur</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li><li><a href="/espace" data-libelle="Espace restaurateur" rel="nofollow">Espace restaurateur (démo)</a></li></ul>
     </nav>
     <div class="pied2__bloc">
       <p class="pied2__t">Suivez-nous</p>

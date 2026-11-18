@@ -40,7 +40,8 @@
     "piedSuivre": "Suivez-nous",
     "piedDemander": "Demander une réception",
     "piedCommander": "Composer ma commande",
-    "piedOffrir": "Composer la carte cadeau"
+    "piedOffrir": "Composer la carte cadeau",
+    "piedEspace": "Espace restaurateur (démo)"
   },
   "pages": {
     "404": {
@@ -105,6 +106,13 @@
       "nav": "Traiteur",
       "partageAlt": "Une assiette du chef devant la cheminée des Jardins de l'Hacienda",
       "accroche": "Les incontournables des fêtes"
+    },
+    "espace": {
+      "titre": "Votre espace : Les Jardins de l'Hacienda",
+      "description": "L'espace du restaurant : réservations, événements, textes, horaires et photos. Démonstration : les modifications restent dans ce navigateur.",
+      "nav": "Espace restaurateur",
+      "partageAlt": "L'espace restaurateur des Jardins de l'Hacienda",
+      "accroche": "Votre espace"
     }
   },
   "accueil": {

@@ -1,12 +1,12 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 18/11/2026 12:01:49 · 1 min · 1 page(s) · audit complet ciblé sur / (étapes : fichiers, mesures)
+Projet : `jardins-hacienda-2-maquette` · 18/11/2026 15:57:29 · 1 min · 1 page(s) · audit complet ciblé sur /espace (étapes : fichiers, mesures)
 
 ## Résumé
 
-- Statut : **1 échec(s)**
-- Passe : `20261118-110021-complet-cible-partiel` · version ?v=7
-- Échecs : **1**
+- Statut : **tout a tourné, aucun échec**
+- Passe : `20261118-145637-complet-cible-partiel` · version ?v=7
+- Échecs : **0**
 - À regarder : **0**
 - Non lancé : **0**
 - Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (39), balayage (1)
@@ -121,13 +121,14 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261118-104440-complet-cible-partiel | complet | /,/reserver | fichiers, mesures, parcours | 0 | 1 | 0 | complet |
 | 20261118-105115-complet-cible-partiel | complet | /reserver | fichiers, mesures, parcours | 1 | 1 | 0 | échecs |
 | 20261118-105429-complet-cible-partiel | complet | /,/reserver | fichiers, mesures, parcours | 1 | 1 | 0 | échecs |
-| **20261118-110021-complet-cible-partiel** (celle-ci) | complet | / | fichiers, mesures | 1 | 0 | 0 | échecs |
+| 20261118-110021-complet-cible-partiel | complet | / | fichiers, mesures | 1 | 0 | 0 | échecs |
+| 20261118-143909-complet-cible-partiel | complet | /espace,/,/reserver,/les-fetes,/la-carte,/offrir,/infos-pratiques | fichiers, mesures, parcours | 1 | 8 | 0 | échecs |
+| 20261118-145343-complet-cible-partiel | complet | /,/espace | fichiers, mesures | 2 | 0 | 0 | échecs |
+| **20261118-145637-complet-cible-partiel** (celle-ci) | complet | /espace | fichiers, mesures | 0 | 0 | 0 | complet |
 
 ## Échecs
 
-### bouton Menu seul sur ordinateur (1)
-
-- **bouton Menu seul sur ordinateur** — `/` — les liens doivent passer sur une deuxième rangée, pas derrière le bouton Menu — largeurs : 900 px _(balayage 320–1920 normal)_
+Aucun.
 
 ## À regarder
 
@@ -154,12 +155,3 @@ Tout a été lancé.
 - Films : `films/` (planches contact de l’ouverture, des transitions, des retours, des ancres et des épinglages ; ⚠ = image signalée)
 - Comparaisons : `comparaisons/`
 - Détail complet : `rapport.json`
-
-
-## Relancer seulement ce qui a échoué
-
-Après correction, si elle ne touche que ces pages (sinon, relancer l’audit standard en entier) :
-
-```
-node _audit/audit.mjs --complet --pages=/ --seulement=fichiers,mesures
-```

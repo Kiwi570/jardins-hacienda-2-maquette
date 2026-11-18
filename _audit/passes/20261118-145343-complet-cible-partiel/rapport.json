@@ -1,0 +1,88 @@
+{
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "section sans visuel",
+      "detail": "",
+      "etape": "mesures",
+      "page": "/espace",
+      "taille": "320×568",
+      "mode": "normal",
+      "selecteur": "section#espace « DÉMONSTRATION LES JARDINS DE L'HACIENDA Votre espa »",
+      "lieux": [
+        "320×568 normal",
+        "375×667 normal",
+        "390×844 normal",
+        "844×390 normal",
+        "768×1024 normal",
+        "1024×768 normal",
+        "1000×560 normal",
+        "1280×720 normal",
+        "1366×768 normal",
+        "1440×900 normal",
+        "1728×1000 normal",
+        "320×568 sansJs",
+        "1920×1080 normal",
+        "375×667 sansJs",
+        "2560×1440 normal",
+        "320×568 sansWebgl",
+        "390×844 sansJs",
+        "844×390 sansJs",
+        "375×667 sansWebgl",
+        "768×1024 sansJs",
+        "390×844 sansWebgl",
+        "1024×768 sansJs",
+        "844×390 sansWebgl",
+        "768×1024 sansWebgl",
+        "1000×560 sansJs",
+        "1280×720 sansJs",
+        "1024×768 sansWebgl",
+        "1366×768 sansJs",
+        "1000×560 sansWebgl",
+        "1440×900 sansJs",
+        "1280×720 sansWebgl",
+        "1728×1000 sansJs",
+        "1366×768 sansWebgl",
+        "1920×1080 sansJs",
+        "1440×900 sansWebgl",
+        "2560×1440 sansJs",
+        "1728×1000 sansWebgl",
+        "1920×1080 sansWebgl",
+        "2560×1440 sansWebgl"
+      ]
+    },
+    {
+      "niveau": "echec",
+      "controle": "bouton Menu seul sur ordinateur",
+      "detail": "les liens doivent passer sur une deuxième rangée, pas derrière le bouton Menu — largeurs : 900 px",
+      "etape": "mesures",
+      "page": "/",
+      "taille": "balayage 320–1920",
+      "mode": "normal",
+      "lieux": [
+        "balayage 320–1920 normal"
+      ]
+    }
+  ],
+  "aRegarder": [],
+  "nonLances": [],
+  "oks": {
+    "vercel.json": 1,
+    ".vercelignore": 1,
+    "robots.txt": 1,
+    "numéro de version": 1,
+    "langues": 1,
+    "mesures": 78,
+    "balayage": 2
+  },
+  "infos": [
+    "Numéro de version des fichiers : ?v=7",
+    "Journal v7 : 13 étape(s) notée(s), 532 min de travail pour 515 min de budget, 0 min d’attente de l’utilisateur.",
+    "Journal : « audit standard (deux passages) et corrections » 79 min pour 35 prévues.",
+    "Journal : « test « vrai visiteur » (7 missions, deux formats) et « regard neuf » (agents séparés) » 48 min pour 30 prévues.",
+    "Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.",
+    "Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.",
+    "Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés."
+  ],
+  "grille": []
+}

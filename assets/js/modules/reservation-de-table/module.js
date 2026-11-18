@@ -60,7 +60,7 @@ export async function init(root, options = {}) {
   if (s.calme) root.classList.add('est-calme');
 
   // ---------- Disponibilités ----------
-  const ouvert = (iso, sid) => !(F.jours || []).includes(JOURS[jourDe(iso)]) && !(F.dates || []).includes(iso) && !((F.services || {})[JOURS[jourDe(iso)]] || []).includes(sid);
+  const ouvert = (iso, sid) => !(F.jours || []).includes(JOURS[jourDe(iso)]) && !(F.dates || []).includes(iso) && !((F.services || {})[JOURS[jourDe(iso)]] || []).includes(sid) && !((F.par_date || {})[iso] || []).includes(sid);
   function estComplet(iso, t, couverts) {
     if (o.complet) return !!o.complet(iso, t, couverts);
     if ((R.complets?.[iso] || []).includes(t)) return true;
@@ -414,6 +414,8 @@ export async function init(root, options = {}) {
       prog?.querySelectorAll('button').forEach((x) => { x.disabled = true; });
       try { sessionStorage.removeItem(CLE); } catch { /* rien */ }
       rendreRecap(); recap.querySelector('[data-resa-focus]')?.focus({ preventScroll: true }); montrer();
+      // Démonstration (v7.6.0) : la demande arrive dans l'agenda de l'espace restaurateur de ce navigateur.
+      try { const cle = 'jh-espace-resas:v1', l = JSON.parse(localStorage.getItem(cle) || '[]'); l.push({ id: reference, ...v, cree: new Date().toISOString() }); localStorage.setItem(cle, JSON.stringify(l.slice(-80))); } catch { /* stockage indisponible */ }
       root.dispatchEvent(new CustomEvent('reservation:envoyee', { detail: { ...v, reference }, bubbles: true }));
       return;
     }

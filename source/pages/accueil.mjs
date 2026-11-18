@@ -169,7 +169,7 @@ export default (c) => {
   </div>
   <button type="button" class="heros__pause" data-heros-pause aria-pressed="false" aria-label="${c.s('accueil.heros.pause')}" data-pause="${c.s('accueil.heros.pause')}" data-reprendre="${c.s('accueil.heros.reprendre')}"><span class="heros__pause-icone" aria-hidden="true"></span></button>
   <div class="heros__texte conteneur">
-    <p class="heros__lieu" data-anime="gsap">${c.t('accueil.heros.lieu')}</p>
+    <p class="heros__lieu" data-anime="gsap" data-edit="accueil.heros.lieu">${c.t('accueil.heros.lieu')}</p>
     <h1 class="heros__titre" id="heros-titre" data-iris-centre><span class="heros__l1">${c.t('accueil.heros.titre1')}</span> <em class="heros__l2">${c.t('accueil.heros.titre2')}</em></h1>
     <p class="heros__intro" data-anime="gsap" data-t-ete-jour="${c.s('accueil.heros.introEte')}" data-t-hiver-soir="${c.s('accueil.heros.introHiverSoir')}" data-t-ete-soir="${c.s('accueil.heros.introEteSoir')}">${c.t('accueil.heros.intro')}</p>
     <p class="heros__actions" data-anime="gsap">
@@ -199,7 +199,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
       <div class="polaroid" data-polaroid>
         <div class="polaroid__carte">
           <div class="polaroid__face polaroid__face--avant">
-            ${c.media({ nom: 'vraie/chef', alt: c.s('accueil.chef.alt'), cadrage: '50% 40%', classe: 'polaroid__photo', sizes: '(max-width: 760px) 64vw, 360px' })}
+            ${c.media({ nom: 'vraie/chef', alt: c.s('accueil.chef.alt'), cadrage: '50% 40%', classe: 'polaroid__photo', sizes: '(max-width: 760px) 64vw, 360px', attrs: 'data-edit-photo="accueil-chef"' })}
             <p class="polaroid__legende">${c.t('accueil.chef.legende')}</p>
           </div>
           <div class="polaroid__face polaroid__face--dos" data-face="dos" aria-hidden="true">
@@ -223,10 +223,10 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
     </div>
     <div class="chef__texte">
       <p class="surtitre">${c.t('accueil.chef.surtitre')}</p>
-      <h2 id="chef-titre" data-anime="lignes">${c.t('accueil.chef.titre')}</h2>
+      <h2 id="chef-titre" data-anime="lignes" data-edit="accueil.chef.titre">${c.t('accueil.chef.titre')}</h2>
       <p class="chef__signature" data-anime>${c.t('accueil.chef.signature')}</p>
-      <p data-anime>${c.t('accueil.chef.texte1')}</p>
-      <p data-anime>${c.t('accueil.chef.texte2')}</p>
+      <p data-anime data-edit="accueil.chef.texte1">${c.t('accueil.chef.texte1')}</p>
+      <p data-anime data-edit="accueil.chef.texte2">${c.t('accueil.chef.texte2')}</p>
       <p class="chef__actions">
         ${c.lien('la-carte', { classe: 'bouton bouton--creme', texte: c.t('accueil.chef.carte') })}
         <a class="bouton bouton--contour bouton--clair" href="${c.site.contact.instagram}" target="_blank" rel="noopener">${c.t('accueil.chef.instagram')}<span class="visuellement-cache"> ${c.t('accueil.chef.nouvelOnglet')}</span></a>
@@ -332,7 +332,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
 
 <section class="feu feu--resto" id="feu" data-heure="19:00" data-lumiere="feu" data-fx="plein-ecran" data-fx-depart="inset(14% 20% 14% 20% round 22px)" style="--fx-longueur:280svh" aria-labelledby="feu-titre">
   <div class="feu__cadre" data-collant>
-    ${c.media({ nom: 'vraie/salle-resto', alt: c.s('accueil.feu.altSalle'), cadrage: '46% 58%', cadrageMobile: '50% 55%', classe: 'feu__photo', sizes: '100vw' })}
+    ${c.media({ nom: 'vraie/salle-resto', alt: c.s('accueil.feu.altSalle'), cadrage: '46% 58%', cadrageMobile: '50% 55%', classe: 'feu__photo', sizes: '100vw', attrs: 'data-edit-photo="accueil-restaurant"' })}
     <canvas class="feu__braises" data-braises data-effet="braises" data-souris aria-hidden="true" data-audit-ignorer></canvas>
     <div class="resto">
       <div class="resto__texte">
@@ -341,7 +341,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
           <h2 class="resto__titre" id="feu-titre" data-anime="lignes">${c.t('accueil.feu.titreA')} <em>${c.t('accueil.feu.titreB')}</em></h2>
         </div>
         <div class="resto__infos" data-resto-infos>
-          <p class="resto__legende"><span data-saison-seul="hiver">${c.t('accueil.feu.texteHiver')}</span><span data-saison-seul="ete">${c.t('accueil.feu.texteEte')}</span></p>
+          <p class="resto__legende"><span data-saison-seul="hiver" data-edit="accueil.feu.texteHiver">${c.t('accueil.feu.texteHiver')}</span><span data-saison-seul="ete">${c.t('accueil.feu.texteEte')}</span></p>
           <ul class="resto__reperes">
             <li>${brut(ICONES.toque)}<span>${c.t('accueil.feu.repere1')}</span></li>
             <li>${brut(ICONES.ardoise)}<span>${c.t('accueil.feu.repere2')}</span></li>
@@ -445,7 +445,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
   <div class="conteneur devise__grille">
     <div class="devise__visuel">
       <span class="devise__scotch devise__scotch--g" aria-hidden="true"></span><span class="devise__scotch devise__scotch--d" aria-hidden="true"></span>
-      ${c.media({ nom: 'vraie/pancarte-bar', alt: c.s('accueil.devise.alt'), cadrage: '42% 50%', classe: 'devise__photo', sizes: '(max-width: 860px) 92vw, 44vw' })}
+      ${c.media({ nom: 'vraie/pancarte-bar', alt: c.s('accueil.devise.alt'), cadrage: '42% 50%', classe: 'devise__photo', sizes: '(max-width: 860px) 92vw, 44vw', attrs: 'data-edit-photo="accueil-devise"' })}
     </div>
     <div class="devise__texte">
       <figure class="devise__citation">
@@ -510,7 +510,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
     <div class="venir__texte">
       <p class="surtitre">${c.t('accueil.venir.surtitre')}</p>
       <h2 id="venir-titre" data-anime="lignes">${c.t('accueil.venir.titre')}</h2>
-      <p data-anime>${c.t('accueil.venir.texte')}</p>
+      <p data-anime data-edit="accueil.venir.texte">${c.t('accueil.venir.texte')}</p>
       <address class="venir__adresse">
         <strong>${c.site.nom}</strong><br>${c.site.contact.adresse}<br>
         <a href="tel:${c.site.contact.telephoneLien}">${c.site.contact.telephone}</a>

@@ -3,6 +3,8 @@
    bibliothèque (dossier modules/) sont chargés ici, page par page, et réglés sans être réécrits.
    Effets propres (data-effet) : heure (horloge de l'en-tête), axes (chiffres variables), heure-section, eau (WebGL),
    passe, vraies, apres-midi, terrasse, guirlandes, carton, braises, decompte, carte-apercu. */
+/* v7.6.0 · L'aperçu des modifications de l'espace restaurateur passe avant tout (textes, photos, horaires, événements). */
+import './espace-apercu.js?v=7';
 import { demarrer, boucle, etat, versObjet, quand, aller, partir, bloquerDefilement, debloquerDefilement, revelerMaintenant } from './socle/index.js?v=7';
 
 const gsap = window.gsap;
@@ -14,7 +16,7 @@ const telephone = () => matchMedia('(max-width: 760px)').matches;
 /* ---------- Heures des pages : couleur du voile et chiffres de l'heure d'arrivée ---------- */
 const HEURES = {
   '/': ['12:00', '#0c6f7b'], '/la-carte': ['12:30', '#9c4a22'], '/receptions': ['19:00', '#24453e'], '/reserver': ['21:00', '#11201b'],
-  '/les-fetes': ['23:30', '#2a120a'], '/offrir': ['00:00', '#120c09'], '/infos-pratiques': [null, '#1c1712'],
+  '/les-fetes': ['23:30', '#2a120a'], '/offrir': ['00:00', '#120c09'], '/infos-pratiques': [null, '#1c1712'], '/espace': [null, '#1c1712'],
 };
 const cheminDe = (u) => { let p = u.pathname.replace(/\.html$/, '').replace(/\/index$/, '/'); if (p.length > 1) p = p.replace(/\/$/, ''); return p || '/'; };
 function heureParis() {
@@ -2305,6 +2307,9 @@ function infosSemaine() {
   hauteur(); addEventListener('resize', hauteur); maj(+range.value);
   range.addEventListener('input', () => maj(+range.value));
 }
+
+/* v7.6.0 · L'espace restaurateur (démonstration). */
+if ($('[data-espace]')) import('./espace.js?v=7').then((m) => m.init($('[data-espace]'))).catch((e) => console.warn('espace', e));
 
 demarrer({
   preparer() {

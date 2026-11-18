@@ -19,7 +19,7 @@ const IDEES = [
 
 export default (c) => html`
 <section class="ouv-offrir" id="debut">
-  ${c.media({ nom: 'vraie/salle-midi', alt: c.s('offrir.alt'), cadrage: '46% 50%', cadrageMobile: '50% 40%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw' })}
+  ${c.media({ nom: 'vraie/salle-midi', alt: c.s('offrir.alt'), cadrage: '46% 50%', cadrageMobile: '50% 40%', priorite: true, classe: 'ouv-offrir__fond', sizes: '100vw', attrs: 'data-edit-photo="offrir-ouverture"' })}
   <div class="conteneur ouv-offrir__grille">
     <div class="ouv-offrir__texte">
       <p class="surtitre">${c.t('offrir.sur')}</p>

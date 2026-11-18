@@ -153,7 +153,7 @@ function pied(c) {
     </div>
     <nav class="pied2__bloc" aria-label="${c.s('commun.sommaire')}">
       <p class="pied2__t">${c.t('commun.piedSite')}</p>
-      <ul class="pied2__liens">${navigation(c).map((k) => html`<li>${c.lien(k)}</li>`)}<li>${c.lien('reserver', { ancre: 'formulaire' })}</li></ul>
+      <ul class="pied2__liens">${navigation(c).map((k) => html`<li>${c.lien(k)}</li>`)}<li>${c.lien('reserver', { ancre: 'formulaire' })}</li><li>${c.lien('espace', { texte: c.t('commun.piedEspace'), attrs: 'rel="nofollow"' })}</li></ul>
     </nav>
     <div class="pied2__bloc">
       <p class="pied2__t">${c.t('commun.piedSuivre')}</p>

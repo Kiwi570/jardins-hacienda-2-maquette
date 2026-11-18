@@ -1,18 +1,5 @@
 {
-  "echecs": [
-    {
-      "niveau": "echec",
-      "controle": "bouton Menu seul sur ordinateur",
-      "detail": "les liens doivent passer sur une deuxième rangée, pas derrière le bouton Menu — largeurs : 900 px",
-      "etape": "mesures",
-      "page": "/",
-      "taille": "balayage 320–1920",
-      "mode": "normal",
-      "lieux": [
-        "balayage 320–1920 normal"
-      ]
-    }
-  ],
+  "echecs": [],
   "aRegarder": [],
   "nonLances": [],
   "oks": {

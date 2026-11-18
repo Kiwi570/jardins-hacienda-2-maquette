@@ -87,7 +87,7 @@ export default (c) => {
       <script type="application/json" data-horaires-accueil>${brut(json)}</script>
     </div>
     <div class="ouv-emp__visuel">
-      ${c.media({ nom: 'vraie/salle-baies', alt: c.s('accueil.lieu.restaurantAlt'), cadrage: '38% 55%', priorite: true, classe: 'ouv-emp__arche', sizes: '(max-width: 760px) 80vw, 60vw', attrs: 'data-fx="parallaxe" data-fx-force="5"' })}
+      ${c.media({ nom: 'vraie/salle-baies', alt: c.s('accueil.lieu.restaurantAlt'), cadrage: '38% 55%', priorite: true, classe: 'ouv-emp__arche', sizes: '(max-width: 760px) 80vw, 60vw', attrs: 'data-fx="parallaxe" data-fx-force="5" data-edit-photo="infos-ouverture"' })}
       <div class="sceau sceau--emp" aria-hidden="true">
         <svg class="sceau__texte" viewBox="0 0 200 200"><defs><path id="sceau-infos" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sceau-infos" textLength="470">${c.s('infos.sceau')}</textPath></text></svg>
         <span class="sceau__logo"></span>

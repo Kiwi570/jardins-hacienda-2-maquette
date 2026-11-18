@@ -35,6 +35,7 @@ L'intro montre le monogramme de la maison, puis l'écran s'ouvre en cercle.
 | Offrir | `/offrir` | La salle au soleil de midi en ouverture, la carte cadeau en vrai objet, la même vert de nuit et or que partout sur le site (elle s'incline vers la souris, reflet qui suit, se retourne : au dos, la place du mot écrit à la main ; v7.5.15, v7.5.21) ; partir d'une idée (une planche à partager, un dîner pour deux, la Saint-Sylvestre, avec les vrais prix) qui choisit le montant et écrit un mot ; la carte cadeau s'écrit sous vos yeux et reste à l'écran pendant qu'on remplit le formulaire, puis part dans son enveloppe rouge et or ; « Pour la recevoir » en trois étapes (v7.5.21) | carte-cadeau-qui-se-compose |
 | Infos pratiques | `/infos-pratiques` | « Venez nous voir à Moineville » en ouverture (la salle aux baies vitrées en arche, statut en direct, appeler ; v7.5.13), la semaine des horaires d'un coup d'œil avec son curseur d'heure, l'accès (les règles de l'été et la vraie photo de la piscine et de la pergola ; v7.5.24), le plan du domaine à toucher (l'entrée, le parking, chaque lieu), une question (la grande table au bord de la piscine, au soleil ; v7.5.24) | formulaire-par-etapes |
 | Page fermée | `/404` | « Cette page a fermé à minuit » | — |
+| Votre espace (démo) | `/espace` | L'espace restaurateur : connexion fictive, puis Aujourd'hui, Réservations (agenda de la semaine, confirmer, refuser, fermer un service, complet, ajout au téléphone), Événements (modifier, masquer, créer, photothèque), Textes et horaires (annonce, horaires, fermetures, ardoise, textes), Photos (remplacer, cadrer). Les changements restent dans le navigateur et s'affichent sur le site ; une réservation faite sur Réserver arrive dans l'agenda (v7.6.0). Lien discret dans le pied de page. | — |
 
 Transition entre les pages (v7.5) : un papier crème qui monte en cloche depuis le clic, le monogramme en terre cuite, le nom de la page et un filet d'or, puis la cloche se soulève.
 
@@ -77,9 +78,18 @@ Transition entre les pages (v7.5) : un papier crème qui monte en cloche depuis 
 | Dates des pool parties | « Les dates sont annoncées sur Instagram. » |
 | Assiettes générées | jamais présentées comme un plat de la carte : les plats gardent leurs noms et leurs prix à côté, l'image porte « Illustration générée » |
 
+## L'espace restaurateur (démonstration, v7.6.0)
+
+- Pour la présentation : ouvrir `/espace`, « Entrer dans mon espace » (identifiant et mot de passe déjà remplis), changer une photo, l'annonce ou l'ardoise, puis « Voir le site » : la pastille « Aperçu de vos modifications » rappelle que ces changements ne se voient que dans ce navigateur. Faire une réservation sur Réserver, puis revenir dans l'espace : elle attend dans l'agenda, « Depuis le site ».
+- « Tout remettre comme livré » (en bas de la navigation de l'espace) efface tout.
+- Fichiers : `source/pages/espace.mjs` (page, emplacements de photos et textes modifiables), `assets/js/espace.js` (les rubriques), `assets/js/espace-apercu.js` (l'aperçu sur chaque page, chargé avant tout), `assets/js/espace-stock.js` (la mémoire, localStorage). Sur le site, `data-edit="clé"` marque un texte modifiable et `data-edit-photo="emplacement"` une photo.
+- Les réservations de démonstration sont tirées des vrais horaires, avec des noms inventés ; aucune n'est réelle.
+- Pour un vrai outil : même écrans, mais l'enregistrement part vers GitHub (Vercel republie le site en une à deux minutes) et les réservations vers une base de données, avec une vraie connexion et les e-mails aux clients.
+
 ## À retirer à la mise en ligne définitive
 
 - La consigne noindex : balise robots dans `source/gabarits/commun.mjs` et en-tête X-Robots-Tag dans `vercel.json`.
+- L'espace restaurateur de démonstration (`/espace`, son lien dans le pied de page, `espace-apercu.js`) s'il n'est pas remplacé par le vrai.
 - Les simulations : réservation et complets simulés (`complets_simules` dans `donnees/reservation.json`), tables prises du plan, carte cadeau, demande de réception, message.
 - Les mentions « à compléter », « à confirmer », « simulé » et la ligne « Maquette » du pied de page.
 
