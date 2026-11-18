@@ -90,6 +90,7 @@ export default (c) => {
           <button type="button" class="esp-rond esp-menu__bouton" data-esp-plus aria-expanded="false" aria-controls="esp-menu-panneau" aria-label="Plus d'actions">${brut(ICO_PLUS)}</button>
           <div class="esp-menu__panneau" id="esp-menu-panneau" data-esp-plus-panneau hidden>
             <a href="${c.url('accueil')}">Voir le site <span aria-hidden="true">↗</span></a>
+            <button type="button" data-esp-installer>Installer sur cet appareil</button>
             <button type="button" data-esp-quitter>Se déconnecter</button>
             <button type="button" class="esp-menu__danger" data-tout-effacer>Tout remettre comme livré</button>
           </div>

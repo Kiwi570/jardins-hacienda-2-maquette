@@ -9,6 +9,7 @@
 import * as stockLocal from './espace-stock.js?v=7';
 import { listeEvenements, typo } from './espace-regles.js?v=7';
 import { MUTATIONS_CARTE } from './espace-carte.js?v=7';
+import { MUTATIONS_CONSEILS } from './espace-conseils.js?v=7';
 export { estVide } from './espace-stock.js?v=7';
 
 const basculer = (liste = [], valeur, actif) => [...new Set([...liste.filter((x) => x !== valeur), ...(actif ? [valeur] : [])])];
@@ -39,6 +40,8 @@ export const MUTATIONS = {
   modeleMessage(S, { cle, texte, defaut }) { S.messages ||= {}; const v = typo((texte || '').trim()); if (!v || v === typo(defaut || '')) delete S.messages[cle]; else S.messages[cle] = v; sansVide(S, 'messages'); },
   /* La carte (v7.7.3) : plat, ajouterPlat, platVisible, epuise (espace-carte.js) */
   ...MUTATIONS_CARTE,
+  /* « L'espace vous propose » (v7.7.4) : taireConseil (espace-conseils.js) */
+  ...MUTATIONS_CONSEILS,
   /* Photos */
   photo(S, { emplacement, photo }) { (S.photos ||= {})[emplacement] = { ...(S.photos[emplacement] || {}), nom: photo.nom || null, l: photo.l || null, src: photo.src || null }; },
   cadrage(S, { emplacement, cadrage, origine }) { (S.photos ||= {})[emplacement] = { ...origine, ...(S.photos[emplacement] || {}), cadrage }; },
@@ -47,7 +50,7 @@ export const MUTATIONS = {
   evenement(S, { id, champs, agenda }) {
     S.evenements ||= {};
     if (agenda.some((x) => x.id === id)) (S.evenements.modifs ||= {})[id] = { ...(S.evenements.modifs[id] || {}), ...champs };
-    else { const l = (S.evenements.ajouts ||= []), i = l.findIndex((x) => x.id === id), x = { id, ...champs }; if (i >= 0) l[i] = x; else l.push(x); }
+    else { const l = (S.evenements.ajouts ||= []), i = l.findIndex((x) => x.id === id), x = { id, ...champs }; if (i >= 0) l[i] = { ...l[i], ...x }; else l.push(x); }
     S.evenements.liste = listeEvenements(agenda, S);
   },
   visibilite(S, { id, visible, agenda }) { const m = ((S.evenements ||= {}).modifs ||= {}); m[id] = { ...(m[id] || {}), masque: !visible }; S.evenements.liste = listeEvenements(agenda, S); },

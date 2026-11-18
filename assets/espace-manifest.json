@@ -1,0 +1,17 @@
+{
+  "name": "Votre espace · Les Jardins de l'Hacienda (démonstration)",
+  "short_name": "Espace JH",
+  "description": "L'espace du restaurant : demandes, réservations, carte et site. Démonstration : tout reste dans ce navigateur.",
+  "lang": "fr",
+  "start_url": "/espace",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f1e7",
+  "theme_color": "#f6f1e7",
+  "icons": [
+    { "src": "/assets/images/espace-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/images/espace-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/images/espace-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

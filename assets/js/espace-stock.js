@@ -15,6 +15,7 @@
      demandes  { statuts: { [id]: étape }, notes: { [id]: texte } }   (v7.7.2 : réceptions, traiteur, cartes cadeaux, questions)
      messages  { [modèle]: texte }                                    (v7.7.2 : les messages envoyés aux clients)
      carte     { modifs: { [rubrique/rang]: champs }, ajouts: [plat], epuises: { [clé]: date } }   (v7.7.3)
+     conseils  { ignores: { [suggestion]: date } }                    (v7.7.4 : « Plus tard », jusqu'au lendemain)
    Les clés qui commencent par « _ » sont de l'intendance : elles ne comptent pas comme une modification du site. */
 export const SCHEMA = 2;
 const CLE = 'jh-espace:v1', CLE_RESAS = 'jh-espace-resas:v1', CLE_DEMANDES = 'jh-espace-demandes:v1';

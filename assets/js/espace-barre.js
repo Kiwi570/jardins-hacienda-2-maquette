@@ -2,7 +2,9 @@
    Cmd ou Ctrl + K (ou « / » hors d'un champ), ou le bouton de la barre du haut, ou le bouton rond sur téléphone.
    On écrit « fermer samedi soir » : la phrase est comprise par espace-commandes.js, la proposition dit en toutes
    lettres ce qui va se passer, Entrée ou un toucher la lance (et elle s'annule comme les autres actions).
-   Champ vide : des exemples à toucher, qui remplissent le champ sans rien lancer. */
+   Champ vide : des exemples à toucher, qui remplissent le champ sans rien lancer.
+   v7.7.4 : la dictée. Quand le navigateur sait reconnaître la parole (Chrome, Edge, Safari), un bouton micro écrit dans le
+   champ ce qui est dit ; rien n'est lancé sans Entrée ou un toucher. Sans cette capacité, le bouton n'apparaît pas. */
 import { EXEMPLES } from './espace-commandes.js?v=7';
 import { typo } from './espace-regles.js?v=7';
 
@@ -14,6 +16,8 @@ const ICONES = {
   annonce: '<path d="M4 10v4h3l6 4V6l-6 4H4ZM16.5 9a4 4 0 0 1 0 6"/>', resa: '<path d="M6.6 3.5h2.6l1.5 4-2 1.3a11 11 0 0 0 6.5 6.5l1.3-2 4 1.5v2.6a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2Z"/>',
   client: '<circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/>', aller: '<path d="M5 12h13M13 6.5l5.5 5.5-5.5 5.5"/>', site: '<path d="M8 16L16 8M9.5 8H16v6.5"/>',
   loupe: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+  micro: '<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5M8.5 20.5h7"/>',
+  carte: '<path d="M6 3.5h9.5L19 7v13.5H6zM15 3.5V7.5h4M9 11.5h6.5M9 14.8h6.5M9 18h4"/>',
 };
 const ico = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONES[k] || ICONES.aller}</svg>`;
 
@@ -31,6 +35,7 @@ export function installerBarre(root, { comprendre, executer, actif }) {
       <h2 id="barre-titre" class="visuellement-cache">Que voulez-vous faire ?</h2>
       <div class="esp-cmd__champ"><span class="esp-cmd__loupe">${ico('loupe')}</span>
         <input id="barre-champ" type="text" role="combobox" aria-expanded="false" aria-controls="barre-liste" aria-autocomplete="list" aria-label="Que voulez-vous faire ?" placeholder="Que voulez-vous faire ?" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go">
+        <button type="button" class="esp-rond esp-cmd__micro" data-dictee aria-pressed="false" aria-label="Dicter" hidden>${ico('micro')}</button>
         <button type="button" class="esp-rond" data-fermer-barre aria-label="Fermer">×</button></div>
       <ul class="esp-cmd__liste" id="barre-liste" role="listbox" aria-label="Ce que l'espace a compris" hidden></ul>
       <p class="esp-cmd__aide" role="status" aria-live="polite" data-barre-aide hidden></p>
@@ -64,14 +69,32 @@ export function installerBarre(root, { comprendre, executer, actif }) {
     el.hidden = false; document.documentElement.classList.add('esp-modale-ouverte'); champ.value = ''; rendre(); champ.focus();
   }
   function fermer(rendreFocus = true) {
-    if (el.hidden) return; el.hidden = true; document.documentElement.classList.remove('esp-modale-ouverte');
+    if (el.hidden) return; if (ecoute) { try { ecoute.abort(); } catch { /* rien */ } finDictee(); }
+    el.hidden = true; document.documentElement.classList.remove('esp-modale-ouverte');
     if (rendreFocus) retour?.focus?.({ preventScroll: true });
   }
+  /* La dictée : ce qui est dit s'écrit dans le champ, au fil de l'eau ; rien n'est lancé tout seul. */
+  const Parole = window.SpeechRecognition || window.webkitSpeechRecognition, micro = el.querySelector('[data-dictee]');
+  let ecoute = null;
+  const finDictee = () => { ecoute = null; micro.setAttribute('aria-pressed', 'false'); micro.setAttribute('aria-label', 'Dicter'); champ.placeholder = 'Que voulez-vous faire ?'; };
+  function dicter() {
+    if (ecoute) { try { ecoute.stop(); } catch { /* rien */ } finDictee(); return; }
+    try {
+      const r = new Parole(); r.lang = 'fr-FR'; r.interimResults = true; r.maxAlternatives = 1;
+      r.onresult = (ev) => { champ.value = [...ev.results].map((x) => x[0].transcript).join(' ').replace(/\s+/g, ' ').replace(/[.!?]$/, '').trim(); rendre(); };
+      r.onerror = (ev) => { finDictee(); if (ev.error !== 'aborted' && ev.error !== 'no-speech') { aide.hidden = false; aide.textContent = 'La dictée n\'a pas démarré (micro refusé ou indisponible). Écrivez votre phrase.'; } champ.focus(); };
+      r.onend = () => { finDictee(); champ.focus(); };
+      r.start(); ecoute = r; micro.setAttribute('aria-pressed', 'true'); micro.setAttribute('aria-label', 'Arrêter la dictée'); champ.placeholder = 'Je vous écoute…'; aide.hidden = true;
+    } catch { finDictee(); aide.hidden = false; aide.textContent = 'La dictée n\'est pas disponible sur ce navigateur. Écrivez votre phrase.'; }
+  }
+  if (Parole) micro.hidden = false;
+
   function lancer(i = choisi) { const p = props[i]; if (!p) return; fermer(false); executer(p); }
 
   champ.addEventListener('input', rendre);
   el.addEventListener('click', (ev) => {
     if (ev.target.closest('[data-fermer-barre]')) { fermer(); return; }
+    if (ev.target.closest('[data-dictee]')) { dicter(); return; }
     const ex = ev.target.closest('[data-exemple]'); if (ex) { champ.value = ex.dataset.exemple; rendre(); champ.focus(); return; }
     const o = ev.target.closest('[data-option]'); if (o) lancer(+o.dataset.option);
   });

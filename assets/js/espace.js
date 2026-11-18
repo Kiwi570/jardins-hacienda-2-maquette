@@ -12,12 +12,15 @@
    v7.7.2 : cinq rubriques (Aujourd'hui, Demandes, Réservations, Carte, Site) ; « Site » a ses onglets (soirées, annonce
    et horaires, textes, messages, photos) ; les demandes de tout le site arrivent dans « Demandes » (espace-vue-demandes.js)
    et s'affichent en direct quand elles sont faites dans un autre onglet.
-   v7.7.3 : « Carte » (espace-vue-carte.js) porte la carte du site (plats, prix, allergènes, épuisé aujourd'hui) et l'ardoise. */
+   v7.7.3 : « Carte » (espace-vue-carte.js) porte la carte du site (plats, prix, allergènes, épuisé aujourd'hui) et l'ardoise.
+   v7.7.4 : « L'espace vous propose » en tête d'Aujourd'hui et le bilan de la semaine dans Réservations
+   (espace-vue-propose.js) ; la dictée dans la barre ; l'installation sur l'écran d'accueil. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
 import { comprendre } from './espace-commandes.js?v=7';
 import { installerBarre } from './espace-barre.js?v=7';
 import { creerDemandes } from './espace-vue-demandes.js?v=7';
 import { creerCarte } from './espace-vue-carte.js?v=7';
+import { creerPropose } from './espace-vue-propose.js?v=7';
 import { normaliser, GENRES } from './espace-demandes.js?v=7';
 import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe } from './espace-regles.js?v=7';
 
@@ -112,7 +115,7 @@ export function init(root) {
 
   // ---------- Vues ----------
   /* L'état des écrans, partagé avec les rubriques écrites dans d'autres fichiers (espace-vue-*.js). */
-  const etat = { vue: 'jour', jour: A.iso, evEdite: null, ajoutOuvert: false, onglet: 'soirees', filtreDemandes: 'tout', demandeOuverte: null, ongletCarte: 'carte', platEdite: null };
+  const etat = { vue: 'jour', jour: A.iso, evEdite: null, ajoutOuvert: false, onglet: 'soirees', filtreDemandes: 'tout', demandeOuverte: null, ongletCarte: 'carte', platEdite: null, ongletResas: 'agenda' };
   /* Où chaque écran se dessine : sa rubrique, ou le panneau de l'onglet ouvert dans « Site ». */
   const corps = (v) => (['evenements', 'soirees', 'horaires', 'textes', 'messages', 'photos'].includes(v) ? $('[data-esp-panneau]', root) : $(`[data-esp-rendu="${v}"]`, root));
   function enAttenteTotal() { const a = vDemandes.attente(); return a.tables.length + a.autres.length; }
@@ -120,6 +123,8 @@ export function init(root) {
   const vDemandes = creerDemandes(X);
   X.ardoiseHtml = () => cartesSite().ardoise;
   const vCarte = creerCarte(X);
+  X.executer = (p) => executer(p);
+  const vPropose = creerPropose(X);
 
   function rendreJour() {
     const l = resas(A.iso), midi = l.filter((r) => r.service === 'midi'), soir = l.filter((r) => r.service === 'soir'), att = enAttente(), autres = vDemandes.attente().autres, total = att.length + autres.length;
@@ -136,6 +141,7 @@ export function init(root) {
         ${tuile('À traiter', total, total ? [att.length ? pluriel(att.length, 'table') : '', autres.length ? `${autres.length} autre${autres.length > 1 ? 's' : ''}` : ''].filter(Boolean).join(' · ') : 'tout est à jour', total ? 'esp-tuile--alerte' : '')}
       </div>
       <div class="esp-grille esp-grille--jour">
+        ${vPropose.carteConseils()}
         <article class="esp-carte esp-carte--large" aria-labelledby="t-attente"><h3 id="t-attente">Ce qui attend une réponse</h3>
           ${total ? `${att.length ? `<ul class="esp-resas">${att.slice(0, 4).map((r) => ligneResa(r, true)).join('')}</ul>` : ''}${autres.length ? `<ul class="esp-dems">${autres.slice(0, 4).map((d) => vDemandes.carte(d, { compacte: true })).join('')}</ul>` : ''}`
             : '<p class="esp-vide esp-vide--fete"><span class="esp-vide__sceau" aria-hidden="true"></span><span><b>Tout a une réponse.</b> Les prochaines demandes faites sur le site arriveront ici.</span></p>'}
@@ -160,6 +166,9 @@ export function init(root) {
   }
 
   function rendreResas() {
+    const og = (id, nom) => `<button type="button" class="esp-onglet" role="tab" id="onglet-resas-${id}" aria-selected="${id === etat.ongletResas}" aria-controls="panneau-resas" tabindex="${id === etat.ongletResas ? 0 : -1}" data-onglet="${id}" data-onglets-resas>${nom}</button>`;
+    const onglets = `<div class="esp-onglets" role="tablist" aria-label="L'agenda et le bilan de la semaine">${og('agenda', 'Agenda')}${og('bilan', 'Bilan de la semaine')}</div>`;
+    if (etat.ongletResas === 'bilan') { corps('resas').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-resas" role="tabpanel" aria-labelledby="onglet-resas-bilan" data-bilan></div>`; vPropose.rendreBilan($('[data-bilan]', root)); return; }
     const lundi = ajouter(etat.jour, -((jourDe(etat.jour) + 6) % 7));
     const jours = Array.from({ length: 7 }, (_, k) => ajouter(lundi, k));
     const l = resas(etat.jour);
@@ -172,7 +181,7 @@ export function init(root) {
         ${lst.length ? `<ul class="esp-resas">${lst.map((r) => ligneResa(r)).join('')}</ul>` : `<p class="esp-vide">${o ? `Pas encore de réservation.${passe || etat.ajoutOuvert ? '' : ' <button type="button" class="esp-lien" data-ajouter>Noter une réservation prise au téléphone</button>'}` : 'Pas de service.'}</p>`}
       </section>`;
     };
-    corps('resas').innerHTML = `
+    corps('resas').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-resas" role="tabpanel" aria-labelledby="onglet-resas-agenda">
       <div class="esp-semaine">
         <button type="button" class="esp-rond" data-semaine="-7" aria-label="Semaine précédente"><span aria-hidden="true">‹</span><span class="esp-semaine__mot" aria-hidden="true">Semaine précédente</span></button>
         <ol class="esp-semaine__jours">${jours.map((iso) => { const lj = resas(iso), n = couverts(lj), att = lj.filter((r) => r.statut === 'a-confirmer').length; return `<li><button type="button" class="esp-jour${iso === A.iso ? ' est-auj' : ''}" data-jour="${iso}" aria-pressed="${iso === etat.jour}"><span class="esp-jour__nom">${e(fmt(iso, { weekday: 'short' }).replace('.', ''))}</span><b>${+iso.slice(8)}</b><span class="esp-jour__n">${n ? `${n} couv.` : '—'}</span>${att ? `<span class="esp-jour__att" aria-label="${att} à confirmer">${att}</span>` : ''}</button></li>`; }).join('')}</ol>
@@ -189,7 +198,7 @@ export function init(root) {
         <p class="esp-champ esp-champ--large"><label for="aj-d">Note</label><input id="aj-d" name="demande" placeholder="Anniversaire, chaise haute…" autocomplete="off"></p>
         <p class="esp-form-ajout__actions"><button type="submit" class="bouton">Enregistrer</button><button type="button" class="esp-bouton esp-bouton--discret" data-ajouter>Fermer</button></p>
       </form>` : ''}
-      <div class="esp-services">${services.map(colonne).join('')}</div>`;
+      <div class="esp-services">${services.map(colonne).join('')}</div></div>`;
     /* Très petit écran : la ligne des jours se fait glisser ; le jour choisi reste au milieu. */
     const choisi = $('.esp-jour[aria-pressed="true"]', root), ol = choisi?.closest('ol');
     if (ol && ol.scrollWidth > ol.clientWidth) ol.scrollLeft = choisi.offsetLeft - (ol.clientWidth - choisi.offsetWidth) / 2;
@@ -376,11 +385,13 @@ export function init(root) {
       ok = agir(p.action.nom, args, { msg: p.action.msg, lien: p.action.lien });
     }
     const a = p.aller; if (!a?.vue) { rendre(); return; }
-    if (a.jour) etat.jour = a.jour; if (a.onglet) { if (a.vue === 'carte') etat.ongletCarte = a.onglet; else etat.onglet = a.onglet; } if (a.filtre) etat.filtreDemandes = a.filtre;
+    if (a.jour) etat.jour = a.jour; if (a.onglet) { if (a.vue === 'carte') etat.ongletCarte = a.onglet; else if (a.vue === 'resas') etat.ongletResas = a.onglet; else etat.onglet = a.onglet; }
+    if (a.vue === 'resas' && !a.onglet) etat.ongletResas = 'agenda'; if (a.demande) etat.demandeOuverte = a.demande; if (a.filtre) etat.filtreDemandes = a.filtre;
     if (a.vue === 'carte') etat.platEdite = null;
     etat.evEdite = ok && a.editer ? a.editer : null; etat.ajoutOuvert = false;
     allerVue(a.vue);
     if (resa) viser($(`[data-resa="${CSS.escape(resa)}"]`, corps(a.vue)), 'center');
+    else if (a.demande) viser($(`[data-esp-rendu="demandes"] [data-demande="${CSS.escape(a.demande)}"]`, root), 'center');
     else if (a.plat) viser($(`[data-plat="${CSS.escape(a.plat)}"]`, root), 'center');
     else if (a.ancre) viser(document.getElementById(a.ancre)?.closest('.esp-carte'));
     else if (a.editer && etat.evEdite) $('#ev-prix', root)?.focus({ preventScroll: true });
@@ -395,6 +406,37 @@ export function init(root) {
     f.style.left = `${Math.round(Math.min(innerWidth - 40, Math.max(40, r.left + Math.min(r.width / 2, 160))))}px`; f.style.top = `${Math.round(Math.min(innerHeight - 120, Math.max(120, r.top + r.height / 2)))}px`;
     f.innerHTML = Array.from({ length: 16 }, (_, i) => `<i style="--a:${i * 22.5 + (i % 3) * 9}deg;--d:${64 + ((i * 37) % 80)}px;--t:${(i % 4) * 45}ms;--s:${10 + (i % 3) * 4}px"></i>`).join('');
     document.body.append(f); setTimeout(() => f.remove(), 1900);
+  }
+
+  // ---------- Installer l'espace sur l'écran d'accueil : la marche à suivre, et le bouton du navigateur quand il le propose ----------
+  let invite = null; addEventListener('beforeinstallprompt', (ev) => { ev.preventDefault(); invite = ev; });
+  const installe = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  if (installe()) $('[data-esp-installer]', root)?.setAttribute('hidden', '');
+  let fenInstall = null, retourInstall = null;
+  function ouvrirInstaller(depuis) {
+    retourInstall = depuis;
+    if (!fenInstall) {
+      fenInstall = document.createElement('div'); fenInstall.className = 'esp-modale esp-modale--petite';
+      fenInstall.innerHTML = `<div class="esp-modale__fond" data-fermer-install></div><div class="esp-modale__boite" role="dialog" aria-modal="true" aria-labelledby="install-titre">
+        <header class="esp-modale__tete"><h2 id="install-titre">Sur l'écran d'accueil</h2><button type="button" class="esp-rond" data-fermer-install aria-label="Fermer">×</button></header>
+        <div class="esp-install"><p>L'espace s'ouvre alors comme une application, sans barre d'adresse, d'un toucher sur son icône.</p>
+          <p data-install-direct hidden><button type="button" class="bouton" data-install-go>Installer maintenant</button></p>
+          <dl><div><dt>iPhone, iPad (Safari)</dt><dd>Le bouton Partager, puis «\u00a0Sur l'écran d'accueil\u00a0».</dd></div>
+            <div><dt>Android (Chrome)</dt><dd>Le menu à trois points, puis «\u00a0Installer l'application\u00a0» ou «\u00a0Ajouter à l'écran d'accueil\u00a0».</dd></div>
+            <div><dt>Ordinateur (Chrome, Edge)</dt><dd>L'icône d'installation, à droite de la barre d'adresse.</dd></div></dl></div></div>`;
+      root.append(fenInstall);
+      const fermer = () => { fenInstall.hidden = true; document.documentElement.classList.remove('esp-modale-ouverte'); retourInstall?.focus?.(); };
+      fenInstall.addEventListener('click', async (ev) => {
+        if (ev.target.closest('[data-fermer-install]')) { fermer(); return; }
+        if (ev.target.closest('[data-install-go]') && invite) { const i = invite; invite = null; fermer(); try { await i.prompt(); } catch { dire('L\'installation n\'a pas pu démarrer : suivez la marche indiquée pour votre appareil.'); } }
+      });
+      fenInstall.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') fermer();
+        if (ev.key === 'Tab') { const f = $$('button', fenInstall).filter((x) => x.offsetParent); if (ev.shiftKey && document.activeElement === f[0]) { ev.preventDefault(); f[f.length - 1].focus(); } else if (!ev.shiftKey && document.activeElement === f[f.length - 1]) { ev.preventDefault(); f[0].focus(); } }
+      });
+    }
+    $('[data-install-direct]', fenInstall).hidden = !invite;
+    fenInstall.hidden = false; document.documentElement.classList.add('esp-modale-ouverte'); $('[data-fermer-install].esp-rond', fenInstall).focus();
   }
 
   // ---------- Le menu « Plus d'actions » (voir le site, se déconnecter, tout remettre comme livré) ----------
@@ -418,7 +460,9 @@ export function init(root) {
     if (t.closest('[data-esp-plus]')) { ouvrirPlus(panneauPlus.hidden); return; }
     const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; allerVue(nav.dataset.espVue); return; }
     const al = t.closest('[data-aller]'); if (al) { if (al.dataset.onglet) etat.onglet = al.dataset.onglet; etat.evEdite = al.dataset.editer || null; allerVue(al.dataset.aller); if (al.dataset.modele) viser(document.getElementById(`modele-${al.dataset.modele}`)); return; }
-    if (vCarte.clic(t)) return;
+    const ogr = t.closest('[data-onglets-resas]'); if (ogr) { etat.ongletResas = ogr.dataset.onglet; etat.ajoutOuvert = false; rendre(); $(`#onglet-resas-${etat.ongletResas}`, root)?.focus(); return; }
+    if (t.closest('[data-esp-installer]')) { ouvrirPlus(false, false); ouvrirInstaller(btnPlus); return; }
+    if (vCarte.clic(t) || vPropose.clic(t)) return;
     const og = t.closest('[role="tab"][data-onglet]'); if (og) { etat.onglet = og.dataset.onglet; etat.evEdite = null; rendre(); $(`#onglet-${etat.onglet}`, root)?.focus(); return; }
     if (vDemandes.clic(t)) return;
     const st = t.closest('[data-statut]'); if (st) { const id = st.dataset.id, s = st.dataset.statut, restait = enAttenteTotal(), repond = ['confirmee', 'refusee'].includes(s);

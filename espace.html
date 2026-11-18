@@ -53,6 +53,10 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
 <meta name="theme-color" content="#f6f1e7">
 <link rel="icon" href="/assets/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<link rel="manifest" href="/assets/espace-manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Espace JH">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Les Jardins de l&#39;Hacienda">
 <meta property="og:locale" content="fr_FR">
@@ -128,6 +132,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
           <button type="button" class="esp-rond esp-menu__bouton" data-esp-plus aria-expanded="false" aria-controls="esp-menu-panneau" aria-label="Plus d'actions"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
           <div class="esp-menu__panneau" id="esp-menu-panneau" data-esp-plus-panneau hidden>
             <a href="/">Voir le site <span aria-hidden="true">↗</span></a>
+            <button type="button" data-esp-installer>Installer sur cet appareil</button>
             <button type="button" data-esp-quitter>Se déconnecter</button>
             <button type="button" class="esp-menu__danger" data-tout-effacer>Tout remettre comme livré</button>
           </div>

@@ -4660,6 +4660,64 @@ html.esp-modale-ouverte { overflow: hidden; }
 /* Sur téléphone : le nom du plat sur toute la largeur (il se lit en entier), le prix et la croix dessous. */
 @media (max-width: 600px) { .esp-ardoise { padding: 22px 18px 20px; } .esp-ardoise__lignes li { grid-template-columns: minmax(0, 1fr) 44px; gap: 0 6px; } .esp-ardoise__lignes input[name="plat"] { grid-column: 1 / -1; } .esp-ardoise__lignes li + li { margin-top: 6px; } }
 :is(html.calme, html[data-calme]) .esp-plat__form { animation: none !important; }
+/* v7.7.4 · « L'espace vous propose » (en tête d'Aujourd'hui), le bilan de la semaine (jauges sur la capacité, tableau),
+   le micro de la barre, la fenêtre « Sur l'écran d'accueil ». */
+.esp-conseils { background: linear-gradient(180deg, var(--esp-attente-clair), var(--esp-carte) 78%); border-color: color-mix(in oklab, var(--or) 55%, transparent); }
+.esp-conseils h3 { display: flex; align-items: center; gap: 10px; }
+.esp-conseils__ico { display: grid; place-items: center; width: 34px; height: 34px; padding: 7px; border-radius: 50%; background: var(--or-fonce); color: #fff; }
+.esp-conseils__ico svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+.esp-conseils__liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.esp-conseil { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 18px; padding: 12px 14px 12px 16px; border-radius: 16px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-conseil p { margin: 0; }
+.esp-conseil__titre { font-family: var(--police-titres); font-size: 1.12rem; font-weight: 600; line-height: 1.25; }
+.esp-conseil__detail { margin-top: 2px !important; font-size: 14px; line-height: 1.4; color: var(--couleur-texte-doux); }
+.esp-conseil__actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.esp-conseils__reste { margin: 10px 0 0; }
+@media (max-width: 720px) { .esp-conseil { grid-template-columns: minmax(0, 1fr); } .esp-conseil__actions { justify-content: stretch; } .esp-conseil__actions .esp-bouton--ok { flex: 1 1 0; min-height: 48px; font-size: 16px; } }
+.esp-semaine--bilan { grid-template-columns: auto minmax(0, 1fr) auto; margin-bottom: 14px; }
+.esp-semaine__titre { margin: 0; font-family: var(--police-titres); font-size: clamp(1.3rem, 1.1rem + .8vw, 1.7rem); font-weight: 600; text-align: center; }
+@media (max-width: 600px) { .esp-semaine--bilan { grid-template-columns: repeat(2, minmax(0, 1fr)); } .esp-semaine--bilan .esp-semaine__titre { grid-column: 1 / -1; order: -1; text-align: left; } }
+.esp-note-demo { margin: 0 0 16px; padding: 12px 14px; border-radius: 14px; background: var(--couleur-surface); font-size: 14px; line-height: 1.45; color: var(--couleur-texte-doux); }
+.esp-note-demo .esp-source { margin: 0 6px 0 0; background: var(--or-fonce); color: #fff; }
+.esp-grille--bilan { grid-template-columns: minmax(0, 2fr) minmax(min(100%, 260px), 1fr); }
+.esp-grille--bilan .esp-carte--large { grid-column: auto; }
+@media (max-width: 900px) { .esp-grille--bilan { grid-template-columns: minmax(0, 1fr); } }
+/* Une jauge par service : le nom, la barre (les couverts sur la capacité), le chiffre. Barre fine, bout arrondi, piste d'un or plus clair. */
+.esp-jauges { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.esp-jauge { display: grid; grid-template-columns: minmax(8.5em, 1fr) minmax(0, 3fr) minmax(5.6em, auto); align-items: center; gap: 4px 14px; min-height: 40px; padding: 2px 8px; border-radius: 10px; }
+.esp-jauge:hover { background: var(--couleur-surface); }
+.esp-jauge__nom { font-weight: 700; line-height: 1.25; }
+.esp-jauge__nom small { font-weight: 500; color: var(--couleur-texte-doux); font-size: 14px; }
+.esp-jauge__barre { position: relative; height: 10px; border-radius: 0 4px 4px 0; background: color-mix(in oklab, var(--or) 26%, var(--couleur-fond)); overflow: hidden; }
+.esp-jauge__barre::after { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(var(--v, 0) * 100%); min-width: 2px; border-radius: 0 4px 4px 0; background: var(--or-fonce); transition: width .6s cubic-bezier(.3, .8, .3, 1); }
+.esp-jauge.est-pleine .esp-jauge__barre::after { background: var(--rouge); }
+.esp-jauge__valeur { font-size: 14px; color: var(--couleur-texte-doux); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.esp-jauge__valeur b { font-family: var(--police-titres); font-size: 1.15rem; font-weight: 600; color: var(--couleur-texte); }
+.esp-jauges__fermes { margin: 12px 0 0; }
+@media (max-width: 599px) { .esp-jauge { grid-template-columns: minmax(0, 1fr) auto; padding: 6px 4px; } .esp-jauge__barre { grid-column: 1 / -1; order: 3; } }
+.esp-tableau { margin-top: 12px; }
+.esp-tableau summary { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; text-decoration: underline; text-underline-offset: .2em; cursor: pointer; }
+.esp-bilan-table { width: 100%; min-width: 320px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.esp-bilan-table :is(th, td) { padding: 9px 8px; border-top: 1px solid var(--couleur-ligne); text-align: right; }
+.esp-bilan-table :is(th[scope="row"], thead th:first-child) { text-align: left; }
+.esp-bilan-table thead th { border-top: 0; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--couleur-texte-doux); }
+.esp-bilan-table tfoot :is(th, td) { border-top: 2px solid var(--couleur-texte); font-weight: 800; }
+.esp-origines { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 8px; }
+.esp-origines li { display: flex; align-items: baseline; gap: 10px; }
+.esp-origines b { min-width: 1.6em; font-family: var(--police-titres); font-size: 1.6rem; font-weight: 600; line-height: 1; font-variant-numeric: lining-nums; text-align: right; }
+.esp-cmd__micro svg { display: block; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.esp-cmd__micro[aria-pressed="true"] { background: var(--rouge); border-color: var(--rouge); color: #fff; animation: esp-pouls 1s ease-in-out infinite; }
+.esp-modale--petite .esp-modale__boite { width: min(100%, 520px); grid-template-rows: auto minmax(0, 1fr); }
+.esp-modale[hidden] { display: none; }
+.esp-install { overflow-y: auto; display: grid; gap: 14px; }
+.esp-install p, .esp-install dl { margin: 0; }
+.esp-install dl { display: grid; gap: 10px; }
+.esp-install dl div { padding: 12px 14px; border-radius: 14px; background: var(--esp-carte); border: 1px solid var(--couleur-ligne); }
+.esp-install dt { font-weight: 800; }
+.esp-install dd { margin: 2px 0 0; color: var(--couleur-texte-doux); }
+:is(html.calme, html[data-calme]) .esp-cmd__micro { animation: none !important; }
+/* Une fenêtre ouverte (barre, photothèque, installation) : le message du bas s'efface derrière elle. */
+html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 .esp-bonjour { margin: -8px 0 18px; font-size: clamp(1rem, .96rem + .2vw, 1.12rem); color: var(--couleur-texte-doux); }
 /* Sur téléphone, les réponses à une demande sont de gros boutons, côte à côte. */
 @media (max-width: 720px) { .esp-resa__actions .esp-bouton { flex: 1 1 0; min-height: 48px; font-size: 16px; } }

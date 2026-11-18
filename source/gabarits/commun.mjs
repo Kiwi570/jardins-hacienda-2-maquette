@@ -56,7 +56,7 @@ ${(c.page.modules || []).map((m) => html`<link rel="stylesheet" href="${c.asset(
 <script type="module" src="${c.asset('js/site.js')}"></script>
 <meta name="theme-color" content="${c.site.couleurs.theme || c.site.couleurs.fond}">
 <link rel="icon" href="/assets/images/favicon.png" type="image/png">
-<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">${p.cle === 'espace' ? brut('\n<link rel="manifest" href="/assets/espace-manifest.json">\n<meta name="mobile-web-app-capable" content="yes">\n<meta name="apple-mobile-web-app-capable" content="yes">\n<meta name="apple-mobile-web-app-title" content="Espace JH">') : ''}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${c.site.nom}">
 <meta property="og:locale" content="fr_FR">

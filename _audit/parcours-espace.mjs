@@ -11,6 +11,9 @@
       l'ouvre ; une réception avance d'étape et s'annule ; le message au client suit le modèle retouché.
    1 quater (v7.7.3). La carte en main : « Épuisé aujourd'hui » se voit sur la carte du site ; un prix et des allergènes
       modifiés aussi ; un plat ajouté apparaît en fin de rubrique ; la barre comprend « épuisé : foie gras ».
+   1 quinquies (v7.7.4). L'espace vous propose : un service presque plein est signalé, « Dire complet » le règle et
+      s'annule, « Plus tard » fait taire la suggestion ; le bilan de la semaine compte comme son tableau ; la fenêtre
+      « Sur l'écran d'accueil » s'ouvre et se ferme à Échap.
    2. Chaque rubrique (et l'éditeur d'événement, l'ajout d'une réservation, la photothèque, la barre), à cinq tailles : les
       mesures de l'audit (débordement, textes sous 12 px, cibles de 44 px, textes coupés, contrastes, noms
       accessibles, typographie), axe-core, les recouvrements, puis un balayage de 320 à 1920 px.
@@ -19,7 +22,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { installerOutils, defilerTout, mesurer, mesurerRecouvrements } from './page.mjs';
 
 /* Les écrans à mesurer : les cinq rubriques, et pour « Site » chacun de ses onglets (v7.7.2). */
-const VUES = ['jour', 'demandes', 'resas', 'carte:carte', 'carte:ardoise', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
+const VUES = ['jour', 'demandes', 'resas:agenda', 'resas:bilan', 'carte:carte', 'carte:ardoise', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
 const P = '/espace';
 
 export default async function ({ contexte, attendrePret, attendre, BASE, R, T }) {
@@ -242,6 +245,49 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     } finally { await ctx.close(); }
   }
 
+  /* ---------- 1 quinquies. L'espace vous propose ; le bilan de la semaine ; sur l'écran d'accueil ---------- */
+  {
+    const taille = T('1366×768'), lieu = { page: P, taille: taille.nom };
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      await entrer(page);
+      const etat = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'));
+      /* Un groupe de trente noté samedi soir : le service passe les quatre cinquièmes de la capacité. */
+      await page.keyboard.press('Control+k'); await attendre(350);
+      await page.locator('#barre-champ').fill('table pour 30 samedi 20 h au nom de Groupe Essai'); await attendre(250); await page.keyboard.press('Enter'); await attendre(500);
+      await aller(page, 'jour');
+      const plein = page.locator('[data-esp-rendu="jour"] [data-faire-conseil^="plein-"]').first();
+      const titre = await page.locator('[data-esp-rendu="jour"] [data-conseil^="plein-"] .esp-conseil__titre').first().innerText().catch(() => '');
+      if (!/Samedi \d+ \S+ au soir\s: \d+ couverts sur \d+/.test(titre)) R.echec('espace : suggestions', `le service presque plein n’est pas signalé (« ${titre} »)`, lieu);
+      await plein.click(); await attendre(400);
+      const jour = Object.keys((await etat()).resa?.complets || {})[0];
+      if (!jour || (await etat()).resa.complets[jour].join() !== 'soir' || await page.locator('[data-esp-rendu="jour"] [data-conseil^="plein-"]').count()) R.echec('espace : suggestions', `« Dire complet » : enregistré ${JSON.stringify((await etat()).resa?.complets)}, suggestion encore là ${await page.locator('[data-esp-rendu="jour"] [data-conseil^="plein-"]').count()}`, lieu);
+      await page.locator('[data-esp-annuler]').click(); await attendre(400);
+      if (Object.keys((await etat()).resa?.complets || {}).length || !(await page.locator('[data-esp-rendu="jour"] [data-conseil^="plein-"]').count())) R.echec('espace : suggestions', '« Annuler » ne rend pas le service ni la suggestion', lieu);
+      /* « Plus tard » : la suggestion se tait pour la journée. */
+      const id = await page.locator('[data-esp-rendu="jour"] [data-conseil]').first().getAttribute('data-conseil');
+      await page.locator(`[data-esp-rendu="jour"] [data-taire-conseil="${id}"]`).click(); await attendre(400);
+      if (!(await etat()).conseils?.ignores?.[id] || await page.locator(`[data-esp-rendu="jour"] [data-conseil="${id}"]`).count()) R.echec('espace : suggestions', '« Plus tard » ne fait pas taire la suggestion', lieu);
+      /* Le bilan de la semaine : le chiffre des couverts est celui du tableau. */
+      await aller(page, 'resas:agenda'); await page.locator(`[data-jour="${jour}"]`).click().catch(() => {}); await attendre(250); await aller(page, 'resas:bilan');
+      await page.locator('.esp-tableau summary').click(); await attendre(250);
+      const bilan = await page.evaluate(() => ({ tuile: +document.querySelector('[data-bilan] .esp-tuile__valeur').textContent, pied: +document.querySelector('.esp-bilan-table tfoot td:last-child').textContent, lignes: [...document.querySelectorAll('.esp-bilan-table tbody td:last-child')].reduce((n, td) => n + +td.textContent, 0), demo: /Démonstration/.test(document.querySelector('.esp-note-demo')?.textContent || ''), tel: document.querySelector('.esp-origines li:nth-child(2) b')?.textContent, pleine: document.querySelectorAll('.esp-jauge.est-pleine').length }));
+      if (!bilan.tuile || bilan.tuile !== bilan.pied || bilan.pied !== bilan.lignes) R.echec('espace : bilan', `couverts : ${bilan.tuile} en tuile, ${bilan.pied} en pied de tableau, ${bilan.lignes} en additionnant les jours`, lieu);
+      if (!bilan.demo) R.echec('espace : bilan', 'le bilan ne dit pas que ses chiffres sont de démonstration', lieu);
+      if (bilan.tel !== '1' || !bilan.pleine) R.echec('espace : bilan', `réservation au téléphone comptée ${bilan.tel}, service presque plein marqué ${bilan.pleine}`, lieu);
+      /* Sur l'écran d'accueil : la fenêtre s'ouvre, Échap la ferme et rend le focus. */
+      await page.locator('[data-esp-plus]').click(); await attendre(250); await page.locator('[data-esp-installer]').click(); await attendre(350);
+      const ouvert = await page.locator('.esp-modale--petite [role="dialog"]').isVisible().catch(() => false);
+      await page.keyboard.press('Escape'); await attendre(250);
+      const fin = await page.evaluate(() => ({ ferme: document.querySelector('.esp-modale--petite').hidden, focus: document.activeElement?.matches('[data-esp-plus]'), manifeste: document.querySelector('link[rel="manifest"]')?.getAttribute('href') || '' }));
+      if (!ouvert || !fin.ferme || !fin.focus) R.echec('espace : écran d’accueil', `fenêtre ouverte ${ouvert}, fermée à Échap ${fin.ferme}, focus rendu ${fin.focus}`, lieu);
+      const man = fin.manifeste ? await page.evaluate(async (u) => { try { const m = await (await fetch(u)).json(); const ic = await Promise.all((m.icons || []).map(async (i) => (await fetch(i.src)).ok)); return { ok: m.start_url === '/espace' && m.display === 'standalone', icones: ic.length >= 2 && ic.every(Boolean) }; } catch (e) { return { erreur: String(e) }; } }, fin.manifeste) : { erreur: 'aucun lien' };
+      if (!man.ok || !man.icones) R.echec('espace : écran d’accueil', `manifeste : ${JSON.stringify(man)}`, lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok('espace : suggestions, bilan, écran d’accueil');
+    } finally { await ctx.close(); }
+  }
+
   /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */
   const noter = (liste, taille, ou) => liste.filter((x) => x.controle !== 'section sans visuel').forEach((x) => R.ajouter(x.niveau || 'echec', x.controle, `${ou} : ${x.detail}`, { page: P, taille: taille.nom, selecteur: x.selecteur }));
   async function mesurerEcran(page, taille, ou, complet) {
@@ -265,7 +311,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       await entrer(page);
       for (const v of VUES) { await aller(page, v); await mesurerEcran(page, taille, `rubrique ${v}`, complet); }
       /* L'ajout d'une réservation, l'éditeur d'événement, la photothèque, le message « Annuler », le menu. */
-      await aller(page, 'resas'); await page.locator('[data-ajouter]').first().click(); await attendre(350); await mesurerEcran(page, taille, 'ajout d’une réservation', complet);
+      await aller(page, 'resas:agenda'); await page.locator('[data-ajouter]').first().click(); await attendre(350); await mesurerEcran(page, taille, 'ajout d’une réservation', complet);
       await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(250); await page.locator('[data-esp-rendu="demandes"] [data-ouvrir-demande]').first().click(); await attendre(400); await mesurerEcran(page, taille, 'demande de réception ouverte', complet);
       await page.locator('[data-filtre-demandes="table"]').click(); await attendre(250); await page.locator('.esp-resa__message summary').first().click(); await attendre(250); await mesurerEcran(page, taille, 'tables à confirmer et message', false);
       await aller(page, 'carte:carte'); await page.locator('[data-plat="entrees/0"] [data-editer-plat]').click(); await attendre(400); await mesurerEcran(page, taille, 'éditeur de plat', complet);
@@ -281,6 +327,8 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       const pan = await page.evaluate(() => { const r = document.querySelector('[data-esp-plus-panneau]').getBoundingClientRect(); return r.left < 0 || r.right > document.documentElement.clientWidth + 1; });
       if (pan) R.echec('espace : menu', 'le menu « Plus d’actions » sort de l’écran', { page: P, taille: taille.nom });
       await page.keyboard.press('Escape'); await attendre(200);
+      await page.locator('[data-esp-plus]').click(); await attendre(250); await page.locator('[data-esp-installer]').click(); await attendre(400); await mesurerEcran(page, taille, 'fenêtre « Sur l’écran d’accueil »', complet);
+      await page.keyboard.press('Escape'); await attendre(250);
       /* La barre : les exemples, puis une proposition. */
       await page.locator('[data-esp-quoi]:visible').first().click(); await attendre(400); await mesurerEcran(page, taille, 'barre : exemples', complet);
       await page.locator('#barre-champ').fill('table pour 4 vendredi 20 h au nom de Martin'); await attendre(300); await mesurerEcran(page, taille, 'barre : proposition', false);
