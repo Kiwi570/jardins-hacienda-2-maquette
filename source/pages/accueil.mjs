@@ -71,6 +71,22 @@ const ICONES = {
   soleil: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle pathLength="1" cx="20" cy="20" r="7"/><path class="icone-rayons" pathLength="1" d="M20 5v5m0 20v5M5 20h5m20 0h5M9.4 9.4l3.5 3.5m14.2 14.2 3.5 3.5M9.4 30.6l3.5-3.5m14.2-14.2 3.5-3.5"/></svg>',
 };
 
+/* v7.5.30 · Les avis qui défilent : de vrais extraits publiés (donnees/avis.json, sources et date du relevé). */
+const MOIS_AN = (iso) => new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso + 'T12:00:00Z'));
+const etoilesAvis = (n) => [0, 1, 2, 3, 4].map((i) => `<span class="avis__etoile" style="--rempli:${Math.max(0, Math.min(1, n - i)).toFixed(2)}"></span>`).join('');
+function carteAvis(a, S, cache) {
+  const src = S[a.source] || { nom: a.source };
+  const note = typeof a.note === 'number' ? `<p class="avis__etoiles" role="img" aria-label="${String(a.note).replace('.', ',')} sur 5">${etoilesAvis(a.note)}</p>` : '';
+  return `<li class="avis"${cache ? ' aria-hidden="true"' : ''}>${note}<blockquote class="avis__texte"><p>«\u00a0${a.texte}\u00a0»</p></blockquote>`
+    + `<p class="avis__qui"><strong>${a.auteur}</strong><span>${MOIS_AN(a.date)} · ${src.nom}${a.traduit ? ', traduit de l\'anglais' : ''}</span></p></li>`;
+}
+function bandeAvis(c) {
+  /* Rang 1 : tous les avis ; rang 2 : les mêmes, dans un autre ordre (sur un écran bas, seul le rang 1 reste). */
+  const A = c.donnees.avis, S = A.sources, L = A.avis, moitie = Math.ceil(L.length / 2);
+  const rangs = [L, [...L.slice(moitie), ...L.slice(0, moitie)]];
+  return rangs.map((r, k) => `<div class="avis-defile__rang${k ? ' avis-defile__rang--2' : ''}"><ul class="avis-defile__piste">${r.map((a) => carteAvis(a, S, false)).join('')}${r.map((a) => carteAvis(a, S, true)).join('')}</ul></div>`).join('');
+}
+
 const PV = (lat, lon) => [Math.round((lon - 5.55) * 300), Math.round((49.75 - lat) * 455)];
 const cheminV = (pts) => 'M' + pts.map(([la, lo]) => PV(la, lo).join(' ')).join(' L ');
 function carteVenir(c) {
@@ -444,14 +460,10 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
           <p class="devise__sur">${c.t('accueil.devise.sur')}, <strong>${c.t('accueil.devise.avis')}</strong></p>
         </div>
       </div>
-      <ul class="devise__themes" data-effet="devise">
-        <li style="--r:-1.6deg"><svg class="devise__icone" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 34c-7 0-11-5-11-10 0-6 6-9 6-15 3 3 4 6 4 9 2-2 3-4 3-7 5 4 9 8 9 13 0 6-4 10-11 10z"/></svg><h3>${c.t('accueil.devise.cadreT')}</h3><p><span data-saison-seul="hiver">${c.t('accueil.devise.cadreHiver')}</span><span data-saison-seul="ete">${c.t('accueil.devise.cadreEte')}</span></p></li>
-        <li style="--r:1.2deg"><svg class="devise__icone" viewBox="0 0 40 40" aria-hidden="true"><circle cx="21" cy="21" r="12"/><circle cx="21" cy="21" r="7"/><path d="M5 8v10M3 8v5c0 2 1 3 2 3s2-1 2-3V8M5 18v15"/></svg><h3>${c.t('accueil.devise.assietteT')}</h3><p>${c.t('accueil.devise.assietteX')}</p></li>
-        <li style="--r:-.9deg"><svg class="devise__icone" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14"/><path d="M13 23c2 4 12 4 14 0"/><path d="M15 16h.01M25 16h.01"/></svg><h3>${c.t('accueil.devise.accueilT')}</h3><p>${c.t('accueil.devise.accueilX')}</p></li>
-      </ul>
-      <p class="devise__releve">${c.t('accueil.devise.releve')}</p>
     </div>
   </div>
+  <div class="avis-defile" data-effet="devise" data-visuel role="region" aria-label="${c.s('accueil.devise.avisRegion')}">${brut(bandeAvis(c))}</div>
+  <p class="conteneur devise__releve">${c.t('accueil.devise.releve')} ${c.t('accueil.devise.releveAvis')}</p>
 </section>
 
 <section class="offrir-emporter" id="offrir-emporter" data-heure="22:00" data-lumiere="fetes" aria-labelledby="oe-titre">

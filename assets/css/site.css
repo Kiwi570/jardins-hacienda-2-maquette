@@ -3844,3 +3844,49 @@ html[data-saison="ete"] .feu--resto .feu__braises { display: none; }
 @media (max-width: 400px) { .oe-carte__visuel--cadeau .carte-luxe { scale: .64; } }
 @media (min-width: 861px) and (max-height: 700px) { .oe-carte__visuel { height: 24vh; } .oe__titre { margin-bottom: 12px; } }
 .oe-carte__visuel--cadeau .carte-luxe { position: absolute; left: 50%; top: 50%; translate: -50% -50%; }
+
+/* ================================================================================================================
+   v7.5.30 · Accueil, la devise et les avis : section plus compacte ; à la place des trois cartes génériques, de vrais
+   extraits d'avis qui défilent sur deux rangs en sens contraires (un seul rang sur un écran bas), arrêtés au survol.
+   ================================================================================================================ */
+.devise { padding-block: clamp(34px, 6vh, 96px) clamp(26px, 4.5vh, 72px); }
+@media (min-width: 861px) { .devise__grille { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(28px, 4vw, 72px); } }
+.devise__visuel { width: min(100%, 440px); justify-self: center; }
+.devise__citation { margin-bottom: clamp(12px, 2.4vh, 26px); }
+.devise__citation blockquote p { font-size: clamp(1.55rem, .9rem + 1.9vw, 2.75rem); }
+.devise__titre { margin-bottom: 8px; font-size: clamp(1.45rem, 1.05rem + 1.1vw, 2.2rem); }
+.devise__note { margin-bottom: 0; }
+.devise__chiffre { font-size: clamp(3.2rem, 2.2rem + 3vw, 5.4rem); }
+.avis-defile { position: relative; z-index: 1; display: grid; gap: 14px; margin-top: clamp(18px, 3.6vh, 44px); overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.avis-defile__piste { list-style: none; margin: 0; padding: 6px 16px 10px 0; display: flex; gap: 16px; width: max-content; animation: avis-defile 90s linear infinite; }
+.avis-defile__rang--2 .avis-defile__piste { animation-duration: 110s; animation-direction: reverse; }
+.avis-defile:hover .avis-defile__piste, .avis-defile:focus-within .avis-defile__piste { animation-play-state: paused; }
+@keyframes avis-defile { to { transform: translateX(-50%); } }
+.avis { flex: none; width: clamp(250px, 23vw, 330px); display: grid; gap: 7px; align-content: start; padding: 14px 18px 13px; border-radius: 18px; background: #fffaf2;
+  box-shadow: 0 16px 32px -22px rgba(28, 23, 18, .5), inset 0 0 0 1px rgba(28, 23, 18, .07); transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); }
+.avis:nth-child(3n+1) { transform: rotate(-.8deg); }
+.avis:nth-child(3n+2) { transform: rotate(.6deg); }
+.avis:hover { transform: translateY(-3px) rotate(0deg); }
+.avis__etoiles { display: flex; gap: 2px; margin: 0; }
+.avis__etoile { width: 15px; height: 15px; background: linear-gradient(90deg, #d9a441 calc(var(--rempli) * 100%), rgba(28, 23, 18, .16) 0);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z'/%3E%3C/svg%3E") center / contain no-repeat; }
+.avis__texte { margin: 0; }
+.avis__texte p { margin: 0; font-family: var(--police-titres); font-style: italic; font-size: 1.04rem; line-height: 1.38; color: #2a2019; }
+.avis__qui { margin: 0; display: grid; gap: 1px; font-size: .84rem; color: rgba(28, 23, 18, .66); }
+.avis__qui strong { font-size: .95rem; color: #b8322c; }
+.devise__releve { position: relative; z-index: 1; margin-top: 10px; }
+@media (min-width: 861px) and (max-height: 820px) { .avis-defile__rang--2 { display: none; } }
+:is(html.calme, html.secours) .avis-defile__piste { animation: none; }
+:is(html.calme, html.secours, html:not(.js)) .avis-defile__rang { overflow-x: auto; }
+:is(html.calme, html.secours, html:not(.js)) .avis[aria-hidden="true"], :is(html.calme, html.secours, html:not(.js)) .avis-defile__rang--2 { display: none; }
+@media (max-width: 860px) { .avis { width: min(78vw, 300px); } .avis-defile__rang--2 { display: none; } .devise__visuel { width: min(100%, 360px); } }
+.avis { width: clamp(280px, 27vw, 390px); }
+.avis__texte p { font-size: 1rem; }
+@media (min-width: 861px) and (max-height: 760px) { .devise__visuel { width: min(100%, 340px); } .devise__citation blockquote p { font-size: clamp(1.5rem, .8rem + 1.7vw, 2.3rem); } }
+@media (max-width: 860px) { .avis { width: min(80vw, 310px); } }
+.devise .devise__releve { margin-inline: auto; }
+/* Chaque rang se fait aussi glisser au doigt (et le texte des cartes à moitié sorties n'est pas « coupé »). */
+.avis-defile__rang { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; }
+.avis-defile__rang::-webkit-scrollbar { display: none; }
