@@ -3,7 +3,7 @@
    de démonstration tirées des vrais horaires, réservations du jour, événements. */
 export const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 export const SEMAINE = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
-export const STATUTS = { 'a-confirmer': 'À confirmer', confirmee: 'Confirmée', arrivee: 'Arrivés', refusee: 'Refusée', annulee: 'Annulée' };
+export const STATUTS = { 'a-confirmer': 'À confirmer', confirmee: 'Confirmée', arrivee: 'Arrivés', absente: 'Absents', refusee: 'Refusée', annulee: 'Annulée' };
 /* Couverts par service : valeur de démonstration pour la jauge, à remplacer par la capacité donnée par le restaurant. */
 export const CAPACITE = 60;
 
@@ -70,11 +70,13 @@ export const depuisSite = (r) => ({ id: r.id, date: r.date, service: r.service, 
 
 /** Les réservations d'un jour, triées par heure : démonstration, ajoutées au téléphone, venues du site, avec le statut choisi dans l'espace. */
 export function resasDuJour({ R, auj, site = [] }, S, iso) {
-  const st = S.resa?.statuts || {};
+  const st = S.resa?.statuts || {}, mod = S.resa?.modifs || {};
   return [...servicesDe(R).flatMap((s) => demo(R, auj, iso, s.id)), ...(S.resa?.ajouts || []).filter((r) => r.date === iso), ...site.filter((r) => r.date === iso).map(depuisSite)]
-    .map((r) => ({ ...r, statut: st[r.id] || r.statut })).sort((a, b) => a.heure.localeCompare(b.heure));
+    /* Ce que le restaurant a modifié (heure, service, couverts, nom, téléphone, note ; v7.7.5), puis le statut choisi. */
+    .map((r) => ({ ...r, ...(mod[r.id] || {}), statut: st[r.id] || r.statut })).sort((a, b) => a.heure.localeCompare(b.heure));
 }
-export const actives = (l) => l.filter((r) => !['refusee', 'annulee'].includes(r.statut));
+/** Les réservations qui comptent : ni refusées, ni annulées, ni absentes. */
+export const actives = (l) => l.filter((r) => !['refusee', 'annulee', 'absente'].includes(r.statut));
 export const couverts = (l) => actives(l).reduce((n, r) => n + (+r.couverts || 0), 0);
 /** Les demandes sans réponse, d'aujourd'hui à dans quatre semaines. */
 export function aConfirmer(ctx, S) { const l = []; for (let k = 0; k <= 28; k++) l.push(...resasDuJour(ctx, S, ajouter(ctx.auj, k)).filter((r) => r.statut === 'a-confirmer')); return l; }

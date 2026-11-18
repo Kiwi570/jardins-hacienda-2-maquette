@@ -14,6 +14,10 @@
    1 quinquies (v7.7.4). L'espace vous propose : un service presque plein est signalé, « Dire complet » le règle et
       s'annule, « Plus tard » fait taire la suggestion ; le bilan de la semaine compte comme son tableau ; la fenêtre
       « Sur l'écran d'accueil » s'ouvre et se ferme à Échap.
+   1 sexies (v7.7.5). Le service : une réservation notée au téléphone apparaît dans la frise, ses couverts comptent
+      dans le résumé et le coup de feu ; « Modifier » change les couverts et la note, et s'annule ; « Annuler la
+      réservation » (ou « Absent » le jour même) retire ses couverts, « Remettre » les rend ; la feuille de service
+      s'imprime avec elle ; la barre comprend « feuille de service ».
    2. Chaque rubrique (et l'éditeur d'événement, l'ajout d'une réservation, la photothèque, la barre), à cinq tailles : les
       mesures de l'audit (débordement, textes sous 12 px, cibles de 44 px, textes coupés, contrastes, noms
       accessibles, typographie), axe-core, les recouvrements, puis un balayage de 320 à 1920 px.
@@ -22,7 +26,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { installerOutils, defilerTout, mesurer, mesurerRecouvrements } from './page.mjs';
 
 /* Les écrans à mesurer : les cinq rubriques, et pour « Site » chacun de ses onglets (v7.7.2). */
-const VUES = ['jour', 'demandes', 'resas:agenda', 'resas:bilan', 'carte:carte', 'carte:ardoise', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
+const VUES = ['jour', 'demandes', 'resas:agenda', 'resas:service', 'resas:bilan', 'carte:carte', 'carte:ardoise', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
 const P = '/espace';
 
 export default async function ({ contexte, attendrePret, attendre, BASE, R, T }) {
@@ -288,6 +292,59 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     } finally { await ctx.close(); }
   }
 
+  /* ---------- 1 sexies. Le service : la frise, modifier, annuler ou absent, la feuille ---------- */
+  {
+    const taille = T('1366×768'), lieu = { page: P, taille: taille.nom };
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      await entrer(page);
+      const etat = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'));
+      await page.keyboard.press('Control+k'); await attendre(350);
+      await page.locator('#barre-champ').fill('table pour 4 samedi 20 h au nom de Service Essai'); await attendre(250); await page.keyboard.press('Enter'); await attendre(500);
+      const r = ((await etat()).resa?.ajouts || []).at(-1);
+      if (!r) { R.echec('espace : service', 'la réservation notée par la barre n’est pas enregistrée', lieu); return; }
+      await aller(page, 'resas:agenda'); await page.locator(`[data-jour="${r.date}"]`).click().catch(() => {}); await attendre(250); await aller(page, 'resas:service');
+      await page.locator('[data-service-vu="soir"]').click().catch(() => {}); await attendre(350);
+      const L = `[data-esp-panneau-resas] [data-resa="${r.id}"]`;
+      const lire = () => page.evaluate((sel) => { const n = (t) => +(String(t || '').match(/\d+/) || [0])[0], txt = (q) => document.querySelector(q)?.textContent || '';
+        return { resume: n(txt('.esp-service-tete__resume')), blocs: [...document.querySelectorAll('[data-esp-panneau-resas] .esp-frise__bloc b')].reduce((a, b) => a + +b.textContent, 0), pic: n(txt('.esp-charge__barre.est-pic b')), tableau: Math.max(0, ...[...document.querySelectorAll('.esp-charge .esp-bilan-table tbody td')].map((td) => +td.textContent)), ligne: (document.querySelector(sel)?.innerText || '').replace(/\s+/g, ' ') }; }, L);
+      const a = await lire();
+      if (!/Service Essai/.test(a.ligne) || !/4 couverts/.test(a.ligne)) R.echec('espace : service', `la réservation n’est pas dans la frise (« ${a.ligne.slice(0, 80)} »)`, lieu);
+      if (!a.resume || a.resume !== a.blocs) R.echec('espace : service', `le résumé annonce ${a.resume} couverts, la frise en porte ${a.blocs}`, lieu);
+      if (!a.pic || a.pic !== a.tableau) R.echec('espace : service', `coup de feu : ${a.pic} sur le graphique, ${a.tableau} dans son tableau`, lieu);
+      /* Modifier : six couverts et une note ; « Annuler » rend la réservation comme elle était. */
+      await page.locator(`${L} [data-modifier-resa]`).first().click(); await attendre(350);
+      const focus = await page.evaluate(() => document.activeElement?.id);
+      await page.locator('#mr-c').fill('6'); await page.locator('#mr-d').fill('Allergie : arachide'); await page.locator('[data-form-resa] button[type="submit"]').click(); await attendre(500);
+      const b = await lire(), m = (await etat()).resa?.modifs?.[r.id];
+      if (focus !== 'mr-h') R.echec('espace : service', `« Modifier » ne place pas le focus dans le formulaire (${focus})`, lieu);
+      if (+m?.couverts !== 6 || !/6 couverts/.test(b.ligne) || !/arachide/.test(b.ligne) || b.resume !== a.resume + 2) R.echec('espace : service', `modifier : enregistré ${JSON.stringify(m)}, ligne « ${b.ligne.slice(0, 80)} », résumé ${b.resume} (attendu ${a.resume + 2})`, lieu);
+      await page.locator('[data-esp-annuler]').click(); await attendre(400);
+      const c = await lire();
+      if ((await etat()).resa?.modifs?.[r.id] || c.resume !== a.resume) R.echec('espace : service', '« Annuler » ne rend pas la réservation comme elle était', lieu);
+      /* Annuler la réservation (un jour à venir) ou la noter absente (le jour même) : ses couverts ne comptent plus. */
+      const geste = (await page.locator(`${L} [data-statut="annulee"]`).count()) ? 'annulee' : 'absente';
+      await page.locator(`${L} [data-statut="${geste}"]`).click(); await attendre(450);
+      const d = await lire(), st = (await etat()).resa?.statuts?.[r.id];
+      if (st !== geste || d.resume !== a.resume - 4 || !/Remettre la réservation/.test(d.ligne)) R.echec('espace : service', `« ${geste} » : statut ${st}, résumé ${d.resume} (attendu ${a.resume - 4}), ligne « ${d.ligne.slice(0, 80)} »`, lieu);
+      await page.locator(`${L} [data-statut="confirmee"]`).click(); await attendre(450);
+      const f = await lire();
+      if ((await etat()).resa?.statuts?.[r.id] !== 'confirmee' || f.resume !== a.resume) R.echec('espace : service', '« Remettre la réservation » ne rend pas ses couverts', lieu);
+      /* La feuille de service : imprimée avec la réservation, puis retirée de la page. */
+      await page.evaluate(() => { window.print = () => { window.__feuille = { texte: document.querySelector('.esp-feuille')?.innerText || '', mode: document.documentElement.classList.contains('esp-impression') }; }; });
+      await page.locator('[data-imprimer-service]').click(); await attendre(250);
+      await page.evaluate(() => dispatchEvent(new Event('afterprint'))); await attendre(150);
+      const fe = await page.evaluate(() => ({ ...(window.__feuille || {}), reste: !!document.querySelector('.esp-feuille') || document.documentElement.classList.contains('esp-impression') }));
+      if (!/Feuille de service/i.test(fe.texte || '') || !/Service Essai/.test(fe.texte || '') || !/Démonstration/.test(fe.texte || '') || !fe.mode || fe.reste) R.echec('espace : feuille de service', `imprimée « ${(fe.texte || '').replace(/\s+/g, ' ').slice(0, 70)} », mode impression ${fe.mode}, encore là après ${fe.reste}`, lieu);
+      /* La barre comprend « feuille de service ». */
+      await aller(page, 'jour'); await page.keyboard.press('Control+k'); await attendre(350);
+      await page.locator('#barre-champ').fill('feuille de service'); await attendre(250); await page.keyboard.press('Enter'); await attendre(500);
+      if (!(await page.locator('[role="tab"][data-onglet="service"][aria-selected="true"]').isVisible().catch(() => false))) R.echec('espace : service', 'la barre n’ouvre pas l’onglet « Service » pour « feuille de service »', lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok('espace : service');
+    } finally { await ctx.close(); }
+  }
+
   /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */
   const noter = (liste, taille, ou) => liste.filter((x) => x.controle !== 'section sans visuel').forEach((x) => R.ajouter(x.niveau || 'echec', x.controle, `${ou} : ${x.detail}`, { page: P, taille: taille.nom, selecteur: x.selecteur }));
   async function mesurerEcran(page, taille, ou, complet) {
@@ -312,6 +369,11 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       for (const v of VUES) { await aller(page, v); await mesurerEcran(page, taille, `rubrique ${v}`, complet); }
       /* L'ajout d'une réservation, l'éditeur d'événement, la photothèque, le message « Annuler », le menu. */
       await aller(page, 'resas:agenda'); await page.locator('[data-ajouter]').first().click(); await attendre(350); await mesurerEcran(page, taille, 'ajout d’une réservation', complet);
+      /* L'onglet « Service » un jour où il y a du monde, puis son formulaire « Modifier ». */
+      { const jours = await page.evaluate(() => [...document.querySelectorAll('[data-esp-rendu="resas"] [data-jour]')].map((b) => b.dataset.jour)); let trouve = false;
+        for (const j of jours) { await aller(page, 'resas:agenda'); await page.locator(`[data-esp-rendu="resas"] [data-jour="${j}"]`).first().click().catch(() => {}); await attendre(200); await aller(page, 'resas:service'); if (await page.locator('[data-esp-panneau-resas] [data-modifier-resa]').count()) { trouve = true; break; } }
+        if (trouve) { await mesurerEcran(page, taille, 'service : la frise', complet); await page.locator('[data-esp-panneau-resas] [data-modifier-resa]').first().click(); await attendre(350); await mesurerEcran(page, taille, 'service : modifier une réservation', complet); await page.locator('[data-form-resa] [data-modifier-resa]').click(); await attendre(200); }
+        else R.regarder('espace : service', 'aucun jour de la semaine n’a de réservation à montrer : la frise n’a pas été mesurée', { page: P, taille: taille.nom }); }
       await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(250); await page.locator('[data-esp-rendu="demandes"] [data-ouvrir-demande]').first().click(); await attendre(400); await mesurerEcran(page, taille, 'demande de réception ouverte', complet);
       await page.locator('[data-filtre-demandes="table"]').click(); await attendre(250); await page.locator('.esp-resa__message summary').first().click(); await attendre(250); await mesurerEcran(page, taille, 'tables à confirmer et message', false);
       await aller(page, 'carte:carte'); await page.locator('[data-plat="entrees/0"] [data-editer-plat]').click(); await attendre(400); await mesurerEcran(page, taille, 'éditeur de plat', complet);

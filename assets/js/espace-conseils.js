@@ -49,13 +49,13 @@ export const lundiDe = (iso) => { const [a, m, j] = iso.split('-').map(Number), 
  */
 export function bilanSemaine(ctx, S, lundi) {
   const regles = { R: ctx.R, exceptions: ctx.exceptions || [] }, svs = servicesDe(ctx.R), jours = [], origines = { site: 0, telephone: 0, demo: 0 };
-  let total = 0, tables = 0, ouverts = 0, attente = 0, plus = null;
+  let total = 0, tables = 0, ouverts = 0, attente = 0, absents = 0, plus = null;
   for (let k = 0; k < 7; k++) { const iso = ajouter(lundi, k), l = resasDuJour(ctx, S, iso), jour = { iso, services: {} };
     for (const s of svs) { const ls = l.filter((r) => r.service === s.id), o = ouvert(regles, S, iso, s.id), c = couverts(ls); jour.services[s.id] = { ouvert: o, couverts: c, tables: actives(ls).length, complet: complet(S, iso, s.id) };
       total += c; tables += actives(ls).length; if (o) ouverts++; if (c && (!plus || c > plus.couverts)) plus = { iso, service: s.id, couverts: c }; }
     for (const r of actives(l)) origines[r.source === 'site' ? 'site' : r.source === 'telephone' ? 'telephone' : 'demo'] += 1;
-    attente += l.filter((r) => r.statut === 'a-confirmer').length; jours.push(jour); }
-  return { lundi, jours, couverts: total, tables, servicesOuverts: ouverts, remplissage: ouverts ? total / (ouverts * CAPACITE) : 0, plusCharge: plus, origines, aConfirmer: attente, capacite: CAPACITE };
+    attente += l.filter((r) => r.statut === 'a-confirmer').length; absents += l.filter((r) => r.statut === 'absente').length; jours.push(jour); }
+  return { lundi, jours, couverts: total, tables, servicesOuverts: ouverts, remplissage: ouverts ? total / (ouverts * CAPACITE) : 0, plusCharge: plus, origines, aConfirmer: attente, absents, capacite: CAPACITE };
 }
 
 export const MUTATIONS_CONSEILS = {

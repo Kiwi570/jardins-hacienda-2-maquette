@@ -4478,7 +4478,7 @@ html.esp-modale-ouverte { overflow: hidden; }
 .esp-fab:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 3px; }
 @media (min-width: 1000px) { .esp-fab { display: none; } }
 /* Le message du bas passe devant : le bouton rond s'efface le temps qu'il est là. */
-.espace:has(.esp-toast.est-visible) .esp-fab { transform: scale(.6); opacity: 0; pointer-events: none; }
+.espace:has(.esp-toast.est-visible) .esp-fab, .espace:has([data-form-resa]) .esp-fab { transform: scale(.6); opacity: 0; pointer-events: none; }
 .esp-cmd { position: fixed; inset: 0; z-index: 920; display: grid; align-items: start; justify-items: center; padding: clamp(10px, 9vh, 96px) 12px 12px; }
 .esp-cmd[hidden] { display: none; }
 .esp-cmd__fond { position: absolute; inset: 0; background: rgba(28, 23, 18, .55); }
@@ -4718,6 +4718,84 @@ html.esp-modale-ouverte { overflow: hidden; }
 :is(html.calme, html[data-calme]) .esp-cmd__micro { animation: none !important; }
 /* Une fenêtre ouverte (barre, photothèque, installation) : le message du bas s'efface derrière elle. */
 html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
+/* v7.7.5 · L'onglet « Service » : les couverts à table quart d'heure par quart d'heure, puis une ligne par réservation,
+   placée dans le temps sur ordinateur, en liste sur téléphone. Et la feuille de service, pour l'impression. */
+.esp-service-tete { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px; margin-bottom: 16px; }
+.esp-service-tete h3 { margin: 0; font-family: var(--police-titres); font-size: clamp(1.4rem, 1.2rem + .8vw, 1.8rem); font-weight: 600; }
+.esp-service-tete__resume { margin: 4px 0 0; color: var(--couleur-texte-doux); }
+.esp-service-tete__outils { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0; }
+.esp-choix { display: inline-flex; gap: 2px; padding: 4px; border-radius: 999px; background: var(--couleur-surface); }
+.esp-choix__b { min-height: 44px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--couleur-texte); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+.esp-choix__b[aria-pressed="true"] { background: var(--couleur-texte); color: var(--couleur-fond); }
+.esp-choix__b:focus-visible { outline: 2px solid var(--or-fonce); outline-offset: 2px; }
+.esp-charge { margin-bottom: 16px; }
+.esp-charge h3 small { margin-left: 8px; font-family: var(--police-texte); font-size: 14px; font-weight: 600; color: var(--couleur-texte-doux); }
+/* Une barre fine par quart d'heure, du pied vers le haut ; seule celle du coup de feu porte son chiffre. */
+@media (max-width: 560px) { .esp-charge h3 small { display: block; margin: 4px 0 0; } }
+.esp-charge__graphe { position: relative; display: flex; align-items: stretch; height: 124px; padding-top: 26px; border-bottom: 1px solid var(--couleur-ligne); }
+.esp-charge__barre { position: relative; flex: 1 1 0; min-width: 0; display: flex; align-items: flex-end; justify-content: center; }
+.esp-charge__barre::before { content: ""; width: min(calc(100% - 2px), 24px); height: calc(var(--h, 0) * 100%); min-height: 2px; border-radius: 4px 4px 0 0; background: color-mix(in oklab, var(--or-fonce) 62%, var(--couleur-fond)); transition: height .5s cubic-bezier(.3, .8, .3, 1); }
+.esp-charge__barre.est-pic::before { background: var(--or-fonce); }
+.esp-charge__barre b { position: absolute; left: 50%; bottom: calc(var(--h, 0) * 100% + 4px); translate: -50% 0; font-family: var(--police-titres); font-size: 1.05rem; font-weight: 600; line-height: 1; font-variant-numeric: lining-nums; }
+.esp-charge__barre:hover::before { background: var(--couleur-texte); }
+.esp-charge__barre:hover::after { content: attr(data-info); position: absolute; left: 50%; bottom: calc(var(--h, 0) * 100% + 8px); z-index: 2; translate: -50% 0; padding: 4px 10px; border-radius: 8px; background: var(--couleur-texte); color: var(--couleur-fond); font-size: 13px; font-weight: 700; white-space: nowrap; pointer-events: none; }
+.esp-charge__maintenant { position: absolute; left: var(--d); top: 0; bottom: 0; border-left: 2px solid var(--rouge); pointer-events: none; }
+.esp-charge__maintenant span { position: absolute; left: 6px; top: 0; font-size: 12px; font-weight: 800; color: #9b2a24; white-space: nowrap; }
+.esp-charge__axe, .esp-frise__heures { position: relative; height: 22px; margin: 4px 0 6px; }
+:is(.esp-charge__axe, .esp-frise__heures) span { position: absolute; left: var(--d); translate: -50% 0; font-size: 12px; font-weight: 700; color: var(--couleur-texte-doux); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.esp-frise__axe { display: none; }
+.esp-frise__liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.esp-frise__ligne { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 8px 16px; padding: 12px 14px; border-radius: 16px; background: #fff; border: 1px solid var(--couleur-ligne); scroll-margin-top: calc(var(--esp-barre-h, 68px) + 16px); }
+.esp-frise__ligne p { margin: 0; }
+.esp-frise__qui { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 10px; }
+.esp-frise__heure { font-family: var(--police-titres); font-size: 1.2rem; font-weight: 600; font-variant-numeric: lining-nums tabular-nums; }
+.esp-frise__nom { font-weight: 800; }
+.esp-frise__nom .esp-pastille { margin-left: 4px; }
+.esp-frise__detail { font-size: 14px; color: var(--couleur-texte-doux); }
+.esp-frise__piste { display: none; }
+.esp-frise__actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.esp-frise__ligne.est-a-confirmer { border-color: color-mix(in oklab, var(--esp-attente) 40%, transparent); box-shadow: inset 4px 0 0 var(--or); }
+.esp-frise__ligne:is(.est-refusee, .est-annulee, .est-absente) { background: transparent; border-style: dashed; }
+.esp-frise__ligne:is(.est-refusee, .est-annulee, .est-absente) .esp-frise__nom { color: var(--couleur-texte-doux); }
+.esp-frise__ligne.est-ouverte { border-color: var(--or); box-shadow: inset 0 0 0 1px var(--or); }
+.esp-pastille--absente { background: #f7e1de; color: #9b2a24; }
+.esp-frise__form { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px; margin-top: 6px; padding-top: 14px; border-top: 1px solid var(--couleur-ligne); animation: esp-entre .3s cubic-bezier(.2, .8, .2, 1) both; }
+.esp-frise__form-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; }
+@media (max-width: 720px) { .esp-frise__actions :is(.esp-bouton--ok, .esp-bouton--non) { flex: 1 1 0; min-height: 48px; font-size: 16px; } }
+/* Sur ordinateur : la frise. Trois colonnes de largeur fixe pour que les heures tombent au même endroit sur chaque ligne. */
+@media (min-width: 1100px) {
+  .esp-frise__axe { display: grid; grid-template-columns: 250px minmax(0, 1fr) 290px; gap: 0 16px; margin: 0; padding: 0 14px; }
+  .esp-frise__ligne { grid-template-columns: 250px minmax(0, 1fr) 290px; padding-block: 8px; }
+  .esp-frise__piste { position: relative; display: block; height: 30px; border-radius: 8px; background: var(--couleur-surface); }
+  .esp-frise__bloc { position: absolute; left: var(--d); width: var(--l); top: 3px; bottom: 3px; display: grid; place-items: center; border-radius: 6px; background: var(--or-fonce); color: #fff; font-size: 13px; font-weight: 800; font-variant-numeric: lining-nums; }
+  .est-arrivee .esp-frise__bloc { background: var(--esp-vert); }
+  .est-a-confirmer .esp-frise__bloc { background: var(--esp-attente-clair); color: var(--esp-attente); box-shadow: inset 0 0 0 2px var(--or); }
+  .esp-frise__actions { justify-content: flex-end; }
+  .esp-frise__form { grid-column: 1 / -1; }
+}
+:is(html.calme, html[data-calme]) .esp-frise__form { animation: none !important; }
+/* La feuille de service : invisible à l'écran, seule sur la page à l'impression. */
+.esp-feuille { display: none; }
+@media print {
+  html.esp-impression body > :not(.esp-feuille) { display: none !important; }
+  html.esp-impression, html.esp-impression body { background: #fff !important; padding: 0 !important; }
+  html.esp-impression .esp-feuille { display: block; color: #000; font: 11pt/1.35 var(--police-texte); }
+  .esp-feuille header { margin-bottom: 10pt; padding-bottom: 8pt; border-bottom: 2pt solid #000; }
+  .esp-feuille__maison { margin: 0; font-size: 9pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+  .esp-feuille h1 { margin: 2pt 0; font-family: var(--police-titres); font-size: 22pt; font-weight: 600; line-height: 1.1; }
+  .esp-feuille__quand { margin: 0; font-size: 12pt; }
+  .esp-feuille table { width: 100%; border-collapse: collapse; }
+  .esp-feuille :is(th, td) { padding: 6pt 5pt; border-bottom: .75pt solid #888; text-align: left; vertical-align: top; }
+  .esp-feuille thead th { border-bottom: 1.5pt solid #000; font-size: 8.5pt; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .esp-feuille td:first-child { font-family: var(--police-titres); font-weight: 600; white-space: nowrap; }
+  .esp-feuille tr { break-inside: avoid; }
+  .esp-feuille__case { display: inline-block; width: 12pt; height: 12pt; border: 1.25pt solid #000; border-radius: 2pt; text-align: center; line-height: 11pt; }
+  .esp-feuille__case.est-cochee::after { content: "✓"; font-size: 10pt; }
+  .esp-feuille footer { margin-top: 12pt; font-size: 9pt; color: #444; }
+  @page { margin: 14mm; }
+}
+.esp-origines__absents { margin: 0 0 12px; }
+.esp-plus .esp-lien + .esp-lien { margin-left: 18px; }
 .esp-bonjour { margin: -8px 0 18px; font-size: clamp(1rem, .96rem + .2vw, 1.12rem); color: var(--couleur-texte-doux); }
 /* Sur téléphone, les réponses à une demande sont de gros boutons, côte à côte. */
 @media (max-width: 720px) { .esp-resa__actions .esp-bouton { flex: 1 1 0; min-height: 48px; font-size: 16px; } }

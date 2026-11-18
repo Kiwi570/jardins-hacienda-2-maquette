@@ -1,13 +1,16 @@
 {
- "id": "20261118-180329-complet-cible",
- "date": "2026-11-18T18:16:40.586Z",
+ "id": "20261118-185249-complet-cible-partiel",
+ "date": "2026-11-18T18:54:18.547Z",
  "niveau": "complet",
- "pages": "/espace",
- "etapes": "toutes",
+ "pages": "/,/espace",
+ "etapes": [
+  "fichiers",
+  "fluidite"
+ ],
  "version": "7",
  "echecs": 0,
- "aRegarder": 5,
- "nonLances": 1,
+ "aRegarder": 1,
+ "nonLances": 0,
  "manquants": 0,
  "statut": "complet"
 }

@@ -10,6 +10,7 @@ import * as stockLocal from './espace-stock.js?v=7';
 import { listeEvenements, typo } from './espace-regles.js?v=7';
 import { MUTATIONS_CARTE } from './espace-carte.js?v=7';
 import { MUTATIONS_CONSEILS } from './espace-conseils.js?v=7';
+import { MUTATIONS_SERVICE } from './espace-service.js?v=7';
 export { estVide } from './espace-stock.js?v=7';
 
 const basculer = (liste = [], valeur, actif) => [...new Set([...liste.filter((x) => x !== valeur), ...(actif ? [valeur] : [])])];
@@ -42,6 +43,8 @@ export const MUTATIONS = {
   ...MUTATIONS_CARTE,
   /* « L'espace vous propose » (v7.7.4) : taireConseil (espace-conseils.js) */
   ...MUTATIONS_CONSEILS,
+  /* Le service (v7.7.5) : modifierResa (espace-service.js) */
+  ...MUTATIONS_SERVICE,
   /* Photos */
   photo(S, { emplacement, photo }) { (S.photos ||= {})[emplacement] = { ...(S.photos[emplacement] || {}), nom: photo.nom || null, l: photo.l || null, src: photo.src || null }; },
   cadrage(S, { emplacement, cadrage, origine }) { (S.photos ||= {})[emplacement] = { ...origine, ...(S.photos[emplacement] || {}), cadrage }; },

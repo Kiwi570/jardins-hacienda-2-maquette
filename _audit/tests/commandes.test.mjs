@@ -93,6 +93,7 @@ test('ouvrir une rubrique, retrouver un client, ne rien inventer', () => {
   assert.deepEqual(un('horaires').aller, { vue: 'site', ancre: 't-horaires', onglet: 'horaires' }); assert.deepEqual(un('ardoise').aller, { vue: 'carte', ancre: 't-ardoise', onglet: 'ardoise' }); assert.deepEqual(un('la carte').aller, { vue: 'carte', onglet: 'carte' }); assert.deepEqual(un('photos').aller, { vue: 'site', onglet: 'photos' });
   assert.deepEqual(un('mariages').aller, { vue: 'demandes', filtre: 'reception' }); assert.deepEqual(un('commandes traiteur').aller, { vue: 'demandes', filtre: 'traiteur' }); assert.deepEqual(un('messages').aller, { vue: 'site', onglet: 'messages' });
   assert.deepEqual(un('samedi').aller, { vue: 'resas', jour: '2026-11-21' });
+  assert.deepEqual(un('feuille de service').aller, { vue: 'resas', onglet: 'service' }); assert.deepEqual(un('le coup de feu').aller, { vue: 'resas', onglet: 'service' }); assert.equal(un('fermer le service de samedi soir').action.nom, 'fermer', 'le mot « service » ne détourne pas une action');
   const resas = Array.from({ length: 12 }, (_, k) => resasDuJour({ R, auj: AUJ, site: [] }, {}, ajouter(AUJ, k))).flat();
   const nom = resas[0].nom.split(/[ .]/)[0]; const c = comprendre(nom.toLowerCase(), ctx({}, { resas })).filter((p) => p.genre === 'client');
   assert.ok(c.length >= 1); assert.ok(c.every((p) => p.aller.vue === 'resas' && p.aller.resa)); assert.ok(c.length <= 4);

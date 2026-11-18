@@ -53,6 +53,7 @@ export function creerPropose(X) {
         </article>
         <article class="esp-carte" aria-labelledby="t-origines"><h3 id="t-origines">D'où viennent les réservations</h3>
           ${nbO ? `<ul class="esp-origines"><li><b>${o.site}</b><span>depuis le site</span></li><li><b>${o.telephone}</b><span>au téléphone</span></li><li><b>${o.demo}</b><span>exemples de démonstration</span></li></ul>` : '<p class="esp-vide">Aucune réservation cette semaine.</p>'}
+          ${b.absents ? `<p class="esp-origines__absents"><b>${b.absents}</b> ${b.absents > 1 ? 'tables notées absentes' : 'table notée absente'} cette semaine.</p>` : ''}
           <p class="esp-aide">Faites une réservation sur la page Réserver, ou notez-en une prise au téléphone : elle apparaît ici.</p>
         </article>
       </div>`;
