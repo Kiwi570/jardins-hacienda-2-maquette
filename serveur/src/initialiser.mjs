@@ -9,8 +9,9 @@ import { publier } from '../../assets/js/disponibilites.js';
 const racine = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const lire = (f) => JSON.parse(readFileSync(join(racine, 'donnees', f), 'utf8'));
 
-export async function initialiser(db) {
-  const reservation = lire('reservation.json'), horaires = lire('horaires.json').adresses[0], salle = lire('salle.json');
+/** `donnees` : { reservation, horaires, salle } déjà lus (fonction hébergée : ils sont embarqués) ; sinon lus dans donnees/. */
+export async function initialiser(db, donnees = null) {
+  const reservation = donnees?.reservation || lire('reservation.json'), horaires = (donnees?.horaires || lire('horaires.json')).adresses[0], salle = donnees?.salle || lire('salle.json');
   const R = publier(reservation, horaires).reservation;
   const reglages = { services: R.services, fermetures: R.fermetures, ouvertures_exceptionnelles: R.ouvertures_exceptionnelles || [], jours_a_l_avance: R.jours_a_l_avance, delai_minutes: R.delai_minutes,
     couverts_max: R.couverts_max, derniere_arrivee_avant_fermeture: R.derniere_arrivee_avant_fermeture || {}, fuseau: 'Europe/Paris',

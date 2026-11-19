@@ -229,3 +229,42 @@ test('sauvegarde et restauration, dans une base de vérification', async () => {
   const abimee = structuredClone(s); abimee.tables.reservations.lignes.pop(); const autre = await baseNeuve({ comptes: false, initialise: false });
   await assert.rejects(restaurer(autre.db, abimee), /abîmée/); assert.equal((await autre.db.q('select count(*)::int n from comptes')).rows[0].n, 0, 'tout ou rien');
 });
+
+test('la fonction hébergée construite : base vide préparée seule, chemin réécrit, même origine, panne de base', async () => {
+  const { execFileSync } = await import('node:child_process'), { tmpdir } = await import('node:os'), { join: joindre } = await import('node:path'), { pathToFileURL } = await import('node:url');
+  const { baseVide, appelFonction, MOTS } = await import('./outillage.mjs'), { ouvrir } = await import('../src/db.mjs'), { hacher } = await import('../src/auth.mjs');
+  const fichier = joindre(tmpdir(), `jh-fonction-${process.pid}.mjs`);
+  execFileSync(process.execPath, [joindre(import.meta.dirname, '..', 'outils', 'construire-fonction.mjs'), fichier], { stdio: 'ignore' });
+  const construit = (await import('node:fs')).readFileSync(fichier, 'utf8');
+  assert.ok(!/postgres:\/\/[^'"`\s]*@/.test(construit), 'aucune adresse de base dans le fichier construit');
+  const url = await baseVide(), avant = { ...process.env };
+  /* Sans adresse de base : 503, jamais un succès. */
+  delete process.env.DATABASE_URL;
+  const f = (await import(pathToFileURL(fichier).href)).default;
+  const sans = await appelFonction(f, { url: '/api?__chemin=etat' });
+  assert.equal(sans.statut, 503); assert.equal(sans.corps.erreur.code, 'SERVEUR');
+  /* Avec la base vide : le premier appel migre et pose les réglages de départ ; aucune réservation, aucun client, aucun compte. */
+  process.env.DATABASE_URL = url; process.env.JH_ENV = 'recette'; process.env.JH_LIVRAISON = 'essai-fonction';
+  const etat = await appelFonction(f, { url: '/api?__chemin=etat' });
+  assert.equal(etat.statut, 200); assert.deepEqual(etat.corps, { ok: true, livraison: 'essai-fonction', environnement: 'recette', base: 1 });
+  const db = ouvrir(url, { max: 2 });
+  for (const t of ['reservations', 'clients', 'comptes']) assert.equal((await db.q(`select count(*)::int n from ${t}`)).rows[0].n, 0, `${t} : vide`);
+  assert.ok((await db.q('select count(*)::int n from tables_salle')).rows[0].n > 0);
+  /* Le chemin réécrit par l'hébergeur (« /api?__chemin=… ») et ses paramètres arrivent bien à l'API. */
+  const regles = await appelFonction(f, { url: '/api?__chemin=public/reglages' }); assert.equal(regles.statut, 200); assert.ok(regles.corps.services);
+  const dispo = await appelFonction(f, { url: `/api?__chemin=public/disponibilites&date=${VENDREDI}&couverts=2` }); assert.equal(dispo.statut, 200);
+  /* Une écriture venue d'un autre site est refusée ; du même hôte, acceptée ; le cookie de session est marqué Secure. */
+  await db.q('insert into comptes (email, nom, role, mot_de_passe) values ($1, $2, $3, $4)', ['accueil@essai.test', 'Accueil', 'accueil', await hacher(MOTS.accueil)]);
+  const corps = { email: 'accueil@essai.test', motDePasse: MOTS.accueil };
+  const ailleurs = await appelFonction(f, { methode: 'POST', url: '/api?__chemin=session', corps, entetes: { origin: 'https://ailleurs.exemple.test', 'x-forwarded-host': 'recette.exemple.test' } });
+  assert.equal(ailleurs.statut, 403); assert.equal(ailleurs.corps.erreur.code, 'ORIGINE');
+  const ici = await appelFonction(f, { methode: 'POST', url: '/api?__chemin=session', corps, entetes: { origin: 'https://recette.exemple.test', 'x-forwarded-host': 'recette.exemple.test' } });
+  assert.equal(ici.statut, 200); assert.match(ici.entetes['set-cookie'], /HttpOnly/); assert.match(ici.entetes['set-cookie'], /Secure/); assert.match(ici.entetes['set-cookie'], /SameSite=Lax/);
+  const cookie = ici.entetes['set-cookie'].split(';')[0];
+  const liste = await appelFonction(f, { url: `/api?__chemin=reservations&du=${VENDREDI}&au=${VENDREDI}`, entetes: { cookie } }); assert.equal(liste.statut, 200); assert.deepEqual(liste.corps.reservations, []);
+  const sansSession = await appelFonction(f, { url: `/api?__chemin=reservations&du=${VENDREDI}&au=${VENDREDI}` }); assert.equal(sansSession.statut, 401);
+  /* Une demande publique passe par la fonction et tient compte de l'adresse posée par le relais. */
+  const dem = await appelFonction(f, { methode: 'POST', url: '/api?__chemin=public/demandes', corps: demande(), entetes: { origin: 'https://recette.exemple.test', 'x-forwarded-host': 'recette.exemple.test', 'x-forwarded-for': '203.0.113.9, 10.0.0.1', 'idempotency-key': 'fonction-0001' } });
+  assert.equal(dem.statut, 201); assert.match(dem.corps.reference, /^R-/);
+  await db.fermer(); for (const k of ['DATABASE_URL', 'JH_ENV', 'JH_LIVRAISON']) { if (k in avant) process.env[k] = avant[k]; else delete process.env[k]; }
+});

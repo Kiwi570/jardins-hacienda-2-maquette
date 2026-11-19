@@ -54,3 +54,19 @@ const R = JSON.parse((await import('node:fs')).readFileSync(join(ici, '..', '..'
 export const prochain = (jourSemaine, service, apres = 2) => Array.from({ length: 40 }, (_, k) => ajouter(AUJ, k + apres)).find((iso) => new Date(`${iso}T12:00:00Z`).getUTCDay() === jourSemaine && etatService(R, iso, service).ouvert);
 export const VENDREDI = prochain(5, 'soir'), SAMEDI = prochain(6, 'soir'), MERCREDI = prochain(3, 'midi'), LUNDI = Array.from({ length: 10 }, (_, k) => ajouter(AUJ, k + 2)).find((iso) => new Date(`${iso}T12:00:00Z`).getUTCDay() === 1);
 export const demande = (plus = {}) => ({ date: VENDREDI, service: 'soir', heure: '20:00', couverts: 2, prenom: 'Claire', nom: 'Essai', telephone: '06 12 34 56 78', email: 'claire@exemple.fr', ...plus });
+
+/** Une base créée mais vide : aucune table. Pour vérifier qu'une fonction hébergée la prépare seule. */
+export async function baseVide() {
+  const nom = `vide_${process.pid}_${++n}`, admin = ouvrir(racineUrl('postgres'), { max: 1 });
+  await admin.q(`create database ${nom}`); await admin.fermer();
+  return racineUrl(nom);
+}
+/** Un appel à une fonction (req, res), sans réseau : rend { statut, entetes, corps }. */
+export function appelFonction(f, { methode = 'GET', url, entetes = {}, corps } = {}) {
+  return new Promise((ok, ko) => {
+    const brut = corps === undefined ? [] : [Buffer.from(JSON.stringify(corps))];
+    const req = { method: methode, url, headers: { host: 'recette.exemple.test', ...(corps === undefined ? {} : { 'content-type': 'application/json' }), ...entetes }, socket: { remoteAddress: '10.0.0.1' }, async *[Symbol.asyncIterator]() { yield* brut; } };
+    const res = { headersSent: false, statut: 0, entetes: {}, writeHead(s, e = {}) { this.statut = s; this.entetes = e; this.headersSent = true; return this; }, end(t) { let c = null; try { c = t ? JSON.parse(t) : null; } catch { c = t; } ok({ statut: this.statut, entetes: this.entetes, corps: c }); } };
+    Promise.resolve(f(req, res)).catch(ko);
+  });
+}

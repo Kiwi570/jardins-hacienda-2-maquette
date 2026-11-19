@@ -48,7 +48,9 @@ export function creerApp({ db, config = {} }) {
       if (methode !== 'GET') {
         /* Écritures : du JSON seulement, et depuis notre site (une page d'un autre site ne peut pas faire agir un compte connecté). */
         if (!/^application\/json\b/i.test(entetes['content-type'] || '')) throw new Refus('VALIDATION', 'Le contenu doit être du JSON.', 415);
-        if (entetes.origin && config.origines?.length && !config.origines.includes(entetes.origin)) throw new Refus('ORIGINE', 'Requête refusée.', 403);
+        /* memeOrigine (fonction hébergée à la même adresse que le site) : l'origine doit être l'hôte de la requête elle-même. */
+        const memeHote = () => { try { return new URL(entetes.origin).host === String(entetes['x-forwarded-host'] || entetes.host || ''); } catch { return false; } };
+        if (entetes.origin && (config.memeOrigine ? !memeHote() && !(config.origines || []).includes(entetes.origin) : config.origines?.length && !config.origines.includes(entetes.origin))) throw new Refus('ORIGINE', 'Requête refusée.', 403);
         if (corps !== undefined && corps !== null && (typeof corps !== 'object' || Array.isArray(corps))) throw new Refus('VALIDATION', 'Le contenu doit être un objet JSON.', 422);
       }
       const compte = /^\/api\/public\//.test(chemin) ? null : await compteDe(db, lireCookie(entetes));

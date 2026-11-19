@@ -2,3 +2,5 @@
 _biblio
 assemblages
 node_modules
+.env
+.env.*

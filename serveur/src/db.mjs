@@ -24,15 +24,19 @@ export function ouvrir(url, { max = 10 } = {}) {
   };
 }
 
-/** Applique les migrations qui manquent, dans l'ordre de leur nom ; chacune dans sa transaction. Rend celles appliquées. */
-export async function migrer(db, dossier) {
+/** Applique les migrations qui manquent, dans l'ordre de leur nom ; chacune dans sa transaction. Rend celles appliquées.
+    `source` : un dossier de fichiers .sql, ou une liste [{ nom, sql }] (fonction hébergée : les fichiers sont embarqués). */
+export async function migrer(db, source) {
+  const liste = Array.isArray(source) ? [...source].sort((a, b) => a.nom.localeCompare(b.nom)) : readdirSync(source).filter((f) => f.endsWith('.sql')).sort().map((nom) => ({ nom, sql: readFileSync(join(source, nom), 'utf8') }));
   await db.q('create table if not exists migrations (nom text primary key, empreinte text not null, appliquee_le timestamptz not null default now())');
   const faites = new Map((await db.q('select nom, empreinte from migrations')).rows.map((r) => [r.nom, r.empreinte])), appliquees = [];
-  for (const nom of readdirSync(dossier).filter((f) => f.endsWith('.sql')).sort()) {
-    const sql = readFileSync(join(dossier, nom), 'utf8'), empreinte = createHash('sha256').update(sql).digest('hex');
+  for (const { nom, sql } of liste) {
+    const empreinte = createHash('sha256').update(sql).digest('hex');
     if (faites.has(nom)) { if (faites.get(nom) !== empreinte) throw new Error(`La migration ${nom} a changé depuis son application : écrire une nouvelle migration au lieu de modifier celle-ci.`); continue; }
-    await db.transaction(async (c) => { await c.query(sql); await c.query('insert into migrations (nom, empreinte) values ($1, $2)', [nom, empreinte]); });
-    appliquees.push(nom);
+    /* Deux démarrages au même instant (deux instances d'une fonction hébergée) : un verrou, et l'on revérifie une fois dedans. */
+    const faite = await db.transaction(async (c) => { await c.query('select pg_advisory_xact_lock(779001)'); if ((await c.query('select 1 from migrations where nom = $1', [nom])).rowCount) return false;
+      await c.query(sql); await c.query('insert into migrations (nom, empreinte) values ($1, $2)', [nom, empreinte]); return true; });
+    if (faite) appliquees.push(nom);
   }
   return appliquees;
 }

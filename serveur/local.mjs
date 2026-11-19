@@ -14,11 +14,14 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
 /* Jamais servis : les dossiers internes (comme .vercelignore), le serveur lui-même, les fichiers cachés. */
 const INTERDITS = /^\/(?:_[^/]*|serveur|outils|source|donnees|recu|node_modules|\.[^/]*)(?:\/|$)/;
 
-export async function demarrer({ url = process.env.DATABASE_URL, port = +process.env.PORT || 3000, origine, environnement = process.env.JH_ENV || 'recette', livraison = process.env.JH_LIVRAISON || '', silencieux = false } = {}) {
-  if (!url) throw new Error('DATABASE_URL manque : voir serveur/.env.exemple');
-  const db = ouvrir(url); await migrer(db, join(ici, 'migrations'));
-  const app = creerApp({ db, config: { origines: [origine || process.env.JH_ORIGINE || `http://localhost:${port}`], securise: String(origine || process.env.JH_ORIGINE || '').startsWith('https://'), environnement, livraison, journalErreur: (e) => { if (!silencieux) console.error(e); } } });
-  const api = versNoeud(app);
+/** `gestionnaire` : une fonction (req, res) déjà prête à la place de l'API locale (essai de la fonction hébergée). */
+export async function demarrer({ url = process.env.DATABASE_URL, port = +process.env.PORT || 3000, origine, environnement = process.env.JH_ENV || 'recette', livraison = process.env.JH_LIVRAISON || '', silencieux = false, gestionnaire = null } = {}) {
+  let db = null, api = gestionnaire;
+  if (!api) {
+    if (!url) throw new Error('DATABASE_URL manque : voir serveur/.env.exemple');
+    db = ouvrir(url); await migrer(db, join(ici, 'migrations'));
+    api = versNoeud(creerApp({ db, config: { origines: [origine || process.env.JH_ORIGINE || `http://localhost:${port}`], securise: String(origine || process.env.JH_ORIGINE || '').startsWith('https://'), environnement, livraison, journalErreur: (e) => { if (!silencieux) console.error(e); } } }));
+  }
   const serveur = createServer(async (req, res) => {
     const u = new URL(req.url, 'http://x'), chemin = decodeURIComponent(u.pathname);
     if (chemin.startsWith('/api/')) { await api(req, res); return; }
@@ -35,7 +38,7 @@ export async function demarrer({ url = process.env.DATABASE_URL, port = +process
     res.writeHead(404, { 'content-type': 'text/html; charset=utf-8' }).end(await readFile(join(racine, '404.html')).catch(() => 'Introuvable'));
   });
   await new Promise((ok) => serveur.listen(port, ok));
-  return { port, db, arreter: async () => { await new Promise((ok) => serveur.close(ok)); serveur.closeAllConnections?.(); await db.fermer(); } };
+  return { port, db, arreter: async () => { await new Promise((ok) => serveur.close(ok)); serveur.closeAllConnections?.(); await db?.fermer(); } };
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

@@ -104,6 +104,16 @@ Comparaison de l'archive v6 (commit 0cc7532) et de la v7, fichier par fichier : 
 - Accueil, le déjeuner : une carte « Carte de la semaine » avant « Nos entrées ». Elle reste à l'écran pendant cinq paliers de défilement : une nappe de lin rayée se déroule sur l'assiette fumante, puis chaque rubrique (Entrées, Plats, À partager, Desserts) glisse et se pose dans sa place en pointillés pendant que son assiette tombe sur la nappe ; la rubrique en cours donne sa fourchette de prix et son nombre de plats (calculés depuis la carte). En sortie, la table se lève et l'assiette fumante revient ; un clic sur une rubrique mène à son palier. Animations réduites, téléphone ou sans JavaScript : les quatre rubriques d'un coup.
 - Le déjeuner, suite : le titre de la section et la « Carte de la semaine » restent fixés ensemble, centrés dans l'écran (resserrés sur écran bas), l'image de droite à la même hauteur ; la nappe devient une table cosy (plateau de bois, nappe de lin écru posée de biais avec plis et ourlet cousu, bougie dont la flamme vacille) ; les assiettes posées sur la nappe sont les quatre vignettes du dessous, qui restent visibles puis s'envolent une à une de leur place, montent en arc en grandissant et se posent ; elles redescendent à leur place quand la table se lève.
 
+**La recette sur Vercel, préparée (v7.9.1)**
+
+Rien ne change sur le site. Rien n'est créé chez un hébergeur.
+
+- `serveur/hebergement/fonction.mjs` et `serveur/outils/construire-fonction.mjs` : l'API comme fonction hébergée, construite en un seul fichier (`api/index.mjs`) avec ses migrations et ses réglages de départ ; elle prépare seule une base vide, refuse les écritures venues d'un autre site, répond 503 sans base (jamais un succès).
+- Les migrations prennent un verrou : deux démarrages au même instant ne se marchent pas dessus.
+- Vérifié : un 12e test du serveur joue la fonction construite sur une base vide ; la recette dans le navigateur passe à travers elle (55 points, 0 échec).
+- La branche git `recette` (jamais fusionnée dans `main`) porte le site construit en mode connecté et la fonction. Marche à suivre, coût affiché et retour arrière : `_exploitation/recette-vercel.md`.
+- `.gitignore` : les fichiers `.env` ne peuvent plus être suivis par mégarde.
+
 **L'Hacienda partagée (v7.9.0)**
 
 Les mêmes réservations sur plusieurs appareils, avec des comptes, des droits et une base. **Implémenté et testé ; ni connecté, ni déployé, ni activé** : le site livré se comporte comme la v7.8.1 tant qu'aucun serveur n'est déclaré. Détail, preuves et limites : `_exploitation/avancement.md`.

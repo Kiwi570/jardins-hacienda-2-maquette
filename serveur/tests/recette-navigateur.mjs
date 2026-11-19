@@ -13,7 +13,8 @@ const captures = process.argv[2] || ''; if (captures) mkdirSync(captures, { recu
 const attendre = (ms) => new Promise((r) => setTimeout(r, ms));
 const resultats = []; let echecs = 0;
 const verifier = (quoi, ok, detail = '') => { resultats.push({ quoi, ok: !!ok, detail }); if (!ok) echecs++; console.log(`${ok ? 'ok   ' : 'ÉCHEC'} ${quoi}${ok || !detail ? '' : ` — ${detail}`}`); };
-const P = await pile({ port: 4791 }), BASE = P.adresse, nav = await chromium.launch();
+/* JH_FONCTION=chemin/vers/api/index.mjs : la même recette, l'API étant servie par la fonction hébergée construite. */
+const P = await pile({ port: 4791, fonction: process.env.JH_FONCTION || '' }), BASE = P.adresse, nav = await chromium.launch();
 const ecran = async (w, h, tactile = false) => { const c = await nav.newContext({ viewport: { width: w, height: h }, hasTouch: tactile, isMobile: tactile, locale: 'fr-FR', timezoneId: 'Europe/Paris', reducedMotion: 'reduce' }); const p = await c.newPage(); p.erreurs = []; p.on('pageerror', (e) => p.erreurs.push(e.message)); return p; };
 const pret = async (p) => { await attendre(900); await p.mouse.click(5, 5).catch(() => {}); await p.keyboard.press('Escape').catch(() => {}); await attendre(1500); };
 const iso = (k) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date(Date.now() + k * 864e5));
