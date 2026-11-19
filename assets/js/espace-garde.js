@@ -1,0 +1,78 @@
+/* Les règles consultées avant chaque action sur une réservation (v7.8.1), en fonctions pures (testées par
+   `node --test _audit/tests/*.test.mjs`). Le dépôt de données les appelle avant d'enregistrer, d'où que vienne l'action :
+   formulaire, barre, suggestion, glisser sur le plan. Demain, le serveur appellera les mêmes.
+
+   Chaque engagement est revérifié sur la réservation précise (date, service, heure, couverts, règles du jour, table) :
+   - noter une réservation au téléphone ;
+   - confirmer une demande, ou remettre une réservation annulée, refusée ou absente ;
+   - modifier une réservation ;
+   - asseoir une réservation à une table, ou plusieurs d'un coup.
+   Une table qui ne convient plus (trop petite, prise entre-temps, fermée) n'est jamais gardée : elle est retirée dans
+   le même enregistrement et la réservation redevient « à placer » ; la note le dit. */
+import { CAPACITE, enMin, heure, verifierResa, trouverResa } from './espace-regles.js?v=7';
+import { dureeDe } from './espace-service.js?v=7';
+import { planDuService, libre, tableApres } from './espace-salle.js?v=7';
+
+const INACTIFS = ['refusee', 'annulee', 'absente'];
+const minutes = (r) => ({ ...r, debutMin: enMin(r.heure), finMin: enMin(r.heure) + dureeDe(r.service) });
+
+/** Peut-on asseoir cette réservation à cette table ? '' si oui, sinon la phrase qui dit pourquoi. */
+export function refusPlacement(ctx, S, salle, r, table) {
+  if (!r) return 'Cette réservation est introuvable : elle a peut-être été supprimée ailleurs.';
+  if (INACTIFS.includes(r.statut)) return 'Cette réservation n\'est plus active : remettez-la d\'abord.';
+  const t = planDuService(ctx, S, salle, r.date, r.service).tables.find((x) => x.id === String(table));
+  if (!t) return `La table ${table} n'est pas sur le plan.`;
+  if (t.fermee) return 'La terrasse est fermée hors saison : elle rouvre en juin.';
+  if (!libre(t, minutes(r))) { const a = t.resas.find((x) => x.id !== r.id); return `La table ${t.id} est prise à cette heure-là (${a?.nom || 'une autre réservation'}, ${heure(a?.heure || r.heure)}).`; }
+  return '';
+}
+
+/**
+ * Ce que les règles disent d'une action : { refus, suites, note }.
+ * refus : la phrase qui dit pourquoi l'action est impossible ('' si elle est possible) ;
+ * suites : les actions à enregistrer avec elle ; note : ce qu'elles ont fait, à dire à l'écran.
+ * `salle` : le plan (donnees/salle.json) ; sans lui, les tables ne sont pas contrôlées.
+ */
+export function reglesAction(ctx, S, salle, nom, args = {}) {
+  const oui = { refus: '', suites: [], note: '' }, non = (refus) => ({ refus, suites: [], note: '' });
+  /* La table d'une réservation qui change ou revient : gardée si elle convient encore, sinon retirée. */
+  const table = (r, champs, pourquoi, places = true) => {
+    if (!salle || !r?.table) return oui;
+    const ta = tableApres(ctx, S, salle, r, champs, { places });
+    return ta.convient ? oui : { refus: '', suites: [{ nom: 'placerResa', args: { id: r.id, table: '' } }], note: `La table ${ta.table} ${pourquoi(ta.raison)} : la réservation est à placer.` };
+  };
+  if (nom === 'ajouterResa') {
+    const r = args.resa || {}; if (r.id && trouverResa(ctx, S, r.id)) return non('Cette réservation est déjà notée.');
+    const v = verifierResa(ctx, S, r); return v.ok ? oui : non(`Réservation impossible : ${v.message}`);
+  }
+  if (nom === 'modifierResa') {
+    const r = trouverResa(ctx, S, args.id), c = args.champs || {}; if (!r) return non('Cette réservation est introuvable : elle a peut-être été supprimée ailleurs.');
+    const bouge = ('heure' in c && c.heure !== r.heure) || ('service' in c && c.service !== r.service), n = 'couverts' in c ? Math.round(+c.couverts) : +r.couverts;
+    if (!Number.isFinite(n) || n < 1 || n > CAPACITE) return non(`Modification impossible : ${n > CAPACITE ? `${n} couverts, c'est plus que la salle (${CAPACITE}).` : 'il faut au moins un couvert.'}`);
+    if (bouge) { const v = verifierResa(ctx, S, { ...r, ...c, couverts: n }); if (!v.ok) return non(`Modification impossible : ${v.message}`); }
+    /* La table n'est remise en cause que si l'heure, le service ou le nombre de couverts change. */
+    return bouge || n > +r.couverts ? table(r, { ...c, couverts: n }, (raison) => `ne convient plus (${raison})`, n > +r.couverts) : oui;
+  }
+  if (nom === 'statut' && ['confirmee', 'arrivee'].includes(args.statut)) {
+    const r = trouverResa(ctx, S, args.id); if (!r) return oui;
+    /* Confirmer ou remettre une réservation à venir : la réservation précise doit encore être possible (heure d'arrivée comprise). */
+    if (args.statut === 'confirmee' && r.date >= ctx.auj) { const v = verifierResa(ctx, S, r); if (!v.ok) return non(`Confirmation impossible : ${v.raison === 'ferme' ? `${(v.message || 'le service est fermé').replace(/\.$/, '').toLowerCase()}. Rouvrez le service, ou refusez la demande.` : `${heure(r.heure)} n'est plus une heure d'arrivée ce jour-là. ${v.message} Modifiez l'heure de la réservation, ou refusez la demande.`}`); }
+    /* Une réservation qui revient (annulée, refusée, absente) ne reprend pas une table donnée entre-temps. */
+    return INACTIFS.includes(r.statut) ? table({ ...r, statut: args.statut }, {}, (raison) => (/prise/.test(raison) ? 'a été donnée entre-temps' : `ne convient plus (${raison})`), false) : oui;
+  }
+  if (nom === 'placerResa' && args.table && salle) { const refus = refusPlacement(ctx, S, salle, trouverResa(ctx, S, args.id), args.table); return refus ? non(refus) : oui; }
+  if (nom === 'placerPlusieurs' && salle) {
+    /* Chaque placement est contrôlé sur l'état où les précédents sont déjà posés : deux réservations ne peuvent pas recevoir la même table. */
+    let etat = S;
+    for (const [id, t] of Object.entries(args.places || {})) {
+      if (!t) continue;
+      const refus = refusPlacement(ctx, etat, salle, trouverResa(ctx, etat, id), t); if (refus) return non(refus);
+      etat = { ...etat, resa: { ...(etat.resa || {}), tables: { ...(etat.resa?.tables || {}), [id]: String(t) } } };
+    }
+    return oui;
+  }
+  return oui;
+}
+
+/** Le garde-fou seul : '' si l'action est possible, sinon la phrase qui dit pourquoi (sans contrôle des tables). */
+export const gardeMetier = (ctx, S, nom, args) => reglesAction(ctx, S, null, nom, args).refus;

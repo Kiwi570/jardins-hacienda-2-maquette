@@ -109,13 +109,13 @@ test('ouvrir une rubrique, retrouver un client, ne rien inventer', () => {
 
 test('la carte : épuisé aujourd\'hui, de nouveau proposé, un prix', () => {
   const p = un('épuisé : foie gras'); assert.equal(p.titre, 'Dire « Foie gras de canard maison » épuisé aujourd\'hui');
-  assert.deepEqual(p.action, { nom: 'epuise', args: { cle: 'entrees/0', date: AUJ, actif: true }, msg: p.action.msg, lien: '/la-carte' }); assert.deepEqual(p.aller, { vue: 'carte', onglet: 'carte', plat: 'entrees/0' });
+  assert.deepEqual(p.action, { nom: 'epuise', args: { cle: 'entrees/foie-gras-de-canard-maison', date: AUJ, actif: true }, msg: p.action.msg, lien: '/la-carte' }); assert.deepEqual(p.aller, { vue: 'carte', onglet: 'carte', plat: 'entrees/foie-gras-de-canard-maison' });
   const S = appliquer({}, 'epuise', p.action.args);
   assert.equal(un('plus de foie gras', S).inactif, true, 'déjà épuisé'); assert.equal(un('il reste du foie gras', S).action.args.actif, false); assert.equal(un('il reste du foie gras').inactif, true);
-  assert.equal(un('épuisé : os à moelle').action.args.cle, 'entrees/3'); assert.equal(un('plus de licorne rôtie'), undefined, 'un plat inconnu n\'est pas inventé');
-  const prix = un('foie gras à 23 €'); assert.equal(prix.titre, 'Passer « Foie gras de canard maison » à 23 €'); assert.deepEqual(prix.action.args, { cle: 'entrees/0', champs: { prix: 23 } });
+  assert.equal(un('épuisé : os à moelle').action.args.cle, 'entrees/l-os-a-moelle'); assert.equal(un('plus de licorne rôtie'), undefined, 'un plat inconnu n\'est pas inventé');
+  const prix = un('foie gras à 23 €'); assert.equal(prix.titre, 'Passer « Foie gras de canard maison » à 23 €'); assert.deepEqual(prix.action.args, { cle: 'entrees/foie-gras-de-canard-maison', champs: { prix: 23 } });
   assert.equal(un('prix du foie gras : 24,50').action.args.champs.prix, 24.5);
-  assert.equal(appliquer({}, 'plat', { ...prix.action.args, base: CARTE }).carte.modifs['entrees/0'].prix, 23);
+  assert.equal(appliquer({}, 'plat', { ...prix.action.args, base: CARTE }).carte.modifs['entrees/foie-gras-de-canard-maison'].prix, 23);
 });
 
 test('chaque exemple proposé est compris et lance une action connue', () => {

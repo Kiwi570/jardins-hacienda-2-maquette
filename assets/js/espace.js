@@ -30,7 +30,8 @@ import { creerService } from './espace-vue-service.js?v=7';
 import { creerSalle } from './espace-vue-salle.js?v=7';
 import { creerClient } from './espace-vue-client.js?v=7';
 import { normaliser, GENRES } from './espace-demandes.js?v=7';
-import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe, etatDuService, creneauxDuJour, verifierResa, gardeMetier } from './espace-regles.js?v=7';
+import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe, etatDuService, creneauxDuJour, verifierResa, listeEvenements } from './espace-regles.js?v=7';
+import { reglesAction } from './espace-garde.js?v=7';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -47,12 +48,21 @@ const REFUS = 'Ce navigateur refuse d\'enregistrer (mémoire pleine ou stockage 
 
 export function init(root) {
   let D; try { D = JSON.parse($('script[data-esp-donnees]', root).textContent); } catch { return; }
-  const R = D.reservation, A = aujourdhui();
+  const R = D.reservation;
+  /* Aujourd'hui, à Moineville : relu au fil du temps (v7.8.1). Une page restée ouverte après minuit ne garde plus la veille. */
+  const A = (() => { let t = 0, v = aujourdhui(); const lire = () => { if (Date.now() - t > 15000) { t = Date.now(); v = aujourdhui(); } return v; }; return { get iso() { return lire().iso; }, get min() { return lire().min; }, relire() { t = 0; return lire(); } }; })();
   /* Le garde-fou : avant d'enregistrer, le dépôt demande aux règles si l'action est possible (d'où qu'elle vienne). */
-  const depot = creerDepot(undefined, undefined, { garde: (nom, args, frais) => gardeMetier({ R, auj: A.iso, site: depot.resasSite(), exceptions: D.horaires.exceptions || [] }, frais, nom, args) });
+  const depot = creerDepot(undefined, undefined, {
+    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, site: depot.resasSite(), exceptions: D.horaires.exceptions || [] }, frais, D.salle, nom, args),
+    /* La liste des soirées publiée sur le site est calculée, jamais restaurée telle quelle : elle suit toujours les données. */
+    derives: [{ chemin: ['evenements', 'liste'], calcul: (e) => (e.evenements && (Object.keys(e.evenements.modifs || {}).length || (e.evenements.ajouts || []).length) ? listeEvenements(D.agenda, e) : undefined) }],
+  });
   const S = () => depot.etat();
   /* Le contexte des règles (réglages du site, jour, demandes venues du site) : relu à chaque rendu. */
   let contexte = null;
+  /* v7.8.1 : les plats du site sont désignés par un identifiant, plus par leur rang. Les anciennes références de ce
+     navigateur sont traduites une fois, sans rien afficher. */
+  { const c = depot.etat().carte || {}; if ([...Object.keys(c.modifs || {}), ...Object.keys(c.epuises || {})].some((k) => /\/\d+$/.test(k))) depot.agir('migrerCarte', { base: D.carte }); }
   const ctx = () => (contexte ||= { R, auj: A.iso, site: depot.resasSite(), demandes: depot.demandesSite(), produits: D.produits || [], exceptions: D.horaires.exceptions || [] });
   const services = servicesDe(R);
   const ouv = (iso, sv) => ouvert(ctx(), S(), iso, sv);
@@ -63,10 +73,15 @@ export function init(root) {
      toutes enregistrées avant de redessiner, de changer de rubrique ou de quitter la page (v7.8.0). */
   const ecritures = new Map();
   function viderEcritures() { for (const [k, x] of [...ecritures]) { clearTimeout(x.t); ecritures.delete(k); x.f(); } }
-  function plus_tard(f, cle = 'saisie') {
+  /* Sans clé, l'écriture a sa propre file : elle ne peut jamais effacer celle d'un autre champ (v7.8.1). */
+  function plus_tard(f, cle = Symbol('saisie')) {
     etatSauve('cours', 'En cours…'); const deja = ecritures.get(cle); if (deja) clearTimeout(deja.t);
     ecritures.set(cle, { f, t: setTimeout(() => { ecritures.delete(cle); f(); }, 500) });
   }
+  /* Le jour change (minuit, ou la page retrouvée le lendemain) : l'espace passe au nouveau jour sans rechargement. */
+  let jourConnu = A.iso;
+  function suivreLeJour() { A.relire(); if (A.iso === jourConnu) return; if (etat.jour === jourConnu) etat.jour = A.iso; jourConnu = A.iso; contexte = null; if (document.documentElement.classList.contains('esp-dedans')) rendre(); }
+  setInterval(suivreLeJour, 30000); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') suivreLeJour(); });
   addEventListener('pagehide', viderEcritures); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') viderEcritures(); });
   const resas = (iso) => resasDuJour(ctx(), S(), iso);
   const enAttente = () => aConfirmer(ctx(), S());
@@ -91,13 +106,17 @@ export function init(root) {
   function agir(nom, args, { msg = 'Enregistré : visible sur le site, dans ce navigateur.', lien = '', groupe = '' } = {}) {
     const ok = depot.agir(nom, args, { libelle: msg, groupe });
     contexte = null;
-    if (ok) dire(msg, { lien, annuler: true }); else dire(depot.raisonRefus() || REFUS);
+    /* Ce que les règles ont fait en plus (une table retirée) est dit avec le message. */
+    if (ok) dire([msg, depot.noteAction()].filter(Boolean).join(' '), { lien, annuler: true }); else dire(depot.raisonRefus() || REFUS);
     return ok;
   }
   function annuler() {
-    if (!depot.annuler()) return;
-    const n = depot.conflitsAnnulation();
-    contexte = null; dire(n ? `Annulé en partie : ${n > 1 ? `${n} éléments ont été modifiés` : 'un élément a été modifié'} ailleurs depuis, ${n > 1 ? 'ils sont gardés' : 'il est gardé'} tel quel.` : 'Annulé : tout est revenu comme avant.'); rendre();
+    if (!depot.peutAnnuler()) return;
+    if (!depot.annuler()) { dire(REFUS); return; }
+    /* Ce qui a été retouché ailleurs depuis est gardé tel quel, et nommé ; ce qui n'a pas pu être restauré est dit. */
+    const NOMS = { resa: 'une réservation', evenements: 'une soirée', annonce: 'l\'annonce', horaires: 'les horaires', carte: 'la carte', ardoise: 'l\'ardoise', textes: 'un texte', photos: 'une photo', clients: 'une fiche client', demandes: 'une demande', messages: 'un modèle de message', conseils: 'une suggestion' };
+    const quoi = [...new Set(depot.gardesAnnulation().map((c) => NOMS[c[0]] || 'un élément'))], partiel = depot.annulationPartielle();
+    contexte = null; dire(quoi.length ? `Annulé en partie : ${quoi.join(', ')} ${quoi.length > 1 ? 'ont été modifiés' : 'a été modifié'} ailleurs depuis ; ${quoi.length > 1 ? 'les versions actuelles sont gardées' : 'la version actuelle est gardée'}.` : partiel ? `Annulé, sauf ${partiel} : le navigateur a refusé de les restaurer.` : 'Annulé : tout est revenu comme avant.'); rendre();
     const t = $(`#vue-${etat.vue}`, root); t?.setAttribute('tabindex', '-1'); t?.focus({ preventScroll: true });
   }
   toastAnnuler.addEventListener('click', annuler);
@@ -525,7 +544,7 @@ export function init(root) {
     if (t.closest('[data-retirer-plat]')) { const li = t.closest('li'), fs = li.closest('[data-ardoise]'); li.remove(); sauverArdoise('Plat retiré de l\'ardoise.'); $('[data-ajouter-plat]', fs)?.focus(); return; }
     const rt = t.closest('[data-retablir-texte]'); if (rt) { const cle = rt.dataset.retablirTexte; agir('texte', { cle, valeur: '' }, { msg: 'Texte d\'origine rétabli.', lien: D.textes.find((x) => x.cle === cle)?.url }); rendre(); $(`[name="${CSS.escape(cle)}"]`, root)?.focus(); return; }
     if (t.closest('[data-esp-quitter]')) { try { sessionStorage.removeItem('jh-espace-session'); } catch { /* rien */ } ouvrirPlus(false, false); montrer(false); return; }
-    if (t.closest('[data-tout-effacer]')) { ouvrirPlus(false, false); depot.toutEffacer({ libelle: 'Tout remettre comme livré' }); contexte = null; etat.evEdite = null; dire('Tout est revenu comme à la livraison.', { annuler: true }); rendre(); $(`#vue-${etat.vue}`, root)?.focus({ preventScroll: true }); }
+    if (t.closest('[data-tout-effacer]')) { ouvrirPlus(false, false); if (!depot.toutEffacer({ libelle: 'Tout remettre comme livré' })) { dire('Votre navigateur a refusé d\'effacer : rien n\'a été remis comme livré.'); return; } contexte = null; etat.evEdite = null; dire('Tout est revenu comme à la livraison.', { annuler: true }); rendre(); $(`#vue-${etat.vue}`, root)?.focus({ preventScroll: true }); }
   });
 
   // ---------- Saisie : enregistrée au fil de l'eau ----------

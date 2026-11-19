@@ -82,7 +82,7 @@ function plat(p, devise) {
     : `<span class="carte-resto__prix">${echap(prix(p.prix, devise))}</span>`;
   const regimes = p.regimes.filter((r) => FILTRES[r]);
   const texte = normer([p.nom, p.description, ...regimes.map((r) => FILTRES[r].libelle)].join(' '));
-  return `<li class="carte-resto__plat" data-filtres="${echap(regimes.join(' '))}" data-texte="${echap(texte)}">`
+  return `<li class="carte-resto__plat"${p.id ? ` data-plat="${echap(p.id)}"` : ''} data-filtres="${echap(regimes.join(' '))}" data-texte="${echap(texte)}">`
     + `<div class="carte-resto__plat-ligne"><span class="carte-resto__plat-nom">${echap(p.nom)}</span>${p.mention ? `<span class="carte-resto__mention">${echap(p.mention)}</span>` : ''}<span class="carte-resto__points" aria-hidden="true"></span>${prixHtml}</div>`
     + (p.description ? `<p class="carte-resto__desc">${echap(p.description)}</p>` : '')
     + (regimes.length || p.allergenes.length ? `<ul class="carte-resto__etiquettes" aria-label="Régime et allergènes">${pictos(regimes, FILTRES, 'carte-resto__regime')}${p.allergenes.length ? pictos(p.allergenes, ALLERGENES, 'carte-resto__allergene') : ''}</ul>` : '')

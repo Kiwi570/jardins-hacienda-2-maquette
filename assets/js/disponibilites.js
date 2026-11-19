@@ -63,14 +63,17 @@ export function etatService(R, iso, sv, equipe = R?.equipe || {}) {
   const F = R.fermetures || {}, j = JOURS[jourDe(iso)];
   /* 1. Fermeture exceptionnelle : une date des réglages, une période des horaires publiés, une période posée dans l'espace. */
   if ((F.dates || []).includes(iso)) return ferme('fermeture', 'Fermeture exceptionnelle');
-  const periode = [...(F.periodes || []), ...(equipe.fermetures || [])].find((x) => dans(iso, x) && !(x.creneaux || []).length);
+  const exceptions = [...(F.periodes || []), ...(equipe.fermetures || [])].filter((x) => dans(iso, x) && !x.ouverture);
+  const periode = exceptions.find((x) => !(x.creneaux || []).length);
   if (periode) return ferme('fermeture', periode.motif || 'Fermeture exceptionnelle');
+  /* Des horaires particuliers ce jour-là (une exception des horaires publiés, avec ses créneaux) remplacent ceux de la semaine. */
+  const particulier = exceptions.find((x) => (x.creneaux || []).length);
   /* 2. Service fermé ce jour-là depuis l'agenda. */
   if ((equipe.fermes?.[iso] || []).includes(sv) || (F.par_date?.[iso] || []).includes(sv)) return ferme('ferme', 'Service fermé ce jour-là');
   /* 3 et 4. Ouverture exceptionnelle, sinon la semaine. */
   const exc = [...(R.ouvertures_exceptionnelles || []), ...(equipe.ouvertures || [])].find((x) => x.date === iso && x.service === sv);
-  const plage = equipe.semaine ? (equipe.semaine[j] || []).find((c) => svDe(c) === sv) : null;
-  const semaineOuverte = equipe.semaine ? !!plage : !(F.jours || []).includes(j) && !(F.services?.[j] || []).includes(sv);
+  const plage = particulier ? particulier.creneaux.find((c) => svDe(c) === sv) : equipe.semaine ? (equipe.semaine[j] || []).find((c) => svDe(c) === sv) : null;
+  const semaineOuverte = particulier || equipe.semaine ? !!plage : !(F.jours || []).includes(j) && !(F.services?.[j] || []).includes(sv);
   if (!semaineOuverte && !exc) return ferme('semaine', 'Fermé ce jour de la semaine');
   /* 5. Les heures d'arrivée : celles du service, resserrées si les horaires de la semaine ont été déplacés. */
   let debut = s.d, fin = s.f;
@@ -84,6 +87,34 @@ export function etatService(R, iso, sv, equipe = R?.equipe || {}) {
   /* 6. Complet : dit par le restaurant pour le service entier. */
   const complet = (equipe.complets?.[iso] || []).includes(sv);
   return { ouvert: true, raison: '', motif: '', exceptionnel: !!exc && !semaineOuverte, note: exc?.note || '', complet, debut, fin, pas: s.pas };
+}
+
+/**
+ * Les ouvertures exceptionnelles, dites comme des exceptions d'horaires (v7.8.1) : le statut « ouvert maintenant » et la
+ * liste « À noter » expliquent ainsi le même soir que la réservation propose. Le créneau du service est celui que la
+ * semaine lui donne les autres jours ; à défaut, de la première arrivée à « dernière arrivée plus la marge ».
+ * Ces entrées portent `ouverture: true` : elles informent l'affichage, elles ne changent pas les règles.
+ */
+export function exceptionsOuvertures(R, semaine = {}, ouvertures = []) {
+  return ouvertures.filter((o) => dateValide(o.date)).map((o) => {
+    const jour = semaine[JOURS[jourDe(o.date)]] || [], s = servicesDe(R).find((x) => x.id === o.service);
+    if (!s || jour.some((c) => svDe(c) === o.service)) return null;
+    const vus = Object.values(semaine).flat().filter((c) => svDe(c) === o.service), compte = (c) => vus.filter((x) => x === c).length;
+    const creneau = [...vus].sort((a, b) => compte(b) - compte(a))[0] || `${hhmm(s.d)}-${hhmm(s.f + margeDe(R, o.service))}`;
+    return { du: o.date, au: o.date, creneaux: [...jour, creneau].sort(), motif: o.note || 'Ouverture exceptionnelle', ouverture: true };
+  }).filter(Boolean);
+}
+
+/**
+ * Ce que le site publie, calculé une fois par le générateur (v7.8.1) pour que le public et l'équipe reçoivent les mêmes
+ * exceptions : les réglages de la réservation reçoivent les exceptions des horaires (`fermetures.periodes`), et les
+ * horaires reçoivent les ouvertures exceptionnelles de la réservation.
+ * @returns {{ reservation: object, exceptions: object[] }}
+ */
+export function publier(reservation, adresse = {}) {
+  const base = (adresse.exceptions || []).filter((x) => !x.ouverture).map((x) => ({ du: x.du || x.date, au: x.au || x.du || x.date, creneaux: x.creneaux || [], motif: x.motif || '' }));
+  return { reservation: { ...reservation, fermetures: { ...(reservation.fermetures || {}), periodes: base } },
+    exceptions: [...(adresse.exceptions || []).filter((x) => !x.ouverture), ...exceptionsOuvertures(reservation, adresse.semaine || {}, reservation.ouvertures_exceptionnelles || [])] };
 }
 
 /** Le service est-il ouvert ce jour-là ? */

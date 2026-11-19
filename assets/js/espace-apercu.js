@@ -3,7 +3,7 @@
    horaires et fermetures (les JSON que lisent le statut et la réservation), événements, la carte (v7.7.3), puis l'annonce et une
    petite pastille « Aperçu de vos modifications ». Ne fait rien si l'espace n'a rien changé. */
 import { lire, estVide } from './espace-stock.js?v=7';
-import { equipeDe } from './disponibilites.js?v=7';
+import { equipeDe, exceptionsOuvertures } from './disponibilites.js?v=7';
 
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -75,7 +75,8 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
     const epuiser = (li) => { li.classList.add('est-epuise'); li.querySelector('.carte-resto__plat-nom').insertAdjacentHTML('afterend', '<span class="carte-resto__epuise">Épuisé aujourd\'hui</span>'); };
     for (const sec of $$('[data-rubrique]')) {
       const rub = sec.dataset.rubrique, ul = sec.querySelector('.carte-resto__plats'), lis = $$('.carte-resto__plat', sec), modele = lis[0];
-      lis.forEach((li, i) => { const cle = `${rub}/${i}`, x = m[cle]; if (x?.masque) { li.remove(); return; } if (x) ecrire(li, x); if (ep[cle] === auj) epuiser(li); });
+      /* v7.8.1 : un plat est reconnu à son identifiant, plus à son rang ; les anciennes clés « rubrique/rang » sont encore lues. */
+      lis.forEach((li, i) => { const id = li.dataset.plat, cle = id && (`${rub}/${id}` in m || ep[`${rub}/${id}`] !== undefined) ? `${rub}/${id}` : `${rub}/${i}`, x = m[cle]; if (x?.masque) { li.remove(); return; } if (x) ecrire(li, x); if (ep[cle] === auj) epuiser(li); });
       for (const a of (c.ajouts || []).filter((x) => x.rubrique === rub)) {
         if (!modele || !ul) continue;
         const li = modele.cloneNode(true); li.classList.remove('est-epuise'); li.dataset.filtres = ''; li.querySelector('.carte-resto__epuise')?.remove(); li.querySelector('.carte-resto__etiquettes')?.remove(); li.querySelector('.carte-resto__allergenes')?.remove();
@@ -91,11 +92,15 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
 
   /* Horaires de la semaine et fermetures exceptionnelles : le statut « ouvert maintenant » les suit partout. */
   const sem = S.horaires?.semaine, exc = S.horaires?.exceptions || [];
-  if (sem || exc.length) sur(() => {
+  const ouv = S.resa?.ouvertures || [];
+  if (sem || exc.length || ouv.length) sur(() => {
+    let R = null; try { R = JSON.parse(document.querySelector('script[data-reservation], script[data-reservation-accueil], script[data-reservation-globale]')?.textContent || 'null'); } catch { /* sans réglages : pas d'ouverture à expliquer */ }
     for (const sc of $$('script[data-horaires-accueil], script[data-horaires-pied], script[data-horaires]')) json(sc, (d) => {
       const a = d.adresses?.[0]; if (!a) return d;
       if (sem) a.semaine = sem;
-      a.exceptions = [...(a.exceptions || []), ...exc.map((e) => ({ du: e.du, au: e.au, creneaux: [], motif: e.motif || 'Fermeture exceptionnelle' }))];
+      /* Les fermetures posées dans l'espace d'abord (elles l'emportent), puis ses ouvertures exceptionnelles, expliquées
+         comme le fait le site pour la Saint-Sylvestre (v7.8.1), puis celles déjà publiées. */
+      a.exceptions = [...exc.map((e) => ({ du: e.du, au: e.au, creneaux: [], motif: e.motif || 'Fermeture exceptionnelle' })), ...(R ? exceptionsOuvertures(R, a.semaine || {}, ouv) : []), ...(a.exceptions || [])];
       return d;
     });
   });
@@ -136,12 +141,13 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
     /* L'espace garde la liste à jour (sans les photos) : la prochaine soirée de l'accueil et l'agenda de Réserver la lisent. */
     const L = (S.evenements.liste || []).filter((e) => !e.masque);
     const ps = document.querySelector('[data-prochaine-soiree] script');
-    if (ps && L.length) json(ps, () => L.filter((e) => e.type !== 'Fête').map((e) => ({ t: e.titre, d: e.debut, p: e.prix })));
+    /* v7.8.1 : une liste devenue vide est écrite vide ; le site retire alors l'annonce au lieu de garder l'ancienne. */
+    if (ps) json(ps, () => L.filter((e) => e.type !== 'Fête').map((e) => ({ t: e.titre, d: e.debut, p: e.prix })));
     /* Le prochain rendez-vous annoncé en haut de l'accueil lit la même liste (v7.8.0 : il gardait l'ancien titre). */
     const hr = document.querySelector('script[data-heros-agenda]');
-    if (hr && L.length) json(hr, (base) => { const ancre = Object.fromEntries((base || []).map((x) => [x.id, x.a])); return L.map((e) => ({ id: e.id, t: e.titre, d: e.debut.slice(0, 10), a: ancre[e.id] || 'dates' })); });
+    if (hr) json(hr, (base) => { const ancre = Object.fromEntries((base || []).map((x) => [x.id, x.a])); return L.map((e) => ({ id: e.id, t: e.titre, d: e.debut.slice(0, 10), a: ancre[e.id] || 'dates' })); });
     const ag = document.querySelector('script[data-agenda]');
-    if (ag && L.length) json(ag, () => L.map((e) => ({ id: e.id, t: e.titre, d: e.debut, p: e.prix })));
+    if (ag) json(ag, () => L.map((e) => ({ id: e.id, t: e.titre, d: e.debut, p: e.prix })));
   });
 
   /* L'annonce du restaurant, puis la pastille qui rappelle que ces changements ne se voient que dans ce navigateur. */

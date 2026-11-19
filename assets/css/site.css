@@ -4898,6 +4898,16 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 /* v7.8.0 · l'agenda dit les heures d'arrivée du jour, ou pourquoi le service est fermé */
 .esp-insecable { white-space: nowrap; }
 .esp-service__tete h4 .esp-pastille { margin-top: 4px; white-space: normal; }
+/* v7.8.1 · « À noter » sous les horaires de la semaine (page Infos pratiques) */
+.semaine__noter { margin-top: 28px; max-width: 60ch; }
+.semaine__noter-titre { margin: 0 0 8px; font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.semaine__noter ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.semaine__noter li { font-size: 1rem; line-height: 1.5; }
+.mini-resa__vide { margin: 0; font-size: 15px; line-height: 1.5; }
+.carton__suite { margin: 6px 0 0; font-size: 14px; line-height: 1.45; text-align: center; }
+.envoi-refuse { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); z-index: 90; translate: -50% 0; display: flex; align-items: center; gap: 14px; width: min(calc(100% - 24px), 560px); padding: 14px 18px; border-radius: 16px; background: #b8322c; color: #fff; box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .6); }
+.envoi-refuse p { margin: 0; font-size: 15px; line-height: 1.45; }
+.envoi-refuse button { flex: none; min-height: 44px; padding: 0 16px; border: 1px solid #fff; border-radius: 999px; background: transparent; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
 .esp-bonjour { margin: -8px 0 18px; font-size: clamp(1rem, .96rem + .2vw, 1.12rem); color: var(--couleur-texte-doux); }
 /* Sur téléphone, les réponses à une demande sont de gros boutons, côte à côte. */
 @media (max-width: 720px) { .esp-resa__actions .esp-bouton { flex: 1 1 0; min-height: 48px; font-size: 16px; } }

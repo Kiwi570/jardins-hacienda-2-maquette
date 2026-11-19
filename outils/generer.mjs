@@ -65,6 +65,12 @@ const donnees = {};
 for (const f of readdirSync(join(racine, 'donnees'))) {
   if (f.endsWith('.json') && f !== 'site.json') donnees[f.replace(/\.json$/, '')] = lire(`donnees/${f}`);
 }
+/* v7.8.1 : la réservation et les horaires publiés reçoivent les mêmes exceptions (disponibilites.js), calculées une fois ici. */
+if (donnees.reservation && donnees.horaires?.adresses?.[0]) {
+  const { publier } = await import(pathToFileURL(join(racine, 'assets/js/disponibilites.js')).href);
+  const p = publier(donnees.reservation, donnees.horaires.adresses[0]);
+  donnees.reservation = p.reservation; donnees.horaires.adresses[0].exceptions = p.exceptions;
+}
 const localiser = (o, l) => {
   if (Array.isArray(o)) return o.map((x) => localiser(x, l));
   if (o && typeof o === 'object') {

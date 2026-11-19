@@ -91,8 +91,8 @@ export function creerDemandes(X) {
     return false;
   }
   function saisie(t) {
-    if (t.matches('[data-note-demande]')) { const id = t.dataset.noteDemande; X.plusTard(() => agir('noteDemande', { id, note: t.value }, { msg: 'Note enregistrée.', groupe: `note-${id}` })); return true; }
-    if (t.closest('[data-form-messages]')) { const cle = t.name; $(`[data-apercu-modele="${cle}"]`, root).textContent = composer(typo(t.value), exempleModele(cle, D.telephone)); X.plusTard(() => agir('modeleMessage', { cle, texte: t.value, defaut: MODELES[cle].texte }, { msg: 'Message enregistré.', groupe: `modele-${cle}` })); return true; }
+    if (t.matches('[data-note-demande]')) { const id = t.dataset.noteDemande; X.plusTard(() => agir('noteDemande', { id, note: t.value }, { msg: 'Note enregistrée.', groupe: `note-${id}` }), `note-${id}`); return true; }
+    if (t.closest('[data-form-messages]')) { const cle = t.name; $(`[data-apercu-modele="${cle}"]`, root).textContent = composer(typo(t.value), exempleModele(cle, D.telephone)); X.plusTard(() => agir('modeleMessage', { cle, texte: t.value, defaut: MODELES[cle].texte }, { msg: 'Message enregistré.', groupe: `modele-${cle}` }), `modele-${cle}`); return true; }
     return false;
   }
   return { rendre, rendreMessages, carte, clic, saisie, liste, attente };

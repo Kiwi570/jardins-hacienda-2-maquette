@@ -4,11 +4,11 @@
    espace-clients.js ; ce fichier dessine et écoute. */
 import { STATUTS, fmt, maj, heure, pluriel, typo } from './espace-regles.js?v=7';
 import { ALLERGENES } from './espace-carte.js?v=7';
-import { cleClient, marques, fiche } from './espace-clients.js?v=7';
+import { cleClient, marques, fiche, notesDe, changementsFiche } from './espace-clients.js?v=7';
 
 export function creerClient(X) {
   const { root, $, $$, e, S, ctx, etat, agir } = X;
-  let fen = null, retour = null, cle = null;
+  let fen = null, retour = null, cle = null, ouverture = null;
 
   /** Le nom d'un client, à toucher pour ouvrir sa fiche ; « Habitué » s'il l'est. */
   function nom(r) {
@@ -37,13 +37,22 @@ export function creerClient(X) {
       </div>`;
   }
 
-  function fermer() { if (!fen || fen.hidden) return; noter(); fen.hidden = true; document.documentElement.classList.remove('esp-modale-ouverte'); X.rendre(); (retour && document.contains(retour) ? retour : $$(`[data-client="${CSS.escape(cle || '')}"]`, root).find((x) => x.offsetParent))?.focus?.(); }
-  /* Enregistre ce qui a changé dans la fiche (rien si rien n'a changé). */
+  function fermer() { if (!fen || fen.hidden) return; noter(); ouverture = null; fen.hidden = true; document.documentElement.classList.remove('esp-modale-ouverte'); X.rendre(); (retour && document.contains(retour) ? retour : $$(`[data-client="${CSS.escape(cle || '')}"]`, root).find((x) => x.offsetParent))?.focus?.(); }
+  /* Enregistre ce que la personne a réellement changé depuis l'ouverture de la fiche, et rien d'autre (v7.8.1) : une
+     fiche intacte n'écrit rien à sa fermeture, et une allergie notée ailleurs entre-temps n'est jamais effacée. Si le
+     même champ a été changé ailleurs, la version enregistrée est gardée et montrée, et la fiche le dit. */
   function noter() {
-    const f = $('[data-form-client]', fen); if (!f) return;
-    const champs = { habitue: f.elements.habitue.checked, allergies: $$('input[name="allergie"]:checked', f).map((i) => i.value), note: f.elements.note.value }, avant = fiche(ctx(), S(), cle);
-    if (champs.habitue === avant.habitue && champs.note.trim() === avant.note && champs.allergies.join('|') === avant.allergies.join('|')) return;
-    if (agir('client', { cle, champs }, { msg: `Fiche de ${avant.nom} enregistrée.`, groupe: `client-${cle}` })) { $('[data-client-etat]', fen).textContent = 'Enregistré.'; $('[data-client-habitue]', fen).hidden = !champs.habitue; }
+    const f = $('[data-form-client]', fen); if (!f || !ouverture) return;
+    const saisie = { habitue: f.elements.habitue.checked, allergies: $$('input[name="allergie"]:checked', f).map((i) => i.value), note: f.elements.note.value };
+    const courant = notesDe(S(), cle), { champs, conflits } = changementsFiche(ouverture, saisie, courant), dit = $('[data-client-etat]', fen);
+    if (champs && !agir('client', { cle, champs }, { msg: `Fiche de ${fiche(ctx(), S(), cle).nom} enregistrée.`, groupe: `client-${cle}` })) { dit.textContent = 'Non enregistré : votre navigateur a refusé.'; return; }
+    if (!champs && !conflits.length) return;
+    /* La fiche repart de ce qui est enregistré maintenant : les allergies ajoutées ailleurs apparaissent, un champ en conflit reprend sa valeur enregistrée. */
+    const apres = notesDe(S(), cle);
+    if (conflits.includes('note')) f.elements.note.value = apres.note; if (conflits.includes('habitue')) f.elements.habitue.checked = apres.habitue;
+    for (const i of $$('input[name="allergie"]', f)) i.checked = apres.allergies.includes(i.value);
+    ouverture = { habitue: apres.habitue, allergies: [...apres.allergies], note: apres.note }; $('[data-client-habitue]', fen).hidden = !apres.habitue;
+    dit.textContent = conflits.length ? `${conflits.includes('note') ? 'Les préférences' : 'La mention « Habitué »'} ${conflits.length > 1 ? 'et la mention « Habitué » ont' : conflits.includes('note') ? 'ont' : 'a'} été modifiée${conflits.includes('note') ? 's' : ''} ailleurs pendant que la fiche était ouverte : la version enregistrée est affichée, la vôtre n'a pas été prise.` : 'Enregistré.';
   }
 
   /** Ouvre la fiche du client `c` ; le focus revient à `depuis` à la fermeture. */
@@ -69,6 +78,8 @@ export function creerClient(X) {
       });
     }
     $('[data-client-boite]', fen).innerHTML = contenu();
+    /* L'état de la fiche à son ouverture : on n'enregistrera que ce qui s'en écarte. */
+    { const n = notesDe(S(), cle); ouverture = { habitue: n.habitue, allergies: [...n.allergies], note: n.note }; }
     fen.hidden = false; document.documentElement.classList.add('esp-modale-ouverte'); $('.esp-rond[data-fermer-client]', fen).focus();
   }
 

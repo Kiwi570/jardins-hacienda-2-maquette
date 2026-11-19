@@ -46,7 +46,8 @@ export function ecrire(d) {
 }
 /** Lit, change (f reçoit l'objet), enregistre ; renvoie false si l'enregistrement a échoué (et ne change rien). */
 export function changer(f) { const d = lire(); f(d); return ecrire(d); }
-export function vider() { try { localStorage.removeItem(CLE); localStorage.removeItem(CLE_RESAS); localStorage.removeItem(CLE_DEMANDES); } catch { /* rien */ } }
+/** Efface tout ; false si le navigateur a refusé (rien ne doit alors être annoncé comme effacé). */
+export function vider() { try { localStorage.removeItem(CLE); localStorage.removeItem(CLE_RESAS); localStorage.removeItem(CLE_DEMANDES); return true; } catch { return false; } }
 export const estVide = (d) => !d || !Object.keys(d).some((k) => !k.startsWith('_') && d[k] && (typeof d[k] !== 'object' || Object.keys(d[k]).length));
 
 /* Les réservations faites sur la page Réserver de ce navigateur : elles arrivent dans l'agenda de l'espace.

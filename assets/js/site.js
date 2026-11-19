@@ -7,6 +7,17 @@
 import './espace-apercu.js?v=7';
 /* v7.7.2 · Les demandes faites sur le site (réception, traiteur, carte cadeau, question) arrivent dans l'espace restaurateur. */
 import { ajouterDemandeSite } from './espace-stock.js?v=7';
+/* v7.8.1 · Aucune réussite avant un enregistrement réussi : si la demande n'a pas pu être passée au restaurant
+   (mémoire du navigateur pleine ou refusée), c'est dit clairement par-dessus l'écran de confirmation du formulaire. */
+function transmettreDemande(d) {
+  if (ajouterDemandeSite(d) !== false) return true;
+  document.querySelector('.envoi-refuse')?.remove();
+  const z = document.createElement('div'); z.className = 'envoi-refuse'; z.setAttribute('role', 'alert');
+  const p = document.createElement('p'); p.textContent = 'Votre demande n\u2019a pas pu être transmise au restaurant depuis ce navigateur. Elle n\u2019est pas enregistrée\u00a0: réessayez, ou appelez-nous.';
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Fermer'; b.addEventListener('click', () => z.remove());
+  z.append(p, b); document.body.append(z); b.focus({ preventScroll: true });
+  return false;
+}
 /* v7.8.0 · Les règles de disponibilité communes au site et à l'espace (ouvertures, dernière arrivée, complet). */
 import { etatService, JOURS as JOURS_SEMAINE, ajouter as ajouterJours } from './disponibilites.js?v=7';
 import { demarrer, boucle, etat, versObjet, quand, aller, partir, bloquerDefilement, debloquerDefilement, revelerMaintenant } from './socle/index.js?v=7';
@@ -161,8 +172,8 @@ function rappelSoiree() {
   el.textContent = `Pour\u00a0: ${x.t}, ${jour}${x.p ? ` · ${x.p}` : ''}.`; el.hidden = false;
 }
 /* Une question (Infos pratiques) : après l'envoi, le message de fin revient à l'écran. */
-document.addEventListener('formulaire:envoye', (e) => { const v = e.detail?.valeurs || e.detail || {}; ajouterDemandeSite({ genre: 'question', sujet: String((e.detail?.resume || []).flatMap((g) => g.champs || []).find((c) => c.nom === 'sujet')?.valeur || v.sujet || ''), message: v.message || '', date: v.date || '', prenom: v.prenom || '', nom: v.nom || '', telephone: v.telephone || '', email: v.email || '' }); });
-document.addEventListener('ccq:valide', (e) => { const d = e.detail || {}; ajouterDemandeSite({ genre: 'cadeau', montant: d.montant, quantite: d.quantite, total: d.total, pour: d.pour || '', de: d.de || '', mot: d.mot || '' }); });
+document.addEventListener('formulaire:envoye', (e) => { const v = e.detail?.valeurs || e.detail || {}; transmettreDemande({ genre: 'question', sujet: String((e.detail?.resume || []).flatMap((g) => g.champs || []).find((c) => c.nom === 'sujet')?.valeur || v.sujet || ''), message: v.message || '', date: v.date || '', prenom: v.prenom || '', nom: v.nom || '', telephone: v.telephone || '', email: v.email || '' }); });
+document.addEventListener('ccq:valide', (e) => { const d = e.detail || {}; transmettreDemande({ genre: 'cadeau', montant: d.montant, quantite: d.quantite, total: d.total, pour: d.pour || '', de: d.de || '', mot: d.mot || '' }); });
 document.addEventListener('formulaire:envoye', (e) => { const fin = e.target.closest('[data-module="formulaire-par-etapes"]')?.querySelector('.fpe__fin'); if (fin) setTimeout(() => amenerDansEcran(fin, true), 120); });
 let givreEnAttente = null;
 function givreAuRepos() {
@@ -227,6 +238,17 @@ async function statuts() {
   try {
     const H = await import('./modules/horaires-ouvert-maintenant/horaires-calcul.js?v=7');
     const a = H.preparer(JSON.parse(src.textContent)).adresses[0];
+    /* v7.8.1 · « À noter », sous les horaires de la semaine : les fermetures et les ouvertures exceptionnelles des six
+       semaines à venir, dites comme la réservation les applique (la Saint-Sylvestre, une soirée ouverte par le restaurant). */
+    const hote = $('#horaires .conteneur');
+    if (hote) {
+      const l = H.aVenir(a, H.maintenant(a.fuseau).iso, 45);
+      if (l.length) {
+        const z = document.createElement('div'); z.className = 'semaine__noter'; const t = document.createElement('p'); t.className = 'semaine__noter-titre'; t.textContent = 'À noter'; const ul = document.createElement('ul');
+        for (const x of l) { const li = document.createElement('li'); li.textContent = x.texte.replace(/ ([:;!?])/g, '\u00a0$1'); ul.append(li); }
+        z.append(t, ul); hote.append(z);
+      }
+    }
     const maj = () => {
       const st = H.statut(a, H.maintenant(a.fuseau));
       /* Le statut de l'ouverture dit l'heure réelle : la grande « 12:00 » est l'heure de la journée racontée, pas celle du visiteur. */
@@ -496,6 +518,11 @@ function miniResa() {
   const services = prochainsServices(R, telephone() ? 6 : (+form.dataset.servicesNombre || 6));
   /* Sous « Le dîner » : le prochain soir est coché d'avance (le midi reste proposé). */
   const coche = Math.max(0, services.findIndex((s) => s.sv === 'soir'));
+  /* Aucun service ouvert à la réservation dans les trois semaines (v7.8.1) : on le dit, on ne garde pas les choix écrits à la génération. */
+  if (!services.length) {
+    zone.innerHTML = '<p class="mini-resa__vide" role="status">Aucun service n\'est ouvert à la réservation en ligne ces trois prochaines semaines. Appelez-nous, ou choisissez une date plus lointaine sur la page Réserver.</p>';
+    for (const b of form.querySelectorAll('button[type="submit"], input[type="submit"]')) b.disabled = true;
+  }
   if (services.length) {
     zone.innerHTML = services.map((s, i) => {
       const d = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(s.iso + 'T12:00:00Z'));
@@ -689,7 +716,7 @@ function decomptes() {
     if (prochaine) {
       const jour = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(prochaine.d.slice(0, 10) + 'T12:00:00Z'));
       txt.textContent = `À venir\u00a0: ${prochaine.t}, ${jour}${prochaine.p ? ` · ${prochaine.p}` : ''}.`;
-    }
+    } else ps.hidden = true; /* plus aucune soirée à venir : l'annonce écrite à la génération n'est pas gardée (v7.8.1) */
   }
 }
 
@@ -1729,7 +1756,7 @@ function emporter() {
     const j = $('[name="jour"]:checked', form), m = $('[name="moment"]:checked', form);
     const produits = lignes.map((l) => `${l.qte} × ${nomLigne(l)}`).join(', ');
     /* Démonstration (v7.7.2) : la commande arrive dans l'espace restaurateur de ce navigateur. */
-    ajouterDemandeSite({ genre: 'traiteur', produits: lignes.map((l) => ({ nom: nomLigne(l), qte: l.qte })), total: total(), jour: j.value, jourLibelle: j.dataset.libelle, moment: m.value, prenom: form.elements.prenom?.value.trim() || '', nom: form.elements.nom?.value.trim() || '', telephone: form.elements.tel?.value.trim() || '', email: form.elements.email?.value.trim() || '' });
+    transmettreDemande({ genre: 'traiteur', produits: lignes.map((l) => ({ nom: nomLigne(l), qte: l.qte })), total: total(), jour: j.value, jourLibelle: j.dataset.libelle, moment: m.value, prenom: form.elements.prenom?.value.trim() || '', nom: form.elements.nom?.value.trim() || '', telephone: form.elements.tel?.value.trim() || '', email: form.elements.email?.value.trim() || '' });
     merci.innerHTML = '<p><strong></strong></p><p></p>';
     merci.querySelector('strong').textContent = fmt(T.recap, { produits, total: euros(total()), retrait: fmt(T.retrait, { jour: j.dataset.libelle, moment: T[m.value] }) });
     merci.querySelector('p + p').textContent = T.simule;
@@ -1861,7 +1888,7 @@ function demande() {
     e.preventDefault(); if (envoye || !valide(etapes[k])) return;
     envoye = true; recap();
     /* Démonstration (v7.7.2) : la demande de réception arrive dans l'espace restaurateur de ce navigateur. */
-    { const d = new FormData(f); ajouterDemandeSite({ genre: 'reception', occasion: $('[name="occasion"]:checked', f)?.dataset.un || d.get('occasion') || '', date: d.get('date') || '', periode: d.get('date') ? '' : d.get('periode') || '', invites: d.get('invites') || '', espace: d.get('espace') || '', message: (d.get('message') || '').trim(), prenom: (d.get('prenom') || '').trim(), nom: (d.get('nom') || '').trim(), telephone: (d.get('telephone') || '').trim(), email: (d.get('email') || '').trim() }); }
+    { const d = new FormData(f); transmettreDemande({ genre: 'reception', occasion: $('[name="occasion"]:checked', f)?.dataset.un || d.get('occasion') || '', date: d.get('date') || '', periode: d.get('date') ? '' : d.get('periode') || '', invites: d.get('invites') || '', espace: d.get('espace') || '', message: (d.get('message') || '').trim(), prenom: (d.get('prenom') || '').trim(), nom: (d.get('nom') || '').trim(), telephone: (d.get('telephone') || '').trim(), email: (d.get('email') || '').trim() }); }
     $$('button', f).forEach((b) => { b.disabled = true; });
     inv.classList.add('est-tamponnee');
     msg.hidden = false; msg.focus({ preventScroll: true });
@@ -1908,18 +1935,10 @@ function libellesReservation() {
   const resa = $('[data-module="reservation-de-table"]'); if (!resa) return;
   const form = $('[data-resa-form]', resa);
   let R = null; try { R = JSON.parse($('script[data-reservation]', resa)?.textContent || 'null'); } catch {}
-  const ex = (R && R.ouvertures_exceptionnelles) || [];
-  const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-  const fermesHebdo = ex.map((e) => [JOURS[new Date(e.date + 'T12:00:00Z').getUTCDay()], e.service]);
-  const estFerme = (iso, sv) => !!iso && fermesHebdo.some(([j, s2]) => s2 === sv && j === JOURS[new Date(iso + 'T12:00:00Z').getUTCDay()]) && !ex.some((e) => e.date === iso && e.service === sv);
+  /* v7.8.1 : plus aucune déduction ici. Le module dit lui-même « fermé » ou « complet » d'après les règles communes ;
+     l'ancien correctif changeait « complet » en « fermé » un jeudi soir ouvert exceptionnellement par le restaurant. */
   const corriger = () => {
     for (const t of $$('.resa__recap-titre', resa)) if (t.textContent.trim() === 'À compléter') t.textContent = 'Choisissez le jour et l’heure';
-    for (const t of $$('.resa__recap-sur', resa)) if (t.textContent.trim() === 'Demande enregistrée') t.textContent = 'Votre table est réservée';
-    if (!form) return;
-    const iso = form.elements.date?.value;
-    for (const r of $$('[name="service"]', form)) { const note = r.closest('label')?.querySelector('[data-note]'); if (note && note.textContent === 'complet' && estFerme(iso, r.value)) note.textContent = 'fermé'; }
-    const sv = $('[name="service"]:checked', form)?.value;
-    if (estFerme(iso, sv)) for (const sm of $$('.resa__creneau small', form)) if (sm.textContent === 'complet') sm.textContent = 'fermé';
   };
   let attente = 0;
   new MutationObserver(() => { cancelAnimationFrame(attente); attente = requestAnimationFrame(corriger); }).observe(resa, { childList: true, subtree: true, characterData: true });
@@ -1973,7 +1992,7 @@ function reservationPlacement() {
       a.addEventListener('click', (ev) => { ev.preventDefault(); const sc = $('.pds__scene', plan) || plan; const r = sc.getBoundingClientRect(); aller(scrollY + r.top - Math.max(0, (innerHeight - r.height) / 2)); });
       lien.append(a); carte.after(lien);
     }
-    if (rep && !rep.hidden) { rep.classList.add('est-reserve'); rep.querySelector('b').textContent = 'Réservé'; const jc = d.date ? new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(d.date + 'T12:00:00Z')) : ''; rep.querySelector('.pds__repere-etiquette > span').textContent = `${jc}${heure ? ' · ' + heure : ''} · ${n} couvert${n > 1 ? 's' : ''}`; }
+    if (rep && !rep.hidden) { rep.classList.add('est-reserve'); rep.querySelector('b').textContent = 'Demandée'; const jc = d.date ? new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(d.date + 'T12:00:00Z')) : ''; rep.querySelector('.pds__repere-etiquette > span').textContent = `${jc}${heure ? ' · ' + heure : ''} · ${n} couvert${n > 1 ? 's' : ''}`; }
     if (!carton) { if (etat.calme) carte.classList.add('est-pose'); else requestAnimationFrame(() => requestAnimationFrame(() => carte.classList.add('est-pose'))); }
     setTimeout(() => { const el = $('[data-resa-recap]', resa); if (!el) return; const eh = parseFloat(getComputedStyle(html).getPropertyValue('--entete-h')) || 0, r = el.getBoundingClientRect(); const libre = innerHeight - eh, dy = r.height < libre - 32 ? r.top - eh - (libre - r.height) / 2 : r.top - eh - 16; if (Math.abs(dy) > 4) aller(scrollY + dy); }, 450);
   });
@@ -2109,7 +2128,7 @@ function heros() {
       const j = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${p.d}T12:00:00Z`));
       txt.textContent = `${p.t}, ${j}`;
       const u = new URL(lien.getAttribute('href'), location.href); u.hash = p.a; lien.setAttribute('href', u.pathname + u.search + u.hash);
-    }
+    } else lien.hidden = true; /* plus aucun rendez-vous à venir : on n'annonce pas une date passée ou masquée (v7.8.1) */
   }
   const bas = $('[data-heros-bascule]', sec);
   if (bas) {

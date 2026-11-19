@@ -10,7 +10,7 @@
 import { pret } from '../../socle/socle.js?v=7';
 import { ajouterResaSite } from '../../espace-stock.js?v=7';
 // v7.8.0 : ouvertures, heures d'arrivée et « complet » viennent des règles communes au site et à l'espace.
-import { etatService, arrivees } from '../../disponibilites.js?v=7';
+import { etatService, arrivees, faisabilite } from '../../disponibilites.js?v=7';
 
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -44,6 +44,8 @@ const QUOI = { date: 'le jour', heure: 'l\'heure', couverts: 'les couverts', esp
  * @param {object} [options]
  * @param {object} [options.reglages]  les réglages (sinon le JSON de la page)
  * @param {function} [options.envoyer] async (demande) => { reference } : l'envoi réel (par défaut, simulé)
+ * @param {object} [options.tables]    { [numéro de table]: places } : pour retirer une table devenue trop petite
+ * @param {function} [options.enregistrer] (demande) => booléen : l'enregistrement de la demande ; false : rien n'est annoncé comme envoyé
  * @param {function} [options.complet] (iso, 'HH:MM', couverts) => booléen : disponibilité réelle (par défaut, le JSON et la simulation)
  */
 export async function init(root, options = {}) {
@@ -89,8 +91,10 @@ export async function init(root, options = {}) {
 
   // ---------- Champs ----------
   const dateEl = champ('date'), couvEl = champ('couverts');
-  const auj = maintenant(fuseau).iso, fin = ajouter(auj, horizon);
-  dateEl.min = auj; dateEl.max = fin;
+  /* Aujourd'hui et le dernier jour réservable : relus au fil du temps (v7.8.1), une page restée ouverte après minuit ne garde plus la veille. */
+  let auj = '', fin = '';
+  function jourCourant() { const a = maintenant(fuseau).iso; if (a === auj) return false; auj = a; fin = ajouter(auj, horizon); dateEl.min = auj; dateEl.max = fin; return true; }
+  jourCourant();
   couvEl.max = maxi;
   const val = () => {
     const fd = new FormData(form);
@@ -166,11 +170,21 @@ export async function init(root, options = {}) {
     tableEl.style.setProperty('--n', c);
     if (mot) { const sv = val().service, t = MOTS[c] || `Une table pour ${c}`; mot.textContent = sv === 'midi' && c === 2 ? 'Un déjeuner à deux' : t; mot.hidden = false; }
   }
+  /* Une table choisie sur le plan ne suit pas un nombre de couverts qu'elle ne peut pas asseoir (v7.8.1) : elle est
+     retirée de la demande, et dit. Ce n'était qu'un souhait : le restaurant place la réservation. */
+  let tableRetiree = '';
+  function verifierTable(c) {
+    const el = form.querySelector('[name="table"]'), t = el?.value, places = t ? +(o.tables || R.tables || {})[t] || 0 : 0;
+    if (t && places && c > places) { el.value = ''; tableRetiree = `La table ${t} (${places} place${places > 1 ? 's' : ''}) ne convient pas pour ${c} personnes : elle n'est plus demandée, le restaurant vous placera.`; }
+    else if (t) tableRetiree = '';
+    const dit = root.querySelector('[data-resa-table-choisie]');
+    if (dit && !el?.value) { dit.textContent = tableRetiree; dit.hidden = !tableRetiree; if (tableRetiree) dit.setAttribute('role', 'status'); }
+  }
   function majCouverts(n) {
     const c = Math.max(1, Math.min(maxi, n)); couvEl.value = c;
     form.querySelector('[data-moins]').disabled = c <= 1; form.querySelector('[data-plus]').disabled = c >= maxi;
     if (groupe) groupe.hidden = c < maxi;
-    rendreTable(c);
+    rendreTable(c); verifierTable(c);
   }
 
   // ---------- 2 · L'heure : une frise, la ligne d'or file jusqu'à l'heure choisie ----------
@@ -209,7 +223,7 @@ export async function init(root, options = {}) {
     }
     const coche = form.querySelector('input[name="espace"]:checked');
     if (!coche || coche.disabled) { const premier = form.querySelector('input[name="espace"]:not(:disabled)'); if (premier) premier.checked = true; }
-    const t = root.querySelector('[data-resa-table-choisie]'); if (t) { t.textContent = v.table ? `Table ${v.table}, choisie sur le plan.` : ''; t.hidden = !v.table; }
+    const t = root.querySelector('[data-resa-table-choisie]'); if (t) { t.textContent = v.table ? `Table ${v.table}, souhaitée sur le plan.` : tableRetiree; t.hidden = !v.table && !tableRetiree; }
   }
 
   // ---------- Le carton de table ----------
@@ -226,7 +240,8 @@ export async function init(root, options = {}) {
       + `<button type="button" class="carton__modifier" data-resa-modifier="${k}"${fini ? ' disabled' : ''}><span class="carton__lib">${lib}</span><span class="carton__val">${t[k] ? contenu : '<span class="carton__blanc">à compléter</span>'}</span>`
       + `${fini ? '' : `<span class="carton__crayon">${ICO.crayon}<span class="resa__sr">Modifier ${QUOI[k] || ''}</span></span>`}</button></li>`;
     const assiettes = `<span class="carton__assiettes" aria-hidden="true">${'<i></i>'.repeat(v.couverts)}</span>${echap(t.couverts)}`;
-    const sur = fini ? 'Votre table est réservée' : verif ? 'Tout est juste ?' : 'Votre réservation';
+    /* Une demande reçue n'est pas une réservation confirmée : c'est le restaurant qui confirme (v7.8.1). */
+    const sur = fini ? 'Votre demande est envoyée' : verif ? 'Tout est juste ?' : 'Votre réservation';
     recap.innerHTML = `<div class="resa__recap-corps carton${verif ? ' est-verif' : ''}${fini ? ' est-envoye' : ''}" tabindex="-1" data-resa-focus>`
       + `<p class="carton__maison" aria-hidden="true">Les Jardins de l'Hacienda</p><h3 class="resa__recap-sur carton__sur">${sur}</h3>`
       + `<ul class="carton__lignes">`
@@ -237,8 +252,8 @@ export async function init(root, options = {}) {
       + (t.demande ? ligne('demande', 'Une demande', echap(t.demande)) : '')
       + ligne('contact', 'Au nom de', echap(t.contact))
       + '</ul>'
-      + (verif ? '<button type="button" class="resa__bouton carton__confirmer" data-resa-confirmer>Confirmer la réservation</button><p class="resa__simule">Envoi simulé : rien ne part vers le restaurant dans cette démonstration.</p>' : '')
-      + (fini ? `<p class="carton__reserve" aria-hidden="true" data-superpose><span>Réservé</span></p><p class="carton__ref">Référence <b>${reference}</b></p><p class="resa__simule">${echap(R.message_simule || 'Réservation simulée : rien n\'a été envoyé. Sur le site final, la demande part vers le restaurant, qui la confirme par message.')}</p>`
+      + (verif ? '<button type="button" class="resa__bouton carton__confirmer" data-resa-confirmer>Envoyer ma demande</button><p class="resa__simule">Envoi simulé : rien ne part vers le restaurant dans cette démonstration.</p>' : '')
+      + (fini ? `<p class="carton__reserve" aria-hidden="true" data-superpose><span>Demande reçue</span></p><p class="carton__ref">Référence <b>${reference}</b></p><p class="carton__suite">Le restaurant vous confirme votre table par message.</p><p class="resa__simule">${echap(R.message_simule || 'Réservation simulée : rien n\'a été envoyé. Sur le site final, la demande part vers le restaurant, qui la confirme par message.')}</p>`
         + '<button type="button" class="resa__bouton resa__bouton--ligne" data-resa-nouvelle>Faire une autre réservation</button>' : '')
       + '</div>';
     avant = t;
@@ -410,17 +425,32 @@ export async function init(root, options = {}) {
     const m = e.target.closest('[data-resa-modifier]'); if (m && !m.disabled) { modifier(m.dataset.resaModifier); return; }
     if (e.target.closest('[data-resa-confirmer]')) {
       if (!verifier()) { etape = 'saisie'; root.classList.remove('est-verification'); rendreRecap(); return; }
-      const b = e.target.closest('[data-resa-confirmer]'); b.disabled = true; b.textContent = 'Envoi…';
-      const v = val();
-      try { reference = (o.envoyer ? (await o.envoyer(v))?.reference : null) || `R-${v.date.slice(5).replace('-', '')}-${String(1000 + Math.floor(Math.random() * 9000))}`; }
-      catch { b.disabled = false; b.textContent = 'Confirmer la réservation'; erreur(b, 'L\'envoi n\'a pas abouti : réessayez, ou appelez-nous.'); return; }
-      envoi = v; etape = 'envoye'; root.classList.remove('est-verification'); root.classList.add('est-envoye');
+      const b = e.target.closest('[data-resa-confirmer]'), v = val();
+      /* Dernière vérification, au moment de s'engager (v7.8.1) : la page a pu rester ouverte (l'heure choisie est passée,
+         le délai n'est plus tenu, le jour a changé) ou le restaurant a pu fermer ou dire complet entre-temps. */
+      jourCourant(); const mnt = maintenant(fuseau), possible = faisabilite(R, { date: v.date, service: v.service, heure: v.heure, couverts: v.couverts }, { auj: mnt.iso, minute: mnt.min, public: true });
+      if (!possible.ok || estComplet(v.date, v.heure, v.couverts, v.service)) {
+        etape = 'saisie'; root.classList.remove('est-verification'); rendreJours(); majServices(); rendreCreneaux(); rendreRecap();
+        const ou = possible.raison === 'heure' || possible.raison === 'passee' || possible.ok ? 2 : 1; if (multi) allerEtape(ou, { focus: false });
+        const cible = ou === 2 ? (form.querySelector('input[name="heure"]:not(:disabled)') || aideCr) : dateEl;
+        erreur(cible, possible.ok ? 'Ce créneau vient d\'être pris : choisissez une autre heure.' : `${possible.message} Votre demande n'est pas partie : choisissez ${ou === 2 ? 'une autre heure' : 'un autre jour'}.`); cible.focus?.({ preventScroll: true }); montrer();
+        return;
+      }
+      b.disabled = true; b.textContent = 'Envoi…';
+      /* Aucune réussite avant un enregistrement réussi : la référence n'existe qu'une fois la demande enregistrée. */
+      const echec = (m) => { b.disabled = false; b.textContent = 'Envoyer ma demande'; erreur(b, m); };
+      let ref = '';
+      try { ref = (o.envoyer ? (await o.envoyer(v))?.reference : `R-${v.date.slice(5).replace('-', '')}-${String(1000 + Math.floor(Math.random() * 9000))}`) || ''; }
+      catch { echec('L\'envoi n\'a pas abouti. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }
+      if (!ref) { echec('Le restaurant n\'a pas confirmé la réception. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }
+      // Démonstration (v7.6.0) : la demande arrive dans l'agenda de l'espace restaurateur de ce navigateur (par le stockage, v7.7.0).
+      const enregistre = o.enregistrer ? o.enregistrer({ id: ref, ...v, cree: new Date().toISOString() }) : ajouterResaSite({ id: ref, ...v, cree: new Date().toISOString() });
+      if (enregistre === false) { echec('Votre demande n\'a pas pu être enregistrée. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }
+      reference = ref; envoi = v; etape = 'envoye'; root.classList.remove('est-verification'); root.classList.add('est-envoye');
       for (const el of form.elements) el.disabled = true;
       prog?.querySelectorAll('button').forEach((x) => { x.disabled = true; });
       try { sessionStorage.removeItem(CLE); } catch { /* rien */ }
       rendreRecap(); recap.querySelector('[data-resa-focus]')?.focus({ preventScroll: true }); montrer();
-      // Démonstration (v7.6.0) : la demande arrive dans l'agenda de l'espace restaurateur de ce navigateur (par le stockage, v7.7.0).
-      ajouterResaSite({ id: reference, ...v, cree: new Date().toISOString() });
       root.dispatchEvent(new CustomEvent('reservation:envoyee', { detail: { ...v, reference }, bubbles: true }));
       return;
     }
@@ -433,7 +463,9 @@ export async function init(root, options = {}) {
   });
 
   // Une autre fenêtre a pu changer le brouillon : on le relit au retour sur l'onglet (sans écraser une saisie en cours).
-  const retour = () => { if (!document.hidden && etape === 'saisie') { rendreJours(); majServices(); rendreCreneaux(); rendreRecap(); } };
+  const retour = () => { if (!document.hidden && etape === 'saisie') { if (jourCourant() && dateEl.value < auj) { dateEl.value = Array.from({ length: horizon }, (_, k) => ajouter(auj, k)).find((iso) => reservable(iso)) || auj; calMois = ''; } rendreJours(); majServices(); rendreCreneaux(); rendreRecap(); } };
+  /* Même sans quitter l'onglet : les heures devenues trop proches et le changement de jour sont suivis chaque minute. */
+  const minuteur = setInterval(retour, 60000);
   document.addEventListener('visibilitychange', retour);
-  return { etat: () => ({ etape, pas, ...val() }), allerEtape, detruire() { document.removeEventListener('visibilitychange', retour); root.classList.remove('est-actif', 'est-calme', 'est-verification', 'est-envoye'); } };
+  return { etat: () => ({ etape, pas, ...val() }), allerEtape, detruire() { clearInterval(minuteur); document.removeEventListener('visibilitychange', retour); root.classList.remove('est-actif', 'est-calme', 'est-verification', 'est-envoye'); } };
 }

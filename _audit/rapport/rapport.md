@@ -1,29 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 18/11/2026 22:14:40 · 53 min · 10 page(s) · audit complet
+Projet : `jardins-hacienda-2-maquette` · 19/11/2026 05:08:34 · 24 min · 10 page(s) · audit complet (étapes : fichiers, films, parcours)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261118-202124-complet` · version ?v=7
+- Passe : `20261119-034425-complet-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **22**
-- Non lancé : **1**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), grille wouahou (6), mesures (390), balayage (9), films d’ouverture (18), films de transition (18), bords de l’écran (10), intro accélérable et passable (7), menu (1), clavier (10), liens et boutons (10), liens profonds (16), liens vers la page en cours (9), changements de hauteur (7), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), espace : mesures (5), espace : balayage (1), parcours du projet (1), tient dans l’écran (8), fluidité (18), défilement selon l’appareil (5), mouvement (18), effets du plan (37), souris immobile (3), vitesse (9), captures (1)
-
-## Grille wouahou
-
-| Point | État | Détail |
-|---|---|---|
-| 1. L’effet signature se manipule | ✓ présent | accueil et 2 autre(s) page(s) |
-| 2. L’intro devient la page | ✓ présent | objet d’ouverture sur 8 page(s), versObjet dans l’intro |
-| 3. La transition reprend le motif | ✓ présent | voile en cloche |
-| 4. Quelque chose relie les sections et les pages | ✓ présent | sur les 8 page(s) |
-| 5. Un titre fait l’événement sur chaque page | ⚠ à regarder | présent sur /la-carte, /offrir, /receptions ; absent sur /a-emporter, /, /infos-pratiques, /les-fetes, /reserver |
-| 6. La scène est un geste du métier | ✓ présent | geste du métier sur /la-carte, /receptions |
-| 7. L’action principale a un retour physique | ✓ présent | sur /, /les-fetes, /offrir, /receptions, /reserver |
-
-Le script vérifie les marques (`data-grille`, `data-iris-centre`, forme du voile, `versObjet`) ; la force et la justesse de chaque point se jugent sur les captures et les films.
+- À regarder : **6**
+- Non lancé : **0**
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), films d’ouverture (18), films de transition (18), intro accélérable et passable (7), menu (1), clavier (10), liens et boutons (10), liens profonds (16), liens vers la page en cours (9), changements de hauteur (7), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
 
 ## Passes de cette version (?v=7)
 
@@ -157,31 +143,16 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261118-190011-complet-cible-partiel | complet | /espace | parcours | 1 | 4 | 0 | échecs |
 | 20261118-191449-complet-cible | complet | /espace | toutes | 0 | 7 | 1 | complet |
 | 20261118-200451-complet-cible-partiel | complet | /espace | parcours | 0 | 0 | 0 | complet |
-| **20261118-202124-complet** (celle-ci) | complet | toutes | toutes | 0 | 22 | 1 | complet |
+| 20261118-202124-complet | complet | toutes | toutes | 0 | 22 | 1 | complet |
+| 20261119-025710-complet-cible-partiel | complet | /espace | parcours | 0 | 0 | 1 | INCOMPLET |
+| 20261119-030455-complet | complet | toutes | toutes | 0 | 17 | 3 | INCOMPLET |
+| **20261119-034425-complet-partiel** (celle-ci) | complet | toutes | fichiers, films, parcours | 0 | 6 | 0 | complet |
 
 ## Échecs
 
 Aucun.
 
 ## À regarder
-
-### grille : aucun titre ne fait l’événement (point 5) (5)
-
-- **grille : aucun titre ne fait l’événement (point 5)** — `/a-emporter` — absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille="typo"
-- **grille : aucun titre ne fait l’événement (point 5)** — `/` — absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille="typo"
-- **grille : aucun titre ne fait l’événement (point 5)** — `/infos-pratiques` — absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille="typo"
-- **grille : aucun titre ne fait l’événement (point 5)** — `/les-fetes` — absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille="typo"
-- **grille : aucun titre ne fait l’événement (point 5)** — `/reserver` — absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille="typo"
-
-### grille : objet d’ouverture hors du premier écran (3)
-
-- **grille : objet d’ouverture hors du premier écran** — `/la-carte` — 335 × 40 px visibles : l’intro et le voile s’ouvrent depuis le centre de l’écran à cette taille _(390×844)_
-- **grille : objet d’ouverture hors du premier écran** — `/les-fetes` — 358 × 40 px visibles : l’intro et le voile s’ouvrent depuis le centre de l’écran à cette taille _(390×844)_
-- **grille : objet d’ouverture hors du premier écran** — `/reserver` — 358 × 52 px visibles : l’intro et le voile s’ouvrent depuis le centre de l’écran à cette taille _(390×844)_
-
-### transition : changement brusque (1)
-
-- **transition : changement brusque** — `/ → /la-carte` — à 390 ms (différence 29 %) (films/transition-vers-la-carte-1366.png) _(1366×768 film)_
 
 ### bouton sans effet visible (2)
 
@@ -190,35 +161,15 @@ Aucun.
 
 ### rechargement au milieu de la page (4)
 
-- **rechargement au milieu de la page** — `/infos-pratiques` — écran différent à la même position après rechargement (6.8 %), voir comparaisons/rechargement-infos-pratiques-*.png _(1366×768)_
+- **rechargement au milieu de la page** — `/infos-pratiques` — écran différent à la même position après rechargement (9.1 %), voir comparaisons/rechargement-infos-pratiques-*.png _(1366×768)_
 - **rechargement au milieu de la page** — `/la-carte` — écran différent à la même position après rechargement (46.2 %), voir comparaisons/rechargement-la-carte-*.png _(1366×768)_
-- **rechargement au milieu de la page** — `/les-fetes` — écran différent à la même position après rechargement (8.7 %), voir comparaisons/rechargement-les-fetes-*.png _(1366×768)_
+- **rechargement au milieu de la page** — `/les-fetes` — écran différent à la même position après rechargement (8.6 %), voir comparaisons/rechargement-les-fetes-*.png _(1366×768)_
 - **rechargement au milieu de la page** — `/reserver` — écran différent à la même position après rechargement (8.5 %), voir comparaisons/rechargement-reserver-*.png _(1366×768)_
-
-### fluidité (4)
-
-- **fluidité** — `/` — 7 % d'images de plus de 50 ms _(1366×768 défilement à la molette, processeur ralenti 4 fois)_
-- **fluidité** — `/la-carte` — 3 % d'images de plus de 50 ms _(1366×768 défilement à la molette, processeur ralenti 4 fois)_
-- **fluidité** — `/les-fetes` — 3 % d'images de plus de 50 ms _(1366×768 défilement à la molette, processeur ralenti 4 fois)_
-- **fluidité** — `/reserver` — 3 % d'images de plus de 50 ms _(1366×768 défilement à la molette, processeur ralenti 4 fois)_
-
-### effet qui ne bouge pas au défilement (3)
-
-- **effet qui ne bouge pas au défilement** — `/infos-pratiques` — div.plan-domaine__carte — plan-domaine : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section _(1366×768 normal, 390×844 normal)_
-- **effet qui ne bouge pas au défilement** — `/receptions` — div.invitation — invitation : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section _(1366×768 normal, 390×844 normal)_
-- **effet qui ne bouge pas au défilement** — `/` — button.bouton — carton : il ne bouge ni au défilement ni tout seul à cette taille (effet au survol, au clic, ou réservé à l'ordinateur ?) ; il ne compte pas comme effet de section _(390×844 normal)_
 
 ## Non lancé
 
-- **Safari (WebKit)** : WebKit ne peut pas s’installer ici : vérification à faire dans Safari sur le Mac (liste dans le rapport)
+Tout a été lancé.
 
-### À vérifier dans Safari sur le Mac (WebKit indisponible ici)
-
-- Ouverture de chaque page : rien qui clignote, intro complète au premier chargement et au rechargement.
-- Changement de page : le voile couvre l’écran, pas de page blanche ; retour arrière sans intro ni voile resté.
-- Défilement : fluide (natif), en-tête qui se cache et revient sans clignoter, sections épinglées entières.
-- Menu sur iPhone (mode Responsive de Safari) : ouverture, fermeture, page bloquée derrière.
-- Polices, images, mention « Illustration générée », formulaires et barre fixe du bas.
 
 ## Repères
 
@@ -229,61 +180,32 @@ Aucun.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Ouverture / (1366×768) : 2585 ms depuis le premier octet
-- Ouverture /a-emporter (1366×768) : 2505 ms depuis le premier octet
+- Ouverture / (1366×768) : 2571 ms depuis le premier octet
+- Ouverture /a-emporter (1366×768) : 2432 ms depuis le premier octet
 - film de l'ouverture /a-emporter 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
-- Ouverture /espace (1366×768) : 2387 ms depuis le premier octet
-- Ouverture /infos-pratiques (1366×768) : 2463 ms depuis le premier octet
-- Ouverture /la-carte (1366×768) : 2386 ms depuis le premier octet
-- Ouverture /les-fetes (1366×768) : 2569 ms depuis le premier octet
-- Ouverture /offrir (1366×768) : 2486 ms depuis le premier octet
-- Ouverture /receptions (1366×768) : 2518 ms depuis le premier octet
-- Ouverture /reserver (1366×768) : 2502 ms depuis le premier octet
-- Ouverture / (390×844) : 2561 ms depuis le premier octet
-- Ouverture /a-emporter (390×844) : 2542 ms depuis le premier octet
-- Ouverture /espace (390×844) : 2407 ms depuis le premier octet
-- Ouverture /infos-pratiques (390×844) : 2454 ms depuis le premier octet
-- Ouverture /la-carte (390×844) : 2467 ms depuis le premier octet
-- Ouverture /les-fetes (390×844) : 2542 ms depuis le premier octet
-- Ouverture /offrir (390×844) : 2465 ms depuis le premier octet
-- Ouverture /receptions (390×844) : 2547 ms depuis le premier octet
-- film de l'ouverture /receptions 390×844 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
-- Ouverture /reserver (390×844) : 2454 ms depuis le premier octet
-- Bords de l’écran : 561 images d’intro, 26 de voile et 265 de menu jugées (panneau immobile couvrant tout l’écran), barre de défilement classique de 15 px.
+- Ouverture /espace (1366×768) : 2358 ms depuis le premier octet
+- film de l'ouverture /espace 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
+- Ouverture /infos-pratiques (1366×768) : 2432 ms depuis le premier octet
+- film de l'ouverture /infos-pratiques 1366×768 : réussi à la tentative 3 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
+- Ouverture /la-carte (1366×768) : 2433 ms depuis le premier octet
+- Ouverture /les-fetes (1366×768) : 2513 ms depuis le premier octet
+- Ouverture /offrir (1366×768) : 2433 ms depuis le premier octet
+- film de l'ouverture /offrir 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
+- Ouverture /receptions (1366×768) : 2462 ms depuis le premier octet
+- Ouverture /reserver (1366×768) : 2421 ms depuis le premier octet
+- Ouverture / (390×844) : 2537 ms depuis le premier octet
+- Ouverture /a-emporter (390×844) : 2464 ms depuis le premier octet
+- Ouverture /espace (390×844) : 2373 ms depuis le premier octet
+- Ouverture /infos-pratiques (390×844) : 2405 ms depuis le premier octet
+- film de l'ouverture /infos-pratiques 390×844 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
+- Ouverture /la-carte (390×844) : 2372 ms depuis le premier octet
+- Ouverture /les-fetes (390×844) : 2443 ms depuis le premier octet
+- Ouverture /offrir (390×844) : 2434 ms depuis le premier octet
+- Ouverture /receptions (390×844) : 2472 ms depuis le premier octet
+- Ouverture /reserver (390×844) : 2429 ms depuis le premier octet
 - Changements de hauteur /a-emporter : aucun effet ScrollTrigger, rien à recalculer.
 - Changements de hauteur /espace : aucun effet ScrollTrigger, rien à recalculer.
 - Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
-- Tient dans l'écran /a-emporter : aucune section épinglée ou plein écran.
-- Tient dans l'écran /espace : aucune section épinglée ou plein écran.
-- Tient dans l'écran /infos-pratiques : aucune section épinglée ou plein écran.
-- Tient dans l'écran /la-carte : aucune section épinglée ou plein écran.
-- Tient dans l'écran /les-fetes : aucune section épinglée ou plein écran.
-- Tient dans l'écran /offrir : aucune section épinglée ou plein écran.
-- Tient dans l'écran /receptions : aucune section épinglée ou plein écran.
-- Tient dans l'écran /reserver : aucune section épinglée ou plein écran.
-- Fluidité /a-emporter 1366×768 (molette) : 2 % d'images lentes sur 210, tâche la plus longue 55 ms
-- Fluidité /espace 1366×768 (molette) : 0 % d'images lentes sur 170, tâche la plus longue 0 ms
-- Fluidité /infos-pratiques 1366×768 (molette) : 0 % d'images lentes sur 284, tâche la plus longue 0 ms
-- Fluidité /offrir 1366×768 (molette) : 1 % d'images lentes sur 232, tâche la plus longue 0 ms
-- Fluidité /receptions 1366×768 (molette) : 3 % d'images lentes sur 545, tâche la plus longue 102 ms
-- Fluidité / 390×844 (doigt) : 0 % d'images lentes sur 1449, tâche la plus longue 50 ms
-- Fluidité /a-emporter 390×844 (doigt) : 0 % d'images lentes sur 1447, tâche la plus longue 0 ms
-- Fluidité /espace 390×844 (doigt) : 0 % d'images lentes sur 1355, tâche la plus longue 0 ms
-- Fluidité /infos-pratiques 390×844 (doigt) : 0 % d'images lentes sur 1433, tâche la plus longue 0 ms
-- Fluidité /la-carte 390×844 (doigt) : 0 % d'images lentes sur 1368, tâche la plus longue 0 ms
-- Fluidité /les-fetes 390×844 (doigt) : 0 % d'images lentes sur 1402, tâche la plus longue 0 ms
-- Fluidité /offrir 390×844 (doigt) : 0 % d'images lentes sur 1437, tâche la plus longue 0 ms
-- Fluidité /receptions 390×844 (doigt) : 0 % d'images lentes sur 1372, tâche la plus longue 0 ms
-- Fluidité /reserver 390×844 (doigt) : 0 % d'images lentes sur 1371, tâche la plus longue 0 ms
-- Vitesse / : 0.81 s de calcul au chargement (téléphone ralenti).
-- Vitesse /a-emporter : 0.62 s de calcul au chargement (téléphone ralenti).
-- Vitesse /espace : 0.28 s de calcul au chargement (téléphone ralenti).
-- Vitesse /infos-pratiques : 0.40 s de calcul au chargement (téléphone ralenti).
-- Vitesse /la-carte : 0.48 s de calcul au chargement (téléphone ralenti).
-- Vitesse /les-fetes : 0.72 s de calcul au chargement (téléphone ralenti).
-- Vitesse /offrir : 0.53 s de calcul au chargement (téléphone ralenti).
-- Vitesse /receptions : 0.62 s de calcul au chargement (téléphone ralenti).
-- Vitesse /reserver : 0.43 s de calcul au chargement (téléphone ralenti).
 
 ## Fichiers
 

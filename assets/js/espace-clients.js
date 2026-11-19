@@ -37,6 +37,28 @@ export function fiche(ctx, S, cle) {
     annulations: resas.filter((r) => r.statut === 'annulee').length, prochaine: futures[futures.length - 1] || null, exemple: resas.length > 0 && resas.every((r) => r.source === 'demo') };
 }
 
+/**
+ * Ce qu'il faut enregistrer d'une fiche ouverte (v7.8.1) : seulement ce que la personne a réellement changé, comparé à
+ * l'état de la fiche à son ouverture, et seulement si personne n'a changé la même chose entre-temps.
+ * @param {{ habitue: boolean, allergies: string[], note: string }} ouverture  la fiche telle qu'elle était à l'ouverture
+ * @param {{ habitue: boolean, allergies: string[], note: string }} saisie     ce que montre le formulaire
+ * @param {{ habitue: boolean, allergies: string[], note: string }} courant    la fiche enregistrée maintenant
+ * @returns {{ champs: object|null, conflits: string[] }}  champs : à passer à l'action `client` (null : rien à enregistrer) ;
+ *          conflits : les champs changés des deux côtés, gardés tels qu'ils sont enregistrés.
+ */
+export function changementsFiche(ouverture, saisie, courant) {
+  const champs = {}, conflits = [];
+  for (const k of ['habitue', 'note']) {
+    const mien = k === 'note' ? String(saisie.note ?? '').trim() : !!saisie.habitue, avant = k === 'note' ? String(ouverture.note ?? '').trim() : !!ouverture.habitue, ici = k === 'note' ? String(courant.note ?? '').trim() : !!courant.habitue;
+    if (mien === avant || mien === ici) continue;          /* pas touché, ou déjà enregistré ainsi */
+    if (ici !== avant) conflits.push(k); else champs[k] = mien; /* changé ailleurs aussi : on garde la version enregistrée */
+  }
+  const avant = new Set(ouverture.allergies || []), mien = new Set(saisie.allergies || []), ici = new Set(courant.allergies || []);
+  const plus = [...mien].filter((a) => !avant.has(a) && !ici.has(a)), moins = [...avant].filter((a) => !mien.has(a) && ici.has(a));
+  if (plus.length) champs.allergiesPlus = plus; if (moins.length) champs.allergiesMoins = moins;
+  return { champs: Object.keys(champs).length ? champs : null, conflits };
+}
+
 export const MUTATIONS_CLIENTS = {
   /** Note ce que la maison sait d'un client : habitué, allergies (liste), préférences. */
   client(S, { cle, champs }) {
@@ -44,6 +66,11 @@ export const MUTATIONS_CLIENTS = {
     const c = ((S.clients ||= {})[cle] ||= {});
     if ('habitue' in champs) c.habitue = !!champs.habitue;
     if ('allergies' in champs) c.allergies = [...new Set((champs.allergies || []).map((a) => String(a).trim()).filter(Boolean))];
+    /* v7.8.1 : une allergie s'ajoute ou se retire une par une, sans toucher à celles notées ailleurs entre-temps. */
+    if (champs.allergiesPlus || champs.allergiesMoins) {
+      const moins = new Set((champs.allergiesMoins || []).map(String));
+      c.allergies = [...new Set([...(c.allergies || []).filter((a) => !moins.has(a)), ...(champs.allergiesPlus || []).map((a) => String(a).trim()).filter(Boolean)])];
+    }
     if ('note' in champs) c.note = String(champs.note ?? '').trim().slice(0, 400);
     if (!c.habitue && !c.allergies?.length && !c.note) delete S.clients[cle];
   },

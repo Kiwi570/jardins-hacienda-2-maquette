@@ -1,7 +1,7 @@
 /* La carte du restaurant dans l'espace (v7.7.3) : les règles, en fonctions pures (testées par
    `node --test _audit/tests/*.test.mjs`).
    La carte livrée avec le site (donnees/carte.json : rubriques et plats) n'est jamais modifiée : l'espace garde ce qui
-   change. Chaque plat a une clé stable, « rubrique/rang » pour un plat du site, « rubrique/+identifiant » pour un plat
+   change. Chaque plat a une clé stable, « rubrique/identifiant » pour un plat du site (v7.8.1 ; avant : « rubrique/rang »), « rubrique/+identifiant » pour un plat
    ajouté. Un plat peut être modifié (nom, description, prix, végétarien, allergènes), retiré de la carte, ou dit
    « épuisé » pour un jour donné : le lendemain, il revient tout seul.
    Les allergènes sont ceux que le restaurant indique lui-même : rien n'est prérempli. */
@@ -28,13 +28,24 @@ const pareil = (a, b) => JSON.stringify(propre(a)) === JSON.stringify(propre(b))
 export function carteDe(base, S, auj) {
   const c = S.carte || {}, m = c.modifs || {}, ep = c.epuises || {};
   return base.map((r) => ({ id: r.id, titre: r.titre, plats: [
-    ...r.plats.map((p, i) => { const cle = `${r.id}/${i}`, x = m[cle] || {}; return { cle, ...propre({ ...p, ...x }), masque: !!x.masque, epuise: ep[cle] === auj, nouveau: false, modifie: Object.keys(x).some((k) => k !== 'masque') }; }),
+    ...r.plats.map((p, i) => { const cle = `${r.id}/${p.id ?? i}`, x = m[cle] || {}; return { cle, ...propre({ ...p, ...x }), masque: !!x.masque, epuise: ep[cle] === auj, nouveau: false, modifie: Object.keys(x).some((k) => k !== 'masque') }; }),
     ...(c.ajouts || []).filter((p) => p.rubrique === r.id).map((p) => { const cle = `${r.id}/+${p.id}`; return { cle, ...propre(p), masque: false, epuise: ep[cle] === auj, nouveau: true, modifie: false }; }),
   ] }));
 }
 export const platsDe = (carte) => carte.flatMap((r) => r.plats.map((p) => ({ ...p, rubrique: r.id, rubriqueTitre: r.titre })));
 /** Le plat de la carte livrée pour une clé (null pour un plat ajouté). */
-export function origine(base, cle) { const [rub, rang] = String(cle).split('/'); const r = base.find((x) => x.id === rub); return r && /^\d+$/.test(rang) ? r.plats[+rang] || null : null; }
+export function origine(base, cle) { const [rub, rang] = String(cle).split('/'); const r = base.find((x) => x.id === rub); return !r || String(rang).startsWith('+') ? null : r.plats.find((p) => p.id === rang) || (/^\d+$/.test(rang) ? r.plats[+rang] || null : null); }
+/** La clé durable d'un plat du site : « rubrique/identifiant ». Une ancienne clé « rubrique/rang » est traduite ; une clé inconnue est rendue telle quelle. */
+export function cleDurable(base, cle) { const [rub, rang] = String(cle).split('/'), p = /^\d+$/.test(rang) ? base.find((x) => x.id === rub)?.plats[+rang] : null; return p?.id ? `${rub}/${p.id}` : String(cle); }
+/**
+ * La migration des anciennes références (v7.8.1) : les plats du site étaient désignés par leur rang dans la rubrique ;
+ * ils le sont par un identifiant qui ne dépend plus de l'ordre d'affichage. Rend true si quelque chose a changé.
+ */
+export function migrerCarte(S, base) {
+  const c = S.carte; if (!c) return false; let change = false;
+  for (const champ of ['modifs', 'epuises']) for (const k of Object.keys(c[champ] || {})) { const n = cleDurable(base, k); if (n !== k) { if (!(n in c[champ])) c[champ][n] = c[champ][k]; delete c[champ][k]; change = true; } }
+  return change;
+}
 
 /** Retrouve un plat d'après ce qu'on en dit (« côte de bœuf », « le foie gras ») : celui dont le nom contient le plus de ces mots. */
 export function trouverPlat(carte, texte) {
@@ -54,6 +65,8 @@ export function trouverPlat(carte, texte) {
 /* Les actions de la carte (appliquées par espace-donnees.js) : chacune modifie une copie de l'état. */
 const net = (S) => { const c = S.carte; if (!c) return; for (const k of ['modifs', 'epuises']) if (c[k] && !Object.keys(c[k]).length) delete c[k]; if (c.ajouts && !c.ajouts.length) delete c.ajouts; if (!Object.keys(c).length) delete S.carte; };
 export const MUTATIONS_CARTE = {
+  /** Traduit les anciennes clés « rubrique/rang » en « rubrique/identifiant » (une fois, à l'ouverture de l'espace). */
+  migrerCarte(S, { base }) { migrerCarte(S, base); },
   /** Modifie un plat ; `base` est la carte livrée : un plat du site redevenu identique ne laisse rien. */
   plat(S, { cle, champs, base }) {
     const c = (S.carte ||= {}), [rub, rang] = cle.split('/');

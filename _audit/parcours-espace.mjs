@@ -28,6 +28,14 @@
       qui n'existe pas, et demande l'heure quand elle n'est pas une arrivée, sans rien valider d'office ; deux onglets :
       « Annuler » ne défait que son propre geste ; deux champs saisis coup sur coup sont tous deux enregistrés ; un
       enregistrement refusé par le navigateur le dit et ne confirme rien.
+   1 nonies (v7.8.1). La stabilisation, dans le navigateur. Page Réserver : la demande n'est dite envoyée qu'une fois
+      enregistrée (un enregistrement refusé garde la saisie et permet de reprendre), l'écran dit « demande », pas
+      « réservation confirmée » ; une heure devenue trop proche est refusée au moment d'envoyer ; une table de deux
+      souhaitée sur le plan est retirée quand on passe à dix couverts. Accueil : plus aucun service ouvert, plus aucune
+      soirée visible, les choix et l'annonce écrits à la génération ne sont pas gardés ; une ouverture exceptionnelle
+      posée dans l'espace est dite dans les horaires. Espace : une fiche client restée ouverte n'efface pas l'allergie
+      notée dans un autre onglet ; deux modèles de message modifiés coup sur coup sont tous deux enregistrés ; après
+      minuit, « Aujourd'hui » passe au lendemain sans rechargement.
    2. Chaque rubrique (et l'éditeur d'événement, l'ajout d'une réservation, la photothèque, la barre), à cinq tailles : les
       mesures de l'audit (débordement, textes sous 12 px, cibles de 44 px, textes coupés, contrastes, noms
       accessibles, typographie), axe-core, les recouvrements, puis un balayage de 320 à 1920 px.
@@ -40,6 +48,8 @@ const VUES = ['jour', 'demandes', 'resas:agenda', 'resas:service', 'resas:salle'
 const P = '/espace';
 
 export default async function ({ contexte, attendrePret, attendre, BASE, R, T }) {
+  /* Pour la mise au point : PARCOURS_ESPACE=1-nonies ne joue que cette étape (plusieurs séparées par des virgules). Sans la variable, tout est joué. */
+  const SEUL = process.env.PARCOURS_ESPACE ? process.env.PARCOURS_ESPACE.split(',') : null;
   const axe = existsSync(new URL('./axe.min.js', import.meta.url)) ? readFileSync(new URL('./axe.min.js', import.meta.url), 'utf8') : '';
   const entrer = async (page) => {
     await page.goto(BASE + P, { waitUntil: 'load' }); await attendrePret(page);
@@ -49,7 +59,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
   const aller = async (page, vue) => { const [v, onglet] = vue.split(':'); await page.locator(`[data-esp-vue="${v}"]`).click(); await attendre(400); if (onglet) { await page.locator(`[role="tab"][data-onglet="${onglet}"]`).click(); await attendre(350); } };
 
   /* ---------- 1. Réserver sur le site, puis confirmer dans l'espace ---------- */
-  {
+  if (!SEUL || SEUL.includes('1')) {
     const taille = T('390×844'), lieu = { page: P, taille: taille.nom };
     const { ctx, page, erreurs } = await contexte({ taille });
     try {
@@ -78,7 +88,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (!/Enregistré à \d/.test(await page.locator('[data-esp-sauve]').innerText())) R.echec('espace : enregistrement', 'l’état « Enregistré à … » ne s’affiche pas après une action', lieu);
       await page.locator('[data-esp-annuler]').click(); await attendre(500);
       if (await statut() !== '' || await badge() !== avant) R.echec('espace : annuler', `après « Annuler » : statut « ${await statut()} », demandes en attente ${await badge()} (attendu ${avant})`, lieu);
-      await page.locator(`[data-esp-rendu="jour"] [data-resa="${demande.id}"] [data-statut="confirmee"]`).click(); await attendre(400);
+      await page.locator(`[data-esp-rendu="jour"] [data-resa="${demande.id}"] [data-statut="confirmee"]`).first().click(); await attendre(400);
 
       /* Dans l'agenda, au jour de la demande : confirmée ; « Complet » ferme le service sur la page Réserver. */
       await aller(page, 'resas');
@@ -112,7 +122,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
   }
 
   /* ---------- 1 bis. La barre « Que voulez-vous faire ? », au doigt puis au clavier ; la fête ---------- */
-  for (const taille of ['390×844', '1366×768'].map(T)) {
+  for (const taille of (!SEUL || SEUL.includes('1-bis') ? ['390×844', '1366×768'] : []).map(T)) {
     const lieu = { page: P, taille: taille.nom }, tel = taille.w < 1000;
     const { ctx, page, erreurs } = await contexte({ taille });
     try {
@@ -160,7 +170,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
   }
 
   /* ---------- 1 ter. Tout arrive ici : les cinq formulaires du site, l'arrivée en direct, les étapes, le message ---------- */
-  {
+  if (!SEUL || SEUL.includes('1-ter')) {
     const taille = T('1366×768'), lieu = { page: P, taille: taille.nom };
     const { ctx, page, erreurs } = await contexte({ taille });
     try {
@@ -222,23 +232,23 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
   }
 
   /* ---------- 1 quater. La carte en main : épuisé aujourd'hui, prix, allergènes, plat ajouté ; la carte du site suit ---------- */
-  {
+  if (!SEUL || SEUL.includes('1-quater')) {
     const taille = T('390×844'), lieu = { page: P, taille: taille.nom };
     const { ctx, page, erreurs } = await contexte({ taille });
     try {
       await entrer(page); await aller(page, 'carte:carte');
       const carte = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').carte || {});
-      const nomPlat = (await page.locator('[data-plat="plats/1"] [data-plat-nom]').innerText()).trim();
-      await page.locator('[data-epuise="plats/1"]').click(); await attendre(400);
+      const nomPlat = (await page.locator('[data-plat="plats/poisson-selon-l-arrivage"] [data-plat-nom]').innerText()).trim();
+      await page.locator('[data-epuise="plats/poisson-selon-l-arrivage"]').click(); await attendre(400);
       const jour = Object.values((await carte()).epuises || {})[0];
-      if (!/^\d{4}-\d\d-\d\d$/.test(jour || '') || !(await page.locator('[data-plat="plats/1"].est-epuise').count())) R.echec('espace : carte', `« Épuisé aujourd’hui » : date enregistrée « ${jour} », plat marqué ${await page.locator('[data-plat="plats/1"].est-epuise').count()}`, lieu);
+      if (!/^\d{4}-\d\d-\d\d$/.test(jour || '') || !(await page.locator('[data-plat="plats/poisson-selon-l-arrivage"].est-epuise').count())) R.echec('espace : carte', `« Épuisé aujourd’hui » : date enregistrée « ${jour} », plat marqué ${await page.locator('[data-plat="plats/poisson-selon-l-arrivage"].est-epuise').count()}`, lieu);
       /* Un prix et des allergènes ; un plat ajouté. */
-      await page.locator('[data-plat="entrees/0"] [data-editer-plat]').click(); await attendre(300);
+      await page.locator('[data-plat="entrees/foie-gras-de-canard-maison"] [data-editer-plat]').click(); await attendre(300);
       await page.locator('#pl-prix').fill('23,50'); await page.locator('[name="allergene"][value="Gluten"]').check(); await attendre(800);
       await page.locator('[data-ajouter-plat-carte="desserts"]').click(); await attendre(300);
       await page.locator('#pl-nom').fill('Tarte aux mirabelles'); await page.locator('#pl-prix').fill('9'); await attendre(800);
       const c = await carte();
-      if (c.modifs?.['entrees/0']?.prix !== 23.5 || c.modifs['entrees/0'].allergenes?.join() !== 'Gluten' || c.ajouts?.[0]?.nom !== 'Tarte aux mirabelles') R.echec('espace : carte', `après les modifications : ${JSON.stringify(c).slice(0, 160)}`, lieu);
+      if (c.modifs?.['entrees/foie-gras-de-canard-maison']?.prix !== 23.5 || c.modifs['entrees/foie-gras-de-canard-maison'].allergenes?.join() !== 'Gluten' || c.ajouts?.[0]?.nom !== 'Tarte aux mirabelles') R.echec('espace : carte', `après les modifications : ${JSON.stringify(c).slice(0, 160)}`, lieu);
       /* La carte du site suit. */
       await page.goto(BASE + '/la-carte', { waitUntil: 'load' }); await attendrePret(page); await attendre(300);
       const site = await page.evaluate(() => ({ prix: document.querySelector('#carte-entrees .carte-resto__prix')?.textContent, allergenes: document.querySelector('#carte-entrees .carte-resto__plat .carte-resto__allergenes')?.textContent || '',
@@ -254,7 +264,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       /* La barre : « épuisé : foie gras ». */
       await entrer(page); await page.locator('.esp-fab').click(); await attendre(350);
       await page.locator('#barre-champ').fill('épuisé : foie gras'); await attendre(250); await page.keyboard.press('Enter'); await attendre(500);
-      const apres = await page.evaluate(() => ({ ep: Object.keys(JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').carte?.epuises || {}).filter((k) => k === 'entrees/0').length, vue: !document.querySelector('[data-vue="carte"]').hidden }));
+      const apres = await page.evaluate(() => ({ ep: Object.keys(JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').carte?.epuises || {}).filter((k) => k === 'entrees/foie-gras-de-canard-maison').length, vue: !document.querySelector('[data-vue="carte"]').hidden }));
       if (!apres.ep || !apres.vue) R.echec('espace : carte', `« épuisé : foie gras » dans la barre : enregistré ${apres.ep}, rubrique Carte ouverte ${apres.vue}`, lieu);
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
       R.ok('espace : la carte en main');
@@ -262,7 +272,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
   }
 
   /* ---------- 1 quinquies. L'espace vous propose ; le bilan de la semaine ; sur l'écran d'accueil ---------- */
-  {
+  if (!SEUL || SEUL.includes('1-quinquies')) {
     const taille = T('1366×768'), lieu = { page: P, taille: taille.nom };
     const { ctx, page, erreurs } = await contexte({ taille });
     try {
@@ -305,7 +315,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
   }
 
   /* ---------- 1 sexies. Le service : la frise, modifier, annuler ou absent, la feuille ---------- */
-  {
+  if (!SEUL || SEUL.includes('1-sexies')) {
     const taille = T('1366×768'), lieu = { page: P, taille: taille.nom };
     const { ctx, page, erreurs } = await contexte({ taille });
     try {
@@ -358,7 +368,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
   }
 
   /* ---------- 1 septies. Le plan de salle et la fiche client ---------- */
-  {
+  if (!SEUL || SEUL.includes('1-septies')) {
     const taille = T('1366×768'), lieu = { page: P, taille: taille.nom };
     const { ctx, page, erreurs } = await contexte({ taille });
     try {
@@ -425,7 +435,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
   }
 
   /* ---------- 1 octies. La cohérence (lot A) ---------- */
-  {
+  if (!SEUL || SEUL.includes('1-octies')) {
     const taille = T('1366×768'), lieu = { page: P, taille: taille.nom };
     const { ctx, page, erreurs } = await contexte({ taille });
     try {
@@ -507,6 +517,117 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     } finally { await ctx.close(); }
   }
 
+  /* ---------- 1 nonies. La stabilisation (v7.8.1) ---------- */
+  if (!SEUL || SEUL.includes('1-nonies')) {
+    const taille = T('1366×768'), lieu = { page: P, taille: taille.nom }, pub = (page) => ({ page, taille: taille.nom });
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      const etat = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'));
+      const poser = (S) => page.evaluate((x) => { if (x) localStorage.setItem('jh-espace:v1', JSON.stringify({ ...x, _schema: 2 })); else localStorage.removeItem('jh-espace:v1'); }, S);
+      const iso = (k) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date(Date.now() + k * 864e5));
+      const vendredi = Array.from({ length: 14 }, (_, k) => iso(k + 2)).find((x) => new Date(x + 'T12:00:00Z').getUTCDay() === 5);
+      /* A. Réserver : un enregistrement refusé ne dit pas « envoyée », garde la saisie et permet de reprendre. */
+      await page.goto(`${BASE}/reserver?date=${vendredi}&service=soir#formulaire`, { waitUntil: 'load' }); await attendrePret(page); await attendre(500);
+      await page.locator('input[name="heure"]:not(:disabled)').first().check({ force: true }); await attendre(200);
+      for (let i = 0; i < 4 && await page.locator('[data-etape-suivante]').isVisible(); i++) { await page.locator('[data-etape-suivante]').click(); await attendre(450); }
+      await page.fill('[name="prenom"]', 'Claire'); await page.fill('[name="nom"]', 'Reprise'); await page.fill('[name="telephone"]', '06 00 00 00 00');
+      await page.locator('[data-resa-form] button[type="submit"]').click(); await attendre(600);
+      const bouton = (await page.locator('[data-resa-confirmer]').innerText()).trim();
+      await page.evaluate(() => { const vrai = Storage.prototype.setItem; window.__vrai = vrai; Storage.prototype.setItem = function (k, v) { if (String(k).startsWith('jh-espace-resas')) throw new DOMException('plein', 'QuotaExceededError'); return vrai.call(this, k, v); }; });
+      await page.locator('[data-resa-confirmer]').click(); await attendre(900);
+      const refus = await page.evaluate(() => ({ envoye: document.querySelector('[data-module="reservation-de-table"]')?.classList.contains('est-envoye'), texte: document.querySelector('[data-resa-recap]')?.innerText.replace(/\s+/g, ' ') || '', nom: document.querySelector('[name="nom"]')?.value, memoire: JSON.parse(localStorage.getItem('jh-espace-resas:v1') || '[]').length, bouton: document.querySelector('[data-resa-confirmer]')?.disabled }));
+      if (refus.envoye || /Référence|Demande reçue/.test(refus.texte) || !/n'a pas pu être enregistrée/.test(refus.texte) || refus.nom !== 'Reprise' || refus.memoire || refus.bouton) R.echec('stabilisation : réussite avant enregistrement', `enregistrement refusé : dit envoyé ${refus.envoye}, texte « ${refus.texte.slice(-110)} », saisie gardée ${refus.nom === 'Reprise'}, bouton bloqué ${refus.bouton}`, pub('/reserver'));
+      await page.evaluate(() => { Storage.prototype.setItem = window.__vrai; });
+      await page.locator('[data-resa-confirmer]').click(); await attendre(1500);
+      const reussi = await page.evaluate(() => ({ texte: document.querySelector('[data-resa-recap]')?.innerText.replace(/\s+/g, ' ') || '', memoire: JSON.parse(localStorage.getItem('jh-espace-resas:v1') || '[]') }));
+      if (!/Votre demande est envoyée/i.test(reussi.texte) || !/Demande reçue/i.test(reussi.texte) || !/Référence R-/.test(reussi.texte) || /table est réservée/i.test(reussi.texte) || reussi.memoire.length !== 1 || !/Envoyer ma demande/.test(bouton)) R.echec('stabilisation : demande et réservation', `après reprise : « ${reussi.texte.slice(0, 120)} », ${reussi.memoire.length} demande(s) en mémoire, bouton « ${bouton} »`, pub('/reserver'));
+      await page.evaluate(() => { localStorage.removeItem('jh-espace-resas:v1'); sessionStorage.clear(); });
+      /* B. Réserver : une table de deux souhaitée sur le plan, puis dix couverts : la table est retirée et c'est dit. */
+      await page.goto(`${BASE}/reserver?date=${vendredi}&service=soir&table=1&couverts=2#formulaire`, { waitUntil: 'load' }); await attendrePret(page); await attendre(500);
+      const avantTable = await page.evaluate(() => document.querySelector('[data-resa-form] [name="table"]')?.value);
+      await page.evaluate(() => { const c = document.querySelector('[data-resa-form] [name="couverts"]'); c.value = '10'; c.dispatchEvent(new Event('input', { bubbles: true })); c.dispatchEvent(new Event('change', { bubbles: true })); }); await attendre(400);
+      const apresTable = await page.evaluate(() => ({ table: document.querySelector('[data-resa-form] [name="table"]')?.value, couverts: document.querySelector('[data-resa-form] [name="couverts"]')?.value, dit: [...document.querySelectorAll('[data-resa-table-choisie]')].map((x) => x.textContent).join(' ') }));
+      if (avantTable !== '1' || apresTable.table !== '' || apresTable.couverts !== '10' || !/table 1 \(2 places\) ne convient pas pour 10 personnes/.test(apresTable.dit)) R.echec('stabilisation : table incompatible', `table avant « ${avantTable} », après ${JSON.stringify(apresTable)}`, pub('/reserver'));
+      await page.evaluate(() => sessionStorage.clear());
+      /* C. Réserver : l'heure choisie devient trop proche pendant que la page reste ouverte : refusée au moment d'envoyer. */
+      const jour = Array.from({ length: 14 }, (_, k) => iso(k + 1)).find((x) => [3, 4, 5, 0].includes(new Date(x + 'T12:00:00Z').getUTCDay()));
+      const heureLocale = (h, m) => new Date(`${jour}T${String(h - 1).padStart(2, '0')}:${String(m).padStart(2, '0')}:00Z`); /* Paris est à UTC+1 de fin octobre à fin mars */
+      const hiver = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', hour: '2-digit', hour12: false }).format(heureLocale(10, 0)) === '10';
+      if (hiver) {
+        await page.clock.install({ time: heureLocale(10, 0) });
+        await page.goto(`${BASE}/reserver?date=${jour}&service=midi#formulaire`, { waitUntil: 'load' }); await page.clock.runFor(4000); await attendre(300);
+        await page.locator('input[name="heure"][value="12:00"]').check({ force: true }); await page.clock.runFor(300);
+        for (let i = 0; i < 4 && await page.locator('[data-etape-suivante]').isVisible(); i++) { await page.locator('[data-etape-suivante]').click(); await page.clock.runFor(700); }
+        await page.fill('[name="prenom"]', 'Claire'); await page.fill('[name="nom"]', 'Retard'); await page.fill('[name="telephone"]', '06 00 00 00 00');
+        await page.locator('[data-resa-form] button[type="submit"]').click(); await page.clock.runFor(800);
+        await page.clock.setFixedTime(heureLocale(11, 10));
+        await page.locator('[data-resa-confirmer]').click(); await page.clock.runFor(900); await attendre(200);
+        const tard = await page.evaluate(() => ({ envoye: document.querySelector('[data-module="reservation-de-table"]')?.classList.contains('est-envoye'), erreur: [...document.querySelectorAll('[data-resa-form] [role="alert"], [data-resa-form] .resa__erreur, [data-resa-form] [data-erreur]')].map((x) => x.textContent).join(' ').replace(/\s+/g, ' '), midi: !!document.querySelector('input[name="heure"][value="12:00"]:not(:disabled)'), memoire: JSON.parse(localStorage.getItem('jh-espace-resas:v1') || '[]').length }));
+        if (tard.envoye || tard.memoire || tard.midi || !/n'est pas partie/.test(tard.erreur)) R.echec('stabilisation : validation finale', `à 11 h 10, pour midi : envoyée ${tard.envoye}, ${tard.memoire} en mémoire, midi encore proposé ${tard.midi}, message « ${tard.erreur.slice(0, 110)} »`, pub('/reserver'));
+        /* Après minuit, la page ne garde pas la veille : le premier jour proposé est le lendemain. */
+        await page.clock.setFixedTime(new Date(heureLocale(10, 0).getTime() + 864e5)); await page.clock.runFor(61000); await attendre(200);
+        const lendemain = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date(heureLocale(10, 0).getTime() + 864e5));
+        const min = await page.evaluate(() => ({ min: document.querySelector('[data-resa-form] [name="date"]')?.min, date: document.querySelector('[data-resa-form] [name="date"]')?.value }));
+        if (min.min !== lendemain || min.date < lendemain) R.echec('stabilisation : minuit', `le lendemain, la page Réserver garde le ${min.min} comme premier jour (date choisie ${min.date}), attendu ${lendemain}`, pub('/reserver'));
+      } else R.regarder('stabilisation : validation finale', 'heure d’été : le scénario de 11 h 10 n’a pas été rejoué dans le navigateur (il l’est par les tests unitaires)', pub('/reserver'));
+    } finally { await ctx.close(); }
+    const { ctx: ctx2, page: p2, erreurs: err2 } = await contexte({ taille });
+    try {
+      const page = p2, etat = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'));
+      const poser = async (S) => { await page.goto(BASE + '/404', { waitUntil: 'load' }).catch(() => {}); await page.evaluate((x) => { if (x) localStorage.setItem('jh-espace:v1', JSON.stringify({ ...x, _schema: 2 })); else localStorage.removeItem('jh-espace:v1'); }, S); };
+      const iso = (k) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date(Date.now() + k * 864e5));
+      /* D. Accueil : tout est fermé trois semaines, toutes les soirées sont masquées : rien d'ancien n'est gardé. */
+      const agenda = await page.goto(BASE + P, { waitUntil: 'load' }).then(() => page.evaluate(() => JSON.parse(document.querySelector('[data-esp-donnees]').textContent).agenda.map((e) => ({ id: e.id, titre: e.titre, debut: e.debut, type: e.type, prix: e.prix }))));
+      await poser({ horaires: { exceptions: [{ du: iso(0), au: iso(40), motif: 'Congés annuels' }] }, evenements: { modifs: Object.fromEntries(agenda.map((e) => [e.id, { masque: true }])), liste: agenda.map((e) => ({ ...e, masque: true })) } });
+      await page.goto(BASE + '/', { waitUntil: 'load' }); await attendrePret(page); await attendre(700);
+      const vide = await page.evaluate(() => { const f = document.querySelector('[data-mini-resa]'); return { choix: f ? f.querySelectorAll('[name="service"]').length : -1, message: f?.querySelector('.mini-resa__vide')?.textContent || '', bouton: f ? [...f.querySelectorAll('button[type="submit"]')].every((b) => b.disabled) : null, rdv: [...document.querySelectorAll('[data-heros-rdv-lien]')].filter((x) => !x.hidden && x.offsetParent).length, soiree: [...document.querySelectorAll('[data-prochaine-soiree]')].filter((x) => !x.hidden && x.offsetParent).length }; });
+      if (vide.choix !== 0 || !/Aucun service/.test(vide.message) || vide.bouton !== true) R.echec('stabilisation : mini-réservation vide', `tout fermé : ${vide.choix} choix gardés, message « ${vide.message.slice(0, 60)} », bouton désactivé ${vide.bouton}`, { page: '/', taille: taille.nom });
+      if (vide.rdv || vide.soiree) R.echec('stabilisation : annonce gardée', `toutes les soirées masquées : rendez-vous du haut de page encore affiché ${vide.rdv}, prochaine soirée encore affichée ${vide.soiree}`, { page: '/', taille: taille.nom });
+      /* E. Une ouverture exceptionnelle posée dans l'espace est dite dans les horaires affichés. */
+      const mardi = Array.from({ length: 14 }, (_, k) => iso(k + 1)).find((x) => new Date(x + 'T12:00:00Z').getUTCDay() === 2);
+      await poser({ resa: { ouvertures: [{ date: mardi, service: 'soir', note: 'Soirée privée' }] } });
+      await page.goto(BASE + '/infos-pratiques', { waitUntil: 'load' }); await attendrePret(page); await attendre(700);
+      const noter = await page.evaluate(() => document.body.innerText.replace(/\s+/g, ' '));
+      if (!/Soirée privée/.test(noter)) R.echec('stabilisation : ouverture exceptionnelle', 'l’ouverture exceptionnelle posée dans l’espace n’est pas dite dans les horaires de la page Infos pratiques', { page: '/infos-pratiques', taille: taille.nom });
+      /* F. Espace : une fiche client restée ouverte n'efface pas l'allergie notée dans un autre onglet. */
+      await poser(null); await entrer(page); await aller(page, 'resas:agenda');
+      const jours = await page.evaluate(() => [...document.querySelectorAll('[data-esp-rendu="resas"] [data-jour]')].map((b) => b.dataset.jour));
+      let cle = '';
+      for (const j of jours) { await page.locator(`[data-esp-rendu="resas"] [data-jour="${j}"]`).first().click().catch(() => {}); await attendre(200); cle = await page.evaluate(() => document.querySelector('[data-esp-rendu="resas"] [data-client]')?.dataset.client || ''); if (cle) break; }
+      if (cle) {
+        await page.locator(`[data-esp-rendu="resas"] [data-client="${cle}"]`).first().click(); await attendre(400);
+        const autre = await ctx2.newPage(); await autre.goto(BASE + '/404', { waitUntil: 'load' }).catch(() => {});
+        await autre.evaluate((c) => { const S = JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'); (S.clients ||= {})[c] = { allergies: ['Arachides'] }; S._schema = 2; localStorage.setItem('jh-espace:v1', JSON.stringify(S)); }, cle); await attendre(400);
+        await page.keyboard.press('Escape'); await attendre(400);
+        const apres = (await etat()).clients?.[cle];
+        if (apres?.allergies?.join() !== 'Arachides') R.echec('stabilisation : fiche client', `fermer une fiche intacte a écrasé l’allergie notée ailleurs (${JSON.stringify(apres)})`, lieu);
+        /* Rouverte, « Habitué » coché : seul ce champ part, l'allergie reste. */
+        await page.locator(`[data-esp-rendu="resas"] [data-client="${cle}"]`).first().click(); await attendre(400);
+        await page.locator('[data-form-client] input[name="habitue"]').check(); await attendre(300); await page.keyboard.press('Escape'); await attendre(300);
+        const fin = (await etat()).clients?.[cle];
+        if (!fin?.habitue || fin.allergies?.join() !== 'Arachides') R.echec('stabilisation : fiche client', `après « Habitué » : ${JSON.stringify(fin)}`, lieu);
+        await autre.close();
+      } else R.regarder('stabilisation : fiche client', 'aucune réservation cette semaine : la fiche n’a pas été rejouée dans le navigateur', lieu);
+      /* G. Deux modèles de message modifiés coup sur coup : les deux sont enregistrés. */
+      await aller(page, 'site:messages');
+      const modeles = await page.evaluate(() => [...document.querySelectorAll('[data-form-messages] textarea')].slice(0, 2).map((t) => t.name));
+      if (modeles.length === 2) {
+        await page.locator(`[data-form-messages] [name="${modeles[0]}"]`).fill('Premier modèle {prenom}'); await page.locator(`[data-form-messages] [name="${modeles[1]}"]`).fill('Second modèle {prenom}'); await attendre(900);
+        const msg = (await etat()).messages || {};
+        if (msg[modeles[0]] !== 'Premier modèle {prenom}' || msg[modeles[1]] !== 'Second modèle {prenom}') R.echec('stabilisation : saisie des messages', `deux modèles modifiés coup sur coup : enregistrés ${JSON.stringify(msg).slice(0, 140)}`, lieu);
+      } else R.regarder('stabilisation : saisie des messages', 'moins de deux modèles de message : non rejoué', lieu);
+      /* H. Après minuit, « Aujourd'hui » passe au lendemain sans rechargement. */
+      await aller(page, 'jour');
+      const avant = await page.evaluate(() => document.querySelector('[data-esp-rendu="jour"]')?.innerText.slice(0, 200) || '');
+      await page.clock.install({ time: new Date() }); await page.clock.setFixedTime(new Date(Date.now() + 864e5)); await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange'))); await attendre(400);
+      const lendemain = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(Date.now() + 864e5));
+      const apresMinuit = await page.evaluate(() => document.querySelector('.esp-bonjour')?.innerText.replace(/\s+/g, ' ').slice(0, 200) || '');
+      if (!apresMinuit.toLowerCase().includes(lendemain.toLowerCase())) R.echec('stabilisation : minuit', `le lendemain, « Aujourd’hui » dit encore « ${apresMinuit.slice(0, 80)} » (attendu ${lendemain})`, lieu);
+      [...new Set(err2)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok('stabilisation v7.8.1');
+    } finally { await ctx2.close(); }
+  }
+
   /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */
   const noter = (liste, taille, ou) => liste.filter((x) => x.controle !== 'section sans visuel').forEach((x) => R.ajouter(x.niveau || 'echec', x.controle, `${ou} : ${x.detail}`, { page: P, taille: taille.nom, selecteur: x.selecteur }));
   async function mesurerEcran(page, taille, ou, complet) {
@@ -523,7 +644,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       }
     }
   }
-  for (const taille of ['320×568', '390×844', '768×1024', '1366×768', '1920×1080'].map(T)) {
+  for (const taille of (!SEUL || SEUL.includes('2') ? ['320×568', '390×844', '768×1024', '1366×768', '1920×1080'] : []).map(T)) {
     const { ctx, page, erreurs } = await contexte({ taille });
     const complet = ['390×844', '1366×768'].includes(taille.nom);
     try {
@@ -543,8 +664,8 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
         else R.regarder('espace : service', 'aucun jour de la semaine n’a de réservation à montrer : la frise n’a pas été mesurée', { page: P, taille: taille.nom }); }
       await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(250); await page.locator('[data-esp-rendu="demandes"] [data-ouvrir-demande]').first().click(); await attendre(400); await mesurerEcran(page, taille, 'demande de réception ouverte', complet);
       await page.locator('[data-filtre-demandes="table"]').click(); await attendre(250); await page.locator('.esp-resa__message summary').first().click(); await attendre(250); await mesurerEcran(page, taille, 'tables à confirmer et message', false);
-      await aller(page, 'carte:carte'); await page.locator('[data-plat="entrees/0"] [data-editer-plat]').click(); await attendre(400); await mesurerEcran(page, taille, 'éditeur de plat', complet);
-      await page.locator('[data-plat="entrees/0"] [data-editer-plat]').first().click(); await attendre(200);
+      await aller(page, 'carte:carte'); await page.locator('[data-plat="entrees/foie-gras-de-canard-maison"] [data-editer-plat]').click(); await attendre(400); await mesurerEcran(page, taille, 'éditeur de plat', complet);
+      await page.locator('[data-plat="entrees/foie-gras-de-canard-maison"] [data-editer-plat]').first().click(); await attendre(200);
       await aller(page, 'site:soirees'); await page.locator('.esp-ev [data-editer]').first().click(); await attendre(450); await mesurerEcran(page, taille, 'éditeur d’événement', complet);
       await page.locator('[data-choisir-photo="ev"]').click(); await attendre(500); await mesurerEcran(page, taille, 'photothèque', complet);
       await page.keyboard.press('Escape'); await attendre(250);
@@ -570,7 +691,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
   }
 
   /* ---------- 3. Balayage de 320 à 1920 px : aucun débordement horizontal, rubrique par rubrique ---------- */
-  {
+  if (!SEUL || SEUL.includes('3')) {
     const { ctx, page } = await contexte({ taille: { nom: 'balayage', w: 320, h: 800, tactile: false } });
     try {
       await entrer(page);

@@ -79,7 +79,7 @@ export function creerCarte(X) {
     $('[data-plat-nom]', li).textContent = nom; $('[data-plat-prix]', li).textContent = prixTexte(champs.prix);
     const d = $('[data-plat-desc]', li); d.textContent = champs.description; d.hidden = !champs.description;
     const plus = $('[data-plat-plus]', li); plus.textContent = [champs.vegetarien ? 'Végétarien' : '', champs.allergenes.length ? `Allergènes : ${champs.allergenes.join(', ').toLowerCase()}` : ''].filter(Boolean).join(' · '); plus.hidden = !plus.textContent;
-    X.plusTard(() => agir('plat', { cle, champs, base: D.carte }, { msg: 'Carte enregistrée : visible sur le site, dans ce navigateur.', lien: D.pages.carte, groupe: `plat-${cle}` }));
+    X.plusTard(() => agir('plat', { cle, champs, base: D.carte }, { msg: 'Carte enregistrée : visible sur le site, dans ce navigateur.', lien: D.pages.carte, groupe: `plat-${cle}` }), `plat-${cle}`);
     return true;
   }
   return { rendre, clic, saisie };

@@ -24,10 +24,10 @@ test('la carte livrée, telle quelle : rien n\'est inventé', () => {
 });
 
 test('modifier un plat ; le remettre comme avant ne laisse rien', () => {
-  let S = appliquer({}, 'plat', { cle: 'entrees/0', champs: { prix: 23, allergenes: ['Lait', 'Gluten', 'Inconnu'] }, base: BASE });
-  const p = plat(S, 'entrees/0'); assert.equal(p.prix, 23); assert.deepEqual(p.allergenes, ['Gluten', 'Lait'], 'dans l\'ordre de la liste, sans intrus'); assert.equal(p.modifie, true); assert.equal(p.nom, BASE[0].plats[0].nom);
-  assert.equal(plat(S, 'entrees/1').modifie, false);
-  S = appliquer(S, 'plat', { cle: 'entrees/0', champs: { prix: BASE[0].plats[0].prix, allergenes: [] }, base: BASE }); assert.ok(estVide(S), 'revenu à la carte livrée');
+  let S = appliquer({}, 'plat', { cle: 'entrees/foie-gras-de-canard-maison', champs: { prix: 23, allergenes: ['Lait', 'Gluten', 'Inconnu'] }, base: BASE });
+  const p = plat(S, 'entrees/foie-gras-de-canard-maison'); assert.equal(p.prix, 23); assert.deepEqual(p.allergenes, ['Gluten', 'Lait'], 'dans l\'ordre de la liste, sans intrus'); assert.equal(p.modifie, true); assert.equal(p.nom, BASE[0].plats[0].nom);
+  assert.equal(plat(S, 'entrees/risotto-de-saint-jacques-au-riz-noir').modifie, false);
+  S = appliquer(S, 'plat', { cle: 'entrees/foie-gras-de-canard-maison', champs: { prix: BASE[0].plats[0].prix, allergenes: [] }, base: BASE }); assert.ok(estVide(S), 'revenu à la carte livrée');
 });
 
 test('ajouter un plat, le modifier, le retirer', () => {
@@ -38,21 +38,21 @@ test('ajouter un plat, le modifier, le retirer', () => {
 });
 
 test('retirer un plat du site de la carte, puis le remettre', () => {
-  let S = appliquer({}, 'platVisible', { cle: 'plats/2', visible: false }); assert.equal(plat(S, 'plats/2').masque, true); assert.equal(plat(S, 'plats/2').modifie, false);
-  S = appliquer(S, 'plat', { cle: 'plats/2', champs: { prix: 30 }, base: BASE }); assert.equal(plat(S, 'plats/2').masque, true, 'modifier ne le remet pas sur la carte');
-  S = appliquer(S, 'platVisible', { cle: 'plats/2', visible: true }); assert.equal(plat(S, 'plats/2').masque, false); assert.equal(plat(S, 'plats/2').prix, 30);
+  let S = appliquer({}, 'platVisible', { cle: 'plats/supreme-de-pintade', visible: false }); assert.equal(plat(S, 'plats/supreme-de-pintade').masque, true); assert.equal(plat(S, 'plats/supreme-de-pintade').modifie, false);
+  S = appliquer(S, 'plat', { cle: 'plats/supreme-de-pintade', champs: { prix: 30 }, base: BASE }); assert.equal(plat(S, 'plats/supreme-de-pintade').masque, true, 'modifier ne le remet pas sur la carte');
+  S = appliquer(S, 'platVisible', { cle: 'plats/supreme-de-pintade', visible: true }); assert.equal(plat(S, 'plats/supreme-de-pintade').masque, false); assert.equal(plat(S, 'plats/supreme-de-pintade').prix, 30);
 });
 
 test('épuisé aujourd\'hui : le lendemain, le plat revient tout seul', () => {
-  let S = appliquer({}, 'epuise', { cle: 'plats/0', date: AUJ, actif: true });
-  assert.equal(plat(S, 'plats/0').epuise, true); assert.equal(plat(S, 'plats/0', DEMAIN).epuise, false, 'demain, il est de retour');
-  S = appliquer(S, 'epuise', { cle: 'plats/1', date: DEMAIN, actif: true }); assert.deepEqual(S.carte.epuises, { 'plats/1': DEMAIN }, 'les jours passés ne s\'accumulent pas');
-  assert.ok(estVide(appliquer(S, 'epuise', { cle: 'plats/1', date: DEMAIN, actif: false })));
+  let S = appliquer({}, 'epuise', { cle: 'plats/piece-de-boucher', date: AUJ, actif: true });
+  assert.equal(plat(S, 'plats/piece-de-boucher').epuise, true); assert.equal(plat(S, 'plats/piece-de-boucher', DEMAIN).epuise, false, 'demain, il est de retour');
+  S = appliquer(S, 'epuise', { cle: 'plats/poisson-selon-l-arrivage', date: DEMAIN, actif: true }); assert.deepEqual(S.carte.epuises, { 'plats/poisson-selon-l-arrivage': DEMAIN }, 'les jours passés ne s\'accumulent pas');
+  assert.ok(estVide(appliquer(S, 'epuise', { cle: 'plats/poisson-selon-l-arrivage', date: DEMAIN, actif: false })));
 });
 
 test('retrouver un plat d\'après ce qu\'on en dit', () => {
   const c = carteDe(BASE, {}, AUJ), t = (x) => trouverPlat(c, x)?.cle;
-  assert.equal(t('foie gras'), 'entrees/0'); assert.equal(t('le foie gras de canard'), 'entrees/0'); assert.equal(t('os à moelle'), 'entrees/3'); assert.equal(t('risotto'), 'entrees/1');
+  assert.equal(t('foie gras'), 'entrees/foie-gras-de-canard-maison'); assert.equal(t('le foie gras de canard'), 'entrees/foie-gras-de-canard-maison'); assert.equal(t('os à moelle'), 'entrees/l-os-a-moelle'); assert.equal(t('risotto'), 'entrees/risotto-de-saint-jacques-au-riz-noir');
   assert.equal(t('licorne rôtie'), undefined); assert.equal(t(''), undefined); assert.equal(t('le la de'), undefined);
-  const S = appliquer({}, 'platVisible', { cle: 'entrees/0', visible: false }); assert.notEqual(trouverPlat(carteDe(BASE, S, AUJ), 'foie gras')?.cle, 'entrees/0', 'un plat retiré de la carte n\'est plus proposé');
+  const S = appliquer({}, 'platVisible', { cle: 'entrees/foie-gras-de-canard-maison', visible: false }); assert.notEqual(trouverPlat(carteDe(BASE, S, AUJ), 'foie gras')?.cle, 'entrees/foie-gras-de-canard-maison', 'un plat retiré de la carte n\'est plus proposé');
 });

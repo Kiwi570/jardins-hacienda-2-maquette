@@ -54,13 +54,14 @@ export function placerTout(plan) {
 /**
  * Après une modification (heure, service, couverts), la table de la réservation convient-elle encore ? (v7.8.0)
  * Trop petite, prise à la nouvelle heure, ou fermée : la réservation est à replacer.
+ * `places: false` : on ne regarde que si elle est libre (une réservation qui revient garde une table que l'équipe avait serrée exprès).
  * @returns {{ table: string, convient: boolean, raison: string }}
  */
-export function tableApres(ctx, S, salle, r, champs = {}) {
+export function tableApres(ctx, S, salle, r, champs = {}, { places = true } = {}) {
   const table = String(r.table || ''); if (!table) return { table: '', convient: true, raison: '' };
   const f = { ...r, ...champs }, n = Math.round(+f.couverts) || 1; f.debutMin = enMin(f.heure); f.finMin = f.debutMin + dureeDe(f.service);
   const t = planDuService(ctx, S, salle, r.date, f.service).tables.find((x) => x.id === table);
-  const raison = !t ? 'elle n\'est plus sur le plan' : t.fermee ? 'la terrasse est fermée' : t.places < n ? `${t.places} places pour ${n} couverts` : !libre(t, f) ? 'elle est prise à cette heure-là' : '';
+  const raison = !t ? 'elle n\'est plus sur le plan' : t.fermee ? 'la terrasse est fermée' : places && t.places < n ? `${t.places} places pour ${n} couverts` : !libre(t, f) ? 'elle est prise à cette heure-là' : '';
   return { table, convient: !raison, raison };
 }
 

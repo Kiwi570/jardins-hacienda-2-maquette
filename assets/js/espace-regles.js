@@ -99,28 +99,6 @@ export function trouverResa(ctx, S, id) {
   const iso = brute?.date || (/^demo-(\d{4}-\d{2}-\d{2})-/.exec(String(id)) || [])[1];
   return iso ? resasDuJour(ctx, S, iso).find((r) => r.id === id) || null : null;
 }
-/**
- * Le garde-fou des actions sur les réservations : '' si l'action est possible, sinon la phrase qui dit pourquoi.
- * Le dépôt l'appelle avant d'enregistrer, d'où que vienne l'action (formulaire, barre, suggestion) : une réservation
- * impossible ne peut pas entrer dans l'agenda, ni être confirmée.
- */
-export function gardeMetier(ctx, S, nom, args = {}) {
-  if (nom === 'ajouterResa') { const v = verifierResa(ctx, S, args.resa || {}); return v.ok ? '' : `Réservation impossible : ${v.message}`; }
-  if (nom === 'modifierResa') {
-    const r = trouverResa(ctx, S, args.id), c = args.champs || {}; if (!r) return 'Cette réservation est introuvable : elle a peut-être été supprimée ailleurs.';
-    const bouge = ('heure' in c && c.heure !== r.heure) || ('service' in c && c.service !== r.service), n = 'couverts' in c ? Math.round(+c.couverts) : +r.couverts;
-    if (!Number.isFinite(n) || n < 1 || n > CAPACITE) return `Modification impossible : ${n > CAPACITE ? `${n} couverts, c'est plus que la salle (${CAPACITE}).` : 'il faut au moins un couvert.'}`;
-    if (bouge) { const v = verifierResa(ctx, S, { ...r, ...c, couverts: n }); if (!v.ok) return `Modification impossible : ${v.message}`; }
-    return '';
-  }
-  if (nom === 'statut' && args.statut === 'confirmee') {
-    const r = trouverResa(ctx, S, args.id); if (!r || r.date < ctx.auj) return '';
-    const e = etatDuService(ctx, S, r.date, r.service);
-    return e.ouvert ? '' : `Confirmation impossible : ${(e.motif || 'le service est fermé').toLowerCase()}. Rouvrez le service, ou refusez la demande.`;
-  }
-  return '';
-}
-
 /** Les événements tels que l'espace les a laissés : ceux du site modifiés ou masqués, et les nouveaux. */
 export function evenements(base, S) {
   const m = S.evenements?.modifs || {};

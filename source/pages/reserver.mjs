@@ -47,7 +47,8 @@ const DECOR = `<svg class="pds__svg" viewBox="0 0 1000 640" aria-hidden="true" f
 
 export default (c) => {
   const s = c.donnees.salle;
-  const reglages = JSON.stringify(c.donnees.reservation).replace(/</g, '\\u003c');
+  /* v7.8.1 : les places de chaque table du plan, pour retirer une table souhaitée devenue trop petite. */
+  const reglages = JSON.stringify({ ...c.donnees.reservation, tables: Object.fromEntries(c.donnees.salle.tables.map((t) => [t.id, t.places])) }).replace(/</g, '\\u003c');
   const R = c.donnees.reservation.services, h = (t) => { const [a, m] = t.split(':').map(Number); return `${a}\u00a0h${m ? '\u00a0' + String(m).padStart(2, '0') : ''}`; };
   const plage = (sv) => `${h(R[sv].debut)} – ${h(R[sv].fin)}`;
   const lien = (t) => c.url('reserver', 'formulaire', `table=${t.id}&couverts=${t.places}&espace=${t.zone === 'terrasse' ? 'terrasse' : 'salle'}`);

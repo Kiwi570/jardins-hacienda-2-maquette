@@ -124,8 +124,12 @@ export function comprendre(texte, ctx) {
   if (!estAnnonce && dd.erreur) return [erreur(`« ${telEcrit(dd.erreur)} » : cette date n'existe pas`, 'Rien n\'est changé. Écrivez une date du calendrier, par exemple « le 28 février » ou « samedi ».')];
   if (!estAnnonce && hd.erreur) return [erreur(`« ${telEcrit(hd.erreur)} » : cette heure n'existe pas`, 'Rien n\'est changé. Écrivez l\'heure comme « 20 h », « 20 h 30 » ou « midi et demi ».')];
   /* Une phrase négative (« ne ferme pas samedi », « le foie gras n'est pas épuisé ») : rien n'est fait à l'envers. */
-  const negative = /\bne pas\b|\b(?:ne|n') ?[a-z']+ (?:pas|plus|jamais)\b|^pas d[e']\b|^surtout pas\b/.test(n);
-  if (!estAnnonce && negative && !/\bcomplete?s?\b/.test(n) && /\b(ferm|epuis|reserv|table|resa|note|ajout|ouvr|rouvr|cree|supprim|annul)/.test(n)) {
+  /* v7.8.1 : la négation est reconnue même sans « ne » (« ferme pas vendredi soir »). Seule exception : « pas complet »,
+     « plus complet », « n'est plus complet », qui demandent de proposer de nouveau un service ; mais « ne ferme pas
+     vendredi soir même si c'est complet » reste une phrase négative. */
+  const sansComplet = n.replace(/\b(?:(?:ne |n')?(?:est|sont) )?(?:pas|plus) complete?s?\b/g, ' ');
+  const negative = /\bne (?:pas|plus|jamais)\b|\b(?:ne|n') ?[a-z']+ (?:pas|plus|jamais)\b|\b(?:ferm|ouvr|rouvr|not|reserv|ajout|annul|supprim|epuis|cre|met)[a-z]* (?:pas|plus|jamais)\b|^pas d[e']\b|^(?:surtout|non) pas\b/.test(sansComplet);
+  if (!estAnnonce && negative && /\b(ferm|epuis|reserv|table|resa|note|ajout|ouvr|rouvr|cree|supprim|annul|complet)/.test(n)) {
     const l = [erreur('Phrase négative : rien n\'est changé', 'Dites ce qu\'il faut faire, par exemple « rouvrir samedi soir », « il reste du foie gras » ou « fermer samedi midi ».')];
     const fermes = date && /\bferm/.test(n) ? (sv ? [sv] : tous).filter((s) => (S.resa?.fermes?.[date] || []).includes(s)) : [];
     if (fermes.length) l.push({ genre: 'ouvrir', titre: `Rouvrir ${quand(date, fermes)}`, detail: 'Ce service a été fermé depuis l\'agenda. La réservation en ligne le proposera de nouveau.', action: { nom: 'fermer', args: { date, services: fermes, actif: false }, msg: 'Service rouvert.', lien: pages.reserver }, aller: { vue: 'resas', jour: date } });
