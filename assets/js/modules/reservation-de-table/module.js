@@ -441,7 +441,7 @@ export async function init(root, options = {}) {
       const echec = (m) => { b.disabled = false; b.textContent = 'Envoyer ma demande'; erreur(b, m); };
       let ref = '';
       try { ref = (o.envoyer ? (await o.envoyer(v))?.reference : `R-${v.date.slice(5).replace('-', '')}-${String(1000 + Math.floor(Math.random() * 9000))}`) || ''; }
-      catch { echec('L\'envoi n\'a pas abouti. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }
+      catch (err) { echec(err?.pourClient || 'L\'envoi n\'a pas abouti. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }
       if (!ref) { echec('Le restaurant n\'a pas confirmé la réception. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }
       // Démonstration (v7.6.0) : la demande arrive dans l'agenda de l'espace restaurateur de ce navigateur (par le stockage, v7.7.0).
       const enregistre = o.enregistrer ? o.enregistrer({ id: ref, ...v, cree: new Date().toISOString() }) : ajouterResaSite({ id: ref, ...v, cree: new Date().toISOString() });

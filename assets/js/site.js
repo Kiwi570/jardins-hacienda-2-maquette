@@ -146,6 +146,32 @@ const apis = {};
    contournement (ouvrir le jeudi soir puis dire « complet » les autres jeudis) cachait aussi les services que le
    restaurant déclare complets depuis son espace. */
 function reglagesResa() { return {}; }
+/* Mode connecté (v7.9.0) : si la page indique une API, la réservation suit le serveur. Les règles viennent de lui, la
+   demande lui est envoyée, et « envoyée » n'est dit qu'avec sa référence. S'il ne répond pas, rien n'est simulé : la
+   page le dit et renvoie vers le téléphone. La même saisie renvoyée après un envoi sans réponse porte la même clé :
+   elle ne crée pas deux demandes. */
+const API = document.querySelector('meta[name="jh-api"]')?.content || '';
+const clesDemande = new Map();
+async function reglagesServeur(el) {
+  let R = null;
+  try { const r = await fetch(`${API}/public/reglages`, { headers: { accept: 'application/json' } }); if (r.ok) R = await r.json(); } catch { /* dit ci-dessous */ }
+  if (!R || !R.services) {
+    const f = el.querySelector('[data-resa-form]'), p = document.createElement('p'); p.className = 'resa__panne'; p.setAttribute('role', 'alert');
+    p.textContent = 'La réservation en ligne ne répond pas pour le moment. Rien n\'est enregistré : appelez-nous, ou réessayez dans un instant.';
+    if (f) { f.hidden = true; f.before(p); }
+    throw new Error('réglages du serveur indisponibles');
+  }
+  return { reglages: R, tables: R.tables, enregistrer: () => true,
+    async envoyer(v) {
+      const empreinte = JSON.stringify(v); if (!clesDemande.has(empreinte)) clesDemande.set(empreinte, `site-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`);
+      let rep; try { rep = await fetch(`${API}/public/demandes`, { method: 'POST', headers: { 'content-type': 'application/json', 'idempotency-key': clesDemande.get(empreinte) }, body: JSON.stringify(v) }); }
+      catch { throw new Error('réseau'); }
+      let json = null; try { json = await rep.json(); } catch { /* réponse illisible : pas de réussite */ }
+      if (rep.ok && json?.reference) { clesDemande.delete(empreinte); return { reference: json.reference }; }
+      /* Un refus net du serveur (complet, fermé, trop tard…) : sa raison est dite au client, la saisie est gardée. */
+      throw Object.assign(new Error('refus'), { pourClient: rep.status < 500 && json?.erreur?.message ? `${json.erreur.message} Votre demande n'est pas partie.` : '' });
+    } };
+}
 /* L'ardoise de La carte : celle du midi ou celle du soir, selon l'heure de la page (avant que le module l'écrive). */
 function contenuArdoise(el, mo) {
   let A = null; try { A = JSON.parse($('script[data-ardoise]', el)?.textContent || 'null'); } catch {}
@@ -201,7 +227,7 @@ async function chargerModules() {
     try {
       if (nom === 'ardoise-a-la-craie') ardoiseDuMoment(el);
       const { init } = await MODULES[nom]();
-      apis[nom] = await init(el, nom === 'reservation-de-table' ? { ...(OPTIONS[nom] || {}), ...reglagesResa(el) } : (OPTIONS[nom] || {}));
+      apis[nom] = await init(el, nom === 'reservation-de-table' ? { ...(OPTIONS[nom] || {}), ...(API ? await reglagesServeur(el) : reglagesResa(el)) } : (OPTIONS[nom] || {}));
       if (nom === 'agenda-des-dates') datesVersReservation(el);
       if (nom === 'accords-mets-et-vins') {
         for (const li of el.querySelectorAll('.ame__liste > li')) li.setAttribute('role', 'none');

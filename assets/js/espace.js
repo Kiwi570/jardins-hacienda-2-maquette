@@ -18,6 +18,9 @@
    v7.7.5 : l'onglet « Service » de Réservations (espace-vue-service.js) : la frise, arrivés, absent, modifier, la feuille.
    v7.7.6 : l'onglet « Salle » (espace-vue-salle.js) : le plan, placer une réservation ; la fiche client
    (espace-vue-client.js), ouverte en touchant un nom.
+   v7.9.0 : le mode connecté. Si la page indique une API (`<meta name="jh-api">`), les réservations, les règles du jour
+   et le plan viennent du serveur (espace-serveur.js) : connexion réelle, « enregistré » seulement quand le serveur l'a
+   confirmé, erreurs et conflits dits, suivi des autres appareils. Sans API, l'espace reste la démonstration locale.
    v7.8.0 : le garde-fou métier du dépôt (une réservation impossible n'entre pas dans l'agenda), les heures d'arrivée du
    jour, l'ouverture exceptionnelle, l'annulation ciblée, les écritures différées jamais perdues. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
@@ -32,6 +35,7 @@ import { creerClient } from './espace-vue-client.js?v=7';
 import { normaliser, GENRES } from './espace-demandes.js?v=7';
 import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe, etatDuService, creneauxDuJour, verifierResa, listeEvenements } from './espace-regles.js?v=7';
 import { reglesAction } from './espace-garde.js?v=7';
+import { creerDepotServeur } from './espace-serveur.js?v=7';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -52,18 +56,21 @@ export function init(root) {
   /* Aujourd'hui, à Moineville : relu au fil du temps (v7.8.1). Une page restée ouverte après minuit ne garde plus la veille. */
   const A = (() => { let t = 0, v = aujourdhui(); const lire = () => { if (Date.now() - t > 15000) { t = Date.now(); v = aujourdhui(); } return v; }; return { get iso() { return lire().iso; }, get min() { return lire().min; }, relire() { t = 0; return lire(); } }; })();
   /* Le garde-fou : avant d'enregistrer, le dépôt demande aux règles si l'action est possible (d'où qu'elle vienne). */
-  const depot = creerDepot(undefined, undefined, {
-    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, site: depot.resasSite(), exceptions: D.horaires.exceptions || [] }, frais, D.salle, nom, args),
+  const API = document.querySelector('meta[name="jh-api"]')?.content || '', ENVIRONNEMENT = document.querySelector('meta[name="jh-environnement"]')?.content || '';
+  const depotLocal = creerDepot(undefined, undefined, {
+    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, site: depotLocal.resasSite(), exceptions: D.horaires.exceptions || [] }, frais, D.salle, nom, args),
     /* La liste des soirées publiée sur le site est calculée, jamais restaurée telle quelle : elle suit toujours les données. */
     derives: [{ chemin: ['evenements', 'liste'], calcul: (e) => (e.evenements && (Object.keys(e.evenements.modifs || {}).length || (e.evenements.ajouts || []).length) ? listeEvenements(D.agenda, e) : undefined) }],
   });
+  /* Mode connecté (v7.9.0) : le dépôt du serveur prend les réservations et les règles ; le reste demeure local. */
+  const depot = API ? creerDepotServeur({ api: API, local: depotLocal, periode: () => ({ du: ajouter(A.iso, -7), au: ajouter(A.iso, 120) }), surFin: (r) => finServeur(r), surEtat: (l) => montrerLiaison(l) }) : depotLocal;
   const S = () => depot.etat();
   /* Le contexte des règles (réglages du site, jour, demandes venues du site) : relu à chaque rendu. */
   let contexte = null;
   /* v7.8.1 : les plats du site sont désignés par un identifiant, plus par leur rang. Les anciennes références de ce
      navigateur sont traduites une fois, sans rien afficher. */
   { const c = depot.etat().carte || {}; if ([...Object.keys(c.modifs || {}), ...Object.keys(c.epuises || {})].some((k) => /\/\d+$/.test(k))) depot.agir('migrerCarte', { base: D.carte }); }
-  const ctx = () => (contexte ||= { R, auj: A.iso, site: depot.resasSite(), demandes: depot.demandesSite(), produits: D.produits || [], exceptions: D.horaires.exceptions || [] });
+  const ctx = () => (contexte ||= { R, auj: A.iso, site: depot.resasSite(), demandes: depot.demandesSite(), produits: D.produits || [], exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API });
   const services = servicesDe(R);
   const ouv = (iso, sv) => ouvert(ctx(), S(), iso, sv);
   const plein = (iso, sv) => estComplet(S(), iso, sv);
@@ -104,12 +111,38 @@ export function init(root) {
   }
   /** Fait une action nommée (espace-donnees.js), l'enregistre et le dit, avec « Annuler ». */
   function agir(nom, args, { msg = 'Enregistré : visible sur le site, dans ce navigateur.', lien = '', groupe = '' } = {}) {
-    const ok = depot.agir(nom, args, { libelle: msg, groupe });
+    const ok = depot.agir(nom, args, { libelle: msg, groupe, msg, lien });
     contexte = null;
+    /* Mode connecté : l'action est partie au serveur. Rien n'est dit « enregistré » avant sa réponse (voir finServeur). */
+    if (ok === 'attente') { etatSauve('cours', 'Enregistrement…'); root.setAttribute('aria-busy', 'true'); return false; }
     /* Ce que les règles ont fait en plus (une table retirée) est dit avec le message. */
     if (ok) dire([msg, depot.noteAction()].filter(Boolean).join(' '), { lien, annuler: true }); else dire(depot.raisonRefus() || REFUS);
     return ok;
   }
+  /* La réponse du serveur à une action. Réussie : l'écran est redessiné depuis ce qu'il a confirmé, les formulaires se
+     ferment. Refusée ou sans réponse : rien n'a changé, la raison est dite, un formulaire ouvert garde sa saisie. */
+  function finServeur({ ok, nom, args, meta, note, message, code }) {
+    root.removeAttribute('aria-busy'); contexte = null;
+    /* Un conflit : quelqu'un a changé la réservation entre-temps. L'écran reprend ce que le serveur a, formulaire refermé. */
+    if (!ok) { if (code === 'RESEAU') montrerLiaison(depot.liaison()); else etatSauve('refus', 'Non enregistré'); dire(message || REFUS); if (code === 'CONFLIT_VERSION') etat.resaEditee = null; if (!etat.ajoutOuvert && !etat.resaEditee) rendre(); return; }
+    etat.ajoutOuvert = false; etat.resaEditee = null; etat.resaAPlacer = null;
+    const propre = String(meta?.msg || 'Enregistré.').replace(/ : le client (?:reçoit un message|est prévenu) \(simulé\)\./, '. Aucun message n\'est encore envoyé au client.').replace(/ : visible sur le site, dans ce navigateur\./, '.');
+    dire([propre, note].filter(Boolean).join(' '), { lien: meta?.lien || '' });
+    if (nom !== 'horaires') rendre(); /* les horaires s'enregistrent pendant la saisie : leur formulaire n'est pas redessiné sous les doigts */
+    if (nom === 'statut' && args?.statut === 'confirmee' && !enAttenteTotal()) feter();
+  }
+  /* L'état de la liaison, toujours visible : à jour (et depuis quand), enregistrement en cours, hors connexion. */
+  function montrerLiaison(l) {
+    if (l.enCours) { etatSauve('cours', 'Enregistrement…'); return; }
+    const h = l.dernier ? new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' }).format(new Date(l.dernier)).replace(':', ' h ') : '';
+    if (l.etat === 'hors-ligne') etatSauve('refus', `Hors connexion${h ? ` depuis ${h}` : ''} : rien ne s'enregistre`);
+    else if (l.etat === 'a-jour') etatSauve('ok', `Synchronisé à ${h}`);
+    else if (l.etat === 'charge') etatSauve('cours', 'Chargement…');
+    else if (l.etat === 'interdit') etatSauve('refus', 'Accès limité');
+    else if (l.etat === 'deconnecte' && document.documentElement.classList.contains('esp-dedans')) { viderEcrans(); montrer(false); const m = $('[data-esp-connexion-message]', root); if (m && l.message) { m.textContent = l.message; m.hidden = false; } }
+  }
+  /* Sortie du mode connecté : plus aucun nom ni téléphone dans la page, même caché. */
+  function viderEcrans() { for (const z of $$('[data-esp-rendu], [data-esp-panneau]', root)) z.innerHTML = ''; for (const z of $$('[data-client-boite]')) { z.innerHTML = ''; z.parentElement.hidden = true; } toastTexte.textContent = ''; toast.hidden = true; fermerModale?.(); contexte = null; }
   function annuler() {
     if (!depot.peutAnnuler()) return;
     if (!depot.annuler()) { dire(REFUS); return; }
@@ -127,6 +160,7 @@ export function init(root) {
   const etatSauve = (etat, texte) => { if (!sauve) return; sauve.dataset.etat = etat; $('[data-esp-sauve-texte]', sauve).textContent = texte; };
   depot.abonner((quoi) => {
     if (quoi.type === 'refus') { etatSauve('refus', 'Non enregistré'); return; }
+    if (API) { etatSauve('ok', 'Enregistré dans ce navigateur (rubrique non partagée)'); return; }
     const h = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' }).format(new Date(quoi.t)).replace(':', ' h ');
     etatSauve('ok', `Enregistré à ${h}`);
   });
@@ -543,7 +577,7 @@ export function init(root) {
     if (t.closest('[data-ajouter-plat]')) { const ol = $('.esp-ardoise__lignes', t.closest('[data-ardoise]')), n = ol.children.length + 1; ol.insertAdjacentHTML('beforeend', `<li><input name="plat" aria-label="Plat ${n}" placeholder="Nouveau plat"><input name="prix" aria-label="Prix du plat ${n}" class="esp-prix" placeholder="00 €"><button type="button" class="esp-rond esp-rond--petit" data-retirer-plat aria-label="Retirer ce plat">×</button></li>`); ol.lastElementChild.querySelector('input').focus(); return; }
     if (t.closest('[data-retirer-plat]')) { const li = t.closest('li'), fs = li.closest('[data-ardoise]'); li.remove(); sauverArdoise('Plat retiré de l\'ardoise.'); $('[data-ajouter-plat]', fs)?.focus(); return; }
     const rt = t.closest('[data-retablir-texte]'); if (rt) { const cle = rt.dataset.retablirTexte; agir('texte', { cle, valeur: '' }, { msg: 'Texte d\'origine rétabli.', lien: D.textes.find((x) => x.cle === cle)?.url }); rendre(); $(`[name="${CSS.escape(cle)}"]`, root)?.focus(); return; }
-    if (t.closest('[data-esp-quitter]')) { try { sessionStorage.removeItem('jh-espace-session'); } catch { /* rien */ } ouvrirPlus(false, false); montrer(false); return; }
+    if (t.closest('[data-esp-quitter]')) { try { sessionStorage.removeItem('jh-espace-session'); } catch { /* rien */ } ouvrirPlus(false, false); if (API) { depot.deconnecter(); viderEcrans(); } montrer(false); return; }
     if (t.closest('[data-tout-effacer]')) { ouvrirPlus(false, false); if (!depot.toutEffacer({ libelle: 'Tout remettre comme livré' })) { dire('Votre navigateur a refusé d\'effacer : rien n\'a été remis comme livré.'); return; } contexte = null; etat.evEdite = null; dire('Tout est revenu comme à la livraison.', { annuler: true }); rendre(); $(`#vue-${etat.vue}`, root)?.focus({ preventScroll: true }); }
   });
 
@@ -571,7 +605,14 @@ export function init(root) {
   root.addEventListener('submit', (ev) => {
     ev.preventDefault(); const f = ev.target;
     if (vService.envoi(f)) return;
-    if (f.matches('[data-esp-connexion]')) { try { sessionStorage.setItem('jh-espace-session', '1'); } catch { /* rien */ } montrer(true); return; }
+    if (f.matches('[data-esp-connexion]')) {
+      if (!API) { try { sessionStorage.setItem('jh-espace-session', '1'); } catch { /* rien */ } montrer(true); return; }
+      /* Mode connecté : une vraie connexion. Rien n'est gardé dans le navigateur, la session est un cookie que le script ne lit pas. */
+      const b = $('button[type="submit"]', f), m = $('[data-esp-connexion-message]', f); b.disabled = true; b.textContent = 'Connexion…'; m.hidden = true;
+      depot.connecter(f.elements.identifiant.value, f.elements.mdp.value).then(() => { f.elements.mdp.value = ''; entrerConnecte(); }, (err) => { m.textContent = err.message; m.hidden = false; f.elements.mdp.focus(); })
+        .finally(() => { b.disabled = false; b.textContent = 'Se connecter'; });
+      return;
+    }
     if (f.matches('[data-form-ajout]')) {
       const v = Object.fromEntries(new FormData(f)); if (!v.nom.trim()) { f.elements.nom.focus(); return; }
       /* Les règles disent si c'est possible (fermé, heure hors service, couverts hors limites) : sinon rien n'est noté et le formulaire reste ouvert. */
@@ -612,6 +653,28 @@ export function init(root) {
     for (const b of $$('[data-esp-badge="demandes"]', root)) { b.classList.remove('est-neuf'); void b.offsetWidth; b.classList.add('est-neuf'); }
   });
 
-  let session = false; try { session = sessionStorage.getItem('jh-espace-session') === '1'; } catch { /* rien */ }
-  if (session) montrer(true); else document.documentElement.classList.remove('esp-dedans');
+  /* Mode connecté : les réglages et le plan du serveur remplacent ceux de la page (les mêmes objets, pour toutes les vues),
+     puis l'espace suit ce qui change sur les autres appareils. Un formulaire ouvert n'est pas redessiné : sa saisie est gardée. */
+  function entrerConnecte() {
+    const reg = depot.reglages(); if (reg) { for (const k of Object.keys(R)) delete R[k]; Object.assign(R, reg); }
+    const tb = depot.tables(); if (tb.length) D.salle.tables = tb.filter((t) => t.active).map((t) => ({ id: t.id, zone: t.zone, places: t.places, forme: t.forme, ...t.plan }));
+    contexte = null; jourConnu = A.iso; etat.jour = A.iso; montrer(true);
+    const c = depot.compte(), bouton = $('[data-tout-effacer]', root), ROLES = { direction: 'Direction', accueil: 'Accueil', edition: 'Édition' };
+    if (bouton) { bouton.textContent = 'Remettre les rubriques non partagées comme livrées';
+      let n = $('[data-esp-partage]', root); if (!n) { n = document.createElement('p'); n.className = 'esp-menu__note'; n.dataset.espPartage = ''; bouton.before(n); }
+      n.textContent = typo(`Connecté : ${c.nom || c.email} (${ROLES[c.role] || c.role}). Partagé entre vos appareils : réservations, plan de salle, complets, fermetures et horaires. Encore dans ce navigateur seulement : carte, soirées, textes, photos, autres demandes, fiches clients.`); }
+    depot.suivre(() => { contexte = null; if (etat.ajoutOuvert || etat.resaEditee || etat.evEdite || etat.platEdite || document.documentElement.classList.contains('esp-modale-ouverte')) return; rendre(); });
+  }
+  if (API) {
+    document.documentElement.classList.remove('esp-dedans');
+    const f = $('[data-esp-connexion]', root), env = ENVIRONNEMENT === 'production' ? '' : (ENVIRONNEMENT || 'recette');
+    f.elements.identifiant.value = ''; f.elements.mdp.value = ''; f.elements.identifiant.type = 'email'; f.elements.identifiant.autocomplete = 'username'; f.elements.identifiant.required = true; f.elements.mdp.required = true;
+    $('label[for="esp-id"]', f).textContent = 'Adresse e-mail'; $('.esp-connexion__texte', f).textContent = `Espace de l'équipe${env ? ` (${env})` : ''} : les réservations sont partagées entre tous vos appareils.`; $('button[type="submit"]', f).textContent = 'Se connecter';
+    const m = document.createElement('p'); m.className = 'esp-connexion__erreur'; m.setAttribute('role', 'alert'); m.dataset.espConnexionMessage = ''; m.hidden = true; $('button[type="submit"]', f).before(m);
+    for (const d of $$('.esp-demo', root)) d.innerHTML = env ? `<span class="esp-long">${e(maj(env))}</span><span class="esp-court">${e(maj(env.slice(0, 4)))}</span>` : '<span class="esp-long">Équipe</span><span class="esp-court">Équipe</span>';
+    depot.reprendre().then((ok) => { if (ok && depot.compte()) entrerConnecte(); });
+  } else {
+    let session = false; try { session = sessionStorage.getItem('jh-espace-session') === '1'; } catch { /* rien */ }
+    if (session) montrer(true); else document.documentElement.classList.remove('esp-dedans');
+  }
 }

@@ -53,7 +53,7 @@ export function creerDemandes(X) {
     const tables = f === 'tout' || f === 'table' ? att.tables : [];
     const suivi = f === 'reception' ? `<ol class="esp-suivi" aria-label="Où en sont les réceptions">${suiviReceptions(l).map((x) => `<li class="${x.n ? 'est-plein' : ''}"><b>${x.n}</b><span>${e(x.nom)}</span></li>`).join('')}</ol>` : '';
     corps('demandes').innerHTML = `
-      <p class="esp-bonjour">${nb ? `${pluriel(nb, 'demande')} ${nb > 1 ? 'attendent' : 'attend'} une réponse.` : 'Tout a une réponse.'} Les cinq formulaires du site arrivent ici : table, réception, traiteur, carte cadeau, question.</p>
+      <p class="esp-bonjour">${nb ? `${pluriel(nb, 'demande')} ${nb > 1 ? 'attendent' : 'attend'} une réponse.` : 'Tout a une réponse.'} ${ctx().exemples === false ? 'Les demandes de table du site arrivent ici, sur tous vos appareils. Réception, traiteur, carte cadeau et question ne sont pas encore partagées.' : 'Les cinq formulaires du site arrivent ici : table, réception, traiteur, carte cadeau, question.'}</p>
       <div class="esp-filtres" role="group" aria-label="Filtrer les demandes">${FILTRES.map(([id, nom]) => `<button type="button" class="esp-filtre" data-filtre-demandes="${id}" aria-pressed="${id === f}">${nom}${compte[id] ? `<span class="esp-filtre__n" aria-label="${compte[id]} à traiter">${compte[id]}</span>` : ''}</button>`).join('')}</div>
       ${suivi}
       <h3 class="esp-sous">À traiter</h3>

@@ -1,0 +1,18 @@
+{
+  "name": "jardins-hacienda-serveur",
+  "private": true,
+  "version": "7.9.0",
+  "description": "API de réservation partagée des Jardins de l'Hacienda (comptes, droits, base PostgreSQL).",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "migrer": "node outils/migrer.mjs",
+    "demarrer": "node local.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "compte": "node outils/creer-compte.mjs",
+    "sauvegarder": "node outils/sauvegarder.mjs",
+    "restaurer": "node outils/restaurer.mjs"
+  },
+  "dependencies": { "pg": "^8.23.1" },
+  "devDependencies": { "embedded-postgres": "18.6.0-beta.19" }
+}

@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 19/11/2026 05:08:34 · 24 min · 10 page(s) · audit complet (étapes : fichiers, films, parcours)
+Projet : `jardins-hacienda-2-maquette` · 19/11/2026 06:14:50 · 2 min · 2 page(s) · audit complet ciblé sur /,/a-emporter (étapes : fichiers, mesures)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261119-034425-complet-partiel` · version ?v=7
+- Passe : `20261119-051222-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **6**
+- À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), films d’ouverture (18), films de transition (18), intro accélérable et passable (7), menu (1), clavier (10), liens et boutons (10), liens profonds (16), liens vers la page en cours (9), changements de hauteur (7), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (78), balayage (2)
 
 ## Passes de cette version (?v=7)
 
@@ -146,7 +146,9 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261118-202124-complet | complet | toutes | toutes | 0 | 22 | 1 | complet |
 | 20261119-025710-complet-cible-partiel | complet | /espace | parcours | 0 | 0 | 1 | INCOMPLET |
 | 20261119-030455-complet | complet | toutes | toutes | 0 | 17 | 3 | INCOMPLET |
-| **20261119-034425-complet-partiel** (celle-ci) | complet | toutes | fichiers, films, parcours | 0 | 6 | 0 | complet |
+| 20261119-034425-complet-partiel | complet | toutes | fichiers, films, parcours | 0 | 6 | 0 | complet |
+| 20261119-041608-complet | complet | toutes | toutes | 1 | 18 | 1 | échecs |
+| **20261119-051222-complet-cible-partiel** (celle-ci) | complet | /,/a-emporter | fichiers, mesures | 0 | 0 | 0 | complet |
 
 ## Échecs
 
@@ -154,17 +156,7 @@ Aucun.
 
 ## À regarder
 
-### bouton sans effet visible (2)
-
-- **bouton sans effet visible** — `/les-fetes` — IPour commencer _(1366×768)_
-- **bouton sans effet visible** — `/les-fetes` — IIEntrée _(1366×768)_
-
-### rechargement au milieu de la page (4)
-
-- **rechargement au milieu de la page** — `/infos-pratiques` — écran différent à la même position après rechargement (9.1 %), voir comparaisons/rechargement-infos-pratiques-*.png _(1366×768)_
-- **rechargement au milieu de la page** — `/la-carte` — écran différent à la même position après rechargement (46.2 %), voir comparaisons/rechargement-la-carte-*.png _(1366×768)_
-- **rechargement au milieu de la page** — `/les-fetes` — écran différent à la même position après rechargement (8.6 %), voir comparaisons/rechargement-les-fetes-*.png _(1366×768)_
-- **rechargement au milieu de la page** — `/reserver` — écran différent à la même position après rechargement (8.5 %), voir comparaisons/rechargement-reserver-*.png _(1366×768)_
+Rien.
 
 ## Non lancé
 
@@ -180,32 +172,6 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Ouverture / (1366×768) : 2571 ms depuis le premier octet
-- Ouverture /a-emporter (1366×768) : 2432 ms depuis le premier octet
-- film de l'ouverture /a-emporter 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
-- Ouverture /espace (1366×768) : 2358 ms depuis le premier octet
-- film de l'ouverture /espace 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
-- Ouverture /infos-pratiques (1366×768) : 2432 ms depuis le premier octet
-- film de l'ouverture /infos-pratiques 1366×768 : réussi à la tentative 3 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
-- Ouverture /la-carte (1366×768) : 2433 ms depuis le premier octet
-- Ouverture /les-fetes (1366×768) : 2513 ms depuis le premier octet
-- Ouverture /offrir (1366×768) : 2433 ms depuis le premier octet
-- film de l'ouverture /offrir 1366×768 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
-- Ouverture /receptions (1366×768) : 2462 ms depuis le premier octet
-- Ouverture /reserver (1366×768) : 2421 ms depuis le premier octet
-- Ouverture / (390×844) : 2537 ms depuis le premier octet
-- Ouverture /a-emporter (390×844) : 2464 ms depuis le premier octet
-- Ouverture /espace (390×844) : 2373 ms depuis le premier octet
-- Ouverture /infos-pratiques (390×844) : 2405 ms depuis le premier octet
-- film de l'ouverture /infos-pratiques 390×844 : réussi à la tentative 2 (avant : cdpSession.send: Protocol error (Page.startScreencast): Not attached to an active page)
-- Ouverture /la-carte (390×844) : 2372 ms depuis le premier octet
-- Ouverture /les-fetes (390×844) : 2443 ms depuis le premier octet
-- Ouverture /offrir (390×844) : 2434 ms depuis le premier octet
-- Ouverture /receptions (390×844) : 2472 ms depuis le premier octet
-- Ouverture /reserver (390×844) : 2429 ms depuis le premier octet
-- Changements de hauteur /a-emporter : aucun effet ScrollTrigger, rien à recalculer.
-- Changements de hauteur /espace : aucun effet ScrollTrigger, rien à recalculer.
-- Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
 
 ## Fichiers
 

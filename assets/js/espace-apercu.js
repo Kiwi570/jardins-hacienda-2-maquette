@@ -91,8 +91,11 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
   });
 
   /* Horaires de la semaine et fermetures exceptionnelles : le statut « ouvert maintenant » les suit partout. */
-  const sem = S.horaires?.semaine, exc = S.horaires?.exceptions || [];
-  const ouv = S.resa?.ouvertures || [];
+  /* Mode connecté (v7.9.0) : les horaires et la réservation viennent du serveur. Ce que ce navigateur a gardé d'une
+     démonstration ne doit jamais se présenter comme la règle partagée : rien n'est injecté ici. */
+  const CONNECTE = !!document.querySelector('meta[name="jh-api"]');
+  const sem = CONNECTE ? null : S.horaires?.semaine, exc = CONNECTE ? [] : S.horaires?.exceptions || [];
+  const ouv = CONNECTE ? [] : S.resa?.ouvertures || [];
   if (sem || exc.length || ouv.length) sur(() => {
     let R = null; try { R = JSON.parse(document.querySelector('script[data-reservation], script[data-reservation-accueil], script[data-reservation-globale]')?.textContent || 'null'); } catch { /* sans réglages : pas d'ouverture à expliquer */ }
     for (const sc of $$('script[data-horaires-accueil], script[data-horaires-pied], script[data-horaires]')) json(sc, (d) => {
@@ -108,7 +111,7 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
   /* La réservation (v7.8.0) : ce que le restaurant a changé est posé tel quel dans les réglages de la page (`equipe`) ;
      la page Réserver, la mini-réservation et l'espace lisent ensuite les mêmes règles (disponibilites.js). Rien n'est
      recalculé ici : horaires déplacés, fermetures, services fermés ou complets, ouvertures exceptionnelles. */
-  if (S.resa || sem || exc.length) for (const sr of $$('script[data-reservation], script[data-reservation-accueil], script[data-reservation-globale]')) json(sr, (R) => { R.equipe = equipeDe(S); return R; });
+  if (!CONNECTE && (S.resa || sem || exc.length)) for (const sr of $$('script[data-reservation], script[data-reservation-accueil], script[data-reservation-globale]')) json(sr, (R) => { R.equipe = equipeDe(S); return R; });
 
   /* Les événements : les billets de la page Les fêtes, la prochaine soirée de l'accueil, l'agenda de Réserver. */
   if (S.evenements) sur(() => {

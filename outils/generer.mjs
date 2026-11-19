@@ -18,7 +18,7 @@ const erreurs = [];
    .vercelignore empêche de mettre en ligne l'audit, les sources, les outils et les données :
    recréé s'il manque, complété s'il lui manque une ligne. (Le dossier assets/partage/ est créé
    par outils/images-partage.mjs : son .gitkeep n'est pas nécessaire.) */
-const IGNORES = ['_audit', '_suivi', '_biblio', '_partage', 'assemblages', 'source', 'outils', 'donnees', 'recu', 'plan-images.json', 'grok-consignes.json', 'README.md', 'CHANGELOG.md', '*.zip'];
+const IGNORES = ['_audit', '_suivi', '_exploitation', 'serveur', '_biblio', '_partage', 'assemblages', 'source', 'outils', 'donnees', 'recu', 'plan-images.json', 'grok-consignes.json', 'README.md', 'CHANGELOG.md', '*.zip'];
 {
   const f = join(racine, '.vercelignore');
   const norm = (l) => l.trim().replace(/^\//, '').replace(/\/$/, '');
@@ -192,10 +192,17 @@ if (erreurs.length) {
   console.error('\nÉCHEC de la génération, aucune page écrite :\n- ' + [...new Set(erreurs)].join('\n- '));
   process.exit(1);
 }
+/* Le mode connecté (v7.9.0) : par défaut, rien. Avec JH_API (par exemple JH_API=/api), chaque page reçoit l'adresse de
+   l'API : la page Réserver et l'espace parlent alors au serveur (voir _exploitation/mise-en-service.md). C'est une
+   bascule : elle ne se fait jamais toute seule, et jamais sans un serveur qui répond à cette adresse. */
+const API = (process.env.JH_API || '').trim(), ENVIRONNEMENT = (process.env.JH_ENV || 'recette').trim();
+if (API && !/^(\/[a-z0-9/_-]*|https:\/\/[a-z0-9.-]+(\/[a-z0-9/_-]*)?)$/i.test(API)) { console.error(`JH_API mal formée : ${API}`); process.exit(1); }
+const connecter = (f, contenu) => (API && f.endsWith('.html') && !f.startsWith('_partage/') ? String(contenu).replace('<meta charset="utf-8">', `<meta charset="utf-8">\n<meta name="jh-api" content="${API}">\n<meta name="jh-environnement" content="${ENVIRONNEMENT}">`) : contenu);
+if (API) console.log(`\nMODE CONNECTÉ : les pages appelleront l'API « ${API} » (environnement « ${ENVIRONNEMENT} »). À ne publier qu'avec un serveur en service.\n`);
 const ecrites = [];
 for (const [f, contenu] of aEcrire) {
   mkdirSync(dirname(join(racine, f)), { recursive: true });
-  writeFileSync(join(racine, f), contenu);
+  writeFileSync(join(racine, f), connecter(f, contenu));
   if (!f.startsWith('_partage/')) ecrites.push(f);
 }
 

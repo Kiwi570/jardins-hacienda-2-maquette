@@ -69,9 +69,10 @@ export function normaliser(d) {
 }
 
 /** Les demandes (hors tables) : démonstration et site, à l'étape où le restaurant les a laissées ; celles qui attendent d'abord, puis les plus récentes. */
-export function demandes({ auj, demandes: site = [], produits = [] }, S) {
+export function demandes({ auj, demandes: site = [], produits = [], exemples = true }, S) {
   const st = S.demandes?.statuts || {}, notes = S.demandes?.notes || {};
-  return [...demandesDemo(auj, produits), ...site].filter((d) => GENRES[d.genre] && d.genre !== 'table').map(normaliser)
+  /* Mode connecté (exemples === false) : aucune demande inventée n'est montrée dans l'outil de l'équipe. */
+  return [...(exemples === false ? [] : demandesDemo(auj, produits)), ...site].filter((d) => GENRES[d.genre] && d.genre !== 'table').map(normaliser)
     .map((d) => ({ ...d, statut: st[d.id] || d.statut, note: notes[d.id] || '' }))
     .sort((a, b) => (a.statut === 'nouvelle' ? 0 : 1) - (b.statut === 'nouvelle' ? 0 : 1) || String(b.cree).localeCompare(String(a.cree)));
 }

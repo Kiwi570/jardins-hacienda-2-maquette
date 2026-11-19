@@ -35,7 +35,8 @@ export function creerPropose(X) {
       <div class="esp-semaine esp-semaine--bilan"><button type="button" class="esp-rond" data-semaine="-7" aria-label="Semaine précédente"><span aria-hidden="true">‹</span><span class="esp-semaine__mot" aria-hidden="true">Semaine précédente</span></button>
         <h3 class="esp-semaine__titre">Semaine du ${e(fmt(lundi, { day: 'numeric', month: lundi.slice(5, 7) === dim.slice(5, 7) ? undefined : 'long' }))} au ${e(fmt(dim, { day: 'numeric', month: 'long' }))}</h3>
         <button type="button" class="esp-rond" data-semaine="7" aria-label="Semaine suivante"><span aria-hidden="true">›</span><span class="esp-semaine__mot" aria-hidden="true">Semaine suivante</span></button></div>
-      <p class="esp-note-demo"><span class="esp-source">Démonstration</span> Les réservations de cette semaine sont des exemples : ces chiffres montrent ce que l'outil calcule, pas l'activité réelle du restaurant. La capacité (${b.capacite} couverts par service) est à remplacer par la vôtre.</p>
+      ${ctx().exemples === false ? `<p class="esp-note-demo"><span class="esp-source">À valider</span> Ces chiffres viennent des réservations enregistrées sur le serveur. La capacité (${b.capacite} couverts par service) est une valeur de départ, à remplacer par la vôtre.</p>`
+        : `<p class="esp-note-demo"><span class="esp-source">Démonstration</span> Les réservations de cette semaine sont des exemples : ces chiffres montrent ce que l'outil calcule, pas l'activité réelle du restaurant. La capacité (${b.capacite} couverts par service) est à remplacer par la vôtre.</p>`}
       <div class="esp-tuiles">
         ${tuile('Couverts', b.couverts, `${pluriel(b.tables, 'table')} dans la semaine`)}
         ${tuile('Remplissage', pc(b.remplissage), `sur ${pluriel(b.servicesOuverts, 'service')} ouvert${b.servicesOuverts > 1 ? 's' : ''}`)}

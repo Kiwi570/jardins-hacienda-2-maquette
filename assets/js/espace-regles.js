@@ -70,9 +70,10 @@ export const depuisSite = (r) => ({ id: r.id, date: r.date, service: r.service, 
   demande: [...(r.demandes || []), r.message].filter(Boolean).join(' · '), espace: r.espace, table: r.table, statut: 'a-confirmer', source: 'site' });
 
 /** Les réservations d'un jour, triées par heure : démonstration, ajoutées au téléphone, venues du site, avec le statut choisi dans l'espace. */
-export function resasDuJour({ R, auj, site = [] }, S, iso) {
+export function resasDuJour({ R, auj, site = [], exemples = true }, S, iso) {
   const st = S.resa?.statuts || {}, mod = S.resa?.modifs || {}, tab = S.resa?.tables || {};
-  return [...servicesDe(R).flatMap((s) => demo(R, auj, iso, s.id)), ...(S.resa?.ajouts || []).filter((r) => r.date === iso), ...site.filter((r) => r.date === iso).map(depuisSite)]
+  /* En mode connecté (ctx.exemples === false), il n'y a aucune réservation d'exemple : seulement celles du serveur. */
+  return [...(exemples === false ? [] : servicesDe(R)).flatMap((s) => demo(R, auj, iso, s.id)), ...(S.resa?.ajouts || []).filter((r) => r.date === iso), ...site.filter((r) => r.date === iso).map(depuisSite)]
     /* Ce que le restaurant a modifié (heure, service, couverts, nom, téléphone, note ; v7.7.5), la table où il l'a assise (v7.7.6), puis le statut choisi. */
     .map((r) => ({ ...r, ...(mod[r.id] || {}), ...(r.id in tab ? { table: tab[r.id] } : {}), statut: st[r.id] || r.statut })).sort((a, b) => a.heure.localeCompare(b.heure));
 }
