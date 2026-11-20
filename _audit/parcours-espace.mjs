@@ -28,6 +28,9 @@
       qui n'existe pas, et demande l'heure quand elle n'est pas une arrivée, sans rien valider d'office ; deux onglets :
       « Annuler » ne défait que son propre geste ; deux champs saisis coup sur coup sont tous deux enregistrés ; un
       enregistrement refusé par le navigateur le dit et ne confirme rien.
+   1 decies (v7.10.0). Toute la maison au même endroit : la navigation, Aujourd'hui (priorité, compteurs), une demande,
+   la fiche client, le service, le briefing, les tâches (créées, liées, terminées, retrouvées après rechargement), la
+   recherche, Offres et Site, l'aperçu des vues métier ; sur ordinateur et sur téléphone.
    1 nonies (v7.8.1). La stabilisation, dans le navigateur. Page Réserver : la demande n'est dite envoyée qu'une fois
       enregistrée (un enregistrement refusé garde la saisie et permet de reprendre), l'écran dit « demande », pas
       « réservation confirmée » ; une heure devenue trop proche est refusée au moment d'envoyer ; une table de deux
@@ -56,7 +59,11 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     if (await page.locator('[data-esp-app]').isHidden()) await page.locator('[data-esp-connexion] button[type="submit"]').click();
     await page.locator('[data-esp-app]').waitFor({ state: 'visible', timeout: 5000 }); await attendre(500);
   };
-  const aller = async (page, vue) => { const [v, onglet] = vue.split(':'); await page.locator(`[data-esp-vue="${v}"]`).click(); await attendre(400); if (onglet) { await page.locator(`[role="tab"][data-onglet="${onglet}"]`).click(); await attendre(350); } };
+  /* v7.10.0 : au téléphone, Agenda, Offres, Clients et Site sont derrière « Plus » ; « Site, Soirées » mène à Offres. */
+  const aller = async (page, vue) => { const [v, onglet] = vue.split(':'), lien = page.locator(`[data-esp-vue="${v}"]:visible`).first();
+    if (!(await lien.count())) { await page.locator('[data-esp-plusnav-bouton]').click(); await attendre(250); }
+    await page.locator(`[data-esp-vue="${v}"]:visible`).first().click(); await attendre(400);
+    if (onglet) { await page.locator(`[role="tab"][data-onglet="${onglet}"]:visible`).first().click(); await attendre(350); } };
 
   /* ---------- 1. Réserver sur le site, puis confirmer dans l'espace ---------- */
   if (!SEUL || SEUL.includes('1')) {
@@ -155,7 +162,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (((await memoire()).evenements?.ajouts || []).length) R.echec('espace : barre', '« Annuler » ne retire pas la soirée créée depuis la barre', lieu);
       /* Une phrase inconnue le dit ; Échap ferme et rend le focus. */
       await ouvrir(); await ecrire('xyzzy quux');
-      if (!/Pas compris/.test(await page.locator('[data-barre-aide]').innerText().catch(() => ''))) R.echec('espace : barre', 'une phrase inconnue ne dit pas « Pas compris »', lieu);
+      if (!/Rien trouvé/.test(await page.locator('[data-barre-aide]').innerText().catch(() => ''))) R.echec('espace : barre', 'une phrase inconnue ne dit pas « Rien trouvé »', lieu);
       await page.keyboard.press('Escape'); await attendre(250);
       const fin = await page.evaluate(() => ({ ferme: document.querySelector('.esp-cmd').hidden, focus: document.activeElement && document.activeElement !== document.body, bloque: document.documentElement.classList.contains('esp-modale-ouverte') }));
       if (!fin.ferme || !fin.focus || fin.bloque) R.echec('espace : barre', `Échap : barre fermée ${fin.ferme}, focus rendu ${fin.focus}, page encore bloquée ${fin.bloque}`, lieu);
@@ -626,6 +633,118 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       [...new Set(err2)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
       R.ok('stabilisation v7.8.1');
     } finally { await ctx2.close(); }
+  }
+
+  /* ---------- 1 decies. Toute la maison au même endroit (v7.10.0) ----------
+     Le parcours de démonstration : Aujourd'hui → priorité → demande → fiche client → agenda et service → briefing et
+     tâche → retour à Aujourd'hui avec l'état à jour ; puis Offres et Site, la recherche, et le rechargement. Joué sur
+     ordinateur et sur téléphone (où la barre du bas est Aujourd'hui, Demandes, Service, Plus). */
+  for (const taille of (!SEUL || SEUL.includes('1-decies') ? ['1366×768', '390×844'] : []).map(T)) {
+    const lieu = { page: P, taille: taille.nom }, tel = taille.w < 1000, ou = `maison (${taille.nom})`;
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      const texte = async (sel) => (await page.locator(sel).first().innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
+      const vueOuverte = () => page.evaluate(() => document.querySelector('.esp-vue:not([hidden])')?.dataset.vue);
+      const toast = () => texte('[data-esp-toast-texte]');
+      await page.goto(BASE + P, { waitUntil: 'load' }); await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
+      await entrer(page);
+      /* La navigation : six rubriques sur ordinateur ; quatre entrées au téléphone, les autres dans « Plus ». */
+      const nav = await page.evaluate(() => [...document.querySelectorAll('.esp-nav__liste > li')].filter((li) => li.offsetParent).map((li) => li.innerText.replace(/\s+/g, ' ').trim().replace(/ \d+$/, '')));
+      const attendu = tel ? ['Jour', 'Demandes', 'Service', 'Plus'] : ['Aujourd\'hui', 'Demandes', 'Agenda', 'Offres', 'Clients', 'Site'];
+      if (nav.join('|') !== attendu.join('|')) R.echec(`${ou} : navigation`, `rubriques visibles « ${nav.join(' · ')} », attendu « ${attendu.join(' · ')} »`, lieu);
+      for (const v of ['demandes', 'resas', 'carte', 'clients', 'site', 'jour']) { await aller(page, v); if (await vueOuverte() !== v || !(await texte(`[data-esp-rendu="${v}"]`))) R.echec(`${ou} : navigation`, `la rubrique « ${v} » ne s'ouvre pas ou est vide`, lieu); }
+      /* Aujourd'hui : les quatre zones, et des compteurs qui correspondent aux listes. */
+      for (const [id, nom] of [['t-prochain', 'le prochain service'], ['t-priorites', 'les priorités'], ['t-fil', 'le fil de la journée'], ['t-taches', 'les tâches']]) if (!(await page.locator(`[data-esp-rendu="jour"] #${id}`).count())) R.echec(`${ou} : Aujourd'hui`, `la zone « ${nom} » manque`, lieu);
+      const acc = await page.evaluate(() => { const c = [...document.querySelectorAll('[data-prochain] .esp-acc__chiffres li')].map((li) => [li.querySelector('span').textContent.trim(), +li.querySelector('b').textContent]); return { cle: document.querySelector('[data-prochain]')?.dataset.prochain, chiffres: Object.fromEntries(c), demandes: document.querySelectorAll('#t-attente ~ ul > li').length, badge: +(document.querySelector('[data-esp-badge="demandes"]:not([hidden])')?.textContent || 0), compte: +(document.querySelector('#t-attente .esp-acc__compte')?.textContent || 0) }; });
+      if (!acc.cle) R.echec(`${ou} : Aujourd'hui`, 'pas de prochain service affiché', lieu);
+      if (acc.compte !== acc.badge) R.echec(`${ou} : compteurs`, `l'accueil annonce ${acc.compte} demandes, la rubrique Demandes ${acc.badge}`, lieu);
+      const [jourSv, sv] = (acc.cle || '|').split('|');
+      /* Une priorité mène à son objet : les réservations sans table → le plan de salle du bon service. */
+      const aPlacer = Object.entries(acc.chiffres).find(([k]) => /placer/.test(k))?.[1] ?? -1, prio = page.locator(`[data-esp-rendu="jour"] [data-faire-priorite^="placer-"]`);
+      if (aPlacer > 0 && !(await prio.count())) R.echec(`${ou} : priorités`, `${aPlacer} réservations à placer, et aucune priorité ne le dit`, lieu);
+      if (await prio.count()) { await prio.first().click(); await attendre(500);
+        const ici = await page.evaluate(() => ({ vue: document.querySelector('.esp-vue:not([hidden])')?.dataset.vue, onglet: document.querySelector('[data-onglets-resas][aria-selected="true"]')?.dataset.onglet, aPlacer: document.querySelectorAll('[data-plan-salle] [data-resa-a-placer], [data-plan-salle] [data-a-placer] li').length }));
+        if (ici.vue !== 'resas' || ici.onglet !== 'salle') R.echec(`${ou} : priorités`, `« Placer en salle » ouvre ${ici.vue}/${ici.onglet}`, lieu);
+        const tout = page.locator('[data-placer-tout]'); if (await tout.count()) { await tout.click(); await attendre(600); }
+        await aller(page, 'jour');
+        const apres = await page.evaluate(() => +([...document.querySelectorAll('[data-prochain] .esp-acc__chiffres li')].find((li) => /placer/.test(li.textContent))?.querySelector('b').textContent ?? -1));
+        if (!(apres < aPlacer)) R.echec(`${ou} : priorités`, `après « Placer tout seul », l'accueil annonce encore ${apres} réservations à placer (avant : ${aPlacer})`, lieu);
+        if (apres === 0 && await page.locator('[data-esp-rendu="jour"] [data-faire-priorite^="placer-"]').count()) R.echec(`${ou} : priorités`, 'plus rien à placer, mais la priorité est encore là', lieu);
+      }
+      /* Une demande → la fiche du client → son agenda. */
+      await aller(page, 'demandes'); await page.locator('[data-filtre="reception"], [data-filtre-demandes="reception"]').first().click().catch(() => {}); await attendre(300);
+      await page.locator('[data-ouvrir-demande="demo-reception-1"]').click(); await attendre(350);
+      const dem = await texte('[data-esp-rendu="demandes"] [data-demande="demo-reception-1"]');
+      for (const mot of ['Camille R.', 'Réception', 'Nouvelle', 'Note pour l\'équipe', 'Tâches de suivi']) if (!dem.toLowerCase().replace(/’/g, '\'').includes(mot.toLowerCase())) R.echec(`${ou} : demande`, `la demande ouverte ne montre pas « ${mot} »`, lieu);
+      await page.locator('[data-demande="demo-reception-1"] [data-tache-pour]').click(); await attendre(400);
+      if (await vueOuverte() !== 'jour' || !/Camille R\./.test(await texte('[data-form-tache]'))) R.echec(`${ou} : tâche de suivi`, 'le formulaire ne s\'ouvre pas dans Aujourd\'hui, lié à la demande', lieu);
+      await page.fill('[data-form-tache] [name="titre"]', 'Rappeler Camille pour la visite'); await page.fill('[data-form-tache] [name="responsable"]', 'Régis'); await page.locator('[data-form-tache] button[type="submit"]').click(); await attendre(400);
+      if (!/Tâche ajoutée/.test(await toast()) || !/Rappeler Camille pour la visite/.test(await texte('.esp-taches'))) R.echec(`${ou} : tâche`, 'la tâche créée n\'apparaît pas dans Aujourd\'hui', lieu);
+      await page.locator('.esp-taches [data-tache-lien]').first().click(); await attendre(450);
+      if (await vueOuverte() !== 'demandes' || !/Rappeler Camille pour la visite/.test(await texte('[data-demande="demo-reception-1"] .esp-dem__taches'))) R.echec(`${ou} : tâche liée`, 'le lien de la tâche n\'ouvre pas la demande, ou la demande ne montre pas sa tâche', lieu);
+      await page.locator('[data-demande="demo-reception-1"] [data-client]').first().click(); await attendre(400);
+      const fiche = await texte('[data-client-boite]');
+      if (!/Camille R\./.test(fiche) || !/Ses demandes/.test(fiche) || !/Mariage/.test(fiche) || !/Dans l'agenda/.test(fiche)) R.echec(`${ou} : fiche client`, `la fiche ne réunit pas la demande et l'agenda : « ${fiche.slice(0, 120)} »`, lieu);
+      const venue = page.locator('[data-client-boite] [data-voir-resa]').first(), quand = await venue.getAttribute('data-date').catch(() => null);
+      if (quand) { await venue.click(); await attendre(500);
+        const ici = await page.evaluate(() => ({ vue: document.querySelector('.esp-vue:not([hidden])')?.dataset.vue, onglet: document.querySelector('[data-onglets-resas][aria-selected="true"]')?.dataset.onglet, titre: document.querySelector('.esp-service-tete h3')?.innerText.replace(/\s+/g, ' ') || '' }));
+        if (ici.vue !== 'resas' || ici.onglet !== 'service') R.echec(`${ou} : fiche → agenda`, `une venue de la fiche ouvre ${ici.vue}/${ici.onglet}`, lieu);
+      } else { await page.keyboard.press('Escape'); await attendre(200); R.echec(`${ou} : fiche client`, 'aucune venue à ouvrir depuis la fiche de Camille R.', lieu); }
+      /* Le service : la date se change sur place ; « Préparer le service » ouvre le briefing du service affiché. */
+      if (tel) { await page.locator('[data-esp-service]').click(); await attendre(450); if (await vueOuverte() !== 'resas' || !(await page.locator('[data-service]').count())) R.echec(`${ou} : Service`, 'le bouton « Service » n\'ouvre pas le service', lieu); }
+      else { await aller(page, 'resas'); await page.locator('[data-onglets-resas][data-onglet="service"]').click(); await attendre(350); }
+      const avant = await texte('.esp-service-tete h3'); await page.locator('.esp-service-tete [data-jour-pas="1"]').click(); await attendre(350); const apresJour = await texte('.esp-service-tete h3'); await page.locator('.esp-service-tete [data-jour-pas="-1"]').click(); await attendre(350);
+      if (avant === apresJour || await texte('.esp-service-tete h3') !== avant) R.echec(`${ou} : Service`, 'les boutons « jour précédent / suivant » ne changent pas la date affichée', lieu);
+      await aller(page, 'jour'); await page.locator('[data-esp-rendu="jour"] [data-briefing]').click(); await attendre(450);
+      const brief = await page.evaluate(() => ({ cle: document.querySelector('.esp-brief')?.dataset.brief, texte: document.querySelector('.esp-brief')?.innerText.replace(/\s+/g, ' ') || '', conf: +([...document.querySelectorAll('.esp-brief__chiffres li')].find((li) => /confirmée/.test(li.textContent))?.querySelector('b').textContent ?? -1), focus: !!document.activeElement?.closest('.esp-modale--brief') }));
+      if (brief.cle !== acc.cle) R.echec(`${ou} : briefing`, `le briefing ouvert est celui de « ${brief.cle} », le prochain service est « ${acc.cle} »`, lieu);
+      const confAccueil = Object.entries(acc.chiffres).find(([k]) => /confirmée/.test(k))?.[1];
+      if (brief.conf !== confAccueil) R.echec(`${ou} : briefing`, `le briefing compte ${brief.conf} réservations confirmées, l'accueil ${confAccueil}`, lieu);
+      for (const mot of ['grandes tablées', 'Occasions, allergies', 'Ce qui reste à traiter', 'Installations', 'Les tâches']) if (!brief.texte.includes(mot)) R.echec(`${ou} : briefing`, `la partie « ${mot} » manque`, lieu);
+      if (!brief.focus) R.echec(`${ou} : briefing`, 'le focus n\'entre pas dans la fenêtre', lieu);
+      const debord = await page.evaluate(() => { const b = document.querySelector('.esp-modale--brief .esp-modale__boite').getBoundingClientRect(); return b.right > innerWidth + 1 || b.left < -1; }); if (debord) R.echec(`${ou} : briefing`, 'la fenêtre dépasse de l\'écran', lieu);
+      await page.locator('[data-brief-tache]').click(); await attendre(400);
+      await page.fill('[data-form-tache] [name="titre"]', 'Sortir les chauffages de terrasse'); await page.locator('[data-form-tache] button[type="submit"]').click(); await attendre(400);
+      await page.locator('[data-esp-rendu="jour"] [data-briefing]').click(); await attendre(400);
+      if (!/Sortir les chauffages de terrasse/.test(await texte('.esp-brief'))) R.echec(`${ou} : briefing`, 'la tâche ajoutée pour ce service n\'est pas dans son briefing', lieu);
+      await page.keyboard.press('Escape'); await attendre(250);
+      if (await page.locator('.esp-modale--brief:not([hidden])').count()) R.echec(`${ou} : briefing`, 'Échap ne ferme pas le briefing', lieu);
+      /* Terminer une tâche, recharger : tout est retrouvé. */
+      await page.locator('.esp-tache', { hasText: 'Sortir les chauffages' }).locator('[data-tache-fait]').click(); await attendre(350);
+      await page.locator('.esp-tache', { hasText: 'Rappeler Camille' }).locator('[data-tache-modifier]').click(); await attendre(250); await page.fill('[data-form-tache] [name="titre"]', 'Rappeler Camille R. pour la visite'); await page.locator('[data-form-tache] button[type="submit"]').click(); await attendre(350);
+      await page.reload({ waitUntil: 'load' }); await attendrePret(page);
+      const taches = await page.evaluate(() => [...document.querySelectorAll('.esp-tache')].map((li) => [li.querySelector('.esp-tache__titre')?.textContent, li.querySelector('[data-tache-fait]')?.getAttribute('aria-checked')]));
+      if (JSON.stringify(taches) !== JSON.stringify([['Rappeler Camille R. pour la visite', 'false'], ['Sortir les chauffages de terrasse', 'true']])) R.echec(`${ou} : tâches`, `après rechargement : ${JSON.stringify(taches)}`, lieu);
+      /* La recherche : la fiche d'abord, puis les réservations dites comme telles ; un résultat ouvre le bon écran ; rien trouvé est dit. */
+      const chercher = async (q) => { await page.locator(tel ? '[data-esp-quoi]:visible' : '[data-esp-quoi]:visible').first().click(); await attendre(300); await page.fill('#barre-champ', q); await attendre(300); return (await page.locator('#barre-liste li').allInnerTexts()).map((x) => x.replace(/\s+/g, ' ')); };
+      const rc = await chercher('camille');
+      if (!/Fiche client/.test(rc[0] || '') || !rc.some((x) => /Réservation ·/.test(x)) || !rc.some((x) => /Réception/.test(x))) R.echec(`${ou} : recherche`, `« camille » : ${JSON.stringify(rc.map((x) => x.slice(0, 50)))}`, lieu);
+      await page.keyboard.press('Enter'); await attendre(500);
+      if (await vueOuverte() !== 'clients' || !/Camille R\./.test(await texte('.esp-modale--fiche:not([hidden]) #client-titre'))) R.echec(`${ou} : recherche`, 'Entrée sur la fiche trouvée n\'ouvre pas Clients avec la fiche', lieu);
+      await page.keyboard.press('Escape'); await attendre(250);
+      const rs = await chercher('raclette'); if (!rs.some((x) => /Soirée/.test(x))) R.echec(`${ou} : recherche`, `« raclette » ne trouve pas la soirée : ${JSON.stringify(rs)}`, lieu);
+      await page.keyboard.press('Enter'); await attendre(500);
+      const offre = await page.evaluate(() => ({ vue: document.querySelector('.esp-vue:not([hidden])')?.dataset.vue, onglet: document.querySelector('[data-onglets-carte][aria-selected="true"]')?.dataset.onglet, titre: document.querySelector('#ev-titre')?.value || '' }));
+      if (offre.vue !== 'carte' || offre.onglet !== 'soirees' || !/raclette/i.test(offre.titre)) R.echec(`${ou} : recherche → offre`, `la soirée trouvée ouvre ${offre.vue}/${offre.onglet} « ${offre.titre} »`, lieu);
+      await chercher('zzzzqq'); if (!/Rien trouvé pour « zzzzqq »/.test(await texte('[data-barre-aide]'))) R.echec(`${ou} : recherche`, 'une recherche sans résultat ne le dit pas', lieu);
+      await page.keyboard.press('Escape'); await attendre(200);
+      /* Offres et Site : un seul éditeur pour les soirées ; les outils du site sont toujours là. */
+      await aller(page, 'carte'); const onglets = await texte('[data-esp-rendu="carte"] [role="tablist"]');
+      if (!/La carte/.test(onglets) || !/L'ardoise/.test(onglets) || !/Les soirées/.test(onglets)) R.echec(`${ou} : Offres`, `onglets « ${onglets} »`, lieu);
+      await aller(page, 'site'); const site = await texte('[data-esp-rendu="site"] [role="tablist"]');
+      for (const mot of ['Annonce et horaires', 'Textes', 'Messages', 'Photos']) if (!site.includes(mot)) R.echec(`${ou} : Site`, `l'onglet « ${mot} » manque`, lieu);
+      await page.locator('[data-esp-rendu="site"] [role="tab"][data-onglet="soirees"]').click(); await attendre(400);
+      const renvoi = await page.evaluate(() => ({ vue: document.querySelector('.esp-vue:not([hidden])')?.dataset.vue, onglet: document.querySelector('[data-onglets-carte][aria-selected="true"]')?.dataset.onglet, editeurs: document.querySelectorAll('[data-esp-panneau] .esp-evs, [data-esp-panneau] [data-nouvel-evenement]').length }));
+      if (renvoi.vue !== 'carte' || renvoi.onglet !== 'soirees') R.echec(`${ou} : Site → Offres`, `« Soirées » dans Site ouvre ${renvoi.vue}/${renvoi.onglet}`, lieu);
+      /* Les vues métier : un aperçu qui change la mise en avant, pas les données. */
+      await aller(page, 'jour');
+      for (const [v, absent] of [['cuisine', 't-priorites'], ['salle', 't-attente'], ['accueil', null], ['direction', null]]) { await page.locator(`[data-vue-metier="${v}"]`).click(); await attendre(300);
+        const vu = await page.evaluate((a) => ({ presse: document.querySelector('[data-vue-metier][aria-pressed="true"]')?.dataset.vueMetier, la: a ? !!document.getElementById(a) : false, service: !!document.getElementById('t-prochain') }), absent);
+        if (vu.presse !== v || vu.la || !vu.service) R.echec(`${ou} : vues métier`, `« ${v} » : ${JSON.stringify(vu)}`, lieu); }
+      const large = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); if (large > 1) R.echec(`${ou} : débordement`, `Aujourd'hui dépasse de ${large} px`, lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok(`toute la maison v7.10.0 (${taille.nom})`);
+    } finally { await ctx.close(); }
   }
 
   /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */

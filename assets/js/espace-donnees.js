@@ -13,6 +13,7 @@ import { MUTATIONS_CONSEILS } from './espace-conseils.js?v=7';
 import { MUTATIONS_SERVICE } from './espace-service.js?v=7';
 import { MUTATIONS_SALLE } from './espace-salle.js?v=7';
 import { MUTATIONS_CLIENTS } from './espace-clients.js?v=7';
+import { MUTATIONS_TACHES } from './espace-taches.js?v=7';
 export { estVide } from './espace-stock.js?v=7';
 
 const basculer = (liste = [], valeur, actif) => [...new Set([...liste.filter((x) => x !== valeur), ...(actif ? [valeur] : [])])];
@@ -56,6 +57,7 @@ export const MUTATIONS = {
   /* Le plan de salle et la fiche client (v7.7.6) : placerResa, placerPlusieurs (espace-salle.js), client (espace-clients.js) */
   ...MUTATIONS_SALLE,
   ...MUTATIONS_CLIENTS,
+  ...MUTATIONS_TACHES,
   /* Photos */
   photo(S, { emplacement, photo }) { (S.photos ||= {})[emplacement] = { ...(S.photos[emplacement] || {}), nom: photo.nom || null, l: photo.l || null, src: photo.src || null }; },
   cadrage(S, { emplacement, cadrage, origine }) { (S.photos ||= {})[emplacement] = { ...origine, ...(S.photos[emplacement] || {}), cadrage }; },

@@ -59,7 +59,7 @@ export function installerBarre(root, { comprendre, executer, actif }) {
     if (choisi >= 0) champ.setAttribute('aria-activedescendant', `barre-o-${choisi}`); else champ.removeAttribute('aria-activedescendant');
     exemples.hidden = texte.length >= 2;
     aide.hidden = !(texte.length >= 2 && !props.length);
-    if (!aide.hidden) aide.textContent = 'Pas compris. Dites-le autrement, par exemple « fermer samedi soir », ou écrivez le nom d\'un client.';
+    if (!aide.hidden) aide.textContent = typo(`Rien trouvé pour « ${texte} ». Essayez un nom, un téléphone, un plat ou une soirée ; ou dites ce que vous voulez faire, par exemple « fermer samedi soir ».`);
   }
   function choisir(i) {
     if (!props.length) return; choisi = (i + props.length) % props.length;

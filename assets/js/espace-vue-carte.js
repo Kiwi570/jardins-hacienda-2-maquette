@@ -6,7 +6,7 @@
 import { ALLERGENES, prixTexte, lirePrix, carteDe, platsDe } from './espace-carte.js?v=7';
 import { pluriel } from './espace-regles.js?v=7';
 
-const ONGLETS = [['carte', 'La carte'], ['ardoise', 'L\'ardoise']];
+const ONGLETS = [['carte', 'La carte'], ['ardoise', 'L\'ardoise'], ['soirees', 'Les soirées']];
 
 export function creerCarte(X) {
   const { root, $, $$, e, S, A, D, etat, agir, corps } = X;
@@ -37,7 +37,9 @@ export function creerCarte(X) {
 
   function rendre() {
     if (!ONGLETS.some(([id]) => id === etat.ongletCarte)) etat.ongletCarte = 'carte';
-    const onglets = `<div class="esp-onglets" role="tablist" aria-label="La carte et l'ardoise">${ONGLETS.map(([id, nom]) => `<button type="button" class="esp-onglet" role="tab" id="onglet-carte-${id}" aria-selected="${id === etat.ongletCarte}" aria-controls="panneau-carte" tabindex="${id === etat.ongletCarte ? 0 : -1}" data-onglet="${id}" data-onglets-carte>${nom}</button>`).join('')}</div>`;
+    const onglets = `<div class="esp-onglets" role="tablist" aria-label="La carte, l'ardoise et les soirées">${ONGLETS.map(([id, nom]) => `<button type="button" class="esp-onglet" role="tab" id="onglet-carte-${id}" aria-selected="${id === etat.ongletCarte}" aria-controls="panneau-carte" tabindex="${id === etat.ongletCarte ? 0 : -1}" data-onglet="${id}" data-onglets-carte>${nom}</button>`).join('')}</div>`;
+    /* Les soirées : le même éditeur et les mêmes données que partout (v7.10.0). */
+    if (etat.ongletCarte === 'soirees') { corps('carte').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-carte" role="tabpanel" aria-labelledby="onglet-carte-soirees" data-esp-panneau></div>`; X.rendreSoirees(); return; }
     if (etat.ongletCarte === 'ardoise') { corps('carte').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-carte" role="tabpanel" aria-labelledby="onglet-carte-ardoise"><div class="esp-grille esp-grille--textes">${X.ardoiseHtml()}</div></div>`; return; }
     const c = carte(), tous = platsDe(c), sur = tous.filter((p) => !p.masque), ep = sur.filter((p) => p.epuise).length;
     corps('carte').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-carte" role="tabpanel" aria-labelledby="onglet-carte-carte">

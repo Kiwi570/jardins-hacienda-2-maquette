@@ -75,3 +75,26 @@ export const MUTATIONS_CLIENTS = {
     if (!c.habitue && !c.allergies?.length && !c.note) delete S.clients[cle];
   },
 };
+
+/* ---------- La liste des clients (v7.10.0) ---------- */
+/**
+ * Tous les clients que l'espace connaît : ceux des réservations (de la semaine passée à dans quatre semaines), ceux des
+ * demandes, et ceux dont la maison a noté quelque chose. Deux personnes ne sont réunies que par leur téléphone ; sans
+ * téléphone, le rapprochement se fait sur le nom et la liste le dit (`parNom`), pour qu'on puisse le vérifier.
+ * @param {object[]} [dems] les demandes déjà mises en forme (espace-demandes.js)
+ * @returns {{ cle, nom, telephone, email, habitue, allergies, note, resas, aVenir, venues, prochaine, derniere, demandes: object[], parNom, exemple }[]}
+ */
+export function listeClients(ctx, S, dems = []) {
+  const m = new Map(), prendre = (cle) => { if (!m.has(cle)) m.set(cle, { cle, nom: '', telephone: '', email: '', resas: [], demandes: [] }); return m.get(cle); };
+  for (let k = -7; k <= 28; k++) for (const r of resasDuJour(ctx, S, ajouter(ctx.auj, k))) { const cle = cleClient(r); if (!cle) continue; const c = prendre(cle); c.resas.push(r); c.nom ||= r.nom || ''; c.telephone ||= r.telephone || ''; c.email ||= r.email || ''; }
+  for (const d of dems) { const cle = cleClient({ nom: d.qui, telephone: d.telephone }); if (!cle || d.qui === 'Sans nom') continue; const c = prendre(cle); c.demandes.push(d); c.nom ||= d.qui; c.telephone ||= d.telephone || ''; c.email ||= d.email || ''; }
+  for (const cle of Object.keys(S.clients || {})) prendre(cle);
+  return [...m.values()].map((c) => { const n = notesDe(S, c.cle), l = c.resas.sort((a, b) => a.date.localeCompare(b.date) || a.heure.localeCompare(b.heure));
+    const futures = l.filter((r) => r.date >= ctx.auj && ['a-confirmer', 'confirmee'].includes(r.statut)), passees = l.filter((r) => r.statut === 'arrivee');
+    return { cle: c.cle, nom: n.nom || c.nom || 'Sans nom', telephone: n.telephone || c.telephone, email: c.email, habitue: !!n.habitue, allergies: n.allergies || [], note: n.note || '',
+      resas: l.length, aVenir: futures.length, venues: passees.length, prochaine: futures[0] || null, derniere: passees[passees.length - 1] || null, demandes: c.demandes,
+      parNom: c.cle.startsWith('n-'), exemple: (l.length > 0 || c.demandes.length > 0) && l.every((r) => r.source === 'demo') && c.demandes.every((d) => d.source === 'demo') }; })
+    .sort((a, b) => simplifier(a.nom).localeCompare(simplifier(b.nom)) || a.cle.localeCompare(b.cle));
+}
+/** Les demandes d'un client (même téléphone, ou même nom s'il n'a pas de téléphone). */
+export const demandesDuClient = (dems, cle) => dems.filter((d) => cleClient({ nom: d.qui, telephone: d.telephone }) === cle);
