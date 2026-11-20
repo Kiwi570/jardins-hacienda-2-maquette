@@ -41,7 +41,8 @@ async function connecter(p, role) {
   await p.fill('#esp-id', `${role}@essai.test`); await p.fill('#esp-mdp', MOTS[role]); await p.locator('[data-esp-connexion] button[type="submit"]').click(); await attendre(1800);
   return p.evaluate(() => document.documentElement.classList.contains('esp-dedans'));
 }
-const vue = async (p, v) => { await p.locator(`[data-esp-vue="${v}"]:visible`).first().click(); await attendre(500); };
+/* v7.10.0 : au téléphone, Agenda, Offres, Clients et Site sont derrière « Plus ». */
+const vue = async (p, v) => { if (!(await p.locator(`[data-esp-vue="${v}"]:visible`).count())) { await p.locator('[data-esp-plusnav-bouton]').click(); await attendre(250); } await p.locator(`[data-esp-vue="${v}"]:visible`).first().click(); await attendre(500); };
 /** L'onglet Service du vendredi soir, dans Réservations. */
 async function serviceDuVendredi(p) {
   await vue(p, 'resas'); await p.locator('[data-onglets-resas][data-onglet="agenda"]').click(); await attendre(300);

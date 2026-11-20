@@ -48,6 +48,8 @@ export const complet = (S, iso, sv) => (S.resa?.complets?.[iso] || []).includes(
 /* Démonstration : des réservations tirées des vrais horaires, avec des noms inventés ; aucune n'est réelle. */
 const NOMS = ['Camille R.', 'Julien M.', 'Sophie L.', 'Thomas B.', 'Léa K.', 'Nicolas F.', 'Claire D.', 'Antoine P.', 'Manon G.', 'Hugo S.', 'Sarah V.', 'Maxime T.', 'Chloé N.', 'Lucas H.', 'Émilie W.', 'Paul-Henri C.', 'Inès A.', 'Romain J.', 'Famille Weber', 'Aurélie et Marc'];
 const DEMANDES = ['', '', 'Anniversaire', '', '', 'Chaise haute', '', 'Près de la cheminée', '', 'Allergie aux fruits à coque', '', '', 'Une occasion à fêter', ''];
+/** Le téléphone inventé d'un client d'exemple : toujours le même pour un même nom, dans les réservations comme dans les demandes (v7.10.0). */
+export function telephoneDemo(nom) { const n = hache(`tel-${nom}`); return `06 ${String(10 + (n % 89)).padStart(2, '0')} ${String(n % 97).padStart(2, '0')} ${String((n >>> 4) % 99).padStart(2, '0')} ${String((n >>> 8) % 99).padStart(2, '0')}`; }
 export function demo(R, auj, iso, sv) {
   if (iso < ajouter(auj, -7) || iso > ajouter(auj, 28) || !ouvertSite(R, iso, sv)) return [];
   const h = hache(iso + sv), we = [5, 6].includes(jourDe(iso)), loin = iso > ajouter(auj, 10);
@@ -57,9 +59,9 @@ export function demo(R, auj, iso, sv) {
     // Quelques demandes en attente seulement, dans les jours qui viennent (comme un vrai lundi matin).
     const statut = iso < auj ? 'arrivee' : iso > auj && iso <= ajouter(auj, 6) && k % 13 === 0 ? 'a-confirmer' : 'confirmee';
     /* Un client d'exemple garde le même téléphone d'une réservation à l'autre : sa fiche le reconnaît (v7.7.6). */
-    const qui = (k + i * 7) % NOMS.length, n = hache(`tel-${NOMS[qui]}`);
+    const qui = (k + i * 7) % NOMS.length;
     out.push({ id: `demo-${iso}-${sv}-${i}`, date: iso, service: sv, heure: t, couverts: 2 + (k % 5) - (k % 7 === 0 ? 1 : 0), nom: NOMS[qui],
-      telephone: `06 ${String(10 + (n % 89)).padStart(2, '0')} ${String(n % 97).padStart(2, '0')} ${String((n >>> 4) % 99).padStart(2, '0')} ${String((n >>> 8) % 99).padStart(2, '0')}`,
+      telephone: telephoneDemo(NOMS[qui]),
       demande: DEMANDES[(k >>> 5) % DEMANDES.length], espace: 'salle', statut, source: 'demo' });
   }
   return out;

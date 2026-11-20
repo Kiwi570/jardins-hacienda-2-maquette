@@ -104,6 +104,23 @@ Comparaison de l'archive v6 (commit 0cc7532) et de la v7, fichier par fichier : 
 - Accueil, le déjeuner : une carte « Carte de la semaine » avant « Nos entrées ». Elle reste à l'écran pendant cinq paliers de défilement : une nappe de lin rayée se déroule sur l'assiette fumante, puis chaque rubrique (Entrées, Plats, À partager, Desserts) glisse et se pose dans sa place en pointillés pendant que son assiette tombe sur la nappe ; la rubrique en cours donne sa fourchette de prix et son nombre de plats (calculés depuis la carte). En sortie, la table se lève et l'assiette fumante revient ; un clic sur une rubrique mène à son palier. Animations réduites, téléphone ou sans JavaScript : les quatre rubriques d'un coup.
 - Le déjeuner, suite : le titre de la section et la « Carte de la semaine » restent fixés ensemble, centrés dans l'écran (resserrés sur écran bas), l'image de droite à la même hauteur ; la nappe devient une table cosy (plateau de bois, nappe de lin écru posée de biais avec plis et ourlet cousu, bougie dont la flamme vacille) ; les assiettes posées sur la nappe sont les quatre vignettes du dessous, qui restent visibles puis s'envolent une à une de leur place, montent en arc en grandissant et se posent ; elles redescendent à leur place quand la table se lève.
 
+**Toute la maison au même endroit (v7.10.0)**
+
+Première des six étapes vers la maquette complète (`_exploitation/vision-et-feuille-de-route.md`). L'existant est gardé ; il est réorganisé autour de la prochaine action. Détail et parcours de test : `_exploitation/livraison-v7.10.0.md`.
+
+- Navigation : **Aujourd'hui · Demandes · Agenda · Offres · Clients · Site**. « Réservations » devient Agenda, « Carte » devient Offres (la carte, l'ardoise et les soirées, dans un seul éditeur), Clients est nouveau. Au téléphone : **Aujourd'hui · Demandes · Service · Plus**.
+- Aujourd'hui en quatre zones : le prochain service (réservations confirmées, couverts attendus, demandes à traiter, grandes tablées, à placer), les priorités (déduites des données, une par situation, avec l'action directe), le fil de la journée (services, soirées, réceptions datées, retraits traiteur) et les tâches.
+- « Préparer le service » : un briefing pour la date et le service choisis (groupes, allergies et demandes notées, ce qui reste à traiter, installations, tâches), relié aux réservations, imprimable. Il n'invente rien : une information absente est dite absente.
+- Tâches : créer, modifier, terminer, supprimer ; échéance, responsable et lien (une demande, un service) facultatifs ; retrouvées après rechargement. Une tâche de suivi s'ajoute depuis une demande et s'y affiche.
+- Clients : la liste, une recherche, la même fiche que partout, avec maintenant les demandes du client. Deux personnes ne sont réunies que par leur téléphone ; sans téléphone, la liste le dit.
+- Recherche dans « Que voulez-vous faire ? » : clients, réservations, demandes, soirées et plats, avec leur type, leur date et leur état ; chaque résultat ouvre le bon écran.
+- Agenda : « Aussi ce jour-là » montre les soirées, les réceptions demandées (qui restent des demandes : rien n'est réservé) et les retraits traiteur. L'onglet Service change de jour sur place.
+- Aperçu « Voir comme » Direction, Accueil, Salle, Cuisine (démonstration seulement) : même données, autre mise en avant ; ce n'est pas un contrôle d'accès.
+- Démonstration : une personne d'exemple a le même téléphone dans ses réservations et ses demandes (Camille R. a une seule fiche).
+- Mode connecté : inchangé pour les réservations (55 points de recette rejoués). Les tâches, comme la carte et les textes, restent sur l'appareil ; l'écran le dit.
+- Site public, page À emporter sur téléphone : la légende de la ronde des plats (nom et prix) a un fond sombre, pour rester lisible quelle que soit la photo derrière (contraste signalé par l'audit).
+- Vérifié : 94 tests de règles (7 nouveaux), un nouveau parcours « 1 decies » sur ordinateur et téléphone, les 16 parcours existants, la recette connectée, l'audit complet.
+
 **La recette sur Vercel, préparée (v7.9.1)**
 
 Rien ne change sur le site. Rien n'est créé chez un hébergeur.

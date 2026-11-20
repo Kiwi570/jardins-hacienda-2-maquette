@@ -4,7 +4,8 @@
    espace-clients.js ; ce fichier dessine et écoute. */
 import { STATUTS, fmt, maj, heure, pluriel, typo } from './espace-regles.js?v=7';
 import { ALLERGENES } from './espace-carte.js?v=7';
-import { cleClient, marques, fiche, notesDe, changementsFiche } from './espace-clients.js?v=7';
+import { cleClient, marques, fiche, notesDe, changementsFiche, demandesDuClient } from './espace-clients.js?v=7';
+import { GENRES, libelleEtape } from './espace-demandes.js?v=7';
 
 export function creerClient(X) {
   const { root, $, $$, e, S, ctx, etat, agir } = X;
@@ -19,7 +20,8 @@ export function creerClient(X) {
   const allergies = (r) => { const a = marques(S(), r).allergies; return a.length ? `Allergies\u00a0: ${a.join(', ').toLowerCase()}` : ''; };
 
   function contenu() {
-    const f = fiche(ctx(), S(), cle);
+    const f = fiche(ctx(), S(), cle), dem = X.demandes ? demandesDuClient(X.demandes(), cle) : [];
+    if (f.nom === 'Sans nom' && dem[0]) { f.nom = dem[0].qui; f.telephone ||= dem[0].telephone; }
     return `<header class="esp-modale__tete"><h2 id="client-titre">${e(f.nom)} <span class="esp-habitue" data-client-habitue${f.habitue ? '' : ' hidden'}>Habitué</span></h2><button type="button" class="esp-rond" data-fermer-client aria-label="Fermer">×</button></header>
       <div class="esp-fiche">
         <p class="esp-fiche__contact">${f.telephone ? `<a href="tel:${e(f.telephone.replace(/\s/g, ''))}">${e(f.telephone)}</a>` : 'Pas de téléphone noté.'}${f.exemple ? ' <span class="esp-source">Client d\'exemple, nom inventé</span>' : ''}</p>
@@ -31,6 +33,7 @@ export function creerClient(X) {
           <p class="esp-champ"><label for="cl-note">Préférences et notes <small>table, vin, occasion…</small></label><textarea id="cl-note" name="note" rows="3" maxlength="400">${e(f.note)}</textarea></p>
           <p class="esp-fiche__etat" role="status" data-client-etat></p>
         </form>
+        ${dem.length ? `<h3>Ses demandes</h3><ul class="esp-fiche__histo esp-fiche__demandes">${dem.map((d) => `<li><span class="esp-fiche__quand"><b>${e(GENRES[d.genre]?.nom || 'Demande')}</b> ${e(d.titre)}</span> <span class="esp-pastille">${e(libelleEtape(d.genre, d.statut))}</span> <button type="button" class="esp-lien" data-voir-demande-client="${e(d.id)}">Voir la demande</button></li>`).join('')}</ul>` : ''}
         <h3>Dans l'agenda</h3>
         ${f.resas.length ? `<ol class="esp-fiche__histo">${f.resas.map((r) => `<li><span class="esp-fiche__quand"><b>${e(maj(fmt(r.date, { weekday: 'short', day: 'numeric', month: 'long' })))}</b> ${heure(r.heure)} · ${pluriel(+r.couverts, 'couvert')}${r.table ? ` · table ${e(r.table)}` : ''}${r.demande ? ` · ${e(typo(r.demande))}` : ''}</span><span class="esp-pastille esp-pastille--${r.statut}">${STATUTS[r.statut]}</span><button type="button" class="esp-bouton" data-voir-resa="${e(r.id)}" data-date="${r.date}" data-service="${r.service}" aria-label="Voir le service du ${e(fmt(r.date, { day: 'numeric', month: 'long' }))}">Voir</button></li>`).join('')}</ol>` : '<p class="esp-aide">Aucune réservation dans l\'agenda.</p>'}
         <p class="esp-aide">Démonstration\u00a0: l'agenda couvre la semaine passée et les quatre semaines à venir. Un vrai outil garde tout l'historique du client.</p>
@@ -64,6 +67,7 @@ export function creerClient(X) {
       root.append(fen);
       fen.addEventListener('click', (ev) => {
         if (ev.target.closest('[data-fermer-client]')) { fermer(); return; }
+        const vd = ev.target.closest('[data-voir-demande-client]'); if (vd) { fermer(); X.executer({ aller: { vue: 'demandes', filtre: 'tout', demande: vd.dataset.voirDemandeClient } }); return; }
         const v = ev.target.closest('[data-voir-resa]');
         if (v) { const { voirResa, date, service } = v.dataset; fermer(); etat.jour = date; etat.ongletResas = 'service'; etat.serviceVu = service; etat.resaEditee = null; X.allerVue('resas'); X.viser($(`[data-esp-panneau-resas] [data-resa="${CSS.escape(voirResa)}"]`, root), 'center'); }
       });

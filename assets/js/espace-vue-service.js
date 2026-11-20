@@ -46,9 +46,10 @@ export function creerService(X) {
     const maintenant = etat.jour === A.iso && A.min >= sv.debut && A.min <= sv.fin ? A.min : null;
     const resume = [pluriel(sv.couverts, 'couvert'), pluriel(sv.tables, 'table'), sv.arrives ? `${sv.arrives} arrivée${sv.arrives > 1 ? 's' : ''} sur ${sv.tables}` : '', sv.absents ? pluriel(sv.absents, 'absent') : '', sv.aConfirmer ? `${sv.aConfirmer} à confirmer` : ''].filter(Boolean).join(' · ');
     cible.innerHTML = `
-      <div class="esp-service-tete"><div><h3>${e(maj(fmt(etat.jour)))}${etat.jour === A.iso ? ' <span class="esp-pastille">Aujourd\'hui</span>' : ''}</h3>
+      <div class="esp-service-tete"><div><h3><button type="button" class="esp-rond esp-rond--petit" data-jour-pas="-1" aria-label="Jour précédent"><span aria-hidden="true">‹</span></button> ${e(maj(fmt(etat.jour)))} <button type="button" class="esp-rond esp-rond--petit" data-jour-pas="1" aria-label="Jour suivant"><span aria-hidden="true">›</span></button>${etat.jour === A.iso ? ' <span class="esp-pastille">Aujourd\'hui</span>' : ''}</h3>
           <p class="esp-service-tete__resume">${sv.ouvert || sv.resas.length ? e(resume) : 'Pas de service.'}${sv.complet ? ' · <span class="esp-pastille esp-pastille--refusee">Complet</span>' : ''}</p></div>
         <p class="esp-service-tete__outils"><span class="esp-choix" role="group" aria-label="Le service à voir">${svs.map((s) => `<button type="button" class="esp-choix__b" data-service-vu="${s.id}" aria-pressed="${s.id === id}">${s.libelle}</button>`).join('')}</span>
+          <button type="button" class="esp-bouton" data-briefing="${etat.jour}|${id}">Préparer le service</button>
           <button type="button" class="esp-bouton" data-imprimer-service>${ICO_IMPR}<span>Imprimer la feuille</span></button></p></div>
       ${sv.tables ? `<article class="esp-carte esp-charge" aria-labelledby="t-charge"><h3 id="t-charge">Couverts à table${sv.pic?.couverts ? ` <small>coup de feu à ${heure(hhmm(sv.pic.t))} : ${pluriel(sv.pic.couverts, 'couvert')}</small>` : ''}</h3>
         <div class="esp-charge__graphe" role="img" aria-label="Couverts à table, quart d'heure par quart d'heure, de ${heure(hhmm(sv.debut))} à ${heure(hhmm(sv.fin))}. Maximum : ${sv.pic?.couverts || 0} à ${heure(hhmm(sv.pic?.t || sv.debut))}.">

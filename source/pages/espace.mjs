@@ -50,11 +50,13 @@ const TEXTES = [
 const VUES = [
   ['jour', 'Aujourd\'hui', 'Jour', '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></svg>'],
   ['demandes', 'Demandes', 'Demandes', '<svg viewBox="0 0 24 24"><path d="M4 13.5V6.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7M4 13.5h4.5l1.2 2.5h4.6l1.2-2.5H20M4 13.5v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>'],
-  ['resas', 'Réservations', 'Agenda', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.6h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 17h2"/></svg>'],
-  ['carte', 'Carte', 'Carte', '<svg viewBox="0 0 24 24"><path d="M6 3.5h9.5L19 7v13.5H6zM15 3.5V7.5h4M9 11.5h6.5M9 14.8h6.5M9 18h4"/></svg>'],
+  ['resas', 'Agenda', 'Agenda', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.6h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 17h2"/></svg>'],
+  ['carte', 'Offres', 'Offres', '<svg viewBox="0 0 24 24"><path d="M6 3.5h9.5L19 7v13.5H6zM15 3.5V7.5h4M9 11.5h6.5M9 14.8h6.5M9 18h4"/></svg>'],
+  ['clients', 'Clients', 'Clients', '<svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.3"/><path d="M2.8 19.5a6.2 6.2 0 0 1 12.4 0M16 5.6a3.1 3.1 0 0 1 0 5.9M17.6 14.3a5.6 5.6 0 0 1 3.6 5.2"/></svg>'],
   ['site', 'Site', 'Site', '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M3.5 9h17M6.5 7h.1M9 7h.1M7 13h6M7 16h10"/></svg>'],
 ];
 const ICO_LOUPE = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
+const ICO_SERVICE = '<svg viewBox="0 0 24 24"><path d="M4 17.5h16M5.5 17.5a6.5 6.5 0 0 1 13 0M12 8V6M10 6h4M3 20.5h18"/></svg>';
 const ICO_PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
 
 export default (c) => {
@@ -118,8 +120,15 @@ export default (c) => {
     <div class="esp-app" data-esp-app hidden>
       <nav class="esp-nav" aria-label="Rubriques de l'espace">
         <ul class="esp-nav__liste">
-          ${VUES.map(([id, nom, court, ico], i) => html`<li><button type="button" class="esp-nav__lien" data-esp-vue="${id}"${i === 0 ? brut(' aria-current="page"') : ''}><span class="esp-ico" aria-hidden="true">${brut(ico)}</span><span class="esp-long">${nom}</span><span class="esp-court">${court}</span><span class="esp-nav__badge" data-esp-badge="${id}" hidden></span></button></li>`)}
+          ${VUES.map(([id, nom, court, ico], i) => html`<li${['jour', 'demandes'].includes(id) ? '' : brut(' class="esp-nav__ordi"')}><button type="button" class="esp-nav__lien" data-esp-vue="${id}"${i === 0 ? brut(' aria-current="page"') : ''}><span class="esp-ico" aria-hidden="true">${brut(ico)}</span><span class="esp-long">${nom}</span><span class="esp-court">${court}</span><span class="esp-nav__badge" data-esp-badge="${id}" hidden></span></button></li>`)}
+          <li class="esp-nav__tel"><button type="button" class="esp-nav__lien" data-esp-service><span class="esp-ico" aria-hidden="true">${brut(ICO_SERVICE)}</span><span class="esp-court">Service</span></button></li>
+          <li class="esp-nav__tel"><button type="button" class="esp-nav__lien" data-esp-plusnav-bouton aria-expanded="false" aria-controls="esp-plusnav"><span class="esp-ico" aria-hidden="true">${brut(ICO_PLUS)}</span><span class="esp-court">Plus</span></button></li>
         </ul>
+        <div class="esp-plusnav" id="esp-plusnav" data-esp-plusnav hidden>
+          <p class="esp-plusnav__titre">Les autres rubriques</p>
+          <ul>${VUES.filter(([id]) => !['jour', 'demandes'].includes(id)).map(([id, nom, , ico]) => html`<li><button type="button" class="esp-plusnav__lien" data-esp-vue="${id}"><span class="esp-ico" aria-hidden="true">${brut(ico)}</span>${nom}</button></li>`)}
+            <li><button type="button" class="esp-plusnav__lien esp-plusnav__lien--raccourci" data-aller="carte" data-onglet-carte="carte"><span class="esp-ico" aria-hidden="true">${brut(VUES[3][3])}</span>Modifier la carte</button></li></ul>
+        </div>
       </nav>
       <button type="button" class="esp-fab" data-esp-quoi aria-label="Que voulez-vous faire ?"><span aria-hidden="true">${brut(ICO_LOUPE)}</span></button>
       <div class="esp-vues">

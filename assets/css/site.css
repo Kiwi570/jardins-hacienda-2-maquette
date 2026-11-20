@@ -4950,3 +4950,160 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 .esp-connexion__photo { margin: 0; min-height: 320px; border-radius: 26px; overflow: hidden; box-shadow: 0 40px 70px -46px rgba(28, 23, 18, .5); }
 .esp-connexion__photo img { width: 100%; height: 100%; object-fit: cover; object-position: var(--cadrage); }
 @media (max-width: 900px) { .esp-connexion { grid-template-columns: minmax(0, 1fr); } .esp-connexion__photo { order: -1; min-height: 0; height: 170px; } .esp-connexion__carte { width: 100%; } }
+
+/* ============================================================================
+   v7.10.0 : toute la maison au même endroit
+   « Aujourd'hui » en quatre zones, les tâches, le briefing, la liste des clients,
+   la barre du téléphone (Aujourd'hui, Demandes, Service, Plus).
+   ============================================================================ */
+.esp-nav__tel { display: none; }
+.esp-plusnav { display: none; }
+@media (max-width: 999px) {
+  .esp-nav__ordi { display: none; }
+  .esp-nav__tel { display: block; }
+  .esp-nav__liste { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .esp-nav .esp-nav__tel .esp-court { display: block; }
+  .esp-plusnav:not([hidden]) { display: block; position: absolute; inset: auto max(8px, env(safe-area-inset-right)) calc(100% + 8px) max(8px, env(safe-area-inset-left)); max-width: 420px; margin-left: auto; padding: 14px; border-radius: 20px; background: var(--esp-carte); border: 1px solid var(--couleur-ligne); box-shadow: 0 24px 60px -24px rgba(28, 23, 18, .55); }
+  .esp-plusnav__titre { margin: 0 0 8px 6px; color: var(--couleur-texte-doux); font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .esp-plusnav ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .esp-plusnav__lien { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 52px; padding: 8px 12px; border: 1px solid var(--couleur-ligne); border-radius: 14px; background: #fff; color: var(--couleur-texte); font: inherit; font-size: 15px; font-weight: 700; text-align: left; cursor: pointer; }
+  .esp-plusnav__lien[aria-current] { background: var(--couleur-texte); border-color: var(--couleur-texte); color: var(--couleur-fond); }
+  .esp-plusnav__lien .esp-ico { display: inline-flex; flex: none; width: 22px; height: 22px; }
+  .esp-plusnav__lien .esp-ico svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .esp-plusnav li:last-child { grid-column: 1 / -1; }
+  .esp-plusnav__lien--raccourci { border-style: dashed; background: transparent; }
+}
+
+/* Voir comme : un aperçu, pas un droit */
+.esp-metier { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 0 0 18px; padding: 10px 14px; border-radius: 16px; border: 1px dashed color-mix(in oklab, var(--couleur-texte) 26%, transparent); }
+.esp-metier p { margin: 0; }
+.esp-metier__titre { font-size: 14px; font-weight: 800; }
+.esp-metier__choix { display: flex; flex-wrap: wrap; gap: 6px; }
+.esp-metier__bouton { min-height: 44px; padding: 0 16px; border: 1px solid var(--couleur-ligne); border-radius: 999px; background: var(--esp-carte); color: var(--couleur-texte); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+.esp-metier__bouton:hover { border-color: var(--couleur-texte); }
+.esp-metier__bouton[aria-pressed="true"] { background: var(--couleur-texte); border-color: var(--couleur-texte); color: var(--couleur-fond); }
+.esp-metier__aide { flex: 1 1 320px; color: var(--couleur-texte-doux); font-size: 14px; }
+
+/* Les quatre zones */
+.esp-acc { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 1.8vw, 22px); align-items: start; }
+.esp-acc > .esp-carte--large { grid-column: 1 / -1; }
+.esp-acc__sur { margin: 0 0 4px; color: var(--or-fonce); font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.esp-acc__service h3 { margin-bottom: 14px; font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.2rem); line-height: 1.12; }
+.esp-acc__service h3 small { display: inline-block; margin-left: 6px; color: var(--couleur-texte-doux); font-family: var(--police-texte); font-size: 15px; font-weight: 600; }
+.esp-acc__chiffres { list-style: none; margin: 0 0 14px; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 8px; }
+.esp-acc__chiffres li { display: grid; gap: 2px; padding: 12px 14px; border-radius: 16px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-acc__chiffres b { font-family: var(--police-titres); font-size: clamp(1.7rem, 1.4rem + 1vw, 2.3rem); font-weight: 600; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+.esp-acc__chiffres span { color: var(--couleur-texte-doux); font-size: 14px; line-height: 1.3; }
+.esp-acc__chiffres li.est-alerte { background: var(--esp-attente-clair); border-color: var(--or); }
+.esp-acc__chiffres li.est-alerte span { color: var(--esp-attente); font-weight: 700; }
+.esp-acc__savoir { margin: 0 0 14px; padding: 10px 14px; border-radius: 14px; background: var(--couleur-surface); font-size: 15px; line-height: 1.5; }
+.esp-acc__actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; }
+.esp-acc__compte { display: inline-block; min-width: 24px; padding: 0 7px; border-radius: 999px; background: var(--rouge); color: #fff; font-family: var(--police-texte); font-size: 13px; font-weight: 800; line-height: 24px; text-align: center; vertical-align: 3px; }
+.esp-acc__attente { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--couleur-ligne); }
+.esp-acc__attente h4 { margin: 0 0 10px; font-family: var(--police-titres); font-size: 1.15rem; font-weight: 600; }
+.esp-acc__priorites > .esp-vide + .esp-acc__attente, .esp-acc__priorites > h3 + .esp-acc__attente { margin-top: 0; padding-top: 0; border-top: 0; }
+
+/* Le fil de la journée */
+.esp-fil { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 8px; }
+.esp-fil__item { display: grid; grid-template-columns: 78px minmax(0, 1fr) auto; align-items: center; gap: 4px 12px; padding: 10px 12px; border-radius: 14px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-fil__item.est-demande { border-style: dashed; background: transparent; }
+.esp-fil__heure { font-family: var(--police-titres); font-size: 1.05rem; font-weight: 600; line-height: 1.2; }
+.esp-fil__quoi { display: grid; gap: 1px; min-width: 0; }
+.esp-fil__quoi b { font-weight: 800; overflow-wrap: anywhere; }
+.esp-fil__quoi small { color: var(--couleur-texte-doux); font-size: 14px; }
+.esp-fil__type { color: var(--or-fonce); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.esp-fil__item .esp-pastille { justify-self: end; }
+.esp-fil__item .esp-lien { grid-column: 2 / -1; justify-self: start; min-height: 44px; }
+
+/* Les tâches */
+.esp-taches { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 6px; }
+.esp-tache { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 6px 8px; padding: 6px 10px 6px 4px; border-radius: 14px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-tache.est-edition { display: block; padding: 14px; }
+.esp-tache.est-retard { border-color: var(--or); }
+.esp-tache p { margin: 0; }
+.esp-tache__coche { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+.esp-tache__coche span { width: 24px; height: 24px; border: 2px solid var(--couleur-texte); border-radius: 8px; background: #fff; transition: background-color .15s, border-color .15s; }
+.esp-tache__coche[aria-checked="true"] span { border-color: var(--esp-vert); background: var(--esp-vert) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 18px no-repeat; }
+.esp-tache__titre { font-weight: 700; overflow-wrap: anywhere; }
+.esp-tache.est-faite .esp-tache__titre { color: var(--couleur-texte-doux); text-decoration: line-through; }
+.esp-tache__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; color: var(--couleur-texte-doux); font-size: 14px; }
+.esp-tache__meta:empty { display: none; }
+.esp-tache__meta .esp-lien, .esp-tache__modifier { min-height: 44px; }
+.esp-tache-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; margin: 0 0 6px; }
+.esp-tache-form p { margin: 0; }
+.esp-tache-form .esp-champ--large, .esp-tache-form__lien, .esp-tache-form__actions { grid-column: 1 / -1; }
+.esp-tache-form__lien { padding: 8px 12px; border-radius: 12px; background: var(--couleur-surface); font-size: 15px; }
+.esp-tache-form__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.esp-tache-form__suppr { margin-left: auto; color: var(--rouge); }
+.esp-acc__taches > .esp-tache-form { padding: 14px; border-radius: 14px; background: #fff; border: 1px solid var(--couleur-ligne); }
+
+/* Le briefing d'un service */
+.esp-modale--brief .esp-modale__boite { width: min(100%, 760px); grid-template-rows: auto minmax(0, 1fr); }
+.esp-brief { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; }
+.esp-brief__quand { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 8px; margin-bottom: 14px; }
+.esp-brief__quand p { margin: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 10px; text-align: center; }
+.esp-brief__quand b { flex: 1 0 100%; font-family: var(--police-titres); font-size: 1.3rem; font-weight: 600; }
+.esp-brief__sv { min-height: 44px; padding: 0 18px; border: 1px solid var(--couleur-ligne); border-radius: 999px; background: #fff; color: var(--couleur-texte); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+.esp-brief__sv[aria-pressed="true"] { background: var(--couleur-texte); border-color: var(--couleur-texte); color: var(--couleur-fond); }
+.esp-brief__bloc { margin: 0 0 14px; }
+.esp-brief__bloc h3 { margin: 0 0 6px; font-family: var(--police-titres); font-size: 1.12rem; font-weight: 600; }
+.esp-brief__bloc h3 small { color: var(--couleur-texte-doux); font-family: var(--police-texte); font-size: 14px; font-weight: 600; }
+.esp-brief__bloc p { margin: 0; }
+.esp-brief__vide { color: var(--couleur-texte-doux); font-size: 15px; }
+.esp-brief__liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.esp-brief__liste li { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; min-height: 44px; padding: 2px 0; border-bottom: 1px solid var(--couleur-ligne); line-height: 1.4; }
+.esp-brief__liste li:last-child { border-bottom: 0; }
+.esp-brief__liste span { color: var(--couleur-texte-doux); font-size: 15px; }
+.esp-brief__liste .esp-lien { min-height: 44px; font-weight: 800; }
+.esp-brief__taches li.est-faite { color: var(--couleur-texte-doux); text-decoration: line-through; }
+.esp-brief__case { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border: 2px solid var(--couleur-texte); border-radius: 6px; font-size: 13px; font-weight: 800; }
+.esp-brief__actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; position: sticky; bottom: 0; padding: 10px 0 2px; background: linear-gradient(to top, var(--couleur-fond) 70%, transparent); }
+.esp-dem__taches .esp-brief__liste li { border-bottom: 0; }
+@media print {
+  .esp-feuille--brief .esp-brief { overflow: visible; }
+  .esp-feuille--brief .esp-acc__chiffres { display: flex; flex-wrap: wrap; gap: 4pt 18pt; margin: 0 0 10pt; padding: 0; list-style: none; }
+  .esp-feuille--brief .esp-acc__chiffres li { display: block; padding: 0; border: 0; background: none; }
+  .esp-feuille--brief .esp-acc__chiffres b { font-size: 15pt; }
+  .esp-feuille--brief .esp-acc__chiffres span, .esp-feuille--brief .esp-brief__liste span, .esp-feuille--brief .esp-brief__vide { color: #000; font-size: 10pt; }
+  .esp-feuille--brief .esp-brief__bloc { margin: 0 0 9pt; break-inside: avoid; }
+  .esp-feuille--brief .esp-brief__bloc h3 { margin: 0 0 3pt; padding-bottom: 2pt; border-bottom: 1pt solid #000; font-size: 12pt; }
+  .esp-feuille--brief .esp-brief__liste { list-style: none; margin: 0; padding: 0; }
+  .esp-feuille--brief .esp-brief__liste li { display: block; min-height: 0; padding: 3pt 0; border-bottom: .5pt solid #999; }
+  .esp-feuille--brief .esp-brief__case { display: inline-block; width: 11pt; height: 11pt; margin-right: 5pt; border: 1pt solid #000; border-radius: 2pt; text-align: center; line-height: 10pt; }
+}
+
+/* Les clients */
+.esp-intro { margin: 0 0 16px; max-width: 70ch; color: var(--couleur-texte-doux); font-size: 17px; }
+.esp-clients__outils { display: grid; gap: 10px; margin: 0 0 8px; }
+.esp-clients__champ { max-width: 520px; margin: 0; }
+.esp-clients__compte { margin: 0 0 8px; min-height: 1.4em; color: var(--couleur-texte-doux); font-size: 14px; font-weight: 700; }
+.esp-clients { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 6px; }
+.esp-cli { display: grid; grid-template-columns: minmax(150px, 1.1fr) minmax(130px, .8fr) minmax(0, 1.6fr); align-items: center; gap: 2px 14px; padding: 8px 14px; border-radius: 14px; background: var(--esp-carte); border: 1px solid var(--couleur-ligne); }
+.esp-cli__nom { margin: 0; justify-self: start; font-size: 17px; }
+.esp-cli__tel { color: var(--couleur-texte-doux); font-variant-numeric: tabular-nums; }
+.esp-cli__sans { font-size: 14px; }
+.esp-cli__marques { display: flex; flex-wrap: wrap; gap: 4px 6px; grid-column: 1 / 3; }
+.esp-cli__marques:empty { display: none; }
+.esp-cli__suite { grid-row: 1; grid-column: 3; color: var(--couleur-texte-doux); font-size: 15px; }
+.esp-onglet--renvoi { opacity: .82; }
+@media (max-width: 760px) {
+  .esp-acc { grid-template-columns: minmax(0, 1fr); }
+  .esp-fil__item { grid-template-columns: 64px minmax(0, 1fr); }
+  .esp-fil__item .esp-pastille { grid-column: 2; justify-self: start; }
+  .esp-cli { grid-template-columns: minmax(0, 1fr); padding: 8px 12px 12px; }
+  .esp-cli__marques, .esp-cli__suite { grid-column: 1; grid-row: auto; }
+  .esp-tache-form { grid-template-columns: minmax(0, 1fr); }
+  .esp-tache { grid-template-columns: 44px minmax(0, 1fr); }
+  .esp-tache__modifier { grid-column: 2; justify-self: start; }
+  .esp-brief__actions .bouton, .esp-brief__actions .esp-bouton { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .esp-tache__coche span { transition: none; } }
+.esp-carte h3 .esp-source, .esp-carte h4 .esp-source, .esp-metier .esp-source { font-family: var(--police-texte); letter-spacing: 0; text-transform: none; }
+.esp-aussi { margin: 0 0 16px; }
+.esp-aussi h4 { margin: 0 0 8px; font-family: var(--police-titres); font-size: 1.1rem; font-weight: 600; }
+.esp-rond--petit { width: 44px; height: 44px; vertical-align: middle; }
+.esp-service-tete h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.esp-fiche__demandes li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.esp-fiche__demandes .esp-lien { min-height: 44px; }
+/* La ronde des plats à emporter, sur téléphone : le nom et le prix sont posés sur la photo. Un fond sombre garde le texte lisible quelle que soit la photo qui passe derrière. */
+@media (max-width: 760px) { .ronde__legende { justify-self: center; width: fit-content; max-width: 100%; margin-inline: auto; padding: 6px 16px; border-radius: 999px; background: rgba(28, 23, 18, .74); } }

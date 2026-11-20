@@ -4,7 +4,7 @@
    étapes jusqu'à la signature), la commande traiteur, la carte cadeau, la question. Chaque demande a une étape, que le
    restaurateur fait avancer d'un geste ; « nouvelle » veut dire : elle attend une réponse.
    Et les messages envoyés aux clients : un modèle par situation, que le restaurant peut retoucher. */
-import { ajouter, jourDe, fmt, maj, heure, pluriel, typo, aConfirmer } from './espace-regles.js?v=7';
+import { ajouter, jourDe, fmt, maj, heure, pluriel, typo, aConfirmer, telephoneDemo } from './espace-regles.js?v=7';
 
 export const GENRES = {
   table: { nom: 'Table', plusieurs: 'Tables' },
@@ -36,12 +36,12 @@ export function demandesDemo(auj, produits = []) {
   const p = produits.slice(0, 2), lignes = p.map((x, i) => ({ nom: x.nom, qte: i ? 1 : 2, prix: x.prix }));
   let retrait = ajouter(auj, 9); retrait = ajouter(retrait, (6 - jourDe(retrait) + 7) % 7);
   return [
-    { id: 'demo-reception-1', genre: 'reception', cree: `${ajouter(auj, -1)}T18:40:00`, occasion: 'Un mariage', date: mariage, invites: '120', espace: 'Salle de réception', message: 'Vin d\'honneur au bord de la piscine, si le temps le permet.', prenom: 'Camille', nom: 'R.', telephone: '06 12 00 00 01', email: 'camille@exemple.fr' },
-    { id: 'demo-reception-2', genre: 'reception', cree: `${ajouter(auj, -9)}T11:05:00`, occasion: 'Un anniversaire', periode: 'Printemps 2027', invites: '40', espace: 'Terrasse', message: '', prenom: 'Thomas', nom: 'B.', telephone: '06 12 00 00 02', email: 'thomas@exemple.fr', statut: 'visite' },
-    { id: 'demo-reception-3', genre: 'reception', cree: `${ajouter(auj, -16)}T09:30:00`, occasion: 'Un baptême', periode: 'Été 2027', invites: '35', espace: 'À voir ensemble', message: '', prenom: 'Sophie', nom: 'L.', telephone: '06 12 00 00 03', email: 'sophie@exemple.fr', statut: 'devis' },
-    ...(lignes.length ? [{ id: 'demo-traiteur-1', genre: 'traiteur', cree: `${auj}T08:15:00`, produits: lignes.map(({ nom, qte }) => ({ nom, qte })), total: lignes.reduce((n, l) => n + l.qte * l.prix, 0), jour: retrait, jourLibelle: fmt(retrait), moment: 'soir', prenom: 'Julien', nom: 'M.', telephone: '06 12 00 00 04', email: 'julien@exemple.fr' }] : []),
+    { id: 'demo-reception-1', genre: 'reception', cree: `${ajouter(auj, -1)}T18:40:00`, occasion: 'Un mariage', date: mariage, invites: '120', espace: 'Salle de réception', message: 'Vin d\'honneur au bord de la piscine, si le temps le permet.', prenom: 'Camille', nom: 'R.', telephone: telephoneDemo('Camille R.'), email: 'camille@exemple.fr' },
+    { id: 'demo-reception-2', genre: 'reception', cree: `${ajouter(auj, -9)}T11:05:00`, occasion: 'Un anniversaire', periode: 'Printemps 2027', invites: '40', espace: 'Terrasse', message: '', prenom: 'Thomas', nom: 'B.', telephone: telephoneDemo('Thomas B.'), email: 'thomas@exemple.fr', statut: 'visite' },
+    { id: 'demo-reception-3', genre: 'reception', cree: `${ajouter(auj, -16)}T09:30:00`, occasion: 'Un baptême', periode: 'Été 2027', invites: '35', espace: 'À voir ensemble', message: '', prenom: 'Sophie', nom: 'L.', telephone: telephoneDemo('Sophie L.'), email: 'sophie@exemple.fr', statut: 'devis' },
+    ...(lignes.length ? [{ id: 'demo-traiteur-1', genre: 'traiteur', cree: `${auj}T08:15:00`, produits: lignes.map(({ nom, qte }) => ({ nom, qte })), total: lignes.reduce((n, l) => n + l.qte * l.prix, 0), jour: retrait, jourLibelle: fmt(retrait), moment: 'soir', prenom: 'Julien', nom: 'M.', telephone: telephoneDemo('Julien M.'), email: 'julien@exemple.fr' }] : []),
     { id: 'demo-cadeau-1', genre: 'cadeau', cree: `${ajouter(auj, -2)}T20:10:00`, montant: 100, quantite: 1, total: 100, pour: 'Léa', de: 'Hugo S.', mot: 'Joyeux anniversaire !' },
-    { id: 'demo-question-1', genre: 'question', cree: `${ajouter(auj, -1)}T14:22:00`, sujet: 'Une allergie', message: 'Avez-vous des plats sans gluten ? Nous serions quatre samedi midi.', prenom: 'Claire', nom: 'D.', telephone: '06 12 00 00 05', email: 'claire@exemple.fr' },
+    { id: 'demo-question-1', genre: 'question', cree: `${ajouter(auj, -1)}T14:22:00`, sujet: 'Une allergie', message: 'Avez-vous des plats sans gluten ? Nous serions quatre samedi midi.', prenom: 'Claire', nom: 'D.', telephone: telephoneDemo('Claire D.'), email: 'claire@exemple.fr' },
   ].map((d) => ({ ...d, source: 'demo' }));
 }
 

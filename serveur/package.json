@@ -1,7 +1,7 @@
 {
   "name": "jardins-hacienda-serveur",
   "private": true,
-  "version": "7.9.1",
+  "version": "7.10.0",
   "description": "API de réservation partagée des Jardins de l'Hacienda (comptes, droits, base PostgreSQL).",
   "type": "module",
   "engines": {
