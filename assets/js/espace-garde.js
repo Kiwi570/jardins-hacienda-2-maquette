@@ -11,7 +11,9 @@
    le même enregistrement et la réservation redevient « à placer » ; la note le dit. */
 import { CAPACITE, enMin, heure, verifierResa, trouverResa } from './espace-regles.js?v=7';
 import { dureeDe } from './espace-service.js?v=7';
-import { planDuService, libre, tableApres } from './espace-salle.js?v=7';
+import { planDuService, libre, tableApres, placeDe, avisPlace } from './espace-salle.js?v=7';
+import { refusInstallation } from './espace-presence.js?v=7';
+import { refusAttente } from './espace-attente.js?v=7';
 
 const INACTIFS = ['refusee', 'annulee', 'absente'];
 const minutes = (r) => ({ ...r, debutMin: enMin(r.heure), finMin: enMin(r.heure) + dureeDe(r.service) });
@@ -20,10 +22,13 @@ const minutes = (r) => ({ ...r, debutMin: enMin(r.heure), finMin: enMin(r.heure)
 export function refusPlacement(ctx, S, salle, r, table) {
   if (!r) return 'Cette réservation est introuvable : elle a peut-être été supprimée ailleurs.';
   if (INACTIFS.includes(r.statut)) return 'Cette réservation n\'est plus active : remettez-la d\'abord.';
-  const t = planDuService(ctx, S, salle, r.date, r.service).tables.find((x) => x.id === String(table));
-  if (!t) return `La table ${table} n'est pas sur le plan.`;
-  if (t.fermee) return 'La terrasse est fermée hors saison : elle rouvre en juin.';
-  if (!libre(t, minutes(r))) { const a = t.resas.find((x) => x.id !== r.id); return `La table ${t.id} est prise à cette heure-là (${a?.nom || 'une autre réservation'}, ${heure(a?.heure || r.heure)}).`; }
+  const t = placeDe(planDuService(ctx, S, salle, r.date, r.service), table);
+  if (!t) return `${String(table).includes('+') ? `L'assemblage ${table}` : `La table ${table}`} n'est pas sur le plan.`;
+  if (t.fermee) { const c = t.assemblage ? t.composantes.find((x) => x.fermee) : t; return c.horsSaison ? 'La terrasse est fermée hors saison : elle rouvre en juin.' : `La table ${c.id} est indisponible pour ce service.`; }
+  if (!libre(t, minutes(r))) {
+    const c = (t.assemblage ? t.composantes : [t]).find((x) => !libre(x, minutes(r))), a = c.resas.find((x) => x.id !== r.id && x.debutMin < minutes(r).finMin && minutes(r).debutMin < x.finMin) || c.resas.find((x) => x.id !== r.id);
+    return `La table ${c.id} est prise à cette heure-là (${a?.nom || 'une autre réservation'}, ${heure(a?.heure || r.heure)}).`;
+  }
   return '';
 }
 
@@ -34,6 +39,12 @@ export function refusPlacement(ctx, S, salle, r, table) {
  * `salle` : le plan (donnees/salle.json) ; sans lui, les tables ne sont pas contrôlées.
  */
 export function reglesAction(ctx, S, salle, nom, args = {}) {
+  const r0 = reglesDeBase(ctx, S, salle, nom, args);
+  /* v7.11.0 : une réservation qui n'est plus « arrivée » n'est plus installée ni partie : sa présence est effacée avec elle. */
+  if (!r0.refus && nom === 'statut' && args.statut !== 'arrivee' && S.service?.presence?.[args.id]?.etat) return { ...r0, suites: [...r0.suites, { nom: 'presenceRetirer', args: { id: args.id } }] };
+  return r0;
+}
+function reglesDeBase(ctx, S, salle, nom, args = {}) {
   const oui = { refus: '', suites: [], note: '' }, non = (refus) => ({ refus, suites: [], note: '' });
   /* La table d'une réservation qui change ou revient : gardée si elle convient encore, sinon retirée. */
   const table = (r, champs, pourquoi, places = true) => {
@@ -59,6 +70,19 @@ export function reglesAction(ctx, S, salle, nom, args = {}) {
     if (args.statut === 'confirmee' && r.date >= ctx.auj) { const v = verifierResa(ctx, S, r); if (!v.ok) return non(`Confirmation impossible : ${v.raison === 'ferme' ? `${(v.message || 'le service est fermé').replace(/\.$/, '').toLowerCase()}. Rouvrez le service, ou refusez la demande.` : `${heure(r.heure)} n'est plus une heure d'arrivée ce jour-là. ${v.message} Modifiez l'heure de la réservation, ou refusez la demande.`}`); }
     /* Une réservation qui revient (annulée, refusée, absente) ne reprend pas une table donnée entre-temps. */
     return INACTIFS.includes(r.statut) ? table({ ...r, statut: args.statut }, {}, (raison) => (/prise/.test(raison) ? 'a été donnée entre-temps' : `ne convient plus (${raison})`), false) : oui;
+  }
+  /* v7.11.0 : la liste d'attente (revérification au moment de l'acceptation). */
+  if (nom.startsWith('attente')) { const refus = refusAttente(ctx, S, salle, nom, args); return refus ? non(refus) : oui; }
+  /* v7.11.0 : l'accueil pendant le service. */
+  if (nom === 'installer' && salle) { const refus = refusInstallation(ctx, S, salle, trouverResa(ctx, S, args.id), args.minute ?? ctx.minute ?? 0); return refus ? non(refus) : oui; }
+  if (nom === 'depart') { const r = trouverResa(ctx, S, args.id); if (!r) return non('Cette réservation est introuvable.'); return r.statut === 'arrivee' && S.service?.presence?.[r.id]?.etat === 'installe' ? oui : non('Ce groupe n\'est pas installé : il n\'y a pas de départ à noter.'); }
+  if (nom === 'passage' && salle) {
+    const r = args.resa || {}; if (trouverResa(ctx, S, r.id)) return non('Ce groupe est déjà noté.');
+    if (!(+r.couverts >= 1) || +r.couverts > CAPACITE) return non('Indiquez le nombre de personnes.');
+    if (r.table) { const plan = planDuService(ctx, S, salle, r.date, r.service, args.minute ?? ctx.minute ?? 0), t = placeDe(plan, r.table), m = enMin(r.heure);
+      const avis = t ? avisPlace(plan, t, { id: r.id, couverts: r.couverts, debutMin: m, finMin: m + dureeDe(r.service) }, { maintenant: !!args.installer }) : { ok: false, genre: 'fermee', raison: 'Cette table n\'est pas sur le plan.' };
+      if (!avis.ok && avis.genre !== 'serre') return non(avis.raison); }
+    return oui;
   }
   if (nom === 'placerResa' && args.table && salle) { const refus = refusPlacement(ctx, S, salle, trouverResa(ctx, S, args.id), args.table); return refus ? non(refus) : oui; }
   if (nom === 'placerPlusieurs' && salle) {

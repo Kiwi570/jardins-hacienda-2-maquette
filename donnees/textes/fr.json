@@ -113,6 +113,13 @@
       "nav": "Espace restaurateur",
       "partageAlt": "L'espace restaurateur des Jardins de l'Hacienda",
       "accroche": "Votre espace"
+    },
+    "venue": {
+      "titre": "Votre venue : Les Jardins de l'Hacienda",
+      "description": "Retrouvez votre réservation aux Jardins de l'Hacienda : statut, récapitulatif, informations pratiques, modification ou annulation.",
+      "nav": "Votre venue",
+      "partageAlt": "Votre venue aux Jardins de l'Hacienda",
+      "accroche": "Votre venue aux Jardins"
     }
   },
   "accueil": {
@@ -1130,5 +1137,12 @@
     "aventLabelFerme": "{jour} : fermé",
     "aventOu": "ou",
     "aventLe": "le"
+  },
+  "venue": {
+    "surtitre": "Les Jardins de l'Hacienda",
+    "titre": "Votre venue aux Jardins",
+    "chargement": "Nous cherchons votre réservation…",
+    "sansScript": "Pour voir ou modifier votre réservation, appelez-nous au",
+    "photoAlt": "La salle des Jardins de l'Hacienda, au soleil de midi"
   }
 }

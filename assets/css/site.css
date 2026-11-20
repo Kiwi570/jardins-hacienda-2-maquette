@@ -5107,3 +5107,244 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 .esp-fiche__demandes .esp-lien { min-height: 44px; }
 /* La ronde des plats à emporter, sur téléphone : le nom et le prix sont posés sur la photo. Un fond sombre garde le texte lisible quelle que soit la photo qui passe derrière. */
 @media (max-width: 760px) { .ronde__legende { justify-self: center; width: fit-content; max-width: 100%; margin-inline: auto; padding: 6px 16px; border-radius: 999px; background: rgba(28, 23, 18, .74); } }
+
+/* ==========================================================================
+   v7.11.0 : un service parfaitement accompagné
+   Présence des groupes, état des tables, clients sans réservation, assemblages, liste d'attente, repli de terrasse.
+   ========================================================================== */
+/* --- Pastilles : où en est le groupe, où en est la table --- */
+.esp-pastille--p-retard, .esp-pastille--p-non-traitee, .esp-pastille--t-a-debarrasser, .esp-pastille--att-expiree { background: #f6dcd9; color: #8a1f1a; }
+.esp-pastille--p-arrive, .esp-pastille--t-a-preparer, .esp-pastille--att-proposee { background: var(--esp-attente-clair); color: var(--esp-attente); }
+.esp-pastille--p-installe, .esp-pastille--t-occupee, .esp-pastille--att-acceptee { background: var(--esp-vert); color: #fff; }
+.esp-pastille--p-parti, .esp-pastille--att-retiree, .esp-pastille--att-refusee, .esp-pastille--att-perimee, .esp-pastille--t-indisponible { background: var(--couleur-surface); color: var(--couleur-texte-doux); }
+.esp-pastille--t-prete { background: var(--esp-vert-clair); color: var(--esp-vert); }
+.esp-source--verifier { background: var(--esp-attente-clair); color: var(--esp-attente); }
+.esp-portee { margin-top: 14px; }
+.esp-portee .esp-source { margin: 0 6px 0 0; }
+
+/* --- La ligne du service : la prochaine action d'abord --- */
+.esp-frise__ligne.est-p-retard, .esp-frise__ligne.est-p-non-traitee { box-shadow: inset 4px 0 0 var(--rouge); }
+.esp-frise__ligne.est-p-arrive { box-shadow: inset 4px 0 0 var(--or); }
+.esp-frise__ligne.est-p-installe { background: color-mix(in oklab, var(--esp-vert-clair) 45%, #fff); }
+.esp-frise__ligne.est-p-parti { background: transparent; }
+.esp-frise__ligne.est-p-parti .esp-frise__nom { color: var(--couleur-texte-doux); }
+.esp-frise__sans-table { color: var(--esp-attente); font-weight: 700; }
+.esp-frise__actions { align-items: flex-start; }
+.esp-frise__principal { min-height: 44px; font-weight: 800; }
+.esp-frise__plus { position: relative; }
+.esp-frise__plus > summary { list-style: none; display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; }
+.esp-frise__plus > summary::-webkit-details-marker { display: none; }
+.esp-frise__plus > summary::after { content: "▾"; margin-left: 6px; font-size: 12px; }
+.esp-frise__plus[open] > summary::after { content: "▴"; }
+.esp-frise__plus > p { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.esp-frise__plus[open] { flex: 1 1 100%; }
+.esp-frise__outil { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 14px; padding: 12px 14px; border-radius: 12px; background: var(--couleur-surface); }
+.esp-frise__outil .esp-aide { flex: 1 1 100%; margin: 0; }
+@media (max-width: 720px) { .esp-frise__actions .esp-frise__principal { flex: 1 1 auto; min-height: 48px; font-size: 16px; } }
+
+/* --- Des clients se présentent --- */
+.esp-passage { border-color: var(--esp-vert); box-shadow: inset 0 0 0 1px var(--esp-vert); }
+.esp-passage__form { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px 16px; align-items: end; }
+.esp-passage__form > :is(.esp-champ--large, .esp-passage__heure, .esp-passage__choix) { grid-column: 1 / -1; }
+.esp-passage__heure { margin: 0; color: var(--couleur-texte-doux); font-size: 15px; }
+.esp-passage__choix h4 { margin: 10px 0 8px; font-family: var(--police-texte); font-size: 15px; font-weight: 800; letter-spacing: .02em; }
+.esp-passage__places { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.esp-passage__places li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.esp-passage__places .esp-bouton { min-width: 132px; min-height: 44px; justify-content: center; }
+.esp-passage__places span { flex: 1 1 220px; color: var(--couleur-texte-doux); font-size: 15px; }
+.esp-passage__rien { margin: 0; padding: 12px 14px; border-radius: 12px; background: var(--esp-attente-clair); color: #5b3605; }
+.esp-passage__autres { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+.esp-passage__autres .esp-bouton { min-height: 44px; }
+:is(.esp-passage__pourquoi, .esp-salle__pourquoi) { margin-top: 10px; font-size: 15px; }
+:is(.esp-passage__pourquoi, .esp-salle__pourquoi) > summary { min-height: 44px; display: inline-flex; align-items: center; cursor: pointer; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+:is(.esp-passage__pourquoi, .esp-salle__pourquoi) ul { margin: 4px 0 0; padding-left: 20px; color: var(--couleur-texte-doux); }
+
+/* --- Les tables à remettre en état --- */
+.esp-tables-etat { margin-top: 18px; }
+.esp-tables-etat h3 small { font-family: var(--police-texte); font-size: 14px; font-weight: 600; letter-spacing: 0; color: var(--couleur-texte-doux); }
+.esp-tables-etat__liste, .esp-tables-etat__alertes { display: grid; gap: 8px; margin: 0 0 8px; padding: 0; list-style: none; }
+.esp-tables-etat__liste li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; padding: 8px 12px; border-radius: 12px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-tables-etat__actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.esp-tables-etat__actions .esp-bouton, .esp-salle__etats .esp-bouton, .esp-salle__gestes .esp-bouton, .esp-salle__assembler .esp-bouton { min-height: 44px; }
+.esp-tables-etat__alertes li { padding: 8px 12px; border-radius: 12px; background: #f6dcd9; color: #6d1814; font-size: 15px; }
+.esp-attente-rappel { margin: 0 0 16px; padding: 10px 14px; border-radius: 12px; background: var(--esp-attente-clair); color: #5b3605; }
+.esp-attente-rappel .esp-lien { min-height: 44px; color: inherit; }
+
+/* --- Le plan : état des tables, tables rapprochées --- */
+.esp-table.est-t-occupee { background: var(--esp-vert); border-color: var(--esp-vert); color: #fff; }
+.esp-table.est-t-occupee :is(b, small) { color: #fff; }
+.esp-table:is(.est-t-a-debarrasser, .est-t-a-preparer) { background: repeating-linear-gradient(135deg, #fff 0 8px, color-mix(in oklab, var(--esp-attente-clair) 55%, #fff) 8px 16px); border-color: var(--esp-attente); }
+.esp-table.est-t-indisponible { background: transparent; border-style: dashed; }
+.esp-table.est-t-indisponible :is(b, .esp-table__qui) { color: var(--couleur-texte-doux); }
+.esp-table.est-rapprochee { border-style: double; border-width: 4px; }
+.esp-table__etat, .esp-table__lien { position: absolute; left: 50%; translate: -50% 0; z-index: 1; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-style: normal; font-weight: 800; white-space: nowrap; }
+.esp-table__etat { bottom: -11px; background: var(--couleur-texte); color: var(--couleur-fond); }
+.esp-table__lien { top: -11px; background: var(--couleur-fond); border: 1px solid var(--couleur-texte); color: var(--couleur-texte); }
+.esp-salle__legende li.est-a-remettre::before { background: repeating-linear-gradient(135deg, #fff 0 4px, var(--esp-attente-clair) 4px 8px); border-color: var(--esp-attente); }
+.esp-salle__choix { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: var(--couleur-surface); }
+.esp-salle__choix p { margin: 0 0 8px; }
+.esp-salle__assembler, .esp-salle__etats, .esp-salle__gestes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.esp-salle__etats { margin: 0 0 10px; }
+.esp-salle__rapprochee { font-size: 13px; font-weight: 700; color: var(--esp-attente); }
+.esp-salle__assis li { flex-wrap: wrap; }
+@media (max-width: 760px) { .esp-table__etat, .esp-table__lien { position: static; translate: none; display: inline-block; margin-top: 4px; } }
+
+/* --- La liste d'attente --- */
+.esp-att-filtres { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; margin: 0 0 14px; }
+.esp-att-filtres .esp-choix { flex-wrap: wrap; }
+.esp-att-filtres__jour { margin: 0; min-width: 220px; }
+.esp-choix__n { display: inline-block; min-width: 20px; margin-left: 4px; padding: 0 6px; border-radius: 999px; background: color-mix(in oklab, currentColor 16%, transparent); font-size: 13px; }
+.esp-att-liste { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.esp-att { padding: 14px 16px; border-radius: 16px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-att p { margin: 0; }
+.esp-att.est-proposee { box-shadow: inset 4px 0 0 var(--or); }
+.esp-att.est-expiree { box-shadow: inset 4px 0 0 var(--rouge); }
+.esp-att:is(.est-acceptee, .est-refusee, .est-retiree, .est-perimee) { background: transparent; border-style: dashed; }
+.esp-att__nom { font-size: 17px; }
+.esp-att__nom .esp-pastille { margin-left: 4px; }
+.esp-att__souhait { margin-top: 2px; }
+.esp-att__meta { margin-top: 2px; color: var(--couleur-texte-doux); font-size: 14px; }
+.esp-att__possible, .esp-att__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 10px; }
+.esp-att__possible .esp-bouton, .esp-att__actions .esp-bouton { min-height: 44px; }
+.esp-att__place { color: var(--couleur-texte-doux); font-size: 14px; }
+.esp-att__propo, .esp-att__rien { margin-top: 10px; }
+.esp-att__rien { color: var(--couleur-texte-doux); }
+.esp-att__propo.est-expiree b { color: #8a1f1a; }
+.esp-att__propo.est-acceptee b { color: var(--esp-vert); }
+.esp-att__message { margin-top: 8px; }
+.esp-att__message > summary { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 700; }
+.esp-att__message p { padding: 12px 14px; border-radius: 4px 16px 16px 16px; background: var(--couleur-surface); font-size: 15px; }
+.esp-att__retirer { margin-top: 6px; }
+.esp-att__retirer .esp-lien, .esp-att .esp-lien { min-height: 44px; }
+.esp-att-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px 16px; align-items: end; margin-bottom: 16px; }
+.esp-att-form > :is(h3, .esp-champ--large, .esp-att-form__actions, .esp-aide) { grid-column: 1 / -1; margin: 0; }
+.esp-att-form__espaces { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 0; border: 0; }
+.esp-att-form__espaces legend { padding: 0; font-weight: 700; }
+.esp-att-form__espaces label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+.esp-att-form__espaces input { width: 22px; height: 22px; accent-color: var(--esp-vert); }
+.esp-att-form__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.esp-att-regle { margin-top: 16px; }
+
+/* --- La fiche client : période, prochaine venue, notes à vérifier --- */
+.esp-fiche__periode { margin: 0 0 6px; color: var(--couleur-texte-doux); font-size: 14px; }
+.esp-fiche__prochaine { margin: 8px 0 0; }
+.esp-fiche__clarifier, .esp-fiche__ancienne { margin: 8px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--esp-attente-clair); color: #5b3605; font-size: 15px; }
+.esp-fiche__clarifier .esp-lien { min-height: 44px; color: inherit; }
+.esp-fiche__ancienne .esp-bouton { min-height: 44px; margin-top: 6px; }
+.esp-fiche__ancienne .esp-source, .esp-fiche__portee .esp-source { margin: 0 6px 0 0; }
+.esp-fiche__portee { margin: 0 0 6px; color: var(--couleur-texte-doux); font-size: 14px; }
+
+/* Sur téléphone, pendant le service : la liste des groupes d'abord, le graphique ensuite. */
+@media (max-width: 720px) { [data-service] { display: flex; flex-direction: column; } [data-service] > .esp-charge { order: 2; margin-top: 16px; } [data-service] > :is(.esp-tables-etat, .esp-portee) { order: 3; } }
+/* --- Le repli de la terrasse --- */
+.esp-repli { margin-bottom: 16px; border-color: var(--or-fonce); box-shadow: inset 0 0 0 1px var(--or-fonce); }
+.esp-repli:focus { outline: none; }
+.esp-repli h4 { margin: 14px 0 8px; font-family: var(--police-texte); font-size: 15px; font-weight: 800; letter-spacing: .02em; }
+.esp-repli__resume { margin: 0; }
+.esp-repli :is(.esp-repli__liste, .esp-repli__sans, .esp-repli__decisions, .esp-repli__bilan) { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.esp-repli__liste li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 8px 12px; border-radius: 12px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-repli__qui small { display: block; color: var(--couleur-texte-doux); font-size: 14px; }
+.esp-repli__vers { margin: 0; min-width: min(100%, 250px); }
+.esp-repli__sans li, .esp-repli__bilan li.est-non, .esp-repli__conflit { padding: 8px 12px; border-radius: 12px; background: #f6dcd9; color: #6d1814; }
+.esp-repli__decisions li { padding-left: 18px; position: relative; }
+.esp-repli__decisions li::before { content: "→"; position: absolute; left: 0; }
+.esp-repli__bilan li { padding: 8px 12px; border-radius: 12px; background: var(--couleur-surface); }
+.esp-repli__bilan li.est-ok { background: var(--esp-vert-clair); color: #1d4737; }
+.esp-repli__option label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 44px; }
+.esp-repli__option input { width: 22px; height: 22px; accent-color: var(--esp-vert); }
+.esp-repli__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+/* --- Aujourd'hui : où en est le service ; « Vue » compacte sur téléphone --- */
+.esp-acc__presence { margin: 10px 0 0; font-size: 15px; }
+.esp-acc__presence .est-alerte { padding: 1px 8px; border-radius: 999px; background: var(--esp-attente-clair); color: var(--esp-attente); font-weight: 700; }
+.esp-acc__presence .esp-lien { min-height: 44px; }
+.esp-acc__reserve, .esp-brief__reserve { margin: 8px 0 0; color: var(--couleur-texte-doux); font-size: 14px; }
+.esp-metier-tel { display: none; }
+@media (max-width: 760px) {
+  .esp-metier--ordi { display: none; }
+  .esp-metier-tel { display: block; margin: 0 0 12px; }
+  .esp-metier-tel > summary { list-style: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px dashed color-mix(in oklab, var(--couleur-texte) 30%, transparent); border-radius: 999px; font-size: 15px; cursor: pointer; }
+  .esp-metier-tel > summary::-webkit-details-marker { display: none; }
+  .esp-metier-tel > summary::after { content: "▾"; font-size: 12px; }
+  .esp-metier-tel[open] > summary::after { content: "▴"; }
+  .esp-metier-tel .esp-metier__choix { margin: 10px 0 6px; }
+  .esp-metier-tel .esp-metier__aide { margin: 0; color: var(--couleur-texte-doux); font-size: 14px; }
+}
+@media (max-width: 760px) { .esp-acc__chiffres li.est-zero { display: none; } }
+.esp-acc__presence .est-alerte { -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* ==========================================================================
+   v7.11.0 : « Votre venue aux Jardins » (page du client) et, sur Réserver, les alternatives et la liste d'attente
+   ========================================================================== */
+.venue { padding-block: calc(var(--entete-h, 72px) + clamp(28px, 6vw, 72px)) clamp(56px, 8vw, 110px); background: var(--couleur-fond); color: var(--couleur-texte); }
+.venue__cadre { max-width: 760px; }
+.venue__titre { margin: 6px 0 22px; font-family: var(--police-titres); font-size: clamp(34px, 6vw, 56px); line-height: 1.05; }
+.venue__carte { padding: clamp(20px, 4vw, 34px); border-radius: 22px; background: #fffdf8; border: 1px solid color-mix(in oklab, var(--couleur-texte) 14%, transparent); box-shadow: 0 18px 40px -28px rgba(28, 23, 18, .4); }
+.venue__carte:focus { outline: none; }
+.venue__carte p { margin: 0 0 12px; }
+.venue__etat { display: inline-block; padding: 6px 16px; border-radius: 999px; background: #2c6650; color: #fff; font-size: 15px; font-weight: 800; letter-spacing: .02em; }
+.venue__etat--demande-recue, .venue__etat--modification-demandee { background: #fbe9c8; color: #6b3f06; }
+.venue__etat--annulee, .venue__etat--refusee, .venue__etat--passee { background: #e9e2d4; color: #4a4036; }
+.venue__phrase { font-size: clamp(18px, 2.4vw, 21px); }
+.venue__message { padding: 12px 16px; border-radius: 14px; background: #e2eee7; color: #1d4737; font-weight: 600; }
+.venue__info { padding: 10px 14px; border-radius: 14px; background: #f1ebde; font-size: 16px; }
+.venue__info--attente { background: #fbe9c8; color: #5b3605; }
+.venue__recap { display: grid; gap: 0; margin: 16px 0 18px; border-top: 1px solid color-mix(in oklab, var(--couleur-texte) 14%, transparent); }
+.venue__recap > div { display: grid; grid-template-columns: minmax(120px, 34%) 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid color-mix(in oklab, var(--couleur-texte) 14%, transparent); }
+.venue__recap dt { color: color-mix(in oklab, var(--couleur-texte) 72%, transparent); font-size: 15px; }
+.venue__recap dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.venue__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 0; }
+.venue__actions .bouton { min-height: 48px; }
+.venue__lien { display: inline-flex; align-items: center; min-height: 44px; padding: 0; border: 0; background: none; color: inherit; font: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.venue__lien:focus-visible, .venue__carte a:focus-visible { outline: 2px solid var(--or-fonce); outline-offset: 3px; border-radius: 4px; }
+.venue__form { margin-top: 6px; padding: 16px 18px; border-radius: 16px; background: #f1ebde; }
+.venue__form h3 { margin: 0 0 12px; font-family: var(--police-titres); font-size: 22px; line-height: 1.2; }
+.venue__champ { display: grid; gap: 6px; }
+.venue__champ label { font-weight: 700; font-size: 15px; }
+.venue__champ small { font-weight: 500; color: color-mix(in oklab, var(--couleur-texte) 72%, transparent); }
+.venue__champ :is(select, input, textarea) { width: 100%; min-height: 48px; padding: 10px 12px; border: 1px solid color-mix(in oklab, var(--couleur-texte) 36%, transparent); border-radius: 12px; background: #fff; color: inherit; font: inherit; font-size: 16px; }
+.venue__champ :is(select, input, textarea):focus-visible { outline: 2px solid var(--or-fonce); outline-offset: 2px; }
+.venue__note { color: color-mix(in oklab, var(--couleur-texte) 76%, transparent); font-size: 15px; }
+.venue__erreur { padding: 10px 14px; border-radius: 12px; background: #f6dcd9; color: #6d1814; font-weight: 600; }
+.venue__contact { margin: 18px 0 0; font-size: 17px; }
+.venue__bloc { margin-top: 28px; }
+.venue__bloc h2 { margin: 0 0 8px; font-family: var(--police-titres); font-size: 24px; }
+.venue__pratique { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.venue__pratique b { display: inline-block; min-width: 96px; font-weight: 700; }
+.venue a:not(.bouton) { color: inherit; }
+.venue__demo { margin: 28px 0 0; padding: 10px 14px; border-radius: 12px; border: 1px dashed color-mix(in oklab, var(--couleur-texte) 34%, transparent); font-size: 14px; }
+.venue__demo span { margin-right: 6px; padding: 1px 8px; border-radius: 999px; background: var(--or-fonce); color: #fff; font-weight: 800; font-size: 12px; }
+.venue__attente { font-size: 18px; }
+@media (max-width: 560px) { .venue__recap > div { grid-template-columns: 1fr; gap: 2px; } .venue__actions .bouton { width: 100%; justify-content: center; } }
+/* --- Dans l'espace : changement demandé par un client, rappels --- */
+.esp-source--ok { background: var(--esp-vert-clair); color: var(--esp-vert); }
+.esp-frise__modif { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 10px 14px; border-radius: 12px; background: var(--esp-attente-clair); color: #5b3605; }
+.esp-frise__modif-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.esp-frise__modif-actions .esp-bouton, [data-lien-venue] { min-height: 44px; }
+.esp-rappels { margin-top: 18px; }
+.esp-rappels > summary { list-style: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; min-height: 44px; cursor: pointer; }
+.esp-rappels > summary::-webkit-details-marker { display: none; }
+.esp-rappels > summary h3 { margin: 0; }
+.esp-rappels > summary h3::after { content: " ▾"; font-family: var(--police-texte); font-size: 13px; }
+.esp-rappels[open] > summary h3::after { content: " ▴"; }
+.esp-rappels__resume { color: var(--couleur-texte-doux); font-size: 15px; }
+.esp-rappels__reglage { max-width: 280px; margin: 12px 0; }
+.esp-rappels__liste { display: grid; gap: 8px; margin: 0 0 10px; padding: 0; list-style: none; }
+.esp-rappels__liste li { padding: 8px 12px; border-radius: 12px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-rappels__qui small { display: block; color: var(--couleur-texte-doux); font-size: 14px; }
+/* La pastille « Aperçu de vos modifications » (pages du site) : une vraie cible au doigt. */
+.apercu-espace { min-height: 44px; }
+/* Le service : « maintenant » se lit au-dessus du graphique, sans jamais passer sur le chiffre du coup de feu. */
+.esp-charge__graphe { margin-top: 16px; }
+.esp-charge__maintenant span { top: -16px; }
+/* Votre venue : la salle en tête de page ; la place du contenu est réservée (rien ne saute quand la réservation s'affiche). */
+.venue__photo { height: clamp(140px, 24vw, 220px); margin-bottom: 22px; border-radius: 22px; overflow: hidden; }
+.venue__photo :is(figure, picture, img) { display: block; width: 100%; height: 100%; margin: 0; }
+.venue__photo img { object-fit: cover; object-position: var(--cadrage, 50% 58%); }
+.venue__sur { color: var(--or-fonce); }
+.venue__corps { min-height: max(680px, 86svh); }
+/* Agenda : la zone tactile du nom (44 px) déborde vers le haut de la ligne, plus sur le détail écrit dessous. */
+.esp-resa .esp-client { margin: -24px 0 0; }
+/* « maintenant » en fin de service : l'étiquette passe à gauche du trait, pour rester dans l'écran. */
+.esp-charge__maintenant.est-fin span { left: auto; right: 6px; }
+/* Votre venue, téléphone tenu en largeur : la photo se fait bandeau, le titre reste dans le premier écran. */
+@media (max-height: 520px) { .venue { padding-top: calc(var(--entete-h, 64px) + 14px); } .venue__photo { height: 72px; margin-bottom: 12px; } .venue__titre { margin-bottom: 14px; } }

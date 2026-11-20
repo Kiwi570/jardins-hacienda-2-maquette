@@ -50,7 +50,7 @@ test('la table proposée : la plus petite qui suffit ; « Placer tout seul » n\
   const { places, restes } = placerTout(p); assert.equal(Object.keys(places).length + restes.length, p.aPlacer.length);
   const S = appliquer({}, 'placerPlusieurs', { places }), q = plan(S);
   assert.equal(q.conflits.length, 0); assert.equal(q.placees.length, Object.keys(places).length); assert.equal(q.aPlacer.length, restes.length);
-  assert.ok(q.tables.every((t) => t.resas.every((r) => +r.couverts <= t.places)), 'personne n\'est serré');
+  assert.ok(q.tables.every((t) => t.resas.every((r) => +r.couverts <= (r.via ? q.assemblages.find((a) => a.id === r.via).places : t.places))), 'personne n\'est serré (un groupe assis sur deux tables rapprochées compte sur leur capacité dite)');
   /* Une tablée de douze ne tient à aucune table : elle reste à placer. */
   const S2 = appliquer({}, 'ajouterResa', { resa: { id: 'tel-12', date: JOUR, service: 'soir', heure: creneaux(R, 'soir')[0], couverts: 12, nom: 'Tablée Essai' } });
   assert.ok(placerTout(plan(S2)).restes.some((r) => r.id === 'tel-12')); assert.equal(proposer(plan(S2), plan(S2).aPlacer.find((r) => r.id === 'tel-12')), null);
@@ -63,7 +63,7 @@ test('le client qui a choisi sa table sur le site arrive déjà placé', () => {
 });
 
 test('la fiche client : reconnu à son téléphone, ses réservations, ce que la maison note', () => {
-  assert.equal(cleClient({ nom: 'Claire Essai', telephone: '06 00 00 00 00' }), 't0600000000'); assert.equal(cleClient({ nom: 'Émilie W.' }), 'n-emilie-w'); assert.equal(cleClient({}), '');
+  assert.equal(cleClient({ nom: 'Claire Essai', telephone: '06 00 00 00 00' }), 't:+33600000000'); assert.equal(cleClient({ nom: 'Émilie W.' }), 'n-emilie-w'); assert.equal(cleClient({ id: 'r9', nom: 'Émilie W.' }), 's:r9', 'sans téléphone : une fiche par réservation (v7.11.0)'); assert.equal(cleClient({}), '');
   const r = serviceDuJour(ctx(), {}, JOUR, 'soir').resas[0], cle = cleClient(r), f = fiche(ctx(), {}, cle);
   assert.equal(f.nom, r.nom); assert.ok(f.resas.some((x) => x.id === r.id)); assert.equal(f.exemple, true); assert.equal(f.habitue, false); assert.deepEqual(f.allergies, []);
   assert.ok(f.resas.every((x) => cleClient(x) === cle)); assert.equal(f.venues + f.aVenir + f.absences + f.annulations <= f.resas.length, true);

@@ -336,7 +336,8 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       await page.locator('[data-service-vu="soir"]').click().catch(() => {}); await attendre(350);
       const L = `[data-esp-panneau-resas] [data-resa="${r.id}"]`;
       const lire = () => page.evaluate((sel) => { const n = (t) => +(String(t || '').match(/\d+/) || [0])[0], txt = (q) => document.querySelector(q)?.textContent || '';
-        return { resume: n(txt('.esp-service-tete__resume')), blocs: [...document.querySelectorAll('[data-esp-panneau-resas] .esp-frise__bloc b')].reduce((a, b) => a + +b.textContent, 0), pic: n(txt('.esp-charge__barre.est-pic b')), tableau: Math.max(0, ...[...document.querySelectorAll('.esp-charge .esp-bilan-table tbody td')].map((td) => +td.textContent)), ligne: (document.querySelector(sel)?.innerText || '').replace(/\s+/g, ' ') }; }, L);
+        /* v7.11.0 : le résumé commence par le nombre de réservations ; les couverts sont le nombre qui précède « couvert ». */
+        return { resume: +((txt('.esp-service-tete__resume').match(/(\d+)\s*couverts?/) || [0, 0])[1]), blocs: [...document.querySelectorAll('[data-esp-panneau-resas] .esp-frise__bloc b')].reduce((a, b) => a + +b.textContent, 0), pic: n(txt('.esp-charge__barre.est-pic b')), tableau: Math.max(0, ...[...document.querySelectorAll('.esp-charge .esp-bilan-table tbody td')].map((td) => +td.textContent)), ligne: (document.querySelector(sel)?.innerText || '').replace(/\s+/g, ' ') }; }, L);
       const a = await lire();
       if (!/Service Essai/.test(a.ligne) || !/4 couverts/.test(a.ligne)) R.echec('espace : service', `la réservation n’est pas dans la frise (« ${a.ligne.slice(0, 80)} »)`, lieu);
       if (!a.resume || a.resume !== a.blocs) R.echec('espace : service', `le résumé annonce ${a.resume} couverts, la frise en porte ${a.blocs}`, lieu);
@@ -660,7 +661,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (acc.compte !== acc.badge) R.echec(`${ou} : compteurs`, `l'accueil annonce ${acc.compte} demandes, la rubrique Demandes ${acc.badge}`, lieu);
       const [jourSv, sv] = (acc.cle || '|').split('|');
       /* Une priorité mène à son objet : les réservations sans table → le plan de salle du bon service. */
-      const aPlacer = Object.entries(acc.chiffres).find(([k]) => /placer/.test(k))?.[1] ?? -1, prio = page.locator(`[data-esp-rendu="jour"] [data-faire-priorite^="placer-"]`);
+      const aPlacer = Object.entries(acc.chiffres).find(([k]) => /sans table/.test(k))?.[1] ?? 0, prio = page.locator(`[data-esp-rendu="jour"] [data-faire-priorite^="placer-"]`);
       if (aPlacer > 0 && !(await prio.count())) R.echec(`${ou} : priorités`, `${aPlacer} réservations à placer, et aucune priorité ne le dit`, lieu);
       if (await prio.count()) { await prio.first().click(); await attendre(500);
         const ici = await page.evaluate(() => ({ vue: document.querySelector('.esp-vue:not([hidden])')?.dataset.vue, onglet: document.querySelector('[data-onglets-resas][aria-selected="true"]')?.dataset.onglet, aPlacer: document.querySelectorAll('[data-plan-salle] [data-resa-a-placer], [data-plan-salle] [data-a-placer] li').length }));
@@ -696,10 +697,10 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       const avant = await texte('.esp-service-tete h3'); await page.locator('.esp-service-tete [data-jour-pas="1"]').click(); await attendre(350); const apresJour = await texte('.esp-service-tete h3'); await page.locator('.esp-service-tete [data-jour-pas="-1"]').click(); await attendre(350);
       if (avant === apresJour || await texte('.esp-service-tete h3') !== avant) R.echec(`${ou} : Service`, 'les boutons « jour précédent / suivant » ne changent pas la date affichée', lieu);
       await aller(page, 'jour'); await page.locator('[data-esp-rendu="jour"] [data-briefing]').click(); await attendre(450);
-      const brief = await page.evaluate(() => ({ cle: document.querySelector('.esp-brief')?.dataset.brief, texte: document.querySelector('.esp-brief')?.innerText.replace(/\s+/g, ' ') || '', conf: +([...document.querySelectorAll('.esp-brief__chiffres li')].find((li) => /confirmée/.test(li.textContent))?.querySelector('b').textContent ?? -1), focus: !!document.activeElement?.closest('.esp-modale--brief') }));
+      const brief = await page.evaluate(() => ({ cle: document.querySelector('.esp-brief')?.dataset.brief, texte: document.querySelector('.esp-brief')?.innerText.replace(/\s+/g, ' ') || '', conf: +([...document.querySelectorAll('.esp-brief__chiffres li')].find((li) => /réservation/.test(li.textContent))?.querySelector('b').textContent ?? -1), focus: !!document.activeElement?.closest('.esp-modale--brief') }));
       if (brief.cle !== acc.cle) R.echec(`${ou} : briefing`, `le briefing ouvert est celui de « ${brief.cle} », le prochain service est « ${acc.cle} »`, lieu);
-      const confAccueil = Object.entries(acc.chiffres).find(([k]) => /confirmée/.test(k))?.[1];
-      if (brief.conf !== confAccueil) R.echec(`${ou} : briefing`, `le briefing compte ${brief.conf} réservations confirmées, l'accueil ${confAccueil}`, lieu);
+      const confAccueil = Object.entries(acc.chiffres).find(([k]) => /^réservations?$/.test(k))?.[1];
+      if (brief.conf !== confAccueil) R.echec(`${ou} : briefing`, `le briefing compte ${brief.conf} réservations, l'accueil ${confAccueil}`, lieu);
       for (const mot of ['grandes tablées', 'Occasions, allergies', 'Ce qui reste à traiter', 'Installations', 'Les tâches']) if (!brief.texte.includes(mot)) R.echec(`${ou} : briefing`, `la partie « ${mot} » manque`, lieu);
       if (!brief.focus) R.echec(`${ou} : briefing`, 'le focus n\'entre pas dans la fenêtre', lieu);
       const debord = await page.evaluate(() => { const b = document.querySelector('.esp-modale--brief .esp-modale__boite').getBoundingClientRect(); return b.right > innerWidth + 1 || b.left < -1; }); if (debord) R.echec(`${ou} : briefing`, 'la fenêtre dépasse de l\'écran', lieu);
@@ -738,8 +739,8 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (renvoi.vue !== 'carte' || renvoi.onglet !== 'soirees') R.echec(`${ou} : Site → Offres`, `« Soirées » dans Site ouvre ${renvoi.vue}/${renvoi.onglet}`, lieu);
       /* Les vues métier : un aperçu qui change la mise en avant, pas les données. */
       await aller(page, 'jour');
-      for (const [v, absent] of [['cuisine', 't-priorites'], ['salle', 't-attente'], ['accueil', null], ['direction', null]]) { await page.locator(`[data-vue-metier="${v}"]`).click(); await attendre(300);
-        const vu = await page.evaluate((a) => ({ presse: document.querySelector('[data-vue-metier][aria-pressed="true"]')?.dataset.vueMetier, la: a ? !!document.getElementById(a) : false, service: !!document.getElementById('t-prochain') }), absent);
+      for (const [v, absent] of [['cuisine', 't-priorites'], ['salle', 't-attente'], ['accueil', null], ['direction', null]]) { if (tel && !(await page.locator('[data-metier-tel]').evaluate((d) => d.open))) { await page.locator('[data-metier-tel] > summary').click(); await attendre(150); } await page.locator(`[data-vue-metier="${v}"]:visible`).click(); await attendre(300);
+        const vu = await page.evaluate((a) => ({ presse: [...document.querySelectorAll('[data-vue-metier][aria-pressed="true"]')].find((b) => b.offsetParent)?.dataset.vueMetier || document.querySelector('[data-vue-metier][aria-pressed="true"]')?.dataset.vueMetier, la: a ? !!document.getElementById(a) : false, service: !!document.getElementById('t-prochain') }), absent);
         if (vu.presse !== v || vu.la || !vu.service) R.echec(`${ou} : vues métier`, `« ${v} » : ${JSON.stringify(vu)}`, lieu); }
       const large = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); if (large > 1) R.echec(`${ou} : débordement`, `Aujourd'hui dépasse de ${large} px`, lieu);
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
@@ -747,8 +748,220 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     } finally { await ctx.close(); }
   }
 
-  /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */
+  /* Les mesures d'un écran (voir « 2. ») servent aussi aux parcours de la v7.11.0 : déclarées avant eux. */
   const noter = (liste, taille, ou) => liste.filter((x) => x.controle !== 'section sans visuel').forEach((x) => R.ajouter(x.niveau || 'echec', x.controle, `${ou} : ${x.detail}`, { page: P, taille: taille.nom, selecteur: x.selecteur }));
+
+  /* ---------- 1 undecies. Un service parfaitement accompagné (v7.11.0) ----------
+     Les cinq scénarios de démonstration, sur ordinateur et sur téléphone, à une heure fixée (un vendredi ou un samedi
+     soir, pour que le service du jour soit celui de l'histoire) :
+     1. une alternative pertinente côté client, et l'inscription en liste d'attente (un double clic n'inscrit qu'une fois) ;
+     2. une annulation qui profite à la liste d'attente : proposition, acceptation revérifiée, une seule réservation ;
+        et une proposition expirée ;
+     3. un service avec réservations et clients sans réservation : retard, arrivée, installation, tables rapprochées,
+        départ, table à débarrasser puis prête ;
+     4. une terrasse réorganisée (exemple d'un soir d'été) : aperçu, ajustement, application, fermeture sans effet ;
+     5. un client modifie sa venue depuis sa page : la réservation initiale est gardée jusqu'à la décision. */
+  for (const taille of (!SEUL || SEUL.includes('1-undecies') ? ['1366×768', '390×844'] : []).map(T)) {
+    const lieu = { page: P, taille: taille.nom }, tel = taille.w < 1000, ou = `service accompagné (${taille.nom})`;
+    /* Le prochain vendredi ou samedi, à l'heure de Paris. */
+    const paris = (d) => Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', weekday: 'short', hourCycle: 'h23' }).formatToParts(d).map((x) => [x.type, x.value]));
+    let jour = new Date(); while (!['Fri', 'Sat'].includes(paris(jour).weekday)) jour = new Date(jour.getTime() + 86400000);
+    const iso = `${paris(jour).year}-${paris(jour).month}-${paris(jour).day}`, a = (hm) => [`${iso}T${hm}:00+01:00`, `${iso}T${hm}:00+02:00`].map((x) => new Date(x)).find((d) => `${paris(d).hour}:${paris(d).minute}` === hm);
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      const texte = async (sel, pg = page) => (await pg.locator(sel).first().innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
+      const toast = () => texte('[data-esp-toast-texte]');
+      const ligne = (nom) => page.locator('[data-esp-panneau-resas] [data-resa]', { hasText: nom }).first();
+      const autre = async (nom, sel) => { const li = ligne(nom); if (!(await li.locator('.esp-frise__plus').evaluate((d) => d.open))) await li.locator('.esp-frise__plus > summary').click(); await li.locator(sel).click(); await attendre(350); };
+      const onglet = async (id) => { await aller(page, 'resas'); await page.locator(`[role="tab"][data-onglets-resas][data-onglet="${id}"]`).click(); await attendre(400); };
+      const debordement = async (pg, quoi) => { const d = await pg.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - document.documentElement.clientWidth); if (d > 1) R.echec(`${ou} : débordement`, `${quoi} déborde de ${d} px`, lieu); };
+      await page.clock.setFixedTime(a('18:05'));
+      await page.goto(BASE + P, { waitUntil: 'load' }); await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
+
+      /* ===== Scénario 1 : côté client, un soir complet ===== */
+      await page.evaluate((d) => localStorage.setItem('jh-espace:v1', JSON.stringify({ _schema: 2, resa: { complets: { [d]: ['soir'] } } })), iso);
+      await page.goto(`${BASE}/reserver?date=${iso}&service=soir&couverts=4#formulaire`, { waitUntil: 'load' }); await attendrePret(page); await attendre(900);
+      const alt = page.locator('[data-resa-alt]');
+      if (!(await alt.isVisible())) R.echec(`${ou} : alternatives`, 'un soir complet ne propose aucune alternative là où se trouve le client', { page: '/reserver', taille: taille.nom });
+      else {
+        const choix = await page.evaluate(() => [...document.querySelectorAll('[data-resa-alt-choix]')].map((b) => b.innerText.replace(/\s+/g, ' ')));
+        if (!choix.length || !choix.every((c) => /Ce qui change/.test(c))) R.echec(`${ou} : alternatives`, `chaque proposition doit dire ce qui change : « ${choix.join(' | ')} »`, { page: '/reserver', taille: taille.nom });
+        if (!(await page.locator('[data-resa-attente]').count())) R.echec(`${ou} : alternatives`, 'la liste d\'attente n\'est pas proposée pour un service complet', { page: '/reserver', taille: taille.nom });
+        await debordement(page, 'Réserver, alternatives');
+        /* La liste d'attente : contrôlée, dite « pas une réservation », inscrite une seule fois. */
+        await page.locator('[data-resa-attente]').click(); await attendre(300);
+        await page.locator('#att-prenom').fill('Louise'); await page.locator('#att-nom').fill('Essai'); await page.locator('[data-resa-attente-envoyer]').click(); await attendre(250);
+        if (!/téléphone ou une adresse/.test(await texte('[data-att-erreur]'))) R.echec(`${ou} : liste d'attente`, 'une inscription sans moyen de prévenir le client n\'est pas refusée', { page: '/reserver', taille: taille.nom });
+        if (await page.locator('#att-prenom').inputValue() !== 'Louise') R.echec(`${ou} : liste d'attente`, 'la saisie est perdue après une erreur', { page: '/reserver', taille: taille.nom });
+        await page.locator('#att-tel').fill('06 11 22 33 44'); await page.locator('[data-resa-attente-envoyer]').dblclick(); await attendre(450);
+        const inscrits = await page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace-demandes:v1') || '[]').filter((d) => d.genre === 'attente'));
+        if (inscrits.length !== 1) R.echec(`${ou} : liste d'attente`, `${inscrits.length} inscriptions après un double clic (attendu : 1)`, { page: '/reserver', taille: taille.nom });
+        if (!/pas une réservation/.test(await texte('[data-resa-alt]'))) R.echec(`${ou} : liste d'attente`, 'la confirmation ne dit pas que ce n\'est pas une réservation', { page: '/reserver', taille: taille.nom });
+        if (await page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace-resas:v1') || '[]').length)) R.echec(`${ou} : liste d'attente`, 'une inscription en liste d\'attente a créé une réservation', { page: '/reserver', taille: taille.nom });
+        /* Choisir une alternative : seul ce qui est annoncé change, le nombre de personnes est gardé. (Même adresse avec une ancre : on repart d'une page vide pour qu'elle soit rechargée.) */
+        await page.goto('about:blank'); await page.goto(`${BASE}/reserver?date=${iso}&service=soir&couverts=4#formulaire`, { waitUntil: 'load' }); await attendrePret(page); await attendre(900);
+        const annonce = await texte('[data-resa-alt-choix="0"]'); await page.locator('[data-resa-alt-choix="0"]').click(); await attendre(600);
+        const apres = await page.evaluate(() => { const d = new FormData(document.querySelector('[data-resa-form]')); return { date: d.get('date'), service: d.get('service'), heure: d.get('heure'), couverts: d.get('couverts'), alt: !document.querySelector('[data-resa-alt]').hidden }; });
+        if (!apres.heure || apres.couverts !== '4' || apres.alt) R.echec(`${ou} : alternatives`, `après « ${annonce} » : ${JSON.stringify(apres)}`, { page: '/reserver', taille: taille.nom });
+      }
+
+      /* ===== Scénario 2 : une annulation profite à la liste d'attente ===== */
+      await page.evaluate(() => localStorage.removeItem('jh-espace:v1'));
+      await entrer(page); await onglet('attente');
+      const etats = () => page.evaluate(() => Object.fromEntries([...document.querySelectorAll('[data-attente]')].map((li) => [li.dataset.attente, li.className.replace(/.*est-/, '')])));
+      await page.locator('[data-filtre-attente="toutes"]').click(); await attendre(250);
+      let e2 = await etats();
+      if (e2['att-demo-1'] !== 'expiree') R.echec(`${ou} : liste d'attente`, `la proposition d'hier devrait être expirée (${e2['att-demo-1']})`, lieu);
+      if (!Object.values(e2).length || !Object.keys(e2).some((k) => /^A-|^a-/i.test(k))) R.echec(`${ou} : liste d'attente`, 'l\'inscription faite sur le site n\'arrive pas dans la liste de l\'équipe', lieu);
+      if (await page.locator('[data-attente="att-demo-2"] [data-attente-proposer]').count()) R.echec(`${ou} : liste d'attente`, 'une place est proposée à la tablée de neuf alors que la grande table est prise', lieu);
+      if (!/revérifiée/.test(await texte('.esp-att-regle'))) R.echec(`${ou} : liste d'attente`, 'la règle de la proposition n\'est pas affichée', lieu);
+      await mesurerEcran(page, taille, 'liste d\'attente', false);
+      await onglet('service'); await autre('Famille Weber', '[data-statut="annulee"]');
+      await onglet('attente'); await page.locator('[data-filtre-attente="toutes"]').click(); await attendre(250);
+      const proposer = page.locator('[data-attente="att-demo-2"] [data-attente-proposer]').first();
+      if (!(await proposer.count())) R.echec(`${ou} : liste d'attente`, 'après l\'annulation de la grande tablée, aucune place n\'est proposée à la plus ancienne demande compatible', lieu);
+      else {
+        await proposer.click(); await attendre(400);
+        if ((await etats())['att-demo-2'] !== 'proposee' || !/n'est pas bloquée/.test(await texte('[data-attente="att-demo-2"]'))) R.echec(`${ou} : liste d'attente`, 'la proposition n\'est pas suivie, ou ne dit pas que la place n\'est pas bloquée', lieu);
+        if (!/Aucun message n'est envoyé/.test(await toast())) R.echec(`${ou} : liste d'attente`, `le message de proposition doit rester un aperçu : « ${await toast()} »`, lieu);
+        /* La seconde tablée reçoit aussi une proposition (rien n'est bloqué) ; la première accepte, au double clic. */
+        await page.locator('[data-attente="att-demo-3"] [data-attente-proposer]').first().click(); await attendre(350);
+        await page.locator('[data-attente="att-demo-2"] [data-attente-accepter]').dblclick(); await attendre(500);
+        const nb = await page.evaluate(() => (JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').resa?.ajouts || []).filter((r) => r.source === 'attente').length);
+        if (nb !== 1) R.echec(`${ou} : liste d'attente`, `${nb} réservations créées par une acceptation (attendu : 1)`, lieu);
+        if ((await etats())['att-demo-2'] !== 'acceptee') R.echec(`${ou} : liste d'attente`, 'l\'inscription acceptée n\'est pas close', lieu);
+        /* La seconde accepte à son tour : la place est prise, c'est dit, rien n'est créé, elle revient en attente. */
+        await page.locator('[data-attente="att-demo-3"] [data-attente-accepter]').click(); await attendre(450);
+        if (!/prise entre-temps/.test(await toast()) || (await etats())['att-demo-3'] !== 'en-attente') R.echec(`${ou} : liste d'attente`, `une acceptation devenue impossible doit le dire et revenir en attente : « ${await toast()} », état ${(await etats())['att-demo-3']}`, lieu);
+        await page.locator('[data-attente="att-demo-2"] [data-attente-voir]').click(); await attendre(500);
+        if (!(await ligne('Tablée Lambert').count())) R.echec(`${ou} : liste d'attente`, 'la réservation créée n\'apparaît pas dans le service', lieu);
+      }
+
+      /* ===== Scénario 3 : le service, avec et sans réservation ===== */
+      await page.evaluate(() => { localStorage.clear(); sessionStorage.removeItem('jh-espace-vue'); }); await page.clock.setFixedTime(a('20:05')); await entrer(page); await aller(page, 'jour');
+      if (tel) { const h = await page.evaluate(() => { const d = document.querySelector('[data-metier-tel] > summary'), o = document.querySelector('.esp-metier--ordi'); return { h: d?.getBoundingClientRect().height || 0, ordi: !!o?.offsetParent, haut: document.querySelector('[data-prochain]')?.getBoundingClientRect().top + scrollY }; });
+        if (!h.h || h.h > 60 || h.ordi) R.echec(`${ou} : téléphone`, `le choix de la vue doit tenir sur une ligne (${Math.round(h.h)} px, bloc complet ${h.ordi ? 'visible' : 'masqué'})`, lieu);
+        if (h.haut > 420) R.echec(`${ou} : téléphone`, `le service commence à ${Math.round(h.haut)} px du haut de la page`, lieu); }
+      for (const mot of ['réservation', 'couverts attendus', 'sans table']) if (!(await texte('[data-prochain] .esp-acc__chiffres')).includes(mot)) R.echec(`${ou} : Aujourd'hui`, `le libellé « ${mot} » manque dans le service`, lieu);
+      if (!/toutes activités confondues/.test(await texte('.esp-bonjour'))) R.echec(`${ou} : Aujourd'hui`, 'le total des demandes ne précise pas « toutes activités confondues »', lieu);
+      await onglet('service');
+      const p0 = await ligne('Aurélie et Marc').getAttribute('data-presence');
+      if (p0 !== 'retard') R.echec(`${ou} : service`, `à 20 h 05, la table de 19 h 30 devrait être « en retard » (${p0})`, lieu);
+      await ligne('Aurélie et Marc').locator('.esp-frise__principal').click(); await attendre(400);
+      if (await ligne('Aurélie et Marc').getAttribute('data-presence') !== 'arrive') R.echec(`${ou} : service`, 'après « Signaler l\'arrivée », le groupe devrait être « arrivé, à installer »', lieu);
+      await ligne('Aurélie et Marc').locator('[data-choisir-table]').click(); await attendre(450);
+      if (!(await page.locator('[data-aide-choix]').count())) R.echec(`${ou} : salle`, 'la réservation choisie n\'explique pas quelles tables conviennent', lieu);
+      await page.locator('[data-salle] [data-table="1"]').click(); await attendre(450);
+      if (await page.locator('[data-salle] [data-table="1"]').getAttribute('data-etat-de-table') !== 'occupee') R.echec(`${ou} : salle`, 'un groupe arrivé puis placé sur une table prête devrait y être installé (table occupée)', lieu);
+      /* Deux tables rapprochées pour cinq couverts. */
+      await page.locator('[data-choisir-resa]', { hasText: 'Famille Weber' }).click(); await attendre(300);
+      if (!/Pourquoi pas les autres/.test(await texte('[data-aide-choix]'))) R.echec(`${ou} : salle`, 'le plan ne dit pas pourquoi les autres tables ne conviennent pas', lieu);
+      const ass = page.locator('[data-assembler="8+9"]');
+      if (!(await ass.count())) R.echec(`${ou} : assemblage`, 'les tables 8 et 9 ne sont pas proposées à une tablée de huit', lieu);
+      else { await ass.click(); await attendre(450);
+        const t = await page.evaluate(() => ({ t8: document.querySelector('[data-table="8"]').className, t9: document.querySelector('[data-table="9"]').className, ou: [...document.querySelectorAll('[data-choisir-resa]')].find((b) => /Weber/.test(b.textContent))?.innerText.replace(/\s+/g, ' ') }));
+        if (!/est-rapprochee/.test(t.t8) || !/est-rapprochee/.test(t.t9) || !/8\+9/.test(t.ou || '')) R.echec(`${ou} : assemblage`, `les deux tables devraient être marquées rapprochées : ${JSON.stringify(t)}`, lieu);
+        /* Une table de l'assemblage ne se donne plus séparément à la même heure. */
+        await page.locator('[data-choisir-resa]', { hasText: 'Camille R.' }).click(); await attendre(250); await page.locator('[data-salle] [data-table="9"]').click(); await attendre(350);
+        if (!/rapprochée|prise|réservée/.test(await toast())) R.echec(`${ou} : assemblage`, `une table rapprochée a pu être donnée à part : « ${await toast()} »`, lieu);
+        await page.locator('[data-choisir-resa]', { hasText: 'Camille R.' }).click(); await attendre(200); }
+      await mesurerEcran(page, taille, 'plan de salle v7.11', false); await debordement(page, 'le plan de salle');
+      /* Des clients se présentent. */
+      await onglet('service'); await page.locator('[data-passage]').click(); await attendre(350);
+      await page.locator('#pa-n').fill('2'); await attendre(250);
+      const places = await page.locator('.esp-passage__places button').count(), raisons = await page.evaluate(() => document.querySelector('.esp-passage__pourquoi')?.textContent.replace(/\s+/g, ' ') || '');
+      if (!places) R.echec(`${ou} : sans réservation`, 'aucune table n\'est proposée à deux personnes un soir où il reste des tables prêtes', lieu);
+      if (!/table 1|Table 1/.test(raisons) || !/occupée/.test(raisons)) R.echec(`${ou} : sans réservation`, `la table occupée devrait être écartée avec sa raison : « ${raisons.slice(0, 160)} »`, lieu);
+      await mesurerEcran(page, taille, 'des clients se présentent', false);
+      await page.locator('#pa-nom').fill('Couple de passage'); await page.locator('.esp-passage__places button').first().click(); await attendre(450);
+      if (await ligne('Couple de passage').getAttribute('data-presence') !== 'installe') R.echec(`${ou} : sans réservation`, 'le groupe installé n\'apparaît pas « installé » dans le service', lieu);
+      await page.locator('[data-passage]').click(); await attendre(300); await page.locator('#pa-n').fill('3'); await page.locator('#pa-nom').fill('Trois amis'); await page.locator('.esp-passage__autres button[value=""]').click(); await attendre(450);
+      if (await ligne('Trois amis').getAttribute('data-presence') !== 'arrive') R.echec(`${ou} : sans réservation`, 'un groupe qui attend sur place devrait être « arrivé, à installer »', lieu);
+      /* Le départ : la table n'est pas « prête » pour autant. */
+      await ligne('Aurélie et Marc').locator('[data-depart]').click(); await attendre(450);
+      const t1 = () => page.evaluate(() => document.querySelector('[data-table-etat="1"]')?.innerText.replace(/\s+/g, ' ') || '');
+      if (!/À débarrasser/i.test(await t1())) R.echec(`${ou} : tables`, `après un départ, la table 1 devrait être « à débarrasser » : « ${await t1()} »`, lieu);
+      await page.locator('[data-table-etat="1"] [data-etat="a-preparer"]').click(); await attendre(350);
+      if (!/À préparer/i.test(await t1())) R.echec(`${ou} : tables`, `« Débarrassée » devrait donner « à préparer » : « ${await t1()} »`, lieu);
+      await page.locator('[data-table-etat="1"] [data-etat=""]').click(); await attendre(350);
+      if (await page.locator('[data-table-etat="1"]').count()) R.echec(`${ou} : tables`, '« Table prête » devrait retirer la table de la liste à remettre en état', lieu);
+      await mesurerEcran(page, taille, 'service v7.11', false); await debordement(page, 'le service');
+      /* Le briefing et Aujourd'hui suivent. */
+      await aller(page, 'jour');
+      if (!/installé|à installer/.test(await texte('[data-acc-presence]'))) R.echec(`${ou} : Aujourd'hui`, `l'accueil ne dit pas où en est le service : « ${await texte('[data-acc-presence]')} »`, lieu);
+      await page.locator('[data-esp-rendu="jour"] [data-briefing]').click(); await attendre(450);
+      const brief = await texte('.esp-brief');
+      for (const mot of ['Où en est le service', 'Tables à rapprocher', 'Sans mention, on ne sait pas']) if (!brief.includes(mot)) R.echec(`${ou} : briefing`, `la partie « ${mot} » manque`, lieu);
+      await page.keyboard.press('Escape'); await attendre(250);
+
+      /* ===== Scénario 5 : le client modifie sa venue (avant le scénario 4, qui change de jour) ===== */
+      await onglet('service');
+      const li5 = ligne('Camille R.'); if (!(await li5.locator('.esp-frise__plus').evaluate((d) => d.open))) await li5.locator('.esp-frise__plus > summary').click();
+      const href = await li5.locator('[data-lien-venue]').getAttribute('href');
+      /* La page du client est ouverte dans l'après-midi : le site demande une heure de délai pour une nouvelle heure d'arrivée. */
+      const client = await ctx.newPage(); await client.clock.setFixedTime(a('16:00')); await client.goto(BASE + href, { waitUntil: 'load' }); await attendre(1200);
+      const etatClient = () => client.locator('[data-venue-etat]').getAttribute('data-venue-etat').catch(() => 'introuvable');
+      if (await etatClient() !== 'confirmee') R.echec(`${ou} : votre venue`, `la page du client devrait montrer « confirmée » (${await etatClient()})`, { page: '/votre-venue', taille: taille.nom });
+      else {
+        await client.locator('[data-venue-outil="modifier"]').click(); await client.locator('#venue-heure').selectOption('21:00'); await client.locator('#venue-couverts').fill('4'); await client.locator('[data-venue-form] button[type="submit"]').click(); await attendre(700);
+        if (await etatClient() !== 'modification-demandee') R.echec(`${ou} : votre venue`, `après la demande, l'état devrait être « modification demandée » (${await etatClient()})`, { page: '/votre-venue', taille: taille.nom });
+        const garde = await texte('[data-esp-panneau-resas] [data-resa][data-presence]:has([data-modif-client])');
+        if (!/20 h 30/.test(garde) || !/2 couverts/.test(garde) || !/demande un changement/.test(garde)) R.echec(`${ou} : votre venue`, `l'espace doit garder la réservation initiale et montrer la demande : « ${garde.slice(0, 200)} »`, lieu);
+        await page.locator('[data-venue-reponse][data-accepte="1"]').click(); await attendre(700);
+        const apres5 = await texte('[data-esp-panneau-resas] [data-resa]:has-text("Camille R.")');
+        if (!/21 h/.test(apres5) || !/4 couverts/.test(apres5)) R.echec(`${ou} : votre venue`, `après acceptation, la réservation devrait être à 21 h pour 4 : « ${apres5.slice(0, 160)} »`, lieu);
+        if (await etatClient() !== 'modifiee') R.echec(`${ou} : votre venue`, `la page du client devrait dire « modifiée » (${await etatClient()})`, { page: '/votre-venue', taille: taille.nom });
+        await client.locator('[data-venue-outil="completer"]').click(); await client.locator('#venue-info').fill('Une poussette'); await client.locator('[data-venue-form] button[type="submit"]').click(); await attendre(700);
+        if (!/Une poussette/.test(await texte('[data-esp-panneau-resas] [data-resa]:has-text("Camille R.")'))) R.echec(`${ou} : votre venue`, 'la précision du client n\'arrive pas sur la réservation', lieu);
+        await client.locator('[data-venue-reconfirmer]').click(); await attendre(600);
+        if (!/Reconfirmée/.test(await texte('[data-esp-panneau-resas] [data-resa]:has-text("Camille R.")'))) R.echec(`${ou} : votre venue`, 'la reconfirmation du client n\'est pas visible dans le service', lieu);
+        await mesurerEcran(client, taille, 'votre venue', false); await debordement(client, 'Votre venue');
+        await client.locator('[data-venue-outil="annuler"]').click(); await client.locator('[data-venue-annuler-oui]').click(); await attendre(800);
+        if (await etatClient() !== 'annulee' || await client.locator('[data-venue-outil]').count()) R.echec(`${ou} : votre venue`, 'après annulation, la page devrait dire « annulée » et ne plus proposer d\'action', { page: '/votre-venue', taille: taille.nom });
+        if (await ligne('Camille R.').getAttribute('data-presence') !== 'annulee') R.echec(`${ou} : votre venue`, 'l\'annulation du client n\'annule pas la réservation dans l\'espace', lieu);
+      }
+      /* Un lien faux ne montre rien. */
+      await client.goto(`${BASE}${href.replace(/c=.*/, 'c=000000')}`, { waitUntil: 'load' }); await attendre(900);
+      if (!/introuvable/i.test(await texte('[data-venue-corps]', client))) R.echec(`${ou} : votre venue`, 'un lien au mauvais code montre une réservation', { page: '/votre-venue', taille: taille.nom });
+      await client.close();
+      /* Les rappels : un réglage, un aperçu, rien d'envoyé. */
+      await page.locator('[data-rappels] > summary').click(); await attendre(300);
+      const rappels = await texte('[data-rappels]');
+      if (!/rien n'est envoyé/i.test(rappels) || !/aperçu/i.test(rappels) || !/ce n'est pas une annulation/.test(rappels)) R.echec(`${ou} : rappels`, `les rappels doivent se dire « aperçu » et ne rien annuler : « ${rappels.slice(0, 200)} »`, lieu);
+      await page.locator('[data-rappel-delai]').selectOption('48'); await attendre(400);
+      if (await page.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').rappels?.delai) !== 48) R.echec(`${ou} : rappels`, 'le réglage du rappel n\'est pas enregistré', lieu);
+
+      /* ===== Scénario 4 : la terrasse réorganisée ===== */
+      await onglet('salle'); await page.locator('[data-exemple-ete]').click(); await attendre(600);
+      const repli = await texte('article[data-repli]');
+      if (!/rien n'est encore changé/.test(repli) || !/Sans solution en salle/.test(repli) || !/Tablée Marchand/.test(repli)) R.echec(`${ou} : repli`, `l'aperçu du repli est incomplet : « ${repli.slice(0, 220)} »`, lieu);
+      const avantRepli = await page.evaluate(() => localStorage.getItem('jh-espace:v1'));
+      await mesurerEcran(page, taille, 'repli de terrasse', false); await debordement(page, 'le repli');
+      /* Ajuster, puis fermer : rien ne change. */
+      const sel = page.locator('[data-repli-choix]').nth(1), autreOption = await sel.evaluate((x) => [...x.options].map((o) => o.value).find((v) => v !== x.value && v !== 'garder'));
+      if (autreOption) { await sel.selectOption(autreOption); await attendre(350); if (await page.locator('[data-repli-choix]').nth(1).inputValue() !== autreOption) R.echec(`${ou} : repli`, 'un ajustement n\'est pas gardé dans l\'aperçu', lieu); }
+      await page.locator('[data-repli-fermer]').click(); await attendre(350);
+      if (await page.evaluate(() => localStorage.getItem('jh-espace:v1')) !== avantRepli) R.echec(`${ou} : repli`, 'fermer l\'aperçu a changé l\'état', lieu);
+      await page.locator('button[data-repli]').click(); await attendre(400); await page.locator('[data-repli-appliquer]').click(); await attendre(700);
+      const bilan = await texte('article[data-repli]');
+      if (!/3 réservations déplacées en salle/.test(bilan) || !/Tablée Marchand.*reste sans solution/.test(bilan)) R.echec(`${ou} : repli`, `le résultat doit dire précisément ce qui a été fait et ce qui reste : « ${bilan.slice(0, 260)} »`, lieu);
+      const dehors = await page.evaluate(() => [...document.querySelectorAll('[data-choisir-resa]')].filter((b) => /table 1[012]\b|tables? 10/.test(b.innerText)).map((b) => b.innerText.replace(/\s+/g, ' ')));
+      if (dehors.length !== 1 || !/Marchand/.test(dehors[0])) R.echec(`${ou} : repli`, `seule la tablée sans solution devrait rester en terrasse : ${JSON.stringify(dehors)}`, lieu);
+
+      /* ===== Identité client : la période est dite, la prochaine venue a une heure ===== */
+      await aller(page, 'clients');
+      if (!/Sur la période affichée/.test(await texte('[data-esp-rendu="clients"] .esp-intro'))) R.echec(`${ou} : clients`, 'la liste des clients ne dit pas sur quelle période elle porte', lieu);
+      await page.locator('#clients-recherche').fill('Famille Weber'); await attendre(350); await page.locator('[data-clients-liste] [data-client]').first().click(); await attendre(450);
+      const fiche = await texte('[data-client-boite]');
+      if (!/Sur la période affichée/.test(fiche) || !/sur cet appareil/i.test(fiche)) R.echec(`${ou} : fiche client`, `la fiche doit dire la période des chiffres et la portée des notes : « ${fiche.slice(0, 200)} »`, lieu);
+      await page.keyboard.press('Escape'); await attendre(200);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok(`espace : un service parfaitement accompagné (${taille.nom})`);
+    } catch (err) { R.echec(`${ou} : parcours interrompu`, String(err.message || err).replace(/\u001b\[[0-9;]*m/g, '').replace(/\s+/g, ' ').slice(0, 420), lieu);
+    } finally { await ctx.close(); }
+  }
+
+  /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */
   async function mesurerEcran(page, taille, ou, complet) {
     await page.evaluate(installerOutils);
     await page.evaluate(defilerTout, { pas: 0.8, pause: 60 }).catch(() => {});

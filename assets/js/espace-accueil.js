@@ -1,9 +1,11 @@
 /* « Aujourd'hui », l'accueil de la maison (v7.10.0) : le prochain service, les priorités, le fil de la journée et le
    briefing. Fonctions pures : elles lisent les mêmes réservations, demandes, soirées et tâches que les autres rubriques,
    et ne gardent rien. Un chiffre affiché ici se retrouve donc, à l'unité près, dans la rubrique qu'il ouvre. */
-import { ajouter, servicesDe, ouvert, resasDuJour, actives, couverts, fmt, maj, heure, pluriel, hhmm, enMin, evenements, typo } from './espace-regles.js?v=7';
+import { trouverResa, ajouter, servicesDe, ouvert, resasDuJour, actives, couverts, fmt, maj, heure, pluriel, hhmm, enMin, evenements, typo } from './espace-regles.js?v=7';
 import { serviceDuJour, dureeDe } from './espace-service.js?v=7';
 import { planDuService } from './espace-salle.js?v=7';
+import { accueilDuService } from './espace-presence.js?v=7';
+import { listeAttente, compatiblesPour, attenteAvecPossibles } from './espace-attente.js?v=7';
 import { conseils } from './espace-conseils.js?v=7';
 import { demandes, GENRES, libelleEtape } from './espace-demandes.js?v=7';
 import { marques } from './espace-clients.js?v=7';
@@ -49,7 +51,17 @@ export function resumeService(ctx, S, salle, iso, sv) {
     placees: plan.placees.length,
     /* Ce que l'équipe doit savoir : la note de la réservation, les allergies et la note de la fiche client. Rien d'autre. */
     attentions: tenues.map(avecNote).filter((r) => r.demande || r.allergies.length || r.noteClient).sort(parHeure),
-    resas: [...tenues, ...dem].sort(parHeure), taches: tachesLiees(S, 'service', cleService(iso, sv)) };
+    resas: [...tenues, ...dem].sort(parHeure), taches: tachesLiees(S, 'service', cleService(iso, sv)),
+    /* v7.11.0 : où en sont les groupes et les tables (le jour même), et la liste d'attente de ce service. */
+    presence: presenceDuService(ctx, S, salle, iso, sv, plan) };
+}
+/** Le résumé de la présence pour un service : les groupes par état, les tables qui demandent un geste, la liste d'attente. */
+export function presenceDuService(ctx, S, salle, iso, sv) {
+  const acc = accueilDuService(ctx, S, salle, iso, sv), P = (k) => acc.parPresence[k] || [], liste = ctx.exemples === false ? [] : listeAttente(ctx, S).filter((e) => e.date === iso && e.periode === sv);
+  return { attendus: P('attendu'), retards: P('retard'), aInstaller: P('arrive'), installes: P('installe'), partis: P('parti'), nonTraitees: P('non-traitee'), aRemettre: acc.aRemettre, bloquees: acc.bloquees,
+    tables: { pretes: (acc.tables.prete || []).length, occupees: (acc.tables.occupee || []).length, aRemettre: acc.aRemettre.length, indisponibles: (acc.tables.indisponible || []).filter((t) => !t.horsSaison).length },
+    assemblages: acc.plan.assemblages.filter((a) => a.resas.length).map((a) => ({ id: a.id, places: a.places, resas: a.resas })),
+    attente: liste.filter((e) => ['en-attente', 'proposee', 'expiree'].includes(e.etat)), attenteCompatibles: ctx.exemples === false ? [] : compatiblesPour(ctx, S, salle, iso, sv) };
 }
 
 /**
@@ -65,6 +77,17 @@ export function priorites(ctx, S, salle, minute) {
     if (r.aPlacer.length) out.push({ id: `placer-${ps.date}-${ps.service}`, genre: 'salle', titre: `${pluriel(r.aPlacer.length, 'réservation')} ${r.aPlacer.length > 1 ? 'n\'ont' : 'n\'a'} pas encore de table ${nomService(ctx, ps.date, ps.service).toLowerCase()}`,
       raison: `${r.aPlacer.slice(0, 3).map((x) => `${x.nom || 'Sans nom'}, ${pluriel(+x.couverts, 'couvert')} à ${heure(x.heure)}`).join(' · ')}${r.aPlacer.length > 3 ? ' …' : ''}. Les placer maintenant évite de chercher une table pendant le service.`,
       bouton: 'Placer en salle', aller: { vue: 'resas', onglet: 'salle', jour: ps.date, service: ps.service } }); }
+  /* 2 bis (v7.11.0). Pendant le service du jour : les retards, les groupes qui attendent leur table, les tables pas prêtes, une place à proposer. */
+  if (ps && ps.date === ctx.auj) { const p = presenceDuService(ctx, S, salle, ps.date, ps.service), vers = { vue: 'resas', onglet: 'service', jour: ps.date, service: ps.service }, noms = (l) => l.slice(0, 3).map((x) => `${x.nom || 'Sans nom'} (${heure(x.heure)}, ${pluriel(+x.couverts, 'couvert')})`).join(' · ');
+    if (p.aInstaller.length) out.unshift({ id: `installer-${ps.date}-${ps.service}`, genre: 'salle', titre: `${pluriel(p.aInstaller.length, 'groupe')} ${p.aInstaller.length > 1 ? 'sont arrivés et attendent' : 'est arrivé et attend'} une table`, raison: `${noms(p.aInstaller)}. Arrivé ne veut pas dire installé : choisissez une table prête.`, bouton: 'Les installer', aller: vers });
+    if (p.retards.length) out.push({ id: `retard-${ps.date}-${ps.service}`, genre: 'salle', titre: `${pluriel(p.retards.length, 'groupe')} en retard`, raison: `${p.retards.slice(0, 3).map((x) => `${x.nom || 'Sans nom'}, attendu à ${heure(x.heure)} (${x.retard} min)`).join(' · ')}. Pas de nouvelle n'est pas une annulation : la table reste gardée tant que vous ne décidez pas.`, bouton: 'Voir le service', aller: vers });
+    if (p.bloquees.length) out.push({ id: `table-${ps.date}-${ps.service}`, genre: 'salle', titre: `Table ${p.bloquees[0].table.id} pas prête pour ${p.bloquees[0].resa.nom || 'la réservation suivante'}`, raison: `Attendu à ${heure(p.bloquees[0].resa.heure)} : ${p.bloquees[0].raison}.${p.bloquees.length > 1 ? ` ${pluriel(p.bloquees.length - 1, 'autre table')} dans le même cas.` : ''}`, bouton: 'Voir les tables', aller: vers });
+    else if (p.aRemettre.length) out.push({ id: `remettre-${ps.date}-${ps.service}`, genre: 'salle', titre: `${pluriel(p.aRemettre.length, 'table')} à remettre en état`, raison: `${p.aRemettre.map((t) => `table ${t.id}`).join(', ')}. Une table vide n'est pas encore une table prête.`, bouton: 'Voir les tables', aller: vers });
+  }
+  for (const [id, v] of Object.entries(ctx.venues || {})) { if (!v?.modif) continue; const r = trouverResa(ctx, S, id); if (!r || ['annulee', 'refusee', 'absente'].includes(r.statut) || r.date < ctx.auj) continue;
+    out.unshift({ id: `venue-${id}`, genre: 'venue', titre: `${r.nom || 'Un client'} demande à changer sa réservation`, raison: `${heure(v.modif.heure)}, ${pluriel(+v.modif.couverts, 'couvert')} au lieu de ${heure(r.heure)}, ${pluriel(+r.couverts, 'couvert')}, ${fmt(r.date, { weekday: 'long', day: 'numeric', month: 'long' })}. La réservation actuelle est gardée tant que vous n'avez pas répondu.`, bouton: 'Répondre', aller: { vue: 'resas', onglet: 'service', jour: r.date, service: r.service } }); }
+  if (ctx.exemples !== false) { const comp = attenteAvecPossibles(ctx, S, salle).filter((e) => e.etat === 'en-attente' && e.possibles.length && e.date <= ajouter(ctx.auj, 2));
+    if (comp.length) out.push({ id: `attente-${comp[0].id}`, genre: 'attente', titre: `Une place peut être proposée à ${comp[0].nom} (liste d'attente)`, raison: `${pluriel(comp[0].couverts, 'personne')}, ${fmt(comp[0].date, { weekday: 'long', day: 'numeric', month: 'long' })} à ${heure(comp[0].possibles[0].heure)}.${comp.length > 1 ? ` ${pluriel(comp.length - 1, 'autre demande')} ensuite, par ordre d'inscription.` : ''}`, bouton: 'Ouvrir la liste d\'attente', aller: { vue: 'resas', onglet: 'attente' } }); }
   /* 3. Une tâche en retard : la plus ancienne. */
   const retard = tachesEnRetard(S, ctx.auj);
   if (retard.length) out.push({ id: `tache-${retard[0].id}`, genre: 'tache', titre: `En retard : ${retard[0].titre}`, raison: `Prévue pour ${fmt(retard[0].echeance)}.${retard.length > 1 ? ` ${pluriel(retard.length - 1, 'autre tâche')} dans le même cas.` : ''}`, bouton: 'Voir la tâche', aller: { vue: 'jour', ancre: 't-taches' } });
@@ -72,7 +95,7 @@ export function priorites(ctx, S, salle, minute) {
   out.push(...proches.filter((c) => c.genre !== 'table'));
   /* « Plus tard » : une priorité mise de côté revient demain si elle est toujours vraie (comme les suggestions). */
   const tu = S.conseils?.ignores || {};
-  return out.filter((c) => tu[c.id] !== ctx.auj).map((c) => ({ ...c, raison: c.raison || c.detail || '', directe: /^(placer|tache)-/.test(c.id) }));
+  return out.filter((c) => tu[c.id] !== ctx.auj).map((c) => ({ ...c, raison: c.raison || c.detail || '', directe: /^(placer|tache|installer|retard|table|remettre|attente|venue)-/.test(c.id) }));
 }
 
 const STATUT_EV = (x) => (x.masque ? 'Masquée sur le site' : 'Affichée sur le site');

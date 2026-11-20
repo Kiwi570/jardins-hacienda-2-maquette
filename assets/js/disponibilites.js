@@ -169,3 +169,31 @@ export function faisabilite(R, resa, o = {}) {
   if (e.complet && pub) return { ...non('complet'), service: sv };
   return { ok: true, raison: '', message: '', alerte: e.complet ? 'complet' : '', service: sv, propositions: [] };
 }
+
+/**
+ * Ce qu'on peut proposer quand le choix du client n'est pas possible (v7.11.0), dans l'ordre : le même jour à une
+ * autre heure, le même jour à l'autre service, un autre jour proche, un autre espace. Chaque proposition dit ce qui
+ * change ; rien d'autre ne change (nombre de personnes, coordonnées, message).
+ * `creneaux(iso, service)` rend les heures telles que le client les voit : [{ t, etat: 'libre' | 'complet' }].
+ * @param {{ date: string, service: string, heure?: string, espace?: string }} souhait
+ * @returns {{ type: 'heure'|'service'|'date'|'espace', date, service, heure, espace?, titre: string, change: string }[]}
+ */
+export function alternatives(R, souhait, { auj, horizon = R?.jours_a_l_avance ?? 60, creneaux, max = 2, jour = (iso) => iso } = {}) {
+  const out = [], libres = (iso, sid) => creneaux(iso, sid).filter((x) => x.etat === 'libre').map((x) => x.t), cible = souhait.heure ? enMin(souhait.heure) : null;
+  /* Sans heure souhaitée : le milieu du service d'abord. */
+  const proches = (l) => (cible == null ? [l[Math.floor((l.length - 1) / 2)], ...l].filter((x, i, t) => x && t.indexOf(x) === i) : [...l].sort((a, b) => Math.abs(enMin(a) - cible) - Math.abs(enMin(b) - cible) || enMin(a) - enMin(b)));
+  const svs = servicesDe(R), nom = (sid) => (svs.find((s) => s.id === sid)?.libelle || sid).toLowerCase(), moment = (sid) => (sid === 'midi' ? 'le midi' : 'le soir');
+  if (souhait.service && souhait.heure) for (const t of proches(libres(souhait.date, souhait.service)).filter((x) => x !== souhait.heure).slice(0, max))
+    out.push({ type: 'heure', date: souhait.date, service: souhait.service, heure: t, titre: `Le même jour, à ${heureDite(t)}`, change: `l'heure d'arrivée (${heureDite(t)} au lieu de ${heureDite(souhait.heure)})` });
+  for (const s of svs) { if (s.id === souhait.service) continue; const l = libres(souhait.date, s.id); if (!l.length) continue;
+    const t = l[Math.floor((l.length - 1) / 2)]; out.push({ type: 'service', date: souhait.date, service: s.id, heure: t, titre: `Le même jour, ${moment(s.id)}, à ${heureDite(t)}`, change: `le service (${nom(s.id)} au lieu de ${nom(souhait.service) || 'l\'autre service'})` }); }
+  if (souhait.service) { let n = 0; for (let k = 1; k <= 21 && n < max; k++) for (const d of [ajouter(souhait.date, k), ajouter(souhait.date, -k)]) {
+    if (n >= max || (auj && d < auj) || (auj && d > ajouter(auj, horizon))) continue; const l = libres(d, souhait.service); if (!l.length) continue;
+    const t = souhait.heure && l.includes(souhait.heure) ? souhait.heure : proches(l)[0]; n++;
+    out.push({ type: 'date', date: d, service: souhait.service, heure: t, titre: `${jour(d)}, ${moment(souhait.service)}, à ${heureDite(t)}`, change: `le jour${souhait.heure && t !== souhait.heure ? ' et l\'heure' : ''} (${jour(d)}${souhait.heure && t !== souhait.heure ? `, ${heureDite(t)}` : ''})` }); } }
+  /* Un espace fermé à cette saison (la terrasse en hiver) : l'autre espace, sans rien changer d'autre. */
+  const e = (R?.espaces || []).find((x) => x.id === souhait.espace);
+  if (e?.mois && !e.mois.includes(+souhait.date.slice(5, 7))) { const autre = (R.espaces || []).find((x) => !x.mois || x.mois.includes(+souhait.date.slice(5, 7)));
+    if (autre) out.push({ type: 'espace', date: souhait.date, service: souhait.service, heure: souhait.heure || '', espace: autre.id, titre: autre.libelle, change: `l'installation (${autre.libelle.toLowerCase()} : ${e.libelle.toLowerCase()}, c'est ${e.hors_saison || 'à la belle saison'})` }); }
+  return out;
+}

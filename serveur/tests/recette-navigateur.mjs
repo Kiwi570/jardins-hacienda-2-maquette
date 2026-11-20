@@ -45,10 +45,10 @@ async function connecter(p, role) {
 const vue = async (p, v) => { if (!(await p.locator(`[data-esp-vue="${v}"]:visible`).count())) { await p.locator('[data-esp-plusnav-bouton]').click(); await attendre(250); } await p.locator(`[data-esp-vue="${v}"]:visible`).first().click(); await attendre(500); };
 /** L'onglet Service du vendredi soir, dans Réservations. */
 async function serviceDuVendredi(p) {
-  await vue(p, 'resas'); await p.locator('[data-onglets-resas][data-onglet="agenda"]').click(); await attendre(300);
+  await vue(p, 'resas'); await p.locator('[role="tab"][data-onglets-resas][data-onglet="agenda"]').click(); await attendre(300);
   for (let i = 0; i < 4 && !(await p.locator(`[data-jour="${vendredi}"]`).count()); i++) { await p.locator('[data-semaine="7"]').first().click(); await attendre(300); }
   await p.locator(`[data-jour="${vendredi}"]`).first().click(); await attendre(300);
-  await p.locator('[data-onglets-resas][data-onglet="service"]').click(); await attendre(300);
+  await p.locator('[role="tab"][data-onglets-resas][data-onglet="service"]').click(); await attendre(300);
   const soir = p.locator('[data-service-vu="soir"]'); if (await soir.count()) { await soir.first().click(); await attendre(300); }
 }
 /* Seulement ce qui est à l'écran : une rubrique qui n'est pas ouverte n'est pas redessinée, elle le sera à son ouverture. */
@@ -95,11 +95,11 @@ try {
   await suivi();
   verifier('téléphone : la demande n\'attend plus (vu sans recharger)', !/À confirmer/.test(await dit(B, 'Claire Essai')), await dit(B, 'Claire Essai'));
   await serviceDuVendredi(B);
-  verifier('téléphone : Claire Essai est confirmée au service du vendredi soir', /Confirmée/i.test(await dit(B, 'Claire Essai')), await dit(B, 'Claire Essai'));
+  verifier('téléphone : Claire Essai est confirmée au service du vendredi soir', /Attendu|Confirmée/i.test(await dit(B, 'Claire Essai')), await dit(B, 'Claire Essai')); /* v7.11.0 : une réservation confirmée à venir se lit « Attendu » dans le service */
   await photo(B, '4-telephone-confirmee');
 
   /* ---------- 4. La direction ajoute une réservation au téléphone ; l'accueil la voit ---------- */
-  await B.locator('[data-onglets-resas][data-onglet="agenda"]').click(); await attendre(300);
+  await B.locator('[role="tab"][data-onglets-resas][data-onglet="agenda"]').click(); await attendre(300);
   await B.locator('[data-ajouter]').first().click(); await attendre(300);
   await B.fill('#aj-nom', 'Paul Combiné'); await B.fill('#aj-tel', '06 98 76 54 32'); await B.selectOption('#aj-sv', 'soir'); await attendre(150);
   await B.selectOption('#aj-h', '20:00'); await B.fill('#aj-c', '3'); await B.fill('#aj-d', 'Chaise haute');
@@ -121,21 +121,29 @@ try {
   await suivi();
   verifier('ordinateur : l\'annulation est visible', /Annulée/i.test(await dit(A, 'Claire Essai')), await dit(A, 'Claire Essai'));
   await ligne(A, 'Claire Essai').locator('[data-statut="confirmee"]').click(); await attendre(1600);
-  verifier('remettre : la réservation annulée est remise après une nouvelle vérification du serveur', /remise à/i.test(await toast(A)) && /Confirmée/i.test(await dit(A, 'Claire Essai')), await toast(A));
+  verifier('remettre : la réservation annulée est remise après une nouvelle vérification du serveur', /remise à/i.test(await toast(A)) && /Attendu|Confirmée/i.test(await dit(A, 'Claire Essai')), await toast(A));
 
   /* ---------- 7. Le placement en salle ---------- */
-  await A.locator('[data-onglets-resas][data-onglet="salle"]').click(); await attendre(500);
+  await A.locator('[role="tab"][data-onglets-resas][data-onglet="salle"]').click(); await attendre(500);
   const placer = A.locator('[data-placer-tout]');
   if (await placer.count()) { await placer.click(); await attendre(2500); }
   const apresPlacement = (await api(A, `/reservations?du=${vendredi}&au=${vendredi}`)).corps.reservations.filter((r) => r.statut === 'confirmee');
   verifier('salle : « Placer tout seul » place les réservations confirmées, sur le serveur', apresPlacement.length === 2 && apresPlacement.every((r) => r.table && r.placement === 'placement') && new Set(apresPlacement.map((r) => r.table)).size === 2, JSON.stringify(apresPlacement.map((r) => [r.nom, r.table, r.placement])));
   await photo(A, '5-ordinateur-salle-placee');
-  await B.locator('[data-onglets-resas][data-onglet="service"]').click(); await suivi();
+  await B.locator('[role="tab"][data-onglets-resas][data-onglet="service"]').click(); await suivi();
   const tablePaul = apresPlacement.find((r) => r.nom === 'Combiné')?.table;
   verifier('téléphone : la table choisie est visible', new RegExp(`table ${tablePaul}\\b`).test(await dit(B, 'Paul Combiné')), await dit(B, 'Paul Combiné'));
 
   /* ---------- 8. Deux appareils sur la même réservation : le second est prévenu, rien n'est écrasé ---------- */
-  await A.locator('[data-onglets-resas][data-onglet="service"]').click(); await attendre(300);
+  await A.locator('[role="tab"][data-onglets-resas][data-onglet="service"]').click(); await attendre(300);
+  /* v7.11.0 : ce que le serveur ne connaît pas encore est masqué, et ce qui reste sur l'appareil est dit. */
+  const masques = await A.locator('#onglet-resas-attente, [data-passage], [data-rappels], [data-lien-venue], [data-attente-rappel]').count();
+  verifier('v7.11.0 : liste d\'attente, clients sans réservation, rappels et page du client sont masqués en mode connecté', masques === 0, `${masques} élément(s) visibles`);
+  verifier('v7.11.0 : la portée des installations et de l\'état des tables est dite', /restent notés sur cet appareil/.test(await texte(A, '.esp-portee')), await texte(A, '.esp-portee'));
+  await A.locator('[role="tab"][data-onglets-resas][data-onglet="salle"]').click(); await attendre(300);
+  const horsServeur = await A.locator('[data-assembler], [data-exemple-ete]').count();
+  verifier('v7.11.0 : ni tables rapprochées ni exemple d\'été en mode connecté', horsServeur === 0, `${horsServeur} élément(s) visibles`);
+  await A.locator('[role="tab"][data-onglets-resas][data-onglet="service"]').click(); await attendre(300);
   await A.route('**/api/suivi**', (r) => r.abort()); /* l'ordinateur ne reçoit plus les nouvelles : son écran vieillit */
   await ligne(B, 'Paul Combiné').locator('[data-modifier-resa]').click(); await attendre(300);
   await B.fill('[data-form-resa] [name="couverts"]', '5'); await B.locator('[data-form-resa] button[type="submit"]').click(); await attendre(1600);
@@ -154,12 +162,12 @@ try {
   verifier('doublons : dix envois de la même demande donnent une seule réservation et une seule référence', nbDix === 1 && new Set(dix.map((x) => x.reference)).size === 1, `${nbDix} réservation(s), ${new Set(dix.map((x) => x.reference)).size} référence(s)`);
 
   /* ---------- 10. Le serveur tombe : aucune fausse réussite, aucun repli local ---------- */
-  await suivi(); await A.locator('[data-onglets-resas][data-onglet="service"]').click(); await attendre(300);
+  await suivi(); await A.locator('[role="tab"][data-onglets-resas][data-onglet="service"]').click(); await attendre(300);
   await P.couper();
   await ligne(A, 'Dix Fois').locator('[data-statut="confirmee"]').click(); await attendre(1800);
   const t10 = await toast(A), s10 = await texte(A, '[data-esp-sauve]');
   verifier('panne : la confirmation n\'est pas annoncée, la raison est dite', /rien n'a été enregistré/.test(t10) && !/confirmée/i.test(t10), t10);
-  verifier('panne : l\'écran dit « hors connexion » et la réservation reste à confirmer', /Hors connexion/.test(s10) && /À confirmer/i.test(await dit(A, 'Dix Fois')), s10);
+  verifier('panne : l\'écran dit « hors connexion » et la réservation reste à confirmer', /Hors connexion/.test(s10) && /À confirmer|Demande à traiter/i.test(await dit(A, 'Dix Fois')), s10); /* v7.11.0 : une demande se lit « Demande à traiter » dans le service */
   verifier('panne : rien n\'a été mis de côté dans le navigateur pour faire croire à un enregistrement', await A.evaluate(() => ![...Object.keys(localStorage)].some((k) => /resa/i.test(k) && /Fois|confirmee/.test(localStorage.getItem(k) || ''))));
   await photo(A, '7-ordinateur-panne');
   const client2 = await ecran(1280, 860);
@@ -202,7 +210,7 @@ try {
   verifier('horaires de la semaine : refusés à l\'accueil par le serveur', horairesAccueil.statut === 403);
 
   /* ---------- 13. Un service dit complet par l'équipe : le site le suit ---------- */
-  await vue(B, 'resas'); await B.locator('[data-onglets-resas][data-onglet="agenda"]').click(); await attendre(300);
+  await vue(B, 'resas'); await B.locator('[role="tab"][data-onglets-resas][data-onglet="agenda"]').click(); await attendre(300);
   const complet = B.locator('[data-complet="soir"]').first();
   if (await complet.count()) { await complet.click(); await attendre(1600); }
   const reglagesApres = (await api(client, '/public/reglages')).corps;
