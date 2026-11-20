@@ -22,7 +22,7 @@
      conseils  { ignores: { [suggestion]: date } }                    (v7.7.4 : « Plus tard », jusqu'au lendemain)
    Les clés qui commencent par « _ » sont de l'intendance : elles ne comptent pas comme une modification du site. */
 export const SCHEMA = 2;
-const CLE = 'jh-espace:v1', CLE_RESAS = 'jh-espace-resas:v1', CLE_DEMANDES = 'jh-espace-demandes:v1';
+const CLE = 'jh-espace:v1', CLE_RESAS = 'jh-espace-resas:v1', CLE_DEMANDES = 'jh-espace-demandes:v1', CLE_VENUES = 'jh-espace-venues:v1';
 
 /** Met un objet lu au schéma courant (fonction pure : ne touche pas au stockage).
     1 → 2 : chaque fermeture exceptionnelle a toujours une fin (`au`) et un motif. */
@@ -47,7 +47,7 @@ export function ecrire(d) {
 /** Lit, change (f reçoit l'objet), enregistre ; renvoie false si l'enregistrement a échoué (et ne change rien). */
 export function changer(f) { const d = lire(); f(d); return ecrire(d); }
 /** Efface tout ; false si le navigateur a refusé (rien ne doit alors être annoncé comme effacé). */
-export function vider() { try { localStorage.removeItem(CLE); localStorage.removeItem(CLE_RESAS); localStorage.removeItem(CLE_DEMANDES); return true; } catch { return false; } }
+export function vider() { try { localStorage.removeItem(CLE); localStorage.removeItem(CLE_RESAS); localStorage.removeItem(CLE_DEMANDES); localStorage.removeItem(CLE_VENUES); return true; } catch { return false; } }
 export const estVide = (d) => !d || !Object.keys(d).some((k) => !k.startsWith('_') && d[k] && (typeof d[k] !== 'object' || Object.keys(d[k]).length));
 
 /* Les réservations faites sur la page Réserver de ce navigateur : elles arrivent dans l'agenda de l'espace.
@@ -67,10 +67,20 @@ export function ajouterDemandeSite(d) {
   return ecrireDemandesSite([...demandesSite(), { id: `${(d.genre || 'demande').charAt(0).toUpperCase()}-${maintenant.getTime().toString(36)}`, cree: maintenant.toISOString(), ...d }]);
 }
 
+/* Ce que le client a fait depuis sa page « Votre venue » (v7.11.0), par réservation : reconfirmation, demande de
+   modification, complément d'information, annulation ; et la réponse de l'équipe à une demande de modification.
+     { [id]: { reconfirmee: date, annulee: date, complement: { texte, cree }, modif: { heure, service, couverts, cree },
+               reponse: { acceptee, le, heure, couverts } } }
+   Démonstration : ce navigateur seulement. Demain : des appels au serveur, protégés par un jeton propre à la réservation. */
+export function venues() { try { const o = JSON.parse(localStorage.getItem(CLE_VENUES) || '{}'); return o && typeof o === 'object' && !Array.isArray(o) ? o : {}; } catch { return {}; } }
+export function noterVenue(id, champs) {
+  try { const o = venues(); o[id] = { ...(o[id] || {}), ...champs }; for (const k of Object.keys(o[id])) if (o[id][k] == null) delete o[id][k]; localStorage.setItem(CLE_VENUES, JSON.stringify(o)); return true; } catch { return false; }
+}
+
 /** Prévient quand le stockage change ailleurs (un autre onglet de ce navigateur : une demande arrive pendant que l'espace
     est ouvert). Demain : un abonnement au serveur. Renvoie de quoi arrêter l'écoute. */
 export function ecouter(f) {
-  const sur = (ev) => { const quoi = ev.key === CLE_RESAS ? 'resas' : ev.key === CLE_DEMANDES ? 'demandes' : ev.key === CLE || ev.key === null ? 'etat' : null; if (quoi) f(quoi); };
+  const sur = (ev) => { const quoi = ev.key === CLE_RESAS ? 'resas' : ev.key === CLE_DEMANDES ? 'demandes' : ev.key === CLE_VENUES ? 'venues' : ev.key === CLE || ev.key === null ? 'etat' : null; if (quoi) f(quoi); };
   try { addEventListener('storage', sur); } catch { return () => {}; }
   return () => removeEventListener('storage', sur);
 }

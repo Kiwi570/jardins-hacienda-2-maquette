@@ -94,3 +94,35 @@
 @media (max-width: 979px) { .resa__ligne { grid-template-columns: minmax(80px, auto) minmax(0, 1fr) auto; } }
 @media (prefers-reduced-motion: reduce) and (max-width: 0px) { .resa *, .resa *::before { transition: none !important; } }
 .calme .resa *, .resa.est-calme * { transition: none !important; }
+
+/* v7.11.0 · Quand le choix n'est pas possible : les autres possibilités et la liste d'attente. */
+.resa__jour.est-complet { opacity: 1; border-style: dashed; }
+.resa__alt { margin-top: 14px; padding: 16px 18px; border-radius: 18px; border: 1px solid color-mix(in oklab, var(--couleur-texte) 22%, transparent); background: color-mix(in oklab, var(--couleur-texte) 6%, transparent); }
+.resa__alt p { margin: 0 0 10px; }
+.resa__alt-titre { font-weight: 700; }
+.resa__alt-liste { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin: 0 0 12px; padding: 0; list-style: none; }
+.resa__alt-choix { display: grid; gap: 4px; width: 100%; min-height: 64px; padding: 12px 14px; border-radius: 14px; border: 1px solid color-mix(in oklab, var(--couleur-texte) 34%, transparent); background: var(--couleur-fond); color: var(--couleur-texte); font: inherit; text-align: left; cursor: pointer; }
+.resa__alt-choix:hover { border-color: var(--couleur-texte); }
+.resa__alt-choix:focus-visible { outline: 2px solid var(--or); outline-offset: 3px; }
+.resa__alt-choix b { font-size: max(16px, 1rem); }
+.resa__alt-choix small { font-size: max(14px, .88rem); color: var(--couleur-texte-doux); }
+.resa__alt-choix--attente { border-style: dashed; }
+.resa__alt-note, .resa__alt-rien { font-size: max(14px, .88rem); color: var(--couleur-texte-doux); }
+.resa__alt-fait { padding: 12px 14px; border-radius: 14px; background: color-mix(in oklab, var(--or) 20%, transparent); }
+.resa__alt-fait:focus { outline: none; }
+.resa__attente { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 16px; align-items: end; margin: 4px 0 12px; padding: 14px 16px; border-radius: 14px; background: var(--couleur-fond); border: 1px solid color-mix(in oklab, var(--couleur-texte) 22%, transparent); }
+.resa__attente > :is(.resa__alt-titre, .resa__attente-espaces, .resa__attente-erreur, .resa__attente-actions, .resa__alt-note) { grid-column: 1 / -1; margin: 0; }
+.resa__attente-champ { display: grid; gap: 6px; margin: 0; }
+.resa__attente-champ label, .resa__attente-espaces legend { font-size: max(14px, .9rem); font-weight: 700; }
+.resa__attente-champ small { font-weight: 500; color: var(--couleur-texte-doux); }
+.resa__attente-champ :is(input:not([type="checkbox"]), select) { width: 100%; min-height: 48px; padding: 10px 12px; border-radius: 12px; border: 1px solid color-mix(in oklab, var(--couleur-texte) 40%, transparent); background: var(--couleur-fond); color: var(--couleur-texte); font: inherit; font-size: 16px; }
+.resa__attente-champ :is(input, select):focus-visible { outline: 2px solid var(--or); outline-offset: 2px; }
+.resa__attente-espaces { display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 0; border: 0; }
+.resa__attente-espaces legend { padding: 0; margin-bottom: 4px; }
+.resa__attente-espaces label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 500; }
+.resa__attente-espaces input { width: 22px; height: 22px; accent-color: var(--or); }
+.resa__attente-erreur { padding: 10px 12px; border-radius: 12px; background: #f6dcd9; color: #6d1814; font-weight: 600; }
+.resa__attente-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.resa .carton .carton__statut { margin: 10px 0 0; font-size: max(14px, .9rem); color: #5b4e42; }
+.resa .carton .carton__venue { margin: 8px 0 0; }
+.resa .carton .carton__venue a { display: inline-flex; align-items: center; min-height: 44px; color: #1c1712; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }

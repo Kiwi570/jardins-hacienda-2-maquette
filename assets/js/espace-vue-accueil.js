@@ -4,6 +4,8 @@
    Les tâches et l'aperçu des vues métier sont gardés dans ce navigateur ; l'écran le dit. */
 import { fmt, maj, heure, pluriel, typo, ajouter, servicesDe, hhmm } from './espace-regles.js?v=7';
 import { accueil, resumeService, nomService, cleService, filDuJour, GRANDE_TABLEE } from './espace-accueil.js?v=7';
+import { nomPlace, ETATS_TABLE } from './espace-salle.js?v=7';
+import { ETATS_ATTENTE } from './espace-attente.js?v=7';
 import { nouvelleTache, tachesDuJour, tachesLiees } from './espace-taches.js?v=7';
 
 const VUES_METIER = [['direction', 'Direction', 'Tout : le service, ce qui attend une décision, la journée et les tâches.'], ['accueil', 'Accueil', 'D\'abord les demandes et les réponses à donner, puis le service.'],
@@ -24,20 +26,23 @@ export function creerAccueil(X) {
   function zoneService(p, vue) {
     if (!p) return `<section class="esp-carte esp-carte--large esp-acc__service" aria-labelledby="t-prochain"><p class="esp-acc__sur">Le prochain service</p><h3 id="t-prochain">Aucun service ouvert dans les quinze jours</h3>
       <p class="esp-vide">Les horaires et les fermetures se règlent dans Site. <button type="button" class="esp-lien" data-aller="site" data-onglet="horaires">Voir les horaires</button></p></section>`;
-    const chiffre = (n, mot, plus = '') => `<li${plus}><b>${n}</b> <span>${mot}</span></li>`;
-    const att = p.attentions, cuisine = vue === 'cuisine';
+    const chiffre = (n, mot, plus = '') => `<li${n ? plus : `${plus.replace(' class="est-alerte"', '')} class="est-zero"`}><b>${n}</b> <span>${mot}</span></li>`;
+    const att = p.attentions, cuisine = vue === 'cuisine', pr = p.presence;
     return `<section class="esp-carte esp-carte--large esp-acc__service" aria-labelledby="t-prochain" data-prochain="${e(cleService(p.date, p.service))}">
       <p class="esp-acc__sur">${p.enCours ? 'Le service en cours' : 'Le prochain service'}</p>
       <h3 id="t-prochain">${e(p.nom)} <small>arrivées de ${heure(hhmm(servicesDe(ctx().R).find((s) => s.id === p.service).d))} à ${heure(hhmm(servicesDe(ctx().R).find((s) => s.id === p.service).f))}</small>${p.complet ? ' <span class="esp-pastille esp-pastille--a-confirmer">Complet</span>' : ''}</h3>
       <ul class="esp-acc__chiffres">
-        ${chiffre(p.confirmees, p.confirmees > 1 ? 'réservations confirmées' : 'réservation confirmée')}
+        ${chiffre(p.confirmees + p.accueillies, p.confirmees + p.accueillies > 1 ? 'réservations' : 'réservation')}
         ${chiffre(p.couvertsAttendus, p.couvertsAttendus > 1 ? 'couverts attendus' : 'couvert attendu')}
-        ${p.accueillies ? chiffre(p.couvertsAccueillis, p.couvertsAccueillis > 1 ? 'personnes déjà accueillies' : 'personne déjà accueillie') : ''}
-        ${cuisine ? '' : chiffre(p.demandes.length, p.demandes.length > 1 ? 'demandes à traiter' : 'demande à traiter', p.demandes.length ? ' class="est-alerte"' : '')}
+        ${cuisine ? '' : chiffre(p.placees, p.placees > 1 ? 'tables attribuées' : 'table attribuée')}
+        ${cuisine ? '' : chiffre(p.demandes.length, p.demandes.length > 1 ? 'demandes pour ce service' : 'demande pour ce service', p.demandes.length ? ' class="est-alerte"' : '')}
         ${chiffre(p.grandes.length, p.grandes.length > 1 ? `grandes tablées (${GRANDE_TABLEE} couverts et plus)` : `grande tablée (${GRANDE_TABLEE} couverts et plus)`)}
-        ${cuisine ? '' : chiffre(p.aPlacer.length, 'à placer en salle', p.aPlacer.length ? ' class="est-alerte"' : '')}
+        ${cuisine || !p.aPlacer.length ? '' : chiffre(p.aPlacer.length, 'sans table', ' class="est-alerte"')}
       </ul>
+      ${p.date === A.iso && (pr.retards.length || pr.aInstaller.length || pr.installes.length || pr.partis.length || pr.aRemettre.length) ? `<p class="esp-acc__presence" data-acc-presence><b>En ce moment&nbsp;:</b> ${[pr.retards.length ? `<span class="est-alerte">${pr.retards.length} en retard</span>` : '', pr.aInstaller.length ? `<span class="est-alerte">${pr.aInstaller.length} à installer</span>` : '', pr.installes.length ? `${pr.installes.length} ${pr.installes.length > 1 ? 'groupes installés' : 'groupe installé'}` : '', pr.partis.length ? `${pr.partis.length} ${pr.partis.length > 1 ? 'partis' : 'parti'}` : '', pr.aRemettre.length ? `<span class="est-alerte">${pluriel(pr.aRemettre.length, 'table')} à remettre en état</span>` : '', `${pluriel(pr.tables.pretes, 'table')} ${pr.tables.pretes > 1 ? 'prêtes' : 'prête'}`].filter(Boolean).join(' · ')}</p>` : ''}
+      ${!cuisine && pr.attente.length ? `<p class="esp-acc__presence">Liste d'attente&nbsp;: ${pluriel(pr.attente.length, 'demande')}${pr.attenteCompatibles.length ? `, <span class="est-alerte">${pr.attenteCompatibles.length} à qui une place peut être proposée</span>` : ''}. <button type="button" class="esp-lien" data-aller="resas" data-onglet-resas="attente">Ouvrir</button></p>` : ''}
       ${att.length ? `<p class="esp-acc__savoir"><b>À savoir&nbsp;:</b> ${att.slice(0, cuisine ? 8 : 3).map((r) => `${e(r.nom || 'Sans nom')} (${e(typo([r.allergies.length ? `allergie : ${r.allergies.join(', ')}` : '', r.demande, r.noteClient].filter(Boolean).join(' ; ')))})`).join(' · ')}${att.length > (cuisine ? 8 : 3) ? ` · et ${att.length - (cuisine ? 8 : 3)} de plus dans le briefing` : ''}</p>` : ''}
+      ${cuisine ? '<p class="esp-aide esp-acc__reserve">Seules les allergies signalées sont affichées : une réservation sans mention n\'est pas une réservation sans allergie.</p>' : ''}
       <p class="esp-acc__actions"><button type="button" class="bouton" data-briefing="${e(cleService(p.date, p.service))}">Préparer le service</button>
         <button type="button" class="esp-bouton" data-aller-service="${e(cleService(p.date, p.service))}" data-onglet-service="${vue === 'salle' ? 'salle' : 'service'}">${vue === 'salle' ? 'Ouvrir la salle' : 'Voir le service'}</button></p>
     </section>`;
@@ -94,7 +99,7 @@ export function creerAccueil(X) {
       <button type="button" class="esp-lien esp-tache__modifier" data-tache-modifier="${e(t.id)}" aria-label="Modifier : ${e(t.titre)}">Modifier</button></li>`);
   function zoneTaches(a) {
     const l = a.taches, aFaire = l.filter((t) => !t.fait).length;
-    return `<section class="esp-carte esp-acc__taches" aria-labelledby="t-taches"><h3 id="t-taches">Les tâches${aFaire ? ` <span class="esp-acc__compte">${aFaire}</span>` : ''} <span class="esp-source">Dans ce navigateur</span></h3>
+    return `<section class="esp-carte esp-acc__taches" aria-labelledby="t-taches"><h3 id="t-taches">Les tâches${aFaire ? ` <span class="esp-acc__compte">${aFaire}</span>` : ''} <span class="esp-source">Sur cet appareil</span></h3>
       ${l.length ? `<ul class="esp-taches">${l.map(ligneTache).join('')}</ul>` : etat.tacheEditee === 'nouvelle' ? '' : '<p class="esp-vide">Aucune tâche. Notez ici ce qu\'il ne faut pas oublier avant le service.</p>'}
       ${etat.tacheEditee === 'nouvelle' ? formulaireTache(null) : '<p class="esp-plus"><button type="button" class="esp-bouton" data-tache-nouvelle>Ajouter une tâche</button></p>'}
       ${connecte() ? '<p class="esp-aide">Les tâches ne sont pas encore partagées entre vos appareils : elles restent sur celui-ci.</p>' : ''}</section>`;
@@ -113,14 +118,17 @@ export function creerAccueil(X) {
 
   function rendre() {
     const a = accueil(C(), S(), D.salle, A.min), vue = connecte() ? 'direction' : etat.vueMetier, nbDem = X.enAttenteTotal();
-    const p = a.prochain, intro = p ? `${p.nom.toLowerCase().replace(/^./, (c) => c.toUpperCase())} : ${pluriel(p.confirmees, 'réservation')} ${p.confirmees > 1 ? 'confirmées' : 'confirmée'}, ${pluriel(p.couvertsAttendus, 'couvert')}` : 'Pas de service à venir';
+    const p = a.prochain, intro = p ? `${p.nom.toLowerCase().replace(/^./, (c) => c.toUpperCase())} : ${pluriel(p.confirmees + p.accueillies, 'réservation')}, ${pluriel(p.couvertsAttendus, 'couvert')} ${p.couvertsAttendus > 1 ? 'attendus' : 'attendu'}` : 'Pas de service à venir';
     const zones = { service: () => zoneService(p, vue), priorites: () => zonePriorites(a, vue), fil: () => zoneFil(a, vue), taches: () => zoneTaches(a), site: () => zoneSite() };
     /* typo() : les espaces insécables de la typographie française, sur tout ce que la rubrique écrit. */
     X.corps('jour').innerHTML = typo(`
-      <p class="esp-bonjour">${e(maj(fmt(A.iso)))}. ${e(intro)}${nbDem ? `, ${pluriel(nbDem, 'demande')} à traiter` : ''}.</p>
-      ${connecte() ? '' : `<div class="esp-metier" role="group" aria-labelledby="t-metier"><p class="esp-metier__titre" id="t-metier">Voir comme <span class="esp-source">Aperçu</span></p>
+      <p class="esp-bonjour">${e(maj(fmt(A.iso)))}. ${e(intro)}${nbDem ? `, ${pluriel(nbDem, 'demande')} à traiter, toutes activités confondues` : ''}.</p>
+      ${connecte() ? '' : `<div class="esp-metier esp-metier--ordi" role="group" aria-labelledby="t-metier"><p class="esp-metier__titre" id="t-metier">Voir comme <span class="esp-source">Aperçu</span></p>
         <p class="esp-metier__choix">${VUES_METIER.map(([id, nom]) => `<button type="button" class="esp-metier__bouton" data-vue-metier="${id}" aria-pressed="${id === vue}">${nom}</button>`).join('')}</p>
-        <p class="esp-metier__aide">${e(VUES_METIER.find(([id]) => id === vue)[2])} Mêmes données pour tous : ce choix change la mise en avant, pas les droits.</p></div>`}
+        <p class="esp-metier__aide">${e(VUES_METIER.find(([id]) => id === vue)[2])} Mêmes données pour tous : ce choix change la mise en avant, pas les droits.</p></div>
+      <details class="esp-metier-tel" data-metier-tel><summary><span>Vue&nbsp;: <b>${VUES_METIER.find(([id]) => id === vue)[1]}</b></span></summary>
+        <p class="esp-metier__choix" role="group" aria-label="Voir comme">${VUES_METIER.map(([id, nom]) => `<button type="button" class="esp-metier__bouton" data-vue-metier="${id}" aria-pressed="${id === vue}">${nom}</button>`).join('')}</p>
+        <p class="esp-metier__aide">${e(VUES_METIER.find(([id]) => id === vue)[2])} Mêmes données pour tous : ce choix change la mise en avant, pas les droits. <span class="esp-source">Aperçu</span></p></details>`}
       <div class="esp-acc esp-acc--${vue}">${ORDRE[vue].map((z) => zones[z]()).join('')}</div>`);
     if (etat.tacheEditee) $(`[data-form-tache] [name="titre"]`, X.corps('jour'))?.focus({ preventScroll: true });
   }
@@ -128,10 +136,10 @@ export function creerAccueil(X) {
   /* ---------- Le briefing d'un service ---------- */
   let fen = null, retour = null;
   function contenuBriefing() {
-    const [iso, sv] = etat.briefing.split('|'), r = resumeService(C(), S(), D.salle, iso, sv), nom = nomService(C(), iso, sv), fil = filDuJour(C(), S(), iso).filter((x) => x.type !== 'service');
+    const [iso, sv] = etat.briefing.split('|'), r = resumeService(C(), S(), D.salle, iso, sv), pr = r.presence, nom = nomService(C(), iso, sv), fil = filDuJour(C(), S(), iso).filter((x) => x.type !== 'service');
     const services = servicesDe(ctx().R), libre = tachesDuJour(S(), A.iso).filter((t) => !t.fait && !t.lien && (!t.echeance || t.echeance <= iso));
     const taches = [...r.taches, ...libre.filter((t) => !r.taches.some((x) => x.id === t.id))];
-    const ligne = (x, plus = '') => `<li><button type="button" class="esp-lien" data-brief-resa="${e(x.id)}">${heure(x.heure)} · ${e(x.nom || 'Sans nom')}</button> <span>${pluriel(+x.couverts, 'couvert')}${x.table ? ` · table ${e(x.table)}` : ''}${plus}</span></li>`;
+    const ligne = (x, plus = '') => `<li><button type="button" class="esp-lien" data-brief-resa="${e(x.id)}">${heure(x.heure)} · ${e(x.nom || 'Sans nom')}</button> <span>${pluriel(+x.couverts, 'couvert')}${x.table ? ` · ${e(nomPlace(x.table))}` : ''}${plus}</span></li>`;
     const bloc = (titre, corps, vide) => `<section class="esp-brief__bloc"><h3>${titre}</h3>${corps || `<p class="esp-brief__vide">${vide}</p>`}</section>`;
     return `<header class="esp-modale__tete"><h2 id="brief-titre">Préparer le service</h2><button type="button" class="esp-rond" data-fermer-brief aria-label="Fermer">×</button></header>
       <div class="esp-brief" data-brief="${e(etat.briefing)}">
@@ -139,11 +147,19 @@ export function creerAccueil(X) {
           <p><b>${e(maj(fmt(iso)))}</b> ${services.map((s) => `<button type="button" class="esp-brief__sv" data-brief-sv="${s.id}" aria-pressed="${s.id === sv}">${s.libelle}</button>`).join('')}</p>
           <button type="button" class="esp-rond" data-brief-jour="1" aria-label="Jour suivant"><span aria-hidden="true">›</span></button></div>
         ${!r.ouvert && !r.resas.length ? `<p class="esp-vide">${e(nom)} : pas de service. Choisissez un autre jour ou l'autre service.</p>` : `
-        <ul class="esp-acc__chiffres esp-brief__chiffres"><li><b>${r.confirmees}</b> <span>${r.confirmees > 1 ? 'réservations confirmées' : 'réservation confirmée'}</span></li><li><b>${r.couvertsAttendus}</b> <span>${r.couvertsAttendus > 1 ? 'couverts attendus' : 'couvert attendu'}</span></li>
-          ${r.accueillies ? `<li><b>${r.couvertsAccueillis}</b> <span>déjà accueillis</span></li>` : ''}<li><b>${r.demandes.length}</b> <span>${r.demandes.length > 1 ? 'demandes à traiter' : 'demande à traiter'}</span></li>${r.pic?.couverts ? `<li><b>${heure(hhmm(r.pic.t))}</b> <span>le plus chargé (${r.pic.couverts} à table)</span></li>` : ''}</ul>
+        <ul class="esp-acc__chiffres esp-brief__chiffres"><li><b>${r.confirmees + r.accueillies}</b> <span>${r.confirmees + r.accueillies > 1 ? 'réservations' : 'réservation'}</span></li><li><b>${r.couvertsAttendus}</b> <span>${r.couvertsAttendus > 1 ? 'couverts attendus' : 'couvert attendu'}</span></li>
+          ${r.accueillies ? `<li><b>${r.couvertsAccueillis}</b> <span>déjà accueillis</span></li>` : ''}<li><b>${r.placees}</b> <span>${r.placees > 1 ? 'tables attribuées' : 'table attribuée'}</span></li><li><b>${r.demandes.length}</b> <span>${r.demandes.length > 1 ? 'demandes pour ce service' : 'demande pour ce service'}</span></li>${r.pic?.couverts ? `<li><b>${heure(hhmm(r.pic.t))}</b> <span>le plus chargé (${r.pic.couverts} à table)</span></li>` : ''}</ul>
+        ${iso === A.iso && (pr.retards.length || pr.aInstaller.length || pr.installes.length || pr.partis.length || pr.aRemettre.length) ? bloc('Où en est le service', `<ul class="esp-brief__liste">${[
+            ...pr.retards.map((x) => ligne(x, ` — en retard de ${x.retard} min${x.retardAnnonce ? ` (retard annoncé : ${x.retardAnnonce} min)` : ''}`)),
+            ...pr.aInstaller.map((x) => ligne(x, ` — arrivé, à installer${x.presents ? ` (${x.presents} présents sur ${+x.couverts})` : ''}`)),
+            ...pr.installes.map((x) => ligne(x, ' — installé')), ...pr.partis.map((x) => ligne(x, ' — parti')),
+            ...pr.aRemettre.map((t) => `<li><b>Table ${e(t.id)}</b> <span>${e(ETATS_TABLE[t.etat].toLowerCase())}</span></li>`)].join('')}</ul>`, '') : ''}
         ${bloc(`Les grandes tablées <small>${GRANDE_TABLEE} couverts et plus</small>`, r.grandes.length ? `<ul class="esp-brief__liste">${r.grandes.map((x) => ligne(x)).join('')}</ul>` : '', 'Aucune pour ce service.')}
-        ${bloc('Occasions, allergies et demandes particulières', r.attentions.length ? `<ul class="esp-brief__liste">${r.attentions.map((x) => ligne(x, ` — ${e(typo([x.allergies.length ? `allergie : ${x.allergies.join(', ')}` : '', x.demande, x.noteClient].filter(Boolean).join(' ; ')))}`)).join('')}</ul>` : '', 'Rien de noté sur les réservations de ce service.')}
+        ${bloc('Occasions, allergies et demandes particulières', r.attentions.length ? `<ul class="esp-brief__liste">${r.attentions.map((x) => ligne(x, ` — ${e(typo([x.allergies.length ? `allergie : ${x.allergies.join(', ')}` : '', x.demande, x.noteClient].filter(Boolean).join(' ; ')))}`)).join('')}</ul><p class="esp-brief__reserve">Seules les allergies signalées figurent ici. Sans mention, on ne sait pas : ce n'est pas « aucune allergie ».</p>` : '', 'Rien de signalé sur les réservations de ce service. Sans mention, on ne sait pas : ce n\'est pas « aucune allergie ».')}
         ${bloc('Ce qui reste à traiter', r.demandes.length || r.aPlacer.length ? `<ul class="esp-brief__liste">${r.demandes.map((x) => ligne(x, ' — demande à confirmer ou refuser')).join('')}${r.aPlacer.map((x) => ligne(x, ' — pas encore de table')).join('')}</ul>` : '', 'Toutes les demandes ont une réponse et chaque réservation a sa table.')}
+        ${pr.assemblages.length ? bloc('Tables à rapprocher', `<ul class="esp-brief__liste">${pr.assemblages.map((a) => `<li><b>Tables ${e(a.id.split('+').join(' et '))}</b> <span>${a.places} places — ${a.resas.map((x) => `${heure(x.heure)} ${e(x.nom || 'Sans nom')} (${+x.couverts})`).join(', ')}</span></li>`).join('')}</ul>`, '') : ''}
+        ${pr.tables.indisponibles ? bloc('Tables indisponibles', `<p>${pluriel(pr.tables.indisponibles, 'table')} ${pr.tables.indisponibles > 1 ? 'indisponibles' : 'indisponible'} pour ce service. <button type="button" class="esp-lien" data-brief-ouvrir="salle">Voir le plan de salle</button></p>`, '') : ''}
+        ${pr.attente.length ? bloc('Liste d\'attente', `<ul class="esp-brief__liste">${pr.attente.map((x) => `<li><b>${e(x.nom)}</b> <span>${pluriel(x.couverts, 'personne')}${x.heure ? `, vers ${heure(x.heure)}` : ''} — ${e(ETATS_ATTENTE[x.etat].toLowerCase())}${pr.attenteCompatibles.some((c) => c.id === x.id) ? ' : une place peut être proposée' : ''}</span></li>`).join('')}</ul><p class="esp-brief__reserve">Une inscription en liste d'attente n'est pas une réservation : ces personnes ne sont pas comptées dans les couverts.</p>`, '') : ''}
         ${bloc('Installations à prévoir', r.placees ? `<p>${pluriel(r.placees, 'réservation')} ${r.placees > 1 ? 'ont' : 'a'} déjà ${r.placees > 1 ? 'leur' : 'sa'} table. <button type="button" class="esp-lien" data-brief-ouvrir="salle">Voir le plan de salle</button></p>` : '', 'Aucune table n\'est encore attribuée pour ce service.')}
         ${fil.length ? bloc('Aussi ce jour-là', `<ul class="esp-brief__liste">${fil.map((x) => `<li><b>${e(x.libelleType)}</b> ${e(x.titre)} <span>${e(x.statut)}</span></li>`).join('')}</ul>`, '') : ''}
         ${bloc('Les tâches', taches.length ? `<ul class="esp-brief__liste esp-brief__taches">${taches.map((t) => `<li class="${t.fait ? 'est-faite' : ''}"><span class="esp-brief__case" aria-hidden="true">${t.fait ? '✓' : ''}</span>${e(t.titre)}${t.responsable ? ` <span>(${e(t.responsable)})</span>` : ''}</li>`).join('')}</ul>` : '', 'Aucune tâche pour ce service.')}`}

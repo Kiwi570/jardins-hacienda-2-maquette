@@ -78,7 +78,9 @@ Transition entre les pages (v7.5) : un papier crème qui monte en cloche depuis 
 | Dates des pool parties | « Les dates sont annoncées sur Instagram. » |
 | Assiettes générées | jamais présentées comme un plat de la carte : les plats gardent leurs noms et leurs prix à côté, l'image porte « Illustration générée » |
 
-## L'espace restaurateur (démonstration, v7.10.0)
+## L'espace restaurateur (démonstration, v7.11.0)
+
+> **v7.11.0 — un service parfaitement accompagné.** Présence des groupes (attendu, en retard, arrivé, installé, parti), état des tables, clients sans réservation, tables rapprochées, repli de terrasse, liste d'attente, alternatives sur la page Réserver, page du client « Votre venue aux Jardins », rappels en aperçu. Ce qui a changé, les cinq scénarios et les limites : `_exploitation/livraison-v7.11.0.md`.
 
 > **v7.10.0 — toute la maison au même endroit.** Six rubriques (Aujourd'hui, Demandes, Agenda, Offres, Clients, Site), un accueil orienté action, un briefing de service, des tâches, une recherche transversale. Vision et étapes suivantes : `_exploitation/vision-et-feuille-de-route.md` ; ce qui a changé et comment le tester : `_exploitation/livraison-v7.10.0.md`.
 
@@ -102,6 +104,7 @@ Transition entre les pages (v7.5) : un papier crème qui monte en cloche depuis 
   - `assets/js/espace-commandes.js` : les phrases que la barre comprend, en fonctions pures (des règles écrites, pas une IA) ; `assets/js/espace-barre.js` : la fenêtre de la barre. Pour faire comprendre une nouvelle phrase : l'ajouter dans `comprendre()`, avec son test dans `_audit/tests/commandes.test.mjs`.
   - `assets/js/espace-stock.js` : le seul fichier qui touche à la mémoire du navigateur (localStorage, clés `jh-espace:v1`, `jh-espace-resas:v1` et `jh-espace-demandes:v1`, schéma numéroté dans `_schema`). Les cinq formulaires du site y écrivent (`ajouterResaSite`, `ajouterDemandeSite`) ; `ecouter()` prévient l'espace quand une demande arrive d'un autre onglet.
   - `assets/js/espace-apercu.js` : l'aperçu sur chaque page du site, chargé avant tout.
+  - `assets/js/espace-presence.js`, `espace-attente.js`, `espace-repli.js`, `espace-venue.js` (règles pures, v7.11.0) et `espace-vue-attente.js` (écran) : la présence et l'état des tables, la liste d'attente, le repli de terrasse, « Votre venue » et les rappels. Côté site : `source/pages/votre-venue.mjs` et `assets/js/venue.js` ; les alternatives sont dans `disponibilites.js` (`alternatives`) et le module `reservation-de-table`.
   - `assets/js/espace-accueil.js`, `espace-taches.js`, `espace-recherche.js` (règles pures, v7.10.0) et `espace-vue-accueil.js`, `espace-vue-clients.js` (écrans) : Aujourd'hui, le briefing, les tâches, la liste des clients, la recherche.
   - `assets/js/espace-serveur.js` : le mode connecté (v7.9.0). Si la page porte `<meta name="jh-api">`, les réservations et les règles du jour viennent du serveur ; sinon ce fichier ne fait rien.
   - `serveur/` : l'API et la base (non publié). `cd serveur && npm install && npm test` lance ses tests sur un PostgreSQL embarqué ; `node tests/recette-navigateur.mjs` joue la chaîne complète dans quatre navigateurs.

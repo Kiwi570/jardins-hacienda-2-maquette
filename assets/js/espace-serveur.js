@@ -118,7 +118,7 @@ export function creerDepotServeur({ api, local, periode, surFin, surEtat, fetch:
 
   return {
     /* le même contrat que le dépôt local, pour les écrans */
-    etat, resasSite: () => [], demandesSite: () => local.demandesSite(), ecouter: (f) => local.ecouter(f), abonner: (f) => local.abonner(f),
+    etat, resasSite: () => [], demandesSite: () => local.demandesSite(), venues: () => ({}), noterVenue: () => false, ecouter: (f) => local.ecouter(f), abonner: (f) => local.abonner(f),
     agir, raisonRefus: () => raison || local.raisonRefus(), noteAction: () => local.noteAction(), toutEffacer: (m) => local.toutEffacer(m), peutAnnuler: () => local.peutAnnuler(), annuler: () => local.annuler(),
     conflitsAnnulation: () => local.conflitsAnnulation(), gardesAnnulation: () => local.gardesAnnulation(), annulationPartielle: () => local.annulationPartielle(),
     /* ce que le mode connecté ajoute */

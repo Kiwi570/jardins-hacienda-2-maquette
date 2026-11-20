@@ -1,29 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 20/11/2026 19:27:18 · 19 min · 1 page(s) · audit complet ciblé sur /espace
+Projet : `jardins-hacienda-2-maquette` · 20/11/2026 23:36:38 · 23 min · 3 page(s) · audit complet ciblé sur /,/votre-venue,/espace (étapes : fichiers, mesures, parcours)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261120-180808-complet-cible` · version ?v=7
+- Passe : `20261120-221320-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **7**
-- Non lancé : **1**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), grille wouahou (6), mesures (39), balayage (1), films d’ouverture (2), films de transition (2), bords de l’écran (2), intro accélérable et passable (7), menu (1), clavier (1), liens et boutons (1), liens profonds (4), liens vers la page en cours (1), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1), fluidité (2), défilement selon l’appareil (5), mouvement (2), effets du plan (37), vitesse (1), captures (1)
-
-## Grille wouahou
-
-| Point | État | Détail |
-|---|---|---|
-| 1. L’effet signature se manipule | ✓ présent | accueil et 2 autre(s) page(s) |
-| 2. L’intro devient la page | ✓ présent | objet d’ouverture sur 8 page(s), versObjet dans l’intro |
-| 3. La transition reprend le motif | ✓ présent | voile en cloche |
-| 4. Quelque chose relie les sections et les pages | ✓ présent | sur les 8 page(s) |
-| 5. Un titre fait l’événement sur chaque page | ⚠ à regarder | présent sur /la-carte, /offrir, /receptions ; absent sur /a-emporter, /, /infos-pratiques, /les-fetes, /reserver |
-| 6. La scène est un geste du métier | ✓ présent | geste du métier sur /la-carte, /receptions |
-| 7. L’action principale a un retour physique | ✓ présent | sur /, /les-fetes, /offrir, /receptions, /reserver |
-
-Le script vérifie les marques (`data-grille`, `data-iris-centre`, forme du voile, `versObjet`) ; la force et la justesse de chaque point se jugent sur les captures et les films.
+- À regarder : **0**
+- Non lancé : **0**
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (117), balayage (3), intro accélérable et passable (7), menu (1), clavier (3), liens et boutons (3), liens profonds (12), liens vers la page en cours (3), changements de hauteur (1), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : un service parfaitement accompagné (1366×768) (1), espace : un service parfaitement accompagné (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
 
 ## Passes de cette version (?v=7)
 
@@ -165,7 +151,12 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261119-051222-complet-cible-partiel | complet | /,/a-emporter | fichiers, mesures | 0 | 0 | 0 | complet |
 | 20261120-170845-complet | complet | toutes | toutes | 1 | 37 | 1 | échecs |
 | 20261120-180634-complet-cible-partiel | complet | /a-emporter | fichiers, mesures | 0 | 0 | 0 | complet |
-| **20261120-180808-complet-cible** (celle-ci) | complet | /espace | toutes | 0 | 7 | 1 | complet |
+| 20261120-180808-complet-cible | complet | /espace | toutes | 0 | 7 | 1 | complet |
+| 20261120-194323-standard-cible | standard | /espace | toutes | 2 | 6 | 1 | échecs |
+| 20261120-195320-standard-cible-partiel | standard | /espace | parcours | 2 | 0 | 0 | échecs |
+| 20261120-202024-complet | complet | toutes | toutes | 4 | 21 | 2 | échecs |
+| 20261120-212726-complet-partiel | complet | toutes | fichiers, mesures, films, parcours | 3 | 6 | 0 | échecs |
+| **20261120-221320-complet-cible-partiel** (celle-ci) | complet | /,/votre-venue,/espace | fichiers, mesures, parcours | 0 | 0 | 0 | complet |
 
 ## Échecs
 
@@ -173,30 +164,12 @@ Aucun.
 
 ## À regarder
 
-### grille : aucun titre ne fait l’événement (point 5) (5)
-
-- **grille : aucun titre ne fait l’événement (point 5)** — `/a-emporter` — absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille="typo"
-- **grille : aucun titre ne fait l’événement (point 5)** — `/` — absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille="typo"
-- **grille : aucun titre ne fait l’événement (point 5)** — `/infos-pratiques` — absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille="typo"
-- **grille : aucun titre ne fait l’événement (point 5)** — `/les-fetes` — absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille="typo"
-- **grille : aucun titre ne fait l’événement (point 5)** — `/reserver` — absent de cette page : titre fabriqué par le métier, axe de police animé ou titre joué avec l’image (modules axes-au-defilement, titre-cousu, texte-grave-en-direct), marqué data-grille="typo"
-
-### retour arrière : changement brusque (2)
-
-- **retour arrière : changement brusque** — `/espace` — à 77 ms (différence 77 %) (films/retour-arrière-1366.png) _(1366×768 retour arrière)_
-- **retour arrière : changement brusque** — `/espace` — à 73 ms (différence 62 %) (films/retour-arrière-390.png) _(390×844 retour arrière)_
+Rien.
 
 ## Non lancé
 
-- **Safari (WebKit)** : WebKit ne peut pas s’installer ici : vérification à faire dans Safari sur le Mac (liste dans le rapport)
+Tout a été lancé.
 
-### À vérifier dans Safari sur le Mac (WebKit indisponible ici)
-
-- Ouverture de chaque page : rien qui clignote, intro complète au premier chargement et au rechargement.
-- Changement de page : le voile couvre l’écran, pas de page blanche ; retour arrière sans intro ni voile resté.
-- Défilement : fluide (natif), en-tête qui se cache et revient sans clignoter, sections épinglées entières.
-- Menu sur iPhone (mode Responsive de Safari) : ouverture, fermeture, page bloquée derrière.
-- Polices, images, mention « Illustration générée », formulaires et barre fixe du bas.
 
 ## Repères
 
@@ -207,15 +180,9 @@ Aucun.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Ouverture /espace (1366×768) : 2390 ms depuis le premier octet
-- Ouverture /espace (390×844) : 2396 ms depuis le premier octet
-- Bords de l’écran : 144 images d’intro, 4 de voile et 51 de menu jugées (panneau immobile couvrant tout l’écran), barre de défilement classique de 15 px.
 - Changements de hauteur /espace : aucun effet ScrollTrigger, rien à recalculer.
+- Changements de hauteur /votre-venue : aucun effet ScrollTrigger, rien à recalculer.
 - Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
-- Tient dans l'écran /espace : aucune section épinglée ou plein écran.
-- Fluidité /espace 1366×768 (molette) : 0 % d'images lentes sur 181, tâche la plus longue 0 ms
-- Fluidité /espace 390×844 (doigt) : 0 % d'images lentes sur 1343, tâche la plus longue 0 ms
-- Vitesse /espace : 0.28 s de calcul au chargement (téléphone ralenti).
 
 ## Fichiers
 

@@ -34,6 +34,8 @@ import { creerCarte } from './espace-vue-carte.js?v=7';
 import { creerPropose } from './espace-vue-propose.js?v=7';
 import { creerService } from './espace-vue-service.js?v=7';
 import { creerSalle } from './espace-vue-salle.js?v=7';
+import { creerAttente } from './espace-vue-attente.js?v=7';
+import { lienVenue, venuesATraiter } from './espace-venue.js?v=7';
 import { creerClient } from './espace-vue-client.js?v=7';
 import { creerAccueil } from './espace-vue-accueil.js?v=7';
 import { creerClients } from './espace-vue-clients.js?v=7';
@@ -42,7 +44,7 @@ import { listeClients } from './espace-clients.js?v=7';
 import { activitesDuJour, prochainService } from './espace-accueil.js?v=7';
 import { carteDe, platsDe, prixTexte } from './espace-carte.js?v=7';
 import { normaliser, GENRES, demandes as toutesDemandes } from './espace-demandes.js?v=7';
-import { SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe, etatDuService, creneauxDuJour, verifierResa, listeEvenements } from './espace-regles.js?v=7';
+import { trouverResa, SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe, etatDuService, creneauxDuJour, verifierResa, listeEvenements } from './espace-regles.js?v=7';
 import { reglesAction } from './espace-garde.js?v=7';
 import { creerDepotServeur } from './espace-serveur.js?v=7';
 
@@ -67,7 +69,10 @@ export function init(root) {
   /* Le garde-fou : avant d'enregistrer, le dépôt demande aux règles si l'action est possible (d'où qu'elle vienne). */
   const API = document.querySelector('meta[name="jh-api"]')?.content || '', ENVIRONNEMENT = document.querySelector('meta[name="jh-environnement"]')?.content || '';
   const depotLocal = creerDepot(undefined, undefined, {
-    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, site: depotLocal.resasSite(), exceptions: D.horaires.exceptions || [] }, frais, D.salle, nom, args),
+    /* v7.11.0 : les règles reçoivent tout le contexte (l'heure, les inscriptions venues du site). En mode connecté, ce qui
+       n'est noté que sur l'appareil (installé, parti, état des tables) est contrôlé sur les réservations du serveur. */
+    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, minute: A.min, maintenant: `${A.iso}T${hhmm(A.min)}:00`, site: depotLocal.resasSite(), demandes: depotLocal.demandesSite(), exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API },
+      API ? { ...depot.etat(), ...Object.fromEntries(Object.entries(frais).filter(([k]) => k !== 'resa' && k !== 'horaires')) } : frais, D.salle, nom, args),
     /* La liste des soirées publiée sur le site est calculée, jamais restaurée telle quelle : elle suit toujours les données. */
     derives: [{ chemin: ['evenements', 'liste'], calcul: (e) => (e.evenements && (Object.keys(e.evenements.modifs || {}).length || (e.evenements.ajouts || []).length) ? listeEvenements(D.agenda, e) : undefined) }],
   });
@@ -79,7 +84,9 @@ export function init(root) {
   /* v7.8.1 : les plats du site sont désignés par un identifiant, plus par leur rang. Les anciennes références de ce
      navigateur sont traduites une fois, sans rien afficher. */
   { const c = depot.etat().carte || {}; if ([...Object.keys(c.modifs || {}), ...Object.keys(c.epuises || {})].some((k) => /\/\d+$/.test(k))) depot.agir('migrerCarte', { base: D.carte }); }
-  const ctx = () => (contexte ||= { R, auj: A.iso, site: depot.resasSite(), demandes: depot.demandesSite(), produits: D.produits || [], exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API });
+  /* v7.11.0 : les notes des clients passent sous leur nouvelle clé de téléphone (une seule forme par numéro). */
+  if (Object.keys(depot.etat().clients || {}).some((k) => /^t\d{6,}$/.test(k))) depot.agir('migrerClients', {});
+  const ctx = () => (contexte ||= { R, auj: A.iso, get minute() { return A.min; }, get maintenant() { return `${A.iso}T${hhmm(A.min)}:00`; }, site: depot.resasSite(), demandes: depot.demandesSite(), venues: API ? {} : depot.venues(), produits: D.produits || [], exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API });
   const services = servicesDe(R);
   const ouv = (iso, sv) => ouvert(ctx(), S(), iso, sv);
   const plein = (iso, sv) => estComplet(S(), iso, sv);
@@ -213,10 +220,12 @@ export function init(root) {
   const vService = creerService(X);
   X.serviceVu = vService.serviceVu;
   const vSalle = creerSalle(X);
+  const vAttente = creerAttente(X);
   const vClient = creerClient(X);
   X.nomClient = vClient.nom; X.allergiesClient = vClient.allergies;
   /* Ce que les rubriques de la v7.10.0 lisent : les mêmes listes que partout ailleurs. */
   X.enAttente = () => enAttente(); X.demandesEnAttente = () => vDemandes.attente().autres; X.carteDemande = (d) => vDemandes.carte(d, { compacte: true });
+  X.trouverResaDuJour = (id) => trouverResa(ctx(), S(), id); X.attenteActive = () => !API; X.raisonRefus = () => depot.raisonRefus();
   X.ouv = ouv; X.siteVide = () => estVide(S()); X.trouverResa = (id) => prochaines().find((r) => r.id === id) || resas(A.iso).find((r) => r.id === id) || null;
   X.demandes = () => toutesDemandes(ctx(), S()); X.clients = () => (ctx().clients ||= listeClients(ctx(), S(), X.demandes()));
   X.activites = (iso) => activitesDuJour({ ...ctx(), agenda: D.agenda }, S(), iso); X.rendreSoirees = () => rendreEvenements();
@@ -229,7 +238,9 @@ export function init(root) {
 
   function rendreResas() {
     const og = (id, nom) => `<button type="button" class="esp-onglet" role="tab" id="onglet-resas-${id}" aria-selected="${id === etat.ongletResas}" aria-controls="panneau-resas" tabindex="${id === etat.ongletResas ? 0 : -1}" data-onglet="${id}" data-onglets-resas>${nom}</button>`;
-    const onglets = `<div class="esp-onglets" role="tablist" aria-label="L'agenda, le service, la salle et le bilan de la semaine">${og('agenda', 'Agenda')}${og('service', 'Service')}${og('salle', 'Salle')}${og('bilan', 'Bilan')}</div>`;
+    const onglets = `<div class="esp-onglets" role="tablist" aria-label="L'agenda, le service, la salle, la liste d'attente et le bilan de la semaine">${og('agenda', 'Agenda')}${og('service', 'Service')}${og('salle', 'Salle')}${API ? '' : og('attente', 'Attente')}${og('bilan', 'Bilan')}</div>`;
+    if (API && etat.ongletResas === 'attente') etat.ongletResas = 'agenda';
+    if (etat.ongletResas === 'attente') { corps('resas').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-resas" role="tabpanel" aria-labelledby="onglet-resas-attente" data-esp-panneau-resas data-attente-liste></div>`; vAttente.rendre($('[data-attente-liste]', root)); return; }
     if (etat.ongletResas === 'bilan') { corps('resas').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-resas" role="tabpanel" aria-labelledby="onglet-resas-bilan" data-esp-panneau-resas data-bilan></div>`; vPropose.rendreBilan($('[data-bilan]', root)); return; }
     if (etat.ongletResas === 'salle') { corps('resas').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-resas" role="tabpanel" aria-labelledby="onglet-resas-salle" data-esp-panneau-resas data-plan-salle></div>`; vSalle.rendre($('[data-plan-salle]', root)); return; }
     if (etat.ongletResas === 'service') { corps('resas').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-resas" role="tabpanel" aria-labelledby="onglet-resas-service" data-esp-panneau-resas data-service></div>`; vService.rendre($('[data-service]', root)); return; }
@@ -387,7 +398,7 @@ export function init(root) {
   document.addEventListener('click', (ev) => { const p = $('[data-esp-plusnav]', root); if (p && !p.hidden && !ev.target.closest('[data-esp-plusnav], [data-esp-plusnav-bouton]')) ouvrirPlusNav(false); });
   function marquerNavMobile() {
     const sv = $('[data-esp-service]', root), pl = $('[data-esp-plusnav-bouton]', root); if (!sv || !pl) return;
-    const service = etat.vue === 'resas' && ['service', 'salle'].includes(etat.ongletResas), plus = ['carte', 'clients', 'site'].includes(etat.vue) || (etat.vue === 'resas' && !service);
+    const service = etat.vue === 'resas' && ['service', 'salle', 'attente'].includes(etat.ongletResas), plus = ['carte', 'clients', 'site'].includes(etat.vue) || (etat.vue === 'resas' && !service);
     if (service) sv.setAttribute('aria-current', 'page'); else sv.removeAttribute('aria-current'); if (plus) pl.setAttribute('aria-current', 'page'); else pl.removeAttribute('aria-current');
   }
   function allerVue(v, focus = true) {
@@ -559,7 +570,7 @@ export function init(root) {
     if (vClient.clic(t)) return;
     const ogr = t.closest('[data-onglets-resas]'); if (ogr) { etat.ongletResas = ogr.dataset.onglet; etat.ajoutOuvert = false; etat.resaAPlacer = null; etat.tableVue = null; rendre(); $(`#onglet-resas-${etat.ongletResas}`, root)?.focus(); return; }
     if (t.closest('[data-esp-installer]')) { ouvrirPlus(false, false); ouvrirInstaller(btnPlus); return; }
-    if (vCarte.clic(t) || vPropose.clic(t) || vService.clic(t) || vSalle.clic(t)) return;
+    if (vCarte.clic(t) || vPropose.clic(t) || vService.clic(t) || vSalle.clic(t) || vAttente.clic(t)) return;
     const og = t.closest('[role="tab"][data-onglet]'); if (og) { etat.onglet = og.dataset.onglet; etat.evEdite = null; rendre(); $(`#onglet-${etat.onglet}`, root)?.focus(); return; }
     if (vDemandes.clic(t)) return;
     const st = t.closest('[data-statut]'); if (st) { const id = st.dataset.id, s = st.dataset.statut, restait = enAttenteTotal(), repond = ['confirmee', 'refusee'].includes(s);
@@ -611,10 +622,10 @@ export function init(root) {
     if (t.closest('[data-form-textes]')) { const cle = t.name, x = D.textes.find((y) => y.cle === cle); plus_tard(() => agir('texte', { cle, valeur: t.value, defaut: x?.defaut }, { msg: 'Texte enregistré : visible sur le site, dans ce navigateur.', lien: x?.url, groupe: `texte-${cle}` }), `texte-${cle}`); return; }
     if (t.closest('[data-editeur]')) apercuBillet(t.closest('[data-editeur]'));
   });
-  root.addEventListener('change', (ev) => { if (ev.target.closest('[data-form-horaires]')) sauverHoraires(); });
+  root.addEventListener('change', (ev) => { if (ev.target.closest('[data-form-horaires]')) sauverHoraires(); else if (!vAttente.change(ev.target)) vSalle.change(ev.target); });
   root.addEventListener('submit', (ev) => {
     ev.preventDefault(); const f = ev.target;
-    if (vService.envoi(f) || vAccueil.soumettre(f)) return;
+    if (vService.envoi(f, ev) || vAccueil.soumettre(f) || vAttente.soumettre(f)) return;
     if (f.matches('[data-esp-connexion]')) {
       if (!API) { try { sessionStorage.setItem('jh-espace-session', '1'); } catch { /* rien */ } montrer(true); return; }
       /* Mode connecté : une vraie connexion. Rien n'est gardé dans le navigateur, la session est un cookie que le script ne lit pas. */
@@ -647,16 +658,33 @@ export function init(root) {
   function montrer(dedans) {
     $('[data-esp-connexion]', root).hidden = dedans; $('[data-esp-app]', root).hidden = !dedans; $('[data-esp-outils]', root).hidden = !dedans;
     root.classList.toggle('est-connecte', dedans); document.documentElement.classList.toggle('esp-dedans', dedans);
-    if (dedans) { let v = 'jour'; try { v = sessionStorage.getItem('jh-espace-vue') || 'jour'; } catch { /* rien */ } if (!$(`[data-vue="${v}"]`, root)) v = 'jour'; allerVue(v, false); $('[data-esp-vue][aria-current]', root)?.focus({ preventScroll: true }); }
+    if (dedans) { let v = 'jour'; try { v = sessionStorage.getItem('jh-espace-vue') || 'jour'; } catch { /* rien */ } if (!$(`[data-vue="${v}"]`, root)) v = 'jour'; const clients = appliquerVenues(); contexte = null; allerVue(v, false); if (clients.length) dire(`${clients.join(' ; ')}.`); $('[data-esp-vue][aria-current]', root)?.focus({ preventScroll: true }); }
     else { scrollTo({ top: 0, behavior: 'instant' }); $('#esp-id', root)?.focus({ preventScroll: true }); }
   }
+  /* v7.11.0 : ce que les clients ont fait depuis « Votre venue » (démonstration). Une annulation annule la réservation,
+     une précision s'ajoute à sa note, une seule fois chacune ; une demande de changement attend la décision de l'équipe. */
+  function appliquerVenues() {
+    if (API) return [];
+    const t = venuesATraiter(S(), depot.venues(), (id) => trouverResa(ctx(), S(), id)), dits = [];
+    for (const a of t.annulations) { if (depot.agir('statut', { id: a.resa.id, statut: 'annulee' }, { libelle: 'Annulation par le client' })) { depot.agir('venueVue', { id: a.resa.id, quoi: 'annulee', cree: a.cree }, {}); dits.push(`${a.resa.nom || 'Un client'} a annulé sa venue du ${fmt(a.resa.date, { weekday: 'long', day: 'numeric', month: 'long' })} à ${heure(a.resa.heure)}`); } contexte = null; }
+    for (const c of t.complements) { if (depot.agir('modifierResa', { id: c.resa.id, champs: { demande: [c.resa.demande, c.texte].filter((x, i, l) => x && l.indexOf(x) === i).join(' · ') } }, { libelle: 'Précision du client' })) { depot.agir('venueVue', { id: c.resa.id, quoi: 'complement', cree: c.cree }, {}); dits.push(`${c.resa.nom || 'Un client'} a ajouté une précision : « ${c.texte} »`); } contexte = null; }
+    return dits;
+  }
+  X.venues = () => (API ? {} : depot.venues());
+  X.lienVenue = (r) => (API || ['passage'].includes(r.source) ? '' : `<a class="esp-bouton esp-bouton--discret" href="${e(lienVenue(r))}" target="_blank" rel="noopener" data-lien-venue>Page du client<span class="visuellement-cache"> (nouvel onglet)</span></a>`);
+  X.repondreVenue = (id, accepte) => { const v = depot.venues()[id], r = trouverResa(ctx(), S(), id); if (!v?.modif || !r) return;
+    if (accepte && !agir('modifierResa', { id, champs: { heure: v.modif.heure, service: v.modif.service, couverts: v.modif.couverts } }, { msg: `Changement accepté : ${r.nom || 'la réservation'}, ${heure(v.modif.heure)}, ${pluriel(+v.modif.couverts, 'couvert')}.` })) return;
+    depot.noterVenue(id, { modif: null, reponse: { acceptee: !!accepte, le: new Date().toISOString(), heure: v.modif.heure, couverts: v.modif.couverts } }); contexte = null;
+    if (!accepte) dire(`Changement refusé : la réservation de ${r.nom || 'ce client'} reste à ${heure(r.heure)}, ${pluriel(+r.couverts, 'couvert')}. Sa page le lui dit.`); };
+
   // ---------- En direct : une demande faite sur le site dans un autre onglet arrive pendant que l'espace est ouvert ----------
   const idsSite = () => [...depot.resasSite(), ...depot.demandesSite()].map((x) => x.id);
   let connus = new Set(idsSite());
   depot.ecouter(() => {
     contexte = null; const neufs = idsSite().filter((id) => !connus.has(id)); connus = new Set(idsSite());
     if (!root.classList.contains('est-connecte')) return;
-    rendre(); if (!neufs.length) return;
+    const clients = appliquerVenues(); contexte = null;
+    rendre(); if (clients.length) dire(`${clients.join(' ; ')}.`); if (!neufs.length) return;
     const id = neufs[neufs.length - 1], r = depot.resasSite().find((x) => x.id === id), d = r ? null : normaliser(depot.demandesSite().find((x) => x.id === id));
     const quoi = r ? `${[r.prenom, r.nom].filter(Boolean).join(' ') || 'Une table'}, ${pluriel(+r.couverts || 2, 'couvert')}, ${fmt(r.date)} à ${heure(r.heure)}` : `${d.qui}, ${GENRES[d.genre].nom.toLowerCase()} : ${d.titre}`;
     dire(`Nouvelle demande depuis le site : ${quoi}.`, { action: { libelle: 'Voir', faire: () => { etat.filtreDemandes = 'tout'; etat.demandeOuverte = d ? id : null; allerVue('demandes'); viser($(`[data-resa="${CSS.escape(id)}"], [data-demande="${CSS.escape(id)}"]`, root), 'center'); } } });
@@ -668,6 +696,8 @@ export function init(root) {
   function entrerConnecte() {
     const reg = depot.reglages(); if (reg) { for (const k of Object.keys(R)) delete R[k]; Object.assign(R, reg); }
     const tb = depot.tables(); if (tb.length) D.salle.tables = tb.filter((t) => t.active).map((t) => ({ id: t.id, zone: t.zone, places: t.places, forme: t.forme, ...t.plan }));
+    /* v7.11.0 : le serveur ne connaît que les tables simples. Les tables rapprochées ne sont donc pas proposées en mode connecté. */
+    D.salle.assemblages = [];
     contexte = null; jourConnu = A.iso; etat.jour = A.iso; montrer(true);
     const c = depot.compte(), bouton = $('[data-tout-effacer]', root), ROLES = { direction: 'Direction', accueil: 'Accueil', edition: 'Édition' };
     if (bouton) { bouton.textContent = 'Remettre les rubriques non partagées comme livrées';

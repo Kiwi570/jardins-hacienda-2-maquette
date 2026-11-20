@@ -2350,6 +2350,8 @@ function infosSemaine() {
 
 /* v7.6.0 · L'espace restaurateur (démonstration). */
 if ($('[data-espace]')) import('./espace.js?v=7').then((m) => m.init($('[data-espace]'))).catch((e) => console.warn('espace', e));
+/* v7.11.0 : la page du client, « Votre venue aux Jardins ». */
+if ($('[data-venue]')) import('./venue.js?v=7').then((m) => m.init($('[data-venue]'))).catch((e) => console.warn('venue', e));
 
 demarrer({
   preparer() {

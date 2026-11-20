@@ -50,19 +50,38 @@ const NOMS = ['Camille R.', 'Julien M.', 'Sophie L.', 'Thomas B.', 'Léa K.', 'N
 const DEMANDES = ['', '', 'Anniversaire', '', '', 'Chaise haute', '', 'Près de la cheminée', '', 'Allergie aux fruits à coque', '', '', 'Une occasion à fêter', ''];
 /** Le téléphone inventé d'un client d'exemple : toujours le même pour un même nom, dans les réservations comme dans les demandes (v7.10.0). */
 export function telephoneDemo(nom) { const n = hache(`tel-${nom}`); return `06 ${String(10 + (n % 89)).padStart(2, '0')} ${String(n % 97).padStart(2, '0')} ${String((n >>> 4) % 99).padStart(2, '0')} ${String((n >>> 8) % 99).padStart(2, '0')}`; }
+/* v7.11.0 : des exemples plausibles. Une personne ne vient qu'une fois par jour et, en moyenne, deux fois par mois : les
+   noms sont tirés dans une réserve de cent cinquante personnes inventées, dans un ordre propre à chaque jour. Quelques
+   personnages ont un rôle dans les histoires de démonstration (`histoires`), toujours aux mêmes moments par rapport à
+   aujourd'hui. Les identifiants ne changent pas : ce qui a été fait sur une réservation d'exemple est gardé. */
+const PRENOMS = ['Alice', 'Bastien', 'Clara', 'Damien', 'Élise', 'Fabien', 'Gaëlle', 'Hervé', 'Irène', 'Jérôme', 'Karine', 'Loïc', 'Marion', 'Nathan', 'Océane', 'Pascal', 'Quentin', 'Rose', 'Simon', 'Tiphaine', 'Ugo', 'Valérie', 'William', 'Yasmine', 'Zoé', 'Adrien', 'Béatrice', 'Cédric', 'Delphine', 'Étienne'];
+const FIGURANTS = PRENOMS.flatMap((p, i) => ['B', 'D', 'G', 'L', 'M'].map((x, j) => `${p} ${'BDGLMPRSTV'[(i + j * 3) % 10]}.`)).filter((n, i, l) => l.indexOf(n) === i && !NOMS.includes(n));
+const RESERVE = [...NOMS, ...FIGURANTS];
+const nombreDemo = (auj, iso, sv) => { const h = hache(iso + sv), we = [5, 6].includes(jourDe(iso)), loin = iso > ajouter(auj, 10); return Math.max(0, (2 + (h % 5) + (we ? 3 : 0)) - (loin ? 3 : 0)); };
+const dansLaFenetre = (auj, iso) => iso >= ajouter(auj, -7) && iso <= ajouter(auj, 28);
+/** Les personnages des histoires : le prochain soir ouvert, un couple, une grande tablée, une cliente allergique ; et sa venue d'avant. */
+export function histoires(R, auj) {
+  const soirs = (pas) => { for (let k = pas > 0 ? 0 : -1; Math.abs(k) <= 7; k += pas) { const iso = ajouter(auj, k); if (ouvertSite(R, iso, 'soir')) return iso; } return null; };
+  const d = soirs(1), avant = soirs(-1), cr = creneaux(R, 'soir'), h = (t) => (cr.includes(t) ? t : cr[Math.min(cr.length - 1, 2)]), out = [];
+  const une = (role, date, heure, couverts, nom, demande, statut = 'confirmee') => out.push({ id: `demo-${date}-soir-${role}`, role, date, service: 'soir', heure: h(heure), couverts, nom, telephone: telephoneDemo(nom), demande, espace: 'salle', statut, source: 'demo', histoire: true });
+  if (d) { une('couple', d, '19:30', 2, 'Aurélie et Marc', 'Anniversaire de mariage'); une('tablee', d, '20:00', 8, 'Famille Weber', 'Une occasion à fêter'); une('allergie', d, '20:30', 2, 'Camille R.', 'Allergie aux fruits à coque'); }
+  if (avant) une('allergie', avant, '20:00', 2, 'Camille R.', 'Allergie aux fruits à coque', 'arrivee');
+  return out;
+}
 export function demo(R, auj, iso, sv) {
-  if (iso < ajouter(auj, -7) || iso > ajouter(auj, 28) || !ouvertSite(R, iso, sv)) return [];
-  const h = hache(iso + sv), we = [5, 6].includes(jourDe(iso)), loin = iso > ajouter(auj, 10);
-  const n = Math.max(0, (2 + (h % 5) + (we ? 3 : 0)) - (loin ? 3 : 0)), cr = creneaux(R, sv), out = [];
+  if (!dansLaFenetre(auj, iso) || !ouvertSite(R, iso, sv)) return [];
+  const cr = creneaux(R, sv), scenes = histoires(R, auj).filter((x) => x.date === iso), out = scenes.filter((x) => x.service === sv);
+  /* Le soir de l'histoire reste un service que la salle peut asseoir : cinq réservations d'exemple au plus, à côté des trois personnages. */
+  const n = Math.min(nombreDemo(auj, iso, sv), out.length >= 3 ? 5 : Infinity);
+  /* L'ordre des personnes ce jour-là ; le soir prend la suite du midi : personne ne vient deux fois dans la journée. */
+  const ordre = RESERVE.filter((nom) => !scenes.some((x) => x.nom === nom)).map((nom) => [hache(`${iso}|${nom}`), nom]).sort((a, b) => a[0] - b[0] || a[1].localeCompare(b[1])).map((x) => x[1]);
+  const avant = servicesDe(R).slice(0, servicesDe(R).findIndex((s) => s.id === sv)).reduce((t, s) => t + (ouvertSite(R, iso, s.id) ? nombreDemo(auj, iso, s.id) : 0), 0);
   for (let i = 0; i < n; i++) {
-    const k = hache(iso + sv + i), t = cr[(k >>> 3) % cr.length];
+    const k = hache(iso + sv + i), t = cr[(k >>> 3) % cr.length], nom = ordre[(avant + i) % ordre.length];
     // Quelques demandes en attente seulement, dans les jours qui viennent (comme un vrai lundi matin).
     const statut = iso < auj ? 'arrivee' : iso > auj && iso <= ajouter(auj, 6) && k % 13 === 0 ? 'a-confirmer' : 'confirmee';
-    /* Un client d'exemple garde le même téléphone d'une réservation à l'autre : sa fiche le reconnaît (v7.7.6). */
-    const qui = (k + i * 7) % NOMS.length;
-    out.push({ id: `demo-${iso}-${sv}-${i}`, date: iso, service: sv, heure: t, couverts: 2 + (k % 5) - (k % 7 === 0 ? 1 : 0), nom: NOMS[qui],
-      telephone: telephoneDemo(NOMS[qui]),
-      demande: DEMANDES[(k >>> 5) % DEMANDES.length], espace: 'salle', statut, source: 'demo' });
+    out.push({ id: `demo-${iso}-${sv}-${i}`, date: iso, service: sv, heure: t, couverts: 2 + (k % 5) - (k % 7 === 0 ? 1 : 0), nom, telephone: telephoneDemo(nom),
+      demande: ((d) => (/Allergie/.test(d) && k % 3 ? '' : d))(DEMANDES[(k >>> 5) % DEMANDES.length]), espace: 'salle', statut, source: 'demo' });
   }
   return out;
 }

@@ -3,7 +3,7 @@
    cartes cadeaux, questions. Une carte par demande : qui, quoi, depuis quand ; un bouton pour l'étape suivante ; en
    l'ouvrant, les détails, les étapes, le message qui part au client (envoi simulé) et une note pour l'équipe.
    Les règles sont dans espace-demandes.js (fonctions pures) ; ce fichier dessine et écoute, avec les outils de espace.js. */
-import { cleClient } from './espace-clients.js?v=7';
+import { cleDemande } from './espace-clients.js?v=7';
 import { GENRES, libelleEtape, suite, recue, demandes as demandesDe, aTraiter, suiviReceptions, MODELES, modele, composer, variablesTable, messageDemande, exempleModele } from './espace-demandes.js?v=7';
 import { pluriel, typo } from './espace-regles.js?v=7';
 
@@ -36,7 +36,7 @@ export function creerDemandes(X) {
       ${g.fin ? `<p><button type="button" class="esp-bouton esp-bouton--discret" data-etape-demande="${e(d.id)}" data-statut="${g.fin[0]}" aria-pressed="${d.statut === g.fin[0]}">${g.fin[1]}</button></p>` : ''}</div>`;
     const corpsCarte = !ouverte ? '' : `<div class="esp-dem__corps" id="dem-${e(d.id)}">
       <dl class="esp-dem__details">${d.lignes.map(([k, v]) => `<div><dt>${e(k)}</dt><dd>${e(v)}</dd></div>`).join('')}</dl>
-      ${d.telephone || d.email ? `<p class="esp-dem__contact">${d.telephone ? `<a class="esp-bouton" href="tel:${e(d.telephone.replace(/\s/g, ''))}">Appeler ${e(d.telephone)}</a>` : ''}${d.email ? `<a class="esp-bouton" href="mailto:${e(d.email)}">Écrire à ${e(d.email)}</a>` : ''}${cleClient({ nom: d.qui, telephone: d.telephone }) && d.qui !== 'Sans nom' ? `<button type="button" class="esp-bouton" data-client="${e(cleClient({ nom: d.qui, telephone: d.telephone }))}" aria-haspopup="dialog">Retrouver ce client</button>` : ''}</p>` : ''}
+      ${d.telephone || d.email ? `<p class="esp-dem__contact">${d.telephone ? `<a class="esp-bouton" href="tel:${e(d.telephone.replace(/\s/g, ''))}">Appeler ${e(d.telephone)}</a>` : ''}${d.email ? `<a class="esp-bouton" href="mailto:${e(d.email)}">Écrire à ${e(d.email)}</a>` : ''}${cleDemande(d) && d.qui !== 'Sans nom' ? `<button type="button" class="esp-bouton" data-client="${e(cleDemande(d))}" aria-haspopup="dialog">Retrouver ce client</button>` : ''}</p>` : ''}
       ${etapes}${msg ? bulle(msg.texte, msg.cle) : ''}
       <p class="esp-champ esp-champ--large"><label for="note-${e(d.id)}">Note pour l'équipe</label><textarea id="note-${e(d.id)}" rows="2" data-note-demande="${e(d.id)}" placeholder="Rappeler après 18 h, budget évoqué…">${e(d.note)}</textarea></p>
       ${X.tachesDe ? X.tachesDe('demande', d.id, `${d.qui} · ${g.nom}`, `Rappeler ${d.prenom || d.qui}`) : ''}</div>`;

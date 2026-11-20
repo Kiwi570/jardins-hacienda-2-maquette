@@ -1,13 +1,17 @@
 {
- "id": "20261120-180808-complet-cible",
- "date": "2026-11-20T18:27:18.843Z",
+ "id": "20261120-221320-complet-cible-partiel",
+ "date": "2026-11-20T22:36:38.985Z",
  "niveau": "complet",
- "pages": "/espace",
- "etapes": "toutes",
+ "pages": "/,/votre-venue,/espace",
+ "etapes": [
+  "fichiers",
+  "mesures",
+  "parcours"
+ ],
  "version": "7",
  "echecs": 0,
- "aRegarder": 7,
- "nonLances": 1,
+ "aRegarder": 0,
+ "nonLances": 0,
  "manquants": 0,
  "statut": "complet"
 }

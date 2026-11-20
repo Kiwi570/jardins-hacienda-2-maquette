@@ -8,9 +8,10 @@
 // et de pizzalyght-maquette/panier (créneaux calculés à l'heure du lieu avec un délai, état relu, focus rendu après rendu).
 // Sans JavaScript : un formulaire ordinaire d'un seul tenant (calendrier, liste d'heures, nombre). Mode calme : sans transition.
 import { pret } from '../../socle/socle.js?v=7';
-import { ajouterResaSite } from '../../espace-stock.js?v=7';
+import { ajouterResaSite, ajouterDemandeSite } from '../../espace-stock.js?v=7';
 // v7.8.0 : ouvertures, heures d'arrivée et « complet » viennent des règles communes au site et à l'espace.
-import { etatService, arrivees, faisabilite } from '../../disponibilites.js?v=7';
+import { etatService, arrivees, faisabilite, alternatives } from '../../disponibilites.js?v=7';
+import { codeVenue } from '../../espace-venue.js?v=7';
 
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -87,6 +88,8 @@ export async function init(root, options = {}) {
   }
   const libres = (iso, sid, c) => creneaux(iso, sid, c).filter((x) => x.etat === 'libre').length;
   const reservable = (iso, c = 2) => services.some((sv) => libres(iso, sv.id, c) > 0);
+  /** Un service ouvert, avec des heures encore à venir, mais plus aucune de libre : complet (v7.11.0). */
+  const complet = (iso, sid, c = val().couverts) => { const l = creneaux(iso, sid, c); return l.length > 0 && l.every((x) => x.etat === 'complet'); };
   const espaceOk = (e, iso) => !e.mois || !iso || e.mois.includes(+iso.slice(5, 7));
 
   // ---------- Champs ----------
@@ -111,7 +114,9 @@ export async function init(root, options = {}) {
   function carte(iso, nom, pressee, attrs) {
     const d = dispo(iso, val().couverts), ok = d.some((x) => x.libre), ferme = !services.some((sv) => ouvert(iso, sv.id));
     const etiquette = `${nom ? nom + ', ' : ''}${dateLongue(iso)} : ${ok ? dispoTexte(d) : ferme ? 'fermé' : 'complet'}`;
-    return `<button type="button" class="resa__jour" ${attrs} aria-pressed="${pressee}" ${ok ? '' : 'disabled'} aria-label="${echap(etiquette)}">`
+    /* v7.11.0 : un jour complet reste choisissable : on y propose d'autres moments et la liste d'attente. Un jour fermé, non. */
+    const plein = !ok && services.some((sv) => complet(iso, sv.id));
+    return `<button type="button" class="resa__jour${plein ? ' est-complet' : ''}" ${attrs} aria-pressed="${pressee}" ${ok || plein ? '' : 'disabled'} aria-label="${echap(etiquette)}${plein ? ' : voir les autres possibilités' : ''}">`
       + `<span class="resa__jour-mois">${court(iso, { month: 'short' })}</span><b class="resa__jour-n">${+iso.slice(8)}</b><span class="resa__jour-nom">${nom === "Aujourd'hui" ? '<span class="resa__nom-long">Aujourd\'hui</span><span class="resa__nom-court">Auj.</span>' : nom || maj(court(iso, { weekday: 'short' }))}</span>`
       + `<span class="resa__jour-dispo">${ok ? d.map((x) => `<i class="resa__dispo${x.libre ? ' est-libre' : ''}">${ICO[x.sv.id] || ''}</i>`).join('') : `<small>${ferme ? 'fermé' : 'complet'}</small>`}</span></button>`;
   }
@@ -130,8 +135,8 @@ export async function init(root, options = {}) {
     const premier = `${calMois}-01`, [a, m] = calMois.split('-').map(Number), nb = new Date(Date.UTC(a, m, 0)).getUTCDate(), decale = (jourDe(premier) + 6) % 7;
     let cases = '<span></span>'.repeat(decale);
     for (let d = 1; d <= nb; d++) {
-      const iso = `${calMois}-${String(d).padStart(2, '0')}`, plage = iso >= auj && iso <= fin, ok = plage && reservable(iso, v.couverts);
-      cases += `<button type="button" class="resa__cal-j${iso === auj ? ' est-auj' : ''}" data-cal-jour="${iso}" aria-pressed="${iso === v.date}" ${ok ? '' : 'disabled'} aria-label="${echap(maj(dateLongue(iso)))}${ok ? '' : plage ? ' : fermé ou complet' : ''}">${d}</button>`;
+      const iso = `${calMois}-${String(d).padStart(2, '0')}`, plage = iso >= auj && iso <= fin, libre = plage && reservable(iso, v.couverts), ok = libre || (plage && services.some((sv) => complet(iso, sv.id, v.couverts)));
+      cases += `<button type="button" class="resa__cal-j${iso === auj ? ' est-auj' : ''}" data-cal-jour="${iso}" aria-pressed="${iso === v.date}" ${ok ? '' : 'disabled'} aria-label="${echap(maj(dateLongue(iso)))}${libre ? '' : ok ? ' : complet, voir les autres possibilités' : plage ? ' : fermé' : ''}">${d}</button>`;
     }
     cal.innerHTML = `<div class="resa__cal-tete"><button type="button" class="resa__cal-nav" data-cal-mois="-1" ${calMois <= auj.slice(0, 7) ? 'disabled' : ''} aria-label="Mois précédent">‹</button>`
       + `<p class="resa__cal-titre" aria-live="polite">${maj(dateLongue(premier, { month: 'long', year: 'numeric' }))}</p>`
@@ -208,11 +213,89 @@ export async function init(root, options = {}) {
       + liste.map((x) => `<label class="resa__creneau${x.etat === 'complet' ? ' est-complet' : ''}${x.t.endsWith(':00') ? ' est-pleine' : ''}"><input type="radio" name="heure" value="${x.t}" ${x.t === garde ? 'checked' : ''} ${x.etat === 'complet' ? 'disabled' : ''} required><i class="resa__point" aria-hidden="true"></i><span>${x.libelle}</span>${x.etat === 'complet' ? '<small>complet</small>' : ''}</label>`).join('')
       + '</div></div></div>' : '';
     const nLibres = liste.filter((x) => x.etat === 'libre').length;
-    aideCr.textContent = !v.date ? 'Choisissez d\'abord une date.' : !v.service ? 'Ce jour-là, le restaurant est fermé ou complet : choisissez une autre date.' : !liste.length ? 'Plus de créneau pour ce service.' : !nLibres ? 'Ce service est complet : essayez l\'autre service ou un autre jour.'
+    aideCr.textContent = !v.date ? 'Choisissez d\'abord une date.' : !v.service ? (services.some((sv) => complet(v.date, sv.id, v.couverts)) ? 'Ce jour-là est complet. D\'autres possibilités sont proposées juste en dessous.' : 'Ce jour-là, le restaurant est fermé ou complet : choisissez une autre date.') : !liste.length ? 'Plus de créneau pour ce service.' : !nLibres ? 'Ce service est complet : essayez l\'autre service ou un autre jour.'
       : heurePerdue && !garde ? `${heure(enMin(heurePerdue))} n'est plus libre pour ${v.couverts} personnes : choisissez une autre heure.` : `${nLibres} créneau${nLibres > 1 ? 'x' : ''} disponible${nLibres > 1 ? 's' : ''}${v.couverts >= 6 ? ` pour ${v.couverts} personnes` : ''}.`;
     majFrise(true);
     if (focus) (zone.querySelector(`input[value="${focus}"]:not(:disabled)`) || zone.querySelector('input:not(:disabled)'))?.focus({ preventScroll: true });
+    rendreAlternatives();
   }
+
+  /* ---------- v7.11.0 · Quand le choix n'est pas possible : d'autres possibilités, et la liste d'attente ----------
+     Chaque proposition dit ce qui change ; tout le reste de la saisie est gardé. La liste d'attente n'est pas une
+     réservation : elle le dit. Démonstration : l'inscription arrive dans l'espace de ce navigateur ; rien n'est envoyé.
+     En mode connecté, la liste d'attente n'est pas proposée (le serveur ne la connaît pas encore). */
+  /* La typographie française de ce que cette zone écrit : une espace insécable devant : ; ! ? */
+  const fr = (h) => h.replace(/ ([:;!?])(?=[ <]|$)/g, '\u00a0$1');
+  const zoneAlt = document.createElement('div'); zoneAlt.className = 'resa__alt'; zoneAlt.dataset.resaAlt = ''; zoneAlt.hidden = true; aideCr.after(zoneAlt);
+  const connecte = !!document.querySelector('meta[name="jh-api"]');
+  let alt = [], attente = null, attenteFaite = null;
+  function souhaitImpossible() {
+    const v = val(); if (!v.date) return null;
+    /* Une heure précise qui n'est plus libre, dans un service encore ouvert. */
+    if (v.service && heurePerdue && !v.heure && !complet(v.date, v.service)) return { date: v.date, service: v.service, heure: heurePerdue, espace: v.espace, complet: true, quoi: `${heure(enMin(heurePerdue))} n'est plus libre` };
+    /* Un service complet ce jour-là : celui qu'on venait voir (adresse de la page), sinon le premier complet. */
+    const voulu = [params.get('service'), 'soir', 'midi'].filter(Boolean), sid = voulu.find((x) => services.some((sv) => sv.id === x) && complet(v.date, x)) || services.find((sv) => complet(v.date, sv.id))?.id;
+    if (sid && (!v.service || !libres(v.date, v.service, v.couverts))) return { date: v.date, service: sid, heure: '', espace: v.espace, complet: true, quoi: `le ${services.find((x) => x.id === sid).libelle.toLowerCase()} du ${dateLongue(v.date, { weekday: 'long', day: 'numeric', month: 'long' })} est complet` };
+    return null;
+  }
+  function rendreAlternatives() {
+    const s = souhaitImpossible();
+    if (attenteFaite) { zoneAlt.hidden = false; zoneAlt.innerHTML = fr(`<p class="resa__alt-fait" role="status" tabindex="-1" data-resa-alt-fait><b>Vous êtes sur la liste d'attente</b> pour le ${echap(dateLongue(attenteFaite.date, { weekday: 'long', day: 'numeric', month: 'long' }))}, ${attenteFaite.periode === 'midi' ? 'le midi' : 'le soir'}, ${attenteFaite.couverts} personne${attenteFaite.couverts > 1 ? 's' : ''}. Ce n'est pas une réservation : aucune table n'est retenue. Si une place se libère, le restaurant vous prévient et vous laisse un délai pour répondre.</p><p class="resa__simule">Démonstration : rien n'a été envoyé. L'inscription est visible dans l'espace du restaurant, sur cet appareil.</p>`); return; }
+    if (!s) { zoneAlt.hidden = true; zoneAlt.innerHTML = ''; alt = []; attente = null; return; }
+    /* Le formulaire de liste d'attente est ouvert pour ce même souhait : on ne le redessine pas (la saisie est gardée). */
+    const cle = `${s.date}|${s.service}|${s.heure}|${val().couverts}`;
+    if (attente && zoneAlt.dataset.cle === cle && zoneAlt.querySelector('[data-resa-attente-form]')) return;
+    zoneAlt.dataset.cle = cle;
+    alt = alternatives(R, s, { auj, horizon, creneaux: (iso, sid) => creneaux(iso, sid, val().couverts), jour: (iso) => dateLongue(iso, { weekday: 'long', day: 'numeric', month: 'long' }) });
+    const v = val();
+    /* Là où se trouve le client : sous les services si le service est complet (étape « quand »), sous les heures si c'est une heure qui manque. */
+    const ancre = s.heure ? aideCr : form.querySelector('[data-champ="service"]') || aideCr; if (zoneAlt.previousElementSibling !== ancre) ancre.after(zoneAlt);
+    zoneAlt.hidden = false;
+    zoneAlt.innerHTML = fr(`<p class="resa__alt-titre" id="resa-alt-titre">${echap(maj(s.quoi))}. Voici ce que nous pouvons vous proposer&nbsp;:</p>
+      <ul class="resa__alt-liste" aria-labelledby="resa-alt-titre">${alt.map((a, i) => `<li><button type="button" class="resa__alt-choix" data-resa-alt-choix="${i}"><b>${echap(maj(a.titre))}</b><small>Ce qui change&nbsp;: ${echap(a.change)}.</small></button></li>`).join('')}
+        ${s.complet && !connecte ? `<li><button type="button" class="resa__alt-choix resa__alt-choix--attente" data-resa-attente aria-expanded="${!!attente}"><b>M'inscrire sur la liste d'attente</b><small>Ce qui change&nbsp;: ce n'est pas une réservation. Vous êtes prévenu si une place se libère.</small></button></li>` : ''}</ul>
+      ${alt.length || (s.complet && !connecte) ? '' : `<p class="resa__alt-rien">Aucune autre possibilité en ligne pour ces jours-là : appelez-nous${R.telephone ? ` au ${echap(R.telephone)}` : ''}.</p>`}
+      ${attente ? `<div class="resa__attente" data-resa-attente-form role="group" aria-labelledby="resa-att-titre"><p class="resa__alt-titre" id="resa-att-titre">Liste d'attente : ${echap(dateLongue(s.date, { weekday: 'long', day: 'numeric', month: 'long' }))}, ${s.service === 'midi' ? 'le midi' : 'le soir'}, ${v.couverts} personne${v.couverts > 1 ? 's' : ''}</p>
+        <p class="resa__attente-champ"><label for="att-heure">Heure souhaitée</label><select id="att-heure" data-att="heure">${arrivees(R, s.date, s.service).map((t) => `<option value="${t}"${t === (s.heure || attente.heure) ? ' selected' : ''}>${heure(enMin(t))}</option>`).join('')}</select></p>
+        <p class="resa__attente-champ"><label for="att-souplesse">Votre souplesse</label><select id="att-souplesse" data-att="souplesse"><option value="0">À cette heure précise</option><option value="30" selected>À une demi-heure près</option><option value="60">À une heure près</option><option value="999">Tout le service me convient</option></select></p>
+        <fieldset class="resa__attente-champ resa__attente-espaces"><legend>Où accepteriez-vous d'être installés&nbsp;?</legend>${espaces.filter((x) => espaceOk(x, s.date)).map((x) => `<label><input type="checkbox" data-att="espace" value="${echap(x.id)}" checked> ${echap(x.libelle)}</label>`).join('')}</fieldset>
+        <p class="resa__attente-champ"><label for="att-prenom">Prénom</label><input id="att-prenom" data-att="prenom" autocomplete="given-name" value="${echap(v.prenom)}"></p>
+        <p class="resa__attente-champ"><label for="att-nom">Nom</label><input id="att-nom" data-att="nom" autocomplete="family-name" value="${echap(v.nom)}"></p>
+        <p class="resa__attente-champ"><label for="att-tel">Téléphone</label><input id="att-tel" data-att="telephone" type="tel" autocomplete="tel" inputmode="tel" value="${echap(v.telephone)}"></p>
+        <p class="resa__attente-champ"><label for="att-mail">Adresse e-mail <small>à défaut de téléphone</small></label><input id="att-mail" data-att="email" type="email" autocomplete="email" value="${echap(v.email)}"></p>
+        <p class="resa__attente-erreur" role="alert" data-att-erreur hidden></p>
+        <p class="resa__attente-actions"><button type="button" class="bouton" data-resa-attente-envoyer>M'inscrire sur la liste d'attente</button><button type="button" class="bouton bouton--contour" data-resa-attente-fermer>Non merci</button></p>
+        <p class="resa__alt-note">Une inscription n'est pas une réservation. Vos coordonnées servent seulement à vous prévenir.</p></div>` : ''}
+      <p class="resa__alt-note">Ce que vous avez déjà saisi est gardé.</p>`);
+  }
+  const espaces = R.espaces || [];
+  /* Les champs de la liste d'attente ne font pas partie de la demande de table : leurs saisies ne relancent pas le formulaire. */
+  for (const t of ['input', 'change']) zoneAlt.addEventListener(t, (e) => e.stopPropagation());
+  zoneAlt.addEventListener('click', (e) => {
+    const c = e.target.closest('[data-resa-alt-choix]');
+    if (c) { const a = alt[+c.dataset.resaAltChoix]; if (!a) return;
+      heurePerdue = ''; attente = null;
+      if (a.date !== dateEl.value) { dateEl.value = a.date; erreur(dateEl, ''); tout('date'); }
+      const sv = form.querySelector(`input[name="service"][value="${a.service}"]`); if (sv && !sv.disabled && !sv.checked) { sv.checked = true; tout('service'); }
+      if (a.espace) { poser('espace', a.espace); tout('autre'); }
+      if (a.heure) { poser('heure', a.heure); tout('heure'); majFrise(true); }
+      if (multi && a.heure) allerEtape(2, { focus: false });
+      aideCr.textContent = `C'est noté : ${a.titre.charAt(0).toLowerCase() + a.titre.slice(1)}. Le reste de votre saisie est gardé.`;
+      (form.querySelector('input[name="heure"]:checked') || form.querySelector('input[name="heure"]:not(:disabled)') || aideCr).focus?.({ preventScroll: true }); return; }
+    if (e.target.closest('[data-resa-attente]')) { const s = souhaitImpossible(); attente = attente ? null : { heure: s?.heure || arrivees(R, s.date, s.service)[Math.floor(arrivees(R, s.date, s.service).length / 2)] }; rendreAlternatives(); (attente ? zoneAlt.querySelector('#att-heure') : zoneAlt.querySelector('[data-resa-attente]'))?.focus({ preventScroll: true }); return; }
+    if (e.target.closest('[data-resa-attente-fermer]')) { attente = null; rendreAlternatives(); zoneAlt.querySelector('[data-resa-attente]')?.focus({ preventScroll: true }); return; }
+    const env = e.target.closest('[data-resa-attente-envoyer]');
+    if (env) { const s = souhaitImpossible(), q = (k) => zoneAlt.querySelector(`[data-att="${k}"]`), err = zoneAlt.querySelector('[data-att-erreur]'), dire = (m, el) => { err.textContent = m; err.hidden = false; el?.focus(); };
+      if (!s) return; if (env.disabled) return;
+      const nom = q('nom').value.trim(), prenom = q('prenom').value.trim(), telephone = q('telephone').value.trim(), email = q('email').value.trim();
+      if (!nom && !prenom) return dire('Indiquez votre nom, pour que le restaurant sache qui prévenir.', q('prenom'));
+      if (telephone.replace(/\D/g, '').length < 9 && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return dire('Indiquez un téléphone ou une adresse e-mail : sans cela, le restaurant ne peut pas vous prévenir.', q('telephone'));
+      const fiche = { genre: 'attente', date: s.date, periode: s.service, heure: q('heure').value, souplesse: +q('souplesse').value, espaces: [...zoneAlt.querySelectorAll('[data-att="espace"]:checked')].map((x) => x.value), couverts: val().couverts, prenom, nom, telephone, email, message: val().message };
+      env.disabled = true; /* un double clic n'inscrit qu'une fois */
+      if (ajouterDemandeSite(fiche) === false) { env.disabled = false; return dire('Votre inscription n\'a pas pu être enregistrée. Votre saisie est gardée : réessayez, ou appelez-nous.', env); }
+      attenteFaite = fiche; attente = null; rendreAlternatives(); zoneAlt.querySelector('[data-resa-alt-fait]')?.focus({ preventScroll: true });
+      root.dispatchEvent(new CustomEvent('reservation:attente', { detail: fiche, bubbles: true })); }
+  });
 
   // ---------- 3 · Où : la terrasse hors saison est désactivée, avec sa raison ; la table venue du plan ----------
   function majEspaces() {
@@ -252,8 +335,8 @@ export async function init(root, options = {}) {
       + (t.demande ? ligne('demande', 'Une demande', echap(t.demande)) : '')
       + ligne('contact', 'Au nom de', echap(t.contact))
       + '</ul>'
-      + (verif ? '<button type="button" class="resa__bouton carton__confirmer" data-resa-confirmer>Envoyer ma demande</button><p class="resa__simule">Envoi simulé : rien ne part vers le restaurant dans cette démonstration.</p>' : '')
-      + (fini ? `<p class="carton__reserve" aria-hidden="true" data-superpose><span>Demande reçue</span></p><p class="carton__ref">Référence <b>${reference}</b></p><p class="carton__suite">Le restaurant vous confirme votre table par message.</p><p class="resa__simule">${echap(R.message_simule || 'Réservation simulée : rien n\'a été envoyé. Sur le site final, la demande part vers le restaurant, qui la confirme par message.')}</p>`
+      + (verif ? '<p class="carton__statut">Après l\'envoi\u00a0: <b>demande reçue</b>. Elle devient une réservation quand le restaurant la confirme.</p><button type="button" class="resa__bouton carton__confirmer" data-resa-confirmer>Envoyer ma demande</button><p class="resa__simule">Envoi simulé : rien ne part vers le restaurant dans cette démonstration.</p>' : '')
+      + (fini ? `<p class="carton__reserve" aria-hidden="true" data-superpose><span>Demande reçue</span></p><p class="carton__ref">Référence <b>${reference}</b></p><p class="carton__suite">Statut\u00a0: <b>demande reçue</b>, en attente de confirmation. Le restaurant vous confirme votre table par message.</p>${connecte ? '' : `<p class="carton__venue"><a href="/votre-venue?r=${encodeURIComponent(reference)}&amp;c=${codeVenue(reference, v.telephone)}">Suivre, modifier ou annuler ma demande</a></p>`}<p class="resa__simule">${echap(R.message_simule || 'Réservation simulée : rien n\'a été envoyé. Sur le site final, la demande part vers le restaurant, qui la confirme par message.')}</p>`
         + '<button type="button" class="resa__bouton resa__bouton--ligne" data-resa-nouvelle>Faire une autre réservation</button>' : '')
       + '</div>';
     avant = t;
@@ -389,13 +472,14 @@ export async function init(root, options = {}) {
     if (n === 'couverts') majCouverts(parseInt(couvEl.value, 10) || 1);
     if (e.target.getAttribute('aria-invalid')) erreur(e.target, '');
     if (n === 'heure') { const h = form.querySelector('input[name="heure"]'); if (h) erreur(h, ''); heurePerdue = ''; }
+    if (n === 'date' || n === 'couverts') { attenteFaite = null; attente = null; }
     tout(n === 'date' || n === 'couverts' ? n : n === 'heure' ? 'heure' : n === 'service' ? 'service' : 'autre');
   });
   form.addEventListener('input', (e) => { if (e.target.matches('textarea, input[type="text"], input[type="tel"], input[type="email"]')) { if (e.target.getAttribute('aria-invalid')) erreur(e.target, ''); rendreRecap(); sauver(); } });
   form.addEventListener('click', (e) => {
     const j = e.target.closest('[data-jour], [data-cal-jour]');
     if (j && !j.disabled) {
-      const iso = j.dataset.jour || j.dataset.calJour; dateEl.value = iso; erreur(dateEl, '');
+      const iso = j.dataset.jour || j.dataset.calJour; dateEl.value = iso; erreur(dateEl, ''); attenteFaite = null; attente = null;
       if (j.dataset.calJour) ouvrirCal(false);
       tout('date'); (form.querySelector(`[data-jour="${iso}"]`) || form.querySelector('[data-resa-plus-tard]'))?.focus({ preventScroll: true }); return;
     }

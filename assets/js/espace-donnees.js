@@ -14,6 +14,10 @@ import { MUTATIONS_SERVICE } from './espace-service.js?v=7';
 import { MUTATIONS_SALLE } from './espace-salle.js?v=7';
 import { MUTATIONS_CLIENTS } from './espace-clients.js?v=7';
 import { MUTATIONS_TACHES } from './espace-taches.js?v=7';
+import { MUTATIONS_PRESENCE } from './espace-presence.js?v=7';
+import { MUTATIONS_ATTENTE } from './espace-attente.js?v=7';
+import { MUTATIONS_REPLI } from './espace-repli.js?v=7';
+import { MUTATIONS_VENUE } from './espace-venue.js?v=7';
 export { estVide } from './espace-stock.js?v=7';
 
 const basculer = (liste = [], valeur, actif) => [...new Set([...liste.filter((x) => x !== valeur), ...(actif ? [valeur] : [])])];
@@ -58,6 +62,10 @@ export const MUTATIONS = {
   ...MUTATIONS_SALLE,
   ...MUTATIONS_CLIENTS,
   ...MUTATIONS_TACHES,
+  ...MUTATIONS_PRESENCE,
+  ...MUTATIONS_ATTENTE,
+  ...MUTATIONS_REPLI,
+  ...MUTATIONS_VENUE,
   /* Photos */
   photo(S, { emplacement, photo }) { (S.photos ||= {})[emplacement] = { ...(S.photos[emplacement] || {}), nom: photo.nom || null, l: photo.l || null, src: photo.src || null }; },
   cadrage(S, { emplacement, cadrage, origine }) { (S.photos ||= {})[emplacement] = { ...origine, ...(S.photos[emplacement] || {}), cadrage }; },
@@ -199,6 +207,8 @@ export function creerDepot(stockage = stockLocal, horloge = () => Date.now(), { 
     etat: () => etat,
     resasSite: () => stockage.resasSite(),
     demandesSite: () => stockage.demandesSite?.() || [],
+    /* v7.11.0 : ce que les clients ont fait depuis « Votre venue », et la réponse de l'équipe. */
+    venues: () => stockage.venues?.() || {}, noterVenue: (id, champs) => stockage.noterVenue?.(id, champs) !== false,
     /** Recharge l'état quand il a changé ailleurs (autre onglet) et prévient ; renvoie de quoi arrêter l'écoute. */
     ecouter(f) { return stockage.ecouter ? stockage.ecouter((quoi) => { if (quoi === 'etat') etat = stockage.lire(); f(quoi); }) : () => {}; },
     abonner(f) { abonnes.add(f); return () => abonnes.delete(f); },
