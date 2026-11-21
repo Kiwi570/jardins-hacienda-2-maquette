@@ -3,7 +3,7 @@
    une place peut être proposée, la proposition et sa réponse, l'inscription notée par l'équipe.
    Portée : démonstration, sur cet appareil. Les messages sont des aperçus : rien n'est envoyé. */
 import { fmt, maj, heure, pluriel, typo, servicesDe, creneaux, ajouter } from './espace-regles.js?v=7';
-import { ETATS_ATTENTE, SOUPLESSES, ESPACES_ATTENTE, DELAI_REPONSE, attenteAvecPossibles, trouverAttente, refusAttente, resaDepuisAttente, echeance, messageProposition, quandDit } from './espace-attente.js?v=7';
+import { ETATS_ATTENTE, SOUPLESSES, ESPACES_ATTENTE, DELAI_REPONSE, MARGE_AVANT_ARRIVEE, DELAI_DERNIERE_MINUTE, attenteAvecPossibles, trouverAttente, refusAttente, resaDepuisAttente, delaiProposition, messageProposition, quandDit } from './espace-attente.js?v=7';
 
 const FILTRES = [['actives', 'En cours'], ['possibles', 'Place à proposer'], ['closes', 'Terminées'], ['toutes', 'Toutes']];
 const EN_COURS = ['en-attente', 'proposee', 'expiree'];
@@ -15,17 +15,26 @@ export function creerAttente(X) {
   const souplesseDite = (x) => (!x.heure ? 'à n\'importe quelle heure du service' : x.souplesse >= 999 ? `vers ${heure(x.heure)}, tout le service convient` : x.souplesse ? `vers ${heure(x.heure)}, à ${x.souplesse === 30 ? 'une demi-heure' : 'une heure'} près` : `à ${heure(x.heure)} précisément`);
   const rangDit = (x) => (x.rang ? `${x.rang === 1 ? '1re' : `${x.rang}e`} inscrite pour ce ${x.periode === 'midi' ? 'midi' : 'soir'}` : '');
 
+  /* Le bouton d'une proposition dit son délai : standard, ou « dernière minute » quand il reste moins d'une heure. */
+  const hm = (instant) => heure(String(instant).slice(11, 16));
+  function boutonsProposer(x, n, refaire = false) {
+    const l = x.possibles.map((c) => ({ c, d: delaiProposition(x, c.heure, ctx().maintenant) })).filter((o) => o.d.mode).slice(0, n);
+    return l.map(({ c, d }) => `<button type="button" class="esp-bouton esp-bouton--ok${d.mode === 'derniere-minute' ? ' esp-att__minute' : ''}" data-attente-proposer="${e(x.id)}" data-heure="${c.heure}" data-service="${c.service}" data-mode="${d.mode}"><span>${d.mode === 'derniere-minute' ? 'Dernière minute : proposer' : refaire ? 'Refaire une proposition :' : 'Proposer'} ${heure(c.heure)}</span><small>${d.mode === 'derniere-minute' ? `réponse sous ${d.minutes} min, avant ${hm(d.expire)}` : `réponse avant ${hm(d.expire)}`}</small></button>`).join('');
+  }
   function carte(x) {
     const p = x.proposition || {}, tel = D.telephone || '', contact = [x.telephone, x.email].filter(Boolean).join(' · ');
+    const boutons = boutonsProposer(x, 3), boutonsRefaire = boutonsProposer(x, 2, true), minute = /data-mode="derniere-minute"/.test(boutons + boutonsRefaire);
+    const tropTard = x.possibles.length && !boutons ? '<p class="esp-att__rien">Il est trop tard pour proposer ces horaires : l\'heure d\'arrivée est là. Proposez un autre créneau.</p>' : '';
+    const noteMinute = minute ? `<p class="esp-att__note-minute"><b>Dernière minute.</b> Il reste moins d'une heure avant l'arrivée : le délai habituel n'est plus possible. Le client aura ${DELAI_DERNIERE_MINUTE} minutes pour répondre, au plus tard jusqu'à l'heure d'arrivée.</p>` : '';
     const suite = x.etat === 'en-attente' ? (x.possibles.length
-        ? `<p class="esp-att__possible"><b>Une place peut être proposée.</b> ${x.possibles.slice(0, 3).map((c) => `<button type="button" class="esp-bouton esp-bouton--ok" data-attente-proposer="${e(x.id)}" data-heure="${c.heure}" data-service="${c.service}">Proposer ${heure(c.heure)}</button>`).join('')}<span class="esp-att__place">${e(maj(x.possibles[0].placeNom))}${x.possibles[0].espace === 'terrasse' ? ', en terrasse' : ''}</span></p>`
+        ? (boutons ? `<p class="esp-att__possible"><b>Une place peut être proposée.</b> ${boutons}<span class="esp-att__place">${e(maj(x.possibles[0].placeNom))}${x.possibles[0].espace === 'terrasse' ? ', en terrasse' : ''}</span></p>${noteMinute}` : tropTard)
         : `<p class="esp-att__rien">${x.motif === 'place-prise' ? 'La place proposée a été prise avant sa réponse. ' : ''}Aucune place ne correspond pour l'instant à ce jour, cette heure et ce nombre de personnes.</p>`)
-      : x.etat === 'proposee' ? `<p class="esp-att__propo"><b>Proposition préparée</b> pour ${heure(p.heure)}, valable jusqu'au ${e(quandDit(p.expire))}. La place n'est pas bloquée&nbsp;: elle sera revérifiée à l'acceptation.</p>
+      : x.etat === 'proposee' ? `<p class="esp-att__propo"><b>Proposition préparée${p.mode === 'derniere-minute' ? ' en dernière minute' : ''}</b> pour ${heure(p.heure)}, valable jusqu'au ${e(quandDit(p.expire))}. La place n'est pas bloquée&nbsp;: elle sera revérifiée à l'acceptation.</p>
           <details class="esp-att__message"><summary>Voir le message <span class="esp-source">Aperçu, rien n'est envoyé</span></summary><p>${e(typo(messageProposition(x, tel)))}</p></details>
           <p class="esp-att__actions"><button type="button" class="esp-bouton esp-bouton--ok" data-attente-accepter="${e(x.id)}">Le client accepte</button><button type="button" class="esp-bouton esp-bouton--non" data-attente-reponse="${e(x.id)}" data-reponse="refusee">Le client refuse</button><button type="button" class="esp-bouton esp-bouton--discret" data-attente-reponse="${e(x.id)}" data-reponse="en-attente">Retirer la proposition</button></p>`
       : x.etat === 'expiree' ? `<p class="esp-att__propo est-expiree"><b>Proposition expirée</b> le ${e(quandDit(p.expire))}, sans réponse. La place n'avait pas été gardée.</p>
-          <p class="esp-att__actions">${x.possibles.slice(0, 2).map((c) => `<button type="button" class="esp-bouton esp-bouton--ok" data-attente-proposer="${e(x.id)}" data-heure="${c.heure}" data-service="${c.service}">Refaire une proposition : ${heure(c.heure)}</button>`).join('')}<button type="button" class="esp-bouton" data-attente-reponse="${e(x.id)}" data-reponse="en-attente">Remettre en attente</button></p>
-          ${x.possibles.length ? '' : '<p class="esp-att__rien">Aucune place ne correspond pour l\'instant.</p>'}`
+          <p class="esp-att__actions">${boutonsRefaire}<button type="button" class="esp-bouton" data-attente-reponse="${e(x.id)}" data-reponse="en-attente">Remettre en attente</button></p>${noteMinute}
+          ${x.possibles.length ? tropTard && !boutonsRefaire ? tropTard : '' : '<p class="esp-att__rien">Aucune place ne correspond pour l\'instant.</p>'}`
       : x.etat === 'acceptee' ? `<p class="esp-att__propo est-acceptee"><b>Réservation créée</b> pour ${heure(p.heure || x.heure)}, ${pluriel(x.couverts, 'couvert')}. <button type="button" class="esp-lien" data-attente-voir="${e(x.resaId || '')}" data-date="${x.date}" data-service="${e(p.service || x.periode)}">Voir la réservation</button></p>`
       : x.etat === 'refusee' ? `<p class="esp-att__rien">Le client a décliné la proposition de ${heure(p.heure || x.heure)}.</p><p class="esp-att__actions"><button type="button" class="esp-bouton" data-attente-reponse="${e(x.id)}" data-reponse="en-attente">Remettre en attente</button></p>`
       : x.etat === 'perimee' ? '<p class="esp-att__rien">La date est passée : aucune place ne s\'est libérée.</p>' : '<p class="esp-att__rien">Inscription retirée.</p>';
@@ -66,7 +75,7 @@ export function creerAttente(X) {
       <div class="esp-att-filtres"><span class="esp-choix" role="group" aria-label="Filtrer la liste d'attente">${FILTRES.map(([id, nom]) => `<button type="button" class="esp-choix__b" data-filtre-attente="${id}" aria-pressed="${id === f}">${nom}${nb[id] ? ` <span class="esp-choix__n">${nb[id]}</span>` : ''}</button>`).join('')}</span>
         ${jours.length > 1 ? `<p class="esp-champ esp-att-filtres__jour"><label for="att-jour">Jour</label><select id="att-jour" data-attente-jour><option value="">Tous les jours</option>${jours.map((d) => `<option value="${d}"${d === jour ? ' selected' : ''}>${e(jourDit(d))}</option>`).join('')}</select></p>` : ''}</div>
       ${vus.length ? `<ol class="esp-att-liste" aria-label="Les inscriptions, la plus ancienne d'abord">${vus.map(carte).join('')}</ol>` : `<p class="esp-vide">${tous.length ? 'Aucune inscription dans ce filtre.' : 'Personne en liste d\'attente. Les inscriptions faites sur la page Réserver arrivent ici.'}</p>`}
-      <p class="esp-aide esp-att-regle"><b>La règle&nbsp;:</b> une proposition ne bloque pas la place. Le client a ${DELAI_REPONSE / 60} heures pour répondre (au plus tard une heure avant l'arrivée) ; la disponibilité est revérifiée au moment où il accepte, et une seule réservation est créée. Délai d'exemple, à régler avec vous. Aucun message n'est envoyé&nbsp;: ce sont des aperçus.</p>`);
+      <p class="esp-aide esp-att-regle"><b>La règle&nbsp;:</b> une proposition ne bloque pas la place. Le client a ${DELAI_REPONSE / 60} heures pour répondre, au plus tard jusqu'à ${MARGE_AVANT_ARRIVEE === 60 ? 'une heure' : `${MARGE_AVANT_ARRIVEE} minutes`} avant l'arrivée. S'il reste moins que cela, la proposition devient « dernière minute »\u00a0: ${DELAI_DERNIERE_MINUTE} minutes pour répondre, au plus tard jusqu'à l'heure d'arrivée. À l'échéance, la proposition expire. La disponibilité est revérifiée au moment où le client accepte, et une seule réservation est créée. Délais d'exemple, à régler avec vous. Aucun message n'est envoyé&nbsp;: ce sont des aperçus.</p>`);
   }
 
   const revenir = (id) => { X.rendre(); const li = $(`[data-attente="${CSS.escape(id)}"]`, root); (li?.querySelector('button') || $('[data-filtre-attente][aria-pressed="true"]', root))?.focus({ preventScroll: true }); };
@@ -76,8 +85,10 @@ export function creerAttente(X) {
     if (t.closest('[data-attente-fermer]')) { etat.attenteAjout = null; X.rendre(); $('[data-attente-nouvelle]', root)?.focus(); return true; }
     const pr = t.closest('[data-attente-proposer]');
     if (pr) { const id = pr.dataset.attenteProposer, x = trouverAttente(ctx(), S(), id), h = pr.dataset.heure, maintenant = ctx().maintenant; if (!x) return true;
-      const expire = echeance(x, h, maintenant);
-      agir('attenteProposer', { id, heure: h, service: pr.dataset.service, faite: maintenant, expire }, { msg: `Proposition préparée pour ${x.nom} : ${heure(h)}, valable jusqu'au ${quandDit(expire)}. Aucun message n'est envoyé.` }); revenir(id); return true; }
+      /* Le délai est calculé au moment du clic, avec l'heure de la maison ; il est enregistré avec la proposition et ne bouge plus. */
+      const d = delaiProposition(x, h, maintenant);
+      if (!d.mode) { dire(`Il est trop tard pour proposer ${heure(h)} : c'est l'heure d'arrivée. Proposez un autre créneau.`); revenir(id); return true; }
+      agir('attenteProposer', { id, heure: h, service: pr.dataset.service, faite: maintenant, expire: d.expire, mode: d.mode }, { msg: `Proposition ${d.mode === 'derniere-minute' ? 'de dernière minute ' : ''}préparée pour ${x.nom} : ${heure(h)}, valable jusqu'au ${quandDit(d.expire)}${d.mode === 'derniere-minute' ? ` (${d.minutes} minutes)` : ''}. Aucun message n'est envoyé.` }); revenir(id); return true; }
     const ac = t.closest('[data-attente-accepter]');
     if (ac) { const id = ac.dataset.attenteAccepter, x = trouverAttente(ctx(), S(), id); if (!x) return true;
       const refus = refusAttente(ctx(), S(), D.salle, 'attenteAccepter', { id });

@@ -143,6 +143,13 @@ try {
   await A.locator('[role="tab"][data-onglets-resas][data-onglet="salle"]').click(); await attendre(300);
   const horsServeur = await A.locator('[data-assembler], [data-exemple-ete]').count();
   verifier('v7.11.0 : ni tables rapprochées ni exemple d\'été en mode connecté', horsServeur === 0, `${horsServeur} élément(s) visibles`);
+  /* v7.11.1 : les scénarios de démonstration appartiennent à la démonstration. En mode connecté : pas de lanceur, et
+     une adresse « ?demo= » n'ouvre aucun scénario, n'écrit rien à part et laisse l'espace partagé tel quel. */
+  const lanceurs = await A.locator('[data-demo-lancer]:visible').count();
+  const Sc = await A.context().newPage(); await Sc.goto(`${BASE}/espace?demo=service`, { waitUntil: 'load' }); await pret(Sc); await attendre(1200);
+  const horsScenario = await Sc.evaluate(() => ({ scene: !!document.querySelector('[data-esp-scene][data-scenario]'), cles: Object.keys(localStorage).filter((k) => k.startsWith('jh-demo:')).length, session: sessionStorage.getItem('jh-demo') || '', fictifs: document.querySelectorAll('[data-resa^="sc1-"]').length }));
+  await Sc.close();
+  verifier('v7.11.1 : pas de « Lancer une démonstration » en mode connecté, et « ?demo= » n\'ouvre aucun scénario', lanceurs === 0 && !horsScenario.scene && !horsScenario.cles && !horsScenario.session && !horsScenario.fictifs, JSON.stringify({ lanceurs, ...horsScenario }));
   await A.locator('[role="tab"][data-onglets-resas][data-onglet="service"]').click(); await attendre(300);
   await A.route('**/api/suivi**', (r) => r.abort()); /* l'ordinateur ne reçoit plus les nouvelles : son écran vieillit */
   await ligne(B, 'Paul Combiné').locator('[data-modifier-resa]').click(); await attendre(300);

@@ -8,7 +8,7 @@
 // et de pizzalyght-maquette/panier (créneaux calculés à l'heure du lieu avec un délai, état relu, focus rendu après rendu).
 // Sans JavaScript : un formulaire ordinaire d'un seul tenant (calendrier, liste d'heures, nombre). Mode calme : sans transition.
 import { pret } from '../../socle/socle.js?v=7';
-import { ajouterResaSite, ajouterDemandeSite } from '../../espace-stock.js?v=7';
+import { ajouterResaSite, ajouterDemandeSite, horloge as horlogeDemo, avecContexte } from '../../espace-stock.js?v=7';
 // v7.8.0 : ouvertures, heures d'arrivée et « complet » viennent des règles communes au site et à l'espace.
 import { etatService, arrivees, faisabilite, alternatives } from '../../disponibilites.js?v=7';
 import { codeVenue } from '../../espace-venue.js?v=7';
@@ -24,6 +24,8 @@ const dateLongue = (iso, o = { weekday: 'long', day: 'numeric', month: 'long' })
 const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const court = (iso, o) => dateLongue(iso, o).replace('.', '');
 function maintenant(fuseau) {
+  /* v7.11.1 : dans un scénario de démonstration, la date et l'heure sont celles du scénario (les mêmes que dans l'espace). */
+  const simulee = horlogeDemo(); if (simulee) return { iso: simulee.iso, min: simulee.min };
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: fuseau, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map((x) => [x.type, x.value]));
   return { iso: `${p.year}-${p.month}-${p.day}`, min: (+p.hour % 24) * 60 + +p.minute };
 }
@@ -336,7 +338,7 @@ export async function init(root, options = {}) {
       + ligne('contact', 'Au nom de', echap(t.contact))
       + '</ul>'
       + (verif ? '<p class="carton__statut">Après l\'envoi\u00a0: <b>demande reçue</b>. Elle devient une réservation quand le restaurant la confirme.</p><button type="button" class="resa__bouton carton__confirmer" data-resa-confirmer>Envoyer ma demande</button><p class="resa__simule">Envoi simulé : rien ne part vers le restaurant dans cette démonstration.</p>' : '')
-      + (fini ? `<p class="carton__reserve" aria-hidden="true" data-superpose><span>Demande reçue</span></p><p class="carton__ref">Référence <b>${reference}</b></p><p class="carton__suite">Statut\u00a0: <b>demande reçue</b>, en attente de confirmation. Le restaurant vous confirme votre table par message.</p>${connecte ? '' : `<p class="carton__venue"><a href="/votre-venue?r=${encodeURIComponent(reference)}&amp;c=${codeVenue(reference, v.telephone)}">Suivre, modifier ou annuler ma demande</a></p>`}<p class="resa__simule">${echap(R.message_simule || 'Réservation simulée : rien n\'a été envoyé. Sur le site final, la demande part vers le restaurant, qui la confirme par message.')}</p>`
+      + (fini ? `<p class="carton__reserve" aria-hidden="true" data-superpose><span>Demande reçue</span></p><p class="carton__ref">Référence <b>${reference}</b></p><p class="carton__suite">Statut\u00a0: <b>demande reçue</b>, en attente de confirmation. Le restaurant vous confirme votre table par message.</p>${connecte ? '' : `<p class="carton__venue"><a href="${echap(avecContexte(`/votre-venue?r=${encodeURIComponent(reference)}&c=${codeVenue(reference, v.telephone)}`))}">Suivre, modifier ou annuler ma demande</a></p>`}<p class="resa__simule">${echap(R.message_simule || 'Réservation simulée : rien n\'a été envoyé. Sur le site final, la demande part vers le restaurant, qui la confirme par message.')}</p>`
         + '<button type="button" class="resa__bouton resa__bouton--ligne" data-resa-nouvelle>Faire une autre réservation</button>' : '')
       + '</div>';
     avant = t;

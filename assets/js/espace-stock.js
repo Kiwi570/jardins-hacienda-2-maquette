@@ -22,7 +22,46 @@
      conseils  { ignores: { [suggestion]: date } }                    (v7.7.4 : « Plus tard », jusqu'au lendemain)
    Les clés qui commencent par « _ » sont de l'intendance : elles ne comptent pas comme une modification du site. */
 export const SCHEMA = 2;
-const CLE = 'jh-espace:v1', CLE_RESAS = 'jh-espace-resas:v1', CLE_DEMANDES = 'jh-espace-demandes:v1', CLE_VENUES = 'jh-espace-venues:v1';
+/* ---------- Le contexte de démonstration (v7.11.1) ----------
+   « Lancer une démonstration » ouvre un scénario dans SON propre espace de données : les quatre entrées ci-dessous (et
+   l'horloge du scénario) portent alors un préfixe à son nom. Les données habituelles ne sont ni lues ni écrites, et un
+   onglet ordinaire resté ouvert ne voit rien passer (il n'écoute que ses propres clés).
+   Le contexte appartient à l'onglet : il arrive par l'adresse (`?demo=nom`), puis il est gardé pour la session de
+   l'onglet (les liens ordinaires du site le conservent) ; `?demo=` (vide) le quitte. Les liens qui ouvrent un nouvel
+   onglet le portent dans leur adresse (`avecContexte`).
+   Jamais en mode connecté : une page reliée au serveur n'a pas de contexte de démonstration. */
+const CLE_CONTEXTE = 'jh-demo';
+export const CONTEXTE = (() => {
+  try {
+    if (typeof document !== 'undefined' && document.querySelector('meta[name="jh-api"]')) return '';
+    const q = new URLSearchParams(location.search);
+    if (q.has('demo')) { const v = q.get('demo') || ''; if (/^[a-z0-9-]{1,24}$/.test(v)) sessionStorage.setItem(CLE_CONTEXTE, v); else sessionStorage.removeItem(CLE_CONTEXTE); }
+    return sessionStorage.getItem(CLE_CONTEXTE) || '';
+  } catch { return ''; }
+})();
+const P = CONTEXTE ? `jh-demo:${CONTEXTE}:` : 'jh-';
+const CLE = `${P}espace:v1`, CLE_RESAS = `${P}espace-resas:v1`, CLE_DEMANDES = `${P}espace-demandes:v1`, CLE_VENUES = `${P}espace-venues:v1`, CLE_HORLOGE = `${P}horloge:v1`;
+/** Une adresse du site, avec le contexte de démonstration de cet onglet (pour un lien qui ouvre un nouvel onglet). */
+export const avecContexte = (url) => (CONTEXTE && !/[?&]demo=/.test(url) ? url.replace(/(#.*)?$/, (ancre) => `${url.includes('?') ? '&' : '?'}demo=${CONTEXTE}${ancre}`) : url);
+/** L'heure simulée du scénario en cours : { iso, min }, ou null hors démonstration (l'horloge normale sert alors). */
+export function horloge() { if (!CONTEXTE) return null; try { const h = JSON.parse(localStorage.getItem(CLE_HORLOGE) || 'null'); return h && /^\d{4}-\d{2}-\d{2}$/.test(h.iso) && Number.isFinite(h.min) ? { iso: h.iso, min: h.min } : null; } catch { return null; } }
+const journal = () => { try { const h = JSON.parse(localStorage.getItem(CLE_HORLOGE) || 'null'); return h && typeof h === 'object' ? h : {}; } catch { return {}; } };
+export function reglerHorloge(h) { if (!CONTEXTE) return false; try { localStorage.setItem(CLE_HORLOGE, JSON.stringify({ ...journal(), iso: h.iso, min: h.min })); return true; } catch { return false; } }
+/* Ce qui a été regardé pendant le scénario (un aperçu ouvert, une page visitée) : des repères pour les étapes
+   « à essayer », gardés avec l'horloge, hors de l'état de l'espace (ils ne s'annulent pas avec « Annuler »). */
+export const vusDemo = () => (CONTEXTE ? journal().vus || {} : {});
+export function noterVu(cle) { if (!CONTEXTE) return false; try { const j = journal(); if (j.vus?.[cle]) return false; localStorage.setItem(CLE_HORLOGE, JSON.stringify({ ...j, vus: { ...(j.vus || {}), [cle]: true } })); return true; } catch { return false; } }
+/** Efface les données du scénario de cet onglet, et elles seules (jamais les données habituelles). */
+export function viderContexte() { if (!CONTEXTE) return false; try { for (const k of [CLE, CLE_RESAS, CLE_DEMANDES, CLE_VENUES, CLE_HORLOGE]) localStorage.removeItem(k); return true; } catch { return false; } }
+/** Efface les données d'un scénario nommé (pour le relancer depuis le début), où que l'on soit. Le préfixe `jh-demo:<nom>:`
+    est le seul touché : les données habituelles (`jh-espace…`) ne peuvent pas l'être. */
+export function viderScenario(nom) { if (!/^[a-z0-9-]{1,24}$/.test(nom || '') || document.querySelector('meta[name="jh-api"]')) return false;
+  try { for (const fin of ['espace:v1', 'espace-resas:v1', 'espace-demandes:v1', 'espace-venues:v1', 'horloge:v1']) localStorage.removeItem(`jh-demo:${nom}:${fin}`); return true; } catch { return false; } }
+/** Écrit l'état de départ d'un scénario (son contexte uniquement). */
+export function semer({ etat, venues: v = {}, horloge: h }) {
+  if (!CONTEXTE) return false;
+  try { localStorage.setItem(CLE, JSON.stringify({ ...etat, _schema: SCHEMA })); if (Object.keys(v).length) localStorage.setItem(CLE_VENUES, JSON.stringify(v)); localStorage.setItem(CLE_HORLOGE, JSON.stringify({ iso: h.iso, min: h.min, vus: {} })); return true; } catch { return false; }
+}
 
 /** Met un objet lu au schéma courant (fonction pure : ne touche pas au stockage).
     1 → 2 : chaque fermeture exceptionnelle a toujours une fin (`au`) et un motif. */
@@ -80,7 +119,7 @@ export function noterVenue(id, champs) {
 /** Prévient quand le stockage change ailleurs (un autre onglet de ce navigateur : une demande arrive pendant que l'espace
     est ouvert). Demain : un abonnement au serveur. Renvoie de quoi arrêter l'écoute. */
 export function ecouter(f) {
-  const sur = (ev) => { const quoi = ev.key === CLE_RESAS ? 'resas' : ev.key === CLE_DEMANDES ? 'demandes' : ev.key === CLE_VENUES ? 'venues' : ev.key === CLE || ev.key === null ? 'etat' : null; if (quoi) f(quoi); };
+  const sur = (ev) => { const quoi = ev.key === CLE_RESAS ? 'resas' : ev.key === CLE_DEMANDES ? 'demandes' : ev.key === CLE_VENUES ? 'venues' : ev.key === CLE_HORLOGE ? 'horloge' : ev.key === CLE || ev.key === null ? 'etat' : null; if (quoi) f(quoi); };
   try { addEventListener('storage', sur); } catch { return () => {}; }
   return () => removeEventListener('storage', sur);
 }

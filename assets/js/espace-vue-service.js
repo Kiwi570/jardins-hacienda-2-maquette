@@ -141,6 +141,7 @@ export function creerService(X) {
         <ol class="esp-frise__liste">${acc.lignes.map((r) => ligne(r, sv)).join('')}</ol></div>${local ? typo(zoneTables(acc) + zoneRappels(acc)) : ''}
         ${local ? '<p class="esp-aide esp-portee"><span class="esp-source">Sur cet appareil</span> Arrivées, installations, départs et état des tables sont notés sur cet appareil.</p>' : '<p class="esp-aide esp-portee"><span class="esp-source">Sur cet appareil</span> Les réservations et leurs tables sont partagées. Installations, départs et état des tables restent notés sur cet appareil pour l\'instant.</p>' + zoneTables(acc)}`
         : `<p class="esp-vide">${sv.ouvert ? 'Pas encore de réservation pour ce service. <button type="button" class="esp-lien" data-onglet="agenda" data-onglets-resas>Noter une réservation dans l\'agenda</button>' : 'Pas de service ce jour-là.'}</p>`}`;
+    if (cible.querySelector('[data-modif-client]')) X.demoVu?.('venue-demande-vue');
   }
 
   /** La feuille de service, pour la salle et la cuisine : une page, l'heure, le nom, les couverts, la note, une case à cocher. */
@@ -163,6 +164,7 @@ export function creerService(X) {
   function clic(t) {
     const sv = t.closest('[data-service-vu]'); if (sv) { etat.serviceVu = sv.dataset.serviceVu; etat.resaEditee = null; X.rendre(); $(`[data-service-vu="${etat.serviceVu}"]`, root)?.focus(); return true; }
     if (t.closest('[data-imprimer-service]')) { imprimer(); return true; }
+    if (t.closest('[data-lien-venue]')) { X.demoVu?.('venue-ouverte'); return false; } /* le lien s'ouvre normalement ; l'étape du scénario est notée */
     /* v7.11.0 : l'accueil pendant le service. */
     const vr = t.closest('[data-venue-reponse]'); if (vr) { X.repondreVenue(vr.dataset.venueReponse, !!vr.dataset.accepte); X.rendre(); $(`[data-esp-panneau-resas] [data-resa="${CSS.escape(vr.dataset.venueReponse)}"] .esp-frise__principal`, root)?.focus({ preventScroll: true }); return true; }
     const revenir = (id) => { X.rendre(); const li = $(`[data-esp-panneau-resas] [data-resa="${CSS.escape(id)}"]`, root); (li?.querySelector('.esp-frise__principal') || li?.querySelector('summary') || $(`[data-table="${CSS.escape(etat.tableVue || '')}"]`, root))?.focus({ preventScroll: true }); };

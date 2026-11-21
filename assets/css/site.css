@@ -5348,3 +5348,88 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 .esp-charge__maintenant.est-fin span { left: auto; right: 6px; }
 /* Votre venue, téléphone tenu en largeur : la photo se fait bandeau, le titre reste dans le premier écran. */
 @media (max-height: 520px) { .venue { padding-top: calc(var(--entete-h, 64px) + 14px); } .venue__photo { height: 72px; margin-bottom: 12px; } .venue__titre { margin-bottom: 14px; } }
+
+/* ==========================================================================
+   v7.11.1 : le service, prêt à être présenté
+   ========================================================================== */
+/* Liste d'attente : le bouton d'une proposition dit son délai ; la dernière minute se voit. */
+.esp-att :is(.esp-att__possible, .esp-att__actions) [data-attente-proposer] { display: inline-grid; justify-items: start; gap: 0; padding-block: 6px; text-align: left; line-height: 1.25; }
+.esp-att [data-attente-proposer] small { font-size: 13px; font-weight: 600; opacity: .92; }
+.esp-att__minute { background: var(--or-fonce); border-color: var(--or-fonce); }
+.esp-att__note-minute { margin-top: 8px; padding: 8px 12px; border-radius: 12px; background: var(--esp-attente-clair); color: #5b3605; font-size: 15px; }
+/* Repli : le bilan, réservation par réservation. */
+.esp-repli__phrase { margin: 0 0 10px; font-size: 17px; }
+.esp-pastille--r-deplacee { background: var(--esp-vert); color: #fff; }
+.esp-pastille--r-refusee, .esp-pastille--r-a-verifier { background: #f6dcd9; color: #8a1f1a; }
+.esp-pastille--r-non-tentee { background: var(--couleur-surface); color: var(--couleur-texte-doux); }
+.esp-repli__bilan .esp-pastille { margin: 0 4px; }
+.esp-repli [disabled] { opacity: .6; cursor: default; }
+/* --- « Lancer une démonstration » : l'entrée, le choix des scénarios, le bandeau --- */
+.esp-outils__demo { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--or-fonce); border-radius: 999px; background: transparent; color: var(--or-fonce); font: inherit; font-size: 15px; font-weight: 800; white-space: nowrap; cursor: pointer; }
+.esp-outils__demo:hover { background: var(--or-fonce); color: #fff; }
+.esp-outils__demo:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 2px; }
+@media (max-width: 1099px) { .esp-outils__demo { display: none; } }
+@media (min-width: 1100px) { [data-demo-menu] { display: none; } }
+.esp-scene { margin: 0 0 18px; }
+.esp-scene[hidden] { display: none; }
+.esp-scene__invite { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 0; padding: 10px 14px; border-radius: 16px; border: 1px dashed color-mix(in oklab, var(--or-fonce) 60%, transparent); font-size: 15px; }
+.esp-scene__invite .esp-bouton { min-height: 44px; border-color: var(--or-fonce); background: transparent; color: var(--or-fonce); font-weight: 800; }
+.esp-scene__invite .esp-bouton:hover { background: var(--or-fonce); color: #fff; }
+.esp-scene[data-scenario] { padding: 14px 18px; border-radius: 20px; background: #1c1712; color: #f6f1e7; box-shadow: inset 0 0 0 1px rgba(233, 162, 59, .35); }
+.esp-scene[data-scenario] p { margin: 0; }
+.esp-scene__tete { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; }
+.esp-scene__nom { font-size: 17px; }
+.esp-scene__nom b { font-family: var(--police-titres); font-size: 1.15em; font-weight: 600; }
+.esp-scene[data-scenario] .esp-source { margin: 0 6px 0 0; background: #e9a23b; color: #1c1712; }
+.esp-scene__heure { margin-left: auto !important; font-weight: 700; font-variant-numeric: tabular-nums; }
+.esp-scene__heure small { margin-left: 6px; font-size: 13px; font-weight: 600; color: #e9c98f; }
+.esp-scene[data-scenario] .esp-bouton { min-height: 44px; border-color: rgba(246, 241, 231, .55); background: transparent; color: #f6f1e7; }
+.esp-scene[data-scenario] .esp-bouton:hover { border-color: #f6f1e7; background: rgba(246, 241, 231, .12); }
+.esp-scene :is(.esp-bouton, summary, .esp-lien):focus-visible { outline: 3px solid #e9a23b; outline-offset: 2px; }
+.esp-scene__essayer { margin-top: 10px !important; padding: 10px 14px; border-radius: 12px; background: rgba(246, 241, 231, .1); font-size: 16px; }
+.esp-scene__essayer b { color: #f3c477; }
+.esp-scene.est-finie .esp-scene__essayer { background: #2c6650; }
+.esp-scene.est-finie .esp-scene__essayer b { color: #fff; }
+.esp-scene__plus { margin-top: 6px; }
+.esp-scene__plus > summary { list-style: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; cursor: pointer; font-size: 15px; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+.esp-scene__plus > summary::-webkit-details-marker { display: none; }
+.esp-scene__plus > summary::after { content: "▾"; font-size: 12px; text-decoration: none; }
+.esp-scene__plus[open] > summary::after { content: "▴"; }
+.esp-scene__etapes { display: grid; gap: 6px; margin: 4px 0 10px; padding: 0; list-style: none; counter-reset: etape; }
+.esp-scene__etapes li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; font-size: 15px; }
+.esp-scene__coche { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid rgba(246, 241, 231, .6); font-size: 14px; font-weight: 800; }
+.esp-scene__etapes li.est-faite .esp-scene__coche { background: #2c6650; border-color: #2c6650; color: #fff; }
+.esp-scene__etapes li.est-faite > span:last-child { color: #d9d0c0; }
+.esp-scene__variante { margin: 0 0 10px !important; padding: 8px 12px; border-radius: 12px; border: 1px dashed rgba(246, 241, 231, .4); font-size: 15px; }
+.esp-scene__commandes { display: flex; flex-wrap: wrap; gap: 8px; }
+.esp-scene[data-scenario] .esp-aide { margin-top: 8px !important; color: #d9d0c0; }
+@media (max-width: 760px) {
+  .esp-scene[data-scenario] { padding: 12px 14px; border-radius: 16px; }
+  .esp-scene__nom { flex: 1 1 100%; font-size: 16px; }
+  .esp-scene__heure { margin-left: 0 !important; flex: 1 1 auto; font-size: 15px; }
+  .esp-scene__essayer { font-size: 15px; padding: 8px 12px; }
+  .esp-scene__commandes .esp-bouton { flex: 1 1 100%; justify-content: center; }
+}
+.esp-modale--demo .esp-modale__boite { width: min(100% - 24px, 860px); }
+.esp-demo-choix { padding: 4px 20px 20px; }
+.esp-demo-choix__intro { margin: 0 0 14px; color: var(--couleur-texte-doux); }
+.esp-demo-choix__liste { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.esp-demo-carte { display: grid; grid-template-columns: auto 1fr; gap: 14px; padding: 16px; border-radius: 18px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-demo-carte.est-en-cours { border-color: var(--or-fonce); box-shadow: inset 0 0 0 1px var(--or-fonce); }
+.esp-demo-carte p { margin: 0 0 8px; }
+.esp-demo-carte h3 { margin: 0 0 6px; font-family: var(--police-titres); font-size: 21px; line-height: 1.2; }
+.esp-demo-carte__num { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #1c1712; color: #f6f1e7; font-family: var(--police-titres); font-size: 20px; }
+.esp-demo-carte__situation { font-size: 15px; }
+.esp-demo-carte__montre { font-size: 15px; color: var(--couleur-texte-doux); }
+.esp-demo-carte__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 10px 0 0 !important; }
+.esp-demo-carte__actions .bouton { min-height: 44px; }
+.esp-demo-carte__duree { color: var(--couleur-texte-doux); font-size: 14px; }
+@media (max-width: 560px) { .esp-demo-choix { padding: 4px 14px 16px; } .esp-demo-choix__liste { grid-template-columns: 1fr; } .esp-demo-carte { grid-template-columns: 1fr; gap: 8px; } }
+.esp-modale--demo .esp-modale__boite { width: min(100%, 860px); grid-template-rows: auto minmax(0, 1fr); }
+.esp-demo-choix { overflow: auto; overscroll-behavior: contain; }
+@media (max-width: 760px) { .esp-scene .esp-long { display: none; } .esp-scene .esp-court { display: inline; } }
+@media (max-width: 760px) { .esp-scene__tete { gap: 4px 10px; } .esp-scene__heure small { margin-left: 4px; } .esp-scene__avancer { min-width: 96px; justify-content: center; } }
+/* Sur téléphone, le lien d'une ligne « En ce moment » passe sous le texte : une vraie cible, jamais collée à une pastille repliée sur deux lignes. */
+@media (max-width: 599px) { .esp-acc__presence .esp-lien { display: flex; align-items: center; } }
+/* Sur grand écran, la barre du haut porte déjà « Lancer une démonstration » : l'invitation d'Aujourd'hui ne le répète pas. */
+@media (min-width: 1100px) { .esp-scene:not([data-scenario]) { display: none; } }

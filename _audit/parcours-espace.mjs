@@ -354,6 +354,8 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if ((await etat()).resa?.modifs?.[r.id] || c.resume !== a.resume) R.echec('espace : service', '« Annuler » ne rend pas la réservation comme elle était', lieu);
       /* Annuler la réservation (un jour à venir) ou la noter absente (le jour même) : ses couverts ne comptent plus. */
       const geste = (await page.locator(`${L} [data-statut="annulee"]`).count()) ? 'annulee' : 'absente';
+      /* Le jour même (un samedi, « samedi » désigne aujourd'hui), « Le client annule » est rangé dans « Autres actions » : on l'ouvre. */
+      if (!(await page.locator(`${L} [data-statut="${geste}"]`).isVisible())) { await page.locator(`${L} .esp-frise__plus > summary`).click(); await attendre(200); }
       await page.locator(`${L} [data-statut="${geste}"]`).click(); await attendre(450);
       const d = await lire(), st = (await etat()).resa?.statuts?.[r.id];
       if (st !== geste || d.resume !== a.resume - 4 || !/Remettre la réservation/.test(d.ligne)) R.echec('espace : service', `« ${geste} » : statut ${st}, résumé ${d.resume} (attendu ${a.resume - 4}), ligne « ${d.ligne.slice(0, 80)} »`, lieu);
@@ -944,7 +946,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (await page.evaluate(() => localStorage.getItem('jh-espace:v1')) !== avantRepli) R.echec(`${ou} : repli`, 'fermer l\'aperçu a changé l\'état', lieu);
       await page.locator('button[data-repli]').click(); await attendre(400); await page.locator('[data-repli-appliquer]').click(); await attendre(700);
       const bilan = await texte('article[data-repli]');
-      if (!/3 réservations déplacées en salle/.test(bilan) || !/Tablée Marchand.*reste sans solution/.test(bilan)) R.echec(`${ou} : repli`, `le résultat doit dire précisément ce qui a été fait et ce qui reste : « ${bilan.slice(0, 260)} »`, lieu);
+      if (!/3 réservations déplacées\./.test(bilan) || !/Tablée Marchand.*reste sans solution/.test(bilan) || (await page.locator('[data-repli-resultat="deplacee"]').count()) !== 3) R.echec(`${ou} : repli`, `le résultat doit dire précisément ce qui a été fait et ce qui reste : « ${bilan.slice(0, 260)} »`, lieu);
       const dehors = await page.evaluate(() => [...document.querySelectorAll('[data-choisir-resa]')].filter((b) => /table 1[012]\b|tables? 10/.test(b.innerText)).map((b) => b.innerText.replace(/\s+/g, ' ')));
       if (dehors.length !== 1 || !/Marchand/.test(dehors[0])) R.echec(`${ou} : repli`, `seule la tablée sans solution devrait rester en terrasse : ${JSON.stringify(dehors)}`, lieu);
 
@@ -957,6 +959,191 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       await page.keyboard.press('Escape'); await attendre(200);
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
       R.ok(`espace : un service parfaitement accompagné (${taille.nom})`);
+    } catch (err) { R.echec(`${ou} : parcours interrompu`, String(err.message || err).replace(/\u001b\[[0-9;]*m/g, '').replace(/\s+/g, ' ').slice(0, 420), lieu);
+    } finally { await ctx.close(); }
+  }
+
+  /* ---------- 1 duodecies. Le service, prêt à être présenté (v7.11.1) ----------
+     « Lancer une démonstration » : les quatre scénarios joués de bout en bout, sur ordinateur et à 390 px. Pour
+     chacun : la situation de départ permet le parcours, les étapes se cochent d'après les actions réelles, la
+     conclusion n'apparaît qu'à la fin, le scénario se recommence à l'identique. Et autour : les données habituelles
+     restent intactes, un onglet ordinaire reste dans son contexte, un rechargement garde la progression et l'heure
+     simulée, la page du client et la page Réserver suivent le scénario. Aucune horloge truquée par le test : c'est
+     l'horloge de démonstration de la maquette qui est vérifiée. */
+  for (const taille of (!SEUL || SEUL.includes('1-duodecies') ? ['1366×768', '390×844'] : []).map(T)) {
+    const lieu = { page: P, taille: taille.nom }, tel = taille.w < 1000, ou = `démonstration (${taille.nom})`;
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      const texte = async (sel, pg = page) => (await pg.locator(sel).first().innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
+      const toast = () => texte('[data-esp-toast-texte]');
+      const ligne = (nom) => page.locator('[data-esp-panneau-resas] [data-resa]', { hasText: nom }).first();
+      const autre = async (nom, sel) => { const li = ligne(nom); if (!(await li.locator('.esp-frise__plus').evaluate((d) => d.open))) await li.locator('.esp-frise__plus > summary').click(); await li.locator(sel).click(); await attendre(350); };
+      const onglet = async (id) => { await aller(page, 'resas'); await page.locator(`[role="tab"][data-onglets-resas][data-onglet="${id}"]`).click(); await attendre(400); };
+      const scene = () => page.evaluate(() => { const z = document.querySelector('[data-esp-scene]'); return { la: !!z && !z.hidden, scenario: z?.dataset.scenario || '', finie: !!z?.classList.contains('est-finie'), heure: z?.querySelector('[data-scene-heure] .esp-long')?.textContent.replace(/\s+/g, ' ').trim() || '', essayer: z?.querySelector('[data-scene-essayer]')?.textContent.replace(/\s+/g, ' ').trim() || '', faites: z?.querySelectorAll('.esp-scene__etapes li.est-faite').length ?? -1, etapes: z?.querySelectorAll('.esp-scene__etapes li').length ?? -1, hauteur: Math.round(z?.getBoundingClientRect().height || 0) }; });
+      const attendu = async (quoi, n, fin = false) => { const s = await scene(); if (s.faites !== n || s.finie !== fin) R.echec(`${ou} : étapes`, `${quoi} : ${s.faites} étape(s) faite(s) sur ${s.etapes}, attendu ${n}${fin ? ' et la conclusion' : ''} (« ${s.essayer.slice(0, 90)} »)`, lieu); return s; };
+      const stock = (pg = page) => pg.evaluate(() => Object.fromEntries(Object.keys(localStorage).sort().map((k) => [k, localStorage.getItem(k)])));
+      /* Une action qui change de page (lien, « Recommencer », « Quitter ») : on attend le NOUVEAU document, repéré par
+         l'absence de la marque posée sur l'ancien, puis l'espace prêt. Aucun délai fixe. */
+      const changerDePage = async (pg, action, pret = () => !!document.querySelector('[data-esp-app]') && !document.querySelector('[data-esp-app]').hidden) => {
+        await pg.evaluate(() => { window.__ancienne = true; }); await action();
+        await pg.waitForFunction(() => !window.__ancienne && document.readyState === 'complete', null, { timeout: 15000 });
+        await pg.waitForFunction(pret, null, { timeout: 15000 }); await attendre(500); };
+      const lancer = async (id) => { if (await page.locator('[data-scene-etapes]').count()) { if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click(); await page.locator('[data-scene-etapes] [data-demo-lancer]').click(); } else await page.locator('[data-demo-lancer]:visible').first().click(); await attendre(350); await changerDePage(page, () => page.locator(`[data-demo-choisir="${id}"]`).click()); };
+      const recommencer = async () => { if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click(); await changerDePage(page, () => page.locator('[data-scene-recommencer]').click()); };
+      const debordement = async (pg, quoi) => { const d = await pg.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - document.documentElement.clientWidth); if (d > 1) R.echec(`${ou} : débordement`, `${quoi} déborde de ${d} px`, lieu); };
+
+      /* ===== Avant : l'espace habituel, avec une modification à retrouver intacte ===== */
+      await page.goto(BASE + P, { waitUntil: 'load' }); await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); }); await entrer(page); await aller(page, 'jour');
+      await page.locator('[data-esp-rendu="jour"] [data-tache-nouvelle]').first().click(); await attendre(250); await page.locator('[data-form-tache] [name="titre"]').fill('Tâche de mon espace habituel'); await page.locator('[data-form-tache] button[type="submit"]').click(); await attendre(400);
+      const habituel = await stock();
+      if (!habituel['jh-espace:v1']?.includes('Tâche de mon espace habituel')) R.echec(`${ou} : préparation`, 'la tâche de l\'espace habituel n\'est pas enregistrée', lieu);
+      /* Le lanceur : facile à trouver, quatre scénarios, clavier. */
+      if ((await page.locator('[data-demo-lancer]:visible').count()) !== 1) R.echec(`${ou} : lanceur`, `« Lancer une démonstration » devrait être visible une fois sur Aujourd'hui (${await page.locator('[data-demo-lancer]:visible').count()})`, lieu);
+      await page.locator('[data-demo-lancer]:visible').first().click(); await attendre(350);
+      const choix = await page.evaluate(() => ({ n: document.querySelectorAll('[data-demo-choisir]').length, focus: !!document.activeElement?.closest('.esp-modale--demo'), titres: [...document.querySelectorAll('.esp-demo-carte h3')].map((h) => h.textContent.trim()) }));
+      if (choix.n !== 4 || !choix.focus) R.echec(`${ou} : lanceur`, `${choix.n} scénarios proposés (attendu 4), focus ${choix.focus ? 'dans' : 'hors de'} la fenêtre`, lieu);
+      await mesurerEcran(page, taille, 'choix des scénarios', false);
+      await page.keyboard.press('Escape'); await attendre(250);
+      if (await page.locator('.esp-modale--demo:not([hidden])').count()) R.echec(`${ou} : lanceur`, 'Échap ne ferme pas le choix des scénarios', lieu);
+
+      /* ===== Scénario 1 : le service commence ===== */
+      await lancer('service');
+      const depart1 = await stock(); let s = await scene();
+      if (!s.la || s.scenario !== 'service' || !/20 h 10/.test(s.heure) || !/Vendredi/.test(s.heure)) R.echec(`${ou} : scénario 1`, `bandeau attendu « Le service commence », un vendredi à 20 h 10 : ${JSON.stringify(s)}`, lieu);
+      if (!/À essayer maintenant/.test(s.essayer) || !/Aurélie et Marc/.test(s.essayer)) R.echec(`${ou} : scénario 1`, `la première indication manque : « ${s.essayer} »`, lieu);
+      if (depart1['jh-espace:v1'] !== habituel['jh-espace:v1']) R.echec(`${ou} : isolation`, 'lancer un scénario a modifié les données habituelles', lieu);
+      if (!Object.keys(depart1).some((k) => k.startsWith('jh-demo:service:'))) R.echec(`${ou} : isolation`, `le scénario n'a pas son propre espace de données : ${Object.keys(depart1).join(', ')}`, lieu);
+      if (await page.locator('[data-tout-effacer]:visible').count()) R.echec(`${ou} : scénario 1`, '« Tout remettre comme livré » reste proposé pendant un scénario', lieu);
+      if (tel) { if (s.hauteur > 300) R.echec(`${ou} : téléphone`, `le bandeau de démonstration fait ${s.hauteur} px de haut`, lieu);
+        const nav = await page.evaluate(() => { const n = document.querySelector('.esp-nav__liste').getBoundingClientRect(); return n.bottom <= innerHeight + 1 && n.height > 40; }); if (!nav) R.echec(`${ou} : téléphone`, 'la navigation du bas n\'est plus utilisable pendant un scénario', lieu); }
+      await mesurerEcran(page, taille, 'scénario 1, départ', false); await debordement(page, 'le scénario 1');
+      await attendu('au départ', 0);
+      await ligne('Aurélie et Marc').locator('.esp-frise__principal').click(); await attendre(400); await attendu('après l\'arrivée', 1);
+      const annonce = await page.evaluate(() => ({ region: document.querySelector('[data-esp-scene]')?.getAttribute('role') === 'region' && /Le service commence/.test(document.querySelector('[data-esp-scene]')?.getAttribute('aria-label') || ''), dit: document.querySelector('[data-esp-scene] + [role="status"]')?.textContent || '' }));
+      if (!annonce.region || !/À essayer maintenant.*Installez-les/.test(annonce.dit)) R.echec(`${ou} : accessibilité`, `le bandeau doit être une région nommée et annoncer la nouvelle indication : ${JSON.stringify(annonce)}`, lieu);
+      if (await ligne('Aurélie et Marc').getAttribute('data-presence') !== 'arrive') R.echec(`${ou} : scénario 1`, 'après l\'arrivée, le groupe devrait être « arrivé, à installer »', lieu);
+      await ligne('Aurélie et Marc').locator('[data-installer]').click(); await attendre(400); await attendu('après l\'installation', 2);
+      await page.locator('[data-passage]').click(); await attendre(300); await page.locator('#pa-n').fill('2'); await attendre(250);
+      const raisons = await page.evaluate(() => document.querySelector('.esp-passage__pourquoi')?.textContent.replace(/\s+/g, ' ') || '');
+      if (!/Table 2.{0,40}à débarrasser/i.test(raisons) || !/occupée/.test(raisons)) R.echec(`${ou} : scénario 1`, `les raisons devraient citer la table à débarrasser et une table occupée : « ${raisons.slice(0, 200)} »`, lieu);
+      await page.locator('.esp-passage__places button').first().click(); await attendre(450); await attendu('après l\'accueil sans réservation', 3);
+      await ligne('Hugo et Léa').locator('[data-depart]').click(); await attendre(450); await attendu('après le départ', 4);
+      await page.locator('[data-table-etat="6"] [data-etat="a-preparer"]').click(); await attendre(350); await attendu('table débarrassée, pas encore prête', 4);
+      await page.locator('[data-table-etat="6"] [data-etat=""]').click(); await attendre(350); s = await attendu('table prête', 5, true);
+      if (!/C'est fait/.test(s.essayer) || !/table vide n'est pas encore une table prête/.test(s.essayer)) R.echec(`${ou} : scénario 1`, `la conclusion attendue manque : « ${s.essayer} »`, lieu);
+      /* Rechargement : la progression et l'heure simulée sont gardées ; avancer l'heure aussi. */
+      await page.reload({ waitUntil: 'load' }); await attendrePret(page); await attendre(600); s = await attendu('après rechargement', 5, true);
+      await page.locator('[data-scene-avancer]').click(); await attendre(400); s = await scene(); if (!/20 h 25/.test(s.heure)) R.echec(`${ou} : horloge`, `« Avancer de 15 minutes » devrait donner 20 h 25 : « ${s.heure} »`, lieu);
+      await page.reload({ waitUntil: 'load' }); await attendrePret(page); await attendre(600); s = await scene(); if (!/20 h 25/.test(s.heure)) R.echec(`${ou} : horloge`, `l'heure simulée n'est pas gardée au rechargement : « ${s.heure} »`, lieu);
+      /* Recommencer : le même point de départ, et lui seul. */
+      await recommencer(); const redepart1 = await stock(); s = await attendu('après « Recommencer »', 0);
+      if (!/20 h 10/.test(s.heure)) R.echec(`${ou} : recommencer`, `l'heure devrait revenir à 20 h 10 : « ${s.heure} »`, lieu);
+      for (const k of Object.keys(depart1).filter((x) => x.startsWith('jh-demo:service:'))) if (redepart1[k] !== depart1[k]) R.echec(`${ou} : recommencer`, `« ${k} » ne retrouve pas son état de départ`, lieu);
+      if (redepart1['jh-espace:v1'] !== habituel['jh-espace:v1']) R.echec(`${ou} : recommencer`, '« Recommencer » a touché aux données habituelles', lieu);
+
+      /* ===== Scénario 2 : une place se libère (et l'expiration, en avançant l'heure) ===== */
+      await lancer('attente'); s = await scene();
+      if (s.scenario !== 'attente' || !/18 h 30/.test(s.heure)) R.echec(`${ou} : scénario 2`, `attendu « Une place se libère » à 18 h 30 : ${JSON.stringify(s)}`, lieu);
+      await onglet('attente');
+      if (await page.locator('[data-attente="sc2-lambert"] [data-attente-proposer]').count()) R.echec(`${ou} : scénario 2`, 'une place est proposée avant l\'annulation : le scénario ne montrerait rien', lieu);
+      await onglet('service'); await autre('Famille Weber', '[data-statut="annulee"]'); await attendu('après l\'annulation', 1);
+      await onglet('attente'); await attendu('liste d\'attente ouverte', 2);
+      const bouton = await texte('[data-attente="sc2-lambert"] [data-attente-proposer]');
+      if (!/Proposer 20 h/.test(bouton) || !/réponse avant 19 h/.test(bouton)) R.echec(`${ou} : scénario 2`, `le bouton devrait dire « Proposer 20 h, réponse avant 19 h » : « ${bouton} »`, lieu);
+      if (await page.locator('[data-attente="sc2-sylvie"] [data-attente-proposer]').count() !== 1 && !(await page.locator('[data-attente="sc2-sylvie"]').count())) R.echec(`${ou} : scénario 2`, 'la seconde tablée n\'apparaît pas', lieu);
+      await page.locator('[data-attente="sc2-lambert"] [data-attente-proposer]').first().click(); await attendre(400); await attendu('proposition préparée', 3);
+      if (!/valable jusqu'au vendredi .* à 19 h\b/.test(await texte('[data-attente="sc2-lambert"]'))) R.echec(`${ou} : scénario 2`, `l'échéance devrait être 19 h : « ${(await texte('[data-attente="sc2-lambert"]')).slice(0, 220)} »`, lieu);
+      await page.locator('[data-attente="sc2-lambert"] [data-attente-accepter]').dblclick(); await attendre(500); s = await attendu('acceptée', 4, true);
+      const creees = await page.evaluate(() => (JSON.parse(localStorage.getItem('jh-demo:attente:espace:v1') || '{}').resa?.ajouts || []).filter((r) => r.source === 'attente').length);
+      if (creees !== 1) R.echec(`${ou} : scénario 2`, `${creees} réservations créées après un double clic (attendu : 1)`, lieu);
+      await mesurerEcran(page, taille, 'scénario 2, liste d\'attente', false);
+      /* La variante : recommencer, proposer, avancer l'heure jusqu'à l'échéance exacte. */
+      await recommencer(); await onglet('service'); await autre('Famille Weber', '[data-statut="annulee"]'); await onglet('attente');
+      await page.locator('[data-attente="sc2-lambert"] [data-attente-proposer]').first().click(); await attendre(350);
+      await page.locator('[data-scene-avancer]').click(); await attendre(350);
+      if (!(await page.locator('[data-attente="sc2-lambert"] [data-attente-accepter]').count())) R.echec(`${ou} : expiration`, 'à 18 h 45, la proposition (échéance 19 h) devrait encore pouvoir être acceptée', lieu);
+      await page.locator('[data-scene-avancer]').click(); await attendre(350); /* 19 h : l'échéance exacte */
+      const expiree = await texte('[data-attente="sc2-lambert"]');
+      if (!/Proposition expirée/.test(expiree) || await page.locator('[data-attente="sc2-lambert"] [data-attente-accepter]').count()) R.echec(`${ou} : expiration`, `à 19 h pile, la proposition devrait être expirée : « ${expiree.slice(0, 200)} »`, lieu);
+      if (!/Dernière minute/.test(expiree) || !/réponse sous 15 min, avant 19 h 15/.test(expiree)) R.echec(`${ou} : dernière minute`, `à 19 h, seule une proposition de dernière minute (15 min) devrait être offerte : « ${expiree.slice(0, 260)} »`, lieu);
+      await page.locator('[data-attente="sc2-lambert"] [data-attente-proposer][data-mode="derniere-minute"]').first().click(); await attendre(400);
+      const minute = await texte('[data-attente="sc2-lambert"]');
+      if (!/en dernière minute/.test(minute) || !/à 19 h 15/.test(minute)) R.echec(`${ou} : dernière minute`, `la proposition devrait être dite « dernière minute », valable jusqu'à 19 h 15 : « ${minute.slice(0, 220)} »`, lieu);
+      await page.reload({ waitUntil: 'load' }); await attendrePret(page); await attendre(600); await onglet('attente');
+      if (!/à 19 h 15/.test(await texte('[data-attente="sc2-lambert"]'))) R.echec(`${ou} : dernière minute`, 'un rechargement a changé l\'échéance de la proposition', lieu);
+      /* La page Réserver, dans le même onglet, suit le scénario (son jour et son heure). */
+      const isoScenario = await page.evaluate(() => JSON.parse(localStorage.getItem('jh-demo:attente:horloge:v1')).iso);
+      await page.goto(`${BASE}/reserver#formulaire`, { waitUntil: 'load' }); await attendrePret(page); await attendre(800);
+      const reserver = await page.evaluate(() => ({ jour: document.querySelector('[data-jour]')?.dataset.jour, pastille: document.querySelector('.apercu-espace')?.textContent.replace(/\s+/g, ' ') || '' }));
+      if (reserver.jour !== isoScenario || !/Démonstration en cours/.test(reserver.pastille)) R.echec(`${ou} : continuité`, `la page Réserver devrait partir du jour du scénario (${isoScenario}) et le dire : ${JSON.stringify(reserver)}`, { page: '/reserver', taille: taille.nom });
+      await page.goto(BASE + P, { waitUntil: 'load' }); await attendrePret(page); await attendre(600);
+      if ((await scene()).scenario !== 'attente') R.echec(`${ou} : continuité`, 'revenir du site à l\'espace fait sortir du scénario', lieu);
+
+      /* ===== Scénario 3 : la terrasse doit rentrer ===== */
+      await lancer('terrasse'); s = await scene();
+      if (s.scenario !== 'terrasse' || !/Samedi \d+ (juin|juillet|août|septembre), 17 h/.test(s.heure)) R.echec(`${ou} : scénario 3`, `attendu un samedi d'été à 17 h : ${JSON.stringify(s)}`, lieu);
+      if (!(await page.locator('button[data-repli]').count())) R.echec(`${ou} : scénario 3`, 'le plan de salle ne propose pas le repli : la terrasse devrait être ouverte ce jour-là', lieu);
+      const avant3 = (await stock())['jh-demo:terrasse:espace:v1'];
+      await page.locator('button[data-repli]').click(); await attendre(400); await attendu('aperçu ouvert', 1);
+      const apercu = await texte('article[data-repli]');
+      if (!/rien n'est encore changé/.test(apercu) || !/Tablée Marchand/.test(apercu) || !/Sans solution en salle/.test(apercu) || !/à rapprocher/.test(apercu)) R.echec(`${ou} : scénario 3`, `l'aperçu devrait montrer des places, un assemblage et un groupe sans solution : « ${apercu.slice(0, 240)} »`, lieu);
+      const sel = page.locator('[data-repli-choix]').nth(1), autreOption = await sel.evaluate((x) => [...x.options].map((o) => o.value).find((v) => v !== x.value && v !== 'garder'));
+      await sel.selectOption(autreOption); await attendre(350); await attendu('choix ajusté', 2);
+      if ((await stock())['jh-demo:terrasse:espace:v1'] !== avant3) R.echec(`${ou} : scénario 3`, 'l\'aperçu et l\'ajustement ont modifié des réservations avant l\'application', lieu);
+      await mesurerEcran(page, taille, 'scénario 3, aperçu du repli', false);
+      await page.locator('[data-repli-appliquer]').dblclick(); await attendre(700); s = await attendu('repli appliqué', 4, true);
+      const bilan3 = await texte('article[data-repli]');
+      if (!/3 réservations déplacées\./.test(bilan3) || (await page.locator('[data-repli-resultat="deplacee"]').count()) !== 3 || !/Tablée Marchand.*reste sans solution/.test(bilan3)) R.echec(`${ou} : scénario 3`, `le bilan devrait compter trois déplacements réels et la tablée restante : « ${bilan3.slice(0, 260)} »`, lieu);
+      await page.locator('[data-repli-fermer]').click(); await attendre(300);
+      const plan3 = await page.evaluate(() => [...document.querySelectorAll('[data-choisir-resa]')].map((b) => b.innerText.replace(/\s+/g, ' ')));
+      if (plan3.filter((x) => /table 1[012]\b|10\+11/.test(x)).length !== 1 || !plan3.some((x) => /Marchand/.test(x) && /10\+11/.test(x))) R.echec(`${ou} : scénario 3`, `sur le plan, seule la tablée Marchand devrait rester en terrasse : ${JSON.stringify(plan3)}`, lieu);
+
+      /* ===== Scénario 4 : le client change ses plans (accepté, puis refusé en recommençant) ===== */
+      for (const accepte of [true, false]) {
+        if (accepte) await lancer('client'); else await recommencer();
+        s = await scene(); if (s.scenario !== 'client' || !/15 h/.test(s.heure)) R.echec(`${ou} : scénario 4`, `attendu « Le client change ses plans » à 15 h : ${JSON.stringify(s)}`, lieu);
+        const li = ligne('Camille R.'); if (!(await li.locator('.esp-frise__plus').evaluate((d) => d.open))) await li.locator('.esp-frise__plus > summary').click();
+        const href = await li.locator('[data-lien-venue]').getAttribute('href');
+        if (!/[?&]demo=client/.test(href)) R.echec(`${ou} : continuité`, `le lien vers la page du client ne porte pas le scénario : ${href}`, lieu);
+        await li.locator('[data-lien-venue]').evaluate((a) => a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })) || true).catch(() => {}); /* l'étape est notée au clic ; la page est ouverte ci-dessous dans un onglet du test */
+        const client = await ctx.newPage(); await client.goto(BASE + href, { waitUntil: 'load' }); await attendre(1200);
+        const etatClient = () => client.locator('[data-venue-etat]').getAttribute('data-venue-etat').catch(() => 'introuvable');
+        if (await etatClient() !== 'confirmee' || !/heure simulée/.test(await texte('.venue__demo', client))) R.echec(`${ou} : scénario 4`, `la page du client devrait montrer la réservation confirmée du scénario, à son heure simulée (${await etatClient()})`, { page: '/votre-venue', taille: taille.nom });
+        await client.locator('[data-venue-outil="modifier"]').click(); await client.locator('#venue-heure').selectOption('21:00'); await client.locator('#venue-couverts').fill('4'); await client.locator('[data-venue-form] button[type="submit"]').click(); await attendre(800);
+        const garde = await texte('[data-esp-panneau-resas] [data-resa]:has([data-modif-client])');
+        if (!/20 h 30/.test(garde) || !/2 couverts/.test(garde) || !/21 h, 4 couverts/.test(garde)) R.echec(`${ou} : scénario 4`, `l'espace doit garder 20 h 30 pour 2 et montrer la demande : « ${garde.slice(0, 200)} »`, lieu);
+        await attendu('demande reçue dans l\'espace', 3);
+        await page.locator(`[data-venue-reponse][data-accepte="${accepte ? '1' : ''}"]`).click(); await attendre(800); s = await attendu(accepte ? 'changement accepté' : 'changement refusé', 4, true);
+        const apres = await texte('[data-esp-panneau-resas] [data-resa]:has-text("Camille R.")'), pageClient = await texte('.venue__carte', client);
+        if (accepte && (!/21 h/.test(apres) || !/4 couverts/.test(apres) || await etatClient() !== 'modifiee' || !/accepté/.test(s.essayer))) R.echec(`${ou} : scénario 4`, `accepté : l'espace (« ${apres.slice(0, 80)} »), la page du client (${await etatClient()}) et la conclusion (« ${s.essayer.slice(0, 80)} ») devraient concorder`, lieu);
+        if (!accepte && (!/20 h 30/.test(apres) || !/2 couverts/.test(apres) || !/n'a pas pu accepter/.test(pageClient) || !/refusé/.test(s.essayer))) R.echec(`${ou} : scénario 4`, `refusé : la réservation doit rester à 20 h 30 pour 2, et la page du client le dire : « ${apres.slice(0, 80)} » / « ${pageClient.slice(0, 120)} »`, lieu);
+        if (accepte) { await mesurerEcran(client, taille, 'votre venue, dans un scénario', false);
+          /* Aller-retour : depuis la page du client, « Revenir à l'espace » reste dans le scénario. */
+          await changerDePage(client, () => client.locator('.venue__demo a').click());
+          const retour = await client.evaluate(() => document.querySelector('[data-esp-scene]')?.dataset.scenario || ''); if (retour !== 'client') R.echec(`${ou} : continuité`, `revenir de la page du client à l'espace fait sortir du scénario (« ${retour} »)`, lieu); }
+        await client.close();
+      }
+
+      /* « Lancer » un scénario déjà joué repart de son début (ici le scénario 2, laissé avec une proposition de dernière minute). */
+      await lancer('attente'); s = await attendu('scénario 2 relancé depuis le choix', 0);
+      if (!/18 h 30/.test(s.heure)) R.echec(`${ou} : relancer`, `« Lancer » un scénario déjà joué devrait le reprendre au début (18 h 30) : « ${s.heure} »`, lieu);
+      if ((await stock())['jh-espace:v1'] !== habituel['jh-espace:v1']) R.echec(`${ou} : relancer`, 'relancer un scénario a touché aux données habituelles', lieu);
+
+      /* ===== Un onglet ordinaire, en même temps : il reste dans son contexte, avec ses données ===== */
+      const normal = await ctx.newPage(); await normal.goto(BASE + P, { waitUntil: 'load' }); await attendrePret(normal);
+      if (await normal.locator('[data-esp-app]').isHidden()) await normal.locator('[data-esp-connexion] button[type="submit"]').click(); await attendre(700);
+      const vuNormal = await normal.evaluate(() => ({ scenario: document.querySelector('[data-esp-scene]')?.dataset.scenario || '', tache: document.body.innerText.includes('Tâche de mon espace habituel'), camille: [...document.querySelectorAll('[data-resa]')].some((x) => /^sc\d-/.test(x.dataset.resa)) }));
+      if (vuNormal.scenario || !vuNormal.tache || vuNormal.camille) R.echec(`${ou} : isolation`, `un onglet ordinaire devrait montrer l'espace habituel, sans scénario : ${JSON.stringify(vuNormal)}`, lieu);
+      await normal.close();
+      const fin = await stock();
+      if (fin['jh-espace:v1'] !== habituel['jh-espace:v1'] || fin['jh-espace-resas:v1'] !== habituel['jh-espace-resas:v1'] || fin['jh-espace-venues:v1'] !== habituel['jh-espace-venues:v1']) R.echec(`${ou} : isolation`, 'après les quatre scénarios, les données habituelles ont changé', lieu);
+      /* Quitter : l'espace habituel, dans le même onglet. */
+      if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click();
+      await changerDePage(page, () => page.locator('[data-scene-etapes] [data-scene-quitter]').click());
+      const quitte = await page.evaluate(() => ({ scenario: document.querySelector('[data-esp-scene]')?.dataset.scenario || '', tache: document.body.innerText.includes('Tâche de mon espace habituel'), invite: [...document.querySelectorAll('[data-demo-lancer]')].some((b) => b.offsetParent) }));
+      if (quitte.scenario || !quitte.tache || !quitte.invite) R.echec(`${ou} : quitter`, `après « Quitter la démonstration », on devrait retrouver l'espace habituel : ${JSON.stringify(quitte)}`, lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok(`espace : démonstrations (${taille.nom})`);
     } catch (err) { R.echec(`${ou} : parcours interrompu`, String(err.message || err).replace(/\u001b\[[0-9;]*m/g, '').replace(/\s+/g, ' ').slice(0, 420), lieu);
     } finally { await ctx.close(); }
   }
@@ -994,7 +1181,10 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
           await page.locator('[data-placer-tout]').click(); await attendre(450); await page.locator('[data-esp-panneau-resas] .esp-table:is(.est-prise, .est-attente, .est-arrivee)').first().click(); await attendre(450); await mesurerEcran(page, taille, 'plan de salle : une table ouverte', complet);
           await page.locator('[data-fermer-table]').click(); await attendre(200); }
         else R.regarder('espace : service', 'aucun jour de la semaine n’a de réservation à montrer : la frise n’a pas été mesurée', { page: P, taille: taille.nom }); }
-      await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(250); await page.locator('[data-esp-rendu="demandes"] [data-ouvrir-demande]').first().click(); await attendre(400); await mesurerEcran(page, taille, 'demande de réception ouverte', complet);
+      await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(250); await page.locator('[data-esp-rendu="demandes"] [data-ouvrir-demande]').first().click(); await attendre(400);
+      /* Un message passager encore affiché peut s'effacer pendant la mesure : lu à moitié transparent, il donnait un faux « contraste insuffisant » selon l'instant. On attend qu'il soit parti de lui-même. */
+      await page.waitForFunction(() => { const t = document.querySelector('.esp-toast'); return !t || getComputedStyle(t).visibility === 'hidden'; }, null, { timeout: 14000 }).catch(() => {});
+      await mesurerEcran(page, taille, 'demande de réception ouverte', complet);
       await page.locator('[data-filtre-demandes="table"]').click(); await attendre(250); await page.locator('.esp-resa__message summary').first().click(); await attendre(250); await mesurerEcran(page, taille, 'tables à confirmer et message', false);
       await aller(page, 'carte:carte'); await page.locator('[data-plat="entrees/foie-gras-de-canard-maison"] [data-editer-plat]').click(); await attendre(400); await mesurerEcran(page, taille, 'éditeur de plat', complet);
       await page.locator('[data-plat="entrees/foie-gras-de-canard-maison"] [data-editer-plat]').first().click(); await attendre(200);
