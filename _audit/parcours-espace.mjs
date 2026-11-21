@@ -1001,7 +1001,10 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if ((await page.locator('[data-demo-lancer]:visible').count()) !== 1) R.echec(`${ou} : lanceur`, `« Lancer une démonstration » devrait être visible une fois sur Aujourd'hui (${await page.locator('[data-demo-lancer]:visible').count()})`, lieu);
       await page.locator('[data-demo-lancer]:visible').first().click(); await attendre(350);
       const choix = await page.evaluate(() => ({ n: document.querySelectorAll('[data-demo-choisir]').length, focus: !!document.activeElement?.closest('.esp-modale--demo'), titres: [...document.querySelectorAll('.esp-demo-carte h3')].map((h) => h.textContent.trim()) }));
-      if (choix.n !== 4 || !choix.focus) R.echec(`${ou} : lanceur`, `${choix.n} scénarios proposés (attendu 4), focus ${choix.focus ? 'dans' : 'hors de'} la fenêtre`, lieu);
+      if (choix.n !== 5 || !choix.focus) R.echec(`${ou} : lanceur`, `${choix.n} scénarios proposés (attendu 5), focus ${choix.focus ? 'dans' : 'hors de'} la fenêtre`, lieu);
+      /* v7.12.0 : les commandes disent ce qu'elles font. Rien n'a encore été joué : « Lancer depuis le début » partout, aucun « Reprendre ». */
+      const libelles = await page.evaluate(() => ({ debut: [...document.querySelectorAll('[data-demo-choisir]')].map((b) => b.textContent.trim()), reprendre: document.querySelectorAll('[data-demo-reprendre]').length }));
+      if (libelles.debut.some((t) => t !== 'Lancer depuis le début') || libelles.reprendre) R.echec(`${ou} : lanceur`, `avant tout lancement : ${JSON.stringify(libelles)}`, lieu);
       await mesurerEcran(page, taille, 'choix des scénarios', false);
       await page.keyboard.press('Escape'); await attendre(250);
       if (await page.locator('.esp-modale--demo:not([hidden])').count()) R.echec(`${ou} : lanceur`, 'Échap ne ferme pas le choix des scénarios', lieu);
@@ -1098,6 +1101,23 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       const plan3 = await page.evaluate(() => [...document.querySelectorAll('[data-choisir-resa]')].map((b) => b.innerText.replace(/\s+/g, ' ')));
       if (plan3.filter((x) => /table 1[012]\b|10\+11/.test(x)).length !== 1 || !plan3.some((x) => /Marchand/.test(x) && /10\+11/.test(x))) R.echec(`${ou} : scénario 3`, `sur le plan, seule la tablée Marchand devrait rester en terrasse : ${JSON.stringify(plan3)}`, lieu);
 
+      /* v7.12.0 · « Reprendre » : le scénario 2, laissé avec une proposition de dernière minute à 19 h, se retrouve tel quel ;
+         le badge « ouvert en ce moment » des pages publiques suit son heure (un vendredi à 19 h : la maison est ouverte). */
+      if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click();
+      await page.locator('[data-scene-etapes] [data-demo-lancer]').click(); await attendre(350);
+      const cmd = await page.evaluate(() => ({ reprendre: [...document.querySelectorAll('[data-demo-reprendre]')].map((b) => b.dataset.demoReprendre).sort(), debut: document.querySelectorAll('[data-demo-choisir]').length }));
+      if (cmd.debut !== 5 || cmd.reprendre.join() !== 'attente,service,terrasse') R.echec(`${ou} : lanceur`, `« Reprendre » devrait être proposé pour les trois scénarios déjà lancés, « Lancer depuis le début » pour tous : ${JSON.stringify(cmd)}`, lieu);
+      await changerDePage(page, () => page.locator('[data-demo-reprendre="attente"]').click()); s = await scene();
+      if (s.scenario !== 'attente' || !/19 h/.test(s.heure) || s.faites !== 3) R.echec(`${ou} : reprendre`, `« Reprendre » devrait garder la progression du scénario 2 (3 étapes, 19 h) : ${JSON.stringify(s)}`, lieu);
+      await page.goto(`${BASE}/infos-pratiques`, { waitUntil: 'load' }); await attendrePret(page); await attendre(1500);
+      const badge = await page.evaluate(() => { const c = document.querySelector('[data-statut-pied]'); return { etat: c?.closest('.statut')?.dataset.etat || '', texte: c?.textContent.replace(/\s+/g, ' ').trim() || '' }; });
+      if (badge.etat !== 'ouvert') R.echec(`${ou} : horloge publique`, `dans le scénario 2 (un vendredi à 19 h), le statut des pages publiques devrait dire « ouvert » : ${JSON.stringify(badge)}`, { page: '/infos-pratiques', taille: taille.nom });
+      await page.goto(BASE + P, { waitUntil: 'load' }); await attendrePret(page); await attendre(600);
+      /* Dans le scénario en cours, « Reprendre » ferme simplement la fenêtre : rien n'est rechargé ni effacé. */
+      if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click();
+      await page.locator('[data-scene-etapes] [data-demo-lancer]').click(); await attendre(350); await page.locator('[data-demo-reprendre="attente"]').click(); await attendre(350);
+      if (await page.locator('.esp-modale--demo:not([hidden])').count() || (await scene()).faites !== 3) R.echec(`${ou} : reprendre`, '« Reprendre » le scénario en cours devrait fermer la fenêtre sans rien changer', lieu);
+
       /* ===== Scénario 4 : le client change ses plans (accepté, puis refusé en recommençant) ===== */
       for (const accepte of [true, false]) {
         if (accepte) await lancer('client'); else await recommencer();
@@ -1144,6 +1164,223 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (quitte.scenario || !quitte.tache || !quitte.invite) R.echec(`${ou} : quitter`, `après « Quitter la démonstration », on devrait retrouver l'espace habituel : ${JSON.stringify(quitte)}`, lieu);
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
       R.ok(`espace : démonstrations (${taille.nom})`);
+    } catch (err) { R.echec(`${ou} : parcours interrompu`, String(err.message || err).replace(/\u001b\[[0-9;]*m/g, '').replace(/\s+/g, ' ').slice(0, 420), lieu);
+    } finally { await ctx.close(); }
+  }
+
+  /* ---------- 1 terdecies. Les réceptions de A à Z (v7.12.0) ----------
+     Le cinquième scénario, « Une réception aux Jardins », joué de bout en bout sur ordinateur et à 390 px : la demande
+     devient un dossier (un seul), une proposition est préparée, vue telle que le client la voit, puis présentée ; le
+     conflit du samedi d'avant apparaît avant toute validation et la saisie est gardée ; l'option est posée ; l'agenda
+     et la page Réserver la reflètent ; le client donne son accord (simulation) sur « Votre réception » ; l'équipe
+     confirme ; le jour J se prépare ; la fiche s'ouvre. Puis les variantes : le client change ses plans (refus, puis
+     acceptation), et l'option qui expire quand l'horloge atteint son échéance. Autour : les données habituelles
+     intactes, le rechargement, le même dossier ouvert depuis l'Agenda, Aujourd'hui et la fiche client, les notes
+     internes absentes de la page du client. */
+  for (const taille of (!SEUL || SEUL.includes('1-terdecies') ? ['1366×768', '390×844'] : []).map(T)) {
+    const lieu = { page: P, taille: taille.nom }, ou = `réceptions (${taille.nom})`;
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      const texte = async (sel, pg = page) => (await pg.locator(sel).first().innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
+      const toast = () => texte('[data-esp-toast-texte]');
+      const scene = () => page.evaluate(() => { const z = document.querySelector('[data-esp-scene]'); return { scenario: z?.dataset.scenario || '', finie: !!z?.classList.contains('est-finie'), heure: z?.querySelector('[data-scene-heure] .esp-long')?.textContent.replace(/\s+/g, ' ').trim() || '', essayer: z?.querySelector('[data-scene-essayer]')?.textContent.replace(/\s+/g, ' ').trim() || '', faites: z?.querySelectorAll('.esp-scene__etapes li.est-faite').length ?? -1 }; });
+      const attendu = async (quoi, n, fin = false) => { const s = await scene(); if (s.faites !== n || s.finie !== fin) R.echec(`${ou} : étapes`, `${quoi} : ${s.faites} étape(s) faite(s) sur 7, attendu ${n}${fin ? ' et la conclusion' : ''} (« ${s.essayer.slice(0, 110)} »)`, lieu); return s; };
+      const stock = () => page.evaluate(() => Object.fromEntries(Object.keys(localStorage).sort().map((k) => [k, localStorage.getItem(k)])));
+      const changerDePage = async (pg, action) => { await pg.evaluate(() => { window.__ancienne = true; }); await action(); await pg.waitForFunction(() => !window.__ancienne && document.readyState === 'complete', null, { timeout: 15000 });
+        await pg.waitForFunction(() => !!document.querySelector('[data-esp-app]') && !document.querySelector('[data-esp-app]').hidden, null, { timeout: 15000 }); await attendre(500); };
+      const change = async (sel, v, pg = page) => { await pg.locator(sel).fill(v); await pg.locator(sel).dispatchEvent('change'); await attendre(300); };
+      const onglet = async (id) => { await page.locator(`#rec-onglet-${id}`).click(); await attendre(350); };
+      const etats = () => page.evaluate(() => ({ etape: document.querySelector('[data-rec-etape]')?.dataset.recEtape || '', retenue: document.querySelector('[data-rec-retenue]')?.dataset.recRetenue || '' }));
+      const dossierS = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-demo:reception:espace:v1') || '{}').receptions?.dossiers?.['rec-sc5-demande'] || null);
+      const debordement = async (pg, quoi) => { const d = await pg.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - document.documentElement.clientWidth); if (d > 1) R.echec(`${ou} : débordement`, `${quoi} déborde de ${d} px`, lieu); };
+      const ouvrirEtapes = async () => { if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click(); await attendre(200); };
+
+      /* ===== Avant : l'espace habituel ; les demandes de réception d'exemple y ont leur suivi ===== */
+      await page.goto(BASE + P, { waitUntil: 'load' }); await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); }); await entrer(page); await aller(page, 'demandes');
+      await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(400);
+      const phases = await page.evaluate(() => [...document.querySelectorAll('.esp-rec-phase__titre')].map((h) => h.childNodes[0].textContent.trim()));
+      if (phases.join(' · ') !== 'À qualifier · Proposition · Décision attendue · Préparation · Terminé') R.echec(`${ou} : suivi`, `phases attendues : À qualifier · Proposition · Décision attendue · Préparation · Terminé ; vues : ${phases.join(' · ')}`, lieu);
+      await page.locator('[data-rec-recherche]').fill('mariage'); await attendre(300);
+      const trouve = await page.evaluate(() => ({ n: document.querySelectorAll('[data-rec-carte]').length, compte: document.querySelector('[data-rec-compte]')?.textContent || '', focus: document.activeElement?.matches('[data-rec-recherche]') }));
+      if (trouve.n !== 1 || !/1 sur 3/.test(trouve.compte) || !trouve.focus) R.echec(`${ou} : suivi`, `la recherche « mariage » devrait garder une carte sur trois, sans quitter le champ : ${JSON.stringify(trouve)}`, lieu);
+      await page.locator('[data-rec-recherche]').fill(''); await attendre(250);
+      await mesurerEcran(page, taille, 'suivi des réceptions', false); await debordement(page, 'le suivi');
+      const habituel = await stock();
+
+      /* ===== Le scénario 5 ===== */
+      await page.locator('[data-demo-lancer]:visible').first().click().catch(async () => { await aller(page, 'jour'); await page.locator('[data-demo-lancer]:visible').first().click(); }); await attendre(350);
+      await changerDePage(page, () => page.locator('[data-demo-choisir="reception"]').click());
+      let s = await scene();
+      if (s.scenario !== 'reception' || !/Mercredi .*, 10 h/.test(s.heure) || !/Thomas B\./.test(s.essayer)) R.echec(`${ou} : scénario 5`, `attendu « Une réception aux Jardins », un mercredi à 10 h : ${JSON.stringify(s)}`, lieu);
+      const cartes = await page.evaluate(() => [...document.querySelectorAll('[data-rec-carte]')].map((c) => `${c.dataset.recCarte}|${c.closest('.esp-rec-phase').querySelector('h3').childNodes[0].textContent.trim()}`));
+      if (cartes.join() !== 'sc5-demande|À qualifier,rec-sc5-mariage|Préparation') R.echec(`${ou} : scénario 5`, `au départ : la demande de Thomas B. à qualifier, le mariage en préparation, et rien d'autre : ${cartes.join()}`, lieu);
+      await attendu('au départ', 0);
+      /* 1. La demande devient un dossier : un seul, même en insistant. */
+      /* Deux clics coup sur coup sur le même bouton : un seul dossier. */
+      await page.evaluate(() => { const b = document.querySelector('[data-rec-carte="sc5-demande"] .esp-rec-carte__creer button'); b.click(); b.click(); }); await attendre(600); await attendu('dossier créé', 1);
+      if (Object.keys((await page.evaluate(() => JSON.parse(localStorage.getItem('jh-demo:reception:espace:v1')).receptions.dossiers))).length !== 2) R.echec(`${ou} : dossier`, 'un double clic sur « Créer le dossier » ne doit créer qu\'un dossier', lieu);
+      const repris = await page.evaluate(() => ({ titre: document.querySelector('#rec-titre')?.textContent.trim(), focus: document.activeElement?.id, client: document.querySelector('#rec-client')?.value, annonces: document.querySelector('#rec-annonces')?.value, attentes: document.querySelector('#rec-attentes')?.value, souhait: document.querySelector('#rec-souhait')?.value }));
+      if (!/Anniversaire · Thomas B\./.test(repris.titre) || repris.client !== 'Thomas B.' || repris.annonces !== '40' || !/40 ans de Julie/.test(repris.attentes) || !repris.souhait) R.echec(`${ou} : dossier`, `le dossier devrait reprendre la demande sans ressaisie : ${JSON.stringify(repris)}`, lieu);
+      if (repris.focus !== 'rec-titre') R.echec(`${ou} : focus`, `à l'ouverture du dossier, le focus devrait être sur son titre (« ${repris.focus} »)`, lieu);
+      let e = await etats(); if (e.etape !== 'a-qualifier' || e.retenue !== 'aucune') R.echec(`${ou} : dossier`, `un dossier neuf est à qualifier et ne retient rien : ${JSON.stringify(e)}`, lieu);
+      await change('#rec-notes', 'NOTE-INTERNE budget serré'); await change('#rec-partage', 'Parking gratuit sur place.');
+      await mesurerEcran(page, taille, 'dossier, onglet Projet', false); await debordement(page, 'le dossier');
+      /* 2. La proposition : brouillon, aperçu client, présentation. Elle ne retient rien. */
+      await onglet('proposition'); await page.locator('[data-rec-proposition-creer]').click(); await attendre(400);
+      await page.locator('[data-rec-catalogue]').selectOption('menu-groupe'); await page.locator('[data-rec-ligne-ajouter]').click(); await attendre(400);
+      await page.locator('[data-rec-catalogue]').selectOption('privatisation'); await page.locator('[data-rec-ligne-ajouter]').click(); await attendre(400);
+      let total = await texte('[data-rec-total]'); if (!/^2\s?200\s?€$/.test(total)) R.echec(`${ou} : proposition`, `40 × 45 € + 400 € devraient faire 2 200 € : « ${total} »`, lieu);
+      await change('#pl-qte-0', '42'); total = await texte('[data-rec-total]'); if (!/^2\s?290\s?€$/.test(total)) R.echec(`${ou} : proposition`, `42 × 45 € + 400 € devraient faire 2 290 € : « ${total} »`, lieu);
+      await change('#pr-compris', 'Le service\nLa mise en place de la salle');
+      await mesurerEcran(page, taille, 'proposition, brouillon', false); await debordement(page, 'la proposition');
+      await page.locator('[data-rec-brouillon] [data-rec-apercu]').click(); await attendre(450);
+      const doc = await page.evaluate(() => ({ texte: document.querySelector('.esp-modale--doc .esp-doc')?.innerText.replace(/\s+/g, ' ') || '', focus: !!document.activeElement?.closest('.esp-modale--doc') }));
+      if (!/Démonstration · proposition d'exemple, sans valeur contractuelle/i.test(doc.texte) || !/2\s?290\s?€/.test(doc.texte) || /NOTE-INTERNE/.test(doc.texte) || !doc.focus) R.echec(`${ou} : document`, `l'aperçu client doit être marqué « démonstration », porter le total, taire les notes internes et prendre le focus : ${JSON.stringify(doc).slice(0, 300)}`, lieu);
+      await mesurerEcran(page, taille, 'proposition, aperçu client', false);
+      await page.keyboard.press('Escape'); await attendre(300); if (await page.locator('.esp-modale--doc:not([hidden])').count()) R.echec(`${ou} : document`, 'Échap ne ferme pas l\'aperçu', lieu);
+      await page.locator('[data-rec-presenter]').click(); await attendre(500); await attendu('proposition présentée', 2);
+      e = await etats(); if (e.etape !== 'presentee' || e.retenue !== 'aucune') R.echec(`${ou} : proposition`, `une proposition présentée ne retient aucun espace : ${JSON.stringify(e)}`, lieu);
+      /* 3. Les espaces. D'abord le conflit du samedi d'avant, vu avant de valider ; la saisie est gardée. */
+      await onglet('espaces'); const s2 = await page.locator('#rf-jour').inputValue(), s1 = new Date(Date.parse(`${s2}T12:00:00Z`) - 7 * 86400000).toISOString().slice(0, 10);
+      await change('#rf-arrivee', '19:00'); await change('#rf-fin', '01:00'); await change('#rf-jour', s1);
+      let verif = await page.evaluate(() => ({ etat: document.querySelector('[data-rec-verif]')?.dataset.recVerif, texte: document.querySelector('[data-rec-verif]')?.innerText.replace(/\s+/g, ' ') || '' }));
+      if (verif.etat !== 'conflit' || !/La salle du restaurant : déjà réservé du samedi .* à 16 h au dimanche .* à 3 h pour « Mariage · Camille et Hugo »/.test(verif.texte)) R.echec(`${ou} : conflit`, `le conflit devrait nommer l'espace, la période et le dossier, avant toute validation : ${JSON.stringify(verif).slice(0, 320)}`, lieu);
+      await mesurerEcran(page, taille, 'espaces, conflit', false);
+      await page.locator('[data-rec-retenir="option"]').click(); await attendre(500);
+      e = await etats(); const garde = await page.locator('#rf-jour').inputValue();
+      if (e.retenue !== 'aucune' || garde !== s1 || !/Mariage · Camille et Hugo/.test(await toast())) R.echec(`${ou} : conflit`, `une validation impossible garde le dossier et la saisie, et dit pourquoi : ${JSON.stringify({ e, garde, toast: await toast() })}`, lieu);
+      /* Une autre solution : la salle de réception est libre ce samedi-là ; puis retour à la date demandée. */
+      await page.locator('[data-rec-form="espace"][value="restaurant"]').uncheck(); await attendre(300); await page.locator('[data-rec-form="espace"][value="salle-reception"]').check(); await attendre(300);
+      if (await page.locator('[data-rec-verif]').getAttribute('data-rec-verif') !== 'libre') R.echec(`${ou} : conflit`, 'la salle de réception devrait être libre le samedi du mariage', lieu);
+      await page.locator('[data-rec-form="espace"][value="salle-reception"]').uncheck(); await attendre(300); await page.locator('[data-rec-form="espace"][value="restaurant"]').check(); await attendre(300); await change('#rf-jour', s2);
+      verif = await page.evaluate(() => ({ etat: document.querySelector('[data-rec-verif]')?.dataset.recVerif, texte: document.querySelector('[data-rec-verif]')?.innerText.replace(/\s+/g, ' ') || '' }));
+      if (verif.etat !== 'libre' || !/du samedi .* à 17 h au dimanche .* à 2 h \(la soirée finit le lendemain\)/.test(verif.texte)) R.echec(`${ou} : option`, `la période devrait aller de la préparation (17 h) à la remise en état (2 h le lendemain) : ${JSON.stringify(verif).slice(0, 300)}`, lieu);
+      await page.locator('[data-rec-retenir="option"]').dblclick(); await attendre(600); await attendu('option posée', 3);
+      e = await etats(); const ret = (await dossierS()).retenue;
+      if (e.retenue !== 'option' || ret.debut !== `${s2}T17:00` || ret.tables.length !== 9 || !ret.salle || !/T18:00$/.test(ret.echeance)) R.echec(`${ou} : option`, `l'option devrait retenir les neuf tables de la salle, de 17 h à 2 h, jusqu'à une échéance à 18 h : ${JSON.stringify({ e, ret })}`, lieu);
+      if ((await dossierS()).historique.filter((h) => /^Option/.test(h.quoi)).length !== 1) R.echec(`${ou} : option`, 'un double clic ne doit poser qu\'une option', lieu);
+      await mesurerEcran(page, taille, 'espaces, option posée', false);
+      /* L'agenda, la salle et la page Réserver reflètent l'option. */
+      await aller(page, 'resas'); for (let k = 0; k < 6 && !(await page.locator(`[data-jour="${s2}"]`).count()); k++) { await page.locator('[data-semaine="7"]').click(); await attendre(250); }
+      if (!/Option/.test(await texte(`[data-jour="${s2}"]`))) R.echec(`${ou} : agenda`, 'la semaine devrait marquer « Option » le samedi de la réception', lieu);
+      await page.locator(`[data-jour="${s2}"]`).click(); await attendre(400);
+      const ligne = await page.evaluate(() => { const li = document.querySelector('.esp-fil__item.est-option'); return li ? li.innerText.replace(/\s+/g, ' ') : ''; });
+      if (!/RÉCEPTION · OPTION/i.test(ligne) || !/Option jusqu'au/.test(ligne) || !/préparation 17 h · invités 19 h · fin 1 h \(le lendemain\) · remise en état jusqu'à 2 h/.test(ligne)) R.echec(`${ou} : agenda`, `la ligne de l'agenda devrait dire « option », son échéance, la préparation et la remise en état : « ${ligne.slice(0, 260)} »`, lieu);
+      await mesurerEcran(page, taille, 'agenda, jour d\'une option', false);
+      /* Le plan de salle de ce soir-là : les neuf tables sont retenues, et le disent. */
+      await page.locator('[role="tab"][data-onglets-resas][data-onglet="salle"]').click(); await attendre(450);
+      const salle = await page.evaluate(() => ({ notice: document.querySelector('.esp-salle-carte [data-rec-notice]')?.innerText.replace(/\s+/g, ' ') || '', retenues: [...document.querySelectorAll('.esp-table')].filter((t) => /retenue pour une réception/.test(t.getAttribute('aria-label') || '')).length }));
+      if (!/Réception · option/i.test(salle.notice) || !/toute la salle du restaurant est retenue/.test(salle.notice) || salle.retenues !== 9) R.echec(`${ou} : plan de salle`, `le plan devrait dire que la salle est retenue (9 tables) : ${JSON.stringify(salle).slice(0, 260)}`, lieu);
+      await mesurerEcran(page, taille, 'plan de salle, tables retenues par une option', false);
+      await page.locator('[role="tab"][data-onglets-resas][data-onglet="agenda"]').click(); await attendre(400);
+      await page.locator('.esp-fil__item.est-option [data-activite]').click(); await attendre(500);
+      if (await page.locator('[data-rec-dossier]').getAttribute('data-rec-dossier') !== 'rec-sc5-demande') R.echec(`${ou} : un seul dossier`, 'l\'agenda devrait ouvrir le dossier de Thomas B.', lieu);
+      await page.goto(`${BASE}/reserver?date=${s2}&service=soir#formulaire`, { waitUntil: 'load' }); await attendrePret(page); await attendre(1500);
+      const reserver = await texte('[data-resa-creneaux-aide]'); if (!/accueille une réception/.test(reserver)) R.echec(`${ou} : page Réserver`, `le soir de l'option, la page Réserver devrait dire que le restaurant accueille une réception : « ${reserver} »`, { page: '/reserver', taille: taille.nom });
+      /* Recharger : le dossier ouvert, la progression et l'heure sont gardés. */
+      await page.goto(BASE + P, { waitUntil: 'load' }); await attendrePret(page); await attendre(700); await attendu('après un tour sur le site', 3);
+      if (await page.locator('[data-rec-dossier]').count() !== 1) R.echec(`${ou} : rechargement`, 'au retour dans l\'espace, le dossier ouvert devrait l\'être encore', lieu);
+      /* 4. Le client : sa page, sans les notes internes ; l'accord (simulation) ne confirme rien. */
+      await onglet('client'); const href = await page.locator('[data-lien-reception]').getAttribute('href');
+      if (!/^\/votre-reception\?d=rec-sc5-demande&c=[a-z0-9]{6}&demo=reception$/.test(href)) R.echec(`${ou} : continuité`, `le lien de la page du client devrait porter le dossier, son code et le scénario : ${href}`, lieu);
+      const client = await ctx.newPage(); client.on('pageerror', (x) => erreurs.push(`page du client : ${x.message}`)); await client.goto(BASE + href, { waitUntil: 'load' }); await attendrePret(client); await attendre(1200);
+      const etatClient = () => client.locator('[data-reception-etat]').getAttribute('data-reception-etat').catch(() => 'introuvable');
+      const vue = await client.evaluate(() => document.querySelector('[data-reception-client]').innerText.replace(/\s+/g, ' '));
+      if (await etatClient() !== 'presentee' || !/Proposition à consulter/.test(vue) || !/2\s?290\s?€/.test(vue) || !/Parking gratuit sur place/.test(vue) || /NOTE-INTERNE|Camille|Mariage/.test(vue) || !/heure simulée/.test(vue)) R.echec(`${ou} : page du client`, `la page devrait montrer la proposition, l'information partagée et l'heure simulée, sans note interne ni autre dossier : « ${vue.slice(0, 300)} »`, { page: '/votre-reception', taille: taille.nom });
+      await mesurerEcran(client, taille, 'votre réception, proposition à consulter', false); await debordement(client, 'la page du client');
+      await client.locator('[data-reception-accorder]').click(); await attendre(300); await client.locator('[data-reception-accord-oui]').click(); await attendre(900);
+      if (await etatClient() !== 'accord' || !/À confirmer par l'équipe/.test(await texte('.venue__etat', client))) R.echec(`${ou} : accord`, `après l'accord, la page du client devrait dire « À confirmer par l'équipe » (${await etatClient()})`, { page: '/votre-reception', taille: taille.nom });
+      await attendu('accord du client', 4); e = await etats();
+      if (e.etape !== 'accord' || e.retenue !== 'option' || !/Accord du client — simulation \(version 1\)/.test(await texte('[data-rec-etape]'))) R.echec(`${ou} : accord`, `l'accord est une simulation sur la version 1 ; il ne confirme rien : ${JSON.stringify(e)}`, lieu);
+      /* 5. La confirmation par l'équipe. */
+      await onglet('espaces'); const conditions = await page.evaluate(() => [...document.querySelectorAll('.esp-rec-conditions li')].map((li) => li.classList.contains('est-ok')));
+      if (conditions.join() !== 'true,true,true') R.echec(`${ou} : confirmation`, `les trois conditions devraient être remplies : ${conditions.join()}`, lieu);
+      await page.locator('.esp-rec-confirmer [data-rec-retenir="ferme"]').click(); await attendre(700); await attendu('réception confirmée', 5);
+      e = await etats(); if (e.etape !== 'confirmee' || e.retenue !== 'ferme' || await etatClient() !== 'confirmee') R.echec(`${ou} : confirmation`, `la réception devrait être confirmée des deux côtés : ${JSON.stringify(e)} / ${await etatClient()}`, lieu);
+      if (!/Rien n'est envoyé/.test(await toast())) R.echec(`${ou} : confirmation`, `le message devrait dire que rien n'est envoyé : « ${await toast()} »`, lieu);
+      /* 6 et 7. Le jour J : les tâches, une information, la fiche. */
+      await onglet('jourj'); await page.evaluate(() => { const b = document.querySelector('[data-rec-taches]'); b.click(); b.click(); }); await attendre(600);
+      if (await page.locator('.esp-dem__taches li').count() !== 6) R.echec(`${ou} : jour J`, `six tâches habituelles attendues, même après un double clic : ${await page.locator('.esp-dem__taches li').count()}`, lieu);
+      await attendu('tâches seules', 5); await change('#jj-cuisine', 'Menu arrêté le 10 : sans fruits à coque pour deux invités.'); await attendu('une information pour l\'équipe', 6);
+      await onglet('jourj'); await mesurerEcran(page, taille, 'dossier, onglet Jour J', false); await debordement(page, 'l\'onglet Jour J');
+      await page.locator('[data-rec-fiche]').click(); await attendre(450);
+      const fiche = await texte('.esp-modale--doc .esp-doc');
+      if (!/FICHE DU JOUR J/i.test(fiche) || !/Réception confirmée/.test(fiche) || !/17 h Préparation/.test(fiche) || !/1 h \(le lendemain\) Fin de la réception/.test(fiche) || !/sans fruits à coque/.test(fiche) || !/Invités confirmés À renseigner/.test(fiche) || /NOTE-INTERNE/.test(fiche)) R.echec(`${ou} : fiche du jour J`, `la fiche devrait relire le dossier et dire ce qui manque : « ${fiche.slice(0, 420)} »`, lieu);
+      await mesurerEcran(page, taille, 'fiche du jour J', false); await page.keyboard.press('Escape'); await attendre(300);
+      s = await attendu('fiche consultée', 7, true);
+      if (!/réception confirmée : La salle du restaurant, du samedi .* à 17 h au dimanche .* à 2 h/.test(s.essayer) || !/Rien n'a été envoyé, signé ni encaissé/.test(s.essayer)) R.echec(`${ou} : conclusion`, `la conclusion devrait décrire le résultat obtenu : « ${s.essayer} »`, lieu);
+      /* Le même dossier depuis Aujourd'hui (la tâche du jour J) et depuis la fiche client. */
+      await aller(page, 'clients'); await page.locator('[data-client]', { hasText: 'Thomas B.' }).first().click(); await attendre(450);
+      if (!(await page.locator('[data-fiche-dossiers] [data-rec-ouvrir="rec-sc5-demande"]').count())) R.echec(`${ou} : un seul dossier`, 'la fiche du client devrait lister sa réception', lieu);
+      else { await page.locator('[data-fiche-dossiers] [data-rec-ouvrir]').click(); await attendre(500); if (await page.locator('[data-rec-dossier]').getAttribute('data-rec-dossier') !== 'rec-sc5-demande' || await page.locator('.esp-modale--fiche:not([hidden])').count()) R.echec(`${ou} : un seul dossier`, 'depuis la fiche client, le même dossier devrait s\'ouvrir (et la fiche se fermer)', lieu); }
+
+      /* ===== Variante : le client change ses plans ===== */
+      const avant = JSON.stringify(await dossierS());
+      await client.locator('[data-reception-outil="changement"]').click(); await attendre(300); await client.locator('#rc-invites').fill('120'); await client.locator('[data-reception-form="changement"] button[type="submit"]').click(); await attendre(900);
+      if (!/En attente de la réponse du restaurant/.test(await texte('[data-reception-attente]', client)) || !/40 \(annoncés\)/.test(await texte('.venue__recap', client))) R.echec(`${ou} : changement`, 'la page du client devrait dire la demande en attente et garder ce qui est convenu', { page: '/votre-reception', taille: taille.nom });
+      if (JSON.stringify(await dossierS()) !== avant) R.echec(`${ou} : changement`, 'la demande du client a modifié le dossier avant toute décision', lieu);
+      await aller(page, 'jour'); const prio = await page.evaluate(() => [...document.querySelectorAll('[data-faire-priorite]')].map((b) => b.closest('li, article, div')?.innerText.replace(/\s+/g, ' ') || '').find((t) => /demande un changement/.test(t)) || '');
+      if (!/Thomas B\. demande un changement/.test(prio)) { R.echec(`${ou} : Aujourd'hui`, `la demande du client devrait remonter dans les priorités : « ${prio.slice(0, 160)} » ; vues : ${(await page.evaluate(() => [...document.querySelectorAll('.esp-conseil__actions')].map((p) => p.closest('li')?.innerText.replace(/\s+/g, ' ').slice(0, 70)).join(' ¦ '))).slice(0, 300)}`, lieu); await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(300); await page.locator('[data-rec-ouvrir="rec-sc5-demande"]').first().click(); await attendre(400); await onglet('client'); }
+      else { await page.locator('[data-faire-priorite^="rec-client-"]').first().click(); await attendre(500); if (await page.locator('[data-rec-panneau]').getAttribute('data-rec-panneau') !== 'client') R.echec(`${ou} : Aujourd'hui`, 'la priorité devrait ouvrir le dossier sur l\'onglet Client', lieu); }
+      const cons = await texte('[data-rec-consequences]');
+      if (!/Invités : 40 → 120/.test(cons) || !/Capacité des espaces retenus : 100\. Elle serait dépassée/.test(cons)) R.echec(`${ou} : changement`, `les conséquences devraient être dites avant d'accepter : « ${cons.slice(0, 240)} »`, lieu);
+      await mesurerEcran(page, taille, 'dossier, demande de changement', false);
+      await page.locator('[data-rec-decider] button[value="oui"]').click(); await attendre(500);
+      if (!/capacité de 100/.test(await toast()) || JSON.stringify(await dossierS()) !== avant) R.echec(`${ou} : changement`, `accepter 120 invités devrait être refusé, sans rien changer : « ${await toast()} »`, lieu);
+      await page.locator('[data-rec-decider] button[value="non"]').click(); await attendre(700);
+      let dS = await dossierS(); if (dS.retenue.etat !== 'ferme' || dS.projet.invitesConfirmes !== 0 || !/n'a pas pu accepter/.test(await texte('[data-reception-decision="refusee"]', client))) R.echec(`${ou} : changement`, 'un refus garde la réception confirmée telle quelle, et la page du client le dit', lieu);
+      await client.locator('[data-reception-outil="changement"]').click(); await attendre(300); await client.locator('#rc-invites').fill('60'); await client.locator('[data-reception-form="changement"] button[type="submit"]').click(); await attendre(900);
+      await attendre(400); await page.locator('[data-rec-decider] button[value="oui"]').click(); await attendre(700); dS = await dossierS();
+      if (dS.projet.invitesConfirmes !== 60 || dS.retenue.etat !== 'ferme' || !dS.aRevoir || !/60 \(confirmés\)/.test(await texte('.venue__recap', client)) || !/a accepté/.test(await texte('[data-reception-decision="acceptee"]', client))) R.echec(`${ou} : changement`, `accepter 60 invités met à jour l'effectif des deux côtés, garde la réception confirmée et marque la proposition « à revoir » : ${JSON.stringify({ n: dS.projet.invitesConfirmes, r: dS.retenue.etat, aRevoir: dS.aRevoir })}`, lieu);
+      await mesurerEcran(client, taille, 'votre réception, confirmée, avec ses demandes', false);
+      await client.close();
+
+      /* ===== Variante : une option qui expire (en recommençant, jusqu'à l'option) ===== */
+      await ouvrirEtapes(); await changerDePage(page, () => page.locator('[data-scene-recommencer]').click()); await attendu('après « Recommencer »', 0);
+      if ((await stock())['jh-demo:reception:espace-venues:v1']) R.echec(`${ou} : recommencer`, 'l\'accord et les demandes du client devraient être effacés avec le scénario', lieu);
+      await page.locator('[data-rec-carte="sc5-demande"] .esp-rec-carte__creer button').click(); await attendre(500); await onglet('espaces'); await change('#rf-arrivee', '19:00'); await change('#rf-fin', '01:00');
+      await page.locator('[data-rec-retenir="option"]').click(); await attendre(600); e = await etats(); if (e.retenue !== 'option') R.echec(`${ou} : expiration`, `l'option devrait être posée : ${JSON.stringify(e)}`, lieu);
+      await ouvrirEtapes(); const sautsVus = await page.evaluate(() => [...document.querySelectorAll('[data-scene-saut]')].map((b) => `${b.textContent.trim()}|${b.getAttribute('aria-disabled') || ''}`));
+      if (sautsVus.join(' ; ') !== 'Aller à l\'échéance de l\'option| ; Aller à la veille| ; Aller au jour J|') R.echec(`${ou} : horloge`, `les trois sauts dans le temps devraient être proposés : ${sautsVus.join(' ; ')}`, lieu);
+      await page.locator('[data-scene-saut="echeance"]').click(); await attendre(600); s = await scene(); e = await etats();
+      if (!/18 h/.test(s.heure) || e.retenue !== 'expiree' || e.etape !== 'a-qualifier' && e.etape !== 'qualifie') R.echec(`${ou} : expiration`, `à l'échéance (18 h), l'option devrait être expirée et le dossier inchangé par ailleurs : ${JSON.stringify({ heure: s.heure, e })}`, lieu);
+      if (!/Option expirée/.test(await texte('[data-rec-suite]')) || !/a expiré/.test(await texte('[data-rec-retenue-phrase]'))) R.echec(`${ou} : expiration`, 'le dossier devrait dire que l\'option a expiré et rester suivi', lieu);
+      dS = await dossierS(); if (!dS || dS.cloture || dS.retenue.etat !== 'option') R.echec(`${ou} : expiration`, 'l\'expiration ne doit ni supprimer ni classer le dossier (elle se déduit de l\'heure)', lieu);
+      await page.goto(`${BASE}/reserver?date=${s2}&service=soir#formulaire`, { waitUntil: 'load' }); await attendrePret(page); await attendre(1500);
+      if (/accueille une réception/.test(await texte('[data-resa-creneaux-aide]'))) R.echec(`${ou} : expiration`, 'une fois l\'option expirée, la page Réserver devrait rouvrir ce soir-là', { page: '/reserver', taille: taille.nom });
+      await page.goto(BASE + P, { waitUntil: 'load' }); await attendrePret(page); await attendre(700);
+      if (!/18 h/.test((await scene()).heure) || (await etats()).retenue !== 'expiree') R.echec(`${ou} : rechargement`, 'recharger ne doit ni reculer l\'heure ni prolonger l\'option', lieu);
+      /* Reposer l'option : une nouvelle vérification, une nouvelle échéance. */
+      await onglet('espaces'); await page.locator('[data-rec-retenir="option"]').click(); await attendre(600);
+      if ((await etats()).retenue !== 'option' || (await dossierS()).retenue.echeance <= dS.retenue.echeance) R.echec(`${ou} : expiration`, `une nouvelle option devrait être posée, avec une échéance plus lointaine (« ${await toast()} »)`, lieu);
+      /* Le jour J atteint sans confirmation : rien n'est confirmé ni coché à la place de l'équipe. */
+      await ouvrirEtapes(); await page.locator('[data-scene-saut="jourj"]').click(); await attendre(600); e = await etats(); s = await scene();
+      if (e.etape === 'confirmee' || e.retenue === 'ferme' || s.finie || !/Samedi/.test(s.heure)) R.echec(`${ou} : horloge`, `avancer au jour J ne doit rien confirmer : ${JSON.stringify({ e, heure: s.heure })}`, lieu);
+
+      /* ===== Une réception qui dérange des réservations déjà prises : le replacement, proposé puis appliqué par un geste explicite =====
+         Dans le scénario 1 (un vendredi soir de service, des tables prises), une petite réception au coin du feu : les
+         réservations des tables 1 et 3 sont en conflit ; un replacement est proposé (aperçu), appliqué, et son bilan est dit. */
+      await ouvrirEtapes(); await page.locator('[data-scene-etapes] [data-demo-lancer]').click(); await attendre(350); await changerDePage(page, () => page.locator('[data-demo-choisir="service"]').click());
+      const vendredi = await page.evaluate(() => JSON.parse(localStorage.getItem('jh-demo:service:horloge:v1')).iso);
+      await aller(page, 'demandes'); await page.locator('[data-filtre-demandes="reception"]').click(); await attendre(350);
+      await page.locator('[data-rec-carte="demo-reception-3"] .esp-rec-carte__creer button').click(); await attendre(500); await change('#rec-annonces', '6');
+      await onglet('espaces'); await change('#rf-jour', vendredi); await change('#rf-arrivee', '20:30'); await change('#rf-fin', '23:00'); await page.locator('[data-rec-form="espace"][value="coin-feu"]').check(); await attendre(350);
+      const gene = await page.evaluate(() => ({ etat: document.querySelector('[data-rec-verif]')?.dataset.recVerif, conflits: [...document.querySelectorAll('[data-rec-conflit="resa"]')].map((li) => li.textContent.replace(/\s+/g, ' ')), repl: document.querySelector('[data-rec-repl]')?.innerText.replace(/\s+/g, ' ') || '' }));
+      if (gene.etat !== 'conflit' || gene.conflits.length !== 2 || !gene.conflits.some((t) => /Table 1 : Aurélie et Marc/.test(t)) || !gene.conflits.some((t) => /Table 3 : Camille R\./.test(t)) || !/Un aperçu : rien n'est changé/.test(gene.repl)) R.echec(`${ou} : replacement`, `les deux réservations des tables 1 et 3 devraient être en conflit, avec un replacement proposé : ${JSON.stringify(gene).slice(0, 420)}`, lieu);
+      const tablesAvant = await page.evaluate(() => JSON.stringify(JSON.parse(localStorage.getItem('jh-demo:service:espace:v1')).resa.tables));
+      await mesurerEcran(page, taille, 'espaces, replacement proposé', false);
+      if (await page.evaluate(() => JSON.stringify(JSON.parse(localStorage.getItem('jh-demo:service:espace:v1')).resa.tables)) !== tablesAvant) R.echec(`${ou} : replacement`, 'l\'aperçu du replacement a déplacé des réservations', lieu);
+      await page.locator('[data-rec-replacer]').click(); await attendre(700);
+      const apres = await page.evaluate(() => ({ bilan: document.querySelector('[data-rec-bilan]')?.innerText.replace(/\s+/g, ' ') || '', etat: document.querySelector('[data-rec-verif]:not([data-rec-bilan])')?.dataset.recVerif, tables: JSON.parse(localStorage.getItem('jh-demo:service:espace:v1')).resa.tables }));
+      if (!/2 réservations déplacées\./.test(apres.bilan) || apres.etat !== 'libre' || ['1', '2', '3'].includes(String(apres.tables['sc1-couple'])) || ['1', '2', '3'].includes(String(apres.tables['sc1-camille']))) R.echec(`${ou} : replacement`, `après l'application : un bilan précis, les deux réservations ailleurs, le coin du feu libre : ${JSON.stringify(apres).slice(0, 380)}`, lieu);
+
+      /* ===== Autour : les données habituelles, quitter ===== */
+      const fin = await stock();
+      for (const k of ['jh-espace:v1', 'jh-espace-resas:v1', 'jh-espace-demandes:v1', 'jh-espace-venues:v1']) if (fin[k] !== habituel[k]) R.echec(`${ou} : isolation`, `« ${k} » a changé pendant le scénario`, lieu);
+      await ouvrirEtapes(); await changerDePage(page, () => page.locator('[data-scene-etapes] [data-scene-quitter]').click());
+      if ((await scene()).scenario || await page.locator('[data-rec-dossier]').count()) R.echec(`${ou} : quitter`, 'après « Quitter la démonstration », ni scénario ni dossier fictif ne devraient rester à l\'écran', lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok(`espace : réceptions (${taille.nom})`);
     } catch (err) { R.echec(`${ou} : parcours interrompu`, String(err.message || err).replace(/\u001b\[[0-9;]*m/g, '').replace(/\s+/g, ' ').slice(0, 420), lieu);
     } finally { await ctx.close(); }
   }

@@ -69,7 +69,9 @@ export function normaliser(d) {
 }
 
 /** Les demandes (hors tables) : démonstration et site, à l'étape où le restaurant les a laissées ; celles qui attendent d'abord, puis les plus récentes. */
-export function demandes({ auj, demandes: site = [], produits = [], exemples = true }, S) {
+export function demandes({ auj, demandes: site = [], produits = [], exemples = true, demandesDemo: avecDemo = true }, S) {
+  /* v7.12.0 : un scénario qui apporte ses propres demandes (fictives) ne montre pas en plus les exemples habituels. */
+  if (avecDemo === false) exemples = false;
   const st = S.demandes?.statuts || {}, notes = S.demandes?.notes || {};
   /* Mode connecté (exemples === false) : aucune demande inventée n'est montrée dans l'outil de l'équipe. */
   return [...(exemples === false ? [] : demandesDemo(auj, produits)), ...site].filter((d) => GENRES[d.genre] && d.genre !== 'table').map(normaliser)

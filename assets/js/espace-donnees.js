@@ -18,6 +18,7 @@ import { MUTATIONS_PRESENCE } from './espace-presence.js?v=7';
 import { MUTATIONS_ATTENTE } from './espace-attente.js?v=7';
 import { MUTATIONS_REPLI } from './espace-repli.js?v=7';
 import { MUTATIONS_VENUE } from './espace-venue.js?v=7';
+import { MUTATIONS_RECEPTIONS } from './espace-receptions.js?v=7';
 export { estVide } from './espace-stock.js?v=7';
 
 const basculer = (liste = [], valeur, actif) => [...new Set([...liste.filter((x) => x !== valeur), ...(actif ? [valeur] : [])])];
@@ -66,6 +67,8 @@ export const MUTATIONS = {
   ...MUTATIONS_ATTENTE,
   ...MUTATIONS_REPLI,
   ...MUTATIONS_VENUE,
+  /* v7.12.0 : les dossiers de réception (un par réception), leurs propositions versionnées, leurs options. */
+  ...MUTATIONS_RECEPTIONS,
   /* Photos */
   photo(S, { emplacement, photo }) { (S.photos ||= {})[emplacement] = { ...(S.photos[emplacement] || {}), nom: photo.nom || null, l: photo.l || null, src: photo.src || null }; },
   cadrage(S, { emplacement, cadrage, origine }) { (S.photos ||= {})[emplacement] = { ...origine, ...(S.photos[emplacement] || {}), cadrage }; },

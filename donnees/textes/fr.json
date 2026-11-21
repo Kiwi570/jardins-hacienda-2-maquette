@@ -120,6 +120,13 @@
       "nav": "Votre venue",
       "partageAlt": "Votre venue aux Jardins de l'Hacienda",
       "accroche": "Votre venue aux Jardins"
+    },
+    "votrereception": {
+      "titre": "Votre réception : Les Jardins de l'Hacienda",
+      "description": "Retrouvez votre projet de réception aux Jardins de l'Hacienda : l'étape en cours, la proposition, ce qui est convenu et vos demandes.",
+      "nav": "Votre réception",
+      "partageAlt": "Votre réception aux Jardins de l'Hacienda",
+      "accroche": "Votre réception aux Jardins"
     }
   },
   "accueil": {
@@ -1144,5 +1151,12 @@
     "chargement": "Nous cherchons votre réservation…",
     "sansScript": "Pour voir ou modifier votre réservation, appelez-nous au",
     "photoAlt": "La salle des Jardins de l'Hacienda, au soleil de midi"
+  },
+  "votreReception": {
+    "surtitre": "Les Jardins de l'Hacienda",
+    "titre": "Votre réception aux Jardins",
+    "chargement": "Nous cherchons votre projet…",
+    "sansScript": "Pour suivre votre projet de réception, appelez-nous au",
+    "photoAlt": "Sous la pergola, les tables d'une réception dressées de blanc"
   }
 }

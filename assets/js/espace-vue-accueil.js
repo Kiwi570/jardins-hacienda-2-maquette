@@ -12,7 +12,7 @@ const VUES_METIER = [['direction', 'Direction', 'Tout : le service, ce qui atten
   ['salle', 'Salle', 'Le service à venir, les tables à placer, les arrivées.'], ['cuisine', 'Cuisine', 'Les couverts, les grandes tablées, les allergies et les notes.']];
 const ORDRE = { direction: ['service', 'priorites', 'fil', 'taches', 'site'], accueil: ['priorites', 'service', 'fil', 'taches', 'site'], salle: ['service', 'priorites', 'fil', 'taches'], cuisine: ['service', 'fil', 'taches'] };
 const ETAT_TACHE = { retard: 'En retard', jour: 'Aujourd\'hui', venir: '', libre: '', faite: 'Terminée' };
-const TYPE_LIEN = { demande: 'Demande', resa: 'Réservation', service: 'Service', client: 'Client' };
+const TYPE_LIEN = { demande: 'Demande', resa: 'Réservation', service: 'Service', client: 'Client', reception: 'Réception' };
 
 export function creerAccueil(X) {
   const { root, $, e, S, A, D, ctx, etat, agir, dire } = X;
@@ -210,6 +210,7 @@ export function creerAccueil(X) {
     else if (l.type === 'service') { const [iso, sv] = l.id.split('|'); X.executer({ aller: { vue: 'resas', onglet: 'service', jour: iso, service: sv } }); }
     else if (l.type === 'resa') { const r = X.trouverResa(l.id); if (r) X.executer({ aller: { vue: 'resas', onglet: 'service', jour: r.date, service: r.service, resa: r.id } }); else dire('Cette réservation n\'est plus dans l\'agenda.'); }
     else if (l.type === 'client') X.executer({ aller: { vue: 'clients', client: l.id } });
+    else if (l.type === 'reception') X.executer({ aller: { dossier: l.id, onglet: 'jourj' } });
   }
   function clic(t) {
     const b = t.closest('[data-briefing]'); if (b) { ouvrirBriefing(b.dataset.briefing, b); return true; }

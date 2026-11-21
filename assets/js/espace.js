@@ -27,8 +27,8 @@
    v7.8.0 : le garde-fou métier du dépôt (une réservation impossible n'entre pas dans l'agenda), les heures d'arrivée du
    jour, l'ouverture exceptionnelle, l'annulation ciblée, les écritures différées jamais perdues. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
-import { CONTEXTE, horloge as horlogeDemo, reglerHorloge, semer, viderContexte, viderScenario, avecContexte, vusDemo, noterVu } from './espace-stock.js?v=7';
-import { SCENARIOS, scenario as scenarioDe, depart as departScenario, avancement } from './espace-scenarios.js?v=7';
+import { CONTEXTE, horloge as horlogeDemo, reglerHorloge, semer, viderContexte, viderScenario, scenarioEntame, avecContexte, vusDemo, noterVu } from './espace-stock.js?v=7';
+import { SCENARIOS, scenario as scenarioDe, depart as departScenario, avancement, sauts as sautsScenario } from './espace-scenarios.js?v=7';
 import { comprendre } from './espace-commandes.js?v=7';
 import { installerBarre } from './espace-barre.js?v=7';
 import { creerDemandes } from './espace-vue-demandes.js?v=7';
@@ -42,7 +42,10 @@ import { creerClient } from './espace-vue-client.js?v=7';
 import { creerAccueil } from './espace-vue-accueil.js?v=7';
 import { creerClients } from './espace-vue-clients.js?v=7';
 import { rechercher } from './espace-recherche.js?v=7';
-import { listeClients, aMigrer } from './espace-clients.js?v=7';
+import { listeClients, aMigrer, partagesConnus, cleDossier } from './espace-clients.js?v=7';
+import { creerReceptions } from './espace-vue-receptions.js?v=7';
+import { lienReception, receptionsDuJour } from './espace-receptions.js?v=7';
+import { occupationsActives, prisesDuService } from './disponibilites.js?v=7';
 import { activitesDuJour, prochainService } from './espace-accueil.js?v=7';
 import { carteDe, platsDe, prixTexte } from './espace-carte.js?v=7';
 import { normaliser, GENRES, demandes as toutesDemandes } from './espace-demandes.js?v=7';
@@ -73,7 +76,7 @@ export function init(root) {
   /* Un nom de scénario inconnu (lien ancien ou mal recopié) : retour à l'espace habituel, sans contexte vide. */
   if (CONTEXTE && !SC) { try { sessionStorage.removeItem('jh-demo'); } catch { /* rien */ } location.replace('/espace'); return; }
   let scenarioFrais = false;
-  if (SC) { if (!horlogeDemo()) scenarioFrais = semer(departScenario(SC.id, R, aujourdhui(new Date()).iso)); fixerHorloge(() => horlogeDemo()); }
+  if (SC) { if (!horlogeDemo()) scenarioFrais = semer(departScenario(SC.id, R, aujourdhui(new Date()).iso, { lieux: D.receptions, salle: D.salle })); fixerHorloge(() => horlogeDemo()); }
   /* Aujourd'hui, à Moineville : relu au fil du temps (v7.8.1). Une page restée ouverte après minuit ne garde plus la veille. */
   const A = (() => { let t = 0, v = aujourdhui(); const lire = () => { if (Date.now() - t > 15000) { t = Date.now(); v = aujourdhui(); } return v; }; return { get iso() { return lire().iso; }, get min() { return lire().min; }, relire() { t = 0; return lire(); } }; })();
   /* Le garde-fou : avant d'enregistrer, le dépôt demande aux règles si l'action est possible (d'où qu'elle vienne). */
@@ -81,7 +84,9 @@ export function init(root) {
   const depotLocal = creerDepot(undefined, undefined, {
     /* v7.11.0 : les règles reçoivent tout le contexte (l'heure, les inscriptions venues du site). En mode connecté, ce qui
        n'est noté que sur l'appareil (installé, parti, état des tables) est contrôlé sur les réservations du serveur. */
-    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, minute: A.min, maintenant: `${A.iso}T${hhmm(A.min)}:00`, site: depotLocal.resasSite(), demandes: depotLocal.demandesSite(), exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API, scenario: SC?.id || '' },
+    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, minute: A.min, maintenant: `${A.iso}T${hhmm(A.min)}:00`, site: depotLocal.resasSite(), demandes: depotLocal.demandesSite(), exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API, scenario: SC?.id || '', lieux: D.receptions, demandesDemo: !SC?.sansDemandesDemo, agenda: D.agenda,
+      /* v7.12.0 : ce que le client a fait depuis sa page (accord simulé, demandes de changement), relu au moment de l'action. */
+      venues: API ? {} : depotLocal.venues() },
       API ? { ...depot.etat(), ...Object.fromEntries(Object.entries(frais).filter(([k]) => k !== 'resa' && k !== 'horaires')) } : frais, D.salle, nom, args),
     /* La liste des soirées publiée sur le site est calculée, jamais restaurée telle quelle : elle suit toujours les données. */
     derives: [{ chemin: ['evenements', 'liste'], calcul: (e) => (e.evenements && (Object.keys(e.evenements.modifs || {}).length || (e.evenements.ajouts || []).length) ? listeEvenements(D.agenda, e) : undefined) }],
@@ -96,7 +101,9 @@ export function init(root) {
   { const c = depot.etat().carte || {}; if ([...Object.keys(c.modifs || {}), ...Object.keys(c.epuises || {})].some((k) => /\/\d+$/.test(k))) depot.agir('migrerCarte', { base: D.carte }); }
   /* v7.11.0 : les notes des clients passent sous leur nouvelle clé de téléphone (une seule forme par numéro). */
   if (aMigrer(depot.etat())) depot.agir('migrerClients', {});
-  const ctx = () => (contexte ||= { R, auj: A.iso, get minute() { return A.min; }, get maintenant() { return `${A.iso}T${hhmm(A.min)}:00`; }, site: depot.resasSite(), demandes: depot.demandesSite(), venues: API ? {} : depot.venues(), produits: D.produits || [], exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API, scenario: SC?.id || '' });
+  const ctx = () => (contexte ||= { R, auj: A.iso, get minute() { return A.min; }, get maintenant() { return `${A.iso}T${hhmm(A.min)}:00`; }, site: depot.resasSite(), demandes: depot.demandesSite(), venues: API ? {} : depot.venues(), produits: D.produits || [], exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API, scenario: SC?.id || '', lieux: D.receptions, demandesDemo: !SC?.sansDemandesDemo, agenda: D.agenda,
+    /* v7.12.0 : les téléphones que plusieurs clients connus partagent (calculés à la demande, une fois par rendu). */
+    get partages() { if (!this.partagesLus) this.partagesLus = partagesConnus(this, depot.etat(), toutesDemandes(this, depot.etat())); return this.partagesLus; } });
   const services = servicesDe(R);
   const ouv = (iso, sv) => ouvert(ctx(), S(), iso, sv);
   const plein = (iso, sv) => estComplet(S(), iso, sv);
@@ -223,6 +230,15 @@ export function init(root) {
   function enAttenteTotal() { const a = vDemandes.attente(); return a.tables.length + a.autres.length; }
   const X = { root, $, $$, e, S, A, D, ctx, etat, agir, dire, corps, ligneResa, rendre, allerVue, viser, feter, enAttenteTotal, plusTard: (f, cle) => plus_tard(f, cle) };
   const vDemandes = creerDemandes(X);
+  /* v7.12.0 : les dossiers de réception (suivi dans Demandes, dossier à onglets, documents). Masqués en mode connecté. */
+  const vReceptions = creerReceptions(X);
+  X.suiviReceptions = vReceptions.suiviHtml; X.boutonDossier = vReceptions.boutonDemande; X.ouvrirDossier = vReceptions.ouvrir;
+  X.lienReception = (d) => `<a class="esp-bouton" href="${e(avecContexte(lienReception(d)))}" target="_blank" rel="noopener" data-lien-reception>Ouvrir la page du client <span aria-hidden="true">↗</span><span class="visuellement-cache"> (nouvel onglet)</span></a>`;
+  X.fermerClient = () => vClient.fermer();
+  /* Ce qu'une réception retient pendant un service : dit en tête de Service et de Salle, avec le chemin vers le dossier. */
+  X.noticeReception = (iso, sv) => { if (API) return ''; const pris = prisesDuService(occupationsActives(S(), ctx().maintenant.slice(0, 16)), R, iso, sv); if (!pris.occs.length) return '';
+    return typo(pris.occs.map((o) => `<p class="esp-rec-notice" data-rec-notice="${e(o.id)}"><span class="esp-pastille esp-pastille--${o.type === 'option' ? 'a-confirmer' : 'confirmee'}">${o.type === 'option' ? 'Réception · option' : 'Réception confirmée'}</span> ${e(o.intitule)} : ${o.salle ? 'toute la salle du restaurant est retenue' : o.tables.length ? `${o.tables.length > 1 ? `les tables ${o.tables.join(', ')} sont retenues` : `la table ${o.tables[0]} est retenue`}` : 'aucune table du restaurant n\'est retenue'} pendant ce service. <button type="button" class="esp-lien" data-rec-ouvrir="${e(o.id)}" data-rec-vers="espaces">Ouvrir le dossier</button></p>`).join('')); };
+  X.ouvrirClient = (d) => { const b = document.createElement('button'); b.dataset.client = cleDossier(d); root.append(b); vClient.clic(b); b.remove(); };
   X.ardoiseHtml = () => cartesSite().ardoise;
   const vCarte = creerCarte(X);
   X.executer = (p) => executer(p);
@@ -274,7 +290,7 @@ export function init(root) {
     corps('resas').innerHTML = `${onglets}<div class="esp-panneau" id="panneau-resas" role="tabpanel" aria-labelledby="onglet-resas-agenda" data-esp-panneau-resas>
       <div class="esp-semaine">
         <button type="button" class="esp-rond" data-semaine="-7" aria-label="Semaine précédente"><span aria-hidden="true">‹</span><span class="esp-semaine__mot" aria-hidden="true">Semaine précédente</span></button>
-        <ol class="esp-semaine__jours">${jours.map((iso) => { const lj = resas(iso), n = couverts(lj), att = lj.filter((r) => r.statut === 'a-confirmer').length; return `<li><button type="button" class="esp-jour${iso === A.iso ? ' est-auj' : ''}" data-jour="${iso}" aria-pressed="${iso === etat.jour}"><span class="esp-jour__nom">${e(fmt(iso, { weekday: 'short' }).replace('.', ''))}</span><b>${+iso.slice(8)}</b><span class="esp-jour__n">${n ? `${n} couv.` : '—'}</span>${att ? `<span class="esp-jour__att" aria-label="${att} à confirmer">${att}</span>` : ''}</button></li>`; }).join('')}</ol>
+        <ol class="esp-semaine__jours">${jours.map((iso) => { const lj = resas(iso), n = couverts(lj), att = lj.filter((r) => r.statut === 'a-confirmer').length; const rec = API ? [] : receptionsDuJour(ctx(), S(), iso).filter((x) => x.type !== 'visite'); return `<li><button type="button" class="esp-jour${iso === A.iso ? ' est-auj' : ''}${rec.length ? ` a-une-reception${rec.some((x) => x.type === 'confirmee') ? ' est-confirmee' : ''}` : ''}" data-jour="${iso}" aria-pressed="${iso === etat.jour}"><span class="esp-jour__nom">${e(fmt(iso, { weekday: 'short' }).replace('.', ''))}</span><b>${+iso.slice(8)}</b><span class="esp-jour__n">${n ? `${n} couv.` : '—'}</span>${att ? `<span class="esp-jour__att" aria-label="${att} à confirmer">${att}</span>` : ''}${rec.length ? `<span class="esp-jour__rec">${rec.some((x) => x.type === 'confirmee') ? 'Réception' : 'Option'}</span>` : ''}</button></li>`; }).join('')}</ol>
         <button type="button" class="esp-rond" data-semaine="7" aria-label="Semaine suivante"><span aria-hidden="true">›</span><span class="esp-semaine__mot" aria-hidden="true">Semaine suivante</span></button>
       </div>
       <div class="esp-jourtete"><h3>${e(maj(fmt(etat.jour)))}${etat.jour === A.iso ? ' <span class="esp-pastille">Aujourd\'hui</span>' : ''}</h3>
@@ -394,10 +410,18 @@ export function init(root) {
           <p class="esp-photo__actions"><button type="button" class="esp-bouton" data-choisir-photo="${p.id}">Changer</button>${s.photos?.[p.id] ? `<button type="button" class="esp-bouton esp-bouton--discret" data-retablir-photo="${p.id}">Rétablir</button>` : ''}<a class="esp-voir" href="${e(p.url)}">${ICO.oeil}<span>Voir</span></a></p></li>`; }).join('')}</ul>`;
   }
 
+  /* v7.12.0 : un rendu ne s'emboîte jamais dans un autre. Un champ en cours de saisie, retiré de l'écran par un rendu, peut déclencher
+     un enregistrement (son « change ») qui demande lui-même un rendu : il est fait juste après, une fois, sur l'état à jour. */
+  let enRendu = false, aRefaire = false;
   function rendre() {
+    if (enRendu) { aRefaire = true; return; }
+    enRendu = true; try { rendreUneFois(); } finally { enRendu = false; }
+    if (aRefaire) { aRefaire = false; rendre(); }
+  }
+  function rendreUneFois() {
     viderEcritures();
     contexte = null;
-    ({ jour: rendreJour, demandes: vDemandes.rendre, resas: rendreResas, carte: vCarte.rendre, clients: vClients.rendre, site: rendreSite })[etat.vue]();
+    ({ jour: rendreJour, demandes: () => { if (!(etat.dossier && !API && vReceptions.rendreDossier())) vDemandes.rendre(); }, resas: rendreResas, carte: vCarte.rendre, clients: vClients.rendre, site: rendreSite })[etat.vue]();
     marquerNavMobile(); rendreScene();
     const n = enAttenteTotal();
     for (const b of $$('[data-esp-badge]', root)) { const on = b.dataset.espBadge === 'demandes' && n > 0; b.hidden = !on; if (on) { b.textContent = n; b.setAttribute('aria-label', `${n} à traiter`); } }
@@ -491,6 +515,9 @@ export function init(root) {
       if (p.action.nom === 'ajouterResa') { resa = 'tel-' + Date.now().toString(36); args.resa = { ...args.resa, id: resa }; }
       ok = agir(p.action.nom, args, { msg: p.action.msg, lien: p.action.lien });
     }
+    /* v7.12.0 : une priorité, une ligne d'agenda ou une tâche qui mène à un dossier de réception ouvre CE dossier. */
+    if (p.aller?.dossier) { vReceptions.ouvrir(p.aller.dossier, p.aller.onglet || 'projet'); return; }
+    etat.dossier = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ }
     const a = p.aller; if (!a?.vue) { rendre(); return; }
     if (a.jour) etat.jour = a.jour; if (a.service) etat.serviceVu = a.service; if (a.onglet) { if (a.vue === 'carte') etat.ongletCarte = a.onglet; else if (a.vue === 'resas') etat.ongletResas = a.onglet; else etat.onglet = a.onglet; }
     if (a.vue === 'resas' && !a.onglet) etat.ongletResas = 'agenda'; if (a.demande) etat.demandeOuverte = a.demande; if (a.filtre) etat.filtreDemandes = a.filtre;
@@ -571,10 +598,12 @@ export function init(root) {
   root.addEventListener('click', (ev) => {
     const t = ev.target;
     if (t.closest('[data-esp-plus]')) { ouvrirPlus(panneauPlus.hidden); return; }
-    const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; if (nav.dataset.espVue === 'resas' && nav.closest('[data-esp-plusnav]')) etat.ongletResas = 'agenda'; allerVue(nav.dataset.espVue); return; }
+    const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; etat.dossier = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } if (nav.dataset.espVue === 'resas' && nav.closest('[data-esp-plusnav]')) etat.ongletResas = 'agenda'; allerVue(nav.dataset.espVue); return; }
     /* Téléphone : « Service » ouvre le service en cours ou le prochain ; « Plus », les autres rubriques. */
     if (t.closest('[data-esp-service]')) { const ps = prochainServiceIci(); etat.evEdite = null; if (ps) { etat.jour = ps.date; etat.serviceVu = ps.service; } etat.ongletResas = 'service'; allerVue('resas'); return; }
     if (t.closest('[data-esp-plusnav-bouton]')) { ouvrirPlusNav($('[data-esp-plusnav]', root).hidden); return; }
+    if (t.closest('[data-voir-demande], [data-aller]')) { etat.dossier = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } }
+    if (vReceptions.clic(t)) return;
     if (vAccueil.clic(t) || vClients.clic(t)) return;
     const act = t.closest('[data-activite]'); if (act) { const x = X.activites(etat.jour).find((y) => y.cle === act.dataset.activite); if (x) executer({ aller: x.aller }); return; }
     const pas = t.closest('[data-jour-pas]'); if (pas) { etat.jour = ajouter(etat.jour, +pas.dataset.jourPas); etat.resaEditee = null; rendre(); $(`[data-jour-pas="${pas.dataset.jourPas}"]`, root)?.focus({ preventScroll: true }); return; }
@@ -628,16 +657,16 @@ export function init(root) {
   }
   root.addEventListener('input', (ev) => {
     const t = ev.target;
-    if (vDemandes.saisie(t) || vCarte.saisie(t)) return;
+    if (vReceptions.saisieTexte(t) || vDemandes.saisie(t) || vCarte.saisie(t)) return;
     if (t.id === 'an-texte') { $('[data-compte]', root).textContent = `${t.value.length} / 160`; $('[data-annonce-apercu]', root).textContent = t.value || '…'; plus_tard(() => agir('annonce', { texte: t.value.trim() }, { msg: 'Annonce enregistrée.', lien: D.pages.accueil, groupe: 'annonce-texte' }), 'annonce'); return; }
     if (t.closest('[data-form-ardoise]')) { plus_tard(() => sauverArdoise(), 'ardoise'); return; }
     if (t.closest('[data-form-textes]')) { const cle = t.name, x = D.textes.find((y) => y.cle === cle); plus_tard(() => agir('texte', { cle, valeur: t.value, defaut: x?.defaut }, { msg: 'Texte enregistré : visible sur le site, dans ce navigateur.', lien: x?.url, groupe: `texte-${cle}` }), `texte-${cle}`); return; }
     if (t.closest('[data-editeur]')) apercuBillet(t.closest('[data-editeur]'));
   });
-  root.addEventListener('change', (ev) => { if (ev.target.closest('[data-form-horaires]')) sauverHoraires(); else if (!vAttente.change(ev.target)) vSalle.change(ev.target); });
+  root.addEventListener('change', (ev) => { if (ev.target.closest('[data-form-horaires]')) sauverHoraires(); else if (!vReceptions.change(ev.target) && !vAttente.change(ev.target)) vSalle.change(ev.target); });
   root.addEventListener('submit', (ev) => {
     ev.preventDefault(); const f = ev.target;
-    if (vService.envoi(f, ev) || vAccueil.soumettre(f) || vAttente.soumettre(f)) return;
+    if (vReceptions.soumettre(f, ev) || vService.envoi(f, ev) || vAccueil.soumettre(f) || vAttente.soumettre(f)) return;
     if (f.matches('[data-esp-connexion]')) {
       if (!API) { try { sessionStorage.setItem('jh-espace-session', '1'); } catch { /* rien */ } montrer(true); return; }
       /* Mode connecté : une vraie connexion. Rien n'est gardé dans le navigateur, la session est un cookie que le script ne lit pas. */
@@ -674,14 +703,14 @@ export function init(root) {
     else { scrollTo({ top: 0, behavior: 'instant' }); $('#esp-id', root)?.focus({ preventScroll: true }); }
   }
   /* ---------- v7.11.1 · « Lancer une démonstration » ----------
-     Hors scénario : une invitation discrète (sur Aujourd'hui) et l'entrée du menu ouvrent le choix des quatre scénarios.
+     Hors scénario : une invitation discrète (sur Aujourd'hui) et l'entrée du menu ouvrent le choix des scénarios.
      Dans un scénario : un bandeau léger dit son nom, la date et l'heure simulées, ce qu'il y a à essayer maintenant,
      et donne les commandes (avancer l'heure, recommencer, changer, quitter). Les étapes se cochent d'après l'état réel. */
   const zoneScene = document.createElement('div'); zoneScene.className = 'esp-scene'; zoneScene.dataset.espScene = ''; $('[data-esp-app]', root).before(zoneScene);
   /* L'indication « À essayer maintenant » est redessinée à chaque action : son annonce passe par une zone stable, mise à jour seulement quand le texte change. */
   const annonceScene = document.createElement('p'); annonceScene.className = 'visuellement-cache'; annonceScene.setAttribute('role', 'status'); zoneScene.after(annonceScene); let ditScene = null;
   const heureSimulee = () => `${maj(fmt(A.iso, { weekday: 'long', day: 'numeric', month: 'long' }))}, ${heure(hhmm(A.min))}`;
-  const etatScene = () => avancement(SC.id, { S: S(), venues: depot.venues(), vus: vusDemo(), iso: horlogeDemo()?.iso || A.iso });
+  const etatScene = () => avancement(SC.id, { S: S(), venues: depot.venues(), vus: vusDemo(), iso: horlogeDemo()?.iso || A.iso, lieux: D.receptions });
   function rendreScene() {
     if (API) { zoneScene.hidden = true; return; }
     if (!SC) { zoneScene.hidden = etat.vue !== 'jour' || !!CONTEXTE;
@@ -697,27 +726,32 @@ export function init(root) {
       <details class="esp-scene__plus" data-scene-etapes${ouvert ? ' open' : ''}><summary>Étapes ${a.faites} sur ${a.etapes.length}, et commandes</summary>
         <ol class="esp-scene__etapes">${a.etapes.map((x) => `<li class="${x.fait ? 'est-faite' : ''}"><span class="esp-scene__coche" aria-hidden="true">${x.fait ? '✓' : ''}</span><span>${e(x.texte)}<span class="visuellement-cache">${x.fait ? ' (fait)' : ' (à faire)'}</span></span></li>`).join('')}</ol>
         ${SC.variante ? `<p class="esp-scene__variante">${e(SC.variante)}</p>` : ''}
+        ${SC.variantes ? `<div class="esp-scene__variantes"><p class="esp-scene__sous">Trois variantes à rejouer</p><ul>${SC.variantes.map((x) => `<li><b>${e(x.titre)}.</b> ${e(x.texte)}</li>`).join('')}</ul></div>` : ''}
+        ${sautsScenario(SC.id, { S: S(), iso: A.iso, min: A.min }).length ? `<div class="esp-scene__sauts" data-scene-sauts><p class="esp-scene__sous">Avancer dans le temps</p><p class="esp-scene__commandes">${sautsScenario(SC.id, { S: S(), iso: A.iso, min: A.min }).map((x) => `<button type="button" class="esp-bouton" data-scene-saut="${x.cle}"${x.cible ? '' : ` aria-disabled="true" title="${e(x.raison)}"`}>${e(x.libelle)}</button>`).join('')}</p><p class="esp-aide">Avancer l'heure n'accepte rien et ne confirme rien : seules ses conséquences s'appliquent (une option qui arrive à échéance expire).</p></div>` : ''}
         <p class="esp-scene__commandes"><button type="button" class="esp-bouton" data-scene-recommencer>Recommencer ce scénario</button><button type="button" class="esp-bouton" data-demo-lancer>Changer de scénario</button><button type="button" class="esp-bouton esp-bouton--discret" data-scene-quitter>Quitter la démonstration</button></p>
         <p class="esp-aide">Données fictives, dans un espace à part : vos données habituelles ne sont pas touchées. Rien n'est envoyé.</p></details>`);
   }
   /* Une étape « regarder » : notée une seule fois, hors de l'état (elle ne s'annule pas avec « Annuler »). */
   X.demoVu = (cle) => { if (SC && noterVu(cle)) rendreScene(); };
+  X.majScene = () => { if (SC) { contexte = null; rendreScene(); } };
   X.scenario = () => SC?.id || '';
   let fenDemo = null, retourDemo = null;
   function ouvrirLanceur(depuis) {
     retourDemo = depuis || document.activeElement;
     if (!fenDemo) { fenDemo = document.createElement('div'); fenDemo.className = 'esp-modale esp-modale--demo'; fenDemo.hidden = true; root.append(fenDemo);
       fenDemo.addEventListener('click', (ev) => { if (ev.target.closest('[data-fermer-demo]')) fermerLanceur();
-        /* « Lancer » part toujours du début : les données fictives laissées par un passage précédent de CE scénario sont effacées. « Reprendre » (le scénario en cours) ne touche à rien. */
-        const choisi = ev.target.closest('[data-demo-choisir]'); if (choisi && choisi.dataset.demoChoisir !== SC?.id) { viderScenario(choisi.dataset.demoChoisir); try { sessionStorage.removeItem('jh-espace-vue'); } catch { /* rien */ } } });
+        /* v7.12.0 : deux commandes, deux effets. « Lancer depuis le début » efface les données fictives de CE scénario (et d'aucun autre) : il repart de sa
+           situation initiale, même s'il est en cours. « Reprendre » ne touche à rien : la progression est gardée ; pour le scénario en cours, la fenêtre se ferme simplement. */
+        const debut = ev.target.closest('[data-demo-choisir]'); if (debut) { viderScenario(debut.dataset.demoChoisir); try { sessionStorage.removeItem('jh-espace-vue'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } }
+        const reprise = ev.target.closest('[data-demo-reprendre]'); if (reprise && reprise.dataset.demoReprendre === SC?.id) { ev.preventDefault(); fermerLanceur(); } });
       fenDemo.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') { ev.stopPropagation(); fermerLanceur(); }
         if (ev.key === 'Tab') { const l = $$('a[href], button:not([disabled])', fenDemo).filter((x) => x.offsetParent), i = l.indexOf(document.activeElement); if (ev.shiftKey && i <= 0) { ev.preventDefault(); l[l.length - 1]?.focus(); } else if (!ev.shiftKey && i === l.length - 1) { ev.preventDefault(); l[0]?.focus(); } } }); }
     fenDemo.innerHTML = typo(`<div class="esp-modale__fond" data-fermer-demo></div><div class="esp-modale__boite" role="dialog" aria-modal="true" aria-labelledby="demo-titre">
       <header class="esp-modale__tete"><h2 id="demo-titre">Lancer une démonstration</h2><button type="button" class="esp-rond" data-fermer-demo aria-label="Fermer">×</button></header>
-      <div class="esp-demo-choix"><p class="esp-demo-choix__intro">Quatre situations prêtes à montrer, avec leurs données fictives, leur date et leur heure. Vos données habituelles restent à part&nbsp;: vous les retrouvez en quittant.</p>
+      <div class="esp-demo-choix"><p class="esp-demo-choix__intro">${['', 'Une situation prête', 'Deux situations prêtes', 'Trois situations prêtes', 'Quatre situations prêtes', 'Cinq situations prêtes', 'Six situations prêtes'][SCENARIOS.length] || 'Des situations prêtes'} à montrer, avec leurs données fictives, leur date et leur heure. Vos données habituelles restent à part&nbsp;: vous les retrouvez en quittant.</p>
         <ol class="esp-demo-choix__liste">${SCENARIOS.map((x) => `<li class="esp-demo-carte${SC?.id === x.id ? ' est-en-cours' : ''}"><p class="esp-demo-carte__num" aria-hidden="true">${x.numero}</p><div><h3>${e(x.titre)}${SC?.id === x.id ? ' <span class="esp-source">En cours</span>' : ''}</h3>
             <p class="esp-demo-carte__situation">${e(x.situation)}</p><p class="esp-demo-carte__montre"><b>À montrer&nbsp;:</b> ${e(x.montre)}</p>
-            <p class="esp-demo-carte__actions"><a class="bouton" href="/espace?demo=${x.id}" data-demo-choisir="${x.id}" aria-label="${SC?.id === x.id ? 'Reprendre' : 'Lancer'} la démonstration ${x.numero}, ${e(x.titre)}">${SC?.id === x.id ? 'Reprendre' : 'Lancer'}</a><span class="esp-demo-carte__duree">${x.etapes.length} étapes · ${e(x.duree)}</span></p></div></li>`).join('')}</ol>
+            <p class="esp-demo-carte__actions"><a class="bouton" href="/espace?demo=${x.id}" data-demo-choisir="${x.id}" aria-label="Lancer depuis le début la démonstration ${x.numero}, ${e(x.titre)}">Lancer depuis le début</a>${scenarioEntame(x.id) ? `<a class="esp-bouton" href="/espace?demo=${x.id}" data-demo-reprendre="${x.id}" aria-label="Reprendre la démonstration ${x.numero}, ${e(x.titre)}, là où elle en était">Reprendre</a>` : ''}<span class="esp-demo-carte__duree">${x.etapes.length} étapes · ${e(x.duree)}</span></p></div></li>`).join('')}</ol>
         ${SC ? '<p class="esp-plus"><button type="button" class="esp-lien" data-scene-quitter>Quitter la démonstration et retrouver mon espace</button></p>' : ''}</div></div>`);
     fenDemo.hidden = false; document.documentElement.classList.add('esp-modale-ouverte'); $('[data-demo-choisir]', fenDemo)?.focus();
   }
@@ -727,9 +761,13 @@ export function init(root) {
     const lancer = t.closest('[data-demo-lancer]'); if (lancer) { ouvrirPlus?.(false, false); ouvrirLanceur(lancer.closest('[data-esp-plus-panneau]') ? $('[data-esp-plus]', root) : lancer); return; }
     if (t.closest('[data-scene-avancer]') && SC) { const h = horlogeDemo(); if (!h) return; if (h.min + 15 >= 24 * 60) { dire('La journée simulée se termine : recommencez le scénario pour revenir au début.'); return; }
       reglerHorloge({ iso: h.iso, min: h.min + 15 }); A.relire(); contexte = null; rendre(); dire(`Il est maintenant ${heure(hhmm(A.min))} (heure simulée).`); $('[data-scene-avancer]', root)?.focus(); return; }
+    /* v7.12.0 : un saut dans le temps (échéance de l'option, veille, jour J), toujours vers l'avenir. Seule l'heure change. */
+    const saut = t.closest('[data-scene-saut]'); if (saut && SC) { const x = sautsScenario(SC.id, { S: S(), iso: A.iso, min: A.min }).find((y) => y.cle === saut.dataset.sceneSaut); if (!x) return;
+      if (!x.cible) { dire(x.raison); return; }
+      reglerHorloge(x.cible); A.relire(); contexte = null; rendre(); dire(`Nous sommes maintenant le ${fmt(A.iso, { weekday: 'long', day: 'numeric', month: 'long' })}, ${heure(hhmm(A.min))} (heure simulée).`); $(`[data-scene-saut="${x.cle}"]`, root)?.focus(); return; }
     /* Recommencer : seules les données fictives de CE scénario sont effacées, puis réécrites à leur état de départ. */
-    if (t.closest('[data-scene-recommencer]') && SC) { viderContexte(); try { sessionStorage.removeItem('jh-espace-vue'); } catch { /* rien */ } location.assign(`/espace?demo=${SC.id}`); return; }
-    if (t.closest('[data-scene-quitter]')) { try { sessionStorage.removeItem('jh-espace-vue'); } catch { /* rien */ } location.assign('/espace?demo='); }
+    if (t.closest('[data-scene-recommencer]') && SC) { viderContexte(); try { sessionStorage.removeItem('jh-espace-vue'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } location.assign(`/espace?demo=${SC.id}`); return; }
+    if (t.closest('[data-scene-quitter]')) { try { sessionStorage.removeItem('jh-espace-vue'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } location.assign('/espace?demo='); }
   });
   /* Dans un scénario : « Voir le site » garde le contexte ; « Tout remettre comme livré » laisse la place à « Recommencer ». */
   if (SC) { for (const a of $$('a.esp-outils__site, [data-esp-plus-panneau] a, [data-esp-toast-lien]', root)) a.href = avecContexte(a.getAttribute('href')); const b = $('[data-tout-effacer]', root); if (b) b.hidden = true; }
@@ -791,7 +829,7 @@ export function init(root) {
   } else {
     let session = false; try { session = sessionStorage.getItem('jh-espace-session') === '1'; } catch { /* rien */ }
     /* Un scénario s'ouvre directement sur son écran de départ (au premier lancement), sans repasser par la porte d'entrée. */
-    if (SC) { etat.ongletResas = SC.depart.onglet || 'agenda'; etat.serviceVu = 'soir'; etat.jour = A.iso; try { sessionStorage.setItem('jh-espace-session', '1'); if (scenarioFrais || !sessionStorage.getItem('jh-espace-vue')) sessionStorage.setItem('jh-espace-vue', SC.depart.vue); } catch { /* rien */ } }
+    if (SC) { if (SC.depart.filtre) etat.filtreDemandes = SC.depart.filtre; etat.ongletResas = SC.depart.onglet || 'agenda'; etat.serviceVu = 'soir'; etat.jour = A.iso; try { sessionStorage.setItem('jh-espace-session', '1'); if (scenarioFrais || !sessionStorage.getItem('jh-espace-vue')) sessionStorage.setItem('jh-espace-vue', SC.depart.vue); } catch { /* rien */ } }
     if (session || SC) montrer(true); else document.documentElement.classList.remove('esp-dedans');
   }
 }

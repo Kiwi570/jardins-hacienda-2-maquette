@@ -1,0 +1,28 @@
+{
+  "_note": "Hypothèses de démonstration de la v7.12.0, à confirmer par le restaurant (voir _exploitation/a-valider.md). Les noms, saisons et capacités marquées « site » viennent de la page Réceptions ; tout le reste est un exemple modifiable. Une capacité absente s'affiche « À renseigner ».",
+  "espaces": [
+    { "id": "salle-reception", "nom": "La salle de réception", "capacite": 220, "cocktail": 140, "source": "site", "tables": [] },
+    { "id": "restaurant", "nom": "La salle du restaurant", "capacite": 100, "source": "site", "tables": ["1", "2", "3", "4", "5", "6", "7", "8", "9"], "public": "salle" },
+    { "id": "coin-feu", "nom": "Au coin du feu", "partie": "restaurant", "tables": ["1", "2", "3"], "source": "plan" },
+    { "id": "baies", "nom": "Les baies vitrées", "partie": "restaurant", "tables": ["4", "5", "6", "8", "9"], "source": "plan" },
+    { "id": "grande-table", "nom": "La grande table", "partie": "restaurant", "tables": ["7"], "source": "plan" },
+    { "id": "terrasse", "nom": "La terrasse", "mois": [6, 7, 8, 9], "tables": ["10", "11", "12"], "public": "terrasse" },
+    { "id": "piscine", "nom": "La piscine", "mois": [6, 7, 8, 9], "tables": [] },
+    { "id": "bar", "nom": "Le coin bar", "mois": [6, 7, 8, 9], "tables": [] }
+  ],
+  "durees": { "preparation": 120, "remise": 60, "option_jours": 7, "visite": 60 },
+  "taches": [
+    { "titre": "Confirmer l'effectif avec le client", "jours": -7 },
+    { "titre": "Transmettre les informations à la cuisine", "jours": -3 },
+    { "titre": "Vérifier la disposition des espaces", "jours": -1 },
+    { "titre": "Préparer la salle", "jours": 0 },
+    { "titre": "Préparer l'accueil des invités", "jours": 0 },
+    { "titre": "Organiser la remise en état", "jours": 0 }
+  ],
+  "lignes": [
+    { "id": "menu-groupe", "libelle": "Menu de groupe, trois plats", "description": "Entrée, plat, dessert. Composition à convenir avec le chef.", "unite": "par personne", "pu": 45, "exemple": true },
+    { "id": "aperitif", "libelle": "Apéritif et bouchées", "description": "Servi à l'arrivée des invités.", "unite": "par personne", "pu": 12, "exemple": true },
+    { "id": "boissons", "libelle": "Boissons du repas", "description": "Vins, eaux et café.", "unite": "par personne", "pu": 18, "exemple": true },
+    { "id": "privatisation", "libelle": "Mise à disposition de l'espace", "description": "Préparation, service et remise en état compris.", "unite": "forfait", "pu": 400, "exemple": true }
+  ]
+}

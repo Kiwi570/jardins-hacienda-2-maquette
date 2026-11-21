@@ -54,9 +54,30 @@ export const notesDe = (S, cle) => ({ ...VIDE, ...(S.clients?.[cle] || {}) });
  * Ce qu'il faut voir sur une réservation de ce client : { habitue, allergies, note }. Un client connu du serveur garde
  * les notes prises avant sous son téléphone (même numéro : même personne). Rien n'est jamais repris d'un simple nom.
  */
-export function marques(S, r) {
+export function marques(S, r, partages = null) {
   const cle = cleClient(r), tel = normaliserTelephone(r?.telephone);
-  return { ...VIDE, ...(S.clients?.[cle] || (cle.startsWith('c:') && tel ? S.clients?.[`t:${tel}`] : null) || {}) };
+  /* v7.12.0 : un téléphone partagé par plusieurs clients connus ne dit pas à qui est l'ancienne note. Elle n'est alors
+     reprise pour personne : elle reste gardée et proposée « à vérifier » (`notesTelephonePartage`). */
+  const herite = cle.startsWith('c:') && tel && !partages?.has(tel) ? S.clients?.[`t:${tel}`] : null;
+  return { ...VIDE, ...(S.clients?.[cle] || herite || {}) };
+}
+/**
+ * Les téléphones partagés (v7.12.0) : ceux que portent au moins deux clients distincts connus du serveur (deux
+ * `clientId`). `listes` : des tableaux d'objets { clientId, telephone } (réservations, demandes, dossiers de réception).
+ * @returns {Set<string>} les numéros sous leur forme unique
+ */
+export function telephonesPartages(...listes) {
+  const m = new Map();
+  for (const l of listes) for (const x of l || []) { const tel = normaliserTelephone(x?.telephone); if (!tel || !x?.clientId) continue; if (!m.has(tel)) m.set(tel, new Set()); m.get(tel).add(String(x.clientId)); }
+  return new Set([...m].filter(([, ids]) => ids.size > 1).map(([tel]) => tel));
+}
+/**
+ * Une ancienne note rangée sous un téléphone que plusieurs clients partagent (v7.12.0) : gardée telle quelle, proposée
+ * « à vérifier » sur la fiche de chacun, appliquée à personne tant que l'équipe ne l'a pas rattachée.
+ */
+export function notesTelephonePartage(S, cle, telephone, partages = null) {
+  const tel = normaliserTelephone(telephone), k = `t:${tel}`, n = S.clients?.[k];
+  return cle.startsWith('c:') && tel && partages?.has(tel) && n && (n.habitue || n.allergies?.length || n.note) ? { cle: k, motif: 'partage', ...VIDE, ...n } : null;
 }
 /**
  * Des notes rangées sous le même numéro écrit autrement (v7.11.1) : une ancienne fiche dont on ne sait pas dire, à ses
@@ -74,6 +95,15 @@ export function notesParNom(S, cle, nom) {
   return k && k !== cle && cle.startsWith('s:') && n && (n.habitue || n.allergies?.length || n.note) ? { cle: k, ...VIDE, ...n } : null;
 }
 
+/** La clé du client d'un dossier de réception (v7.12.0) : la même que celle de sa demande d'origine. */
+export const cleDossier = (d) => cleClient({ id: d.demande || d.id, nom: d.client?.nom, telephone: d.client?.telephone, clientId: d.client?.clientId });
+/** Les dossiers de réception d'un client : les mêmes objets que partout ailleurs (aucune copie). */
+export const dossiersDuClient = (S, cle) => (cle ? Object.values(S.receptions?.dossiers || {}).filter((d) => cleDossier(d) === cle) : []);
+/** Les téléphones partagés parmi tout ce que l'espace connaît : réservations (de la semaine passée à dans quatre semaines), demandes, dossiers de réception. */
+export function partagesConnus(ctx, S, dems = []) {
+  const resas = []; for (let k = -7; k <= 28; k++) resas.push(...resasDuJour(ctx, S, ajouter(ctx.auj, k)));
+  return telephonesPartages(resas, dems.map((d) => ({ clientId: d.clientId || d.brut?.clientId, telephone: d.telephone })), Object.values(S.receptions?.dossiers || {}).map((d) => d.client || {}));
+}
 /** Toutes les réservations d'un client dans l'agenda (de la semaine passée à dans quatre semaines), de la plus récente à la plus ancienne. */
 export function historique(ctx, S, cle, { avant = 7, apres = 28 } = {}) {
   const l = [];
@@ -86,13 +116,13 @@ export function historique(ctx, S, cle, { avant = 7, apres = 28 } = {}) {
  * @returns {{ cle: string, nom: string, telephone: string, habitue: boolean, allergies: string[], note: string, resas: object[], venues: number, aVenir: number, absences: number, annulations: number, prochaine: object|null, exemple: boolean }}
  */
 export function fiche(ctx, S, cle) {
-  const resas = historique(ctx, S, cle), der = resas[0] || {}, n = { ...VIDE, ...(S.clients?.[cle] ? S.clients[cle] : marques(S, der)) };
+  const resas = historique(ctx, S, cle), dossiers = dossiersDuClient(S, cle), der = resas[0] || (dossiers[0] ? { ...dossiers[0].client, id: dossiers[0].demande || dossiers[0].id } : {}), n = { ...VIDE, ...(S.clients?.[cle] ? S.clients[cle] : marques(S, der, ctx.partages)) };
   const venues = resas.map((r) => ({ ...r, moment: momentVenue(r, ctx.auj, ctx.minute) }));
   const futures = venues.filter((r) => r.moment === 'a-venir').sort((a, b) => a.date.localeCompare(b.date) || a.heure.localeCompare(b.heure));
   return { cle, nom: n.nom || der.nom || 'Sans nom', telephone: n.telephone || der.telephone || '', habitue: !!n.habitue, allergies: n.allergies || [], note: n.note || '', resas: venues,
     venues: resas.filter((r) => r.statut === 'arrivee').length, aVenir: futures.length, absences: resas.filter((r) => r.statut === 'absente').length,
     annulations: resas.filter((r) => r.statut === 'annulee').length, prochaine: futures[0] || null, aClarifier: venues.filter((r) => r.moment === 'a-clarifier'),
-    periode: { du: ajouter(ctx.auj, -7), au: ajouter(ctx.auj, 28) }, ancienne: notesParNom(S, cle, n.nom || der.nom), aVerifier: [notesParNom(S, cle, n.nom || der.nom), notesMemeNumero(S, cle, n.telephone || der.telephone)].filter(Boolean), exemple: resas.length > 0 && resas.every((r) => r.source === 'demo') };
+    periode: { du: ajouter(ctx.auj, -7), au: ajouter(ctx.auj, 28) }, ancienne: notesParNom(S, cle, n.nom || der.nom), aVerifier: [notesParNom(S, cle, n.nom || der.nom), notesMemeNumero(S, cle, n.telephone || der.telephone), notesTelephonePartage(S, cle, n.telephone || der.telephone, ctx.partages)].filter(Boolean), dossiers, exemple: (resas.length > 0 || dossiers.length > 0) && resas.every((r) => r.source === 'demo') && dossiers.every((d) => d.source === 'demo') };
 }
 /**
  * Où en est une venue par rapport à maintenant (v7.11.0), avec la date ET l'heure :
@@ -181,13 +211,15 @@ export function listeClients(ctx, S, dems = []) {
   const m = new Map(), prendre = (cle) => { if (!m.has(cle)) m.set(cle, { cle, nom: '', telephone: '', email: '', resas: [], demandes: [] }); return m.get(cle); };
   for (let k = -7; k <= 28; k++) for (const r of resasDuJour(ctx, S, ajouter(ctx.auj, k))) { const cle = cleClient(r); if (!cle) continue; const c = prendre(cle); c.resas.push(r); c.nom ||= r.nom || ''; c.telephone ||= r.telephone || ''; c.email ||= r.email || ''; }
   for (const d of dems) { const cle = cleDemande(d); if (!cle || d.qui === 'Sans nom') continue; const c = prendre(cle); c.demandes.push(d); c.nom ||= d.qui; c.telephone ||= d.telephone || ''; c.email ||= d.email || ''; }
+  /* v7.12.0 : les clients des dossiers de réception, sous la même clé que leur demande. */
+  for (const d of Object.values(S.receptions?.dossiers || {})) { const cle = cleDossier(d); if (!cle) continue; const c = prendre(cle); (c.dossiers ||= []).push(d); c.nom ||= d.client?.nom || ''; c.telephone ||= d.client?.telephone || ''; c.email ||= d.client?.email || ''; }
   /* Les clients dont la maison a noté quelque chose restent dans la liste (sauf les anciennes notes gardées sous un seul nom). */
   for (const cle of Object.keys(S.clients || {})) if (!cle.startsWith('n-')) prendre(cle);
-  const l = [...m.values()].map((c) => { const der = c.resas[c.resas.length - 1] || {}, n = { ...VIDE, ...(S.clients?.[c.cle] ? S.clients[c.cle] : marques(S, { ...der, id: der.id })) };
+  const l = [...m.values()].map((c) => { const der = c.resas[c.resas.length - 1] || {}, n = { ...VIDE, ...(S.clients?.[c.cle] ? S.clients[c.cle] : marques(S, { ...der, id: der.id }, ctx.partages)) };
     const v = c.resas.map((r) => ({ ...r, moment: momentVenue(r, ctx.auj, ctx.minute) })).sort((a, b) => a.date.localeCompare(b.date) || a.heure.localeCompare(b.heure));
     const futures = v.filter((r) => r.moment === 'a-venir'), passees = v.filter((r) => r.statut === 'arrivee');
     return { cle: c.cle, nom: n.nom || c.nom || 'Sans nom', telephone: n.telephone || c.telephone, email: c.email, habitue: !!n.habitue, allergies: n.allergies || [], note: n.note || '',
-      resas: v.length, aVenir: futures.length, venues: passees.length, prochaine: futures[0] || null, derniere: passees[passees.length - 1] || null, aClarifier: v.filter((r) => r.moment === 'a-clarifier'), demandes: c.demandes,
+      resas: v.length, aVenir: futures.length, venues: passees.length, prochaine: futures[0] || null, derniere: passees[passees.length - 1] || null, aClarifier: v.filter((r) => r.moment === 'a-clarifier'), demandes: c.demandes, dossiers: c.dossiers || [],
       parNom: c.cle.startsWith('s:') || c.cle.startsWith('n-'), exemple: (v.length > 0 || c.demandes.length > 0) && v.every((r) => r.source === 'demo') && c.demandes.every((d) => d.source === 'demo') }; });
   /* Même nom, fiches distinctes : un rapprochement possible, à vérifier (jamais fait d'office). */
   const parNom = new Map(); for (const c of l) { const k = slug(c.nom); if (k) parNom.set(k, [...(parNom.get(k) || []), c.cle]); }

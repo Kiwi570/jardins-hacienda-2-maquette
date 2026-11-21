@@ -6,7 +6,7 @@
 /* v7.6.0 · L'aperçu des modifications de l'espace restaurateur passe avant tout (textes, photos, horaires, événements). */
 import './espace-apercu.js?v=7';
 /* v7.7.2 · Les demandes faites sur le site (réception, traiteur, carte cadeau, question) arrivent dans l'espace restaurateur. */
-import { ajouterDemandeSite } from './espace-stock.js?v=7';
+import { ajouterDemandeSite, horloge as horlogeDemo } from './espace-stock.js?v=7';
 /* v7.8.1 · Aucune réussite avant un enregistrement réussi : si la demande n'a pas pu être passée au restaurant
    (mémoire du navigateur pleine ou refusée), c'est dit clairement par-dessus l'écran de confirmation du formulaire. */
 function transmettreDemande(d) {
@@ -34,6 +34,17 @@ const HEURES = {
   '/les-fetes': ['23:30', '#2a120a'], '/offrir': ['00:00', '#120c09'], '/infos-pratiques': [null, '#1c1712'], '/espace': [null, '#1c1712'],
 };
 const cheminDe = (u) => { let p = u.pathname.replace(/\.html$/, '').replace(/\/index$/, '/'); if (p.length > 1) p = p.replace(/\/$/, ''); return p || '/'; };
+/**
+ * L'instant de référence du site (v7.12.0) : maintenant ; dans un scénario de démonstration, un instant dont l'heure de
+ * Paris est celle du scénario. Tout ce qui dit l'ouverture ou une disponibilité le lit (statut, prochains services,
+ * jours passés des commandes) ; l'ambiance (thème jour ou soir, comptes à rebours des fêtes) garde l'heure réelle.
+ */
+function instantSite() {
+  const h = horlogeDemo(); if (!h) return new Date();
+  const [a, m, j] = h.iso.split('-').map(Number), vise = Date.UTC(a, m - 1, j, 0, h.min);
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(vise)).map((x) => [x.type, x.value]));
+  return new Date(vise - (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute) - vise));
+}
 function heureParis() {
   const p = Object.fromEntries(new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map((x) => [x.type, x.value]));
   return `${p.hour}:${p.minute}`;
@@ -278,7 +289,7 @@ async function statuts() {
     const maj = () => {
       const st = H.statut(a, H.maintenant(a.fuseau));
       /* Le statut de l'ouverture dit l'heure réelle : la grande « 12:00 » est l'heure de la journée racontée, pas celle du visiteur. */
-      const p2 = Object.fromEntries(new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: 'numeric', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map((x) => [x.type, x.value]));
+      const p2 = Object.fromEntries(new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: 'numeric', minute: '2-digit', hourCycle: 'h23' }).formatToParts(instantSite()).map((x) => [x.type, x.value]));
       const reelle = `${+p2.hour}\u00a0h\u00a0${p2.minute}`;
       for (const c of cibles) { c.textContent = c.dataset.statutHeure ? `${c.dataset.statutHeure} ${reelle}\u00a0: ${st.texte.charAt(0).toLowerCase()}${st.texte.slice(1)}` : st.texte; const p = c.closest('.statut'); if (p) p.dataset.etat = st.etat === 'ferme' ? 'ferme' : st.etat === 'ouvert' ? 'ouvert' : st.etat; }
     };
@@ -520,7 +531,7 @@ function panorama() {
 
 /* ---------- 21 h · réserver dans la page : prochains services ouverts, carte de placement qui s'envole ---------- */
 function prochainsServices(R, nb = 6) {
-  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map((x) => [x.type, x.value]));
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(instantSite()).map((x) => [x.type, x.value]));
   const auj = `${p.year}-${p.month}-${p.day}`, mnt = +p.hour * 60 + +p.minute;
   const sortie = [];
   /* v7.8.0 : ouvert, complet et dernière arrivée viennent des règles communes au site et à l'espace (disponibilites.js). */
@@ -1413,7 +1424,7 @@ function aventCalendrier() {
   if (etat.calme || !('IntersectionObserver' in window)) ouvrir();
   else { const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { ouvrir(); io.disconnect(); } }, { threshold: 0.2 }); io.observe($('.avent__mur', sec)); }
   const radio = (iso) => $(`[name="jour"][value="${iso}"]`);
-  const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date());
+  const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(instantSite());
   for (const b of $$('[data-avent-jour]', sec)) if (b.dataset.aventJour < auj) { b.disabled = true; b.closest('li').classList.add('est-passe'); }
   const marquer = (iso) => {
     for (const b of $$('[data-avent-jour]', sec)) { const oui = b.dataset.aventJour === iso; b.setAttribute('aria-pressed', String(oui)); b.closest('li').classList.toggle('est-choisi', oui); }
@@ -1741,7 +1752,7 @@ function emporter() {
   const sectionCommande = $('#commande');
   if (sectionCommande) new IntersectionObserver(([e]) => { commandeVue = e.isIntersecting; rendre(); }, { threshold: 0.12 }).observe(sectionCommande);
   /* Jour et moment : jours passés grisés à la date réelle, midi ou soir selon les horaires du jour choisi. */
-  const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date());
+  const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(instantSite());
   const jours = $$('[name="jour"]', form), moments = $$('[name="moment"]', form);
   for (const j of jours) if (j.value < auj) { j.disabled = true; j.closest('label').classList.add('est-passe'); }
   const retrait = () => {
@@ -2328,7 +2339,7 @@ function infosSemaine() {
   const t = $('[data-semaine]'); if (!t) return;
   const range = $('[data-semaine-range]', t), bulle = $('[data-semaine-bulle]', t), lecture = $('[data-semaine-lecture]', t), curseur = $('.semaine__curseur', t), jours = $$('.semaine__jour', t);
   const NOMS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).map((x) => [x.type, x.value]));
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(instantSite()).map((x) => [x.type, x.value]));
   const auj = NOMS[new Date(`${p.year}-${p.month}-${p.day}T12:00:00Z`).getUTCDay()], mnt = +p.hour * 60 + +p.minute;
   for (const j of jours) if (j.dataset.jour === auj) { j.classList.add('est-aujourdhui'); j.style.setProperty('--m', (mnt / 1440).toFixed(4)); $('.semaine__maintenant', j)?.style.setProperty('left', `${(mnt / 1440) * 100}%`); }
   const lisible = (m) => { const h = Math.floor(m / 60), mm = m % 60; return `${h} h${mm ? ' ' + String(mm).padStart(2, '0') : ''}`; };
@@ -2352,6 +2363,8 @@ function infosSemaine() {
 if ($('[data-espace]')) import('./espace.js?v=7').then((m) => m.init($('[data-espace]'))).catch((e) => console.warn('espace', e));
 /* v7.11.0 : la page du client, « Votre venue aux Jardins ». */
 if ($('[data-venue]')) import('./venue.js?v=7').then((m) => m.init($('[data-venue]'))).catch((e) => console.warn('venue', e));
+/* v7.12.0 : « Votre réception aux Jardins », la page du client d'un dossier de réception. */
+if ($('[data-reception-client]')) import('./reception-client.js?v=7').then((m) => m.init($('[data-reception-client]'))).catch((e) => console.warn('reception', e));
 
 demarrer({
   preparer() {
