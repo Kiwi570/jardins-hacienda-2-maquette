@@ -19,8 +19,16 @@ export function normaliserTelephone(tel) {
   if (/^\+33\(?0/.test(s.replace(/\s/g, ''))) return `+33${ch.slice(3)}`;         /* « +33 (0)6… » */
   if (c.startsWith('+')) return `+${ch}`;
   if (ch.startsWith('00')) return `+${ch.slice(2)}`;
-  if (/^0[1-9]\d{8}$/.test(ch)) return `+33${ch.slice(1)}`;                        /* numéro français à dix chiffres */
-  return ch;
+  return francais(ch) || ch;
+}
+/**
+ * Un numéro français écrit sans « + » (v7.11.1), reconnu à ses seuls chiffres : « 0612345678 », « 33612345678 »,
+ * « 330612345678 », « 0033612345678 ». Rend « +33612345678 », ou '' si ce n'est pas une de ces écritures (numéro
+ * étranger, trop court, ambigu) : dans ce cas rien n'est deviné.
+ */
+export function francais(chiffres) {
+  const m = /^(?:0033|33)0?([1-9]\d{8})$/.exec(chiffres) || /^0([1-9]\d{8})$/.exec(chiffres);
+  return m ? `+33${m[1]}` : '';
 }
 const slug = (nom) => simplifier(nom || '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 /** L'ancienne clé (avant la v7.11.0) d'un client reconnu par son nom : gardée pour retrouver ses anciennes notes. */
@@ -50,6 +58,16 @@ export function marques(S, r) {
   const cle = cleClient(r), tel = normaliserTelephone(r?.telephone);
   return { ...VIDE, ...(S.clients?.[cle] || (cle.startsWith('c:') && tel ? S.clients?.[`t:${tel}`] : null) || {}) };
 }
+/**
+ * Des notes rangées sous le même numéro écrit autrement (v7.11.1) : une ancienne fiche dont on ne sait pas dire, à ses
+ * seuls chiffres, à qui elle appartient (numéro étranger ou ambigu). Elles sont gardées telles quelles et proposées
+ * « à vérifier » sur la fiche qui porte ces mêmes chiffres ; rien n'est attribué d'office.
+ */
+export function notesMemeNumero(S, cle, telephone) {
+  const tel = normaliserTelephone(telephone), ch = tel.replace(/\D/g, ''); if (!tel.startsWith('+') || !ch) return null;
+  const k = `t:${ch}`, n = S.clients?.[k];
+  return k !== cle && n && (n.habitue || n.allergies?.length || n.note) ? { cle: k, motif: 'numero', ...VIDE, ...n } : null;
+}
 /** D'anciennes notes gardées sous le seul nom (avant la v7.11.0) : une proposition à vérifier, jamais appliquée d'office. */
 export function notesParNom(S, cle, nom) {
   const k = cleNom(nom), n = S.clients?.[k];
@@ -74,7 +92,7 @@ export function fiche(ctx, S, cle) {
   return { cle, nom: n.nom || der.nom || 'Sans nom', telephone: n.telephone || der.telephone || '', habitue: !!n.habitue, allergies: n.allergies || [], note: n.note || '', resas: venues,
     venues: resas.filter((r) => r.statut === 'arrivee').length, aVenir: futures.length, absences: resas.filter((r) => r.statut === 'absente').length,
     annulations: resas.filter((r) => r.statut === 'annulee').length, prochaine: futures[0] || null, aClarifier: venues.filter((r) => r.moment === 'a-clarifier'),
-    periode: { du: ajouter(ctx.auj, -7), au: ajouter(ctx.auj, 28) }, ancienne: notesParNom(S, cle, n.nom || der.nom), exemple: resas.length > 0 && resas.every((r) => r.source === 'demo') };
+    periode: { du: ajouter(ctx.auj, -7), au: ajouter(ctx.auj, 28) }, ancienne: notesParNom(S, cle, n.nom || der.nom), aVerifier: [notesParNom(S, cle, n.nom || der.nom), notesMemeNumero(S, cle, n.telephone || der.telephone)].filter(Boolean), exemple: resas.length > 0 && resas.every((r) => r.source === 'demo') };
 }
 /**
  * Où en est une venue par rapport à maintenant (v7.11.0), avec la date ET l'heure :
@@ -110,13 +128,28 @@ export function changementsFiche(ouverture, saisie, courant) {
   return { champs: Object.keys(champs).length ? champs : null, conflits };
 }
 
+/** Où une clé d'avant doit aller : '' si elle est déjà à sa place (ou n'est pas une clé de téléphone à reprendre). */
+export function cleMigree(k) {
+  const ancien = /^t(\d{6,})$/.exec(k); if (ancien) return `t:${francais(ancien[1]) || ancien[1]}`;
+  const mal = /^t:(\d{6,})$/.exec(k); return mal && francais(mal[1]) ? `t:${francais(mal[1])}` : '';
+}
+/** Reste-t-il des fiches à reprendre ? (Pour ne lancer la migration que s'il y a quelque chose à faire.) */
+export const aMigrer = (S) => Object.keys(S.clients || {}).some((k) => { const c = cleMigree(k); return c && c !== k; });
 /** Réunit deux jeux de notes sans rien perdre : habitué si l'un l'est, toutes les allergies, les deux notes. */
-const reunir = (a = {}, b = {}) => ({ ...b, ...a, habitue: !!(a.habitue || b.habitue), allergies: [...new Set([...(a.allergies || []), ...(b.allergies || [])])], note: [a.note, b.note].filter((x, i, l) => x && l.indexOf(x) === i).join(' · ') });
+const reunir = (a = {}, b = {}) => ({ ...b, ...a, habitue: !!(a.habitue || b.habitue), allergies: [...new Set([...(a.allergies || []), ...(b.allergies || [])])], note: [a.note, b.note].flatMap((x) => String(x || '').split(' · ')).map((x) => x.trim()).filter((x, i, l) => x && l.indexOf(x) === i).join(' · ') });
 
 export const MUTATIONS_CLIENTS = {
   /** v7.11.0 : les notes gardées sous l'ancienne clé de téléphone (« t0612… ») passent sous la nouvelle (« t:+33612… »). Rien n'est perdu ; les notes gardées sous un seul nom restent où elles sont, à vérifier. */
+  /**
+   * v7.11.1 : reprend aussi les anciennes clés internationales (« t33612345678 ») et répare celles que la v7.11.0 avait
+   * mal rangées (« t:33612345678 ») : pour une écriture française reconnue, tout rejoint « t:+33612345678 ». Ce qui
+   * est déjà noté à destination est gardé avec ; l'ancienne entrée n'est retirée qu'une fois son contenu réuni, dans
+   * le même enregistrement. Un numéro qu'on ne sait pas attribuer (étranger, ambigu) garde ses chiffres : il sera
+   * proposé « à vérifier » sur la fiche concernée (`notesMemeNumero`). Les identifiants du serveur (`c:`) ne sont
+   * jamais touchés. Un second passage ne change plus rien.
+   */
   migrerClients(S) {
-    for (const k of Object.keys(S.clients || {})) { const m = k.match(/^t(\d{6,})$/); if (!m) continue; const cle = `t:${normaliserTelephone(m[1])}`; S.clients[cle] = reunir(S.clients[cle], S.clients[k]); delete S.clients[k]; }
+    for (const k of Object.keys(S.clients || {})) { const cle = cleMigree(k); if (!cle || cle === k) continue; S.clients[cle] = reunir(S.clients[cle], S.clients[k]); delete S.clients[k]; }
   },
   /** Rattache à une fiche d'anciennes notes gardées sous un nom, après vérification par l'équipe. */
   rattacherNotes(S, { de, vers }) { if (!S.clients?.[de] || !vers || de === vers) return; S.clients[vers] = reunir(S.clients[vers], S.clients[de]); delete S.clients[de]; },

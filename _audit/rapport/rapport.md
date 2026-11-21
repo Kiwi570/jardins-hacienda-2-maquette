@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 20/11/2026 23:36:38 · 23 min · 3 page(s) · audit complet ciblé sur /,/votre-venue,/espace (étapes : fichiers, mesures, parcours)
+Projet : `jardins-hacienda-2-maquette` · 21/11/2026 03:34:44 · 28 min · 11 page(s) · audit complet (étapes : fichiers, parcours)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261120-221320-complet-cible-partiel` · version ?v=7
+- Passe : `20261121-020646-complet-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **0**
+- À regarder : **6**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (117), balayage (3), intro accélérable et passable (7), menu (1), clavier (3), liens et boutons (3), liens profonds (12), liens vers la page en cours (3), changements de hauteur (1), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : un service parfaitement accompagné (1366×768) (1), espace : un service parfaitement accompagné (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), intro accélérable et passable (7), menu (1), clavier (11), liens et boutons (11), liens profonds (16), liens vers la page en cours (10), changements de hauteur (7), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : un service parfaitement accompagné (1366×768) (1), espace : un service parfaitement accompagné (390×844) (1), espace : démonstrations (1366×768) (1), espace : démonstrations (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
 
 ## Passes de cette version (?v=7)
 
@@ -156,7 +156,10 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261120-195320-standard-cible-partiel | standard | /espace | parcours | 2 | 0 | 0 | échecs |
 | 20261120-202024-complet | complet | toutes | toutes | 4 | 21 | 2 | échecs |
 | 20261120-212726-complet-partiel | complet | toutes | fichiers, mesures, films, parcours | 3 | 6 | 0 | échecs |
-| **20261120-221320-complet-cible-partiel** (celle-ci) | complet | /,/votre-venue,/espace | fichiers, mesures, parcours | 0 | 0 | 0 | complet |
+| 20261120-221320-complet-cible-partiel | complet | /,/votre-venue,/espace | fichiers, mesures, parcours | 0 | 0 | 0 | complet |
+| 20261121-001212-complet | complet | toutes | toutes | 0 | 19 | 3 | INCOMPLET |
+| 20261121-013335-complet-partiel | complet | toutes | fichiers, bords, parcours | 11 | 6 | 1 | échecs |
+| **20261121-020646-complet-partiel** (celle-ci) | complet | toutes | fichiers, parcours | 0 | 6 | 0 | complet |
 
 ## Échecs
 
@@ -164,7 +167,17 @@ Aucun.
 
 ## À regarder
 
-Rien.
+### bouton sans effet visible (2)
+
+- **bouton sans effet visible** — `/les-fetes` — IPour commencer _(1366×768)_
+- **bouton sans effet visible** — `/les-fetes` — IIEntrée _(1366×768)_
+
+### rechargement au milieu de la page (4)
+
+- **rechargement au milieu de la page** — `/infos-pratiques` — écran différent à la même position après rechargement (10.0 %), voir comparaisons/rechargement-infos-pratiques-*.png _(1366×768)_
+- **rechargement au milieu de la page** — `/la-carte` — écran différent à la même position après rechargement (46.2 %), voir comparaisons/rechargement-la-carte-*.png _(1366×768)_
+- **rechargement au milieu de la page** — `/les-fetes` — écran différent à la même position après rechargement (8.6 %), voir comparaisons/rechargement-les-fetes-*.png _(1366×768)_
+- **rechargement au milieu de la page** — `/reserver` — écran différent à la même position après rechargement (56.4 %), voir comparaisons/rechargement-reserver-*.png _(1366×768)_
 
 ## Non lancé
 
@@ -180,6 +193,7 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
+- Changements de hauteur /a-emporter : aucun effet ScrollTrigger, rien à recalculer.
 - Changements de hauteur /espace : aucun effet ScrollTrigger, rien à recalculer.
 - Changements de hauteur /votre-venue : aucun effet ScrollTrigger, rien à recalculer.
 - Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.

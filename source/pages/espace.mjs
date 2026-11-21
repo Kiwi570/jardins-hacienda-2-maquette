@@ -91,11 +91,13 @@ export default (c) => {
       <div class="esp-outils" data-esp-outils hidden>
         <button type="button" class="esp-quoi" data-esp-quoi><span class="esp-quoi__ico" aria-hidden="true">${brut(ICO_LOUPE)}</span><span>Que voulez-vous faire&nbsp;?</span><kbd class="esp-quoi__touche" data-esp-quoi-touche aria-hidden="true">Ctrl K</kbd></button>
         <p class="esp-sauve" data-esp-sauve data-etat="ok"><span class="esp-sauve__point" aria-hidden="true"></span><span data-esp-sauve-texte>Tout est enregistré</span></p>
+        <button type="button" class="esp-outils__demo" data-demo-lancer hidden>Lancer une démonstration</button>
         <a class="esp-outils__site" href="${c.url('accueil')}">Voir le site <span aria-hidden="true">↗</span></a>
         <div class="esp-menu">
           <button type="button" class="esp-rond esp-menu__bouton" data-esp-plus aria-expanded="false" aria-controls="esp-menu-panneau" aria-label="Plus d'actions">${brut(ICO_PLUS)}</button>
           <div class="esp-menu__panneau" id="esp-menu-panneau" data-esp-plus-panneau hidden>
             <a href="${c.url('accueil')}">Voir le site <span aria-hidden="true">↗</span></a>
+            <button type="button" data-demo-lancer data-demo-menu>Lancer une démonstration</button>
             <button type="button" data-esp-installer>Installer sur cet appareil</button>
             <button type="button" data-esp-quitter>Se déconnecter</button>
             <button type="button" class="esp-menu__danger" data-tout-effacer>Tout remettre comme livré</button>

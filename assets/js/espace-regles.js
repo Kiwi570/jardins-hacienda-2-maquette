@@ -21,7 +21,13 @@ export const typo = (t) => String(t).replace(/ ([:;!?»])/g, ' $1').replace(/«
 export const simplifier = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[’`]/g, '\'').replace(/\s+/g, ' ').trim();
 export const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? 's' : ''}`;
 /** Le jour et la minute qu'il est à Moineville. */
-export function aujourdhui(maintenant = new Date()) {
+/* v7.11.1 : en démonstration, un scénario fournit sa propre date et sa propre heure (`fixerHorloge`). Tout ce qui
+   demande « quel jour, quelle heure » passe par `aujourdhui()` et lit alors la même horloge simulée. */
+let horlogeFixee = null;
+export function fixerHorloge(f) { horlogeFixee = typeof f === 'function' ? f : null; }
+export function aujourdhui(maintenant) {
+  if (maintenant === undefined && horlogeFixee) { const h = horlogeFixee(); if (h) return { iso: h.iso, min: h.min }; }
+  maintenant ||= new Date();
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(maintenant).map((x) => [x.type, x.value]));
   return { iso: `${p.year}-${p.month}-${p.day}`, min: +p.hour * 60 + +p.minute };
 }
@@ -91,7 +97,9 @@ export const depuisSite = (r) => ({ id: r.id, date: r.date, service: r.service, 
   demande: [...(r.demandes || []), r.message].filter(Boolean).join(' · '), espace: r.espace, table: r.table, statut: 'a-confirmer', source: 'site' });
 
 /** Les réservations d'un jour, triées par heure : démonstration, ajoutées au téléphone, venues du site, avec le statut choisi dans l'espace. */
-export function resasDuJour({ R, auj, site = [], exemples = true }, S, iso) {
+export function resasDuJour({ R, auj, site = [], exemples = true, scenario = '' }, S, iso) {
+  /* Dans un scénario de démonstration (v7.11.1), les réservations sont celles que le scénario a préparées : pas d'exemples tirés au hasard. */
+  if (scenario) exemples = false;
   const st = S.resa?.statuts || {}, mod = S.resa?.modifs || {}, tab = S.resa?.tables || {};
   /* En mode connecté (ctx.exemples === false), il n'y a aucune réservation d'exemple : seulement celles du serveur. */
   return [...(exemples === false ? [] : servicesDe(R)).flatMap((s) => demo(R, auj, iso, s.id)), ...(S.resa?.ajouts || []).filter((r) => r.date === iso), ...site.filter((r) => r.date === iso).map(depuisSite)]

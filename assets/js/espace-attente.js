@@ -10,7 +10,7 @@
    de l'inscription : un double clic ne peut pas en créer deux).
 
    Ce qui est noté : `S.attente.liste` (inscriptions notées par l'équipe) et `S.attente.suivi[id] = { statut,
-   proposition: { heure, service, faite, expire }, resaId, motif }` pour toutes les inscriptions, d'où qu'elles viennent
+   proposition: { heure, service, faite, expire, mode }, resaId, motif }` pour toutes les inscriptions, d'où qu'elles viennent
    (équipe, site, exemples). Les messages sont des aperçus : rien n'est envoyé.
    Portée : démonstration, sur cet appareil. Le serveur ne connaît pas encore la liste d'attente. */
 import { enMin, hhmm, heure, fmt, ajouter, pluriel, servicesDe, verifierResa, telephoneDemo, histoires, ouvertSite, creneaux } from './espace-regles.js?v=7';
@@ -19,8 +19,11 @@ import { planDuService, placerTout, proposer, nomPlace } from './espace-salle.js
 
 export const ETATS_ATTENTE = { 'en-attente': 'En attente', proposee: 'Proposition faite', acceptee: 'Acceptée', refusee: 'Refusée par le client', expiree: 'Proposition expirée', retiree: 'Retirée', perimee: 'Date passée' };
 export const SOUPLESSES = [[0, 'À cette heure précise'], [30, 'À une demi-heure près'], [60, 'À une heure près'], [999, 'Tout le service']];
-/** Le délai laissé au client pour répondre à une proposition, en minutes. Valeur d'exemple, à régler avec le restaurant. */
-export const DELAI_REPONSE = 120;
+/* Les délais d'une proposition, en minutes. Valeurs d'exemple, à confirmer avec le restaurant (`_exploitation/a-valider.md`).
+   - DELAI_REPONSE : le temps laissé au client pour répondre ;
+   - MARGE_AVANT_ARRIVEE : une proposition standard se clôt au plus tard ce temps-là avant l'arrivée ;
+   - DELAI_DERNIERE_MINUTE : quand il est trop tard pour une proposition standard, le délai court, dit comme tel. */
+export const DELAI_REPONSE = 120, MARGE_AVANT_ARRIVEE = 60, DELAI_DERNIERE_MINUTE = 15;
 export const ESPACES_ATTENTE = { salle: 'En salle', terrasse: 'En terrasse' };
 
 /** Les inscriptions d'exemple : toujours aux mêmes moments par rapport à aujourd'hui, noms inventés. */
@@ -43,7 +46,8 @@ const depuisSite = (d) => ({ id: d.id, cree: d.cree, nom: [d.prenom, d.nom].filt
 
 /** L'état d'une inscription à cet instant : une proposition dont le délai est passé est « expirée », une date passée « périmée ». */
 export function etatAttente(e, auj, maintenant) {
-  if (e.statut === 'proposee' && e.proposition?.expire && maintenant && String(maintenant) > String(e.proposition.expire)) return 'expiree';
+  /* À l'échéance exacte, la proposition est expirée (v7.11.1). L'échéance est celle enregistrée à la création : rien ne la prolonge. */
+  if (e.statut === 'proposee' && e.proposition?.expire && maintenant && String(maintenant).slice(0, 19) >= String(e.proposition.expire).slice(0, 19)) return 'expiree';
   if (['en-attente', 'expiree', 'proposee'].includes(e.statut) && e.date < auj) return 'perimee';
   return e.statut;
 }
@@ -54,7 +58,7 @@ export function etatAttente(e, auj, maintenant) {
  */
 export function listeAttente(ctx, S) {
   const suivi = S.attente?.suivi || {};
-  const l = [...(ctx.exemples === false ? [] : attenteDemo(ctx.R, ctx.auj)), ...(S.attente?.liste || []), ...(ctx.demandes || []).filter((d) => d.genre === 'attente').map(depuisSite)]
+  const l = [...(ctx.exemples === false || ctx.scenario ? [] : attenteDemo(ctx.R, ctx.auj)), ...(S.attente?.liste || []), ...(ctx.demandes || []).filter((d) => d.genre === 'attente').map(depuisSite)]
     .map((e) => { const x = { ...e, ...(suivi[e.id] || {}) }; return { ...x, etat: etatAttente(x, ctx.auj, ctx.maintenant) }; })
     .sort((a, b) => String(a.cree).localeCompare(String(b.cree)) || a.id.localeCompare(b.id));
   const rangs = {};
@@ -107,12 +111,25 @@ export function resaDepuisAttente(e) {
   return { id: idResaAttente(e.id), date: e.date, service: p.service || e.periode, heure: p.heure || e.heure, couverts: e.couverts, nom: e.nom, telephone: e.telephone, email: e.email, demande: [e.note, 'Venu de la liste d\'attente'].filter(Boolean).join(' · '),
     espace: e.espaces?.length === 1 ? e.espaces[0] : 'salle', statut: 'confirmee', source: 'attente' };
 }
-/** L'échéance d'une proposition faite à cet instant : le délai de réponse, sans dépasser une heure avant l'arrivée. */
-export function echeance(e, heureProposee, maintenant) {
-  const d = new Date(`${maintenant.slice(0, 19)}Z`), fin = new Date(d.getTime() + DELAI_REPONSE * 60000).toISOString().slice(0, 19);
-  const avant = `${e.date}T${hhmm(Math.max(0, enMin(heureProposee) - 60))}:00`;
-  return fin < avant ? fin : avant > maintenant ? avant : fin;
+/* Les instants sont des dates et heures de la maison, écrites « 2026-11-27T19:30:00 » (l'heure métier du restaurant,
+   la même pour le calcul, l'affichage et la validation). */
+const ms = (instant) => Date.parse(`${String(instant).slice(0, 19)}Z`), versInstant = (t) => new Date(t).toISOString().slice(0, 19);
+/**
+ * Le délai de réponse d'une proposition faite maintenant pour cette heure d'arrivée (v7.11.1) :
+ * - standard : la plus proche de « maintenant + 2 h » et « arrivée − 1 h », si elle est encore à venir ;
+ * - dernière minute (quand la fenêtre standard est passée) : la plus proche de « maintenant + 15 min » et de l'arrivée ;
+ * - à l'heure d'arrivée ou après : aucun délai valable, il faut proposer un autre créneau.
+ * @returns {{ mode: 'standard' | 'derniere-minute' | '', expire: string, minutes: number }}
+ */
+export function delaiProposition(e, heureProposee, maintenant) {
+  const t0 = ms(maintenant), arrivee = ms(`${e.date}T${hhmm(enMin(heureProposee))}:00`);
+  const standard = Math.min(t0 + DELAI_REPONSE * 60000, arrivee - MARGE_AVANT_ARRIVEE * 60000);
+  if (standard > t0) return { mode: 'standard', expire: versInstant(standard), minutes: Math.round((standard - t0) / 60000) };
+  if (t0 < arrivee) { const fin = Math.min(t0 + DELAI_DERNIERE_MINUTE * 60000, arrivee); return { mode: 'derniere-minute', expire: versInstant(fin), minutes: Math.round((fin - t0) / 60000) }; }
+  return { mode: '', expire: '', minutes: 0 };
 }
+/** L'échéance seule (voir `delaiProposition`) : '' s'il n'y a plus de délai valable. */
+export const echeance = (e, heureProposee, maintenant) => delaiProposition(e, heureProposee, maintenant).expire;
 
 /** Peut-on faire cette action sur la liste d'attente ? '' si oui, sinon la phrase qui dit pourquoi (appelée par le garde-fou du dépôt). */
 export function refusAttente(ctx, S, salle, nom, args = {}) {
@@ -130,11 +147,16 @@ export function refusAttente(ctx, S, salle, nom, args = {}) {
     if (e.etat === 'acceptee') return 'Cette inscription a déjà donné une réservation.';
     if (!['en-attente', 'expiree', 'refusee'].includes(e.etat)) return e.etat === 'proposee' ? 'Une proposition est déjà en cours pour ce client.' : 'Cette inscription n\'attend plus de proposition.';
     if (!creneauxCompatibles(ctx, S, salle, e).some((c) => c.heure === args.heure)) return `${heure(args.heure)} n'est plus possible pour ${pluriel(e.couverts, 'personne')} ce jour-là.`;
+    /* Le délai est recalculé ici, avec la même heure que l'écran : jamais plus long que la règle, jamais déjà passé. */
+    const d = delaiProposition(e, args.heure, ctx.maintenant);
+    if (!d.mode) return `Il est trop tard pour proposer ${heure(args.heure)} : c'est l'heure d'arrivée. Proposez un autre créneau.`;
+    if (d.mode === 'derniere-minute' && args.mode !== 'derniere-minute') return `Le délai habituel n'est plus possible pour ${heure(args.heure)} (il se clôt une heure avant l'arrivée). Utilisez « Dernière minute » : le client aura ${d.minutes} minutes pour répondre.`;
+    if (!args.expire || String(args.expire) > d.expire || String(args.expire) <= String(ctx.maintenant).slice(0, 19)) return 'Le délai de réponse a changé : relancez la proposition.';
     return '';
   }
   if (nom === 'attenteAccepter') {
     if (e.etat === 'acceptee') return 'Déjà acceptée : la réservation existe, elle n\'a pas été créée une seconde fois.';
-    if (e.etat === 'expiree') return `La proposition a expiré (${quand(e.proposition.expire)}) : elle ne peut plus être acceptée. Refaites une proposition si la place est toujours libre.`;
+    if (e.etat === 'expiree') return `La proposition a expiré (${quand(e.proposition.expire)}) : le délai de réponse est passé, elle ne peut plus être acceptée. Refaites une proposition si la place est toujours libre.`;
     if (e.etat !== 'proposee') return 'Aucune proposition en cours pour ce client.';
     /* La règle : on revérifie au moment de l'acceptation. La proposition n'avait rien bloqué. */
     if (!creneauxCompatibles(ctx, S, salle, { ...e, heure: e.proposition.heure, souplesse: 0 }).some((c) => c.heure === e.proposition.heure)) return `La place proposée à ${heure(e.proposition.heure)} a été prise entre-temps : l'acceptation n'est pas possible. La demande reste dans la liste d'attente.`;
@@ -150,7 +172,7 @@ export const MUTATIONS_ATTENTE = {
   /** L'équipe inscrit un client en liste d'attente. */
   attenteAjouter(S, { entree }) { const l = ((S.attente ||= {}).liste ||= []); if (!l.some((e) => e.id === entree.id)) l.push({ ...entree, statut: 'en-attente' }); },
   /** Une proposition est préparée pour le client ; elle expire à `expire`. Rien n'est bloqué. */
-  attenteProposer(S, { id, heure: h, service, faite, expire }) { (((S.attente ||= {}).suivi ||= {})[id] ||= {}); Object.assign(S.attente.suivi[id], { statut: 'proposee', proposition: { heure: h, service, faite, expire }, motif: '' }); },
+  attenteProposer(S, { id, heure: h, service, faite, expire, mode = 'standard' }) { (((S.attente ||= {}).suivi ||= {})[id] ||= {}); Object.assign(S.attente.suivi[id], { statut: 'proposee', proposition: { heure: h, service, faite, expire, mode }, motif: '' }); },
   /** Le client accepte : UNE réservation confirmée est créée (jamais deux), l'inscription est close. */
   attenteAccepter(S, { id, resa }) {
     const s = (((S.attente ||= {}).suivi ||= {})[id] ||= {}); if (s.statut === 'acceptee') return;
@@ -164,5 +186,5 @@ export const MUTATIONS_ATTENTE = {
 /** L'aperçu du message de proposition (rien n'est envoyé). */
 export function messageProposition(e, telephone = '') {
   const p = e.proposition || {};
-  return `Bonjour ${String(e.nom).split(' ')[0]}, une table pour ${pluriel(e.couverts, 'personne')} s'est libérée aux Jardins de l'Hacienda le ${fmt(e.date, { weekday: 'long', day: 'numeric', month: 'long' })} à ${heure(p.heure || e.heure)}. Pour la prendre, répondez avant ${p.expire ? `le ${quand(p.expire)}` : 'ce soir'} : passé ce délai, elle sera proposée à la personne suivante.${telephone ? ` Une question : ${telephone}.` : ''}`;
+  return `Bonjour ${String(e.nom).split(' ')[0]}, une table pour ${pluriel(e.couverts, 'personne')} s'est libérée aux Jardins de l'Hacienda le ${fmt(e.date, { weekday: 'long', day: 'numeric', month: 'long' })} à ${heure(p.heure || e.heure)}. Pour la prendre, répondez avant ${p.expire ? `le ${quand(p.expire)}` : 'ce soir'}${p.mode === 'derniere-minute' ? ' (c\'est une place de dernière minute)' : ''} : passé ce délai, elle sera proposée à la personne suivante.${telephone ? ` Une question : ${telephone}.` : ''}`;
 }

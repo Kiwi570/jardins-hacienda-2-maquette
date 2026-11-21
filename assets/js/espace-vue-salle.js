@@ -6,7 +6,7 @@
 import { typo, STATUTS, fmt, maj, heure, pluriel, servicesDe } from './espace-regles.js?v=7';
 import { planDuService, libre, proposer, placerTout, placeDe, avisPlace, assemblagesPossibles, nomPlace, cleSalle, ETATS_TABLE } from './espace-salle.js?v=7';
 import { refusInstallation } from './espace-presence.js?v=7';
-import { repliTerrasse, soirDEte, exempleEte } from './espace-repli.js?v=7';
+import { repliTerrasse, soirDEte, exempleEte, phraseBilan, appliquerUnParUn, ETATS_REPLI } from './espace-repli.js?v=7';
 import { terrasseOuverte } from './espace-salle.js?v=7';
 
 const FOND = `<svg class="esp-salle__fond" viewBox="0 0 1000 640" aria-hidden="true" focusable="false">
@@ -66,13 +66,18 @@ export function creerSalle(X) {
   /* Le repli de la terrasse : un aperçu, à ajuster, puis à appliquer. Fermer ne change rien. */
   function panneauRepli(p) {
     const o = etat.repli; if (!o) return '';
-    if (o.bilan) return `<article class="esp-carte esp-repli" aria-labelledby="t-repli" data-repli tabindex="-1"><h3 id="t-repli">Repli en intérieur : ce qui a été fait</h3>
-      <ul class="esp-repli__bilan">${o.bilan.faits.length ? `<li class="est-ok"><b>${pluriel(o.bilan.faits.length, 'réservation')} ${o.bilan.faits.length > 1 ? 'déplacées' : 'déplacée'} en salle</b> : ${o.bilan.faits.map((x) => `${e(x.nom)} (${e(x.vers)})`).join(', ')}.</li>` : '<li>Aucune réservation n\'a été déplacée.</li>'}
-        ${o.bilan.refus.map((x) => `<li class="est-non"><b>${e(x.nom)} n'a pas été déplacé</b> : ${e(x.raison)}</li>`).join('')}
-        ${o.bilan.restes.map((x) => `<li class="est-non"><b>${e(x)}</b></li>`).join('')}
-        ${o.bilan.tables.length ? `<li>Tables de la terrasse rendues indisponibles pour ce service : ${o.bilan.tables.join(', ')}.</li>` : ''}</ul>
-      <p class="esp-aide">Chaque déplacement peut être annulé avec « Annuler » (plusieurs fois de suite).</p>
-      <p><button type="button" class="esp-bouton" data-repli-fermer>Fermer</button></p></article>`;
+    if (o.bilan) { const B = o.bilan, parEtat = (k) => B.resultats.filter((x) => x.etat === k), reste = B.resultats.some((x) => x.etat !== 'deplacee');
+      const li = (x, classe, texte) => `<li class="${classe}" data-repli-resultat="${x.etat}"><b>${e(x.nom)}</b> <span class="esp-pastille esp-pastille--r-${x.etat}">${ETATS_REPLI[x.etat]}</span> ${texte}</li>`;
+      return `<article class="esp-carte esp-repli" aria-labelledby="t-repli" data-repli data-repli-bilan tabindex="-1"><h3 id="t-repli">Repli en intérieur : ce qui a été fait</h3>
+      <p class="esp-repli__phrase" role="status" data-repli-phrase><b>${e(phraseBilan(B.resultats))}</b></p>
+      <ul class="esp-repli__bilan">${parEtat('deplacee').map((x) => li(x, 'est-ok', `${e(nomPlace(x.table))}${x.raison ? `. ${e(x.raison)}` : ''}`)).join('')}
+        ${parEtat('refusee').map((x) => li(x, 'est-non', `vers ${e(nomPlace(x.table))} : ${e(x.raison)}`)).join('')}
+        ${parEtat('a-verifier').map((x) => li(x, 'est-non', `vers ${e(nomPlace(x.table))} : ${e(x.raison)}`)).join('')}
+        ${parEtat('non-tentee').map((x) => li(x, '', `vers ${e(nomPlace(x.table))} : ${e(x.raison || 'le traitement s\'est arrêté avant ce déplacement.')}`)).join('')}
+        ${B.restes.map((x) => `<li class="est-non"><b>${e(x)}</b></li>`).join('')}
+        ${B.tables.length ? `<li>Tables de la terrasse rendues indisponibles pour ce service : ${B.tables.join(', ')}.</li>` : ''}</ul>
+      <p class="esp-aide">${reste ? 'Le traitement s\'arrête au premier incident : ce qui a été déplacé avant est gardé. « Reprendre le repli » repart de l\'état actuel, avec ce qui reste à traiter.' : 'Chaque déplacement a été revérifié au moment d\'être enregistré.'}${X.ctx().exemples !== false ? ' Chaque déplacement peut être annulé avec « Annuler ».' : ''}</p>
+      <p class="esp-repli__actions">${reste ? '<button type="button" class="bouton" data-repli-reprendre-tout>Reprendre le repli</button>' : ''}<button type="button" class="esp-bouton" data-repli-fermer>Fermer</button></p></article>`; }
     const a = repliTerrasse(ctx(), S(), D.salle, etat.jour, p.service.service, o.choix || {});
     const ligne = (x) => `<li><span class="esp-repli__qui"><b>${heure(x.resa.heure)} · ${e(nom(x.resa))}</b> ${pluriel(+x.resa.couverts, 'couvert')}<small>${x.de ? `pour l'instant ${e(nomPlace(x.de))}` : 'avait demandé la terrasse, pas encore placée'}</small></span>
         <span class="esp-champ esp-repli__vers"><label for="repli-${e(x.resa.id)}">En salle</label><select id="repli-${e(x.resa.id)}" data-repli-choix="${e(x.resa.id)}">${x.options.map((op) => `<option value="${e(op.id)}"${op.id === x.vers ? ' selected' : ''}>${e(maj1(op.nom))} · ${op.places} places${op.id.includes('+') ? ' (à rapprocher)' : ''}</option>`).join('')}<option value="garder">La laisser en terrasse</option></select></span></li>`;
@@ -85,20 +90,29 @@ export function creerSalle(X) {
       ${a.conflits.length ? `<p class="esp-repli__conflit">Déjà à revoir avant le repli : ${a.conflits.map((c) => `table ${e(c.table)} (deux réservations en même temps)`).join(', ')}.</p>` : ''}
       ${a.decisions.length ? `<h4>Ce qui reste à décider</h4><ul class="esp-repli__decisions">${a.decisions.map((d) => `<li>${e(d)}</li>`).join('')}</ul>` : ''}
       <p class="esp-repli__option"><label><input type="checkbox" data-repli-fermer-terrasse${o.fermer === false ? '' : ' checked'}> Rendre les tables de la terrasse indisponibles pour ce service <span class="esp-source">Sur cet appareil</span></label></p>`}
-      <p class="esp-repli__actions">${a.propositions.length ? `<button type="button" class="bouton" data-repli-appliquer>Appliquer le repli (${pluriel(a.propositions.length, 'déplacement')})</button>` : ''}<button type="button" class="esp-bouton esp-bouton--discret" data-repli-fermer>Fermer sans rien changer</button></p>
-      <p class="esp-aide">Chaque déplacement est revérifié au moment d'être enregistré. Les clients ne sont pas prévenus automatiquement.</p></article>`;
+      <p class="esp-repli__actions">${a.propositions.length ? `<button type="button" class="bouton" data-repli-appliquer${o.enCours ? ' disabled aria-busy="true"' : ''}>${o.enCours ? 'Application en cours…' : `Appliquer le repli (${pluriel(a.propositions.length, 'déplacement')})`}</button>` : ''}<button type="button" class="esp-bouton esp-bouton--discret" data-repli-fermer${o.enCours ? ' disabled' : ''}>Fermer sans rien changer</button></p>
+      <p class="esp-aide">Les déplacements sont enregistrés un par un, chacun revérifié. Au premier refus, le traitement s'arrête et le bilan dit ce qui a été fait et ce qui reste. Les clients ne sont pas prévenus automatiquement.</p></article>`;
   }
-  function appliquerRepli() {
-    const p = plan(), o = etat.repli, a = repliTerrasse(ctx(), S(), D.salle, etat.jour, p.service.service, o.choix || {}), faits = [], refus = [], tables = [];
-    /* Mode connecté : un seul envoi au serveur, qui revérifie tout et répond pour l'ensemble (tout ou rien). */
-    if (X.ctx().exemples === false) { agir('placerPlusieurs', { places: a.places }, { msg: `Repli appliqué : ${pluriel(a.propositions.length, 'réservation')} en salle.` }); etat.repli = null; return; }
-    for (const x of a.propositions) {
-      const r = agir('placerResa', { id: x.resa.id, table: x.vers }, { msg: `Repli : ${nom(x.resa)}, ${nomPlace(x.vers)}.` });
-      if (r) faits.push({ nom: nom(x.resa), vers: nomPlace(x.vers) }); else refus.push({ nom: nom(x.resa), raison: X.raisonRefus?.() || 'la place a été prise entre-temps.' });
+  /* Appliquer : un déplacement après l'autre, arrêt au premier incident, puis un bilan exact (v7.11.1). Un second
+     clic pendant le traitement ne relance rien. Le panneau reste ouvert jusqu'au résultat. */
+  async function appliquerRepli() {
+    const o = etat.repli; if (!o || o.enCours || o.bilan) return;
+    const p = plan(), a = repliTerrasse(ctx(), S(), D.salle, etat.jour, p.service.service, o.choix || {}), noms = Object.fromEntries(a.propositions.map((x) => [x.resa.id, nom(x.resa)]));
+    const liste = a.propositions.map((x) => ({ id: x.resa.id, table: x.vers })), connecte = X.ctx().exemples === false, tables = [];
+    o.enCours = true; X.rendre(); $('article[data-repli]', root)?.focus();
+    let resultats;
+    if (connecte) {
+      const r = await X.placerUnParUn(liste);
+      if (r.occupe) return; /* une série est déjà en cours : elle donnera son propre bilan */
+      if (r.refus) { o.enCours = false; dire(r.refus); X.rendre(); return; }
+      resultats = r.resultats;
+    } else {
+      resultats = appliquerUnParUn(liste, (x) => agir('placerResa', { id: x.id, table: x.table }, { msg: `Repli : ${noms[x.id]}, ${nomPlace(x.table)}.` }) === true || X.raisonRefus?.() || 'La place a été prise entre-temps.');
+      if (o.fermer !== false && resultats.every((x) => x.etat === 'deplacee')) { const q = plan(); for (const t of q.tables.filter((x) => x.zone === 'terrasse' && !x.horsSaison && !x.resas.length && x.etat !== 'indisponible')) { if (agir('etatTable', { cle: cleSalle(etat.jour, q.service.service), table: t.id, etat: 'indisponible' }, { msg: `Table ${t.id} indisponible.` })) tables.push(t.id); } }
     }
-    if (o.fermer !== false && X.ctx().exemples !== false) { const q = plan(); for (const t of q.tables.filter((x) => x.zone === 'terrasse' && !x.horsSaison && !x.resas.length && x.etat !== 'indisponible')) { if (agir('etatTable', { cle: cleSalle(etat.jour, q.service.service), table: t.id, etat: 'indisponible' }, { msg: `Table ${t.id} indisponible.` })) tables.push(t.id); } }
-    etat.repli = { bilan: { faits, refus, tables, restes: [...a.sansSolution.map((x) => `${nom(x.resa)} (${+x.resa.couverts} couverts) reste sans solution : ${x.raison}`), ...a.installes.map((r) => `${nom(r)} est installé en terrasse : à déplacer de vive voix.`), ...a.gardees.map((r) => `${nom(r)} reste en terrasse, à votre demande.`)] } };
-    dire(`Repli appliqué : ${pluriel(faits.length, 'réservation')} ${faits.length > 1 ? 'déplacées' : 'déplacée'}${refus.length ? `, ${refus.length} ${refus.length > 1 ? 'refusées' : 'refusée'}` : ''}${a.sansSolution.length ? `, ${a.sansSolution.length} sans solution` : ''}.`);
+    etat.repli = { bilan: { resultats: resultats.map((x) => ({ ...x, nom: noms[x.id] || 'Réservation' })), tables,
+      restes: [...a.sansSolution.map((x) => `${nom(x.resa)} (${+x.resa.couverts} couverts) reste sans solution : ${x.raison}`), ...a.installes.map((r) => `${nom(r)} est installé en terrasse : à déplacer de vive voix.`), ...a.gardees.map((r) => `${nom(r)} reste en terrasse, à votre demande.`)] } };
+    X.apresSerie?.(); if (resultats.some((x) => x.etat === 'deplacee')) X.demoVu?.('repli-bilan'); X.rendre(); dire(phraseBilan(resultats)); $('article[data-repli]', root)?.focus();
   }
 
   /** Dessine l'onglet dans `cible`. */
@@ -140,10 +154,11 @@ export function creerSalle(X) {
   function clic(c) {
     const et = c.closest('[data-choisir-resa]');
     if (et) { const id = et.dataset.choisirResa; etat.resaAPlacer = etat.resaAPlacer === id ? null : id; etat.tableVue = null; X.rendre(); $(`[data-choisir-resa="${CSS.escape(id)}"]`, root)?.focus(); return true; }
-    if (c.closest('[data-repli-appliquer]')) { appliquerRepli(); X.rendre(); $('[data-repli]', root)?.focus(); return true; }
-    if (c.closest('[data-repli-fermer]')) { etat.repli = null; X.rendre(); $('[data-repli]', root)?.focus(); return true; }
+    if (c.closest('[data-repli-appliquer]')) { appliquerRepli(); return true; }
+    if (c.closest('[data-repli-reprendre-tout]')) { etat.repli = { choix: {} }; X.rendre(); $('article[data-repli]', root)?.focus(); return true; }
+    if (c.closest('[data-repli-fermer]')) { if (etat.repli?.enCours) return true; etat.repli = null; X.rendre(); $('button[data-repli]', root)?.focus(); return true; }
     const rr = c.closest('[data-repli-reprendre]'); if (rr) { delete etat.repli.choix[rr.dataset.repliReprendre]; X.rendre(); $('[data-repli]', root)?.focus(); return true; }
-    if (c.closest('button[data-repli]')) { etat.repli = etat.repli ? null : { choix: {} }; etat.resaAPlacer = null; etat.tableVue = null; X.rendre(); (etat.repli ? $('article[data-repli]', root) : $('button[data-repli]', root))?.focus(); return true; }
+    if (c.closest('button[data-repli]')) { etat.repli = etat.repli ? null : { choix: {} }; if (etat.repli) X.demoVu?.('repli-ouvert'); etat.resaAPlacer = null; etat.tableVue = null; X.rendre(); (etat.repli ? $('article[data-repli]', root) : $('button[data-repli]', root))?.focus(); return true; }
     if (c.closest('[data-exemple-ete]')) { const d = soirDEte(ctx()); if (!d) { dire('Aucun soir d\'été ouvert dans l\'année qui vient.'); return true; }
       agir('exempleEte', { resas: exempleEte(ctx(), d) }, { msg: `Exemple chargé : un samedi soir de juin, terrasse ouverte. Réservations d'exemple, noms inventés.` }); etat.jour = d; etat.serviceVu = 'soir'; etat.repli = { choix: {} }; etat.resaAPlacer = null; etat.tableVue = null; X.rendre(); $('article[data-repli]', root)?.focus(); return true; }
     const asb = c.closest('[data-assembler]'); if (asb) { if (etat.resaAPlacer && asseoir(etat.resaAPlacer, asb.dataset.assembler)) etat.resaAPlacer = null; X.rendre(); $(`[data-table="${CSS.escape(asb.dataset.assembler.split('+')[0])}"]`, root)?.focus({ preventScroll: true }); return true; }
@@ -180,7 +195,7 @@ export function creerSalle(X) {
   root.addEventListener('dragend', () => { glissee = null; if (!etat.resaAPlacer) $('[data-salle]', root)?.classList.remove('est-en-choix'); });
 
   function change(t) {
-    const ch = t.closest('[data-repli-choix]'); if (ch && etat.repli) { (etat.repli.choix ||= {})[ch.dataset.repliChoix] = ch.value; X.rendre(); ($(`[data-repli-choix="${CSS.escape(ch.dataset.repliChoix)}"]`, root) || $('article[data-repli]', root))?.focus(); return true; }
+    const ch = t.closest('[data-repli-choix]'); if (ch && etat.repli) { (etat.repli.choix ||= {})[ch.dataset.repliChoix] = ch.value; X.demoVu?.('repli-ajuste'); X.rendre(); ($(`[data-repli-choix="${CSS.escape(ch.dataset.repliChoix)}"]`, root) || $('article[data-repli]', root))?.focus(); return true; }
     const f = t.closest('[data-repli-fermer-terrasse]'); if (f && etat.repli) { etat.repli.fermer = f.checked; return true; }
     return false;
   }

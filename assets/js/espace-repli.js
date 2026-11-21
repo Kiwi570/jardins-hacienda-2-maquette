@@ -60,6 +60,32 @@ export function exempleEte(ctx, iso) {
   ];
 }
 
+/* ---------- Le bilan d'un repli appliqué (v7.11.1) ----------
+   Un repli s'applique déplacement par déplacement, et s'arrête au premier incident. Le bilan dit, pour chaque
+   réservation, ce qui s'est réellement passé : 'deplacee', 'refusee', 'non-tentee', 'a-verifier'. Le nombre prévu
+   n'est jamais un compteur de réussite. */
+export const ETATS_REPLI = { deplacee: 'Déplacée', refusee: 'Refusée', 'non-tentee': 'Non tentée', 'a-verifier': 'Résultat à vérifier' };
+export function compteBilan(resultats = []) {
+  const n = (k) => resultats.filter((x) => x.etat === k).length;
+  return { deplacees: n('deplacee'), refusees: n('refusee'), nonTentees: n('non-tentee'), aVerifier: n('a-verifier'), prevues: resultats.length };
+}
+/** La phrase du bilan : « 1 réservation déplacée. 1 déplacement refusé. 2 déplacements restent à traiter. » */
+export function phraseBilan(resultats = []) {
+  const c = compteBilan(resultats), p = (k, un, plusieurs) => (k ? [`${k} ${k > 1 ? plusieurs : un}.`] : []);
+  if (!c.prevues) return 'Aucun déplacement à faire.';
+  return [...(c.deplacees ? p(c.deplacees, 'réservation déplacée', 'réservations déplacées') : ['Aucune réservation déplacée.']), ...p(c.refusees, 'déplacement refusé', 'déplacements refusés'),
+    ...p(c.aVerifier, 'résultat à vérifier', 'résultats à vérifier'), ...p(c.nonTentees, 'déplacement reste à traiter', 'déplacements restent à traiter')].join(' ');
+}
+/**
+ * Applique des déplacements un par un avec `deplacer(x)` (rend true, ou la raison du refus) et s'arrête au premier
+ * refus : le même comportement, en démonstration, que la série du mode connecté.
+ */
+export function appliquerUnParUn(liste, deplacer) {
+  const resultats = liste.map((x) => ({ id: x.id, table: String(x.table || ''), etat: 'non-tentee', raison: '' }));
+  for (const x of resultats) { const r = deplacer(x); if (r === true) x.etat = 'deplacee'; else { x.etat = 'refusee'; x.raison = String(r || 'Ce déplacement a été refusé.'); break; } }
+  return resultats;
+}
+
 export const MUTATIONS_REPLI = {
   /** Charge l'exemple d'un soir d'été (une seule fois par date) : des réservations d'exemple, avec leurs tables. */
   exempleEte(S, { resas }) {

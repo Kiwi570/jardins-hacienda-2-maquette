@@ -2,9 +2,9 @@
    Les règles sont dans espace-venue.js (fonctions pures, testées). Démonstration : la page lit les réservations de ce
    navigateur et note ce que le client fait dans le stockage commun ; l'espace du restaurant le voit aussitôt.
    Rien n'est envoyé. En mode connecté, la page ne lit rien en local : elle renvoie vers le téléphone. */
-import { lire, resasSite, venues, noterVenue, ecouter } from './espace-stock.js?v=7';
+import { lire, resasSite, venues, noterVenue, ecouter, CONTEXTE, horloge as horlogeDemo } from './espace-stock.js?v=7';
 import { equipeDe } from './disponibilites.js?v=7';
-import { trouverResa, aujourdhui, fmt, maj, heure, typo, pluriel } from './espace-regles.js?v=7';
+import { trouverResa, aujourdhui, fixerHorloge, fmt, maj, heure, hhmm, typo, pluriel } from './espace-regles.js?v=7';
 import { codeVenue, etatVenue, actionsVenue, heuresVenue, refusModifVenue } from './espace-venue.js?v=7';
 import { nomPlace } from './espace-salle.js?v=7';
 
@@ -14,23 +14,25 @@ export function init(root) {
   const corps = root.querySelector('[data-venue-corps]'); let D; try { D = JSON.parse(root.querySelector('[data-venue-donnees]').textContent); } catch { return; }
   const q = new URLSearchParams(location.search), id = q.get('r') || '', code = q.get('c') || '', R = D.reservation;
   const connecte = !!document.querySelector('meta[name="jh-api"]');
+  /* v7.11.1 : ouverte depuis un scénario de démonstration, la page lit ses données et son heure simulée. */
+  if (CONTEXTE && horlogeDemo()) fixerHorloge(() => horlogeDemo());
   const etat = { outil: '', message: '', erreur: '' };
   const tel = `<a href="tel:${e(D.telephoneLien)}">${e(D.telephone)}</a>`;
   const pied = `<section class="venue__bloc" aria-labelledby="venue-pratique"><h2 id="venue-pratique">Informations pratiques</h2>
       <ul class="venue__pratique"><li><b>Adresse</b> ${e(D.adresse)}</li><li><b>Téléphone</b> ${tel}</li><li><a class="venue__lien" href="${e(D.liens.infos)}">Accès, horaires et stationnement</a></li></ul></section>
     <section class="venue__bloc" aria-labelledby="venue-conditions"><h2 id="venue-conditions">Conditions</h2>
       <p>Les conditions d'annulation et de retard seront précisées ici par le restaurant. En cas d'empêchement, prévenez-nous dès que possible.</p></section>`;
-  const demo = '<p class="venue__demo"><span>Démonstration</span> Cette page lit les réservations enregistrées dans ce navigateur. Aucun message n\'est envoyé.</p>';
+  const demo = () => `<p class="venue__demo"><span>Démonstration</span> Cette page lit les réservations enregistrées dans ce navigateur. Aucun message n'est envoyé.${CONTEXTE && horlogeDemo() ? ` Scénario en cours\u00a0: nous sommes le ${fmt(aujourdhui().iso, { weekday: 'long', day: 'numeric', month: 'long' })}, ${heure(hhmm(aujourdhui().min))} (heure simulée). <a class="venue__lien" href="/espace">Revenir à l'espace</a>` : ''}</p>`;
 
   function lireResa() {
-    const maintenant = aujourdhui(), S = lire(), ctx = { R, auj: maintenant.iso, site: resasSite(), exceptions: [] };
+    const maintenant = aujourdhui(), S = lire(), ctx = { R, auj: maintenant.iso, site: resasSite(), exceptions: [], scenario: CONTEXTE };
     const r = id ? trouverResa(ctx, S, id) : null;
     return { r: r && codeVenue(r.id, r.telephone) === code ? r : null, S, maintenant, v: venues()[id] || {}, equipe: equipeDe(S, []) };
   }
   function introuvable() {
     corps.innerHTML = typo(`<div class="venue__carte venue__carte--vide" tabindex="-1" data-venue-focus><p class="venue__etat venue__etat--annulee">Réservation introuvable</p>
       <p>${connecte ? 'Sur ce site d\'essai, la page « Votre venue » n\'est pas encore reliée au restaurant.' : 'Nous ne retrouvons pas cette réservation : le lien est incomplet, ou il a été ouvert sur un autre appareil que celui de la démonstration.'} Pour voir, modifier ou annuler votre réservation, appelez-nous : ${tel}.</p>
-      <p class="venue__actions"><a class="bouton" href="${e(D.liens.reserver)}">Réserver une table</a></p></div>${pied}${connecte ? '' : demo}`);
+      <p class="venue__actions"><a class="bouton" href="${e(D.liens.reserver)}">Réserver une table</a></p></div>${pied}${connecte ? '' : demo()}`);
   }
   function rendre(focus) {
     if (connecte) { introuvable(); return; }
@@ -63,7 +65,7 @@ export function init(root) {
         ${outil}
         ${!actions.length ? `<p class="venue__note">Pour toute question, appelez-nous : ${tel}. <a class="venue__lien" href="${e(D.liens.reserver)}">Faire une nouvelle demande</a></p>` : ''}
       </div>
-      <p class="venue__contact">Une question, un retard&nbsp;? Appelez-nous : ${tel}.</p>${pied}${demo}`);
+      <p class="venue__contact">Une question, un retard&nbsp;? Appelez-nous : ${tel}.</p>${pied}${demo()}`);
     if (focus) corps.querySelector(focus)?.focus({ preventScroll: focus === '[data-venue-focus]' });
   }
   const dire = (m) => { etat.message = m; etat.outil = ''; etat.erreur = ''; rendre('[data-venue-focus]'); };

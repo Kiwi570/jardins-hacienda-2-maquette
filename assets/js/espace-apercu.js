@@ -2,7 +2,7 @@
    Chargé avant tout le reste (premier import de site.js) : textes [data-edit], photos [data-edit-photo], ardoise,
    horaires et fermetures (les JSON que lisent le statut et la réservation), événements, la carte (v7.7.3), puis l'annonce et une
    petite pastille « Aperçu de vos modifications ». Ne fait rien si l'espace n'a rien changé. */
-import { lire, estVide } from './espace-stock.js?v=7';
+import { lire, estVide, CONTEXTE } from './espace-stock.js?v=7';
 import { equipeDe, exceptionsOuvertures } from './disponibilites.js?v=7';
 
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -162,7 +162,8 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
       pile.insertAdjacentHTML('beforeend', `<aside class="annonce-site" aria-label="Annonce du restaurant"><p class="annonce-site__sur">Annonce</p><p class="annonce-site__texte">${echap(a.texte)}</p><button type="button" class="annonce-site__fermer" aria-label="Fermer l'annonce">×</button></aside>`);
       pile.querySelector('.annonce-site__fermer').addEventListener('click', (ev) => { ev.currentTarget.closest('.annonce-site').remove(); try { sessionStorage.setItem('jh-annonce-fermee', a.texte); } catch { /* rien */ } });
     }
-    pile.insertAdjacentHTML('beforeend', '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Aperçu de vos modifications<span class="apercu-espace__lien">Votre espace</span></a>');
+    /* v7.11.1 : dans un scénario de démonstration, la pastille le dit et ramène à l'espace du scénario. */
+    pile.insertAdjacentHTML('beforeend', CONTEXTE ? '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Démonstration en cours<span class="apercu-espace__lien">Revenir à l\'espace</span></a>' : '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Aperçu de vos modifications<span class="apercu-espace__lien">Votre espace</span></a>');
     document.body.append(pile);
     requestAnimationFrame(() => setTimeout(() => pile.classList.add('est-visible'), 900));
   });

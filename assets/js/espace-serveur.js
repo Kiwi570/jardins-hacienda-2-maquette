@@ -101,6 +101,43 @@ export function creerDepotServeur({ api, local, periode, surFin, surEtat, fetch:
     for (const a of etapes) { const r = await appel('POST', '/reglages/equipe', { corps: { version: regles.version, operation, args: a } }); regles = { ...regles, equipe: r.equipe, version: r.version }; }
     return {};
   }
+  /**
+   * Plusieurs déplacements, un par un, avec un bilan exact par réservation (v7.11.1, pour le repli de terrasse).
+   * Ce n'est PAS une opération « tout ou rien » : chaque déplacement confirmé par le serveur est gardé. Au premier
+   * incident (refus, réponse perdue), on s'arrête ; les suivants ne sont pas tentés.
+   * - 'deplacee'   : écriture confirmée par le serveur (un rafraîchissement raté ensuite n'y change rien) ;
+   * - 'refusee'    : refus explicite, avec sa raison ;
+   * - 'non-tentee' : pas exécuté (arrêt du traitement), ou réponse perdue puis vérification faite : rien n'a été écrit ;
+   * - 'a-verifier' : réponse perdue et état impossible à relire : on ne sait pas.
+   * Un second appel pendant le premier ne lance rien (`occupe`).
+   * @param {{ id: string, table: string }[]} liste
+   * @returns {Promise<{ occupe?: boolean, refus?: string, resultats: { id, table, etat, raison }[] }>}
+   */
+  let serie = false;
+  async function placerUnParUn(liste = []) {
+    if (serie || lien.enCours) return { occupe: true, resultats: [] };
+    if (lien.etat !== 'a-jour') return { refus: lien.etat === 'hors-ligne' ? 'Pas de liaison avec le serveur : rien n\'a été déplacé.' : 'Connectez-vous pour agir sur les réservations.', resultats: [] };
+    serie = true; dire({ enCours: lien.enCours + 1 });
+    const resultats = liste.map((x) => ({ id: x.id, table: String(x.table || ''), etat: 'non-tentee', raison: '' }));
+    try {
+      for (const x of resultats) {
+        try { const r = await appel('PUT', `/reservations/${x.id}/table`, { corps: { table: x.table, version: versions(x.id) } }); poser([r.reservation]); x.etat = 'deplacee'; }
+        catch (e) {
+          if (e.code === 'RESEAU' || e.code === 'SERVEUR') {
+            /* Réponse perdue : l'écriture a peut-être eu lieu. On relit l'état avant de conclure, sans rien relancer. */
+            const relu = await charger().catch(() => false), r = reservations.get(x.id);
+            if (relu && lien.etat === 'a-jour' && r) { const fait = String(r.table || '') === x.table && r.placement === 'placement';
+              x.etat = fait ? 'deplacee' : 'non-tentee'; x.raison = fait ? 'La réponse s\'était perdue ; vérification faite : le déplacement est bien enregistré.' : 'La réponse du serveur s\'est perdue ; vérification faite : ce déplacement n\'a pas été enregistré.'; }
+            else { x.etat = 'a-verifier'; x.raison = 'Sans réponse du serveur : on ne sait pas si ce déplacement a été enregistré. Vérifiez le plan avant de recommencer.'; }
+          } else { if (e.code === 'CONFLIT_VERSION' && e.details?.reservation) poser([e.details.reservation]); x.etat = 'refusee'; x.raison = e.message; }
+          break; /* arrêt au premier incident : les suivants restent « non tentés » */
+        }
+      }
+      /* Remettre l'écran à jour ; si cela échoue, le bilan ne change pas (une écriture confirmée reste une réussite). */
+      await actualiser().catch(() => false);
+    } finally { serie = false; dire({ enCours: Math.max(0, lien.enCours - 1) }); }
+    return { resultats };
+  }
   function agir(nom, args = {}, meta = {}) {
     if (!ACTIONS_RESA.includes(nom) && !ACTIONS_REGLES[nom]) return local.agir(nom, args, meta);
     if (lien.etat !== 'a-jour' && lien.etat !== 'hors-ligne') { raison = lien.etat === 'interdit' ? 'Votre compte ne donne pas accès aux réservations.' : lien.etat === 'charge' ? 'Chargement en cours : un instant.' : 'Connectez-vous pour agir sur les réservations.'; return false; }
@@ -119,7 +156,7 @@ export function creerDepotServeur({ api, local, periode, surFin, surEtat, fetch:
   return {
     /* le même contrat que le dépôt local, pour les écrans */
     etat, resasSite: () => [], demandesSite: () => local.demandesSite(), venues: () => ({}), noterVenue: () => false, ecouter: (f) => local.ecouter(f), abonner: (f) => local.abonner(f),
-    agir, raisonRefus: () => raison || local.raisonRefus(), noteAction: () => local.noteAction(), toutEffacer: (m) => local.toutEffacer(m), peutAnnuler: () => local.peutAnnuler(), annuler: () => local.annuler(),
+    agir, placerUnParUn, raisonRefus: () => raison || local.raisonRefus(), noteAction: () => local.noteAction(), toutEffacer: (m) => local.toutEffacer(m), peutAnnuler: () => local.peutAnnuler(), annuler: () => local.annuler(),
     conflitsAnnulation: () => local.conflitsAnnulation(), gardesAnnulation: () => local.gardesAnnulation(), annulationPartielle: () => local.annulationPartielle(),
     /* ce que le mode connecté ajoute */
     connecte: true, reglages: () => regles.reservation, tables: () => regles.tables, compte: () => compte, droits: () => droits, liaison: () => ({ ...lien }), reservation: (id) => reservations.get(id) || null,
