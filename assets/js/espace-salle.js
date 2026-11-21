@@ -4,7 +4,8 @@
    site arrive déjà placé. Une table porte les réservations du service qui y sont assises ; elle est libre pour une
    réservation si personne n'y est entre son arrivée et la fin de son repas (durées de `espace-service.js`).
    La terrasse n'ouvre que de juin à septembre, comme sur le site. */
-import { actives, enMin } from './espace-regles.js?v=7';
+import { actives, enMin, instantCtx } from './espace-regles.js?v=7';
+import { occupationsActives, prisesDuService } from './disponibilites.js?v=7';
 import { serviceDuJour, dureeDe } from './espace-service.js?v=7';
 
 /** La terrasse est-elle ouverte ce jour-là ? De juin à septembre. */
@@ -52,6 +53,8 @@ export const cleSalle = (iso, sv) => `${iso}|${sv}`;
 export function planDuService(ctx, S, salle, iso, sv, minute = iso === ctx.auj ? ctx.minute ?? null : null) {
   const service = serviceDuJour(ctx, S, iso, sv), presence = S.service?.presence || {}, notes = S.service?.tables?.[cleSalle(iso, sv)] || {};
   const base = tablesDe(salle, iso), ass = assemblagesDe(salle, iso), parId = new Map(ass.map((a) => [a.id, a]));
+  /* v7.12.0 : les tables retenues par une option encore valable ou une réception confirmée, pour ce service. */
+  const pris = prisesDuService(occupationsActives(S, instantCtx(ctx)), ctx.R, iso, sv);
   const pres = actives(service.resas).map((r) => {
     const p = presence[r.id], installe = r.statut === 'arrivee' && p?.etat === 'installe', parti = r.statut === 'arrivee' && p?.etat === 'parti';
     /* La durée prévue ne libère pas une table : tant que le groupe est installé, il l'occupe. Parti : il l'a rendue. */
@@ -63,15 +66,16 @@ export function planDuService(ctx, S, salle, iso, sv, minute = iso === ctx.auj ?
   const tables = base.map((t) => {
     const resas = pres.filter((r) => sur(r).includes(t.id)).map((r) => (parId.has(String(r.table)) ? { ...r, via: String(r.table) } : r)).sort((a, b) => a.debutMin - b.debutMin);
     const occupant = resas.find((r) => r.installe) || null, note = notes[t.id] || '';
-    const etat = t.fermee || note === 'indisponible' ? 'indisponible' : occupant ? 'occupee' : ['a-debarrasser', 'a-preparer'].includes(note) ? note : 'prete';
-    return { ...t, resas, occupant, etat, fermee: t.fermee || note === 'indisponible', horsSaison: t.fermee };
+    const reception = pris.tables.get(t.id) || null;
+    const etat = t.fermee || note === 'indisponible' || reception ? 'indisponible' : occupant ? 'occupee' : ['a-debarrasser', 'a-preparer'].includes(note) ? note : 'prete';
+    return { ...t, resas, occupant, etat, fermee: t.fermee || note === 'indisponible' || !!reception, horsSaison: t.fermee, reception };
   });
   const assemblages = ass.map((a) => { const composantes = tables.filter((t) => a.tables.includes(t.id));
     return { ...a, composantes, fermee: composantes.some((t) => t.fermee), resas: pres.filter((r) => String(r.table || '') === a.id).sort((x, y) => x.debutMin - y.debutMin),
       etat: composantes.some((t) => t.etat === 'indisponible') ? 'indisponible' : composantes.some((t) => t.etat === 'occupee') ? 'occupee' : composantes.find((t) => t.etat !== 'prete')?.etat || 'prete' }; });
   const placees = pres.filter((r) => connues.has(String(r.table || ''))), aPlacer = pres.filter((r) => !connues.has(String(r.table || '')));
   const conflits = tables.filter((t) => t.resas.some((a, i) => t.resas.slice(i + 1).some((b) => croise(a, b)))).map((t) => ({ table: t.id, resas: t.resas }));
-  return { service, tables, assemblages, aPlacer, placees, conflits, minute };
+  return { service, tables, assemblages, aPlacer, placees, conflits, minute, receptions: pris.occs };
 }
 
 /** La place (table ou assemblage) qui porte cet identifiant dans le plan. */
@@ -91,6 +95,7 @@ export const assemblagesPossibles = (plan, r) => (plan.assemblages || []).filter
 export function avisPlace(plan, t, r, { maintenant = false } = {}) {
   const n = +r.couverts || 1, tables = t.assemblage ? t.composantes : [t], dire = (h) => `${Math.floor(h / 60) % 24} h${h % 60 ? ` ${String(h % 60).padStart(2, '0')}` : ''}`;
   const hors = tables.find((c) => c.horsSaison); if (hors) return { ok: false, genre: 'fermee', raison: 'La terrasse est fermée hors saison.' };
+  const retenue = tables.find((c) => c.reception); if (retenue) return { ok: false, genre: 'fermee', raison: `La table ${retenue.id} est retenue pour une réception (${retenue.reception.intitule}${retenue.reception.type === 'option' ? ', option' : ''}).` };
   const indispo = tables.find((c) => c.etat === 'indisponible'); if (indispo) return { ok: false, genre: 'fermee', raison: `La table ${indispo.id} est indisponible pour ce service.` };
   for (const c of tables) { const a = c.resas.find((x) => x.id !== r.id && croise(x, r));
     if (a) return { ok: false, genre: 'prise', raison: a.installe ? `La table ${c.id} est occupée par ${a.nom || 'un groupe'}${a.depasse ? ', installé depuis plus longtemps que prévu' : `, jusque vers ${dire(a.finMin)}`}.` : `La table ${c.id} est ${a.via && a.via !== t.id ? `rapprochée d'une autre (${nomPlace(a.via)}) ` : 'réservée '}à ${dire(a.debutMin)} pour ${a.nom || 'une autre réservation'}.` }; }

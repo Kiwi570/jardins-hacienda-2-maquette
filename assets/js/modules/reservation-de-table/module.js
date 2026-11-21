@@ -71,7 +71,8 @@ export async function init(root, options = {}) {
   const ouvert = (iso, sid) => etatService(R, iso, sid).ouvert;
   function estComplet(iso, t, couverts, sid) {
     /* Ce que le restaurant a dit complet l'emporte toujours ; ensuite la disponibilité réelle (option), puis le JSON et la simulation. */
-    if (sid && etatService(R, iso, sid).complet) return true;
+    /* v7.12.0 : la salle retenue par une réception (option encore valable ou réception confirmée) : le service n'est pas proposé. */
+    if (sid && (etatService(R, iso, sid).complet || etatService(R, iso, sid).prive)) return true;
     if ((R.complets?.[iso] || []).includes(t)) return true;
     if (o.complet) return !!o.complet(iso, t, couverts);
     if (!R.complets_simules) return false;
@@ -92,7 +93,7 @@ export async function init(root, options = {}) {
   const reservable = (iso, c = 2) => services.some((sv) => libres(iso, sv.id, c) > 0);
   /** Un service ouvert, avec des heures encore à venir, mais plus aucune de libre : complet (v7.11.0). */
   const complet = (iso, sid, c = val().couverts) => { const l = creneaux(iso, sid, c); return l.length > 0 && l.every((x) => x.etat === 'complet'); };
-  const espaceOk = (e, iso) => !e.mois || !iso || e.mois.includes(+iso.slice(5, 7));
+  const espaceOk = (e, iso, sid = val?.().service) => (!e.mois || !iso || e.mois.includes(+iso.slice(5, 7))) && !(e.id === 'terrasse' && iso && sid && etatService(R, iso, sid).terrassePrise);
 
   // ---------- Champs ----------
   const dateEl = champ('date'), couvEl = champ('couverts');
@@ -215,7 +216,7 @@ export async function init(root, options = {}) {
       + liste.map((x) => `<label class="resa__creneau${x.etat === 'complet' ? ' est-complet' : ''}${x.t.endsWith(':00') ? ' est-pleine' : ''}"><input type="radio" name="heure" value="${x.t}" ${x.t === garde ? 'checked' : ''} ${x.etat === 'complet' ? 'disabled' : ''} required><i class="resa__point" aria-hidden="true"></i><span>${x.libelle}</span>${x.etat === 'complet' ? '<small>complet</small>' : ''}</label>`).join('')
       + '</div></div></div>' : '';
     const nLibres = liste.filter((x) => x.etat === 'libre').length;
-    aideCr.textContent = !v.date ? 'Choisissez d\'abord une date.' : !v.service ? (services.some((sv) => complet(v.date, sv.id, v.couverts)) ? 'Ce jour-là est complet. D\'autres possibilités sont proposées juste en dessous.' : 'Ce jour-là, le restaurant est fermé ou complet : choisissez une autre date.') : !liste.length ? 'Plus de créneau pour ce service.' : !nLibres ? 'Ce service est complet : essayez l\'autre service ou un autre jour.'
+    aideCr.textContent = !v.date ? 'Choisissez d\'abord une date.' : !v.service ? (services.some((sv) => ouvert(v.date, sv.id) && etatService(R, v.date, sv.id).prive) ? 'Ce jour-là, le restaurant accueille une réception. D\'autres possibilités sont proposées juste en dessous.' : services.some((sv) => complet(v.date, sv.id, v.couverts)) ? 'Ce jour-là est complet. D\'autres possibilités sont proposées juste en dessous.' : 'Ce jour-là, le restaurant est fermé ou complet : choisissez une autre date.') : !liste.length ? 'Plus de créneau pour ce service.' : !nLibres ? 'Ce service est complet : essayez l\'autre service ou un autre jour.'
       : heurePerdue && !garde ? `${heure(enMin(heurePerdue))} n'est plus libre pour ${v.couverts} personnes : choisissez une autre heure.` : `${nLibres} créneau${nLibres > 1 ? 'x' : ''} disponible${nLibres > 1 ? 's' : ''}${v.couverts >= 6 ? ` pour ${v.couverts} personnes` : ''}.`;
     majFrise(true);
     if (focus) (zone.querySelector(`input[value="${focus}"]:not(:disabled)`) || zone.querySelector('input:not(:disabled)'))?.focus({ preventScroll: true });

@@ -4,7 +4,7 @@
    l'ouvrant, les détails, les étapes, le message qui part au client (envoi simulé) et une note pour l'équipe.
    Les règles sont dans espace-demandes.js (fonctions pures) ; ce fichier dessine et écoute, avec les outils de espace.js. */
 import { cleDemande } from './espace-clients.js?v=7';
-import { GENRES, libelleEtape, suite, recue, demandes as demandesDe, aTraiter, suiviReceptions, MODELES, modele, composer, variablesTable, messageDemande, exempleModele } from './espace-demandes.js?v=7';
+import { GENRES, libelleEtape, suite, recue, demandes as demandesDe, aTraiter, MODELES, modele, composer, variablesTable, messageDemande, exempleModele } from './espace-demandes.js?v=7';
 import { pluriel, typo } from './espace-regles.js?v=7';
 
 const ICO = {
@@ -42,7 +42,7 @@ export function creerDemandes(X) {
       ${X.tachesDe ? X.tachesDe('demande', d.id, `${d.qui} · ${g.nom}`, `Rappeler ${d.prenom || d.qui}`) : ''}</div>`;
     return `<li class="esp-dem est-${d.statut}${ouverte ? ' est-ouverte' : ''}" data-demande="${e(d.id)}">
       <button type="button" class="esp-dem__tete" ${compacte ? `data-voir-demande="${e(d.id)}"` : `data-ouvrir-demande="${e(d.id)}" aria-expanded="${ouverte}"${ouverte ? ` aria-controls="dem-${e(d.id)}"` : ''}`}>${tete}</button>
-      ${s ? `<p class="esp-dem__actions"><button type="button" class="esp-bouton${d.statut === 'nouvelle' ? ' esp-bouton--ok' : ''}" data-etape-demande="${e(d.id)}" data-statut="${s.statut}"${d.statut === 'nouvelle' ? ' data-repondre' : ''}>${e(s.libelle)}</button></p>` : ''}
+      ${s || X.boutonDossier?.(d) ? `<p class="esp-dem__actions">${s ? `<button type="button" class="esp-bouton${d.statut === 'nouvelle' ? ' esp-bouton--ok' : ''}" data-etape-demande="${e(d.id)}" data-statut="${s.statut}"${d.statut === 'nouvelle' ? ' data-repondre' : ''}>${e(s.libelle)}</button>` : ''}${compacte ? '' : X.boutonDossier?.(d) || ''}</p>` : ''}
       ${corpsCarte}</li>`;
   }
   /** Une table à confirmer, avec le message qui partira au client. */
@@ -53,12 +53,13 @@ export function creerDemandes(X) {
     const compte = { tout: nb, table: att.tables.length, ...Object.fromEntries(['reception', 'traiteur', 'cadeau', 'question'].map((g) => [g, att.autres.filter((d) => d.genre === g).length])) };
     const voir = l.filter((d) => f === 'tout' || d.genre === f), neuves = voir.filter((d) => d.statut === 'nouvelle'), autres = voir.filter((d) => d.statut !== 'nouvelle');
     const tables = f === 'tout' || f === 'table' ? att.tables : [];
-    const suivi = f === 'reception' ? `<ol class="esp-suivi" aria-label="Où en sont les réceptions">${suiviReceptions(l).map((x) => `<li class="${x.n ? 'est-plein' : ''}"><b>${x.n}</b><span>${e(x.nom)}</span></li>`).join('')}</ol>` : '';
+    /* v7.12.0 : le filtre « Réceptions » montre le suivi des dossiers, phase par phase ; les demandes qui n'ont pas encore de dossier y figurent. */
+    const suivi = f === 'reception' ? (X.suiviReceptions?.() || '') : '';
     corps('demandes').innerHTML = `
       <p class="esp-bonjour">${nb ? `${pluriel(nb, 'demande')} ${nb > 1 ? 'attendent' : 'attend'} une réponse.` : 'Tout a une réponse.'} ${ctx().exemples === false ? 'Les demandes de table du site arrivent ici, sur tous vos appareils. Réception, traiteur, carte cadeau et question ne sont pas encore partagées.' : 'Les cinq formulaires du site arrivent ici : table, réception, traiteur, carte cadeau, question.'}</p>
       <div class="esp-filtres" role="group" aria-label="Filtrer les demandes">${FILTRES.map(([id, nom]) => `<button type="button" class="esp-filtre" data-filtre-demandes="${id}" aria-pressed="${id === f}">${nom}${compte[id] ? `<span class="esp-filtre__n" aria-label="${compte[id]} à traiter">${compte[id]}</span>` : ''}</button>`).join('')}</div>
       ${suivi}
-      <h3 class="esp-sous">À traiter</h3>
+      ${f === 'reception' && ctx().exemples !== false ? '<h3 class="esp-sous">Les demandes reçues</h3>' : '<h3 class="esp-sous">À traiter</h3>'}
       ${tables.length || neuves.length ? `${tables.length ? `<ul class="esp-resas esp-resas--demandes">${tables.map(table).join('')}</ul>` : ''}${neuves.length ? `<ul class="esp-dems">${neuves.map((d) => carte(d)).join('')}</ul>` : ''}`
         : `<p class="esp-vide esp-vide--fete"><span class="esp-vide__sceau" aria-hidden="true"></span><span><b>Tout a une réponse.</b> ${f === 'tout' ? 'Les prochaines demandes faites sur le site arriveront ici.' : 'Rien à traiter dans cette catégorie.'}</span></p>`}
       ${f === 'table' ? '<p class="esp-plus"><button type="button" class="esp-lien" data-aller="resas">Voir toutes les réservations dans l\'agenda</button></p>' : ''}

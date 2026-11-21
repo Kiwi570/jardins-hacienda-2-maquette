@@ -26,7 +26,11 @@ export const jourDe = (iso) => { const [a, m, j] = iso.split('-').map(Number); r
 const dateLongue = (iso, opts = { weekday: 'long', day: 'numeric', month: 'long' }) => { const [a, m, j] = iso.split('-').map(Number); return new Intl.DateTimeFormat('fr-FR', { ...opts, timeZone: 'UTC' }).format(new Date(Date.UTC(a, m - 1, j))); };
 
 /** Heure du lieu : { iso, min, fuseau } pour l'instant donné (Date). */
+/* v7.12.0 : dans un scénario de démonstration, la date et l'heure sont celles du scénario, comme dans l'espace. Le
+   repère est posé par `espace-apercu.js`, chargé avant tout sur chaque page ; hors scénario, il n'existe pas. */
+const simulee = () => { try { const h = globalThis.__jhHorloge?.(); return h && /^\d{4}-\d{2}-\d{2}$/.test(h.iso) && Number.isFinite(h.min) ? h : null; } catch { return null; } };
 export function maintenant(fuseau = 'Europe/Paris', instant = new Date()) {
+  const s = simulee(); if (s) return { iso: s.iso, min: s.min, fuseau };
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: fuseau, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
     .formatToParts(instant).map((x) => [x.type, x.value]));
   return { iso: `${p.year}-${p.month}-${p.day}`, min: (+p.hour % 24) * 60 + +p.minute, fuseau };

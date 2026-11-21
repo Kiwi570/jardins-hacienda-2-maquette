@@ -2,7 +2,10 @@
    Chargé avant tout le reste (premier import de site.js) : textes [data-edit], photos [data-edit-photo], ardoise,
    horaires et fermetures (les JSON que lisent le statut et la réservation), événements, la carte (v7.7.3), puis l'annonce et une
    petite pastille « Aperçu de vos modifications ». Ne fait rien si l'espace n'a rien changé. */
-import { lire, estVide, CONTEXTE } from './espace-stock.js?v=7';
+import { lire, estVide, CONTEXTE, horloge } from './espace-stock.js?v=7';
+/* v7.12.0 : une même horloge pour le scénario et ses pages publiques. Les calculs d'ouverture (badge « ouvert en ce
+   moment », cadran, prochains services) lisent ce repère ; hors scénario il n'est pas posé : l'heure réelle sert. */
+if (CONTEXTE && horloge()) globalThis.__jhHorloge = horloge;
 import { equipeDe, exceptionsOuvertures } from './disponibilites.js?v=7';
 
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -111,7 +114,10 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
   /* La réservation (v7.8.0) : ce que le restaurant a changé est posé tel quel dans les réglages de la page (`equipe`) ;
      la page Réserver, la mini-réservation et l'espace lisent ensuite les mêmes règles (disponibilites.js). Rien n'est
      recalculé ici : horaires déplacés, fermetures, services fermés ou complets, ouvertures exceptionnelles. */
-  if (!CONNECTE && (S.resa || sem || exc.length)) for (const sr of $$('script[data-reservation], script[data-reservation-accueil], script[data-reservation-globale]')) json(sr, (R) => { R.equipe = equipeDe(S); return R; });
+  /* v7.12.0 : l'instant présent (celui du scénario de démonstration s'il y en a un), pour savoir si une option retient encore ses espaces. */
+  const instantPresent = (fuseau = 'Europe/Paris') => { const h = CONTEXTE ? horloge() : null; if (h) return `${h.iso}T${String(Math.floor(h.min / 60)).padStart(2, '0')}:${String(h.min % 60).padStart(2, '0')}`;
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: fuseau, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map((x) => [x.type, x.value])); return `${p.year}-${p.month}-${p.day}T${String(+p.hour % 24).padStart(2, '0')}:${p.minute}`; };
+  if (!CONNECTE && (S.resa || sem || exc.length || S.receptions)) for (const sr of $$('script[data-reservation], script[data-reservation-accueil], script[data-reservation-globale]')) json(sr, (R) => { R.equipe = equipeDe(S, [], instantPresent(R.fuseau)); return R; });
 
   /* Les événements : les billets de la page Les fêtes, la prochaine soirée de l'accueil, l'agenda de Réserver. */
   if (S.evenements) sur(() => {

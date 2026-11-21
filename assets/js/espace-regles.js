@@ -38,17 +38,19 @@ export function creneaux(R, sv) { const s = servicesDe(R).find((x) => x.id === s
 /** Les règles du site seul (semaine, dates fermées, ouvertures exceptionnelles), sans rien de l'espace. */
 export const ouvertSite = (R, iso, sv) => etatService(R, iso, sv, {}).ouvert;
 /** L'état d'un service ce jour-là, avec ce que l'espace a changé : { ouvert, raison, motif, exceptionnel, note, complet, debut, fin, pas }. */
-export const etatDuService = ({ R, exceptions = [] }, S, iso, sv) => etatService(R, iso, sv, equipeDe(S, exceptions));
+/** L'instant présent d'un contexte, « AAAA-MM-JJTHH:MM » : celui qu'il porte, sinon son jour et sa minute. */
+export const instantCtx = (ctx = {}) => String(ctx.maintenant || (ctx.auj ? `${ctx.auj}T${hhmm(ctx.minute ?? 0)}` : '')).slice(0, 16);
+export const etatDuService = (ctx, S, iso, sv) => etatService(ctx.R, iso, sv, equipeDe(S, ctx.exceptions || [], instantCtx(ctx)));
 /** Le service est-il ouvert ce jour-là ? Règles du site, plus ce que l'espace a changé (S). */
 export const ouvert = (regles, S, iso, sv) => etatDuService(regles, S, iso, sv).ouvert;
 /** Les heures d'arrivée possibles ce jour-là (horaires déplacés et ouvertures exceptionnelles compris) ; vide si le service est fermé. */
-export const creneauxDuJour = ({ R, exceptions = [] }, S, iso, sv) => arrivees(R, iso, sv, equipeDe(S, exceptions));
+export const creneauxDuJour = (ctx, S, iso, sv) => arrivees(ctx.R, iso, sv, equipeDe(S, ctx.exceptions || [], instantCtx(ctx)));
 /**
  * Une réservation notée par l'équipe est-elle possible ? { ok, raison, message, alerte, service, propositions }.
  * Fermé, heure hors service, date passée ou impossible, couverts hors limites : refusé. Service dit complet : possible,
  * avec l'alerte « complet » (l'équipe déroge, en le sachant).
  */
-export const verifierResa = ({ R, exceptions = [], auj }, S, resa) => faisabilite(R, resa, { auj, equipe: equipeDe(S, exceptions), couvertsMax: CAPACITE });
+export const verifierResa = (ctx, S, resa) => faisabilite(ctx.R, resa, { auj: ctx.auj, equipe: equipeDe(S, ctx.exceptions || [], instantCtx(ctx)), couvertsMax: CAPACITE });
 export const complet = (S, iso, sv) => (S.resa?.complets?.[iso] || []).includes(sv);
 
 /* Démonstration : des réservations tirées des vrais horaires, avec des noms inventés ; aucune n'est réelle. */

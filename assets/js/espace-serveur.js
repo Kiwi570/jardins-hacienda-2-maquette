@@ -74,6 +74,9 @@ export function creerDepotServeur({ api, local, periode, surFin, surEtat, fetch:
     const S = { ...local.etat() }, E = regles.equipe || {}, l = [...reservations.values()].map(versEcran);
     S.resa = { ajouts: l, tables: Object.fromEntries(l.filter((r) => r.table).map((r) => [r.id, r.table])), fermes: E.fermes || {}, complets: E.complets || {}, ouvertures: E.ouvertures || [] };
     S.horaires = { ...(E.semaine ? { semaine: E.semaine } : {}), exceptions: E.fermetures || [] };
+    /* v7.12.0 : les dossiers de réception ne sont pas partagés. Un dossier resté dans ce navigateur (laissé par la
+       démonstration) ne doit retenir aucune table du plan partagé, ni fermer un service : il est écarté ici. */
+    delete S.receptions;
     return S;
   }
 

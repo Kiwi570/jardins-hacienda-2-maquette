@@ -47,8 +47,40 @@ export const margeDe = (R, sv) => Math.max(0, +(R?.derniere_arrivee_avant_fermet
  * semaine, fermetures exceptionnelles, services fermés ou complets un jour, ouvertures exceptionnelles.
  * `exceptions` : celles des horaires publiés. L'aperçu du site et l'espace appellent tous deux cette fonction.
  */
-export const equipeDe = (S = {}, exceptions = []) => ({ ...(S.horaires?.semaine ? { semaine: S.horaires.semaine } : {}), fermetures: [...exceptions, ...(S.horaires?.exceptions || [])],
-  fermes: S.resa?.fermes || {}, complets: S.resa?.complets || {}, ouvertures: S.resa?.ouvertures || [] });
+export const equipeDe = (S = {}, exceptions = [], maintenant = '') => ({ ...(S.horaires?.semaine ? { semaine: S.horaires.semaine } : {}), fermetures: [...exceptions, ...(S.horaires?.exceptions || [])],
+  fermes: S.resa?.fermes || {}, complets: S.resa?.complets || {}, ouvertures: S.resa?.ouvertures || [],
+  /* v7.12.0 : les espaces retenus par une option encore valable ou une réception confirmée. */
+  ...(S.receptions ? { occupations: occupationsActives(S, maintenant) } : {}) });
+
+/* ---------- Les réceptions et les espaces qu'elles retiennent (v7.12.0) ----------
+   Une demande, une visite ou une proposition ne retient rien. Une OPTION retient ses espaces jusqu'à une échéance ;
+   une réception CONFIRMÉE les réserve. Dans les deux cas, pour une période opérationnelle entière : du début de la
+   préparation à la fin de la remise en état, y compris quand la soirée se termine après minuit.
+   Tout se lit dans le dossier (`S.receptions.dossiers[id].retenue`) : son état, sa période, les tables du plan qu'elle
+   prend, si elle prend toute la salle du restaurant ou toute la terrasse. Les mêmes fonctions servent au plan de
+   salle, au placement, aux arrivées sans réservation, à la liste d'attente, à l'agenda et à la page Réserver.
+   Règle retenue (à confirmer) : une table prise par une réception n'est plus proposée pendant tout service dont la
+   fenêtre (de la première arrivée à la fermeture) croise la période de la réception. */
+const court = (t) => String(t || '').slice(0, 16);
+/** Un instant « AAAA-MM-JJTHH:MM » à partir d'un jour et de minutes comptées depuis minuit (1500 : le lendemain à 1 h). */
+export const instantDe = (iso, min) => `${ajouter(iso, Math.floor(min / 1440))}T${hhmm(((min % 1440) + 1440) % 1440)}`;
+/** Deux périodes { debut, fin } se croisent-elles ? Une fin égale à un début ne se croise pas. */
+export const seCroisent = (a, b) => court(a.debut) < court(b.fin) && court(b.debut) < court(a.fin);
+/** Une retenue bloque-t-elle encore ses espaces ? Une option cesse de bloquer à son échéance exacte. */
+export const retenueActive = (ret, maintenant = '') => !!ret && (ret.etat === 'ferme' || (ret.etat === 'option' && (!maintenant || court(maintenant) < court(ret.echeance))));
+/** Les espaces retenus en ce moment : [{ id, type: 'option' | 'ferme', intitule, client, debut, fin, tables, espaces, salle, terrasse, echeance }]. */
+export function occupationsActives(S, maintenant = '') {
+  return Object.values(S?.receptions?.dossiers || {}).filter((d) => retenueActive(d.retenue, maintenant)).map((d) => ({ id: d.id, type: d.retenue.etat, intitule: d.projet?.intitule || d.projet?.occasion || 'Réception', client: d.client?.nom || '',
+    debut: court(d.retenue.debut), fin: court(d.retenue.fin), tables: (d.retenue.tables || []).map(String), espaces: d.retenue.espaces || [], salle: !!d.retenue.salle, terrasse: !!d.retenue.terrasse, echeance: d.retenue.echeance || '' }));
+}
+/** La fenêtre d'un service ce jour-là : de la première arrivée à la fermeture (dernière arrivée, plus la marge du service). */
+export const fenetreService = (R, iso, sv) => { const s = servicesDe(R).find((x) => x.id === sv); return s ? { debut: instantDe(iso, s.d), fin: instantDe(iso, s.f + margeDe(R, sv)) } : null; };
+/** Ce que les réceptions prennent pendant un service : { occs, tables: Map(table → occupation), salle, terrasse }. */
+export function prisesDuService(occupations, R, iso, sv) {
+  const f = fenetreService(R, iso, sv), occs = f ? (occupations || []).filter((o) => seCroisent(o, f)) : [], tables = new Map();
+  for (const o of occs) for (const t of o.tables) if (!tables.has(t)) tables.set(t, o);
+  return { occs, tables, salle: occs.some((o) => o.salle), terrasse: occs.some((o) => o.terrasse) };
+}
 
 const dans = (iso, x) => (x.du || x.date) <= iso && iso <= (x.au || x.du || x.date);
 
@@ -86,7 +118,9 @@ export function etatService(R, iso, sv, equipe = R?.equipe || {}) {
   }
   /* 6. Complet : dit par le restaurant pour le service entier. */
   const complet = (equipe.complets?.[iso] || []).includes(sv);
-  return { ouvert: true, raison: '', motif: '', exceptionnel: !!exc && !semaineOuverte, note: exc?.note || '', complet, debut, fin, pas: s.pas };
+  /* 7. v7.12.0 : une réception qui retient toute la salle du restaurant privatise le service ; la terrasse peut l'être seule. */
+  const pris = prisesDuService(equipe.occupations, R, iso, sv);
+  return { ouvert: true, raison: '', motif: '', exceptionnel: !!exc && !semaineOuverte, note: exc?.note || '', complet, debut, fin, pas: s.pas, prive: pris.salle, terrassePrise: pris.terrasse, reception: pris.occs[0]?.intitule || '' };
 }
 
 /**
@@ -166,8 +200,10 @@ export function faisabilite(R, resa, o = {}) {
   }
   /* Le jour même : le site demande un délai ; l'équipe peut noter une table après coup. */
   if (pub && auj && resa.date === auj && enMin(t) < minute + (R.delai_minutes ?? 60)) return { ...non('passee', 'Cette heure est trop proche ou déjà passée.'), service: sv };
+  /* v7.12.0 : la salle retenue par une réception. Le site ne propose plus ce service ; l'équipe est prévenue. */
+  if (e.prive && pub) return { ...non('prive', 'Le restaurant accueille une réception ce jour-là : ce service n\'est pas ouvert à la réservation.'), service: sv };
   if (e.complet && pub) return { ...non('complet'), service: sv };
-  return { ok: true, raison: '', message: '', alerte: e.complet ? 'complet' : '', service: sv, propositions: [] };
+  return { ok: true, raison: '', message: '', alerte: e.prive ? 'prive' : e.complet ? 'complet' : '', service: sv, propositions: [] };
 }
 
 /**

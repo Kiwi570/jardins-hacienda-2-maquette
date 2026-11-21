@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="fr" data-v="7" data-page="votrereception" data-theme="jour" style="--voile-page:#f6f1e7">
+<head>
+<meta charset="utf-8">
+<meta name="jh-api" content="/api">
+<meta name="jh-environnement" content="recette">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Votre réception : Les Jardins de l&#39;Hacienda</title>
+<meta name="description" content="Retrouvez votre projet de réception aux Jardins de l&#39;Hacienda : l&#39;étape en cours, la proposition, ce qui est convenu et vos demandes.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://jardins-hacienda-2-maquette.vercel.app/votre-reception">
+<style>:root{--fond:#f6f1e7;--texte:#1c1712;--voile-fond:#1a0f0b;--ouverture-fond:#f6f1e7;--menu-fond:#16100c}:root { --entete-h: 72px; --barres-h: 0px; } html { background: var(--fond); color: var(--texte); scrollbar-gutter: stable; } body { margin: 0; background: var(--fond); } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime] { opacity: 0; } html.js:not(.calme):not(.secours):not([data-arrivee="retour"]) [data-anime].vu { opacity: 1; } [data-voile] { position: fixed; inset: 0; z-index: 900; background: var(--voile-fond); background: radial-gradient(75% 68% at 50% 46%, #fcf6eb 0%, #f2e9da 48%, #e3d4bc 100%); transform: translateY(100%); visibility: hidden; pointer-events: none; } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) [data-voile] { transform: none; visibility: visible; } html.calme [data-voile], html.secours [data-voile] { visibility: hidden !important; } .ouverture-panneau { position: fixed; inset: 0; z-index: 850; display: none; place-content: center; justify-items: center; background: var(--ouverture-fond, var(--voile-fond)); color: var(--fond); text-align: center; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) .ouverture-panneau { display: grid; } html.defilement-bloque, html.defilement-bloque body, html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie), html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) body, html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours), html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) body { overflow: hidden; } html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) { background-color: var(--ouverture-fond, var(--voile-fond)); } html[data-arrivee="voile"]:not(.voile-leve):not(.calme):not(.secours) { background-color: var(--voile-fond); } .ouverture-objet { margin: 0 0 6px; } .ouverture-logo { display: block; width: clamp(88px, 12vw, 132px); aspect-ratio: 480 / 448; background: currentColor; -webkit-mask: url(/assets/images/logo-480.webp) center / contain no-repeat; mask: url(/assets/images/logo-480.webp) center / contain no-repeat; } .voile-heure, .horloge, .menu-heure { display: none !important; } .ouverture-panneau { gap: 10px; color: var(--ouverture-texte, #1c1712); } .ouverture-heure { margin: 0; display: flex; align-items: flex-start; font-family: 'Manrope', 'Manrope Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(5rem, min(22vw, 30vh), 15rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } .ouverture-rouleau { display: block; height: 1em; overflow: hidden; } .ouverture-rouleau > span { display: block; height: 1em; } .ouverture-sep { display: block; padding-inline: .02em; } .ouverture-nom { margin: 0; font-family: 'Fraunces', 'Fraunces Fallback', Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.1; } .ouverture-ligne { margin: 0; font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; opacity: .72; } .voile-contenu { display: grid; justify-items: center; gap: 10px; color: #1c1712; } .voile-logo { display: block; width: clamp(64px, 8vw, 96px); aspect-ratio: 480 / 448; background: #b8322c; -webkit-mask: url(/assets/images/logo-480.webp) center / contain no-repeat; mask: url(/assets/images/logo-480.webp) center / contain no-repeat; } .voile-trait { display: block; width: 120px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, #c99d52, transparent); } html.voile-depart:not(.calme) .voile-logo { animation: voile-logo .55s cubic-bezier(.2, .8, .2, 1) .12s both; } html.voile-depart:not(.calme) [data-voile-libelle] { animation: voile-mot .5s cubic-bezier(.2, .8, .2, 1) .2s both; } html.voile-depart:not(.calme) .voile-trait { animation: voile-trait .6s cubic-bezier(.2, .8, .2, 1) .26s both; } @keyframes voile-logo { from { opacity: 0; transform: scale(.82) rotate(-8deg); } } @keyframes voile-mot { from { opacity: 0; transform: translateY(12px); } } @keyframes voile-trait { from { transform: scaleX(0); } } .voile-heure { margin: 0; font-family: 'Manrope', 'Manrope Fallback', system-ui, sans-serif; font-weight: 300; font-size: clamp(4rem, 16vw, 11rem); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; } html:not([data-moment="soir"]) [data-moment-seul="soir"], html[data-moment="soir"] [data-moment-seul="jour"] { display: none !important; } html:not([data-saison="ete"]) [data-saison-seul="ete"], html[data-saison="ete"] [data-saison-seul="hiver"] { display: none !important; } html.js[data-arrivee="intro"] .ouverture-panneau :is(.ouverture-nom, .ouverture-ligne, [data-ouverture-objet]) { opacity: 0; }</style>
+<script>(function () {
+var d = document.documentElement, ss = null, ls = null;
+try { ss = window.sessionStorage; ls = window.localStorage; } catch (e) {}
+d.classList.add('js');
+var calme = false;
+try { if (ls) ls.removeItem('socle:calme'); } catch (e) {}
+if (calme) d.classList.add('calme');
+var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+var type = nav ? nav.type : 'navigate';
+var depart = null;
+try { depart = JSON.parse(ss.getItem('socle:depart') || 'null'); ss.removeItem('socle:depart'); } catch (e) {}
+if (depart && !(Date.now() - depart.t < 15000)) depart = null;
+var retourSection = false;
+try { retourSection = !!ss.getItem('socle:calme-retour'); } catch (e) {}
+var mode = type === 'back_forward' || retourSection ? 'retour' : type === 'reload' ? 'intro' : depart ? 'voile' : 'intro';
+d.setAttribute('data-arrivee', mode);
+if (mode === 'voile' && depart.couleur) d.style.setProperty('--voile-fond', depart.couleur);
+if (mode === 'voile' && depart.avant) d.style.setProperty('--voile-avant', depart.avant);
+if (type === 'reload' && 'scrollRestoration' in history) {
+if (!retourSection) history.scrollRestoration = 'manual';
+}
+try {
+var choisie = ls && ls.getItem('socle:langue');
+var langue = (d.lang || '').slice(0, 2);
+if (choisie && choisie !== langue && type === 'navigate' && !depart) {
+var alt = document.querySelector('link[rel="alternate"][hreflang="' + choisie + '"]');
+if (alt) location.replace(new URL(alt.href).pathname + location.search + location.hash);
+}
+} catch (e) {}
+setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('secours'); }, 2000);
+})();</script>
+<script>(function(){try{var d=document.documentElement,p={};new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit',month:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});var h=+p.hour,m=+p.month;var mo=h>=5&&h<17?'jour':'soir';try{var q=new URLSearchParams(location.search).get('moment');if(q==='jour'||q==='soir')mo=q;}catch(e){}d.setAttribute('data-moment',mo);if(d.hasAttribute('data-theme-auto')){d.setAttribute('data-theme',mo==='soir'?'nuit':'jour');if(mo==='soir'){d.style.setProperty('--ouverture-fond','#120c09');d.style.setProperty('--ouverture-texte','#f6efe2');}}var sa=m>=5&&m<=9?'ete':'hiver';try{var qs=new URLSearchParams(location.search).get('saison');if(qs==='ete'||qs==='hiver')sa=qs;}catch(e){}d.setAttribute('data-saison',sa);d.style.setProperty('--heure-reelle',"'"+p.hour+':'+p.minute+"'");}catch(e){}})();</script>
+<link rel="preload" href="/assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/socle.css?v=7">
+<link rel="stylesheet" href="/assets/css/site.css?v=7">
+<link rel="modulepreload" href="/assets/js/site.js?v=7">
+<link rel="modulepreload" href="/assets/js/socle/index.js?v=7">
+<script src="/assets/vendor/gsap.min.js" defer></script>
+<script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/assets/vendor/SplitText.min.js" defer></script>
+<script type="module" src="/assets/js/site.js?v=7"></script>
+<meta name="theme-color" content="#f6f1e7">
+<link rel="icon" href="/assets/images/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Les Jardins de l&#39;Hacienda">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Votre réception : Les Jardins de l&#39;Hacienda">
+<meta property="og:description" content="Retrouvez votre projet de réception aux Jardins de l&#39;Hacienda : l&#39;étape en cours, la proposition, ce qui est convenu et vos demandes.">
+<meta property="og:url" content="https://jardins-hacienda-2-maquette.vercel.app/votre-reception">
+<meta property="og:image" content="https://jardins-hacienda-2-maquette.vercel.app/assets/partage/accueil-fr.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="La piscine des Jardins de l&#39;Hacienda à midi, sous les palmiers">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":"Les Jardins de l'Hacienda","url":"https://jardins-hacienda-2-maquette.vercel.app/","telephone":"+33 6 18 21 28 10","servesCuisine":"Cuisine traditionnelle de saison","address":{"@type":"PostalAddress","streetAddress":"6 Vathier Haye","postalCode":"54580","addressLocality":"Moineville","addressCountry":"FR"},"sameAs":["https://www.facebook.com/lesjardinsdelhacienda54","https://www.instagram.com/lesjardinsdel.hacienda/"],"acceptsReservations":true}</script>
+</head>
+<body id="haut">
+<script type="application/json" data-reservation-globale>{"fuseau":"Europe/Paris","delai_minutes":60,"jours_a_l_avance":60,"couverts_max":10,"derniere_arrivee_avant_fermeture":{"midi":60,"soir":150},"telephone":"06 18 21 28 10","services":{"midi":{"libelle":"Midi","debut":"12:00","fin":"13:30","pas":15},"soir":{"libelle":"Soir","debut":"19:00","fin":"21:30","pas":15}},"fermetures":{"jours":["lundi","mardi"],"services":{"mercredi":["soir"],"jeudi":["soir"],"samedi":["midi"],"dimanche":["soir"]},"dates":[],"periodes":[]},"espaces":[{"id":"salle","libelle":"En salle"},{"id":"terrasse","libelle":"En terrasse","mois":[6,7,8,9],"note":"selon la météo","hors_saison":"de juin à septembre"}],"complets":{},"complets_simules":false,"message_simule":"Réservation simulée : rien n'est envoyé dans cette maquette.","ouvertures_exceptionnelles":[{"date":"2026-12-31","service":"soir","note":"Saint-Sylvestre"}]}</script>
+<div data-voile data-forme="cloche" aria-hidden="true"><div class="voile-contenu"><span class="voile-logo" aria-hidden="true"></span><p class="voile-heure" data-voile-heure>12:00</p><span data-voile-libelle>Votre réception</span><span class="voile-trait" aria-hidden="true"></span></div></div>
+<div class="ouverture-panneau" data-ouverture aria-hidden="true">
+  <p class="ouverture-objet" data-ouverture-objet><span class="ouverture-logo"></span></p>
+  <p class="ouverture-nom">Les Jardins de l&#39;Hacienda</p>
+  <p class="ouverture-ligne">Restaurant et réceptions · Moineville</p>
+</div>
+<a class="evitement" href="#contenu">Aller au contenu</a>
+<header data-entete>
+  <div class="entete-rangee">
+    <a class="entete-logo" href="/" aria-label="Les Jardins de l&#39;Hacienda, accueil" data-libelle="Accueil">
+      <img class="entete-logo__jour" src="/assets/images/logo-240.webp" alt="" width="40" height="37"><img class="entete-logo__nuit" src="/assets/images/logo-clair.png" alt="" width="40" height="40"><span>Les Jardins de l&#39;Hacienda</span>
+    </a>
+    <p class="horloge" data-horloge data-grille="fil" data-effet="heure" aria-hidden="true"><span class="horloge__h" data-horloge-h>12</span><span class="horloge__sep">:</span><span class="horloge__m" data-horloge-m>00</span></p>
+    <nav data-nav aria-label="Navigation principale">
+      <ul><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Évènements">Évènements</a></li><li><a href="/a-emporter" data-libelle="Traiteur">Traiteur</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+    </nav>
+    <div class="entete-actions">
+      <a class="bouton bouton--entete" href="/reserver#formulaire" data-libelle="Réserver" data-resa-cible>Réserver</a>
+      <button type="button" data-menu-bouton aria-controls="menu" aria-expanded="false" data-libelle-ouvrir="Menu" data-libelle-fermer="Fermer"><span data-libelle-bouton>Menu</span></button>
+      <a class="menu-sansjs" href="#menu" data-menu-lien>Menu</a>
+    </div>
+  </div>
+</header>
+<script>/* Avant le premier affichage : rangées de la navigation (même règle que ajusterNav dans assets/js/socle/entete.js)
+   et hauteur réelle de l'en-tête, pour que rien ne saute quand le JavaScript du site prend la main. */
+(function () {
+  var h = document.documentElement, u = document.querySelector('[data-nav] ul'), e = document.querySelector('[data-entete]');
+  if (u) {
+    var deborde = function () { return u.scrollWidth > u.clientWidth + 1; }, c = deborde();
+    if (c && window.matchMedia('(min-width: 900px)').matches) {
+      h.classList.add('nav-deux-rangees'); c = deborde();
+      if (c) { h.classList.add('nav-deux-lignes'); var a = u.querySelector('a'); c = !a || u.getBoundingClientRect().height > a.getBoundingClientRect().height * 2.5; }
+      if (c) h.classList.remove('nav-deux-rangees', 'nav-deux-lignes');
+    }
+    if (c) h.classList.add('nav-compacte');
+  }
+  if (e) h.style.setProperty('--entete-h', Math.round(e.getBoundingClientRect().height) + 'px');
+})();</script>
+<span id="menu-ferme" aria-hidden="true"></span>
+<div id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu">
+  <p class="menu-sansjs-fermer"><a href="#menu-ferme">Fermer</a></p>
+  <ul><li style="--i:0"><span class="menu-heure" aria-hidden="true">12:00</span><a href="/" class="menu-lien" data-libelle="Accueil">Accueil</a></li><li style="--i:1"><span class="menu-heure" aria-hidden="true">12:30</span><a href="/la-carte" class="menu-lien" data-libelle="La carte">La carte</a></li><li style="--i:2"><span class="menu-heure" aria-hidden="true">19:00</span><a href="/receptions" class="menu-lien" data-libelle="Réceptions">Réceptions</a></li><li style="--i:3"><span class="menu-heure" aria-hidden="true">23:30</span><a href="/les-fetes" class="menu-lien" data-libelle="Évènements">Évènements</a></li><li style="--i:4"><span class="menu-heure" aria-hidden="true">18:00</span><a href="/a-emporter" class="menu-lien" data-libelle="Traiteur">Traiteur</a></li><li style="--i:5"><span class="menu-heure" aria-hidden="true">00:00</span><a href="/offrir" class="menu-lien" data-libelle="Offrir">Offrir</a></li><li style="--i:6"><span class="menu-heure" aria-hidden="true">Maintenant</span><a href="/infos-pratiques" class="menu-lien" data-libelle="Infos pratiques">Infos pratiques</a></li></ul>
+  <p class="menu-actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une table</a> <a class="bouton bouton--contour" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
+</div>
+<main id="contenu" tabindex="-1" data-sans-action data-sans-effet>
+<section class="venue venue--reception" id="reception" data-reception-client aria-labelledby="reception-titre">
+  <script type="application/json" data-reception-donnees>{"lieux":{"espaces":[{"id":"salle-reception","nom":"La salle de réception","capacite":220,"cocktail":140,"source":"site","tables":[]},{"id":"restaurant","nom":"La salle du restaurant","capacite":100,"source":"site","tables":["1","2","3","4","5","6","7","8","9"],"public":"salle"},{"id":"coin-feu","nom":"Au coin du feu","partie":"restaurant","tables":["1","2","3"],"source":"plan"},{"id":"baies","nom":"Les baies vitrées","partie":"restaurant","tables":["4","5","6","8","9"],"source":"plan"},{"id":"grande-table","nom":"La grande table","partie":"restaurant","tables":["7"],"source":"plan"},{"id":"terrasse","nom":"La terrasse","mois":[6,7,8,9],"tables":["10","11","12"],"public":"terrasse"},{"id":"piscine","nom":"La piscine","mois":[6,7,8,9],"tables":[]},{"id":"bar","nom":"Le coin bar","mois":[6,7,8,9],"tables":[]}],"durees":{"preparation":120,"remise":60,"option_jours":7,"visite":60}},"telephone":"06 18 21 28 10","telephoneLien":"+33618212810","adresse":"6 Vathier Haye, 54580 Moineville","liens":{"receptions":"/receptions","infos":"/infos-pratiques"}}</script>
+  <div class="conteneur venue__cadre">
+    <div class="venue__photo"><figure class="media " style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/pergola-banquet-mobile-640.webp 640w, /assets/images/vraie/pergola-banquet-mobile-1080.webp 1080w" sizes="(max-width: 800px) 100vw, 760px">
+    <img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w, /assets/images/vraie/pergola-banquet-1920.webp 1920w" sizes="(max-width: 800px) 100vw, 760px" alt="Sous la pergola, les tables d&#39;une réception dressées de blanc" width="1280" height="853" fetchpriority="high" loading="eager" decoding="async">
+  </picture>
+</figure></div>
+    <p class="surtitre venue__sur">Les Jardins de l&#39;Hacienda</p>
+    <h1 id="reception-titre" class="venue__titre">Votre réception aux Jardins</h1>
+    <div class="venue__corps" data-reception-corps>
+      <p class="venue__attente">Nous cherchons votre projet…</p>
+    </div>
+    <noscript><p class="venue__attente">Pour suivre votre projet de réception, appelez-nous au <a href="tel:+33618212810">06 18 21 28 10</a>.</p></noscript>
+  </div>
+</section>
+</main>
+<footer class="pied pied2" id="pied">
+  <div class="pied2__bandeau" aria-hidden="true"><div class="pied2__piste"><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:40% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-baies-mobile-640.webp 640w, /assets/images/vraie/salle-baies-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/salle-baies-1280.webp" srcset="/assets/images/vraie/salle-baies-640.webp 640w, /assets/images/vraie/salle-baies-1280.webp 1280w, /assets/images/vraie/salle-baies-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/cepes-mobile-640.webp 640w, /assets/images/vraie/cepes-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/cepes-1280.webp" srcset="/assets/images/vraie/cepes-640.webp 640w, /assets/images/vraie/cepes-1280.webp 1280w, /assets/images/vraie/cepes-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:45% 62%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/brasero-mobile-640.webp 640w, /assets/images/vraie/brasero-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/brasero-1280.webp" srcset="/assets/images/vraie/brasero-640.webp 640w, /assets/images/vraie/brasero-1280.webp 1280w, /assets/images/vraie/brasero-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 45%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:55% 62%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/piscine-palmiers-mobile-640.webp 640w, /assets/images/vraie/piscine-palmiers-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/piscine-palmiers-1280.webp" srcset="/assets/images/vraie/piscine-palmiers-640.webp 640w, /assets/images/vraie/piscine-palmiers-1280.webp 1280w, /assets/images/vraie/piscine-palmiers-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-midi-mobile-640.webp 640w, /assets/images/vraie/salle-midi-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/salle-midi-1280.webp" srcset="/assets/images/vraie/salle-midi-640.webp 640w, /assets/images/vraie/salle-midi-1280.webp 1280w, /assets/images/vraie/salle-midi-1920.webp 1920w" sizes="240px" alt="" width="1280" height="854" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/pergola-banquet-mobile-640.webp 640w, /assets/images/vraie/pergola-banquet-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w, /assets/images/vraie/pergola-banquet-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/table-piscine-mobile-640.webp 640w, /assets/images/vraie/table-piscine-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/table-piscine-960.webp" srcset="/assets/images/vraie/table-piscine-480.webp 480w, /assets/images/vraie/table-piscine-640.webp 640w, /assets/images/vraie/table-piscine-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:40% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-baies-mobile-640.webp 640w, /assets/images/vraie/salle-baies-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/salle-baies-1280.webp" srcset="/assets/images/vraie/salle-baies-640.webp 640w, /assets/images/vraie/salle-baies-1280.webp 1280w, /assets/images/vraie/salle-baies-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 55%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/cepes-mobile-640.webp 640w, /assets/images/vraie/cepes-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/cepes-1280.webp" srcset="/assets/images/vraie/cepes-640.webp 640w, /assets/images/vraie/cepes-1280.webp 1280w, /assets/images/vraie/cepes-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:45% 62%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/brasero-mobile-640.webp 640w, /assets/images/vraie/brasero-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/brasero-1280.webp" srcset="/assets/images/vraie/brasero-640.webp 640w, /assets/images/vraie/brasero-1280.webp 1280w, /assets/images/vraie/brasero-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--0" style="--cadrage:50% 45%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/gateaux-mobile-640.webp 640w, /assets/images/vraie/gateaux-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/gateaux-960.webp" srcset="/assets/images/vraie/gateaux-480.webp 480w, /assets/images/vraie/gateaux-640.webp 640w, /assets/images/vraie/gateaux-960.webp 960w" sizes="240px" alt="" width="960" height="1280" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--1" style="--cadrage:55% 62%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/piscine-palmiers-mobile-640.webp 640w, /assets/images/vraie/piscine-palmiers-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/piscine-palmiers-1280.webp" srcset="/assets/images/vraie/piscine-palmiers-640.webp 640w, /assets/images/vraie/piscine-palmiers-1280.webp 1280w, /assets/images/vraie/piscine-palmiers-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--2" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/salle-midi-mobile-640.webp 640w, /assets/images/vraie/salle-midi-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/salle-midi-1280.webp" srcset="/assets/images/vraie/salle-midi-640.webp 640w, /assets/images/vraie/salle-midi-1280.webp 1280w, /assets/images/vraie/salle-midi-1920.webp 1920w" sizes="240px" alt="" width="1280" height="854" loading="lazy" decoding="async">
+  </picture>
+</figure><figure class="media pied2__photo pied2__photo--3" style="--cadrage:50% 50%">
+  <picture><source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/images/vraie/pergola-banquet-mobile-640.webp 640w, /assets/images/vraie/pergola-banquet-mobile-1080.webp 1080w" sizes="240px">
+    <img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w, /assets/images/vraie/pergola-banquet-1920.webp 1920w" sizes="240px" alt="" width="1280" height="853" loading="lazy" decoding="async">
+  </picture>
+</figure></div></div>
+  <div class="conteneur pied2__appel">
+    <div>
+      <p class="surtitre">À bientôt</p>
+      <h2 class="pied2__titre">À très vite, <em>aux Jardins</em></h2>
+      <p class="statut pied2__statut"><span class="statut__point" aria-hidden="true"></span><span data-statut-pied>6 Vathier Haye, 54580 Moineville</span></p>
+      <script type="application/json" data-horaires-pied>{"fuseau":"Europe/Paris","seuil_ferme_bientot":30,"regle_feries":"ouvert","feries":[{"date":"2026-11-11","nom":"Armistice"},{"date":"2026-12-25","nom":"Noël"},{"date":"2027-01-01","nom":"Jour de l'an"}],"adresses":[{"id":"restaurant","nom":"Le restaurant","adresse":"6 Vathier Haye, 54580 Moineville","telephone":"06 18 21 28 10","semaine":{"lundi":[],"mardi":[],"mercredi":["12:00-14:30"],"jeudi":["12:00-14:30"],"vendredi":["12:00-14:30","19:00-00:00"],"samedi":["19:00-00:00"],"dimanche":["12:00-16:00"]},"exceptions":[{"du":"2026-12-31","au":"2026-12-31","creneaux":["12:00-14:30","19:00-00:00"],"motif":"Saint-Sylvestre","ouverture":true}]}]}</script>
+    </div>
+    <p class="pied2__actions"><a href="/reserver#formulaire" class="bouton" data-libelle="Réserver">Réserver une table</a> <a class="bouton bouton--contour bouton--clair" href="tel:+33618212810">Appeler 06 18 21 28 10</a></p>
+  </div>
+  <div class="conteneur pied2__grille">
+    <div class="pied2__bloc">
+      <p class="pied2__t">Nous trouver</p>
+      <address class="pied2__adresse">6 Vathier Haye
+54580 Moineville</address>
+      <ul class="pied2__distances" aria-label="Distances à vol d&#39;oiseau"><li><strong>19 km</strong> Metz</li><li><strong>24 km</strong> Thionville</li><li><strong>47 km</strong> Luxembourg</li></ul>
+      <p><a href="/infos-pratiques#acces" class="lien-fleche" data-libelle="Infos pratiques">Horaires et accès</a></p>
+    </div>
+    <nav class="pied2__bloc" aria-label="Sommaire">
+      <p class="pied2__t">Le site</p>
+      <ul class="pied2__liens"><li><a href="/" data-libelle="Accueil">Accueil</a></li><li><a href="/la-carte" data-libelle="La carte">La carte</a></li><li><a href="/receptions" data-libelle="Réceptions">Réceptions</a></li><li><a href="/les-fetes" data-libelle="Évènements">Évènements</a></li><li><a href="/a-emporter" data-libelle="Traiteur">Traiteur</a></li><li><a href="/offrir" data-libelle="Offrir">Offrir</a></li><li><a href="/infos-pratiques" data-libelle="Infos pratiques">Infos pratiques</a></li><li><a href="/reserver#formulaire" data-libelle="Réserver">Réserver</a></li><li><a href="/espace" data-libelle="Espace restaurateur" rel="nofollow">Espace restaurateur (démo)</a></li></ul>
+    </nav>
+    <div class="pied2__bloc">
+      <p class="pied2__t">Suivez-nous</p>
+      <p class="pied2__reseaux"><a class="pied2__reseau" href="https://www.instagram.com/lesjardinsdel.hacienda/" target="_blank" rel="noopener" aria-label="Instagram (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a><a class="pied2__reseau" href="https://www.facebook.com/lesjardinsdelhacienda54" target="_blank" rel="noopener" aria-label="Facebook (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M13.4 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.6-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21z"/></svg><span>Facebook</span></a></p>
+      <p class="pied2__haut-ligne"><a class="pied2__haut" href="#haut" data-sans-transition><span class="pied2__haut-icone"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span>Retour en haut</a></p>
+    </div>
+  </div>
+  <p class="pied2__marque" aria-hidden="true" data-pied-marque>Les Jardins de l&#39;Hacienda</p>
+  <div class="conteneur pied-bas pied2__bas"><p>Maquette : réservations, cartes cadeaux et demandes sont simulées, rien n&#39;est envoyé.</p><p>Les images marquées « Illustration générée » sont créées par IA ; toutes les autres sont des photos de la maison.</p><p>Mentions légales : à compléter · Politique de confidentialité : à compléter</p><p>© Les Jardins de l&#39;Hacienda</p></div>
+</footer>
+<div data-barre-fixe>
+  <a class="bouton bouton--contour" href="tel:+33618212810">Appeler</a>
+  <a class="bouton" href="/reserver#formulaire" data-libelle="Réserver">Réserver</a>
+</div>
+</body>
+</html>

@@ -5507,6 +5507,18 @@ var bornes = (creneau) => {
 };
 var servicesDe = (R) => Object.entries(R?.services || {}).map(([id, s]) => ({ id, libelle: s.libelle || (id === "midi" ? "Midi" : "Soir"), d: enMin(s.debut), f: enMin(s.fin), pas: s.pas || 15 }));
 var margeDe = (R, sv) => Math.max(0, +(R?.derniere_arrivee_avant_fermeture?.[sv] ?? 0) || 0);
+var court = (t) => String(t || "").slice(0, 16);
+var instantDe = (iso, min) => `${ajouter(iso, Math.floor(min / 1440))}T${hhmm((min % 1440 + 1440) % 1440)}`;
+var seCroisent = (a, b) => court(a.debut) < court(b.fin) && court(b.debut) < court(a.fin);
+var fenetreService = (R, iso, sv) => {
+  const s = servicesDe(R).find((x) => x.id === sv);
+  return s ? { debut: instantDe(iso, s.d), fin: instantDe(iso, s.f + margeDe(R, sv)) } : null;
+};
+function prisesDuService(occupations, R, iso, sv) {
+  const f = fenetreService(R, iso, sv), occs = f ? (occupations || []).filter((o) => seCroisent(o, f)) : [], tables = /* @__PURE__ */ new Map();
+  for (const o of occs) for (const t of o.tables) if (!tables.has(t)) tables.set(t, o);
+  return { occs, tables, salle: occs.some((o) => o.salle), terrasse: occs.some((o) => o.terrasse) };
+}
 var dans = (iso, x) => (x.du || x.date) <= iso && iso <= (x.au || x.du || x.date);
 function etatService(R, iso, sv, equipe = R?.equipe || {}) {
   const s = servicesDe(R).find((x) => x.id === sv), ferme = (raison, motif = "") => ({ ouvert: false, raison, motif, exceptionnel: false, note: "", complet: false, debut: s?.d ?? 0, fin: s?.f ?? 0, pas: s?.pas ?? 15 });
@@ -5532,7 +5544,8 @@ function etatService(R, iso, sv, equipe = R?.equipe || {}) {
     if (fin < debut) return ferme("horaires", "Les horaires de ce jour ne laissent aucune heure d'arriv\xE9e");
   }
   const complet = (equipe.complets?.[iso] || []).includes(sv);
-  return { ouvert: true, raison: "", motif: "", exceptionnel: !!exc && !semaineOuverte, note: exc?.note || "", complet, debut, fin, pas: s.pas };
+  const pris = prisesDuService(equipe.occupations, R, iso, sv);
+  return { ouvert: true, raison: "", motif: "", exceptionnel: !!exc && !semaineOuverte, note: exc?.note || "", complet, debut, fin, pas: s.pas, prive: pris.salle, terrassePrise: pris.terrasse, reception: pris.occs[0]?.intitule || "" };
 }
 function exceptionsOuvertures(R, semaine = {}, ouvertures = []) {
   return ouvertures.filter((o) => dateValide(o.date)).map((o) => {
@@ -5584,8 +5597,9 @@ function faisabilite(R, resa, o = {}) {
     return { ...non("heure", `Ce service re\xE7oit de ${heureDite(l[0])} \xE0 ${heureDite(l[l.length - 1])}.`, proches), service: sv };
   }
   if (pub && auj && resa.date === auj && enMin(t) < minute + (R.delai_minutes ?? 60)) return { ...non("passee", "Cette heure est trop proche ou d\xE9j\xE0 pass\xE9e."), service: sv };
+  if (e.prive && pub) return { ...non("prive", "Le restaurant accueille une r\xE9ception ce jour-l\xE0 : ce service n'est pas ouvert \xE0 la r\xE9servation."), service: sv };
   if (e.complet && pub) return { ...non("complet"), service: sv };
-  return { ok: true, raison: "", message: "", alerte: e.complet ? "complet" : "", service: sv, propositions: [] };
+  return { ok: true, raison: "", message: "", alerte: e.prive ? "prive" : e.complet ? "complet" : "", service: sv, propositions: [] };
 }
 
 // serveur/src/metier.mjs

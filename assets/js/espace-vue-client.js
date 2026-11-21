@@ -14,10 +14,10 @@ export function creerClient(X) {
   /** Le nom d'un client, à toucher pour ouvrir sa fiche ; « Habitué » s'il l'est. */
   function nom(r) {
     const c = cleClient(r), n = e(r.nom || 'Sans nom');
-    return c ? `<button type="button" class="esp-client" data-client="${e(c)}" aria-haspopup="dialog" aria-label="${n}, ouvrir sa fiche">${n}</button>${marques(S(), r).habitue ? ' <span class="esp-habitue">Habitué</span>' : ''}` : n;
+    return c ? `<button type="button" class="esp-client" data-client="${e(c)}" aria-haspopup="dialog" aria-label="${n}, ouvrir sa fiche">${n}</button>${marques(S(), r, ctx().partages).habitue ? ' <span class="esp-habitue">Habitué</span>' : ''}` : n;
   }
   /** Les allergies notées sur sa fiche, à montrer sur chacune de ses réservations (texte, sans balise). */
-  const allergies = (r) => { const a = marques(S(), r).allergies; return a.length ? `Allergies\u00a0: ${a.join(', ').toLowerCase()}` : ''; };
+  const allergies = (r) => { const a = marques(S(), r, ctx().partages).allergies; return a.length ? `Allergies\u00a0: ${a.join(', ').toLowerCase()}` : ''; };
 
   function contenu() {
     const f = fiche(ctx(), S(), cle), dem = X.demandes ? demandesDuClient(X.demandes(), cle) : [];
@@ -29,7 +29,8 @@ export function creerClient(X) {
         <ul class="esp-fiche__chiffres"><li><b>${f.venues}</b> ${f.venues > 1 ? 'venues' : 'venue'}</li><li><b>${f.aVenir}</b> à venir</li><li><b>${f.absences}</b> ${f.absences > 1 ? 'absences' : 'absence'}</li></ul>
         ${f.prochaine ? `<p class="esp-fiche__prochaine">Prochaine venue\u00a0: <b>${e(maj(fmt(f.prochaine.date, { weekday: 'long', day: 'numeric', month: 'long' })))} à ${heure(f.prochaine.heure)}</b>, ${pluriel(+f.prochaine.couverts, 'couvert')}${f.prochaine.statut === 'a-confirmer' ? ' (demande à confirmer)' : ''}.</p>` : ''}
         ${f.aClarifier.length ? `<p class="esp-fiche__clarifier">${f.aClarifier.map((r) => `Attendu ${r.date === A.iso ? 'aujourd\'hui' : e(fmt(r.date, { weekday: 'long', day: 'numeric', month: 'long' }))} à ${heure(r.heure)}, l'heure est passée\u00a0: <button type="button" class="esp-lien" data-voir-resa="${e(r.id)}" data-date="${r.date}" data-service="${r.service}">dire s'il est venu</button>`).join('<br>')}</p>` : ''}
-        ${f.aVerifier.map((v) => `<p class="esp-fiche__ancienne" data-ancienne><span class="esp-source">À vérifier</span> ${v.motif === 'numero' ? 'Une note existe sous ce même numéro, écrit autrement (sans indicatif)' : 'Une note existe sous le même nom, prise avant que les fiches soient distinguées'}\u00a0: ${e([v.habitue ? 'habitué' : '', v.allergies.length ? `allergies : ${v.allergies.join(', ')}` : '', v.note].filter(Boolean).join(' ; '))}. Elle n'est appliquée à personne tant que vous ne l'avez pas confirmé. <button type="button" class="esp-bouton" data-rattacher="${e(v.cle)}">C'est bien cette personne</button></p>`).join('')}
+        ${f.aVerifier.map((v) => `<p class="esp-fiche__ancienne" data-ancienne><span class="esp-source">À vérifier</span> ${v.motif === 'partage' ? 'Une ancienne note existe sous ce numéro de téléphone, que plusieurs clients partagent' : v.motif === 'numero' ? 'Une note existe sous ce même numéro, écrit autrement (sans indicatif)' : 'Une note existe sous le même nom, prise avant que les fiches soient distinguées'}\u00a0: ${e([v.habitue ? 'habitué' : '', v.allergies.length ? `allergies : ${v.allergies.join(', ')}` : '', v.note].filter(Boolean).join(' ; '))}. Elle n'est appliquée à personne tant que vous ne l'avez pas confirmé. <button type="button" class="esp-bouton" data-rattacher="${e(v.cle)}">C'est bien cette personne</button></p>`).join('')}
+        ${f.dossiers?.length && ctx().exemples !== false ? `<div class="esp-fiche__dossiers" data-fiche-dossiers><p class="esp-champ__titre">${f.dossiers.length > 1 ? 'Ses réceptions' : 'Sa réception'}</p><ul>${f.dossiers.map((d) => `<li><button type="button" class="esp-lien" data-rec-ouvrir="${e(d.id)}">${e(d.projet?.intitule || 'Réception')}${d.jour ? `, ${e(fmt(d.jour, { day: 'numeric', month: 'long', year: 'numeric' }))}` : ''}</button></li>`).join('')}</ul></div>` : ''}
         <form class="esp-fiche__form" data-form-client>
           <p><label class="esp-coche"><input type="checkbox" name="habitue"${f.habitue ? ' checked' : ''}><span>Habitué de la maison</span></label></p>
           <fieldset class="esp-champ"><legend>Allergies <small>elles s'affichent sur chacune de ses réservations et sur la feuille de service</small></legend>

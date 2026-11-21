@@ -55,12 +55,14 @@ export function noterVu(cle) { if (!CONTEXTE) return false; try { const j = jour
 export function viderContexte() { if (!CONTEXTE) return false; try { for (const k of [CLE, CLE_RESAS, CLE_DEMANDES, CLE_VENUES, CLE_HORLOGE]) localStorage.removeItem(k); return true; } catch { return false; } }
 /** Efface les données d'un scénario nommé (pour le relancer depuis le début), où que l'on soit. Le préfixe `jh-demo:<nom>:`
     est le seul touché : les données habituelles (`jh-espace…`) ne peuvent pas l'être. */
+/** Ce scénario a-t-il déjà été lancé sur cet appareil (une progression est gardée) ? */
+export function scenarioEntame(nom) { try { return /^[a-z0-9-]{1,24}$/.test(nom || '') && !!localStorage.getItem(`jh-demo:${nom}:horloge:v1`); } catch { return false; } }
 export function viderScenario(nom) { if (!/^[a-z0-9-]{1,24}$/.test(nom || '') || document.querySelector('meta[name="jh-api"]')) return false;
   try { for (const fin of ['espace:v1', 'espace-resas:v1', 'espace-demandes:v1', 'espace-venues:v1', 'horloge:v1']) localStorage.removeItem(`jh-demo:${nom}:${fin}`); return true; } catch { return false; } }
 /** Écrit l'état de départ d'un scénario (son contexte uniquement). */
-export function semer({ etat, venues: v = {}, horloge: h }) {
+export function semer({ etat, venues: v = {}, horloge: h, demandes = [] }) {
   if (!CONTEXTE) return false;
-  try { localStorage.setItem(CLE, JSON.stringify({ ...etat, _schema: SCHEMA })); if (Object.keys(v).length) localStorage.setItem(CLE_VENUES, JSON.stringify(v)); localStorage.setItem(CLE_HORLOGE, JSON.stringify({ iso: h.iso, min: h.min, vus: {} })); return true; } catch { return false; }
+  try { localStorage.setItem(CLE, JSON.stringify({ ...etat, _schema: SCHEMA })); if (Object.keys(v).length) localStorage.setItem(CLE_VENUES, JSON.stringify(v)); if (demandes.length) localStorage.setItem(CLE_DEMANDES, JSON.stringify(demandes)); localStorage.setItem(CLE_HORLOGE, JSON.stringify({ iso: h.iso, min: h.min, vus: {} })); return true; } catch { return false; }
 }
 
 /** Met un objet lu au schéma courant (fonction pure : ne touche pas au stockage).

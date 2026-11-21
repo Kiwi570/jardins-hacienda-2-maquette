@@ -27,7 +27,7 @@ export function init(root) {
   function lireResa() {
     const maintenant = aujourdhui(), S = lire(), ctx = { R, auj: maintenant.iso, site: resasSite(), exceptions: [], scenario: CONTEXTE };
     const r = id ? trouverResa(ctx, S, id) : null;
-    return { r: r && codeVenue(r.id, r.telephone) === code ? r : null, S, maintenant, v: venues()[id] || {}, equipe: equipeDe(S, []) };
+    return { r: r && codeVenue(r.id, r.telephone) === code ? r : null, S, maintenant, v: venues()[id] || {}, equipe: equipeDe(S, [], `${maintenant.iso}T${hhmm(maintenant.min)}`) };
   }
   function introuvable() {
     corps.innerHTML = typo(`<div class="venue__carte venue__carte--vide" tabindex="-1" data-venue-focus><p class="venue__etat venue__etat--annulee">Réservation introuvable</p>

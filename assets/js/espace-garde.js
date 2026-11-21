@@ -14,6 +14,7 @@ import { dureeDe } from './espace-service.js?v=7';
 import { planDuService, libre, tableApres, placeDe, avisPlace } from './espace-salle.js?v=7';
 import { refusInstallation } from './espace-presence.js?v=7';
 import { refusAttente } from './espace-attente.js?v=7';
+import { refusReception } from './espace-receptions.js?v=7';
 
 const INACTIFS = ['refusee', 'annulee', 'absente'];
 const minutes = (r) => ({ ...r, debutMin: enMin(r.heure), finMin: enMin(r.heure) + dureeDe(r.service) });
@@ -24,7 +25,7 @@ export function refusPlacement(ctx, S, salle, r, table) {
   if (INACTIFS.includes(r.statut)) return 'Cette réservation n\'est plus active : remettez-la d\'abord.';
   const t = placeDe(planDuService(ctx, S, salle, r.date, r.service), table);
   if (!t) return `${String(table).includes('+') ? `L'assemblage ${table}` : `La table ${table}`} n'est pas sur le plan.`;
-  if (t.fermee) { const c = t.assemblage ? t.composantes.find((x) => x.fermee) : t; return c.horsSaison ? 'La terrasse est fermée hors saison : elle rouvre en juin.' : `La table ${c.id} est indisponible pour ce service.`; }
+  if (t.fermee) { const c = t.assemblage ? t.composantes.find((x) => x.fermee) : t; return c.horsSaison ? 'La terrasse est fermée hors saison : elle rouvre en juin.' : c.reception ? `La table ${c.id} est retenue pour une réception (${c.reception.intitule}${c.reception.type === 'option' ? ', option' : ''}).` : `La table ${c.id} est indisponible pour ce service.`; }
   if (!libre(t, minutes(r))) {
     const c = (t.assemblage ? t.composantes : [t]).find((x) => !libre(x, minutes(r))), a = c.resas.find((x) => x.id !== r.id && x.debutMin < minutes(r).finMin && minutes(r).debutMin < x.finMin) || c.resas.find((x) => x.id !== r.id);
     return `La table ${c.id} est prise à cette heure-là (${a?.nom || 'une autre réservation'}, ${heure(a?.heure || r.heure)}).`;
@@ -39,6 +40,8 @@ export function refusPlacement(ctx, S, salle, r, table) {
  * `salle` : le plan (donnees/salle.json) ; sans lui, les tables ne sont pas contrôlées.
  */
 export function reglesAction(ctx, S, salle, nom, args = {}) {
+  /* v7.12.0 : les dossiers de réception. Poser, déplacer, prolonger, confirmer : les conflits sont revérifiés ici, au moment d'enregistrer. */
+  if (/^rec[A-Z]/.test(nom)) return { refus: refusReception(ctx, S, salle, nom, args), suites: [], note: '' };
   const r0 = reglesDeBase(ctx, S, salle, nom, args);
   /* v7.11.0 : une réservation qui n'est plus « arrivée » n'est plus installée ni partie : sa présence est effacée avec elle. */
   if (!r0.refus && nom === 'statut' && args.statut !== 'arrivee' && S.service?.presence?.[args.id]?.etat) return { ...r0, suites: [...r0.suites, { nom: 'presenceRetirer', args: { id: args.id } }] };

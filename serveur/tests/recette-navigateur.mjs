@@ -150,6 +150,26 @@ try {
   const horsScenario = await Sc.evaluate(() => ({ scene: !!document.querySelector('[data-esp-scene][data-scenario]'), cles: Object.keys(localStorage).filter((k) => k.startsWith('jh-demo:')).length, session: sessionStorage.getItem('jh-demo') || '', fictifs: document.querySelectorAll('[data-resa^="sc1-"]').length }));
   await Sc.close();
   verifier('v7.11.1 : pas de « Lancer une démonstration » en mode connecté, et « ?demo= » n\'ouvre aucun scénario', lanceurs === 0 && !horsScenario.scene && !horsScenario.cles && !horsScenario.session && !horsScenario.fictifs, JSON.stringify({ lanceurs, ...horsScenario }));
+  /* v7.12.0 : les dossiers de réception ne sont pas partagés. En mode connecté : le suivi le dit et ne propose rien,
+     aucune option locale ne retient de table, et la page « Votre réception » dit qu'elle n'est pas reliée. Même un
+     dossier fictif resté dans le navigateur (laissé par la démonstration) n'y change rien. */
+  await A.evaluate(() => { const avant = localStorage.getItem('jh-espace:v1'); localStorage.setItem('essai-avant', avant ?? '∅'); let base = {}; try { base = JSON.parse(avant || '{}') || {}; } catch { /* rien */ } localStorage.setItem('jh-espace:v1', JSON.stringify({ ...base, receptions: { dossiers: { 'rec-fantome': { id: 'rec-fantome', demande: 'fantome', client: { nom: 'Fantôme Local', telephone: '0600000000' }, retenue: { etat: 'ferme', debut: '2020-01-01T00:00', fin: '2099-01-01T00:00', salle: true, tables: ['1', '2', '3', '4', '5', '6', '7', '8', '9'], espaces: ['restaurant'] } } } } })); });
+  /* Dans un second onglet du même navigateur (même session, même stockage) : l'écran de l'accueil n'est pas dérangé. */
+  const Rc = await A.context().newPage(); await Rc.goto(`${BASE}/espace`, { waitUntil: 'load' }); await pret(Rc);
+  await vue(Rc, 'demandes'); await Rc.locator('[data-filtre-demandes="reception"]').click(); await attendre(400);
+  const recConnecte = await Rc.evaluate(() => ({ avis: document.querySelector('[data-vue="demandes"]')?.innerText.replace(/\s+/g, ' ') || '', actifs: document.querySelectorAll('[data-rec-creer], [data-rec-carte], [data-rec-ouvrir], [data-rec-panneau], [data-rec-notice], [data-table-reception]').length }));
+  verifier('v7.12.0 : le suivi des réceptions dit que les dossiers ne sont pas partagés, et ne propose aucune action', /Les dossiers de réception ne sont pas partagés/.test(recConnecte.avis) && recConnecte.actifs === 0 && !/Fantôme Local/.test(recConnecte.avis), JSON.stringify(recConnecte).slice(0, 300));
+  await vue(Rc, 'resas'); await Rc.locator('[role="tab"][data-onglets-resas][data-onglet="salle"]').click(); await attendre(400);
+  const salleConnecte = await Rc.evaluate(() => ({ retenues: [...document.querySelectorAll('.esp-table')].filter((t) => /réception/i.test(t.getAttribute('aria-label') || '')).length, notices: document.querySelectorAll('[data-rec-notice], [data-table-reception]').length }));
+  verifier('v7.12.0 : un dossier resté dans le navigateur ne retient aucune table du plan partagé', salleConnecte.retenues === 0 && salleConnecte.notices === 0, JSON.stringify(salleConnecte));
+  const Vr = await A.context().newPage(); await Vr.goto(`${BASE}/votre-reception?d=rec-fantome&c=0000`, { waitUntil: 'load' }); await attendre(1200);
+  const vrTexte = await texte(Vr, '[data-reception-client]'); const vrOutils = await Vr.locator('[data-reception-accorder], [data-reception-outil], [data-reception-form]').count();
+  const Rs = await A.context().newPage(); await Rs.goto(`${BASE}/reserver`, { waitUntil: 'load' }); await attendre(1500);
+  const resaPrive = /accueille une réception/.test(await texte(Rs, 'main'));
+  await Vr.close(); await Rs.close(); await Rc.close();
+  verifier('v7.12.0 : « Votre réception » dit qu\'elle n\'est pas reliée et ne propose ni accord ni demande', /n'est pas reliée au restaurant/.test(vrTexte) && vrOutils === 0 && !/Fantôme/.test(vrTexte), vrTexte.slice(0, 240));
+  verifier('v7.12.0 : la page Réserver n\'annonce aucune réception d\'après un dossier local', !resaPrive);
+  await A.evaluate(() => { const avant = localStorage.getItem('essai-avant'); if (avant === '∅' || avant == null) localStorage.removeItem('jh-espace:v1'); else localStorage.setItem('jh-espace:v1', avant); localStorage.removeItem('essai-avant'); });
   await A.locator('[role="tab"][data-onglets-resas][data-onglet="service"]').click(); await attendre(300);
   await A.route('**/api/suivi**', (r) => r.abort()); /* l'ordinateur ne reçoit plus les nouvelles : son écran vieillit */
   await ligne(B, 'Paul Combiné').locator('[data-modifier-resa]').click(); await attendre(300);
