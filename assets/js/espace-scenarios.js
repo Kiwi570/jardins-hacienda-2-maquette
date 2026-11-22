@@ -12,7 +12,7 @@ import { ajouter, ouvertSite, telephoneDemo } from './espace-regles.js?v=7';
 import { terrasseOuverte, cleSalle } from './espace-salle.js?v=7';
 import { exempleEte } from './espace-repli.js?v=7';
 import { normaliser } from './espace-demandes.js?v=7';
-import { MUTATIONS_RECEPTIONS, dossierDepuisDemande, idDossier, argsRetenue, couranteDe, accordDe, nomsEspaces, instantDit, etatRetenue } from './espace-receptions.js?v=7';
+import { MUTATIONS_RECEPTIONS, dossierDepuisDemande, idDossier, argsRetenue, accepteeDe, commerceDe, nomsEspaces, instantDit, etatRetenue } from './espace-receptions.js?v=7';
 import { retenueActive } from './disponibilites.js?v=7';
 
 const SOIR = 'soir', jourSemaine = (iso) => new Date(`${iso}T12:00:00Z`).getUTCDay();
@@ -123,9 +123,9 @@ export const SCENARIOS = [
     },
     etapes: [
       { id: 'dossier', texte: 'Dans Demandes, repérez la demande de Thomas B. et créez son dossier.', fait: (c) => !!dossierSc5(c) },
-      { id: 'proposition', texte: 'Onglet Proposition : préparez une proposition (une ou deux prestations) et présentez-la au client.', fait: (c) => !!couranteDe(dossierSc5(c) || {}) },
+      { id: 'proposition', texte: 'Onglet Proposition : préparez une proposition (une ou deux prestations) et présentez-la au client.', fait: (c) => (dossierSc5(c)?.propositions || []).some((p) => !!p.presenteeLe) },
       { id: 'option', texte: 'Onglet Espaces et option : la salle du restaurant, arrivée à 19 h, fin à 1 h. Vérifiez, puis posez l\'option.', fait: (c) => ['option', 'ferme'].includes(dossierSc5(c)?.retenue?.etat) || (dossierSc5(c)?.historique || []).some((h) => /^Option posée/.test(h.quoi)) },
-      { id: 'accord', texte: 'Onglet Client : ouvrez « Votre réception » (nouvel onglet) et donnez votre accord sur la proposition.', fait: (c) => { const d = dossierSc5(c); return !!d && (!!accordDe(d, c.venues[d.id] || {}) || d.retenue?.etat === 'ferme'); } },
+      { id: 'accord', texte: 'Onglet Client : ouvrez « Votre réception » (nouvel onglet) et donnez votre accord sur la proposition.', fait: (c) => { const d = dossierSc5(c); return !!d && (!!accepteeDe(d, c.venues[d.id] || {}) || d.retenue?.etat === 'ferme'); } },
       { id: 'confirmer', texte: 'Revenez à l\'espace : dans Espaces et option, confirmez la réception.', fait: (c) => dossierSc5(c)?.retenue?.etat === 'ferme' },
       { id: 'preparer', texte: 'Onglet Jour J : ajoutez les tâches habituelles et complétez une information pour l\'équipe.', fait: (c) => { const d = dossierSc5(c); return !!d && (c.S.taches?.liste || []).some((t) => t.lien?.type === 'reception' && t.lien.id === d.id) && !!(d.jourJ?.configuration || d.jourJ?.cuisine || d.jourJ?.accueil || d.projet?.invitesConfirmes); } },
       { id: 'fiche', texte: 'Ouvrez « Voir et imprimer la fiche » : le résumé du jour J, relu depuis le dossier.', fait: (c) => vu(c, 'rec-fiche') && dossierSc5(c)?.retenue?.etat === 'ferme' },
@@ -133,10 +133,11 @@ export const SCENARIOS = [
     variantes: [
       { titre: 'Un conflit', texte: 'Avant de poser l\'option, choisissez le samedi d\'avant : la salle est déjà réservée pour un mariage. Le conflit s\'affiche avant toute validation ; essayez la salle de réception ce jour-là, ou revenez au samedi demandé.' },
       { titre: 'Une option qui expire', texte: 'Une fois l\'option posée : « Aller à l\'échéance de l\'option ». Les espaces se libèrent, le dossier reste suivi, et reposer l\'option demande une nouvelle vérification.' },
-      { titre: 'Un client qui change ses plans', texte: 'Sur « Votre réception », demandez 120 invités (trop pour la salle : l\'équipe le voit et refuse), puis 60 invités ou une arrivée à 18 h (possible : l\'équipe accepte).' },
+      /* v7.12.1 : la variante va jusqu'au bout : changement accepté, version 2, nouvel accord, jour J à jour, version 1 intacte. */
+      { titre: 'Un client qui change ses plans', texte: 'Une fois la réception confirmée : sur « Votre réception », demandez 60 invités. Onglet Client, l\'équipe accepte : les espaces restent réservés, et le dossier dit « Révision à préparer ». Onglet Proposition : « Préparer une nouvelle version », passez à 60 menus, « Présenter au client ». Sur sa page, le client voit la version 2 à côté de la version 1 acceptée, et donne son accord. La fiche du jour J passe alors à la version 2 ; la version 1 reste consultable, telle qu\'elle a été présentée. Pour montrer un refus : demandez d\'abord 120 invités, trop pour la salle.' },
     ],
     conclusion: (c) => { const d = dossierSc5(c), r = d.retenue, n = (c.S.taches?.liste || []).filter((t) => t.lien?.type === 'reception' && t.lien.id === d.id);
-      return `La demande de Thomas B. est devenue une réception confirmée : ${nomsEspaces(c.lieux, r.espaces).join(', ')}, du ${instantDit(r.debut)} au ${instantDit(r.fin)}. L'agenda la montre${r.salle ? ', la page Réserver n\'ouvre plus ce soir-là' : ''}, et la fiche du jour J rassemble ce que l'équipe doit savoir (${n.length > 1 ? `${n.length} tâches` : n.length ? '1 tâche' : 'aucune tâche'}, dont ${n.filter((t) => t.fait).length} ${n.filter((t) => t.fait).length > 1 ? 'faites' : 'faite'}). Rien n'a été envoyé, signé ni encaissé.`; } },
+      return `La demande de Thomas B. est devenue une réception confirmée : ${nomsEspaces(c.lieux, r.espaces).join(', ')}, du ${instantDit(r.debut)} au ${instantDit(r.fin)}. L'agenda la montre${r.salle ? ', la page Réserver n\'ouvre plus ce soir-là' : ''}, et la fiche du jour J rassemble ce que l'équipe doit savoir (${n.length > 1 ? `${n.length} tâches` : n.length ? '1 tâche' : 'aucune tâche'}, dont ${n.filter((t) => t.fait).length} ${n.filter((t) => t.fait).length > 1 ? 'faites' : 'faite'}). ${commerceDe(d, c.venues[d.id] || {}).lignes.map((l) => l.texte).join(' ; ')}. Rien n'a été envoyé, signé ni encaissé.`; } },
 ];
 const dossierSc5 = (c) => c.S.receptions?.dossiers?.[idDossier('sc5-demande')] || null;
 /** Le prochain mercredi (aujourd'hui compris) : le jour où commence le scénario 5. */

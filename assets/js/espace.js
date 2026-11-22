@@ -45,11 +45,10 @@ import { rechercher } from './espace-recherche.js?v=7';
 import { listeClients, aMigrer, partagesConnus, cleDossier } from './espace-clients.js?v=7';
 import { creerReceptions } from './espace-vue-receptions.js?v=7';
 import { lienReception, receptionsDuJour } from './espace-receptions.js?v=7';
-import { occupationsActives, prisesDuService } from './disponibilites.js?v=7';
 import { activitesDuJour, prochainService } from './espace-accueil.js?v=7';
 import { carteDe, platsDe, prixTexte } from './espace-carte.js?v=7';
 import { normaliser, GENRES, demandes as toutesDemandes } from './espace-demandes.js?v=7';
-import { trouverResa, fixerHorloge, SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe, etatDuService, creneauxDuJour, verifierResa, listeEvenements } from './espace-regles.js?v=7';
+import { trouverResa, fixerHorloge, SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe, etatDuService, prisesDuServiceCtx, creneauxDuJour, verifierResa, listeEvenements } from './espace-regles.js?v=7';
 import { reglesAction } from './espace-garde.js?v=7';
 import { creerDepotServeur } from './espace-serveur.js?v=7';
 
@@ -236,8 +235,10 @@ export function init(root) {
   X.lienReception = (d) => `<a class="esp-bouton" href="${e(avecContexte(lienReception(d)))}" target="_blank" rel="noopener" data-lien-reception>Ouvrir la page du client <span aria-hidden="true">↗</span><span class="visuellement-cache"> (nouvel onglet)</span></a>`;
   X.fermerClient = () => vClient.fermer();
   /* Ce qu'une réception retient pendant un service : dit en tête de Service et de Salle, avec le chemin vers le dossier. */
-  X.noticeReception = (iso, sv) => { if (API) return ''; const pris = prisesDuService(occupationsActives(S(), ctx().maintenant.slice(0, 16)), R, iso, sv); if (!pris.occs.length) return '';
-    return typo(pris.occs.map((o) => `<p class="esp-rec-notice" data-rec-notice="${e(o.id)}"><span class="esp-pastille esp-pastille--${o.type === 'option' ? 'a-confirmer' : 'confirmee'}">${o.type === 'option' ? 'Réception · option' : 'Réception confirmée'}</span> ${e(o.intitule)} : ${o.salle ? 'toute la salle du restaurant est retenue' : o.tables.length ? `${o.tables.length > 1 ? `les tables ${o.tables.join(', ')} sont retenues` : `la table ${o.tables[0]} est retenue`}` : 'aucune table du restaurant n\'est retenue'} pendant ce service. <button type="button" class="esp-lien" data-rec-ouvrir="${e(o.id)}" data-rec-vers="espaces">Ouvrir le dossier</button></p>`).join('')); };
+  X.noticeReception = (iso, sv) => { if (API) return ''; const pris = prisesDuServiceCtx(ctx(), S(), iso, sv); if (!pris.occs.length) return '';
+    /* v7.12.1 : plusieurs réceptions peuvent, à elles toutes, retenir tout ce qui est utilisable ce jour-là. */
+    const reunion = pris.occs.length > 1 && pris.tout ? '<p class="esp-rec-notice" data-rec-notice-reunion><b>À elles toutes, ces réceptions retiennent toutes les tables utilisables ce service-là :</b> la page Réserver ne le propose pas.</p>' : '';
+    return typo(pris.occs.map((o) => `<p class="esp-rec-notice" data-rec-notice="${e(o.id)}"><span class="esp-pastille esp-pastille--${o.type === 'option' ? 'a-confirmer' : 'confirmee'}">${o.type === 'option' ? 'Réception · option' : 'Réception confirmée'}</span> ${e(o.intitule)} : ${o.salle ? 'toute la salle du restaurant est retenue' : o.tables.length ? `${o.tables.length > 1 ? `les tables ${o.tables.join(', ')} sont retenues` : `la table ${o.tables[0]} est retenue`}` : 'aucune table du restaurant n\'est retenue'} pendant ce service. <button type="button" class="esp-lien" data-rec-ouvrir="${e(o.id)}" data-rec-vers="espaces">Ouvrir le dossier</button></p>`).join('') + reunion); };
   X.ouvrirClient = (d) => { const b = document.createElement('button'); b.dataset.client = cleDossier(d); root.append(b); vClient.clic(b); b.remove(); };
   X.ardoiseHtml = () => cartesSite().ardoise;
   const vCarte = creerCarte(X);

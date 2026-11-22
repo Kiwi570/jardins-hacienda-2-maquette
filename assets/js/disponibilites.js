@@ -39,6 +39,10 @@ export const bornes = (creneau) => { const [a, b] = String(creneau).split('-').m
 /** Les services de la réservation, dans l'ordre : [{ id, libelle, d, f, pas }] (d : première arrivée, f : dernière arrivée). */
 export const servicesDe = (R) => Object.entries(R?.services || {}).map(([id, s]) => ({ id, libelle: s.libelle || (id === 'midi' ? 'Midi' : 'Soir'), d: enMin(s.debut), f: enMin(s.fin), pas: s.pas || 15 }));
 
+/** La durée indicative d'un repas, en minutes, par service (1 h 30 le midi, 2 h le soir : à régler avec le restaurant). Le service, le plan de salle et les réceptions lisent la même. */
+export const DUREES_REPAS = { midi: 90, soir: 120 };
+export const dureeRepas = (sv) => DUREES_REPAS[sv] || 90;
+
 /** Le temps laissé entre la dernière arrivée et la fermeture du lieu, en minutes, par service (réglage à valider par le restaurant). */
 export const margeDe = (R, sv) => Math.max(0, +(R?.derniere_arrivee_avant_fermeture?.[sv] ?? 0) || 0);
 
@@ -60,7 +64,12 @@ export const equipeDe = (S = {}, exceptions = [], maintenant = '') => ({ ...(S.h
    prend, si elle prend toute la salle du restaurant ou toute la terrasse. Les mêmes fonctions servent au plan de
    salle, au placement, aux arrivées sans réservation, à la liste d'attente, à l'agenda et à la page Réserver.
    Règle retenue (à confirmer) : une table prise par une réception n'est plus proposée pendant tout service dont la
-   fenêtre (de la première arrivée à la fermeture) croise la période de la réception. */
+   fenêtre croise la période de la réception.
+   v7.12.1 : cette fenêtre suit les horaires EFFECTIFS du jour (ouverture exceptionnelle, horaires déplacés) et va de la
+   première arrivée à la fin du dernier repas possible (dernière arrivée, plus la durée d'un repas ou la marge de
+   fermeture si elle est plus longue). Elle franchit minuit quand le repas le franchit. Les zones retenues par
+   plusieurs dossiers s'additionnent : le service n'est plus proposé quand tous les espaces utilisables à cette saison
+   sont pris, même si aucun dossier ne retient « toute la salle ». */
 const court = (t) => String(t || '').slice(0, 16);
 /** Un instant « AAAA-MM-JJTHH:MM » à partir d'un jour et de minutes comptées depuis minuit (1500 : le lendemain à 1 h). */
 export const instantDe = (iso, min) => `${ajouter(iso, Math.floor(min / 1440))}T${hhmm(((min % 1440) + 1440) % 1440)}`;
@@ -71,15 +80,34 @@ export const retenueActive = (ret, maintenant = '') => !!ret && (ret.etat === 'f
 /** Les espaces retenus en ce moment : [{ id, type: 'option' | 'ferme', intitule, client, debut, fin, tables, espaces, salle, terrasse, echeance }]. */
 export function occupationsActives(S, maintenant = '') {
   return Object.values(S?.receptions?.dossiers || {}).filter((d) => retenueActive(d.retenue, maintenant)).map((d) => ({ id: d.id, type: d.retenue.etat, intitule: d.projet?.intitule || d.projet?.occasion || 'Réception', client: d.client?.nom || '',
-    debut: court(d.retenue.debut), fin: court(d.retenue.fin), tables: (d.retenue.tables || []).map(String), espaces: d.retenue.espaces || [], salle: !!d.retenue.salle, terrasse: !!d.retenue.terrasse, echeance: d.retenue.echeance || '' }));
+    debut: court(d.retenue.debut), fin: court(d.retenue.fin), tables: (d.retenue.tables || []).map(String), espaces: d.retenue.espaces || [], salle: !!d.retenue.salle, terrasse: !!d.retenue.terrasse, publics: d.retenue.publics || null, echeance: d.retenue.echeance || '' }));
 }
-/** La fenêtre d'un service ce jour-là : de la première arrivée à la fermeture (dernière arrivée, plus la marge du service). */
-export const fenetreService = (R, iso, sv) => { const s = servicesDe(R).find((x) => x.id === sv); return s ? { debut: instantDe(iso, s.d), fin: instantDe(iso, s.f + margeDe(R, sv)) } : null; };
-/** Ce que les réceptions prennent pendant un service : { occs, tables: Map(table → occupation), salle, terrasse }. */
-export function prisesDuService(occupations, R, iso, sv) {
-  const f = fenetreService(R, iso, sv), occs = f ? (occupations || []).filter((o) => seCroisent(o, f)) : [], tables = new Map();
+/**
+ * La fenêtre d'un service ce jour-là : de la première arrivée à la fin du dernier repas possible. Elle suit les
+ * horaires effectifs du jour (`equipe` : ouvertures exceptionnelles, horaires déplacés) ; un service fermé garde sa
+ * fenêtre habituelle. La fin vaut : dernière arrivée, plus la durée d'un repas (ou la marge de fermeture, si elle est
+ * plus longue). Une fin après minuit appartient au lendemain.
+ */
+export const fenetreService = (R, iso, sv, equipe = R?.equipe || {}) => {
+  const s = servicesDe(R).find((x) => x.id === sv); if (!s) return null;
+  const h = horairesDuService(R, iso, sv, equipe), d = h.ouvert ? h.debut : s.d, f = h.ouvert ? h.fin : s.f;
+  return { debut: instantDe(iso, d), fin: instantDe(iso, f + Math.max(margeDe(R, sv), dureeRepas(sv))) };
+};
+/** L'espace « terrasse » de la réservation est-il utilisable ce jour-là (sa saison) ? */
+const terrasseOuverte = (R, iso) => { const e = (R?.espaces || []).find((x) => x.id === 'terrasse'); return !!e && (!e.mois || e.mois.includes(+String(iso).slice(5, 7))); };
+/**
+ * Ce que les réceptions prennent pendant un service : { occs, tables: Map(table → occupation), salle, terrasse, tout }.
+ * salle, terrasse : tout l'espace que le site propose est pris, par un dossier ou par la réunion de plusieurs.
+ * tout : il ne reste aucun espace utilisable à cette saison (la terrasse hors saison ne compte pas).
+ */
+export function prisesDuService(occupations, R, iso, sv, equipe = R?.equipe || {}) {
+  const f = fenetreService(R, iso, sv, equipe), occs = f ? (occupations || []).filter((o) => seCroisent(o, f)) : [], tables = new Map();
   for (const o of occs) for (const t of o.tables) if (!tables.has(t)) tables.set(t, o);
-  return { occs, tables, salle: occs.some((o) => o.salle), terrasse: occs.some((o) => o.terrasse) };
+  /* Chaque retenue dit ce qu'elle prend de chaque espace public et combien de tables il compte : la réunion se calcule ici. */
+  const entier = (pub) => { if (occs.some((o) => o[pub])) return true; const sur = Math.max(0, ...occs.map((o) => +o.publics?.[pub]?.sur || 0)); if (!sur) return false;
+    return new Set(occs.flatMap((o) => (o.publics?.[pub]?.tables || []).map(String))).size >= sur; };
+  const salle = entier('salle'), terrasse = entier('terrasse');
+  return { occs, tables, salle, terrasse, tout: salle && (terrasse || !terrasseOuverte(R, iso)) };
 }
 
 const dans = (iso, x) => (x.du || x.date) <= iso && iso <= (x.au || x.du || x.date);
@@ -90,6 +118,16 @@ const dans = (iso, x) => (x.du || x.date) <= iso && iso <= (x.au || x.du || x.da
  *   raison : pourquoi il est fermé ; exceptionnel : ouvert par une ouverture exceptionnelle ; debut, fin : première et dernière arrivée (minutes).
  */
 export function etatService(R, iso, sv, equipe = R?.equipe || {}) {
+  const h = horairesDuService(R, iso, sv, equipe); if (!h.ouvert) return h;
+  /* 6. Complet : dit par le restaurant pour le service entier. */
+  const complet = (equipe.complets?.[iso] || []).includes(sv);
+  /* 7. Les réceptions (v7.12.0, v7.12.1) : quand tous les espaces utilisables sont retenus, le service est privatisé ;
+     la salle ou la terrasse peuvent l'être seules, et l'autre reste proposée. */
+  const pris = prisesDuService(equipe.occupations, R, iso, sv, equipe);
+  return { ...h, complet, prive: pris.tout, sallePrise: pris.salle, terrassePrise: pris.terrasse, reception: pris.occs[0]?.intitule || '' };
+}
+/** Les horaires d'un service ce jour-là, sans regarder l'occupation : ouvert ou non, pourquoi, première et dernière arrivée. */
+function horairesDuService(R, iso, sv, equipe = R?.equipe || {}) {
   const s = servicesDe(R).find((x) => x.id === sv), ferme = (raison, motif = '') => ({ ouvert: false, raison, motif, exceptionnel: false, note: '', complet: false, debut: s?.d ?? 0, fin: s?.f ?? 0, pas: s?.pas ?? 15 });
   if (!s || !dateValide(iso)) return ferme('inconnu');
   const F = R.fermetures || {}, j = JOURS[jourDe(iso)];
@@ -116,11 +154,7 @@ export function etatService(R, iso, sv, equipe = R?.equipe || {}) {
     fin = Math.min(fin, b - margeDe(R, sv));
     if (fin < debut) return ferme('horaires', 'Les horaires de ce jour ne laissent aucune heure d\'arrivée');
   }
-  /* 6. Complet : dit par le restaurant pour le service entier. */
-  const complet = (equipe.complets?.[iso] || []).includes(sv);
-  /* 7. v7.12.0 : une réception qui retient toute la salle du restaurant privatise le service ; la terrasse peut l'être seule. */
-  const pris = prisesDuService(equipe.occupations, R, iso, sv);
-  return { ouvert: true, raison: '', motif: '', exceptionnel: !!exc && !semaineOuverte, note: exc?.note || '', complet, debut, fin, pas: s.pas, prive: pris.salle, terrassePrise: pris.terrasse, reception: pris.occs[0]?.intitule || '' };
+  return { ouvert: true, raison: '', motif: '', exceptionnel: !!exc && !semaineOuverte, note: exc?.note || '', complet: false, debut, fin, pas: s.pas };
 }
 
 /**

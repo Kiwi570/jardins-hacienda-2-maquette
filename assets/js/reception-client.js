@@ -48,7 +48,13 @@ export function init(root) {
         <p class="venue__note">C'est une demande : ce qui est convenu reste inchangé tant que le restaurant n'a pas répondu.</p>
         ${etat.erreur ? `<p class="venue__erreur" role="alert">${e(etat.erreur)}</p>` : ''}
         <p class="venue__actions"><button type="submit" class="bouton">Envoyer ma demande de changement</button><button type="button" class="bouton bouton--contour" data-reception-fermer>Ne rien changer</button></p></form>`;
-    corps.innerHTML = typo(`<div class="venue__carte" tabindex="-1" data-reception-focus data-reception-etat="${vue.etape.id}">
+    const confirmee = vue.etape.id === 'confirmee', acceptee = vue.acceptee;
+    /* v7.12.1 : chaque version est montrée d'après son instantané (prestations, prix, et ce qu'elle affichait le jour où elle a été présentée). */
+    const pour = (x) => (x.contexte?.invites ? ` Établie pour ${x.contexte.invites} invité${x.contexte.invites > 1 ? 's' : ''}.` : x.contexte ? '' : ' La date et l\'effectif affichés ce jour-là n\'ont pas été conservés.');
+    const tableau = (x) => `<div class="venue__table"><table><caption class="visuellement-cache">Les prestations de la version ${x.v}</caption><thead><tr><th scope="col">Prestation</th><th scope="col">Quantité</th><th scope="col">Prix unitaire</th><th scope="col">Total</th></tr></thead>
+          <tbody>${x.lignes.map((l) => `<tr><td><b>${e(l.libelle)}</b>${l.description ? `<br><span>${e(l.description)}</span>` : ''}</td><td>${e(String(l.qte).replace('.', ','))}${l.unite ? ` <span>${e(l.unite)}</span>` : ''}</td><td>${e(euros(l.pu))}</td><td>${e(euros(totalLigne(l)))}</td></tr>`).join('')}</tbody>
+          <tfoot><tr><th scope="row" colspan="3">Total</th><td>${e(euros(x.total))}</td></tr></tfoot></table></div>`;
+    corps.innerHTML = typo(`<div class="venue__carte" tabindex="-1" data-reception-focus data-reception-etat="${vue.etape.id}" data-reception-revision="${vue.revision ? 'due' : acceptee ? 'attente' : ''}">
         <p class="venue__etat venue__etat--${ETAT[vue.etape.id] || 'confirmee'}">${e(vue.etape.libelle)}</p>
         <p class="venue__phrase">${e(vue.etape.phrase)}</p>
         ${etat.message ? `<p class="venue__message" role="status">${e(etat.message)}</p>` : ''}
@@ -58,19 +64,21 @@ export function init(root) {
         ${vue.partage ? `<p class="venue__info">${e(vue.partage)}</p>` : ''}
         ${vue.ouvert && !outilQuestion && !outilChangement ? `<p class="venue__actions"><button type="button" class="bouton bouton--contour" data-reception-outil="question">Poser une question</button><button type="button" class="bouton bouton--contour" data-reception-outil="changement">Demander un changement</button></p>` : ''}
         ${outilQuestion}${outilChangement}</div>
-      ${p ? `<section class="venue__bloc" aria-labelledby="rc-prop" data-reception-proposition="${p.v}"><h2 id="rc-prop">La proposition <small>version ${p.v}</small></h2>
-        <p class="venue__note">Présentée le ${e(instantDit(p.presenteeLe, true))}. Démonstration : montants d'exemple, sans valeur contractuelle.</p>
+      ${p ? `<section class="venue__bloc" aria-labelledby="rc-prop" data-reception-proposition="${p.v}"><h2 id="rc-prop">${acceptee ? 'La nouvelle proposition' : 'La proposition'} <small>version ${p.v}</small></h2>
+        ${acceptee ? `<p class="venue__info venue__info--attente" data-reception-attente-version="${p.v}"><b>Version ${p.v} présentée : votre accord est attendu.</b> Votre accord sur la version ${acceptee.v} reste noté, mais il ne vaut pas pour celle-ci. Tant que vous n'avez pas répondu, la version ${acceptee.v} reste la référence.</p>` : ''}
+        <p class="venue__note">Présentée le ${e(instantDit(p.presenteeLe, true))}.${pour(p)} Démonstration : montants d'exemple, sans valeur contractuelle.</p>
         <h3 class="venue__prop-titre">${e(p.titre)}</h3>${p.presentation ? `<p>${e(p.presentation)}</p>` : ''}
-        <div class="venue__table"><table><caption class="visuellement-cache">Les prestations de la proposition</caption><thead><tr><th scope="col">Prestation</th><th scope="col">Quantité</th><th scope="col">Prix unitaire</th><th scope="col">Total</th></tr></thead>
-          <tbody>${p.lignes.map((l) => `<tr><td><b>${e(l.libelle)}</b>${l.description ? `<br><span>${e(l.description)}</span>` : ''}</td><td>${e(String(l.qte).replace('.', ','))}${l.unite ? ` <span>${e(l.unite)}</span>` : ''}</td><td>${e(euros(l.pu))}</td><td>${e(euros(totalLigne(l)))}</td></tr>`).join('')}</tbody>
-          <tfoot><tr><th scope="row" colspan="3">Total</th><td>${e(euros(p.total))}</td></tr></tfoot></table></div>
+        ${tableau(p)}
         ${liste(p.compris).length ? `<h3 class="venue__sous">Ce qui est compris</h3><ul class="venue__liste">${liste(p.compris).map((l) => `<li>${e(l)}</li>`).join('')}</ul>` : ''}
         ${liste(p.aPreciser).length ? `<h3 class="venue__sous">Ce qui reste à préciser</h3><ul class="venue__liste">${liste(p.aPreciser).map((l) => `<li>${e(l)}</li>`).join('')}</ul>` : ''}
         <p class="venue__note">Proposition valable ${p.validite ? `jusqu'au ${e(fmt(p.validite, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }))}` : ': durée à préciser par le restaurant'}. ${e(p.conditions || 'Conditions (acompte, annulation) : à préciser par le restaurant.')}</p>
-        ${vue.accord ? `<p class="venue__info" data-reception-accord="${vue.accord.version}"><b>Accord donné — simulation.</b> Vous avez donné votre accord sur la version ${vue.accord.version}, le ${e(instantDit(vue.accord.le, true))}. La réception sera confirmée par l'équipe, après vérification des espaces.</p>`
-          : vue.peutAccorder ? (etat.accord ? `<div class="venue__form" role="group" aria-labelledby="rc-f-a"><h3 id="rc-f-a">Donner votre accord sur la version ${p.v} ?</h3><p class="venue__note">Simulation : cet accord ne vaut ni signature ni paiement. Il indique au restaurant que la proposition vous convient ; c'est l'équipe qui confirme la réception.</p>
+        ${vue.accord ? `<p class="venue__info" data-reception-accord="${vue.accord.version}"><b>Accord donné — simulation.</b> Vous avez donné votre accord sur la version ${vue.accord.version}, le ${e(instantDit(vue.accord.le, true))}. ${confirmee ? 'C\'est la proposition retenue pour votre réception, déjà confirmée.' : 'La réception sera confirmée par l\'équipe, après vérification des espaces.'}</p>`
+          : vue.peutAccorder ? (etat.accord ? `<div class="venue__form" role="group" aria-labelledby="rc-f-a"><h3 id="rc-f-a">Donner votre accord sur la version ${p.v} ?</h3><p class="venue__note">Simulation : cet accord ne vaut ni signature ni paiement. ${confirmee ? `Il indique au restaurant que la version ${p.v} vous convient : elle deviendra la proposition retenue. Vos espaces restent réservés.` : 'Il indique au restaurant que la proposition vous convient ; c\'est l\'équipe qui confirme la réception.'}</p>
               <p class="venue__actions"><button type="button" class="bouton" data-reception-accord-oui="${p.v}">Oui, je donne mon accord (simulation)</button><button type="button" class="bouton bouton--contour" data-reception-accord-non>Pas maintenant</button></p></div>`
             : `<p class="venue__actions"><button type="button" class="bouton" data-reception-accorder>Donner mon accord sur cette version</button></p>`) : ''}</section>` : ''}
+      ${acceptee ? `<section class="venue__bloc" aria-labelledby="rc-acc" data-reception-acceptee="${acceptee.v}"><h2 id="rc-acc">Proposition acceptée <small>version ${acceptee.v}</small></h2>
+        <p class="venue__info"><b>Accord donné — simulation</b>, le ${e(instantDit(acceptee.accord.le, true))}${acceptee.accord.par === 'equipe' ? ' (noté par le restaurant)' : ''}. Cette version reste telle qu'elle vous a été présentée le ${e(instantDit(acceptee.presenteeLe, true))}.${pour(acceptee)}</p>
+        <details class="venue__details"><summary>Revoir la version ${acceptee.v} (${e(euros(acceptee.total))})</summary><h3 class="venue__prop-titre">${e(acceptee.titre)}</h3>${tableau(acceptee)}</details></section>` : ''}
       ${vue.prochaines.length ? `<section class="venue__bloc" aria-labelledby="rc-suite"><h2 id="rc-suite">Les prochaines étapes</h2><ol class="venue__liste">${vue.prochaines.map((l) => `<li>${e(l)}</li>`).join('')}</ol></section>` : ''}
       ${vue.attendu.length ? `<section class="venue__bloc" aria-labelledby="rc-attendu"><h2 id="rc-attendu">Ce que nous attendons de vous</h2>${vue.attendu.map((i) => (i.valeur ? `<p class="venue__info"><b>${e(i.libelle)}</b> : ${e(i.valeur)} <small>(transmis)</small></p>`
         : `<form class="venue__form" data-reception-form="info" data-info="${e(i.id)}">${champ(e(i.libelle), `rc-info-${e(i.id)}`, `<input id="rc-info-${e(i.id)}" name="valeur" maxlength="300" required>`)}<p class="venue__actions"><button type="submit" class="bouton">Transmettre</button></p></form>`)).join('')}</section>` : ''}
@@ -90,7 +98,9 @@ export function init(root) {
     const oui = t.closest('[data-reception-accord-oui]'); if (oui) { const x = lireDossier(); if (!x) return; const vue = vueClient(x.ctx, x.d, x.v);
       /* L'accord porte sur la version affichée : si elle n'est plus la version courante, on le dit au lieu de l'enregistrer. */
       if (!vue.peutAccorder || vue.proposition?.v !== +oui.dataset.receptionAccordOui) { dire('La proposition a changé entre-temps : relisez la version affichée.'); return; }
-      if (noterVenue(id, { accord: { version: vue.proposition.v, le: instant() } })) dire(`Merci : votre accord sur la version ${vue.proposition.v} est noté (simulation). L'équipe confirmera la réception après vérification des espaces.`); else dire('Votre accord n\'a pas pu être enregistré dans ce navigateur.'); }
+      const le = instant(), deja = (x.v.accords || []).concat(x.v.accord && !(x.v.accords || []).some((a) => a.version === x.v.accord.version) ? [x.v.accord] : []);
+      /* Les accords sont gardés version par version : celui de la version 1 reste attaché à la version 1. */
+      if (noterVenue(id, { accord: { version: vue.proposition.v, le }, accords: [...deja.filter((a) => a.version !== vue.proposition.v), { version: vue.proposition.v, le }] })) dire(vue.etape.id === 'confirmee' ? `Merci : votre accord sur la version ${vue.proposition.v} est noté (simulation). Elle devient la proposition retenue ; vos espaces restent réservés.` : `Merci : votre accord sur la version ${vue.proposition.v} est noté (simulation). L'équipe confirmera la réception après vérification des espaces.`); else dire('Votre accord n\'a pas pu être enregistré dans ce navigateur.'); }
   });
   root.addEventListener('change', (ev) => { if (ev.target.matches('[data-reception-type]')) { etat.type = ev.target.value; etat.erreur = ''; rendre('#rc-type'); } });
   root.addEventListener('submit', (ev) => {

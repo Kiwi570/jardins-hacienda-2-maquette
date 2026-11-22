@@ -7,9 +7,12 @@
    La durée d'un repas est une valeur indicative (1 h 30 le midi, 2 h le soir), à régler avec le restaurant. */
 import { enMin, hhmm, servicesDe, creneauxDuJour, ouvert, complet, resasDuJour, actives, couverts } from './espace-regles.js?v=7';
 
-export const DUREES = { midi: 90, soir: 120 };
+import { DUREES_REPAS, dureeRepas } from './disponibilites.js?v=7';
+
+/* La durée d'un repas est définie avec les disponibilités (v7.12.1) : le service, la salle et les réceptions lisent la même. */
+export const DUREES = DUREES_REPAS;
 /** La durée d'un repas pour un service, en minutes. */
-export const dureeDe = (sv) => DUREES[sv] || 90;
+export const dureeDe = dureeRepas;
 
 /**
  * Le service d'un jour : ses bornes, ses réservations placées dans le temps, la charge de la salle.

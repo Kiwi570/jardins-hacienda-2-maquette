@@ -224,7 +224,7 @@ test('11 · une demande de changement garde l\'accord précédent jusqu\'à la d
   /* Accepter un effectif possible : l'effectif confirmé change, la proposition est marquée « à revoir », la réception reste confirmée. */
   const ok40 = { id: 'c2', type: 'effectif', valeur: { invites: 40 }, le: '2026-11-22T11:00' }, c2 = ctx({ venues: v({ changements: [ok40] }) });
   let Ac = ok(S, 'recDecider', { id: ID, changement: 'c2', type: 'effectif', valeur: ok40.valeur, acceptee: true, le: c2.maintenant }, c2);
-  assert.deepEqual([dossierDe(Ac, ID).projet.invitesConfirmes, dossierDe(Ac, ID).retenue.etat], [40, 'ferme']); assert.match(dossierDe(Ac, ID).aRevoir, /proposition version 1 est à revoir/); assert.deepEqual(couranteDe(dossierDe(Ac, ID)), couranteDe(avant), 'la version présentée n\'est pas réécrite');
+  assert.deepEqual([dossierDe(Ac, ID).projet.invitesConfirmes, dossierDe(Ac, ID).retenue.etat], [40, 'ferme']); assert.deepEqual([dossierDe(Ac, ID).aRevoir.version, dossierDe(Ac, ID).aRevoir.motifs], [1, ['40 invités']], 'la révision due est notée, avec la version qu\'elle concerne'); assert.deepEqual(couranteDe(dossierDe(Ac, ID)), couranteDe(avant), 'la version présentée n\'est pas réécrite');
   /* Accepter un nouvel horaire : la période occupée suit, après vérification. */
   const plusTot = { id: 'c3', type: 'horaire', valeur: { arrivee: '18:00' }, le: '2026-11-22T12:00' }, c3 = ctx({ venues: v({ changements: [plusTot] }) }), k = consequences(c3, S, SALLE, dossierDe(S, ID), plusTot);
   assert.match(k.lignes[0], /du samedi 12 décembre à 17 h au dimanche 13 décembre à 2 h → du samedi 12 décembre à 16 h au dimanche 13 décembre à 2 h/); assert.equal(k.retenue.debut, '2026-12-12T16:00');
@@ -246,9 +246,12 @@ test('12 · les notes internes n\'apparaissent ni dans la vue du client ni dans 
 /* ============================== Le jour J ============================== */
 test('le jour J · la fiche relit le dossier et dit ce qui manque ; les tâches habituelles ne se doublent pas', () => {
   let S = ok(option(proposition(creer())).S, 'recPresenter', { id: ID, le: 'x' }); const d = dossierDe(S, ID);
-  const f = fichePreparation(ctx(), d, {}, []); assert.deepEqual(f.sections.map((s) => s.titre), ['La réception', 'Les espaces', 'Les horaires', 'Les prestations', 'Les personnes', 'À savoir']);
-  assert.deepEqual(f.sections.flatMap((s) => s.lignes).filter((l) => l.manque).map((l) => l.label), ['Invités confirmés', 'Configuration', 'Pour la cuisine', 'Pour l\'accueil']); assert.equal(f.manques, 4);
-  assert.match(f.sections[0].lignes.at(-1).valeur, /Version 1 · Les 60 ans de Paul · 1 350 € \(montants d'exemple\) · sans accord/); assert.match(f.sections[2].lignes.find((l) => l.label === 'Fin de la réception').valeur, /1 h \(le lendemain\)/);
+  /* v7.12.1 : une version seulement présentée n'est pas la proposition retenue ; elle figure « à valider ». */
+  const f = fichePreparation(ctx(), d, {}, []); assert.deepEqual(f.sections.map((s) => s.cle), ['reception', 'a-valider', 'espaces', 'horaires', 'prestations', 'proposees', 'personnes', 'a-savoir']);
+  assert.deepEqual(f.sections.flatMap((s) => s.lignes).filter((l) => l.manque).map((l) => l.label), ['Invités confirmés', 'Proposition retenue', 'Configuration', 'Prestations', 'Pour la cuisine', 'Pour l\'accueil']); assert.equal(f.manques, 6); assert.equal(f.aValider, 1);
+  assert.match(f.sections[0].lignes.at(-1).valeur, /Aucune pour le moment : la version 1 est présentée, sans accord/); assert.match(f.sections.find((s) => s.cle === 'horaires').lignes.find((l) => l.label === 'Fin de la réception').valeur, /1 h \(le lendemain\)/);
+  const g = fichePreparation(ctx(), d, { accord: { version: 1, le: '2026-11-20T10:30' } }, []); assert.deepEqual(g.sections.map((s) => s.titre), ['La réception', 'Les espaces', 'Les horaires', 'Les prestations acceptées (version 1)', 'Les personnes', 'À savoir']);
+  assert.match(g.sections[0].lignes.at(-1).valeur, /Version 1 · Les 60 ans de Paul · 1.350.€ \(montants d'exemple\) · établie pour 30.invités · accord du client, simulation/); assert.deepEqual([g.manques, g.aValider, g.acceptee], [4, 0, 1]);
   const t = tachesHabituelles(LIEUX, d, 'x'); assert.equal(t.length, 6); assert.deepEqual([t[0].echeance, t[0].lien], ['2026-12-05', { type: 'reception', id: ID, libelle: 'Anniversaire · Nadia K.' }]);
   for (const x of [...t, ...t]) S = appliquer(S, 'tacheAjouter', { tache: x }); assert.equal(S.taches.liste.length, 6, 'ajoutées deux fois : six tâches, pas douze');
 });
@@ -329,7 +332,7 @@ test('scénario 5 · le parcours principal : chaque étape suit une action réel
   assert.equal(ou(d, S, { venues }).faites, 5, 'les tâches seules ne suffisent pas'); S = ok(S, 'recModifier', { id: ID5, champs: { jourJ: { cuisine: 'Menu arrêté.' } } }, cv);
   assert.equal(ou(d, S, { venues }).faites, 6); assert.equal(ou(d, S, { venues }).fini, false);
   const fin = ou(d, S, { venues, vus: { 'rec-fiche': true } }); assert.equal(fin.fini, true);
-  assert.match(fin.conclusion, /réception confirmée : La salle du restaurant, du samedi .* à 17 h au dimanche .* à 2 h\..*page Réserver n'ouvre plus ce soir-là.*\(6 tâches, dont 0 faite\)\. Rien n'a été envoyé, signé ni encaissé\./);
+  assert.match(fin.conclusion, /réception confirmée : La salle du restaurant, du samedi .* à 17 h au dimanche .* à 2 h\..*page Réserver n'ouvre plus ce soir-là.*\(6 tâches, dont 0 faite\)\. Proposition acceptée : version 1\. Rien n'a été envoyé, signé ni encaissé\./);
   assert.equal(tachesLiees(S, 'reception', ID5).length, 6); assert.equal(fichePreparation(cv, dossierDe(S, ID5), venues[ID5], tachesLiees(S, 'reception', ID5)).sections[5].lignes.find((l) => l.label === 'Pour la cuisine').valeur, 'Menu arrêté.');
 });
 
@@ -370,7 +373,7 @@ test('scénario 5 · variante « le client change ses plans » : 120 invités ne
   assert.match(agir(S, 'recDecider', { id: ID5, changement: 'c1', type: 'effectif', valeur: trop.valeur, acceptee: true, le: cv.maintenant }, cv).refus, /120 invités pour une capacité de 100/);
   S = ok(S, 'recDecider', { id: ID5, changement: 'c1', type: 'effectif', valeur: trop.valeur, acceptee: false, le: cv.maintenant }, cv); assert.deepEqual([dossierDe(S, ID5).projet.invitesConfirmes, dossierDe(S, ID5).retenue.etat], [0, 'ferme']);
   S = ok(S, 'recDecider', { id: ID5, changement: 'c2', type: 'effectif', valeur: bien.valeur, acceptee: true, le: cv.maintenant }, cv);
-  assert.deepEqual([dossierDe(S, ID5).projet.invitesConfirmes, dossierDe(S, ID5).retenue.etat, accordDe(dossierDe(S, ID5), cv.venues[ID5]).version], [60, 'ferme', 1]); assert.match(dossierDe(S, ID5).aRevoir, /à revoir/);
+  assert.deepEqual([dossierDe(S, ID5).projet.invitesConfirmes, dossierDe(S, ID5).retenue.etat, accordDe(dossierDe(S, ID5), cv.venues[ID5]).version], [60, 'ferme', 1]); assert.deepEqual([dossierDe(S, ID5).aRevoir.version, dossierDe(S, ID5).aRevoir.motifs], [1, ['60 invités']]);
   assert.deepEqual(vueClient(cv, dossierDe(S, ID5), cv.venues[ID5]).changements.map((x) => x.decision.acceptee), [false, true]);
 });
 

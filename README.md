@@ -78,7 +78,9 @@ Transition entre les pages (v7.5) : un papier crème qui monte en cloche depuis 
 | Dates des pool parties | « Les dates sont annoncées sur Instagram. » |
 | Assiettes générées | jamais présentées comme un plat de la carte : les plats gardent leurs noms et leurs prix à côté, l'image porte « Illustration générée » |
 
-## L'espace restaurateur (démonstration, v7.12.0)
+## L'espace restaurateur (démonstration, v7.12.1)
+
+> **v7.12.1 — ce qui est convenu reste clair.** Une réception confirmée peut recevoir une révision de sa proposition : la version acceptée, la version en attente d'accord et les espaces réservés se lisent à part. Une version présentée garde un instantané de ce qu'elle affichait ; un accord ne vaut que pour sa version ; la fiche du jour J dit ce qui est confirmé et ce qui reste à valider. L'occupation des tables suit la durée réelle des repas, les horaires du jour et la réunion des zones retenues. Détail : `_exploitation/livraison-v7.12.1.md`.
 
 > **v7.12.0 — les réceptions de A à Z.** Une demande de réception devient un dossier unique : propositions versionnées, option avec échéance et espaces retenus (conflits montrés avant de valider), page du client « Votre réception aux Jardins », confirmation par l'équipe, préparation et fiche du jour J. L'agenda, le plan de salle et la page Réserver suivent ces décisions. Cinquième scénario de démonstration : « Une réception aux Jardins ». Tout est local et fictif : rien n'est partagé, signé, encaissé ni envoyé. Détail : `_exploitation/livraison-v7.12.0.md` ; règles : `_exploitation/regles-receptions.md` ; pour présenter : `_exploitation/guide-demonstrations.md`.
 

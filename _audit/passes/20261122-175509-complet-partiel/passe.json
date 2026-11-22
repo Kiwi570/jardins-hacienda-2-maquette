@@ -1,0 +1,16 @@
+{
+ "id": "20261122-175509-complet-partiel",
+ "date": "2026-11-22T18:01:47.082Z",
+ "niveau": "complet",
+ "pages": "toutes",
+ "etapes": [
+  "fichiers",
+  "fluidite"
+ ],
+ "version": "7",
+ "echecs": 0,
+ "aRegarder": 3,
+ "nonLances": 0,
+ "manquants": 0,
+ "statut": "complet"
+}
