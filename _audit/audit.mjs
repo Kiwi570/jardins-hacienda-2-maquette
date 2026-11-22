@@ -80,12 +80,14 @@ class Rapport {
 }
 let etapeCourante = 'fichiers';
 const R = new Rapport();
-async function tache(nom, fn) {
+/* `ms` : le temps laissé à l'étape. v7.12.1 : les parcours du projet ont grandi (réceptions, démonstrations) et dépassent 25 minutes ;
+   ils ont 45 minutes. Une étape qui dépasse est dite « non lancée » : elle ne compte pas comme vérifiée. */
+async function tache(nom, fn, ms = 25 * 60000) {
   if (!faire(nom.split(':')[0])) return;
   etapeCourante = nom.split(':')[0];
   const t0 = Date.now();
   process.stdout.write(`… ${nom}\n`);
-  try { await limite(fn(), 25 * 60000, nom); } catch (err) { R.nonLance(nom, String((err && err.message) || err).split('\n')[0]); }
+  try { await limite(fn(), ms, nom); } catch (err) { R.nonLance(nom, String((err && err.message) || err).split('\n')[0]); }
   process.stdout.write(`  fait en ${Math.round((Date.now() - t0) / 1000)} s\n`);
 }
 
@@ -1075,7 +1077,7 @@ await tache('parcours:projet', async () => {
   const m = await import(f);
   await m.default({ contexte, attendrePret, attendre, BASE, R, T, pages: PAGES_CONTENU });
   R.ok('parcours du projet');
-});
+}, 45 * 60000);
 
 /* ---------- 6. Tient dans l'écran (sections épinglées et plein écran), film de chaque épinglage ---------- */
 await tache('ecran', async () => {

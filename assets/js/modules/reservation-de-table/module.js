@@ -93,7 +93,10 @@ export async function init(root, options = {}) {
   const reservable = (iso, c = 2) => services.some((sv) => libres(iso, sv.id, c) > 0);
   /** Un service ouvert, avec des heures encore à venir, mais plus aucune de libre : complet (v7.11.0). */
   const complet = (iso, sid, c = val().couverts) => { const l = creneaux(iso, sid, c); return l.length > 0 && l.every((x) => x.etat === 'complet'); };
-  const espaceOk = (e, iso, sid = val?.().service) => (!e.mois || !iso || e.mois.includes(+iso.slice(5, 7))) && !(e.id === 'terrasse' && iso && sid && etatService(R, iso, sid).terrassePrise);
+  /* v7.12.1 : un espace retenu par une ou plusieurs réceptions n'est pas proposé ; l'autre le reste s'il est utilisable. */
+  const enSaison = (e, iso) => !e.mois || !iso || e.mois.includes(+iso.slice(5, 7));
+  const retenu = (e, iso, sid = val?.().service) => { if (!iso || !sid) return false; const x = etatService(R, iso, sid); return e.id === 'terrasse' ? !!x.terrassePrise : e.id === 'salle' ? !!x.sallePrise : false; };
+  const espaceOk = (e, iso, sid) => enSaison(e, iso) && !retenu(e, iso, sid);
 
   // ---------- Champs ----------
   const dateEl = champ('date'), couvEl = champ('couverts');
@@ -305,7 +308,7 @@ export async function init(root, options = {}) {
     const v = val();
     for (const r of form.querySelectorAll('input[name="espace"]')) {
       const e = (R.espaces || []).find((x) => x.id === r.value) || {}, ok = espaceOk(e, v.date); r.disabled = !ok;
-      const note = r.closest('label')?.querySelector('[data-note]'); if (note) note.textContent = ok ? (e.note || '') : (e.hors_saison || 'pas à cette date');
+      const note = r.closest('label')?.querySelector('[data-note]'); if (note) note.textContent = ok ? (e.note || '') : !enSaison(e, v.date) ? (e.hors_saison || 'pas à cette date') : 'retenue pour une réception ce jour-là';
     }
     const coche = form.querySelector('input[name="espace"]:checked');
     if (!coche || coche.disabled) { const premier = form.querySelector('input[name="espace"]:not(:disabled)'); if (premier) premier.checked = true; }

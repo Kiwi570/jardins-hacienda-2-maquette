@@ -4,8 +4,7 @@
    site arrive déjà placé. Une table porte les réservations du service qui y sont assises ; elle est libre pour une
    réservation si personne n'y est entre son arrivée et la fin de son repas (durées de `espace-service.js`).
    La terrasse n'ouvre que de juin à septembre, comme sur le site. */
-import { actives, enMin, instantCtx } from './espace-regles.js?v=7';
-import { occupationsActives, prisesDuService } from './disponibilites.js?v=7';
+import { actives, enMin, instantCtx, prisesDuServiceCtx } from './espace-regles.js?v=7';
 import { serviceDuJour, dureeDe } from './espace-service.js?v=7';
 
 /** La terrasse est-elle ouverte ce jour-là ? De juin à septembre. */
@@ -54,7 +53,7 @@ export function planDuService(ctx, S, salle, iso, sv, minute = iso === ctx.auj ?
   const service = serviceDuJour(ctx, S, iso, sv), presence = S.service?.presence || {}, notes = S.service?.tables?.[cleSalle(iso, sv)] || {};
   const base = tablesDe(salle, iso), ass = assemblagesDe(salle, iso), parId = new Map(ass.map((a) => [a.id, a]));
   /* v7.12.0 : les tables retenues par une option encore valable ou une réception confirmée, pour ce service. */
-  const pris = prisesDuService(occupationsActives(S, instantCtx(ctx)), ctx.R, iso, sv);
+  const pris = prisesDuServiceCtx(ctx, S, iso, sv);
   const pres = actives(service.resas).map((r) => {
     const p = presence[r.id], installe = r.statut === 'arrivee' && p?.etat === 'installe', parti = r.statut === 'arrivee' && p?.etat === 'parti';
     /* La durée prévue ne libère pas une table : tant que le groupe est installé, il l'occupe. Parti : il l'a rendue. */

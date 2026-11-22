@@ -664,7 +664,11 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       const [jourSv, sv] = (acc.cle || '|').split('|');
       /* Une priorité mène à son objet : les réservations sans table → le plan de salle du bon service. */
       const aPlacer = Object.entries(acc.chiffres).find(([k]) => /sans table/.test(k))?.[1] ?? 0, prio = page.locator(`[data-esp-rendu="jour"] [data-faire-priorite^="placer-"]`);
-      if (aPlacer > 0 && !(await prio.count())) R.echec(`${ou} : priorités`, `${aPlacer} réservations à placer, et aucune priorité ne le dit`, lieu);
+      /* La priorité « à placer » n'existe que pour un service d'aujourd'hui ou de demain (règle de l'accueil) : un dimanche
+         après le déjeuner, le prochain service est mercredi, et l'accueil ne presse pas de placer trois jours à l'avance. */
+      const demain = await page.evaluate(() => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date(Date.now() + 86400000)));
+      if (aPlacer > 0 && jourSv <= demain && !(await prio.count())) R.echec(`${ou} : priorités`, `${aPlacer} réservations à placer ${jourSv}, et aucune priorité ne le dit`, lieu);
+      if (jourSv > demain && await prio.count()) R.echec(`${ou} : priorités`, `le prochain service est le ${jourSv} : l'accueil ne devrait pas presser de placer si tôt`, lieu);
       if (await prio.count()) { await prio.first().click(); await attendre(500);
         const ici = await page.evaluate(() => ({ vue: document.querySelector('.esp-vue:not([hidden])')?.dataset.vue, onglet: document.querySelector('[data-onglets-resas][aria-selected="true"]')?.dataset.onglet, aPlacer: document.querySelectorAll('[data-plan-salle] [data-resa-a-placer], [data-plan-salle] [data-a-placer] li').length }));
         if (ici.vue !== 'resas' || ici.onglet !== 'salle') R.echec(`${ou} : priorités`, `« Placer en salle » ouvre ${ici.vue}/${ici.onglet}`, lieu);
@@ -1333,6 +1337,84 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       await attendre(400); await page.locator('[data-rec-decider] button[value="oui"]').click(); await attendre(700); dS = await dossierS();
       if (dS.projet.invitesConfirmes !== 60 || dS.retenue.etat !== 'ferme' || !dS.aRevoir || !/60 \(confirmés\)/.test(await texte('.venue__recap', client)) || !/a accepté/.test(await texte('[data-reception-decision="acceptee"]', client))) R.echec(`${ou} : changement`, `accepter 60 invités met à jour l'effectif des deux côtés, garde la réception confirmée et marque la proposition « à revoir » : ${JSON.stringify({ n: dS.projet.invitesConfirmes, r: dS.retenue.etat, aRevoir: dS.aRevoir })}`, lieu);
       await mesurerEcran(client, taille, 'votre réception, confirmée, avec ses demandes', false);
+
+      /* ===== v7.12.1 · Ce qui est convenu reste clair : la révision après la confirmation =====
+         60 invités sont acceptés ; la version 1 (40 menus, 2 290 €) reste acceptée et intacte ; une version 2 est
+         préparée, présentée, acceptée par le client ; le jour J suit ; les espaces restent réservés tout du long. */
+      const commerce = () => page.evaluate(() => ({ cles: document.querySelector('[data-rec-commerce]')?.dataset.recCommerce || '', texte: document.querySelector('[data-rec-commerce]')?.innerText.replace(/\s+/g, ' ') || '', suite: document.querySelector('[data-rec-suite]')?.innerText.replace(/\s+/g, ' ') || '', revision: document.querySelector('[data-rec-revision]')?.innerText.replace(/\s+/g, ' ') || '' }));
+      const jourJ = () => page.evaluate(() => { const t = (c) => document.querySelector(`[data-rec-section="${c}"]`)?.innerText.replace(/\s+/g, ' ') || ''; return { base: document.querySelector('[data-rec-base]')?.innerText.replace(/\s+/g, ' ') || '', reception: t('reception'), aValider: t('a-valider'), prestations: t('prestations'), proposees: t('proposees'), pastille: document.querySelector('[data-rec-a-valider]')?.dataset.recAValider || '' }; });
+      const lieuClient = { page: '/votre-reception', taille: taille.nom };
+      let k = await commerce();
+      if (k.cles !== 'acceptee revision' || !/Proposition acceptée : version 1/.test(k.texte) || !/Révision à préparer/.test(k.texte) || !/60 invités/.test(k.revision) || !/La version 1 acceptée reste la référence/.test(k.revision) || !/Préparer une nouvelle version de la proposition \(60 invités\)/.test(k.suite)) R.echec(`${ou} : révision`, `après l'acceptation des 60 invités, le dossier devrait dire « Proposition acceptée : version 1 » et « Révision à préparer » : ${JSON.stringify(k).slice(0, 420)}`, lieu);
+      if (await client.locator('[data-reception-focus]').getAttribute('data-reception-revision') !== 'due' || !/l'équipe doit encore mettre la proposition à jour ; la version 1 reste la référence/.test(await texte('.venue__phrase', client))) R.echec(`${ou} : révision`, `la page du client devrait dire qu'une mise à jour de la proposition est attendue : « ${(await texte('.venue__phrase', client)).slice(0, 220)} »`, lieuClient);
+      await onglet('jourj'); let jj = await jourJ();
+      if (!/Version 1 · .* 2 290 €.* établie pour 40 invités/.test(jj.reception) || !/Proposition à réviser/.test(jj.aValider) || !/60 invités confirmés ; les prestations acceptées \(version 1\) sont établies pour 40/.test(jj.aValider) || jj.pastille !== '2') R.echec(`${ou} : révision`, `le jour J devrait garder la version 1 et signaler ce qui reste à valider : ${JSON.stringify(jj).slice(0, 420)}`, lieu);
+      /* Un brouillon créé puis abandonné n'efface pas la révision due. */
+      await page.locator('[data-rec-revision] [data-rec-onglet="proposition"]').click(); await attendre(400);
+      if (await page.locator('[data-rec-panneau]').getAttribute('data-rec-panneau') !== 'proposition') R.echec(`${ou} : révision`, '« Ouvrir la proposition » devrait mener à l\'onglet Proposition', lieu);
+      await page.locator('[data-rec-nouvelle-version]').click(); await attendre(500); await page.locator('[data-rec-abandonner]').click(); await attendre(500); k = await commerce();
+      if (k.cles !== 'acceptee revision' || (await dossierS()).projet.invitesConfirmes !== 60) R.echec(`${ou} : révision`, `un brouillon abandonné ne doit effacer ni la révision due ni le changement accepté : ${JSON.stringify(k).slice(0, 240)}`, lieu);
+      /* La version 2 : 60 menus, présentée. */
+      await page.locator('[data-rec-nouvelle-version]').click(); await attendre(500); await change('#pl-qte-0', '60');
+      if (!/3\s?100\s?€/.test(await texte('[data-rec-total]')) || (await commerce()).cles !== 'acceptee brouillon') R.echec(`${ou} : révision`, `la version 2 devrait totaliser 3 100 € et le dossier dire « Version 2 en préparation » : ${await texte('[data-rec-total]')} / ${(await commerce()).cles}`, lieu);
+      const retAvant = JSON.stringify((await dossierS()).retenue);
+      await page.locator('[data-rec-presenter]').click(); await attendre(700); k = await commerce(); e = await etats(); dS = await dossierS();
+      if (e.etape !== 'confirmee' || e.retenue !== 'ferme' || JSON.stringify(dS.retenue) !== retAvant || k.cles !== 'acceptee attente' || !/Version 2 présentée, accord attendu/.test(k.texte) || !/Attendre l'accord du client sur la version 2/.test(k.suite)) R.echec(`${ou} : révision`, `présenter la version 2 ne libère rien et ne confirme rien de plus : ${JSON.stringify({ e, cles: k.cles, suite: k.suite }).slice(0, 320)}`, lieu);
+      const versions = await page.evaluate(() => [...document.querySelectorAll('[data-rec-version]')].map((li) => `${li.dataset.recVersion}:${li.dataset.recVersionEtat}`).join(' '));
+      if (versions !== '2:attente 1:acceptee' || !(await page.locator('[data-rec-retirer-ouvrir]').count())) R.echec(`${ou} : révision`, `la liste devrait dire la version 2 en attente et la version 1 acceptée, et proposer de retirer la version 2 : ${versions}`, lieu);
+      await mesurerEcran(page, taille, 'dossier, version 2 en attente d\'accord', false); await debordement(page, 'l\'onglet Proposition avec deux versions');
+      /* Le document de la version 1 : resté tel qu'il a été présenté (40 invités, 2 290 €), alors que le dossier dit 60. */
+      await page.locator('[data-rec-version="1"] [data-rec-apercu]').click(); await attendre(450);
+      const doc1 = await texte('.esp-modale--doc .esp-doc');
+      if (!(await page.locator('.esp-modale--doc [data-doc-contexte="instantane"]').count()) || !/Proposition version 1 · présentée le/.test(doc1) || !/Pour Thomas B\. · .* · 40 invités annoncés/.test(doc1) || !/42 par personne/.test(doc1) || !/2\s?290\s?€/.test(doc1) || /60/.test(doc1.replace(/2026/g, ''))) R.echec(`${ou} : instantané`, `le document de la version 1 devrait rester à 40 invités et 2 290 € : « ${doc1.slice(0, 420)} »`, lieu);
+      await mesurerEcran(page, taille, 'proposition version 1, instantané', false); await page.keyboard.press('Escape'); await attendre(300);
+      /* Le jour J : la version 1 reste la base ; la version 2 est « à valider ». */
+      await onglet('jourj'); jj = await jourJ();
+      if (!/Préparez sur la base de la version 1 acceptée, établie pour 40 invités\. 2 points restent à valider/.test(jj.base) || !/Version 2 présentée Accord du client attendu \(3 100 €, pour 60 invités\)/.test(jj.aValider) || !/ACCEPTÉES \(VERSION 1\).*42 par personne/i.test(jj.prestations) || !/PROPOSÉES \(VERSION 2, ACCORD ATTENDU\).*60 par personne/i.test(jj.proposees) || !/Version 1 · /.test(jj.reception)) R.echec(`${ou} : jour J`, `une version seulement présentée ne doit pas devenir la proposition retenue : ${JSON.stringify(jj).slice(0, 520)}`, lieu);
+      await mesurerEcran(page, taille, 'dossier, jour J avec une révision en attente', false); await debordement(page, 'le jour J avec une révision en attente');
+      await page.locator('[data-rec-fiche]').click(); await attendre(450); const fiche2 = await texte('.esp-modale--doc .esp-doc');
+      if (!/À VALIDER AVANT LE JOUR J/i.test(fiche2) || !/Préparez sur la base de la version 1 acceptée/.test(fiche2) || !/Version 2 présentée/.test(fiche2)) R.echec(`${ou} : fiche du jour J`, `la fiche imprimable devrait signaler ce qui reste à valider : « ${fiche2.slice(0, 420)} »`, lieu);
+      await mesurerEcran(page, taille, 'fiche du jour J, révision en attente', false); await page.keyboard.press('Escape'); await attendre(300);
+      /* La page du client : la version 2 à accepter, la version 1 acceptée toujours consultable. */
+      await attendre(500);
+      const cl2 = await client.evaluate(() => ({ etat: document.querySelector('[data-reception-etat]')?.dataset.receptionEtat, v: document.querySelector('[data-reception-proposition]')?.dataset.receptionProposition, acc: document.querySelector('[data-reception-acceptee]')?.dataset.receptionAcceptee, attente: document.querySelector('[data-reception-attente-version]')?.innerText.replace(/\s+/g, ' ') || '', bouton: !!document.querySelector('[data-reception-accorder]'), phrase: document.querySelector('.venue__phrase')?.innerText.replace(/\s+/g, ' ') || '', recap: document.querySelector('.venue__recap')?.innerText.replace(/\s+/g, ' ') || '' }));
+      if (cl2.etat !== 'confirmee' || cl2.v !== '2' || cl2.acc !== '1' || !cl2.bouton || !/Version 2 présentée : votre accord est attendu/.test(cl2.attente) || !/il ne vaut pas pour celle-ci/.test(cl2.attente) || !/Une nouvelle proposition \(version 2\) attend votre accord/.test(cl2.phrase) || !/Proposition acceptée Version 1, 2 290 €/.test(cl2.recap) || !/Proposition en attente Version 2, 3 100 €/.test(cl2.recap)) R.echec(`${ou} : révision`, `la page du client devrait montrer la version 2 à accepter et la version 1 acceptée : ${JSON.stringify(cl2).slice(0, 520)}`, lieuClient);
+      await client.locator('.venue__details summary').click(); await attendre(300);
+      const acc1 = await texte('[data-reception-acceptee]', client);
+      if (!/Établie pour 40 invités/.test(acc1) || !/42 par personne/.test(acc1) || !/2\s?290\s?€/.test(acc1)) R.echec(`${ou} : instantané`, `sur la page du client, la version 1 acceptée devrait rester à 40 invités : « ${acc1.slice(0, 300)} »`, lieuClient);
+      await mesurerEcran(client, taille, 'votre réception, version 2 en attente d\'accord', false); await debordement(client, 'la page du client avec deux versions');
+      await client.locator('[data-reception-accorder]').click(); await attendre(300);
+      if (!/elle deviendra la proposition retenue\. Vos espaces restent réservés/.test(await texte('.venue__form', client))) R.echec(`${ou} : révision`, `la confirmation de l'accord devrait dire ce qu'il change : « ${(await texte('.venue__form', client)).slice(0, 240)} »`, lieuClient);
+      await mesurerEcran(client, taille, 'votre réception, accord sur la version 2', false);
+      await client.locator('[data-reception-accord-oui]').click(); await attendre(900);
+      const cl3 = await client.evaluate(() => ({ msg: document.querySelector('.venue__message')?.innerText.replace(/\s+/g, ' ') || '', accord: document.querySelector('[data-reception-accord]')?.dataset.receptionAccord, bouton: !!document.querySelector('[data-reception-accorder]'), acc: !!document.querySelector('[data-reception-acceptee]'), recap: document.querySelector('.venue__recap')?.innerText.replace(/\s+/g, ' ') || '' }));
+      if (!/accord sur la version 2 est noté \(simulation\)\. Elle devient la proposition retenue/.test(cl3.msg) || cl3.accord !== '2' || cl3.bouton || cl3.acc || !/Proposition acceptée Version 2, 3 100 €, établie pour 60 invités/.test(cl3.recap) || /Proposition en attente/.test(cl3.recap)) R.echec(`${ou} : révision`, `après l'accord, la version 2 devrait être la proposition acceptée du client : ${JSON.stringify(cl3).slice(0, 420)}`, lieuClient);
+      /* L'espace suit, d'un bloc : proposition acceptée, jour J, prestations ; les espaces n'ont pas bougé. */
+      await attendre(600); k = await commerce(); jj = await jourJ(); e = await etats(); dS = await dossierS();
+      if (k.cles !== 'acceptee' || !/Proposition acceptée : version 2/.test(k.texte) || k.revision || jj.aValider || jj.proposees || !/Version 2 · .*3 100 €.*établie pour 60 invités/.test(jj.reception) || !/ACCEPTÉES \(VERSION 2\).*60 par personne/i.test(jj.prestations) || !/Préparez sur la base de la version 2 acceptée, établie pour 60 invités\.$/.test(jj.base) || e.etape !== 'confirmee' || JSON.stringify(dS.retenue) !== retAvant) R.echec(`${ou} : jour J`, `l'accord sur la version 2 devrait mettre à jour la proposition retenue et le jour J ensemble, sans toucher aux espaces : ${JSON.stringify({ cles: k.cles, jj, e }).slice(0, 560)}`, lieu);
+      await mesurerEcran(page, taille, 'dossier, jour J après l\'accord sur la version 2', false);
+      const accords = await page.evaluate(() => (JSON.parse(localStorage.getItem('jh-demo:reception:espace-venues:v1') || '{}')['rec-sc5-demande']?.accords || []).map((a) => a.version).join(','));
+      if (accords !== '1,2') R.echec(`${ou} : accords`, `les accords devraient être gardés version par version (1 puis 2) : « ${accords} »`, lieu);
+      /* La version 1, encore : toujours consultable, toujours intacte. */
+      await onglet('proposition');
+      const v1 = await page.evaluate(() => ({ etat: document.querySelector('[data-rec-version="1"]')?.dataset.recVersionEtat, texte: document.querySelector('[data-rec-version="1"]')?.innerText.replace(/\s+/g, ' ') || '' }));
+      if (v1.etat !== 'ancienne' || !/2\s?290\s?€ · pour 40 invités/.test(v1.texte) || !/Acceptée, puis remplacée/.test(v1.texte) || !/Accord du client — simulation/.test(v1.texte)) R.echec(`${ou} : instantané`, `la version 1 devrait rester dans la liste, avec son accord et ses 40 invités : ${JSON.stringify(v1).slice(0, 300)}`, lieu);
+      await page.locator('[data-rec-version="1"] [data-rec-apercu]').click(); await attendre(450);
+      if (!/40 invités annoncés/.test(await texte('.esp-modale--doc .esp-doc')) || !/2\s?290\s?€/.test(await texte('.esp-modale--doc .esp-doc'))) R.echec(`${ou} : instantané`, 'après l\'accord sur la version 2, le document de la version 1 devrait être inchangé', lieu);
+      await page.keyboard.press('Escape'); await attendre(300);
+      /* Une révision refusée : une version 3 est présentée, puis retirée. La version 2, acceptée, redevient la référence ;
+         la version retirée reste dans la liste ; une version acceptée, elle, ne se retire pas. */
+      if (await page.locator('[data-rec-retirer-ouvrir]').count()) R.echec(`${ou} : retrait`, 'une version qui a reçu un accord ne devrait pas pouvoir être retirée', lieu);
+      await page.locator('[data-rec-nouvelle-version]').click(); await attendre(500); await change('#pl-qte-0', '65'); await page.locator('[data-rec-presenter]').click(); await attendre(700);
+      if ((await commerce()).cles !== 'acceptee attente' || !(await client.locator('[data-reception-accorder]').count())) R.echec(`${ou} : retrait`, `une version 3 présentée devrait attendre son accord, à côté de la version 2 acceptée : ${(await commerce()).cles}`, lieu);
+      await page.locator('[data-rec-retirer-ouvrir]').click(); await attendre(300); await mesurerEcran(page, taille, 'dossier, retirer une version', false);
+      await page.locator('[data-rec-retirer] button[type="submit"]').click(); await attendre(400);
+      if ((await dossierS()).courante !== 3) R.echec(`${ou} : retrait`, 'sans raison, la version ne devrait pas être retirée', lieu);
+      await page.locator('#rec-retrait').fill('Le client préfère en rester à 60 invités'); await page.locator('[data-rec-retirer] button[type="submit"]').click(); await attendre(700);
+      k = await commerce(); dS = await dossierS(); const listeV = await page.evaluate(() => [...document.querySelectorAll('[data-rec-version]')].map((li) => `${li.dataset.recVersion}:${li.dataset.recVersionEtat}`).join(' '));
+      if (k.cles !== 'acceptee' || !/Proposition acceptée : version 2/.test(k.texte) || dS.courante !== 2 || listeV !== '3:retiree 2:acceptee 1:ancienne' || JSON.stringify(dS.retenue) !== retAvant || dS.projet.invitesConfirmes !== 60) R.echec(`${ou} : retrait`, `après le retrait de la version 3, la version 2 acceptée devrait redevenir la référence, sans rien changer d'autre : ${JSON.stringify({ cles: k.cles, courante: dS.courante, listeV })}`, lieu);
+      await attendre(500);
+      if (await client.locator('[data-reception-accorder]').count() || await client.locator('[data-reception-proposition]').getAttribute('data-reception-proposition') !== '2') R.echec(`${ou} : retrait`, 'la page du client devrait revenir à la version 2 acceptée, sans accord à donner', lieuClient);
       await client.close();
 
       /* ===== Variante : une option qui expire (en recommençant, jusqu'à l'option) ===== */
@@ -1383,6 +1465,42 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       R.ok(`espace : réceptions (${taille.nom})`);
     } catch (err) { R.echec(`${ou} : parcours interrompu`, String(err.message || err).replace(/\u001b\[[0-9;]*m/g, '').replace(/\s+/g, ' ').slice(0, 420), lieu);
     } finally { await ctx.close(); }
+  }
+
+  /* ---------- 1 quaterdecies. Le restaurant et les réceptions, vus de la page Réserver (v7.12.1) ----------
+     Plusieurs dossiers retiennent chacun une zone du restaurant. Hors saison de terrasse, les trois zones intérieures
+     font tout ce qui est utilisable : la page Réserver ne propose plus ce soir-là, même si aucun dossier ne retient
+     « toute la salle ». Deux zones sur trois : le service reste proposé. En été, la salle entièrement retenue n'est
+     plus proposée, la terrasse le reste ; salle et terrasse retenues : le service est privatisé.
+     Les dossiers sont construits par les mêmes règles que l'espace, puis posés dans le stockage de démonstration. */
+  for (const taille of (!SEUL || SEUL.includes('1-quaterdecies') ? ['390×844'] : []).map(T)) {
+    const ou = `réserver et réceptions (${taille.nom})`, lieu = { page: '/reserver', taille: taille.nom };
+    try {
+      globalThis.document ||= { visibilityState: 'visible' };
+      const racine = new URL('../', import.meta.url), lireD = (f) => JSON.parse(readFileSync(new URL(`donnees/${f}`, racine), 'utf8'));
+      const { MUTATIONS_RECEPTIONS, dossierDepuisDemande, argsRetenue } = await import(new URL('assets/js/espace-receptions.js', racine).href), { normaliser } = await import(new URL('assets/js/espace-demandes.js', racine).href);
+      const LIEUX = lireD('receptions.json'), SALLE = lireD('salle.json'), zones = [['a', 'coin-feu'], ['b', 'baies'], ['c', 'grande-table']];
+      const etat = (jour, l, maintenant) => { const S = { _schema: 2, receptions: { dossiers: {} } };
+        for (const [i, z] of l) { const d = dossierDepuisDemande(normaliser({ id: `zone-${i}`, genre: 'reception', cree: `${maintenant}:00`, occasion: 'Un anniversaire', date: jour, invites: '4', prenom: 'Zone', nom: i.toUpperCase(), telephone: `06 00 00 00 0${zones.findIndex((x) => x[0] === i) + 1}`, source: 'demo' }), { cree: maintenant, lieux: LIEUX });
+          MUTATIONS_RECEPTIONS.recCreer(S, { dossier: d }); MUTATIONS_RECEPTIONS.recRetenir(S, argsRetenue({ lieux: LIEUX }, SALLE, S.receptions.dossiers[d.id], { type: 'ferme', jour, horaires: { arrivee: '19:00', fin: '01:00' }, espaces: [z], le: maintenant })); }
+        return S; };
+      const voir = async (S, jour, horloge) => { const { ctx, page, erreurs } = await contexte({ taille });
+        try { await ctx.addInitScript((x) => { localStorage.setItem('jh-espace:v1', x); }, JSON.stringify(S)); await page.clock.setFixedTime(new Date(horloge));
+          await page.goto(`${BASE}/reserver?date=${jour}&service=soir#formulaire`, { waitUntil: 'load' }); await attendrePret(page); await attendre(900);
+          const r = await page.evaluate(() => ({ aide: document.querySelector('[data-resa-creneaux-aide]')?.textContent.replace(/\s+/g, ' ') || '', libres: document.querySelectorAll('input[name="heure"]:not(:disabled)').length,
+            espaces: Object.fromEntries([...document.querySelectorAll('input[name="espace"]')].map((x) => [x.value, `${x.disabled ? 'retiré' : 'proposé'}${x.checked ? ', coché' : ''} · ${x.closest('label')?.querySelector('[data-note]')?.textContent || ''}`])) }));
+          [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu)); return r; } finally { await ctx.close(); } };
+      const NOV = '2026-11-22T10:00:00+01:00', JUIN = '2027-06-20T10:00:00+02:00', DEC = '2026-12-12', JUIL = '2027-07-10';
+      let r = await voir(etat(DEC, zones, '2026-11-22T10:00'), DEC, NOV);
+      if (!/le restaurant accueille une réception/.test(r.aide) || r.libres !== 0) R.echec(`${ou} : zones réunies`, `trois dossiers retiennent les trois zones intérieures, terrasse hors saison : aucune disponibilité ne devrait être annoncée : ${JSON.stringify(r).slice(0, 300)}`, lieu);
+      r = await voir(etat(DEC, zones.slice(0, 2), '2026-11-22T10:00'), DEC, NOV);
+      if (r.libres < 1 || /accueille une réception/.test(r.aide) || !/^proposé/.test(r.espaces.salle || '')) R.echec(`${ou} : réception partielle`, `deux zones sur trois : le service devrait rester proposé en salle : ${JSON.stringify(r).slice(0, 300)}`, lieu);
+      r = await voir(etat(JUIL, zones, '2027-06-20T10:00'), JUIL, JUIN);
+      if (r.libres < 1 || !/^retiré · retenue pour une réception ce jour-là/.test(r.espaces.salle || '') || !/^proposé, coché/.test(r.espaces.terrasse || '')) R.echec(`${ou} : la saison`, `en juillet, salle entièrement retenue : la terrasse devrait rester proposée, la salle non : ${JSON.stringify(r).slice(0, 300)}`, lieu);
+      r = await voir(etat(JUIL, [...zones, ['t', 'terrasse']], '2027-06-20T10:00'), JUIL, JUIN);
+      if (!/le restaurant accueille une réception/.test(r.aide) || r.libres !== 0) R.echec(`${ou} : la saison`, `en juillet, salle et terrasse retenues : le service devrait être privatisé : ${JSON.stringify(r).slice(0, 300)}`, lieu);
+      R.ok(`espace : réserver et réceptions (${taille.nom})`);
+    } catch (err) { R.echec(`${ou} : parcours interrompu`, String(err.message || err).replace(/\u001b\[[0-9;]*m/g, '').replace(/\s+/g, ' ').slice(0, 420), lieu); }
   }
 
   /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */

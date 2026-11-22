@@ -3,7 +3,7 @@
    de démonstration tirées des vrais horaires, réservations du jour, événements.
    v7.8.0 : les ouvertures, les heures d'arrivée et la faisabilité d'une réservation viennent de `disponibilites.js`,
    le fichier que lit aussi la page Réserver : une seule logique pour le site et pour l'équipe. */
-import { JOURS, enMin, hhmm, ajouter, jourDe, svDe, servicesDe, etatService, arrivees, faisabilite, equipeDe } from './disponibilites.js?v=7';
+import { JOURS, enMin, hhmm, ajouter, jourDe, svDe, servicesDe, etatService, arrivees, faisabilite, equipeDe, fenetreService, prisesDuService, occupationsActives } from './disponibilites.js?v=7';
 export { JOURS, enMin, hhmm, ajouter, jourDe, svDe, servicesDe, etatService, equipeDe };
 export const SEMAINE = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
 export const STATUTS = { 'a-confirmer': 'À confirmer', confirmee: 'Confirmée', arrivee: 'Arrivés', absente: 'Absents', refusee: 'Refusée', annulee: 'Annulée' };
@@ -41,6 +41,10 @@ export const ouvertSite = (R, iso, sv) => etatService(R, iso, sv, {}).ouvert;
 /** L'instant présent d'un contexte, « AAAA-MM-JJTHH:MM » : celui qu'il porte, sinon son jour et sa minute. */
 export const instantCtx = (ctx = {}) => String(ctx.maintenant || (ctx.auj ? `${ctx.auj}T${hhmm(ctx.minute ?? 0)}` : '')).slice(0, 16);
 export const etatDuService = (ctx, S, iso, sv) => etatService(ctx.R, iso, sv, equipeDe(S, ctx.exceptions || [], instantCtx(ctx)));
+/** La fenêtre d'un service ce jour-là, avec les horaires que l'espace a changés (v7.12.1) : voir `fenetreService`. */
+export const fenetreDuService = (ctx, S, iso, sv) => fenetreService(ctx.R, iso, sv, equipeDe(S, ctx.exceptions || [], instantCtx(ctx)));
+/** Ce que les réceptions retiennent pendant un service, d'après l'état de l'espace : voir `prisesDuService`. `plus` : une occupation envisagée, à ajouter. */
+export const prisesDuServiceCtx = (ctx, S, iso, sv, plus = []) => prisesDuService([...occupationsActives(S, instantCtx(ctx)), ...plus], ctx.R, iso, sv, equipeDe(S, ctx.exceptions || [], instantCtx(ctx)));
 /** Le service est-il ouvert ce jour-là ? Règles du site, plus ce que l'espace a changé (S). */
 export const ouvert = (regles, S, iso, sv) => etatDuService(regles, S, iso, sv).ouvert;
 /** Les heures d'arrivée possibles ce jour-là (horaires déplacés et ouvertures exceptionnelles compris) ; vide si le service est fermé. */

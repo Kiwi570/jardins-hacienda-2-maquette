@@ -5646,3 +5646,31 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 .esp-rec-notice { margin: 8px 0 0; padding: 8px 12px; border-radius: 12px; border: 1px dashed var(--or-fonce); background: #fff; font-size: 15px; }
 .esp-salle-carte .esp-rec-notice { margin: 0 0 12px; }
 .esp-rec-notice .esp-lien { margin-left: 4px; }
+
+/* ---------- v7.12.1 · Ce qui est convenu reste clair ----------
+   La proposition acceptée, la version en attente d'accord et la révision due se lisent à part des espaces réservés :
+   dans l'en-tête du dossier, dans la liste des versions, sur la fiche du jour J et sur la page du client. */
+.esp-rec-etats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.esp-rec-etats li .esp-pastille + .esp-rec-etats__detail + .esp-pastille { margin-top: 6px; }
+@media (max-width: 1240px) { .esp-rec-etats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .esp-rec-etats { grid-template-columns: minmax(0, 1fr); } }
+.esp-rec-alerte .esp-lien { margin-left: 4px; }
+.esp-rec-situation { display: grid; gap: 4px; margin: 0 0 12px; padding: 10px 14px; border-radius: 12px; border-left: 4px solid var(--or-fonce); background: var(--couleur-surface); font-size: 15px; }
+.esp-rec-version.est-en-attente { background: #fbe9c8; color: #3d2503; }
+.esp-rec-version.est-en-attente small { color: #5b3605; }
+.esp-rec-base { margin: 0 0 14px; padding: 10px 14px; border-radius: 12px; background: var(--couleur-surface); font-size: 15px; font-weight: 600; }
+.esp-rec-fiche section.est-en-attente { padding: 10px 12px; border-radius: 12px; border: 1px dashed var(--or-fonce); background: #fdf6e6; }
+.esp-rec-fiche section.est-en-attente h5 { color: #5b3605; border-bottom-color: color-mix(in oklab, var(--or-fonce) 45%, transparent); }
+.esp-rec-fiche .est-en-attente dt { color: #5b3605; }
+.esp-rec-fiche .est-en-attente dd { color: #3d2503; font-weight: 600; }
+.esp-doc__base { margin: 0 0 12px; padding: 8px 12px; border: 1px solid #1c1712; border-radius: 8px; font-size: 15px; font-weight: 700; }
+.esp-doc__attente { padding: 8px 12px; border: 1px dashed #1c1712; border-radius: 8px; }
+.esp-doc__attente h4 { margin-top: 0; }
+.esp-doc__attente dl div { border-bottom-color: transparent; }
+.venue__details { margin-top: 10px; padding: 10px 14px; border-radius: 14px; border: 1px solid color-mix(in oklab, var(--couleur-texte) 18%, transparent); }
+.venue__details summary { min-height: 44px; display: flex; align-items: center; gap: 8px; font-weight: 700; cursor: pointer; }
+.venue__details summary::before { content: '+'; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1px solid currentColor; font-weight: 700; line-height: 1; }
+.venue__details[open] summary::before { content: '–'; }
+.venue__details summary::-webkit-details-marker { display: none; }
+.venue__details summary:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 3px; border-radius: 8px; }
+@media print { .esp-feuille--doc .esp-doc__attente { break-inside: avoid; } }
