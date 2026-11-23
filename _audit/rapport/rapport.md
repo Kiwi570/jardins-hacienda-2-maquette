@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 22/11/2026 19:01:47 · 7 min · 12 page(s) · audit complet (étapes : fichiers, fluidite)
+Projet : `jardins-hacienda-2-maquette` · 23/11/2026 18:26:14 · 33 min · 2 page(s) · audit complet ciblé sur /espace,/receptions (étapes : fichiers, mesures, parcours)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261122-175509-complet-partiel` · version ?v=7
+- Passe : `20261123-165251-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **3**
+- À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), fluidité (22), défilement selon l’appareil (5)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (78), balayage (2), intro accélérable et passable (7), menu (1), clavier (2), liens et boutons (2), liens profonds (4), liens vers la page en cours (2), changements de hauteur (1), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : un service parfaitement accompagné (1366×768) (1), espace : un service parfaitement accompagné (390×844) (1), espace : démonstrations (1366×768) (1), espace : démonstrations (390×844) (1), espace : réceptions (1366×768) (1), espace : réceptions (390×844) (1), espace : réserver et réceptions (390×844) (1), espace : offres (1366×768) (1), espace : offres (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
 
 ## Passes de cette version (?v=7)
 
@@ -164,7 +164,10 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261121-184813-complet | complet | toutes | toutes | 0 | 19 | 1 | complet |
 | 20261122-155236-complet | complet | toutes | toutes | 2 | 21 | 2 | échecs |
 | 20261122-171745-complet-partiel | complet | toutes | fichiers, parcours | 0 | 6 | 0 | complet |
-| **20261122-175509-complet-partiel** (celle-ci) | complet | toutes | fichiers, fluidite | 0 | 3 | 0 | complet |
+| 20261122-175509-complet-partiel | complet | toutes | fichiers, fluidite | 0 | 3 | 0 | complet |
+| 20261123-144630-complet | complet | toutes | toutes | 7 | 76 | 1 | échecs |
+| 20261123-160901-complet-cible-partiel | complet | /,/404,/receptions,/espace | fichiers, mesures, parcours | 0 | 58 | 0 | complet |
+| **20261123-165251-complet-cible-partiel** (celle-ci) | complet | /espace,/receptions | fichiers, mesures, parcours | 0 | 0 | 0 | complet |
 
 ## Échecs
 
@@ -172,11 +175,7 @@ Aucun.
 
 ## À regarder
 
-### fluidité (3)
-
-- **fluidité** — `/` — 6 % d'images de plus de 50 ms _(1366×768 défilement à la molette, processeur ralenti 4 fois)_
-- **fluidité** — `/a-emporter` — 4 % d'images de plus de 50 ms _(1366×768 défilement à la molette, processeur ralenti 4 fois)_
-- **fluidité** — `/offrir` — 3 % d'images de plus de 50 ms _(1366×768 défilement à la molette, processeur ralenti 4 fois)_
+Rien.
 
 ## Non lancé
 
@@ -192,25 +191,8 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Fluidité /espace 1366×768 (molette) : 0 % d'images lentes sur 170, tâche la plus longue 0 ms
-- Fluidité /infos-pratiques 1366×768 (molette) : 1 % d'images lentes sur 278, tâche la plus longue 65 ms
-- Fluidité /la-carte 1366×768 (molette) : 2 % d'images lentes sur 334, tâche la plus longue 59 ms
-- Fluidité /les-fetes 1366×768 (molette) : 2 % d'images lentes sur 443, tâche la plus longue 100 ms
-- Fluidité /receptions 1366×768 (molette) : 1 % d'images lentes sur 566, tâche la plus longue 68 ms
-- Fluidité /reserver 1366×768 (molette) : 0 % d'images lentes sur 233, tâche la plus longue 56 ms
-- Fluidité /votre-reception 1366×768 (molette) : 0 % d'images lentes sur 164, tâche la plus longue 0 ms
-- Fluidité /votre-venue 1366×768 (molette) : 0 % d'images lentes sur 165, tâche la plus longue 0 ms
-- Fluidité / 390×844 (doigt) : 0 % d'images lentes sur 1429, tâche la plus longue 0 ms
-- Fluidité /a-emporter 390×844 (doigt) : 0 % d'images lentes sur 1430, tâche la plus longue 0 ms
-- Fluidité /espace 390×844 (doigt) : 0 % d'images lentes sur 1345, tâche la plus longue 0 ms
-- Fluidité /infos-pratiques 390×844 (doigt) : 0 % d'images lentes sur 1420, tâche la plus longue 0 ms
-- Fluidité /la-carte 390×844 (doigt) : 0 % d'images lentes sur 1344, tâche la plus longue 0 ms
-- Fluidité /les-fetes 390×844 (doigt) : 0 % d'images lentes sur 1426, tâche la plus longue 0 ms
-- Fluidité /offrir 390×844 (doigt) : 0 % d'images lentes sur 1414, tâche la plus longue 0 ms
-- Fluidité /receptions 390×844 (doigt) : 0 % d'images lentes sur 1352, tâche la plus longue 0 ms
-- Fluidité /reserver 390×844 (doigt) : 0 % d'images lentes sur 1341, tâche la plus longue 0 ms
-- Fluidité /votre-reception 390×844 (doigt) : 0 % d'images lentes sur 1344, tâche la plus longue 0 ms
-- Fluidité /votre-venue 390×844 (doigt) : 0 % d'images lentes sur 1338, tâche la plus longue 0 ms
+- Changements de hauteur /espace : aucun effet ScrollTrigger, rien à recalculer.
+- Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
 
 ## Fichiers
 

@@ -1,15 +1,16 @@
 {
- "id": "20261122-175509-complet-partiel",
- "date": "2026-11-22T18:01:47.082Z",
+ "id": "20261123-165251-complet-cible-partiel",
+ "date": "2026-11-23T17:26:14.293Z",
  "niveau": "complet",
- "pages": "toutes",
+ "pages": "/espace,/receptions",
  "etapes": [
   "fichiers",
-  "fluidite"
+  "mesures",
+  "parcours"
  ],
  "version": "7",
  "echecs": 0,
- "aRegarder": 3,
+ "aRegarder": 0,
  "nonLances": 0,
  "manquants": 0,
  "statut": "complet"

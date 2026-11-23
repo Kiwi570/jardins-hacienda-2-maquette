@@ -75,7 +75,7 @@ export default (c) => {
         <p class="socle-surtitre">${c.t('reserver.formSur')}</p>
         <h2 id="resa-titre" data-anime="lignes">${c.t('reserver.formTitre')}</h2>
         <p class="resa__soiree" data-soiree hidden></p>
-        <script type="application/json" data-agenda>${brut(JSON.stringify(c.donnees.agenda.dates.map((d) => ({ id: d.id, t: d.titre, d: d.debut, p: d.prix }))).replace(/<\//g, '<\\/'))}</script>
+        <script type="application/json" data-agenda>${brut(JSON.stringify(c.donnees.agenda.dates.map((d) => ({ id: d.id, t: d.titre, d: d.debut, p: d.prix, s: d.service || 'soir' }))).replace(/<\//g, '<\\/'))}</script>
         <p class="resa__intro">${c.t('reserver.formTexte')}</p>
         <ol class="resa__progression" data-resa-progression hidden>
           ${ETAPES.map((e, k) => html`<li><button type="button" class="resa__pas" data-aller-etape="${k + 1}"><span class="resa__pas-n" aria-hidden="true">${k + 1}</span><span class="resa__pas-t">${e}</span></button></li>`)}

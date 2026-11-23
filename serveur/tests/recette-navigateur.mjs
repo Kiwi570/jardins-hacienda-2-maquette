@@ -166,6 +166,17 @@ try {
   const vrTexte = await texte(Vr, '[data-reception-client]'); const vrOutils = await Vr.locator('[data-reception-accorder], [data-reception-outil], [data-reception-form]').count();
   const Rs = await A.context().newPage(); await Rs.goto(`${BASE}/reserver`, { waitUntil: 'load' }); await attendre(1500);
   const resaPrive = /accueille une réception/.test(await texte(Rs, 'main'));
+  /* v7.13.0 : les offres restent dans ce navigateur ; elles ne touchent ni les réservations ni le planning partagés, et aucun tarif d'exemple n'entre dans le catalogue. */
+  const avantOffres = JSON.stringify(await api(A, `/reservations?du=${vendredi}&au=${vendredi}`));
+  await vue(Rc, 'carte'); await Rc.locator('#onglet-carte-catalogue').click(); await attendre(400);
+  const catC = await Rc.evaluate(() => ({ exemples: document.querySelectorAll('[data-offre-exemple]').length, types: [...new Set([...document.querySelectorAll('[data-offre]')].map((x) => x.dataset.offreType))].sort().join() }));
+  verifier('v7.13.0 : aucune offre d\'exemple dans le catalogue du site connecté', catC.exemples === 0 && !/formule|prestation/.test(catC.types) && /plat/.test(catC.types), JSON.stringify(catC));
+  await Rc.locator('[data-offre-nouvelle]').first().click(); await attendre(400); await Rc.locator('#of-nom').fill('Cocktail de recette'); await Rc.locator('#of-prix').fill('20'); await Rc.locator('[data-form-offre] button[type="submit"]').click(); await attendre(500);
+  await Rc.locator('[data-pub-ouvrir]').first().click(); await attendre(300);
+  const resumeC = await texte(Rc, '[data-pub-resume]'); await Rc.locator('[data-pub-confirmer]').click(); await attendre(600);
+  const publieC = await Rc.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').publie?.n || 0);
+  verifier('v7.13.0 : publier une offre est dit local à ce navigateur, et ne change rien aux réservations partagées', /pas encore partagé entre vos appareils/.test(resumeC) && publieC === 1 && JSON.stringify(await api(A, `/reservations?du=${vendredi}&au=${vendredi}`)) === avantOffres, `${resumeC.slice(0, 140)} | n° ${publieC}`);
+  await Rc.evaluate(() => { const d = JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'); delete d.offres; delete d.publie; localStorage.setItem('jh-espace:v1', JSON.stringify(d)); });
   await Vr.close(); await Rs.close(); await Rc.close();
   verifier('v7.12.0 : « Votre réception » dit qu\'elle n\'est pas reliée et ne propose ni accord ni demande', /n'est pas reliée au restaurant/.test(vrTexte) && vrOutils === 0 && !/Fantôme/.test(vrTexte), vrTexte.slice(0, 240));
   verifier('v7.12.0 : la page Réserver n\'annonce aucune réception d\'après un dossier local', !resaPrive);

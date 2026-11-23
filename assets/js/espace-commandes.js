@@ -163,18 +163,20 @@ export function comprendre(texte, ctx) {
   }
   /* La carte (v7.7.3) : « épuisé : côte de bœuf », « plus de foie gras », « il reste du foie gras », « foie gras à 23 € ». */
   if (ctx.carte && !out.length && !an && !retirerAnnonce) {
-    const carte = carteDe(ctx.carte, S, auj), allerCarte = (cle) => ({ vue: 'carte', onglet: 'carte', plat: cle });
+    /* v7.13.0 : avec le service en cours (`ctx.service`), « épuisé » ne vaut que pour lui ; sans lui, pour la journée (comme avant). */
+    const quand = ctx.service ? (ctx.service === 'midi' ? 'ce midi' : 'ce soir') : 'aujourd\'hui', pour = ctx.service ? { service: ctx.service } : {};
+    const carte = carteDe(ctx.carte, S, auj, ctx.service || ''), allerCarte = (cle) => ({ vue: 'carte', onglet: 'carte', plat: cle });
     const ep = n.match(/^(?:epuisee?s?|rupture(?: de)?|plus d[e']|il n'y a plus d[e']|termine|fini)\s*:?\s*(.+)$/), remis = n.match(/^(?:il reste|de nouveau|remettre|encore)\s*:?\s*(?:du |de la |des |de l'|le |la |les )?(.+)$/);
     const px = brut.match(/^(?:prix\s+(?:du |de la |des |de l'|de )?)?(.+?)\s+(?:à|a|:|=|passe à|passe a)\s*(\d+(?:[.,]\d{1,2})?)\s*(?:€|euros?)?$/i);
     if (ep || remis) {
       const p = trouverPlat(carte, (ep || remis)[1]);
-      if (p) out.push(ep ? (p.epuise ? { genre: 'carte', titre: `« ${p.nom} » est déjà épuisé aujourd'hui`, detail: 'Il reviendra tout seul demain.', aller: allerCarte(p.cle), inactif: true }
-          : { genre: 'carte', titre: `Dire « ${p.nom} » épuisé aujourd'hui`, detail: 'La carte du site l\'indique aussitôt ; demain, le plat revient tout seul.', action: { nom: 'epuise', args: { cle: p.cle, date: auj, actif: true }, msg: `« ${p.nom} » : épuisé aujourd'hui, la carte du site l'indique.`, lien: pages.carte }, aller: allerCarte(p.cle) })
-        : (p.epuise ? { genre: 'carte', titre: `Remettre « ${p.nom} » à la carte dès maintenant`, detail: 'Il n\'est plus indiqué épuisé sur le site.', action: { nom: 'epuise', args: { cle: p.cle, date: auj, actif: false }, msg: `« ${p.nom} » est de nouveau proposé.`, lien: pages.carte }, aller: allerCarte(p.cle) }
+      if (p) out.push(ep ? (p.epuise ? { genre: 'carte', titre: `« ${p.nom} » est déjà épuisé ${quand}`, detail: ctx.service ? 'Il reviendra tout seul au service suivant.' : 'Il reviendra tout seul demain.', aller: allerCarte(p.cle), inactif: true }
+          : { genre: 'carte', titre: `Dire « ${p.nom} » épuisé ${quand}`, detail: ctx.service ? 'La carte du site l\'indique aussitôt, sans publication ; au service suivant, le plat revient tout seul.' : 'La carte du site l\'indique aussitôt ; demain, le plat revient tout seul.', action: { nom: 'epuise', args: { cle: p.cle, date: auj, ...pour, actif: true }, msg: `« ${p.nom} » : épuisé ${quand}, la carte du site l'indique.`, lien: pages.carte }, aller: allerCarte(p.cle) })
+        : (p.epuise ? { genre: 'carte', titre: `Remettre « ${p.nom} » à la carte dès maintenant`, detail: 'Il n\'est plus indiqué épuisé sur le site.', action: { nom: 'epuise', args: { cle: p.cle, date: auj, ...pour, actif: false }, msg: `« ${p.nom} » est de nouveau proposé.`, lien: pages.carte }, aller: allerCarte(p.cle) }
           : { genre: 'carte', titre: `« ${p.nom} » n'est pas épuisé`, detail: 'Rien à changer.', aller: allerCarte(p.cle), inactif: true }));
     } else if (px) {
       const p = trouverPlat(carte, px[1]), v = lirePrix(px[2]);
-      if (p && !date) out.push({ genre: 'carte', titre: `Passer « ${p.nom} » à ${prixTexte(v)}`, detail: `Aujourd'hui : ${prixTexte(p.prix) || 'sans prix'}. La carte du site suit aussitôt.`, action: { nom: 'plat', args: { cle: p.cle, champs: { prix: v } }, msg: `« ${p.nom} » : ${prixTexte(v)} sur la carte.`, lien: pages.carte }, aller: allerCarte(p.cle) });
+      if (p && !date) out.push({ genre: 'carte', titre: `Passer « ${p.nom} » à ${prixTexte(v)}`, detail: `Aujourd'hui : ${prixTexte(p.prix) || 'sans prix'}. Le prix est préparé : le site le suit quand vous publiez la carte.`, action: { nom: 'plat', args: { cle: p.cle, champs: { prix: v } }, msg: `« ${p.nom} » : ${prixTexte(v)}, en préparation. Publiez la carte pour que le site le suive.`, lien: pages.carte }, aller: allerCarte(p.cle) });
     }
   }
   /* Une soirée : « ajouter une soirée raclette le 12 ». */

@@ -78,7 +78,9 @@ Transition entre les pages (v7.5) : un papier crème qui monte en cloche depuis 
 | Dates des pool parties | « Les dates sont annoncées sur Instagram. » |
 | Assiettes générées | jamais présentées comme un plat de la carte : les plats gardent leurs noms et leurs prix à côté, l'image porte « Illustration générée » |
 
-## L'espace restaurateur (démonstration, v7.12.1)
+## L'espace restaurateur (démonstration, v7.13.0)
+
+> **v7.13.0 — les offres prennent vie.** Un catalogue commun réunit formules, prestations, plats, soirées et produits à emporter (Offres, onglet « Tout le catalogue »). La carte, l'ardoise, les soirées et les offres se préparent, se vérifient dans un aperçu « Aperçu — non publié », puis se publient une à la fois ; le site lit la version publiée, et l'historique permet de reprendre une version en brouillon (Site, onglet « Publication »). « Épuisé ce midi / ce soir » vaut pour un seul service, tout de suite. Une réservation garde le lien avec sa soirée. Une proposition copie l'offre publiée : ce qui a été accepté garde son prix (1 800 €), une nouvelle proposition prend le nouveau (1 960 €). Sixième démonstration : « Une offre prend vie ». Tout est local au navigateur ; rien n'est envoyé ni encaissé. Détail : `_exploitation/livraison-v7.13.0.md`, règles : `_exploitation/regles-offres.md`.
 
 > **v7.12.1 — ce qui est convenu reste clair.** Une réception confirmée peut recevoir une révision de sa proposition : la version acceptée, la version en attente d'accord et les espaces réservés se lisent à part. Une version présentée garde un instantané de ce qu'elle affichait ; un accord ne vaut que pour sa version ; la fiche du jour J dit ce qui est confirmé et ce qui reste à valider. L'occupation des tables suit la durée réelle des repas, les horaires du jour et la réunion des zones retenues. Détail : `_exploitation/livraison-v7.12.1.md`.
 

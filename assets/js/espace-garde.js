@@ -15,6 +15,7 @@ import { planDuService, libre, tableApres, placeDe, avisPlace } from './espace-s
 import { refusInstallation } from './espace-presence.js?v=7';
 import { refusAttente } from './espace-attente.js?v=7';
 import { refusReception } from './espace-receptions.js?v=7';
+import { refusOffre } from './espace-offres.js?v=7';
 
 const INACTIFS = ['refusee', 'annulee', 'absente'];
 const minutes = (r) => ({ ...r, debutMin: enMin(r.heure), finMin: enMin(r.heure) + dureeDe(r.service) });
@@ -42,6 +43,8 @@ export function refusPlacement(ctx, S, salle, r, table) {
 export function reglesAction(ctx, S, salle, nom, args = {}) {
   /* v7.12.0 : les dossiers de réception. Poser, déplacer, prolonger, confirmer : les conflits sont revérifiés ici, au moment d'enregistrer. */
   if (/^rec[A-Z]/.test(nom)) return { refus: refusReception(ctx, S, salle, nom, args), suites: [], note: '' };
+  /* v7.13.0 : les offres, la publication, et les soirées déjà réservées (une date ne change pas sous des réservations). */
+  if (/^off[A-Z]/.test(nom) || ['offre', 'evenement', 'supprimerEvenement'].includes(nom)) return { refus: refusOffre(S, nom, args, { resas: ctx.resasSoirees ? ctx.resasSoirees(S) : [] }), suites: [], note: '' };
   const r0 = reglesDeBase(ctx, S, salle, nom, args);
   /* v7.11.0 : une réservation qui n'est plus « arrivée » n'est plus installée ni partie : sa présence est effacée avec elle. */
   if (!r0.refus && nom === 'statut' && args.statut !== 'arrivee' && S.service?.presence?.[args.id]?.etat) return { ...r0, suites: [...r0.suites, { nom: 'presenceRetirer', args: { id: args.id } }] };

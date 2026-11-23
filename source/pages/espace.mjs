@@ -72,7 +72,7 @@ export default (c) => {
     textes: TEXTES.map((t) => ({ ...t, defaut: c.s(t.cle), url: c.url(t.page, t.ancre) })),
     phototheque: phototheque(T),
     /* v7.7.2 : les produits de la page Traiteur (demandes de démonstration) et le téléphone du restaurant (messages aux clients). */
-    produits: D.emporter.produits.map((p) => ({ nom: p.nom, prix: p.prix, unite: p.unite })),
+    produits: D.emporter.produits.map((p) => ({ id: p.id, nom: p.nom, prix: p.prix, unite: p.unite })),
     /* v7.7.3 : la carte du site (rubriques et plats), que l'espace modifie sans toucher au fichier. */
     carte: D.carte.rubriques.map((r) => ({ id: r.id, titre: r.titre, plats: r.plats.map((p) => ({ id: p.id, nom: p.nom, description: p.description || '', prix: p.prix ?? '', vegetarien: !!p.vegetarien })) })),
     telephone: c.site.contact.telephone,
@@ -80,7 +80,7 @@ export default (c) => {
     salle: { zones: D.salle.zones, assemblages: (D.salle.assemblages || []).map((a) => ({ tables: a.tables, places: a.places })), tables: D.salle.tables.map((t) => ({ id: t.id, zone: t.zone, places: t.places, forme: t.forme, x: t.x, y: t.y, l: t.l, ...(t.h ? { h: t.h } : {}), ...(t.note ? { note: t.note } : {}) })) },
     /* v7.12.0 : les espaces de réception et leurs hypothèses de démonstration (donnees/receptions.json). */
     receptions: { espaces: D.receptions.espaces, durees: D.receptions.durees, taches: D.receptions.taches, lignes: D.receptions.lignes },
-    pages: { fetes: c.url('les-fetes', 'dates'), carte: c.url('la-carte'), accueil: c.url('accueil'), reserver: c.url('reserver', 'formulaire'), infos: c.url('infos-pratiques') },
+    pages: { receptions: c.url('receptions'), fetes: c.url('les-fetes', 'dates'), carte: c.url('la-carte'), accueil: c.url('accueil'), reserver: c.url('reserver', 'formulaire'), infos: c.url('infos-pratiques') },
   };
   return html`
 <section class="espace" id="espace" data-espace aria-labelledby="espace-titre">

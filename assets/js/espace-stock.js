@@ -20,6 +20,11 @@
      messages  { [modèle]: texte }                                    (v7.7.2 : les messages envoyés aux clients)
      carte     { modifs: { [rubrique/rang]: champs }, ajouts: [plat], epuises: { [clé]: date } }   (v7.7.3)
      conseils  { ignores: { [suggestion]: date } }                    (v7.7.4 : « Plus tard », jusqu'au lendemain)
+     offres    { modifs: { [id]: champs }, ajouts: [offre], archives: { [id]: quand } }   (v7.13.0 : le catalogue, en préparation)
+     publie    { n, carte, ardoise, evenements, offres, historique: [{ n, le, perimetre, id, libelle, resume, avant, apres }] }
+               (v7.13.0 : ce que lisent les pages du site ; absent : état d'avant, où tout était aussitôt en ligne)
+     v7.13.0 : carte.epuises vaut « AAAA-MM-JJ/soir » (un jour ET un service ; l'ancienne valeur « AAAA-MM-JJ » vaut pour la journée) ;
+               carte.ordre { [rubrique]: [clé] } ; carte, ardoise, evenements et offres sont le contenu EN PRÉPARATION (voir espace-offres.js).
    Les clés qui commencent par « _ » sont de l'intendance : elles ne comptent pas comme une modification du site. */
 export const SCHEMA = 2;
 /* ---------- Le contexte de démonstration (v7.11.1) ----------

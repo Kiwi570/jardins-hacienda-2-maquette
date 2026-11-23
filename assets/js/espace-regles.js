@@ -100,7 +100,7 @@ export function demo(R, auj, iso, sv) {
 
 /** Une demande faite sur la page Réserver, mise à la forme de l'agenda. */
 export const depuisSite = (r) => ({ id: r.id, date: r.date, service: r.service, heure: r.heure, couverts: r.couverts, nom: [r.prenom, r.nom].filter(Boolean).join(' '), telephone: r.telephone,
-  demande: [...(r.demandes || []), r.message].filter(Boolean).join(' · '), espace: r.espace, table: r.table, statut: 'a-confirmer', source: 'site' });
+  demande: [...(r.demandes || []), r.message].filter(Boolean).join(' · '), espace: r.espace, table: r.table, statut: 'a-confirmer', source: 'site', ...(r.soiree?.id ? { soiree: r.soiree } : {}) });
 
 /** Les réservations d'un jour, triées par heure : démonstration, ajoutées au téléphone, venues du site, avec le statut choisi dans l'espace. */
 export function resasDuJour({ R, auj, site = [], exemples = true, scenario = '' }, S, iso) {
@@ -142,4 +142,9 @@ export function evenements(base, S) {
     .sort((a, b) => a.debut.localeCompare(b.debut));
 }
 /** La même liste, sans les photos : pour la prochaine soirée de l'accueil et l'agenda de Réserver. */
+/** Toutes les réservations prises depuis une soirée (v7.13.0), avec leur statut et leurs modifications du moment. */
+export function resasSoirees(ctx, S) {
+  const jours = new Set([...(S.resa?.ajouts || []), ...(ctx.site || [])].filter((r) => r.soiree?.id).map((r) => r.date));
+  return [...jours].flatMap((iso) => resasDuJour(ctx, S, iso)).filter((r) => r.soiree?.id);
+}
 export const listeEvenements = (base, S) => evenements(base, S).map(({ id, titre, debut, type, prix, service, masque }) => ({ id, titre, debut, type, prix, service, masque: !!masque }));

@@ -441,8 +441,15 @@ export async function init(root, options = {}) {
     if (els[0].type === 'radio' || els[0].type === 'checkbox') els.forEach((e) => { e.checked = Array.isArray(v) ? v.includes(e.value) : e.value === v; });
     else els[0].value = v;
   }
-  function sauver() { try { const v = val(); sessionStorage.setItem(CLE, JSON.stringify({ ...Object.fromEntries(GARDES.map((k) => [k, v[k]])), demandes: v.demandes })); } catch { /* stockage indisponible : on garde en mémoire */ } }
+  function sauver() { try { const v = val(); rappelSoiree(v); sessionStorage.setItem(CLE, JSON.stringify({ ...Object.fromEntries(GARDES.map((k) => [k, v[k]])), demandes: v.demandes })); } catch { /* stockage indisponible : on garde en mémoire */ } }
   const params = new URLSearchParams(location.search);
+  /* v7.13.0 : la réservation garde le lien avec la soirée d'où elle vient (« ?soiree=… »), tant que le jour et le service
+     restent ceux de la soirée. Elle garde aussi le titre et le prix affichés à ce moment-là. Le lien n'ouvre aucune
+     place : la demande passe par les mêmes règles de disponibilité que les autres. */
+  const soireeDe = (v) => { const id = params.get('soiree'); if (!id || !v) return null;
+    let L = []; try { L = JSON.parse(document.querySelector('script[data-agenda]')?.textContent || '[]'); } catch { L = []; }
+    const x = L.find((d) => d.id === id); return x && String(x.d).slice(0, 10) === v.date && (!x.s || x.s === v.service) ? { id: x.id, titre: x.t || '', prix: x.p || '' } : null; };
+  const rappelSoiree = (v) => { const el = document.querySelector('[data-soiree]'); if (el && params.get('soiree') && el.textContent) el.hidden = !soireeDe(v); };
   const depuisAdresse = ['date', 'service', 'heure', 'couverts', 'espace', 'demande', 'table'].some((k) => params.has(k));
   let brouillon = null; try { brouillon = depuisAdresse ? null : JSON.parse(sessionStorage.getItem(CLE) || 'null'); } catch { brouillon = null; }
   const depart = brouillon || {};
@@ -534,7 +541,8 @@ export async function init(root, options = {}) {
       catch (err) { echec(err?.pourClient || 'L\'envoi n\'a pas abouti. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }
       if (!ref) { echec('Le restaurant n\'a pas confirmé la réception. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }
       // Démonstration (v7.6.0) : la demande arrive dans l'agenda de l'espace restaurateur de ce navigateur (par le stockage, v7.7.0).
-      const enregistre = o.enregistrer ? o.enregistrer({ id: ref, ...v, cree: new Date().toISOString() }) : ajouterResaSite({ id: ref, ...v, cree: new Date().toISOString() });
+      const liee = soireeDe(v);
+      const enregistre = o.enregistrer ? o.enregistrer({ id: ref, ...v, cree: new Date().toISOString() }) : ajouterResaSite({ id: ref, ...v, ...(liee ? { soiree: liee } : {}), cree: new Date().toISOString() });
       if (enregistre === false) { echec('Votre demande n\'a pas pu être enregistrée. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }
       reference = ref; envoi = v; etape = 'envoye'; root.classList.remove('est-verification'); root.classList.add('est-envoye');
       for (const el of form.elements) el.disabled = true;

@@ -2,11 +2,12 @@
    Chargé avant tout le reste (premier import de site.js) : textes [data-edit], photos [data-edit-photo], ardoise,
    horaires et fermetures (les JSON que lisent le statut et la réservation), événements, la carte (v7.7.3), puis l'annonce et une
    petite pastille « Aperçu de vos modifications ». Ne fait rien si l'espace n'a rien changé. */
-import { lire, estVide, CONTEXTE, horloge } from './espace-stock.js?v=7';
+import { lire, estVide, CONTEXTE, horloge, noterVu } from './espace-stock.js?v=7';
 /* v7.12.0 : une même horloge pour le scénario et ses pages publiques. Les calculs d'ouverture (badge « ouvert en ce
    moment », cadran, prochains services) lisent ce repère ; hors scénario il n'est pas posé : l'heure réelle sert. */
 if (CONTEXTE && horloge()) globalThis.__jhHorloge = horloge;
-import { equipeDe, exceptionsOuvertures } from './disponibilites.js?v=7';
+import { equipeDe, exceptionsOuvertures, serviceCourant } from './disponibilites.js?v=7';
+import { vuePublique, offresVitrine, estEpuise, UNITES } from './espace-publie.js?v=7';
 
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -31,8 +32,15 @@ export function evenements(base, S) {
     .sort((a, b) => a.debut.localeCompare(b.debut));
 }
 
-const S = lire();
-if (!estVide(S) && !document.querySelector('[data-espace]')) {
+/* v7.13.0 : les pages du site lisent la version PUBLIÉE. L'aperçu (« ?apercu=1 », gardé pour cet onglet jusqu'à
+   « ?apercu=0 ») montre à la place ce qui est en préparation, avec son repère : il ne publie rien. */
+const APERCU = (() => { const p = new URLSearchParams(location.search);
+  try { if (p.has('apercu')) { if (p.get('apercu') === '1') sessionStorage.setItem('jh-apercu', '1'); else sessionStorage.removeItem('jh-apercu'); } return sessionStorage.getItem('jh-apercu') === '1'; } catch { return p.get('apercu') === '1'; } })();
+const BRUT = lire(), S = vuePublique(BRUT, APERCU);
+/* L'instant présent : celui du scénario de démonstration s'il y en a un (la même horloge que l'espace), sinon l'heure du restaurant. */
+const instantPresent = (fuseau = 'Europe/Paris') => { const h = CONTEXTE ? horloge() : null; if (h) return `${h.iso}T${String(Math.floor(h.min / 60)).padStart(2, '0')}:${String(h.min % 60).padStart(2, '0')}`;
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: fuseau, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map((x) => [x.type, x.value])); return `${p.year}-${p.month}-${p.day}T${String(+p.hour % 24).padStart(2, '0')}:${p.minute}`; };
+if ((!estVide(S) || APERCU) && !document.querySelector('[data-espace]')) {
   /* Textes */
   sur(() => { for (const el of $$('[data-edit]')) { const v = S.textes?.[el.dataset.edit]; if (v) el.textContent = v; } });
   /* Photos */
@@ -60,7 +68,9 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
      rubrique (fourchette de prix, nombre de propositions) suit. Clé d'un plat : « rubrique/rang ». */
   if (S.carte && document.querySelector('[data-rubrique] .carte-resto__plat')) sur(() => {
     const c = S.carte, m = c.modifs || {}, ep = c.epuises || {};
-    const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).map((x) => [x.type, x.value])), auj = `${p.year}-${p.month}-${p.day}`;
+    /* v7.13.0 : « épuisé » vaut pour un jour et un service ; le service en cours se lit sur l'horloge commune. */
+    let reglages = null; try { reglages = JSON.parse(document.querySelector('script[data-reservation], script[data-reservation-accueil], script[data-reservation-globale]')?.textContent || 'null'); } catch { /* sans réglages : la limite habituelle entre midi et soir */ }
+    const inst = instantPresent(reglages?.fuseau), auj = inst.slice(0, 10), sv = serviceCourant(reglages, +inst.slice(11, 13) * 60 + +inst.slice(14, 16));
     const prix = (v) => { if (v == null || v === '') return ''; const n = typeof v === 'number' ? v : /^\s*\d+(?:[.,]\d{1,2})?\s*$/.test(String(v)) ? parseFloat(String(v).replace(',', '.')) : null; return n == null ? String(v) : `${Number.isInteger(n) ? n : n.toFixed(2).replace('.', ',')} €`; };
     const ecrire = (li, x) => {
       li.removeAttribute('data-texte'); /* la recherche de la carte relit le texte affiché */
@@ -75,17 +85,20 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
       }
       if ('allergenes' in x) { li.querySelector('.carte-resto__allergenes')?.remove(); if (x.allergenes?.length) { const a = document.createElement('p'); a.className = 'carte-resto__allergenes'; a.textContent = `Allergènes\u00a0: ${x.allergenes.join(', ').toLowerCase()}`; (li.querySelector('.carte-resto__desc') || li.querySelector('.carte-resto__plat-ligne')).after(a); } }
     };
-    const epuiser = (li) => { li.classList.add('est-epuise'); li.querySelector('.carte-resto__plat-nom').insertAdjacentHTML('afterend', '<span class="carte-resto__epuise">Épuisé aujourd\'hui</span>'); };
+    const epuiser = (li) => { li.classList.add('est-epuise'); li.querySelector('.carte-resto__plat-nom').insertAdjacentHTML('afterend', `<span class="carte-resto__epuise">Épuisé ${sv === 'midi' ? 'ce midi' : 'ce soir'}</span>`); };
     for (const sec of $$('[data-rubrique]')) {
       const rub = sec.dataset.rubrique, ul = sec.querySelector('.carte-resto__plats'), lis = $$('.carte-resto__plat', sec), modele = lis[0];
       /* v7.8.1 : un plat est reconnu à son identifiant, plus à son rang ; les anciennes clés « rubrique/rang » sont encore lues. */
-      lis.forEach((li, i) => { const id = li.dataset.plat, cle = id && (`${rub}/${id}` in m || ep[`${rub}/${id}`] !== undefined) ? `${rub}/${id}` : `${rub}/${i}`, x = m[cle]; if (x?.masque) { li.remove(); return; } if (x) ecrire(li, x); if (ep[cle] === auj) epuiser(li); });
+      lis.forEach((li, i) => { const id = li.dataset.plat, cle = id && (`${rub}/${id}` in m || ep[`${rub}/${id}`] !== undefined) ? `${rub}/${id}` : `${rub}/${i}`, x = m[cle]; li.dataset.cle = id ? `${rub}/${id}` : cle; if (x?.masque) { li.remove(); return; } if (x) ecrire(li, x); if (estEpuise(ep[cle], auj, sv)) epuiser(li); });
       for (const a of (c.ajouts || []).filter((x) => x.rubrique === rub)) {
         if (!modele || !ul) continue;
         const li = modele.cloneNode(true); li.classList.remove('est-epuise'); li.dataset.filtres = ''; li.querySelector('.carte-resto__epuise')?.remove(); li.querySelector('.carte-resto__etiquettes')?.remove(); li.querySelector('.carte-resto__allergenes')?.remove();
+        li.dataset.cle = `${rub}/+${a.id}`; li.dataset.plat = `+${a.id}`;
         ecrire(li, { nom: a.nom, prix: a.prix, description: a.description, vegetarien: a.vegetarien, allergenes: a.allergenes }); ul.append(li);
-        if (ep[`${rub}/+${a.id}`] === auj) epuiser(li);
+        if (estEpuise(ep[`${rub}/+${a.id}`], auj, sv)) epuiser(li);
       }
+      /* v7.13.0 : l'ordre choisi dans l'espace (les plats qu'il ne nomme pas gardent leur place, à la suite). */
+      const ordre = c.ordre?.[rub]; if (ordre?.length && ul) { const rang = (li) => { const k = ordre.indexOf(li.dataset.cle); return k < 0 ? 1e6 : k; }; $$('.carte-resto__plat', sec).map((li, k) => ({ li, k })).sort((a, b) => rang(a.li) - rang(b.li) || a.k - b.k).forEach((x) => ul.append(x.li)); }
       /* L'en-tête de la rubrique, si elle a changé : « de 18 à 26 € · 6 propositions » (même règle que la page : sans les menus). */
       const change = Object.keys(m).some((k) => k.startsWith(`${rub}/`)) || (c.ajouts || []).some((x) => x.rubrique === rub);
       const detail = change && sec.querySelector('.rubrique-bande__detail'), reste = $$('.carte-resto__plat', sec);
@@ -115,8 +128,6 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
      la page Réserver, la mini-réservation et l'espace lisent ensuite les mêmes règles (disponibilites.js). Rien n'est
      recalculé ici : horaires déplacés, fermetures, services fermés ou complets, ouvertures exceptionnelles. */
   /* v7.12.0 : l'instant présent (celui du scénario de démonstration s'il y en a un), pour savoir si une option retient encore ses espaces. */
-  const instantPresent = (fuseau = 'Europe/Paris') => { const h = CONTEXTE ? horloge() : null; if (h) return `${h.iso}T${String(Math.floor(h.min / 60)).padStart(2, '0')}:${String(h.min % 60).padStart(2, '0')}`;
-    const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: fuseau, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map((x) => [x.type, x.value])); return `${p.year}-${p.month}-${p.day}T${String(+p.hour % 24).padStart(2, '0')}:${p.minute}`; };
   if (!CONNECTE && (S.resa || sem || exc.length || S.receptions)) for (const sr of $$('script[data-reservation], script[data-reservation-accueil], script[data-reservation-globale]')) json(sr, (R) => { R.equipe = equipeDe(S, [], instantPresent(R.fuseau)); return R; });
 
   /* Les événements : les billets de la page Les fêtes, la prochaine soirée de l'accueil, l'agenda de Réserver. */
@@ -156,7 +167,26 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
     const hr = document.querySelector('script[data-heros-agenda]');
     if (hr) json(hr, (base) => { const ancre = Object.fromEntries((base || []).map((x) => [x.id, x.a])); return L.map((e) => ({ id: e.id, t: e.titre, d: e.debut.slice(0, 10), a: ancre[e.id] || 'dates' })); });
     const ag = document.querySelector('script[data-agenda]');
-    if (ag) json(ag, () => L.map((e) => ({ id: e.id, t: e.titre, d: e.debut, p: e.prix })));
+    if (ag) json(ag, () => L.map((e) => ({ id: e.id, t: e.titre, d: e.debut, p: e.prix, s: e.service || 'soir' })));
+  });
+
+  /* v7.13.0 : les offres que le restaurant montre sur le site (page Réceptions). Rien n'est affiché tant qu'aucune n'est publiée pour le site. */
+  sur(() => {
+    const gabarit = document.querySelector('template[data-offres-site-gabarit]'); if (!gabarit) return;
+    let lignes = []; try { lignes = JSON.parse(document.querySelector('script[data-offres-base]')?.textContent || '[]'); } catch { /* sans base : seulement les offres créées dans l'espace */ }
+    /* Site connecté : les offres d'exemple de la démonstration n'y existent pas ; seules celles que le restaurant a créées peuvent s'afficher. */
+    if (document.querySelector('meta[name="jh-api"]')) lignes = lignes.filter((x) => !x.exemple);
+    const l = offresVitrine({ lignes }, BRUT, instantPresent().slice(0, 10), APERCU);
+    if (CONTEXTE) noterVu(APERCU ? 'offre-apercu' : 'offre-site');
+    if (!l.length) return;
+    /* Le bloc n'est posé dans la page que s'il a quelque chose à montrer. */
+    const sec = gabarit.content.firstElementChild.cloneNode(true);
+    const prix = (v) => `${Number.isInteger(v) ? v : Number(v).toFixed(2).replace('.', ',')}\u00a0€`;
+    sec.querySelector('[data-offres-site-liste]').innerHTML = l.map((o) => `<li class="offres-site__offre" data-offre-site="${echap(o.id)}">${o.visuel?.nom ? `<img class="offres-site__photo" src="/assets/images/${echap(o.visuel.nom)}-640.webp" alt="${echap(o.visuel.alt || '')}" loading="lazy" width="640" height="427">` : ''}
+      <h3 class="offres-site__nom">${echap(o.nom)}${o.exemple ? ' <span class="offres-site__exemple">Exemple</span>' : ''}</h3>${o.description ? `<p class="offres-site__desc">${echap(o.description)}</p>` : ''}
+      <p class="offres-site__prix">${o.prix === '' || o.prix == null ? 'Prix sur demande' : `<b data-offre-site-prix>${prix(o.prix)}</b> ${echap(UNITES[o.unite] || '')}`}</p>${o.conditions ? `<p class="offres-site__conditions">${echap(o.conditions)}</p>` : ''}</li>`).join('');
+    const mention = sec.querySelector('[data-offres-site-mention]'); if (mention) mention.hidden = !l.some((o) => o.exemple);
+    gabarit.after(sec);
   });
 
   /* L'annonce du restaurant, puis la pastille qui rappelle que ces changements ne se voient que dans ce navigateur. */
@@ -169,7 +199,10 @@ if (!estVide(S) && !document.querySelector('[data-espace]')) {
       pile.querySelector('.annonce-site__fermer').addEventListener('click', (ev) => { ev.currentTarget.closest('.annonce-site').remove(); try { sessionStorage.setItem('jh-annonce-fermee', a.texte); } catch { /* rien */ } });
     }
     /* v7.11.1 : dans un scénario de démonstration, la pastille le dit et ramène à l'espace du scénario. */
-    pile.insertAdjacentHTML('beforeend', CONTEXTE ? '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Démonstration en cours<span class="apercu-espace__lien">Revenir à l\'espace</span></a>' : '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Aperçu de vos modifications<span class="apercu-espace__lien">Votre espace</span></a>');
+    /* v7.13.0 : en aperçu, le repère dit que rien de ceci n'est publié, et ramène à la version publiée. */
+    const ici = `${location.pathname}?apercu=0${location.hash}`;
+    pile.insertAdjacentHTML('beforeend', APERCU ? `<div class="apercu-espace apercu-espace--non-publie" role="status" data-apercu-non-publie><span class="apercu-espace__point" aria-hidden="true"></span><b>Aperçu — non publié</b><span class="apercu-espace__detail">Vos visiteurs voient toujours la version publiée.</span><a class="apercu-espace__lien" href="${ici}" data-apercu-quitter>Voir la version publiée</a><a class="apercu-espace__lien" href="/espace">${CONTEXTE ? 'Revenir à l\'espace' : 'Votre espace'}</a></div>`
+      : CONTEXTE ? '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Démonstration en cours<span class="apercu-espace__lien">Revenir à l\'espace</span></a>' : '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Version publiée, sur cet appareil<span class="apercu-espace__lien">Votre espace</span></a>');
     document.body.append(pile);
     requestAnimationFrame(() => setTimeout(() => pile.classList.add('est-visible'), 900));
   });

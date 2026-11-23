@@ -5526,13 +5526,13 @@ function prisesDuService(occupations, R, iso, sv, equipe = R?.equipe || {}) {
   const f = fenetreService(R, iso, sv, equipe), occs = f ? (occupations || []).filter((o) => seCroisent(o, f)) : [], tables = /* @__PURE__ */ new Map();
   for (const o of occs) for (const t of o.tables) if (!tables.has(t)) tables.set(t, o);
   const entier = (pub) => {
-    if (occs.some((o) => o[pub])) return true;
+    if (occs.some((o) => o[pub] || o.incertain)) return true;
     const sur = Math.max(0, ...occs.map((o) => +o.publics?.[pub]?.sur || 0));
     if (!sur) return false;
     return new Set(occs.flatMap((o) => (o.publics?.[pub]?.tables || []).map(String))).size >= sur;
   };
   const salle = entier("salle"), terrasse = entier("terrasse");
-  return { occs, tables, salle, terrasse, tout: salle && (terrasse || !terrasseOuverte(R, iso)) };
+  return { occs, tables, salle, terrasse, tout: salle && (terrasse || !terrasseOuverte(R, iso)), incertain: occs.some((o) => o.incertain) };
 }
 var dans = (iso, x) => (x.du || x.date) <= iso && iso <= (x.au || x.du || x.date);
 function etatService(R, iso, sv, equipe = R?.equipe || {}) {
