@@ -47,6 +47,8 @@ import { creerClients } from './espace-vue-clients.js?v=7';
 import { rechercher } from './espace-recherche.js?v=7';
 import { listeClients, aMigrer, partagesConnus, cleDossier } from './espace-clients.js?v=7';
 import { creerReceptions } from './espace-vue-receptions.js?v=7';
+import { creerCommerce } from './espace-vue-commerce.js?v=7';
+import { commandeDe, cadeauDe } from './commerce.js?v=7';
 import { lienReception, receptionsDuJour, retenuesAReprendre } from './espace-receptions.js?v=7';
 import { activitesDuJour, prochainService } from './espace-accueil.js?v=7';
 import { carteDe, platsDe, prixTexte } from './espace-carte.js?v=7';
@@ -151,12 +153,15 @@ export function init(root) {
   }
   /** Fait une action nommée (espace-donnees.js), l'enregistre et le dit, avec « Annuler ». */
   function agir(nom, args, { msg = 'Enregistré : visible sur le site, dans ce navigateur.', lien = '', groupe = '' } = {}) {
-    const ok = depot.agir(nom, args, { libelle: msg, groupe, msg, lien });
+    /* v7.14.0 : une commande, un règlement simulé, une carte ou une utilisation ne se « défont » pas d'un geste : ils se
+       corrigent ou s'annulent avec un motif, et la trace reste. Pas de bouton « Annuler » sur ces actions. */
+    const trace = /^(cmd|cad|carte|com)[A-Z]/.test(nom);
+    const ok = depot.agir(nom, args, { libelle: msg, groupe, msg, lien, sansRetour: trace });
     contexte = null;
     /* Mode connecté : l'action est partie au serveur. Rien n'est dit « enregistré » avant sa réponse (voir finServeur). */
     if (ok === 'attente') { etatSauve('cours', 'Enregistrement…'); root.setAttribute('aria-busy', 'true'); return false; }
     /* Ce que les règles ont fait en plus (une table retirée) est dit avec le message. */
-    if (ok) dire([msg, depot.noteAction()].filter(Boolean).join(' '), { lien, annuler: true }); else dire(depot.raisonRefus() || REFUS);
+    if (ok) dire([msg, depot.noteAction()].filter(Boolean).join(' '), { lien, annuler: !trace }); else dire(depot.raisonRefus() || REFUS);
     return ok;
   }
   /* La réponse du serveur à une action. Réussie : l'écran est redessiné depuis ce qu'il a confirmé, les formulaires se
@@ -254,6 +259,8 @@ export function init(root) {
   X.lienApercu = (url) => { const [chemin, ancre] = String(url).split('#'); return avecContexte(`${chemin}${chemin.includes('?') ? '&' : '?'}apercu=1${ancre ? `#${ancre}` : ''}`); };
   X.resasSoiree = (id) => resasDeSoiree(ctx().resasSoirees(S()), id);
   const vOffres = creerOffres(X); X.offres = vOffres;
+  /* v7.14.0 : les commandes à emporter et les cartes cadeaux (dossiers, préparation, cartes émises), dans Demandes. */
+  const vCommerce = creerCommerce(X); X.commerce = vCommerce; X.boutonCommerce = vCommerce.boutonDemande; X.accesCommerce = vCommerce.acces; X.ficheCommerce = vCommerce.fiche; X.aujourdhuiCommerce = vCommerce.aujourdhui;
   /* La barre « en préparation » suit une saisie enregistrée au fil de l'eau, sans redessiner le formulaire (le champ garde le curseur). */
   /* v7.13.1 : les zones « en préparation / publié » de la rubrique Site suivent une saisie enregistrée au fil de l'eau. */
   X.majZones = () => { if (etat.pub) return; for (const z of $$('[data-pub-zone]', root)) z.innerHTML = vOffres.zone(z.dataset.pubZone); };
@@ -274,6 +281,12 @@ export function init(root) {
   X.placerUnParUn = (liste) => depot.placerUnParUn(liste); X.apresSerie = () => { contexte = null; };
   X.ouv = ouv; X.siteVide = () => estVide(S()); X.trouverResa = (id) => prochaines().find((r) => r.id === id) || resas(A.iso).find((r) => r.id === id) || null;
   X.demandes = () => toutesDemandes(ctx(), S()); X.clients = () => (ctx().clients ||= listeClients(ctx(), S(), X.demandes()));
+  /* v7.14.0 : les demandes traiteur et cadeau déjà avancées avant le suivi des commandes sont reprises une fois, telles
+     qu'elles étaient (une commande « confirmée » devient validée ; une carte « envoyée » reste notée ainsi, sans carte émise). */
+  { const E = depot.etat(), site = toutesDemandes(ctx(), E).filter((d) => d.statut !== 'nouvelle'), st = Object.fromEntries(site.map((d) => [d.id, d.statut]));
+    const cmd = site.filter((d) => d.genre === 'traiteur' && !E.commerce?.commandes?.[d.id]).map((d) => ({ id: d.id, statut: st[d.id], base: commandeDe(d, E, D.receptions) }));
+    const cad = site.filter((d) => d.genre === 'cadeau' && st[d.id] === 'envoyee' && !E.commerce?.cadeaux?.[d.id]).map((d) => ({ id: d.id, statut: st[d.id], base: cadeauDe(d, E, D.receptions) }));
+    if (cmd.length || cad.length) { depot.agir('comReprendre', { commandes: cmd, cadeaux: cad, le: `${A.iso}T${hhmm(A.min)}` }); contexte = null; } }
   X.activites = (iso) => activitesDuJour({ ...ctx(), agenda: D.agenda }, S(), iso); X.rendreSoirees = () => rendreEvenements();
   const vAccueil = creerAccueil(X);
   X.tachesDe = vAccueil.tachesDe;
@@ -451,7 +464,7 @@ export function init(root) {
   function rendreUneFois() {
     viderEcritures();
     contexte = null;
-    ({ jour: rendreJour, demandes: () => { if (!(etat.dossier && !API && vReceptions.rendreDossier())) vDemandes.rendre(); }, resas: rendreResas, carte: vCarte.rendre, clients: vClients.rendre, site: rendreSite })[etat.vue]();
+    ({ jour: rendreJour, demandes: () => { if (etat.commerce && vCommerce.rendre()) return; if (!(etat.dossier && !API && vReceptions.rendreDossier())) vDemandes.rendre(); }, resas: rendreResas, carte: vCarte.rendre, clients: vClients.rendre, site: rendreSite })[etat.vue]();
     marquerNavMobile(); rendreScene();
     const n = enAttenteTotal();
     for (const b of $$('[data-esp-badge]', root)) { const on = b.dataset.espBadge === 'demandes' && n > 0; b.hidden = !on; if (on) { b.textContent = n; b.setAttribute('aria-label', `${n} à traiter`); } }
@@ -547,6 +560,7 @@ export function init(root) {
     }
     /* v7.12.0 : une priorité, une ligne d'agenda ou une tâche qui mène à un dossier de réception ouvre CE dossier. */
     if (p.aller?.dossier) { vReceptions.ouvrir(p.aller.dossier, p.aller.onglet || 'projet'); return; }
+    if (p.aller?.commande) { vCommerce.ouvrir('commande', p.aller.commande); return; }
     etat.dossier = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ }
     const a = p.aller; if (!a?.vue) { rendre(); return; }
     if (a.jour) etat.jour = a.jour; if (a.service) etat.serviceVu = a.service; if (a.onglet) { if (a.vue === 'carte') etat.ongletCarte = a.onglet; else if (a.vue === 'resas') etat.ongletResas = a.onglet; else etat.onglet = a.onglet; }
@@ -628,10 +642,12 @@ export function init(root) {
   root.addEventListener('click', (ev) => {
     const t = ev.target;
     if (t.closest('[data-esp-plus]')) { ouvrirPlus(panneauPlus.hidden); return; }
-    const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; etat.dossier = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } if (nav.dataset.espVue === 'resas' && nav.closest('[data-esp-plusnav]')) etat.ongletResas = 'agenda'; allerVue(nav.dataset.espVue); return; }
+    const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; etat.dossier = null; etat.commerce = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } if (nav.dataset.espVue === 'resas' && nav.closest('[data-esp-plusnav]')) etat.ongletResas = 'agenda'; allerVue(nav.dataset.espVue); return; }
     /* Téléphone : « Service » ouvre le service en cours ou le prochain ; « Plus », les autres rubriques. */
     if (t.closest('[data-esp-service]')) { const ps = prochainServiceIci(); etat.evEdite = null; if (ps) { etat.jour = ps.date; etat.serviceVu = ps.service; } etat.ongletResas = 'service'; allerVue('resas'); return; }
     if (t.closest('[data-esp-plusnav-bouton]')) { ouvrirPlusNav($('[data-esp-plusnav]', root).hidden); return; }
+    if (t.closest('[data-voir-demande], [data-aller], [data-rec-ouvrir], [data-voir-resa]')) etat.commerce = null;
+    if (vCommerce.clic(t)) return;
     if (t.closest('[data-voir-demande], [data-aller]')) { etat.dossier = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } }
     if (vOffres.clic(t)) return;
     if (vReceptions.clic(t)) return;
@@ -688,7 +704,7 @@ export function init(root) {
   }
   root.addEventListener('input', (ev) => {
     const t = ev.target;
-    if (vReceptions.saisieTexte(t) || vDemandes.saisie(t) || vCarte.saisie(t)) return;
+    if (vCommerce.saisie(t) || vReceptions.saisieTexte(t) || vDemandes.saisie(t) || vCarte.saisie(t)) return;
     if (t.id === 'an-texte') { $('[data-compte]', root).textContent = `${t.value.length} / 160`; $('[data-annonce-apercu]', root).textContent = t.value || '…'; plus_tard(() => { agir('annonce', { texte: t.value.trim() }, { msg: 'Annonce enregistrée en préparation : publiez-la pour que le site la suive.', groupe: 'annonce-texte' }); X.majZones(); }, 'annonce'); return; }
     if (t.closest('[data-form-ardoise]')) { plus_tard(() => sauverArdoise(), 'ardoise'); return; }
     if (t.closest('[data-form-textes]')) { const cle = t.name, x = D.textes.find((y) => y.cle === cle); plus_tard(() => { agir('texte', { cle, valeur: t.value, defaut: x?.defaut }, { msg: 'Texte enregistré en préparation : le site ne change pas tant que vous ne publiez pas les textes de cette page.', groupe: `texte-${cle}` }); X.majZones(); }, `texte-${cle}`); return; }
@@ -697,7 +713,7 @@ export function init(root) {
   root.addEventListener('change', (ev) => { if (ev.target.closest('[data-form-horaires]')) sauverHoraires(); else if (!vReceptions.change(ev.target) && !vAttente.change(ev.target)) vSalle.change(ev.target); });
   root.addEventListener('submit', (ev) => {
     ev.preventDefault(); const f = ev.target;
-    if (vOffres.soumis(f)) return;
+    if (vOffres.soumis(f) || vCommerce.soumettre(f)) return;
     if (vReceptions.soumettre(f, ev) || vService.envoi(f, ev) || vAccueil.soumettre(f) || vAttente.soumettre(f)) return;
     if (f.matches('[data-esp-connexion]')) {
       if (!API) { try { sessionStorage.setItem('jh-espace-session', '1'); } catch { /* rien */ } montrer(true); return; }
@@ -743,7 +759,7 @@ export function init(root) {
   /* L'indication « À essayer maintenant » est redessinée à chaque action : son annonce passe par une zone stable, mise à jour seulement quand le texte change. */
   const annonceScene = document.createElement('p'); annonceScene.className = 'visuellement-cache'; annonceScene.setAttribute('role', 'status'); zoneScene.after(annonceScene); let ditScene = null;
   const heureSimulee = () => `${maj(fmt(A.iso, { weekday: 'long', day: 'numeric', month: 'long' }))}, ${heure(hhmm(A.min))}`;
-  const etatScene = () => avancement(SC.id, { S: S(), venues: depot.venues(), vus: vusDemo(), iso: horlogeDemo()?.iso || A.iso, lieux: D.receptions });
+  const etatScene = () => avancement(SC.id, { S: S(), venues: depot.venues(), vus: vusDemo(), iso: horlogeDemo()?.iso || A.iso, lieux: D.receptions, demandes: depot.demandesSite() });
   function rendreScene() {
     if (API) { zoneScene.hidden = true; return; }
     if (!SC) { zoneScene.hidden = etat.vue !== 'jour' || !!CONTEXTE;
@@ -781,7 +797,7 @@ export function init(root) {
         if (ev.key === 'Tab') { const l = $$('a[href], button:not([disabled])', fenDemo).filter((x) => x.offsetParent), i = l.indexOf(document.activeElement); if (ev.shiftKey && i <= 0) { ev.preventDefault(); l[l.length - 1]?.focus(); } else if (!ev.shiftKey && i === l.length - 1) { ev.preventDefault(); l[0]?.focus(); } } }); }
     fenDemo.innerHTML = typo(`<div class="esp-modale__fond" data-fermer-demo></div><div class="esp-modale__boite" role="dialog" aria-modal="true" aria-labelledby="demo-titre">
       <header class="esp-modale__tete"><h2 id="demo-titre">Lancer une démonstration</h2><button type="button" class="esp-rond" data-fermer-demo aria-label="Fermer">×</button></header>
-      <div class="esp-demo-choix"><p class="esp-demo-choix__intro">${['', 'Une situation prête', 'Deux situations prêtes', 'Trois situations prêtes', 'Quatre situations prêtes', 'Cinq situations prêtes', 'Six situations prêtes'][SCENARIOS.length] || 'Des situations prêtes'} à montrer, avec leurs données fictives, leur date et leur heure. Vos données habituelles restent à part&nbsp;: vous les retrouvez en quittant.</p>
+      <div class="esp-demo-choix"><p class="esp-demo-choix__intro">${['', 'Une situation prête', 'Deux situations prêtes', 'Trois situations prêtes', 'Quatre situations prêtes', 'Cinq situations prêtes', 'Six situations prêtes', 'Sept situations prêtes', 'Huit situations prêtes'][SCENARIOS.length] || 'Des situations prêtes'} à montrer, avec leurs données fictives, leur date et leur heure. Vos données habituelles restent à part&nbsp;: vous les retrouvez en quittant.</p>
         <ol class="esp-demo-choix__liste">${SCENARIOS.map((x) => `<li class="esp-demo-carte${SC?.id === x.id ? ' est-en-cours' : ''}"><p class="esp-demo-carte__num" aria-hidden="true">${x.numero}</p><div><h3>${e(x.titre)}${SC?.id === x.id ? ' <span class="esp-source">En cours</span>' : ''}</h3>
             <p class="esp-demo-carte__situation">${e(x.situation)}</p><p class="esp-demo-carte__montre"><b>À montrer&nbsp;:</b> ${e(x.montre)}</p>
             <p class="esp-demo-carte__actions"><a class="bouton" href="/espace?demo=${x.id}" data-demo-choisir="${x.id}" aria-label="Lancer depuis le début la démonstration ${x.numero}, ${e(x.titre)}">Lancer depuis le début</a>${scenarioEntame(x.id) ? `<a class="esp-bouton" href="/espace?demo=${x.id}" data-demo-reprendre="${x.id}" aria-label="Reprendre la démonstration ${x.numero}, ${e(x.titre)}, là où elle en était">Reprendre</a>` : ''}<span class="esp-demo-carte__duree">${x.etapes.length} étapes · ${e(x.duree)}</span></p></div></li>`).join('')}</ol>
@@ -862,7 +878,7 @@ export function init(root) {
   } else {
     let session = false; try { session = sessionStorage.getItem('jh-espace-session') === '1'; } catch { /* rien */ }
     /* Un scénario s'ouvre directement sur son écran de départ (au premier lancement), sans repasser par la porte d'entrée. */
-    if (SC) { if (SC.depart.filtre) etat.filtreDemandes = SC.depart.filtre; if (SC.depart.ongletCarte) etat.ongletCarte = SC.depart.ongletCarte; etat.ongletResas = SC.depart.onglet || 'agenda'; etat.serviceVu = 'soir'; etat.jour = A.iso; try { sessionStorage.setItem('jh-espace-session', '1'); if (scenarioFrais || !sessionStorage.getItem('jh-espace-vue')) sessionStorage.setItem('jh-espace-vue', SC.depart.vue); } catch { /* rien */ } }
+    if (SC) { if (SC.depart.filtre) etat.filtreDemandes = SC.depart.filtre; if (SC.depart.ongletCarte) etat.ongletCarte = SC.depart.ongletCarte; if (SC.depart.filtreOffres) etat.filtreOffres = SC.depart.filtreOffres; etat.ongletResas = SC.depart.onglet || 'agenda'; etat.serviceVu = 'soir'; etat.jour = A.iso; try { sessionStorage.setItem('jh-espace-session', '1'); if (scenarioFrais || !sessionStorage.getItem('jh-espace-vue')) sessionStorage.setItem('jh-espace-vue', SC.depart.vue); } catch { /* rien */ } }
     if (session || SC) montrer(true); else document.documentElement.classList.remove('esp-dedans');
   }
 }

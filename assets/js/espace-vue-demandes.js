@@ -16,7 +16,7 @@ const ICO = {
 };
 const ico = (g) => `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICO[g] || ICO.question}</svg>`;
 const FILTRES = [['tout', 'Tout'], ['table', 'Tables'], ['reception', 'Réceptions'], ['traiteur', 'Traiteur'], ['cadeau', 'Cartes cadeaux'], ['question', 'Questions']];
-const FINIES = ['signe', 'retiree', 'envoyee', 'repondue'], PERDUES = ['perdue', 'annulee'];
+const FINIES = ['signe', 'retiree', 'envoyee', 'repondue', 'emise', 'prete'], PERDUES = ['perdue', 'annulee', 'refusee'];
 const classePastille = (s) => (s === 'nouvelle' ? 'a-confirmer' : FINIES.includes(s) ? 'confirmee' : PERDUES.includes(s) ? 'refusee' : 'cours');
 
 export function creerDemandes(X) {
@@ -27,11 +27,12 @@ export function creerDemandes(X) {
 
   /** La carte d'une demande. Compacte (rubrique Aujourd'hui) : l'en-tête mène à la rubrique Demandes. */
   function carte(d, { compacte = false } = {}) {
-    const g = GENRES[d.genre], s = suite(d.genre, d.statut), ouverte = !compacte && etat.demandeOuverte === d.id, msg = ouverte ? messageDemande(S(), d, D.telephone) : null;
+    const g = GENRES[d.genre], com = ['traiteur', 'cadeau'].includes(d.genre), s = com ? null : suite(d.genre, d.statut), ouverte = !compacte && etat.demandeOuverte === d.id, msg = ouverte ? messageDemande(S(), d, D.telephone) : null;
     const src = d.source === 'demo' ? '<span class="esp-source">Exemple</span>' : '<span class="esp-source esp-source--site">Depuis le site</span>';
     const tete = `<span class="esp-dem__ico">${ico(d.genre)}</span><span class="esp-dem__qui"><span class="esp-dem__nom">${e(d.qui)} ${src}</span><span class="esp-dem__titre">${e(g.nom)} · ${e(d.titre)}</span></span>
       <span class="esp-dem__etat"><span class="esp-pastille esp-pastille--${classePastille(d.statut)}">${e(libelleEtape(d.genre, d.statut))}</span><span class="esp-dem__recue">reçue ${e(recue(d.cree, A.iso))}</span></span>`;
-    const etapes = !ouverte ? '' : `<div class="esp-dem__bloc"><p class="esp-champ__titre" id="et-${e(d.id)}">Où elle en est</p>
+    /* v7.14.0 : une commande à emporter ou une carte cadeau se suit dans son dossier (le bon bouton au bon moment), pas étape par étape ici. */
+    const etapes = !ouverte || com ? '' : `<div class="esp-dem__bloc"><p class="esp-champ__titre" id="et-${e(d.id)}">Où elle en est</p>
       <ol class="esp-etapes" aria-labelledby="et-${e(d.id)}">${g.etapes.map(([id, nom], i) => `<li><button type="button" class="esp-etape${g.etapes.findIndex(([x]) => x === d.statut) >= i ? ' est-faite' : ''}" data-etape-demande="${e(d.id)}" data-statut="${id}"${d.statut === id ? ' aria-current="step"' : ''}><span class="esp-etape__n" aria-hidden="true">${i + 1}</span>${nom}</button></li>`).join('')}</ol>
       ${g.fin ? `<p><button type="button" class="esp-bouton esp-bouton--discret" data-etape-demande="${e(d.id)}" data-statut="${g.fin[0]}" aria-pressed="${d.statut === g.fin[0]}">${g.fin[1]}</button></p>` : ''}</div>`;
     const corpsCarte = !ouverte ? '' : `<div class="esp-dem__corps" id="dem-${e(d.id)}">
@@ -42,7 +43,7 @@ export function creerDemandes(X) {
       ${X.tachesDe ? X.tachesDe('demande', d.id, `${d.qui} · ${g.nom}`, `Rappeler ${d.prenom || d.qui}`) : ''}</div>`;
     return `<li class="esp-dem est-${d.statut}${ouverte ? ' est-ouverte' : ''}" data-demande="${e(d.id)}">
       <button type="button" class="esp-dem__tete" ${compacte ? `data-voir-demande="${e(d.id)}"` : `data-ouvrir-demande="${e(d.id)}" aria-expanded="${ouverte}"${ouverte ? ` aria-controls="dem-${e(d.id)}"` : ''}`}>${tete}</button>
-      ${s || X.boutonDossier?.(d) ? `<p class="esp-dem__actions">${s ? `<button type="button" class="esp-bouton${d.statut === 'nouvelle' ? ' esp-bouton--ok' : ''}" data-etape-demande="${e(d.id)}" data-statut="${s.statut}"${d.statut === 'nouvelle' ? ' data-repondre' : ''}>${e(s.libelle)}</button>` : ''}${compacte ? '' : X.boutonDossier?.(d) || ''}</p>` : ''}
+      ${s || X.boutonDossier?.(d) || (com && X.boutonCommerce?.(d)) ? `<p class="esp-dem__actions">${com ? X.boutonCommerce?.(d) || '' : ''}${s ? `<button type="button" class="esp-bouton${d.statut === 'nouvelle' ? ' esp-bouton--ok' : ''}" data-etape-demande="${e(d.id)}" data-statut="${s.statut}"${d.statut === 'nouvelle' ? ' data-repondre' : ''}>${e(s.libelle)}</button>` : ''}${compacte ? '' : X.boutonDossier?.(d) || ''}</p>` : ''}
       ${corpsCarte}</li>`;
   }
   /** Une table à confirmer, avec le message qui partira au client. */
@@ -58,7 +59,7 @@ export function creerDemandes(X) {
     corps('demandes').innerHTML = `
       <p class="esp-bonjour">${nb ? `${pluriel(nb, 'demande')} ${nb > 1 ? 'attendent' : 'attend'} une réponse.` : 'Tout a une réponse.'} ${ctx().exemples === false ? 'Les demandes de table du site arrivent ici, sur tous vos appareils. Réception, traiteur, carte cadeau et question ne sont pas encore partagées.' : 'Les cinq formulaires du site arrivent ici : table, réception, traiteur, carte cadeau, question.'}</p>
       <div class="esp-filtres" role="group" aria-label="Filtrer les demandes">${FILTRES.map(([id, nom]) => `<button type="button" class="esp-filtre" data-filtre-demandes="${id}" aria-pressed="${id === f}">${nom}${compte[id] ? `<span class="esp-filtre__n" aria-label="${compte[id]} à traiter">${compte[id]}</span>` : ''}</button>`).join('')}</div>
-      ${suivi}
+      ${suivi}${X.accesCommerce && ['tout', 'traiteur', 'cadeau'].includes(f) ? X.accesCommerce() : ''}
       ${f === 'reception' && ctx().exemples !== false ? '<h3 class="esp-sous">Les demandes reçues</h3>' : '<h3 class="esp-sous">À traiter</h3>'}
       ${tables.length || neuves.length ? `${tables.length ? `<ul class="esp-resas esp-resas--demandes">${tables.map(table).join('')}</ul>` : ''}${neuves.length ? `<ul class="esp-dems">${neuves.map((d) => carte(d)).join('')}</ul>` : ''}`
         : `<p class="esp-vide esp-vide--fete"><span class="esp-vide__sceau" aria-hidden="true"></span><span><b>Tout a une réponse.</b> ${f === 'tout' ? 'Les prochaines demandes faites sur le site arriveront ici.' : 'Rien à traiter dans cette catégorie.'}</span></p>`}

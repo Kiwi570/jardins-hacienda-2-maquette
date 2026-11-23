@@ -79,8 +79,10 @@ export default (c) => {
     /* v7.7.6 : les tables du plan de la page Réserver, pour le plan de salle de l'espace. */
     salle: { zones: D.salle.zones, assemblages: (D.salle.assemblages || []).map((a) => ({ tables: a.tables, places: a.places })), tables: D.salle.tables.map((t) => ({ id: t.id, zone: t.zone, places: t.places, forme: t.forme, x: t.x, y: t.y, l: t.l, ...(t.h ? { h: t.h } : {}), ...(t.note ? { note: t.note } : {}) })) },
     /* v7.12.0 : les espaces de réception et leurs hypothèses de démonstration (donnees/receptions.json). */
-    receptions: { espaces: D.receptions.espaces, durees: D.receptions.durees, taches: D.receptions.taches, lignes: D.receptions.lignes, cadeaux: D.cadeaux.montants },
-    pages: { offrir: c.url('offrir', 'composer'), receptions: c.url('receptions'), fetes: c.url('les-fetes', 'dates'), carte: c.url('la-carte'), accueil: c.url('accueil'), reserver: c.url('reserver', 'formulaire'), infos: c.url('infos-pratiques') },
+    receptions: { espaces: D.receptions.espaces, durees: D.receptions.durees, taches: D.receptions.taches, lignes: D.receptions.lignes, cadeaux: D.cadeaux.montants,
+      /* v7.14.0 : les produits de la page À emporter, base du catalogue traiteur (et la période de retrait annoncée). */
+      emporter: D.emporter.produits.map((p) => ({ id: p.id, nom: p.nom, texte: p.texte, prix: p.prix, unite: p.unite })), retraits: { debut: D.emporter.debut, fin: D.emporter.fin } },
+    pages: { emporter: c.url('a-emporter', 'produits'), offrir: c.url('offrir', 'composer'), receptions: c.url('receptions'), fetes: c.url('les-fetes', 'dates'), carte: c.url('la-carte'), accueil: c.url('accueil'), reserver: c.url('reserver', 'formulaire'), infos: c.url('infos-pratiques') },
   };
   return html`
 <section class="espace" id="espace" data-espace aria-labelledby="espace-titre">

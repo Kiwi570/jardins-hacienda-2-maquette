@@ -42,12 +42,20 @@ export function lirePrixOffre(t) {
   const s = String(t ?? '').trim().replace(/\s*(€|euros?)$/i, '').replace(/[\s  ]/g, ''); if (!s) return '';
   return /^\d{1,6}(?:[.,]\d{1,2})?$/.test(s) ? parseFloat(s.replace(',', '.')) : null;
 }
+/** Un nombre écrit à la française (« 0,5 ») : le nombre, '' si le champ est vide, null s'il n'est pas lisible. */
+export function lireNombre(t) { if (typeof t === 'number') return Number.isFinite(t) ? t : null; const s = String(t ?? '').trim().replace(/[\s  ]/g, ''); if (!s) return ''; return /^\d{1,5}(?:[.,]\d{1,3})?$/.test(s) ? parseFloat(s.replace(',', '.')) : null; }
+const ventePropre = (v = {}, unite = '') => { const d = unite === 'kilo' ? 0.5 : 1, min = lireNombre(v.min), pas = lireNombre(v.pas), delai = lireNombre(v.delai);
+  return { min: typeof min === 'number' && min > 0 ? min : d, pas: typeof pas === 'number' && pas > 0 ? pas : d, delai: typeof delai === 'number' && delai >= 0 ? Math.round(delai) : '' }; };
+/** Les unités d'un produit à emporter : celles qui se comptent ou se pèsent. */
+export const UNITES_EMPORTER = ['piece', 'kilo', 'formule'];
 /** Une offre mise au propre (les champs absents ne sont pas inventés). */
 export function offrePropre(o) {
   const prix = lirePrixOffre(o.prix), p = o.periode && (o.periode.du || o.periode.au) ? { du: ISO.test(o.periode.du || '') ? o.periode.du : '', au: ISO.test(o.periode.au || '') ? o.periode.au : '' } : null;
-  return { id: String(o.id || '').slice(0, 40), type: TYPES[o.type] && !['plat', 'soiree', 'emporter'].includes(o.type) ? o.type : 'prestation', nom: net(o.nom, 120), description: net(o.description, 600), prix: prix == null ? '' : prix, unite: UNITES[o.unite] ? o.unite : '',
+  return { id: String(o.id || '').slice(0, 40), type: TYPES[o.type] && !['plat', 'soiree'].includes(o.type) ? o.type : 'prestation', nom: net(o.nom, 120), description: net(o.description, 600), prix: prix == null ? '' : prix, unite: UNITES[o.unite] ? o.unite : '',
     categorie: net(o.categorie, 60), ordre: Math.max(0, Math.round(+o.ordre || 0)), periode: p, conditions: net(o.conditions, 400), usages: { propositions: o.usages?.propositions !== false, site: !!o.usages?.site },
-    visuel: o.visuel?.nom ? { nom: String(o.visuel.nom).slice(0, 80), alt: net(o.visuel.alt, 160) } : null, ...(o.exemple ? { exemple: true } : {}) };
+    visuel: o.visuel?.nom ? { nom: String(o.visuel.nom).slice(0, 80), alt: net(o.visuel.alt, 160) } : null, ...(o.exemple ? { exemple: true } : {}),
+    /* v7.14.0 : un produit à emporter garde sa quantité minimale, son pas et son délai de commande (vide : non précisé). */
+    ...(o.type === 'emporter' ? { vente: ventePropre(o.vente, o.unite), ...(o.produit ? { produit: String(o.produit).slice(0, 40) } : {}) } : {}) };
 }
 /**
  * Ce qui empêche d'enregistrer une offre : [{ champ, message }] (vide si tout va bien). `saisie` : les champs tels
@@ -58,6 +66,14 @@ export function validerOffre(saisie = {}) {
   if (!String(saisie.nom || '').trim()) e.push({ champ: 'nom', message: 'Donnez un nom à cette offre.' });
   if (prix == null) e.push({ champ: 'prix', message: 'Le prix doit être un nombre positif, par exemple 49 ou 49,50. Laissez le champ vide si le prix n\'est pas encore décidé.' });
   if (!UNITES[saisie.unite]) e.push({ champ: 'unite', message: 'Choisissez l\'unité du prix : par personne, la pièce, le kilo, la formule ou au forfait.' });
+  if (saisie.type === 'emporter') {
+    if (UNITES[saisie.unite] && !UNITES_EMPORTER.includes(saisie.unite)) e.push({ champ: 'unite', message: 'Un produit à emporter se vend à la pièce, au kilo ou à la formule.' });
+    if (prix === '' && saisie.site) e.push({ champ: 'prix', message: 'Un produit proposé à la commande a besoin d\'un prix : écrivez-le, ou décochez « Proposé à la commande » en attendant.' });
+    const min = lireNombre(saisie.vente?.min), pas = lireNombre(saisie.vente?.pas), delai = lireNombre(saisie.vente?.delai);
+    if (!(typeof min === 'number' && min > 0)) e.push({ champ: 'min', message: 'La quantité minimale est un nombre plus grand que zéro, par exemple 1 ou 0,5.' });
+    if (!(typeof pas === 'number' && pas > 0)) e.push({ champ: 'pas', message: 'Le pas est un nombre plus grand que zéro : de combien la quantité augmente à chaque fois.' });
+    if (delai === null || (typeof delai === 'number' && (delai < 0 || !Number.isInteger(delai)))) e.push({ champ: 'delai', message: 'Le délai de commande est un nombre entier de jours ; laissez vide s\'il n\'est pas décidé.' });
+  }
   const du = saisie.periode?.du || '', au = saisie.periode?.au || '';
   if ((du && !ISO.test(du)) || (au && !ISO.test(au))) e.push({ champ: 'periode', message: 'Les dates de la période s\'écrivent en choisissant un jour dans le calendrier.' });
   else if (du && au && au < du) e.push({ champ: 'periode', message: 'La période se termine avant de commencer : la date de fin doit suivre la date de début.' });
@@ -105,9 +121,11 @@ export const offresDuSite = (lieux, S, iso = '', apercu = false) => offresVitrin
 
 /* ---------- Ce qui attend d'être publié ---------- */
 const dit = (v) => (v === '' || v == null ? 'rien' : String(v));
-const CHAMPS_OFFRE = [['nom', 'Nom'], ['description', 'Description'], ['prix', 'Prix'], ['unite', 'Unité'], ['categorie', 'Catégorie'], ['ordre', 'Ordre'], ['periode', 'Période'], ['conditions', 'Conditions'], ['usages', 'Endroits d\'usage'], ['visuel', 'Photo']];
+const CHAMPS_OFFRE = [['nom', 'Nom'], ['description', 'Description'], ['prix', 'Prix'], ['unite', 'Unité'], ['vente', 'Quantités et délai'], ['categorie', 'Catégorie'], ['ordre', 'Ordre'], ['periode', 'Période'], ['conditions', 'Conditions'], ['usages', 'Endroits d\'usage'], ['visuel', 'Photo']];
+const nb = (n) => String(n).replace('.', ',');
 const valOffre = (o, k) => (k === 'prix' ? (o.prix === '' || o.prix == null ? 'à définir' : prixTexte(o.prix)) : k === 'unite' ? UNITES[o.unite] || 'aucune' : k === 'periode' ? (o.periode ? `du ${o.periode.du || '…'} au ${o.periode.au || '…'}` : 'toute l\'année')
-  : k === 'usages' ? (o.type === 'cadeau' ? (o.usages?.site ? 'proposée sur la page Offrir' : 'masquée sur la page Offrir') : [o.usages?.propositions !== false ? 'propositions' : '', o.usages?.site ? 'site' : ''].filter(Boolean).join(' et ') || 'nulle part') : k === 'visuel' ? (o.visuel?.nom ? `photo « ${o.visuel.alt || o.visuel.nom} »` : 'aucune') : dit(o[k]));
+  : k === 'vente' ? (o.vente ? `minimum ${nb(o.vente.min)}, par pas de ${nb(o.vente.pas)}, délai ${o.vente.delai === '' ? 'non précisé' : `${o.vente.delai} j`}` : 'sans objet')
+  : k === 'usages' ? (o.type === 'cadeau' ? (o.usages?.site ? 'proposée sur la page Offrir' : 'masquée sur la page Offrir') : o.type === 'emporter' ? [o.usages?.site ? 'proposé sur la page À emporter' : 'masqué sur la page À emporter', o.usages?.propositions ? 'propositions' : ''].filter(Boolean).join(' et ') : [o.usages?.propositions !== false ? 'propositions' : '', o.usages?.site ? 'site' : ''].filter(Boolean).join(' et ') || 'nulle part') : k === 'visuel' ? (o.visuel?.nom ? `photo « ${o.visuel.alt || o.visuel.nom} »` : 'aucune') : dit(o[k]));
 function changementsOffre(a, b) {
   if (!a) return [`Nouvelle offre : ${b.nom}, ${prixOffre(b)}.`];
   if (!b) return [`Offre retirée : ${a.nom}.`];
@@ -165,7 +183,7 @@ export function changementsSoiree(a, b) {
 export function enPreparation(sources, S) {
   const l = [], { carte: base = [], agenda = [], lieux } = sources || {};
   const oa = offresDe(offresDeBase(lieux), publie(S, 'offres')), ob = offresDe(offresDeBase(lieux), contenu(S, 'offres'));
-  for (const id of new Set([...oa, ...ob].map((o) => o.id))) { const a = oa.find((o) => o.id === id), b = ob.find((o) => o.id === id), ch = changementsOffre(a, b); if (ch.length) l.push({ perimetre: 'offre', id, libelle: (b || a).nom, bouton: 'Publier cette offre', changements: ch, ...((b || a).type === 'cadeau' ? { ou: 'Page Offrir' } : {}) }); }
+  for (const id of new Set([...oa, ...ob].map((o) => o.id))) { const a = oa.find((o) => o.id === id), b = ob.find((o) => o.id === id), ch = changementsOffre(a, b); if (ch.length) l.push({ perimetre: 'offre', id, libelle: (b || a).nom, bouton: 'Publier cette offre', changements: ch, ...((b || a).type === 'cadeau' ? { ou: 'Page Offrir' } : (b || a).type === 'emporter' ? { ou: 'Page À emporter' } : {}) }); }
   const c = changementsCarte(base, publie(S, 'carte'), contenu(S, 'carte'));
   if (c.phrases.length) l.push({ perimetre: 'carte', id: '', libelle: 'La carte', bouton: 'Publier les modifications de la carte', changements: c.phrases, cles: [...c.cles] });
   const ar = changementsArdoise(publie(S, 'ardoise'), contenu(S, 'ardoise'), sources?.ardoise);
@@ -277,7 +295,7 @@ export function usagesOffre(lieux, S, id) {
   const props = [];
   for (const d of Object.values(S?.receptions?.dossiers || {})) for (const p of d.propositions || []) { const n = (p.lignes || []).filter((l) => l.origine === id).length; if (n) props.push({ dossier: d.id, client: d.client?.nom || '', intitule: d.projet?.intitule || d.projet?.occasion || 'Réception', version: p.v, etat: p.etat }); }
   const pub = offre(lieux, S, id, 'publie');
-  return { propositions: props, site: !!pub?.usages?.site && !pub.archive, nouvelles: !!pub && pub.usages?.propositions !== false, cadeau: pub?.type === 'cadeau' || offre(lieux, S, id)?.type === 'cadeau' };
+  return { propositions: props, site: !!pub?.usages?.site && !pub.archive, nouvelles: !!pub && pub.usages?.propositions !== false, cadeau: pub?.type === 'cadeau' || offre(lieux, S, id)?.type === 'cadeau', emporter: pub?.type === 'emporter' || offre(lieux, S, id)?.type === 'emporter' };
 }
 const INACTIFS = ['refusee', 'annulee', 'absente'];
 /** Les réservations encore actives prises depuis une soirée (`resas` : toutes celles que l'espace connaît). */
@@ -299,7 +317,7 @@ export function refusOffre(S, nom, args = {}, { resas = [] } = {}) {
   if (nom === 'offre') {
     /* Le formulaire envoie ce qui est écrit (`saisie`) ; sinon on vérifie l'offre telle qu'elle serait après le changement. */
     const o = { ...((args.base || []).find((x) => x.id === args.id) || {}), ...(S.offres?.modifs?.[args.id] || {}), ...((S.offres?.ajouts || []).find((x) => x.id === args.id) || {}), ...(args.champs || {}) };
-    const e = validerOffre(args.saisie || { nom: o.nom, prix: o.prix, unite: o.unite, periode: o.periode }); return e.length ? e[0].message : '';
+    const e = validerOffre(args.saisie ? { type: o.type, vente: o.vente, site: !!o.usages?.site, ...args.saisie } : { nom: o.nom, prix: o.prix, unite: o.unite, periode: o.periode, type: o.type, vente: o.vente, site: !!o.usages?.site }); return e.length ? e[0].message : '';
   }
   if (nom === 'offPublier') {
     if (args.vu != null && (S.publie?.n || 0) !== args.vu) return 'Le site a été publié ailleurs pendant que cet écran était ouvert (un autre onglet). Rien n\'a été publié ici : relisez les changements, puis publiez de nouveau.';
@@ -339,6 +357,5 @@ export function catalogue(sources, S, auj = '') {
     ...offres(lieux, S).map((o) => ({ id: o.id, type: o.type, nom: o.nom, prix: prixOffre(o), categorie: o.categorie || 'Réceptions', exemple: !!o.exemple, archive: o.archive, publie: pubO.some((x) => x.id === o.id), preparation: enCours('offre', o.id), ou: 'offre', usages: o.usages })),
     ...platsDe(carteDe(base, { carte: contenu(S, 'carte') || {} }, '')).filter((p) => !p.masque || cles.has(p.cle)).map((p) => ({ id: p.cle, type: 'plat', nom: p.nom, prix: prixTexte(p.prix) || 'Prix à définir', categorie: p.rubriqueTitre, exemple: false, archive: false, publie: !(p.nouveau && cles.has(p.cle)), preparation: cles.has(p.cle), ou: 'carte' })),
     ...evenementsDe(agenda, { evenements: contenu(S, 'evenements') || {} }).filter((x) => !auj || String(x.debut).slice(0, 10) >= auj).map((x) => ({ id: x.id, type: 'soiree', nom: x.titre, prix: x.prix || 'Prix à définir', categorie: `${fmt(String(x.debut).slice(0, 10))}, ${x.service === 'midi' ? 'midi' : 'soir'}`, exemple: false, archive: false, publie: pubS.some((y) => y.id === x.id && !y.masque), preparation: enCours('soiree', x.id), ou: 'soirees' })),
-    ...produits.map((p, i) => ({ id: p.id ? `emporter:${p.id}` : `traiteur-${i}`, type: 'emporter', nom: p.nom, prix: `${prixTexte(p.prix)} ${p.unite === 'kg' ? UNITES.kilo : UNITES.piece}`, categorie: 'Carte traiteur', exemple: false, archive: false, publie: true, preparation: false, ou: 'emporter', lecture: true })),
   ];
 }

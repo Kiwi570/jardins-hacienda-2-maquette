@@ -184,6 +184,15 @@ try {
   const publieC = await Rc.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').publie?.n || 0);
   verifier('v7.13.0 : publier une offre est dit local à ce navigateur, et ne change rien aux réservations partagées', /pas encore partagé entre vos appareils/.test(resumeC) && publieC === 1 && JSON.stringify(await api(A, `/reservations?du=${vendredi}&au=${vendredi}`)) === avantOffres, `${resumeC.slice(0, 140)} | n° ${publieC}`);
   await Rc.evaluate(() => { const d = JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'); delete d.offres; delete d.publie; localStorage.setItem('jh-espace:v1', JSON.stringify(d)); });
+  /* v7.14.0 : le catalogue traiteur, les commandes et les cartes cadeaux restent dans ce navigateur, et c'est écrit ; rien ne touche aux réservations partagées. */
+  await Rc.reload({ waitUntil: 'load' }); await pret(Rc); await vue(Rc, 'carte'); await Rc.locator('#onglet-carte-catalogue').click(); await attendre(400);
+  const emporterC = await Rc.locator('[data-offre][data-offre-type="emporter"]').count();
+  await vue(Rc, 'demandes'); const accesC = await Rc.locator('[data-com-acces] button').count(); await Rc.locator('[data-com-ouvrir="preparation"]').click(); await attendre(400);
+  const localC = await texte(Rc, '[data-com-local]'); await Rc.locator('[data-cap] summary').click(); await attendre(200); await Rc.locator('#cap-retraits').fill('3'); await Rc.locator('[data-form-cap] button[type="submit"]').click(); await attendre(500);
+  const capC = await Rc.evaluate(() => JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').commerce?.capacites?.retraits);
+  await Rc.locator('[data-com-retour]').click(); await attendre(300); await Rc.locator('[data-com-ouvrir="cartes"]').click(); await attendre(400); const cartesC = await texte(Rc, '#com-titre');
+  verifier('v7.14.0 : produits à emporter au catalogue ; commandes et cartes cadeaux dites locales à ce navigateur ; réservations partagées inchangées', emporterC === 8 && accesC === 2 && /pas encore partagées entre vos appareils/.test(localC) && capC === 3 && /Cartes cadeaux émises/.test(cartesC) && JSON.stringify(await api(A, `/reservations?du=${vendredi}&au=${vendredi}`)) === avantOffres && !(await Rc.locator('[data-demo-lancer]:visible').count()), `${emporterC} produits | ${accesC} accès | ${localC.slice(0, 90)} | capacité ${capC} | ${cartesC}`);
+  await Rc.evaluate(() => { const d = JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'); delete d.commerce; localStorage.setItem('jh-espace:v1', JSON.stringify(d)); });
   await Vr.close(); await Rs.close(); await Rc.close();
   verifier('v7.12.0 : « Votre réception » dit qu\'elle n\'est pas reliée et ne propose ni accord ni demande', /n'est pas reliée au restaurant/.test(vrTexte) && vrOutils === 0 && !/Fantôme/.test(vrTexte), vrTexte.slice(0, 240));
   verifier('v7.12.0 : la page Réserver n\'annonce aucune réception d\'après un dossier local', !resaPrive);

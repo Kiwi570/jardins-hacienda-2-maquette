@@ -15,6 +15,7 @@ const TEXTES = {
   simule: 'Achat simulé\u00a0: rien n’est débité.',
   preparation: 'Préparation de la carte…',
   erreurMontant: 'Choisissez un montant entre {min} et {max}.',
+    erreurOffre: 'Ce montant n\u2019est pas proposé\u00a0: choisissez une carte dans la liste.',
   echec: 'La carte n’a pas pu être enregistrée. Réessayez dans un instant.',
 };
 const OUVERT = 125; // angle du rabat ouvert : renversé vers l'arrière, doublure visible
@@ -92,7 +93,8 @@ export async function init(root, options = {}) {
     const montant = libreVoulu ? Math.round((parseFloat(String(libre?.value || '').replace(',', '.')) || 0) * 100) / 100 : +r.value;
     const quantite = borne(Math.round(+qte?.value || 1), 1, o.quantiteMax);
     const v = (n) => (champ(n)?.value || '').trim();
-    return { montant, quantite, total: Math.round(montant * quantite * 100) / 100, pour: v('pour'), de: v('de'), mot: v('mot'), libre: libreVoulu };
+    return { montant, quantite, total: Math.round(montant * quantite * 100) / 100, pour: v('pour'), de: v('de'), mot: v('mot'), libre: libreVoulu, cadeau: r?.closest('[data-cadeau]')?.dataset.cadeau || '',
+      acheteur: { nom: v('acheteur_nom'), telephone: v('acheteur_tel'), email: v('acheteur_email') } };
   };
   let affiche = parseFloat(String(el.montant?.textContent || '0').replace(/\s/g, '').replace(',', '.')) || 0, tCompte = null, nPile = 0, tAnnonce = 0, dernierTotal = '';
   function compter(v) {
@@ -136,8 +138,12 @@ export async function init(root, options = {}) {
     if (el.erreur) el.erreur.textContent = msg || '';
     if (libre) { if (msg) libre.setAttribute('aria-invalid', 'true'); else libre.removeAttribute('aria-invalid'); }
   }
-  const montantValide = (v) => v.montant >= o.min && v.montant <= o.max;
-  const msgMontant = () => remplir(T.erreurMontant, { min: prix(o.min), max: prix(o.max) });
+  /* v7.14.0 : quand la page fournit les offres réellement proposées (`options.offres`), c'est l'offre choisie qui est
+     reconnue (son identifiant, à défaut son montant) : un montant hors de la liste est refusé, quel qu'il soit, et un
+     montant publié est accepté, quel qu'il soit. Sans cette liste, la plage du montant libre s'applique comme avant. */
+  const offreDe = (v) => { if (typeof o.offres !== 'function' || v.libre) return null; const l = o.offres() || []; return l.find((x) => v.cadeau && x.id === v.cadeau && x.prix === v.montant) || (v.cadeau ? null : l.find((x) => x.prix === v.montant)) || null; };
+  const montantValide = (v) => (typeof o.offres === 'function' ? !!offreDe(v) : v.montant >= o.min && v.montant <= o.max);
+  const msgMontant = () => (typeof o.offres === 'function' ? T.erreurOffre : remplir(T.erreurMontant, { min: prix(o.min), max: prix(o.max) }));
 
   // ---------- Interactions du formulaire ----------
   ecouter(form, 'input', (e) => {
@@ -243,7 +249,8 @@ export async function init(root, options = {}) {
     if (!montantValide(v)) { erreur(msgMontant()); (v.libre ? libre : form.querySelector('[name="montant"]'))?.focus(); return; }
     erreur('');
     occupe = true; el.offrir?.setAttribute('aria-busy', 'true');
-    const detail = { montant: v.montant, quantite: v.quantite, total: v.total, pour: v.pour, de: v.de, mot: v.mot };
+    const choisie = offreDe(v);
+    const detail = { montant: v.montant, quantite: v.quantite, total: v.total, pour: v.pour, de: v.de, mot: v.mot, acheteur: v.acheteur, offre: choisie ? { id: choisie.id, intitule: choisie.nom, publication: choisie.publication ?? null } : null };
     root.dispatchEvent(new CustomEvent('ccq:valide', { detail, bubbles: true }));
     if (typeof o.envoyer === 'function') {
       if (el.statut) { el.statut.hidden = false; el.statut.textContent = T.preparation; }

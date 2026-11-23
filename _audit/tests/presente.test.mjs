@@ -222,8 +222,8 @@ const etat = (id, d, S, plus = {}) => avancement(id, { S, venues: {}, vus: {}, i
 const jouer = (S, c, ...actions) => { for (const [nom, args] of actions) { const r = agir(S, nom, args, c); assert.equal(r.refus || '', '', `${nom} doit être possible`); S = r.S; } return S; };
 
 test('D · les quatre scénarios partent toujours du même point, quel que soit le jour réel, sans exemple tiré au hasard', () => {
-  assert.deepEqual(SCENARIOS.map((s) => s.id), ['service', 'attente', 'terrasse', 'client', 'reception', 'offre'], 'les quatre scénarios du service, celui des réceptions (v7.12.0, receptions.test.mjs), celui des offres (v7.13.0, offres.test.mjs)');
-  for (const reel of REELS) for (const s of SCENARIOS.filter((x) => !['reception', 'offre'].includes(x.id))) {
+  assert.deepEqual(SCENARIOS.map((s) => s.id), ['service', 'attente', 'terrasse', 'client', 'reception', 'offre', 'commande', 'cadeau'], 'les quatre scénarios du service, celui des réceptions (v7.12.0, receptions.test.mjs), celui des offres (v7.13.0, offres.test.mjs), ceux des commandes et des cartes cadeaux (v7.14.0, commerce.test.mjs)');
+  for (const reel of REELS) for (const s of SCENARIOS.filter((x) => !['reception', 'offre', 'commande', 'cadeau'].includes(x.id))) {
     const d = depart(s.id, R, reel), encore = depart(s.id, R, reel);
     assert.deepEqual(d, encore, `${s.id} : deux lancements le même jour donnent le même départ`);
     assert.ok(d.horloge.iso >= reel, `${s.id} : le jour simulé n'est pas dans le passé (${d.horloge.iso})`);

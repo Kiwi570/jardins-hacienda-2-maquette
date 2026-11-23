@@ -172,7 +172,8 @@ export default (c) => {
       <h2 id="cadeau-fetes-titre" data-anime="lignes">${c.t('fetes.cadeauTitre')} <em>${c.t('fetes.cadeauTitre2')}</em></h2>
       <p class="cadeau-fetes__intro">${c.t('fetes.cadeauTexte')}</p>
       <div class="oe-carte__montants cadeau-fetes__montants" role="group" aria-label="${c.s('accueil.oe.montants')}">
-        ${[25, 50, 100, 150, 200].map((m) => html`<button type="button" class="oe-montant" data-montant="${m}" aria-pressed="${m === 100 ? 'true' : 'false'}">${m} €</button>`)}
+        ${c.donnees.cadeaux.montants.map((m) => html`<button type="button" class="oe-montant" data-montant="${m}" data-cadeau="cadeau-${m}" aria-pressed="${m === 100 ? 'true' : 'false'}">${m} €</button>`)}
+          <script type="application/json" data-cadeaux-base>${brut(JSON.stringify(c.donnees.cadeaux.montants))}</script>
       </div>
       <p class="cadeau-fetes__actions">${c.lien('offrir', { classe: 'bouton', texte: c.t('fetes.cadeauBouton') })}</p>
     </div>

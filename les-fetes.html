@@ -125,7 +125,7 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
           <span class="ephem__reliure" aria-hidden="true"><span></span><span></span></span>
           <div class="ephem__bloc">
             <span class="ephem__epaisseur" aria-hidden="true"></span>
-            <p class="ephem__page" data-ephem-page><span class="ephem__haut" data-ephem-haut>Plus que</span> <span class="ephem__n" data-ephem-n>38</span> <span class="ephem__bas" data-ephem-bas>jours avant la <span class="insecable">Saint-Sylvestre</span></span></p>
+            <p class="ephem__page" data-ephem-page><span class="ephem__haut" data-ephem-haut>Plus que</span> <span class="ephem__n" data-ephem-n>37</span> <span class="ephem__bas" data-ephem-bas>jours avant la <span class="insecable">Saint-Sylvestre</span></span></p>
           </div>
         </div>
         <div class="ouv-fetes__suite">
@@ -346,9 +346,10 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
     <div class="cadeau-fetes__texte">
       <p class="surtitre">Pour Noël</p>
       <h2 id="cadeau-fetes-titre" data-anime="lignes">Offrez un moment <em>aux Jardins</em></h2>
-      <p class="cadeau-fetes__intro">La carte cadeau des Jardins de l&#39;Hacienda, de 25 à 200 €, valable 6 mois sur toute la carte du chef. Choisissez un montant :</p>
+      <p class="cadeau-fetes__intro">La carte cadeau des Jardins de l&#39;Hacienda, au montant de votre choix, valable 6 mois sur toute la carte du chef. Choisissez un montant :</p>
       <div class="oe-carte__montants cadeau-fetes__montants" role="group" aria-label="Montant de la carte cadeau">
-        <button type="button" class="oe-montant" data-montant="25" aria-pressed="false">25 €</button><button type="button" class="oe-montant" data-montant="50" aria-pressed="false">50 €</button><button type="button" class="oe-montant" data-montant="100" aria-pressed="true">100 €</button><button type="button" class="oe-montant" data-montant="150" aria-pressed="false">150 €</button><button type="button" class="oe-montant" data-montant="200" aria-pressed="false">200 €</button>
+        <button type="button" class="oe-montant" data-montant="25" data-cadeau="cadeau-25" aria-pressed="false">25 €</button><button type="button" class="oe-montant" data-montant="50" data-cadeau="cadeau-50" aria-pressed="false">50 €</button><button type="button" class="oe-montant" data-montant="100" data-cadeau="cadeau-100" aria-pressed="true">100 €</button><button type="button" class="oe-montant" data-montant="150" data-cadeau="cadeau-150" aria-pressed="false">150 €</button><button type="button" class="oe-montant" data-montant="200" data-cadeau="cadeau-200" aria-pressed="false">200 €</button>
+          <script type="application/json" data-cadeaux-base>[25,50,100,150,200]</script>
       </div>
       <p class="cadeau-fetes__actions"><a href="/offrir" class="bouton" data-libelle="Offrir">Offrir une carte cadeau</a></p>
     </div>

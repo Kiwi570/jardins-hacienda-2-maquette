@@ -129,7 +129,8 @@ export function creerAccueil(X) {
       <details class="esp-metier-tel" data-metier-tel><summary><span>Vue&nbsp;: <b>${VUES_METIER.find(([id]) => id === vue)[1]}</b></span></summary>
         <p class="esp-metier__choix" role="group" aria-label="Voir comme">${VUES_METIER.map(([id, nom]) => `<button type="button" class="esp-metier__bouton" data-vue-metier="${id}" aria-pressed="${id === vue}">${nom}</button>`).join('')}</p>
         <p class="esp-metier__aide">${e(VUES_METIER.find(([id]) => id === vue)[2])} Mêmes données pour tous : ce choix change la mise en avant, pas les droits. <span class="esp-source">Aperçu</span></p></details>`}
-      <div class="esp-acc esp-acc--${vue}">${ORDRE[vue].map((z) => zones[z]()).join('')}</div>`);
+      <div class="esp-acc esp-acc--${vue}">${ORDRE[vue].map((z) => zones[z]()).join('')}</div>
+      ${X.aujourdhuiCommerce?.() || ''}`);
     if (etat.tacheEditee) $(`[data-form-tache] [name="titre"]`, X.corps('jour'))?.focus({ preventScroll: true });
   }
 

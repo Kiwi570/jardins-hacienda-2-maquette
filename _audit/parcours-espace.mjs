@@ -169,6 +169,13 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       /* La fête : la dernière demande reçoit sa réponse. */
       await aller(page, 'jour'); let fete = false;
       for (let i = 0; i < 30 && await page.locator('[data-esp-rendu="jour"] [data-repondre]').count(); i++) { await page.locator('[data-esp-rendu="jour"] [data-repondre]').first().click(); await attendre(150); fete = fete || !!(await page.locator('.esp-fete').count()); }
+      /* v7.14.0 : une commande à emporter et une carte cadeau se décident dans leur dossier, pas d'un seul geste. */
+      for (let i = 0; i < 6 && await page.locator('[data-esp-rendu="jour"] .esp-dem [data-com-ouvrir]').count(); i++) {
+        const b = page.locator('[data-esp-rendu="jour"] .esp-dem [data-com-ouvrir]').first(), quoi = await b.getAttribute('data-com-ouvrir'); await b.click(); await attendre(400);
+        if (quoi === 'commande') await page.locator('[data-cmd-avancer="validee"]').click();
+        else { await page.locator('#cad-ach-nom').fill('Hugo S. (exemple)'); await page.locator('#cad-ach-tel').fill('06 00 00 00 02'); await page.locator('[data-form-cad-valider] button[type="submit"]').click(); }
+        await attendre(250); fete = fete || !!(await page.locator('.esp-fete').count()); await aller(page, 'jour');
+      }
       const tout = await page.locator('[data-esp-rendu="jour"] .esp-vide--fete').innerText().catch(() => '');
       if (!/Tout a une réponse/.test(tout) || !fete) R.echec('espace : tout a une réponse', `message « ${tout.slice(0, 60)} », fête lancée ${fete}`, lieu);
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
@@ -1020,7 +1027,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if ((await page.locator('[data-demo-lancer]:visible').count()) !== 1) R.echec(`${ou} : lanceur`, `« Lancer une démonstration » devrait être visible une fois sur Aujourd'hui (${await page.locator('[data-demo-lancer]:visible').count()})`, lieu);
       await page.locator('[data-demo-lancer]:visible').first().click(); await attendre(350);
       const choix = await page.evaluate(() => ({ n: document.querySelectorAll('[data-demo-choisir]').length, focus: !!document.activeElement?.closest('.esp-modale--demo'), titres: [...document.querySelectorAll('.esp-demo-carte h3')].map((h) => h.textContent.trim()) }));
-      if (choix.n !== 6 || !choix.focus) R.echec(`${ou} : lanceur`, `${choix.n} scénarios proposés (attendu 6), focus ${choix.focus ? 'dans' : 'hors de'} la fenêtre`, lieu);
+      if (choix.n !== 8 || !choix.focus) R.echec(`${ou} : lanceur`, `${choix.n} scénarios proposés (attendu 8), focus ${choix.focus ? 'dans' : 'hors de'} la fenêtre`, lieu);
       /* v7.12.0 : les commandes disent ce qu'elles font. Rien n'a encore été joué : « Lancer depuis le début » partout, aucun « Reprendre ». */
       const libelles = await page.evaluate(() => ({ debut: [...document.querySelectorAll('[data-demo-choisir]')].map((b) => b.textContent.trim()), reprendre: document.querySelectorAll('[data-demo-reprendre]').length }));
       if (libelles.debut.some((t) => t !== 'Lancer depuis le début') || libelles.reprendre) R.echec(`${ou} : lanceur`, `avant tout lancement : ${JSON.stringify(libelles)}`, lieu);
@@ -1125,7 +1132,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click();
       await page.locator('[data-scene-etapes] [data-demo-lancer]').click(); await attendre(350);
       const cmd = await page.evaluate(() => ({ reprendre: [...document.querySelectorAll('[data-demo-reprendre]')].map((b) => b.dataset.demoReprendre).sort(), debut: document.querySelectorAll('[data-demo-choisir]').length }));
-      if (cmd.debut !== 6 || cmd.reprendre.join() !== 'attente,service,terrasse') R.echec(`${ou} : lanceur`, `« Reprendre » devrait être proposé pour les trois scénarios déjà lancés, « Lancer depuis le début » pour tous : ${JSON.stringify(cmd)}`, lieu);
+      if (cmd.debut !== 8 || cmd.reprendre.join() !== 'attente,service,terrasse') R.echec(`${ou} : lanceur`, `« Reprendre » devrait être proposé pour les trois scénarios déjà lancés, « Lancer depuis le début » pour tous : ${JSON.stringify(cmd)}`, lieu);
       await changerDePage(page, () => page.locator('[data-demo-reprendre="attente"]').click()); s = await scene();
       if (s.scenario !== 'attente' || !/19 h/.test(s.heure) || s.faites !== 3) R.echec(`${ou} : reprendre`, `« Reprendre » devrait garder la progression du scénario 2 (3 étapes, 19 h) : ${JSON.stringify(s)}`, lieu);
       await page.goto(`${BASE}/infos-pratiques`, { waitUntil: 'load' }); await attendrePret(page); await attendre(1500);
@@ -1747,6 +1754,171 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (!/Page Offrir/.test(resumeCadeau) || !/masquée sur la page Offrir/.test(resumeCadeau) || o3.puces !== '50 € | 100 € | 150 € | 200 €' || o3.coche !== '50' || !/100/.test(totalV1)) R.echec(`${ou} : cadeaux`, `après publication : résumé « ${resumeCadeau.slice(0, 160)} », page Offrir « ${o3.puces} », coché ${o3.coche}, totalV1 « ${totalV1} »`, { page: '/offrir', taille: taille.nom });
       /* Les données habituelles n'ont pas bougé. */
       if ((await page.evaluate(() => localStorage.getItem('jh-espace:v1'))) !== habituel) R.echec(`${ou} : isolation`, 'la démonstration a modifié les données habituelles', lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok(`espace : ${ou}`);
+    } finally { await ctx.close(); }
+  }
+
+  /* ---------- 1-sexdecies. v7.14.0 : du catalogue à la remise au client (ordinateur et largeur de téléphone) ----------
+     Lot 0 (annonce et aperçu sans recouvrement, carte cadeau à 250 €), puis les démonstrations 7 et 8 suivies comme un
+     utilisateur, avec leurs variantes : dernière capacité demandée deux fois (deux onglets), annulation, changement de
+     prix après la commande, créneau complet vu du site, double clic, dépassement refusé, correction tracée. */
+  for (const taille of (!SEUL || SEUL.includes('1-sexdecies') ? ['1366×768', '390×844'] : []).map(T)) {
+    const lieu = { page: P, taille: taille.nom }, ou = `commerce (${taille.nom})`;
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      const texte = async (sel, pg = page) => (await pg.locator(sel).first().innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
+      const toast = () => texte('[data-esp-toast-texte]'), refus = (pg = page) => texte('[data-com-erreur]', pg);
+      const faites = (pg = page) => pg.locator('[data-esp-scene] .esp-scene__etapes li.est-faite').count();
+      const debordement = async (pg, quoi) => { const d = await pg.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - document.documentElement.clientWidth); if (d > 1) R.echec(`${ou} : débordement`, `${quoi} déborde de ${d} px`, lieu); };
+      const faux = (titre, cond, detail) => { if (!cond) R.echec(`${ou} : ${titre}`, String(detail).slice(0, 420), lieu); };
+      let demo = 'offre';
+      const etat = () => page.evaluate((d) => JSON.parse(localStorage.getItem(`jh-demo:${d}:espace:v1`) || '{}'), demo);
+      const demandes = () => page.evaluate((d) => JSON.parse(localStorage.getItem(`jh-demo:${d}:espace-demandes:v1`) || '[]'), demo);
+      const site = async (chemin, pause = 600) => { const g = await ctx.newPage(), [avant, ancre] = chemin.split('#'); await g.goto(`${BASE}${avant}${avant.includes('?') ? '&' : '?'}demo=${demo}${ancre ? `#${ancre}` : ''}`, { waitUntil: 'load' }); await attendrePret(g); await attendre(pause); return g; };
+      const ouvrirDemo = async (id, pg = page) => { demo = id; await pg.goto(`${BASE}${P}?demo=${id}`, { waitUntil: 'load' }); await attendrePret(pg); if (await pg.locator('[data-esp-app]').isHidden()) await pg.locator('[data-esp-connexion] button[type="submit"]').click(); await pg.locator('[data-esp-app]').waitFor({ state: 'visible', timeout: 5000 }); await attendre(700); };
+      await page.goto(BASE + '/la-carte', { waitUntil: 'load' }); await page.evaluate(() => localStorage.setItem('jh-espace:v1', JSON.stringify({ _schema: 2, annonce: { active: false, texte: 'Témoin des données habituelles' } })));
+      const habituel = await page.evaluate(() => localStorage.getItem('jh-espace:v1'));
+
+      /* ===== Lot 0 · A. L'annonce et le repère d'aperçu ont leur place : rien n'est recouvert, après l'animation d'ouverture. ===== */
+      await ouvrirDemo('offre'); await aller(page, 'site:horaires');
+      await page.locator('#an-texte').fill('Fermeture annuelle du 4 au 18 janvier : toute l\'équipe vous retrouve le mardi 19 janvier au déjeuner, avec la nouvelle carte d\'hiver du chef.'); await attendre(1300); await page.locator('[data-annonce-active]').click(); await attendre(500);
+      const ac = await site('/?apercu=1'); await ac.waitForFunction(() => document.documentElement.classList.contains('intro-finie') || !document.documentElement.matches('[data-arrivee="intro"]'), null, { timeout: 15000 }).catch(() => {}); await attendre(900);
+      const pose = await ac.evaluate(() => { const r = (sel) => { const x = document.querySelector(sel)?.getBoundingClientRect(); return x ? { haut: Math.round(x.top), bas: Math.round(x.bottom), l: Math.round(x.width) } : null; }; const bande = r('[data-bandeaux]');
+        const sous = [...document.querySelectorAll('main :is(h1, h2, p, a, button)')].filter((el) => { const x = el.getBoundingClientRect(), cs = getComputedStyle(el); return x.width > 4 && x.height > 4 && cs.visibility !== 'hidden' && +cs.opacity > 0.05 && x.top < bande.bas - 1 && x.bottom > bande.haut + 1 && (el.textContent || '').trim(); }).map((el) => (el.textContent || '').trim().slice(0, 30));
+        return { bande, entete: r('[data-entete]'), h1: r('main h1'), sous, repere: document.querySelector('[data-apercu-non-publie]')?.textContent.replace(/\s+/g, ' ').trim() || '', liens: [...document.querySelectorAll('[data-apercu-non-publie] a')].map((a) => [a.textContent.trim(), Math.round(a.getBoundingClientRect().height)]), annonce: document.querySelector('.annonce-site__texte')?.textContent || '', rappel: document.querySelector('.apercu-pile')?.classList.contains('est-visible') }; });
+      faux('aperçu', pose.bande && !pose.sous.length && pose.bande.haut >= pose.entete.bas - 1 && pose.h1.haut >= pose.bande.bas, `la bande d'aperçu recouvre du contenu : ${JSON.stringify(pose)}`);
+      faux('aperçu', /Aperçu — non publié/.test(pose.repere) && /l'annonce/.test(pose.repere) && pose.liens.length === 2 && pose.liens.every(([t, h]) => h >= 44) && /Voir la version publiée/.test(pose.liens[0][0]) && /Revenir à l'espace/.test(pose.liens[1][0]) && /mardi 19 janvier/.test(pose.annonce) && !pose.rappel, `repère, liens ou annonce : ${JSON.stringify(pose)}`);
+      await debordement(ac, 'l’accueil en aperçu'); await ac.evaluate(() => scrollTo(0, 1400)); await attendre(900);
+      faux('aperçu', await ac.evaluate(() => document.querySelector('.apercu-pile')?.classList.contains('est-visible') && /Aperçu — non publié/.test(document.querySelector('[data-apercu-rappel]')?.textContent || '')), 'une fois la bande sortie de l’écran, le rappel « Aperçu — non publié » devrait rester visible');
+      await ac.locator('.annonce-site__fermer').evaluate((b) => b.click()); await attendre(400); faux('aperçu', !(await ac.locator('.annonce-site').count()) && (await ac.locator('[data-apercu-non-publie]').count()) === 1, 'fermer l’annonce ne doit pas retirer le repère d’aperçu'); await ac.close();
+      const an = await site('/'); faux('aperçu', !(await an.locator('.annonce-site, [data-apercu-non-publie]').count()), 'sans publication, le site normal ne montre ni l’annonce préparée ni le repère'); await an.close();
+
+      /* ===== Lot 0 · B et C. Une carte cadeau publiée à 250 € va jusqu'à la demande reçue ; un montant hors catalogue est refusé. ===== */
+      await aller(page, 'carte:catalogue');
+      await page.locator('[data-offre="cadeau-200"] [data-offre-editer]').click(); await attendre(350); await page.locator('#of-prix').fill('250'); await page.locator('[data-form-offre] button[type="submit"]').click(); await attendre(600);
+      await page.locator('[data-offre="cadeau-200"] [data-pub-ouvrir]').first().click(); await attendre(350); await page.locator('[data-pub-confirmer]').first().click(); await attendre(700);
+      const of = await site('/offrir#composer', 1800), puces = (await of.locator('.ccq__puce').allInnerTexts()).map((x) => x.replace(/\s+/g, ' ').trim()).join('|');
+      await of.locator('.ccq__puce[data-cadeau="cadeau-200"]').click(); await of.locator('#ccq-qte').fill('2'); await of.locator('#ccq-pour').fill('Léa'); await of.locator('#ccq-de').fill('Hugo'); await of.locator('#ccq-ach-nom').fill('Hugo Simon (exemple)'); await of.locator('#ccq-ach-tel').fill('06 00 00 00 02'); await attendre(300);
+      await debordement(of, 'la page Offrir'); await of.locator('.ccq__offrir').click(); await attendre(4500);
+      const env = { erreur: await texte('[data-ccq-erreur="montant"]', of), statut: await texte('[data-ccq-statut]', of) }, dc = (await demandes()).filter((d) => d.genre === 'cadeau').pop() || {};
+      faux('cadeau 250 €', puces === '25 €|50 €|100 €|150 €|250 €' && !env.erreur && /2 cartes de 250 €, total 500 €/.test(env.statut), `page Offrir « ${puces} », erreur « ${env.erreur} », statut « ${env.statut} »`);
+      faux('cadeau 250 €', dc.montant === 250 && dc.quantite === 2 && dc.total === 500 && dc.offre === 'cadeau-200' && dc.intitule === 'Carte cadeau de 250 €' && dc.publication >= 1 && dc.acheteur?.nom === 'Hugo Simon (exemple)' && dc.pour === 'Léa' && dc.de === 'Hugo', `la demande reçue : ${JSON.stringify(dc)}`);
+      await of.reload({ waitUntil: 'load' }); await attendrePret(of); await attendre(1500); await of.evaluate(() => { const r = document.querySelector('.ccq__puce input'); r.value = '60'; r.checked = true; r.dispatchEvent(new Event('input', { bubbles: true })); }); await of.locator('.ccq__offrir').click(); await attendre(900);
+      faux('cadeau 250 €', /n’est pas proposé/.test(await texte('[data-ccq-erreur="montant"]', of)), 'un montant hors du catalogue publié (60 €) devrait être refusé'); await of.close();
+      const acc = await site('/'); faux('cadeau 250 €', (await acc.locator('.oe-montant').allInnerTexts()).map((x) => x.replace(/\s+/g, ' ').trim()).join('|') === '25 €|50 €|100 €|150 €|250 €' && !/25 à 200/.test(await acc.evaluate(() => document.body.textContent)), 'les montants de l’accueil devraient suivre le catalogue publié'); await acc.close();
+      await page.reload({ waitUntil: 'load' }); await attendrePret(page); await attendre(900); await aller(page, 'demandes'); await page.locator(`[data-demande="${dc.id}"] [data-com-ouvrir="cadeau"]`).click(); await attendre(450);
+      faux('cadeau 250 €', /Carte cadeau de 250 €/.test(await texte('[data-cad-offre]')) && /version publiée n° \d/.test(await texte('[data-cad-offre]')) && /500 €/.test(await texte('[data-cad-total]')) && /Hugo Simon/.test(await texte('[data-cad-acheteur]')), `le suivi de la demande : « ${await texte('[data-cad-offre]')} », « ${await texte('[data-cad-total]')} »`); await debordement(page, 'le suivi d’une demande de carte');
+
+      /* ===== Démonstration 7 · Une commande jusqu'au retrait ===== */
+      await ouvrirDemo('commande');
+      faux('démo 7', /Démonstration 7 sur 8/.test(await texte('[data-esp-scene]')) && /2 déc/.test(await texte('[data-scene-heure]')) && (await page.locator('[data-offre-type="emporter"]').count()) === 8 && (await faites()) === 1, `au départ : « ${(await texte('[data-esp-scene]')).slice(0, 160)} », ${await faites()} étape(s)`);
+      faux('démo 7', /18 € la pièce/.test(await texte('[data-offre="emporter-escargots"] [data-offre-prix]')) && /28 € le kilo/.test(await texte('[data-offre="emporter-pate-lorrain"] [data-offre-prix]')), 'les unités du catalogue traiteur devraient être explicites'); await debordement(page, 'le catalogue à emporter');
+      const cmdSite = async (escargots, kg) => { const g = await site('/a-emporter#produits', 1500);
+        if (escargots) { await g.locator('[data-ajouter="escargots"]').click(); await attendre(1100); for (let k = 1; k < escargots; k++) { await g.locator('.emp-tl [data-action="plus"]').first().click(); await attendre(200); } await g.locator('.emp-tiroir__continuer').click({ force: true }); await attendre(650); }
+        if (kg) { await g.locator('[data-produit="pate-lorrain"] [data-poids]').selectOption(String(kg)); await g.locator('[data-ajouter="pate-lorrain"]').click(); await attendre(1100); }
+        return g; };
+      const g7 = await cmdSite(2, 1.5); const tir = { lignes: (await g7.locator('.emp-tl').allInnerTexts()).map((x) => x.replace(/\s+/g, ' ')).join(' / '), total: await texte('[data-tiroir-total]', g7) };
+      faux('démo 7', /2 pièces/.test(tir.lignes) && /1,5 kg/.test(tir.lignes) && /18 € la pièce/.test(tir.lignes) && /28 € le kg/.test(tir.lignes) && /78/.test(tir.total), `le panier : ${JSON.stringify(tir)}`);
+      await g7.locator('[data-tiroir-valider]').click(); await attendre(450);
+      faux('démo 7', await g7.evaluate(() => [...document.querySelectorAll('[name="jour"]')].filter((x) => x.value < '2026-12-02').every((x) => x.disabled) && !document.querySelector('[name="jour"][value="2026-12-05"]').disabled), 'les jours passés devraient être refusés, le samedi 5 décembre proposé');
+      await g7.evaluate(() => document.querySelector('[name="jour"][value="2026-12-05"]').click()); await attendre(350); await g7.evaluate(() => document.querySelector('[name="moment"][value="soir"]').click()); await attendre(250); await g7.locator('[data-tiroir-suite]').click(); await attendre(450);
+      await g7.locator('[name="prenom"]').fill('Julie'); await g7.locator('[name="nom"]').fill('Martin (exemple)'); await g7.locator('[name="tel"]').fill('06 00 00 00 01'); await g7.locator('[name="remarque"]').fill('Sans persil.'); await attendre(250);
+      const rel = await texte('[data-emp-relecture]', g7); await debordement(g7, 'le panneau de commande');
+      await g7.locator('.emp-tiroir__pied button[type="submit"]').click(); await attendre(800);
+      const merci = await texte('[data-emp-merci]', g7), ref = await texte('[data-emp-ref]', g7); await g7.close();
+      faux('démo 7', /2 pièces/.test(rel) && /1,5 kg/.test(rel) && /78/.test(rel) && /samedi 5 décembre/.test(rel) && /doit encore être validée/.test(merci) && /^T-[A-Z0-9]+$/.test(ref), `relecture « ${rel.slice(0, 160)} », confirmation « ${merci.slice(0, 160)} », référence « ${ref} »`);
+      const id7 = `T-${ref.slice(2).toLowerCase()}`, d7 = (await demandes()).find((d) => d.id === id7) || {};
+      faux('démo 7', d7.cree === '2026-12-02T10:00:00' && d7.total === 78 && d7.lignes?.length === 2 && d7.lignes[1].unite === 'kilo' && d7.lignes[1].quantite === 1.5 && d7.lignes[1].total === 42 && d7.remarque === 'Sans persil.', `la demande enregistrée (horloge du scénario, lignes, unités) : ${JSON.stringify(d7).slice(0, 300)}`);
+      await page.bringToFront(); await attendre(1100); await aller(page, 'demandes');
+      await page.locator(`[data-demande="${id7}"] [data-com-ouvrir="commande"]`).click(); await attendre(450);
+      const dossier = { ref: await texte('[data-cmd-ref]'), total: await texte('[data-cmd-total]'), retrait: await texte('[data-cmd-retrait]'), lignes: await texte('[data-cmd-lignes] tbody'), dispo: await texte('[data-cmd-dispo]'), actions: await texte('[data-cmd-actions]') };
+      faux('démo 7', dossier.ref === ref && /78 €/.test(dossier.total) && /Samedi 5 décembre/.test(dossier.retrait) && /2 pièces 18 € la pièce 36 €/.test(dossier.lignes) && /1,5 kg .*28 € le kilo 42 €/.test(dossier.lignes), `le dossier ne reprend pas la commande du site : ${JSON.stringify(dossier)}`);
+      faux('démo 7', /déjà engagés ailleurs 4 pièces sur 6 pièces/.test(dossier.dispo) && /1 autre commande sur 2/.test(dossier.dispo) && /exemple/i.test(dossier.dispo) && /aucune table ni aucun couvert/.test(dossier.dispo) && /Valider la commande/.test(dossier.actions) && !/Lancer la préparation|Remettre/.test(dossier.actions), `disponibilités ou boutons : ${JSON.stringify(dossier)}`);
+      faux('démo 7', (await faites()) === 3, `après l'ouverture du dossier : ${await faites()} étape(s) sur 6`); await debordement(page, 'le dossier d’une commande');
+      /* La dernière capacité demandée par deux commandes : le second onglet affichait encore Nadia B. comme possible. */
+      const o2 = await ctx.newPage(); await ouvrirDemo('commande', o2); await aller(o2, 'demandes'); await o2.locator('[data-demande="sc7-nadia"] [data-com-ouvrir="commande"]').click(); await attendre(450);
+      const avant2 = await texte('[data-cmd-dispo]', o2);
+      await page.bringToFront(); await page.locator('[data-cmd-avancer="validee"]').click(); await attendre(600);
+      faux('démo 7', /validée/.test(await toast()) && /Aucun message/.test(await toast()) && /Validée/.test(await texte('[data-cmd-pastille]')) && (await page.locator('[data-esp-toast-annuler]:visible').count()) === 0 && (await faites()) === 4, `validation : « ${await toast()} », ${await faites()} étape(s)`);
+      await o2.bringToFront(); await o2.locator('[data-cmd-avancer="validee"]').click(); await attendre(600);
+      const r2 = await refus(o2), e2 = await etat();
+      faux('dernière capacité', /4 pièces sur 6/.test(avant2) && /production du samedi 5 décembre est complète/.test(r2) && /n'a pas été validée/.test(r2) && /Demande reçue/.test(await texte('[data-cmd-pastille]', o2)) && !e2.commerce.commandes['sc7-nadia'] && e2.commerce.commandes[id7].etat === 'validee', `second onglet : avant « ${avant2.slice(0, 120)} », refus « ${r2} », enregistré ${JSON.stringify(Object.keys(e2.commerce.commandes))}`);
+      await o2.close(); await page.bringToFront();
+      /* Le créneau complet, vu du site : mêmes règles. */
+      const g8 = await cmdSite(0, 1); await g8.locator('[data-tiroir-valider]').click(); await attendre(400); await g8.evaluate(() => document.querySelector('[name="jour"][value="2026-12-05"]').click()); await attendre(350);
+      faux('créneau complet', /retraits du soir sont complets/.test(await texte('[data-emp-creneau-note]', g8)) && await g8.locator('[name="moment"][value="soir"]').isDisabled(), `le site devrait refuser le samedi soir : « ${await texte('[data-emp-creneau-note]', g8)} »`); await g8.close();
+      /* Une annulation avant la préparation libère la production et le créneau. */
+      await page.locator('[data-com-retour]').click(); await attendre(350); await page.locator('[data-demande="sc7-marc"] [data-com-ouvrir="commande"]').click(); await attendre(450);
+      await page.locator('[data-cmd-motif="annuler"]').click(); await attendre(300); await page.locator('[data-com-motif] button[type="submit"]').click(); await attendre(350); const sansMotif = await refus();
+      await page.locator('#com-motif').fill('Le client a annulé par téléphone.'); await page.locator('[data-com-motif] button[type="submit"]').click(); await attendre(600);
+      const e3 = await etat(), marc = e3.commerce.commandes['sc7-marc'];
+      faux('annulation', /motif/.test(sansMotif) && marc.etat === 'annulee' && /libérés/.test(marc.historique.at(-1).texte) && /Annulée/.test(await texte('[data-cmd-pastille]')) && !(await page.locator('[data-cmd-actions]').count()), `annulation : sans motif « ${sansMotif} », état ${marc.etat}, « ${marc.historique.at(-1).texte} »`);
+      /* Préparation : quantités regroupées, étapes, feuilles. */
+      await page.locator('[data-com-retour]').click(); await attendre(350); await page.locator('[data-com-ouvrir="preparation"]').click(); await attendre(450);
+      const prep = await texte('[data-prep-produits] tbody'); faux('préparation', /Escargots[^—]*6 pièces/.test(prep) && /Pâté lorrain[^—]*1,5 kg/.test(prep) && !/foie/i.test(prep), `quantités à préparer : « ${prep} »`); await debordement(page, 'la préparation');
+      await page.locator(`[data-prep-commande="${id7}"] [data-cmd-avancer="preparation"]`).click(); await attendre(450); await page.locator(`[data-prep-commande="${id7}"] [data-cmd-avancer="prete"]`).click(); await attendre(450);
+      await page.evaluate(() => { window.print = () => { window.__imprime = (document.querySelector('.esp-feuille')?.innerText || '').replace(/\s+/g, ' '); }; }); await page.locator('[data-com-imprimer="preparation"]').click(); await attendre(250);
+      const feuille = await page.evaluate(() => window.__imprime || ''); faux('préparation', /Feuille de préparation/.test(feuille) && /4 pièces/.test(feuille) && /2 pièces/.test(feuille) && /1,5 kg/.test(feuille) && feuille.includes(ref) && (await faites()) === 5, `feuille de préparation « ${feuille.slice(0, 200)} », ${await faites()} étape(s)`);
+      await page.locator(`[data-prep-commande="${id7}"] [data-com-ouvrir="commande"]`).click(); await attendre(450); await page.locator('[data-cmd-fiche]').click(); await attendre(300);
+      const fiche = await texte('[data-cmd-fiche-apercu]'); await page.locator('[data-com-imprimer="retrait"]').click(); await attendre(250); const imprimee = await page.evaluate(() => window.__imprime || '');
+      faux('retrait', /Fiche de retrait/.test(fiche) && fiche.includes(ref) && /Julie Martin/.test(fiche) && /Samedi 5 décembre, le soir/.test(fiche) && /2 pièces/.test(fiche) && /1,5 kg/.test(fiche) && /Sans persil/.test(fiche) && /Fiche de retrait/.test(imprimee), `fiche de retrait « ${fiche.slice(0, 220)} »`); await debordement(page, 'la fiche de retrait');
+      await page.locator('[data-cmd-avancer="retiree"]').click(); await attendre(600);
+      const e4 = await etat(), k7 = e4.commerce.commandes[id7], fin7 = await texte('[data-scene-essayer]');
+      faux('démo 7', k7.etat === 'retiree' && k7.historique.map((h) => h.quoi).join() === 'recue,validee,preparation,prete,retiree' && (await faites()) === 6 && fin7.includes(ref) && /6 pièces d'escargots engagées sur 6/.test(fin7) && /Rien n'a été envoyé ni encaissé/.test(fin7) && !e4.resa?.ajouts?.length, `fin : ${k7.etat}, historique ${k7.historique.map((h) => h.quoi).join()}, conclusion « ${fin7.slice(0, 200)} »`);
+      /* Un prix qui change après la commande : le site suit, la commande reçue ne bouge pas. */
+      await aller(page, 'carte'); await page.locator('[data-offre="emporter-escargots"] [data-offre-editer]').click(); await attendre(350); await page.locator('#of-prix').fill('20'); await page.locator('[data-form-offre] button[type="submit"]').click(); await attendre(500);
+      await page.locator('[data-offre="emporter-escargots"] [data-pub-ouvrir]').first().click(); await attendre(300); await page.locator('[data-pub-confirmer]').first().click(); await attendre(600);
+      const g9 = await site('/a-emporter#produits', 1200), prixSite = await texte('[data-produit="escargots"] .emp-produit__prix', g9); await g9.close();
+      await aller(page, 'demandes'); await page.locator(`[data-demande="${id7}"] [data-com-ouvrir="commande"]`).click(); await attendre(450);
+      faux('prix après commande', /20/.test(prixSite) && /18 € la pièce 36 €/.test(await texte('[data-cmd-lignes] tbody')) && /78 €/.test(await texte('[data-cmd-total]')), `site « ${prixSite} », commande « ${await texte('[data-cmd-lignes] tbody')} »`);
+      /* La fiche du client : la commande une fois, pas de fusion sur le nom. */
+      await page.locator('[data-voir-demande]').click(); await attendre(450); if (!(await page.locator(`[data-demande="${id7}"] [data-client]:visible`).count())) { await page.locator(`[data-demande="${id7}"] [data-ouvrir-demande]`).click(); await attendre(300); }
+      await page.locator(`[data-demande="${id7}"] [data-client]`).first().click(); await attendre(450);
+      const fc = await texte('[data-com-fiche]'); faux('fiche client', /Commandes à emporter \(1\)/.test(fc) && fc.includes(ref) && /Retirée/.test(fc) && !(await page.locator('.esp-fiche__demandes li').count()), `fiche : « ${fc.slice(0, 200)} »`); await debordement(page, 'la fiche du client');
+      await page.locator('button[data-fermer-client]').first().click(); await attendre(300);
+
+      /* ===== Démonstration 8 · Un cadeau qui garde sa valeur ===== */
+      await ouvrirDemo('cadeau');
+      faux('démo 8', /Démonstration 8 sur 8/.test(await texte('[data-esp-scene]')) && (await faites()) === 0, `au départ : ${await faites()} étape(s)`);
+      await page.locator('[data-demande="sc8-cadeau"] [data-com-ouvrir="cadeau"]').click(); await attendre(450);
+      faux('démo 8', /Hugo S\./.test(await texte('[data-cad-acheteur]')) && /100 €/.test(await texte('[data-cad-total]')) && /Non enregistré/.test(await texte('[data-cad-reglement]')) && !(await page.locator('[data-cad-emettre], [data-cad-regler]').count()) && (await faites()) === 1, `la demande : « ${await texte('.esp-com-etats')} »`);
+      await page.locator('[data-form-cad-valider] button[type="submit"]').click(); await attendre(500); faux('démo 8', !(await page.locator('[data-cad-emettre]').count()) && (await page.locator('[data-cad-regler]').count()) === 1 && (await faites()) === 2, 'après la validation : seul le règlement simulé devrait être proposé');
+      await page.locator('[data-cad-regler]').click(); await attendre(500); faux('démo 8', /Simulé, 100 €/.test(await texte('[data-cad-reglement]')) && /Aucun paiement réel/.test(await toast()) && /exemple à confirmer/.test(await texte('[data-cad-validite]')) && (await faites()) === 3, `règlement : « ${await texte('[data-cad-reglement]')} », « ${await toast()} »`);
+      await page.locator('[data-cad-emettre]').dblclick(); await attendre(700);
+      const e5 = await etat(), l8 = Object.values(e5.commerce.cartes || {});
+      faux('deux cartes', l8.length === 2 && l8.every((c) => c.valeur === 50 && /^DEMO-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(c.code)) && l8[0].code !== l8[1].code && (await page.locator('[data-cad-cartes] li').count()) === 2 && (await faites()) === 4, `cartes émises : ${JSON.stringify(l8.map((c) => [c.code, c.valeur]))}`); await debordement(page, 'les cartes émises d’une demande');
+      await page.locator('[data-cad-cartes] [data-com-ouvrir="carte"]').first().click(); await attendre(450);
+      await page.locator('#util-montant').fill('20'); await page.locator('#util-ref').fill('Déjeuner du mercredi'); await page.locator('#util-par').fill('Régis'); await attendre(250);
+      const avantUse = await texte('[data-util-apres]'); await page.locator('[data-form-carte-utiliser] button[type="submit"]').dblclick(); await attendre(700);
+      const e6 = await etat(), s6 = Object.values(e6.commerce.cartes).map((c) => [c.utilisations.length, 50 - c.utilisations.filter((u) => !u.annulee).reduce((t, u) => t + u.montant, 0)]);
+      faux('utilisation', /30 €/.test(avantUse) && JSON.stringify(s6) === '[[1,30],[0,50]]' && /30 €/.test(await texte('[data-carte-solde]')) && (await faites()) === 5, `après 20 € (double clic) : ${JSON.stringify(s6)}, affiché « ${await texte('[data-carte-solde]')} »`);
+      await page.locator('#util-montant').fill('35'); await attendre(250); const prevu = await texte('[data-util-apres]'); await page.locator('[data-form-carte-utiliser] button[type="submit"]').click(); await attendre(600);
+      const fin8 = await texte('[data-scene-essayer]');
+      faux('dépassement', /dépasse le solde/.test(prevu) && /35 € ne peuvent pas être utilisés/.test(await refus()) && /Rien n'a été débité/.test(await refus()) && /30 €/.test(await texte('[data-carte-solde]')) && (await faites()) === 6 && /solde 30 €/.test(fin8) && /solde 50 €/.test(fin8) && /Aucun paiement réel/.test(fin8), `refus « ${await refus()} », conclusion « ${fin8.slice(0, 220)} »`); await debordement(page, 'une carte cadeau');
+      /* Conflit entre deux onglets : le second affichait encore 30 €. */
+      const o3 = await ctx.newPage(); await o3.goto(page.url(), { waitUntil: 'load' }); await attendrePret(o3); await attendre(900); await aller(o3, 'demandes'); await o3.locator('[data-com-ouvrir="cartes"]').click(); await attendre(350); await o3.locator('[data-cartes] [data-com-ouvrir="carte"]').first().click(); await attendre(400); await o3.locator('#util-montant').fill('25'); await attendre(200);
+      await page.bringToFront(); await page.locator('#util-montant').fill('10'); await page.locator('[data-form-carte-utiliser] button[type="submit"]').click(); await attendre(600);
+      await o3.bringToFront(); await o3.locator('[data-form-carte-utiliser] button[type="submit"]').click(); await attendre(600);
+      faux('conflit', /(a changé ailleurs : il est maintenant de 20 €|Le solde de cette carte est de 20 €)/.test(await refus(o3)) && /[Rr]ien n'a été débité/.test(await refus(o3)) && /20 €/.test(await texte('[data-carte-solde]', o3)) && Object.values((await etat()).commerce.cartes)[0].utilisations.length === 2, `second onglet : « ${await refus(o3)} », solde affiché « ${await texte('[data-carte-solde]', o3)} »`); await o3.close(); await page.bringToFront();
+      /* Correction tracée : l'ancienne reste lisible, la nouvelle la remplace ; la saisie est gardée si le motif manque. */
+      await page.reload({ waitUntil: 'load' }); await attendrePret(page); await attendre(900); await aller(page, 'demandes'); await page.locator('[data-com-ouvrir="cartes"]').click(); await attendre(350); await page.locator('[data-cartes] [data-com-ouvrir="carte"]').first().click(); await attendre(400);
+      await page.locator('[data-usage-corriger]').first().click(); await attendre(300); await page.locator('#usage-montant').fill('15'); await page.locator('[data-form-usage] button[type="submit"]').click(); await attendre(400);
+      const sansMotif8 = await refus(), garde = await page.locator('#usage-montant').inputValue(); await page.locator('#usage-motif').fill('Addition de 15 € et non de 20 €.'); await page.locator('[data-form-usage] button[type="submit"]').click(); await attendre(600);
+      const e7 = await etat(), c8 = Object.values(e7.commerce.cartes)[0];
+      faux('correction', /motif/.test(sansMotif8) && garde === '15' && c8.utilisations.length === 3 && c8.utilisations[0].annulee?.remplaceePar === 'u3' && c8.utilisations[2].corrige === 'u1' && /25 €/.test(await texte('[data-carte-solde]')) && (await page.locator('[data-usages] li.est-annulee').count()) === 1, `correction : sans motif « ${sansMotif8} », saisie gardée « ${garde} », ${JSON.stringify(c8.utilisations.map((u) => [u.id, u.montant, !!u.annulee]))}`);
+      /* L'offre archivée après l'émission : les cartes gardent leur valeur et leur solde. */
+      await aller(page, 'carte:catalogue'); await page.locator('[data-offre="cadeau-50"] [data-offre-archiver]').click(); await attendre(300); await page.locator('[data-offre-archiver-oui]').click(); await attendre(500);
+      await aller(page, 'demandes'); await page.locator('[data-com-ouvrir="cartes"]').click(); await attendre(350);
+      const apresArch = (await page.locator('[data-cartes] li').allInnerTexts()).map((x) => x.replace(/\s+/g, ' ')).join(' / ');
+      faux('offre archivée', (apresArch.match(/Active/g) || []).length === 2 && /solde 25 €/.test(apresArch) && /solde 50 €/.test(apresArch), `cartes après l'archivage : « ${apresArch.slice(0, 260)} »`); await debordement(page, 'la liste des cartes');
+      await page.locator('#carte-code').fill(c8.code.toLowerCase().replace(/-/g, ' ')); await page.locator('[data-form-carte-code] button[type="submit"]').click(); await attendre(450); faux('code', (await texte('[data-carte-code]')) === c8.code, 'une carte devrait se retrouver par son code, écrit en minuscules et sans tirets');
+      /* Aujourd'hui : rien ne compte dans les couverts ; les demandes à traiter y sont. */
+      await aller(page, 'jour'); await debordement(page, 'Aujourd’hui');
+      /* Recommencer remet le scénario à son départ ; quitter rend les données habituelles, intactes. */
+      await page.locator('[data-scene-etapes] summary').click(); await attendre(250); await page.locator('[data-scene-recommencer]').click(); await attendre(1200);
+      const e8 = await etat(); faux('remise à zéro', !Object.keys(e8.commerce?.cartes || {}).length && !e8.commerce?.cadeaux && (await faites()) === 0, `après « Recommencer » : ${JSON.stringify(e8.commerce || {}).slice(0, 160)}, ${await faites()} étape(s)`);
+      if ((await page.evaluate(() => localStorage.getItem('jh-espace:v1'))) !== habituel) R.echec(`${ou} : isolation`, 'les démonstrations ont modifié les données habituelles', lieu);
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
       R.ok(`espace : ${ou}`);
     } finally { await ctx.close(); }

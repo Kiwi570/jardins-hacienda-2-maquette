@@ -115,7 +115,9 @@ export function creerReceptions(X) {
 
   /* v7.13.0 : une nouvelle ligne reprend la version PUBLIÉE du catalogue (une offre en préparation ou archivée n'y est pas). */
   const publiees = () => offresCatalogue(lieux(), S(), 'publie');
-  const catalogue = () => [...offresPourProposition(lieux(), S()).map((o) => ({ id: o.id, offre: o, libelle: o.nom, description: o.description, unite: UNITES[o.unite] || '', pu: o.prix, exemple: !!o.exemple, groupe: 'Votre catalogue (offres publiées)' })), ...(D.produits || []).map((p, i) => ({ id: `traiteur-${i}`, libelle: p.nom, description: 'Carte traiteur du site.', unite: p.unite === 'kg' ? 'le kilo' : 'pièce', pu: +p.prix || 0, groupe: 'Carte traiteur (prix du site)' }))];
+  /* v7.14.0 : les produits à emporter sont des offres du catalogue comme les autres : la proposition reprend leur version
+     publiée (prix et unité du moment), plus les prix livrés avec le site. Une ligne de proposition ne crée jamais de commande. */
+  const catalogue = () => offresPourProposition(lieux(), S()).map((o) => ({ id: o.id, offre: o, libelle: o.nom, description: o.description, unite: UNITES[o.unite] || '', pu: o.prix, exemple: !!o.exemple, groupe: o.type === 'emporter' ? 'Carte traiteur (produits publiés)' : 'Votre catalogue (offres publiées)' }));
   const enPrepCatalogue = () => offresCatalogue(lieux(), S()).filter((o) => !o.archive && attentePub({ lieux: lieux() }, S(), 'offre', o.id));
   function ongletProposition(d) {
     const v = actionsClient(venues(), d.id), b = brouillonDe(d), c = couranteDe(d), accord = accordDe(d, v), versions = versionsDe(d), cat = catalogue(), groupes = [...new Set(cat.map((x) => x.groupe))];

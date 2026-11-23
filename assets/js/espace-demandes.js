@@ -10,9 +10,9 @@ export const GENRES = {
   table: { nom: 'Table', plusieurs: 'Tables' },
   reception: { nom: 'Réception', plusieurs: 'Réceptions', etapes: [['nouvelle', 'Nouvelle'], ['rappele', 'Rappelé'], ['visite', 'Visite faite'], ['devis', 'Devis envoyé'], ['signe', 'Signé']], fin: ['perdue', 'Sans suite'],
     suite: { nouvelle: 'J\'ai rappelé', rappele: 'Visite faite', visite: 'Devis envoyé', devis: 'C\'est signé' } },
-  traiteur: { nom: 'Traiteur', plusieurs: 'Traiteur', etapes: [['nouvelle', 'Nouvelle'], ['confirmee', 'Confirmée'], ['prete', 'Prête'], ['retiree', 'Retirée']], fin: ['annulee', 'Annulée'],
-    suite: { nouvelle: 'Confirmer la commande', confirmee: 'Commande prête', prete: 'Retirée' } },
-  cadeau: { nom: 'Carte cadeau', plusieurs: 'Cartes cadeaux', etapes: [['nouvelle', 'Nouvelle'], ['envoyee', 'Envoyée']], suite: { nouvelle: 'Carte envoyée' } },
+  /* v7.14.0 : la commande à emporter et la carte cadeau se suivent dans leur dossier (commerce.js) ; l'étape montrée ici en découle. */
+  traiteur: { nom: 'Traiteur', plusieurs: 'Traiteur', etapes: [['nouvelle', 'Demande reçue'], ['confirmee', 'Validée'], ['preparation', 'En préparation'], ['prete', 'Prête'], ['retiree', 'Retirée'], ['refusee', 'Refusée']], fin: ['annulee', 'Annulée'] },
+  cadeau: { nom: 'Carte cadeau', plusieurs: 'Cartes cadeaux', etapes: [['nouvelle', 'Demande reçue'], ['validee', 'Validée'], ['reglee', 'Réglée (simulation)'], ['emise', 'Cartes émises'], ['envoyee', 'Envoyée (ancien suivi)'], ['refusee', 'Refusée'], ['annulee', 'Annulée']] },
   question: { nom: 'Question', plusieurs: 'Questions', etapes: [['nouvelle', 'Nouvelle'], ['repondue', 'Répondue']], suite: { nouvelle: 'J\'ai répondu' } },
 };
 export const libelleEtape = (genre, statut) => [...(GENRES[genre]?.etapes || []), GENRES[genre]?.fin].filter(Boolean).find(([id]) => id === statut)?.[1] || 'Nouvelle';
@@ -54,18 +54,24 @@ export function normaliser(d) {
     titre = [d.occasion?.replace(/^une? /i, '').replace(/^./, (c) => c.toUpperCase()), d.invites ? `${d.invites} invités` : '', quand].filter(Boolean).join(' · ');
     L.push(['Occasion', d.occasion], ['Date', quand ? maj(quand) : ''], ['Invités', d.invites], ['Espace', d.espace], ['Message', d.message]);
   } else if (d.genre === 'traiteur') {
-    const n = (d.produits || []).reduce((s, x) => s + (+x.qte || 0), 0), retrait = [d.jourLibelle || (d.jour ? fmt(d.jour) : ''), d.moment === 'midi' ? 'à midi' : d.moment === 'soir' ? 'le soir' : ''].filter(Boolean).join(', ');
+    /* v7.14.0 : une demande récente porte ses lignes (quantité et unité : « 2 pièces », « 1,5 kg ») ; on compte les produits, pas les quantités. */
+    const L2 = Array.isArray(d.lignes) && d.lignes.length ? d.lignes : null, qu = (l) => `${String(l.quantite).replace('.', ',')} ${l.unite === 'kilo' ? 'kg' : l.unite === 'piece' ? (l.quantite > 1 ? 'pièces' : 'pièce') : l.unite === 'formule' ? (l.quantite > 1 ? 'formules' : 'formule') : '(unité à préciser)'}`;
+    const n = L2 ? L2.length : (d.produits || []).length, retrait = [d.jourLibelle || (d.jour ? fmt(d.jour) : ''), d.moment === 'midi' ? 'à midi' : d.moment === 'soir' ? 'le soir' : ''].filter(Boolean).join(', ');
     titre = [pluriel(n, 'produit'), d.total != null ? euros(+d.total) : '', retrait ? `retrait ${retrait}` : ''].filter(Boolean).join(' · ');
-    L.push(['Commande', (d.produits || []).map((x) => `${x.qte} × ${x.nom}`).join(', ')], ['Total', d.total != null ? euros(+d.total) : ''], ['Retrait', retrait ? maj(retrait) : '']);
+    L.push(['Commande', L2 ? L2.map((x) => `${qu(x)} ${x.nom}`).join(', ') : (d.produits || []).map((x) => `${x.qte} × ${x.nom}`).join(', ')], ['Total', d.total != null ? euros(+d.total) : ''], ['Retrait', retrait ? maj(retrait) : ''], ['Remarque', d.remarque]);
   } else if (d.genre === 'cadeau') {
-    nomQui = d.de || qui;
+    /* v7.14.0 : l'acheteur (la personne à rappeler) est distinct de la signature « De la part de » et du bénéficiaire. La
+       demande garde l'offre choisie (identifiant, intitulé, version publiée) ; une demande plus ancienne reste lisible. */
+    const ach = d.acheteur || {};
+    nomQui = ach.nom || d.de || qui;
     titre = `${pluriel(+d.quantite || 1, 'carte')} de ${euros(+d.montant || 0)}${d.pour ? ` pour ${d.pour}` : ''}`;
-    L.push(['Montant', `${+d.quantite > 1 ? `${d.quantite} × ` : ''}${euros(+d.montant || 0)}`], ['Pour', d.pour], ['De la part de', d.de], ['Le mot', d.mot]);
+    L.push(['Offre', d.offre ? `${d.intitule || 'Carte cadeau'}${d.publication != null ? ` (version publiée n°\u00a0${d.publication})` : ''}` : ''], ['Montant', `${+d.quantite > 1 ? `${d.quantite} × ` : ''}${euros(+d.montant || 0)}`], ['Total', d.total != null && +d.quantite > 1 ? euros(+d.total) : ''],
+      ['Acheteur', [ach.nom, ach.telephone, ach.email].filter(Boolean).join(' · ')], ['Pour', d.pour], ['De la part de', d.de], ['Le mot', d.mot]);
   } else if (d.genre === 'question') {
     titre = d.sujet || 'Une question';
     L.push(['Sujet', d.sujet], ['Message', d.message], ['Pour le', d.date ? maj(fmt(d.date)) : '']);
   }
-  return { id: d.id, genre: d.genre, cree: d.cree, qui: nomQui || 'Sans nom', prenom: d.prenom || (d.de || '').split(' ')[0] || '', telephone: d.telephone || d.tel || '', email: d.email || '', titre, lignes: L.filter(([, v]) => v), statut: d.statut || 'nouvelle', source: d.source === 'demo' ? 'demo' : 'site', brut: d };
+  return { id: d.id, genre: d.genre, cree: d.cree, qui: nomQui || 'Sans nom', prenom: d.prenom || (d.acheteur?.nom || d.de || '').split(' ')[0] || '', telephone: d.telephone || d.tel || d.acheteur?.telephone || '', email: d.email || d.acheteur?.email || '', titre, lignes: L.filter(([, v]) => v), statut: d.statut || 'nouvelle', source: d.source === 'demo' ? 'demo' : 'site', brut: d };
 }
 
 /** Les demandes (hors tables) : démonstration et site, à l'étape où le restaurant les a laissées ; celles qui attendent d'abord, puis les plus récentes. */

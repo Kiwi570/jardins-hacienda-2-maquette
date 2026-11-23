@@ -12,11 +12,19 @@ export function offresDeBase(lieux) {
     unite: cleUnite(l.unite), categorie: 'Réceptions', ordre: i + 1, periode: null, conditions: '', usages: { propositions: true, site: false }, visuel: null, exemple: !!l.exemple })),
     /* v7.13.1 : les cartes cadeaux de la page Offrir (`lieux.cadeaux` : ses montants), sous un identifiant stable par montant
        d'origine. Pour une carte cadeau, « sur le site » veut dire : proposée sur la page Offrir. */
-    ...(lieux?.cadeaux || []).map((m, i) => ({ id: `cadeau-${m}`, type: 'cadeau', nom: `Carte cadeau de ${m} €`, description: '', prix: +m, unite: 'carte', categorie: 'Cartes cadeaux', ordre: 101 + i, periode: null, conditions: '', usages: { propositions: false, site: true }, visuel: null, exemple: false }))];
+    ...(lieux?.cadeaux || []).map((m, i) => ({ id: `cadeau-${m}`, type: 'cadeau', nom: `Carte cadeau de ${m} €`, description: '', prix: +m, unite: 'carte', categorie: 'Cartes cadeaux', ordre: 101 + i, periode: null, conditions: '', usages: { propositions: false, site: true }, visuel: null, exemple: false })),
+    /* v7.14.0 : les produits de la page À emporter (`lieux.emporter` : ceux livrés avec le site), sous un identifiant stable
+       par produit. `vente` : la quantité minimale et le pas (dans l'unité du prix), le délai de commande en jours (vide :
+       non précisé). `produit` : le produit livré dont l'offre garde le dessin. « Sur le site » veut dire : page À emporter. Comme avant,
+       un produit livré peut être repris dans une proposition de réception (au prix publié) : cela ne crée jamais de commande. */
+    ...(lieux?.emporter || []).map((x, i) => { const kilo = /kg|kilo/i.test(x.unite || ''); return { id: `emporter-${x.id}`, type: 'emporter', nom: x.nom, description: x.texte || '', prix: +x.prix, unite: kilo ? 'kilo' : cleUnite(x.unite) || 'piece', categorie: 'Carte traiteur', ordre: 201 + i,
+      periode: null, conditions: '', usages: { propositions: true, site: true }, visuel: null, exemple: false, vente: { min: kilo ? 0.5 : 1, pas: kilo ? 0.5 : 1, delai: '' }, produit: x.id }; })];
 }
 /** Les offres d'un contenu ({ modifs, ajouts }) : celles du site, modifiées ou non, puis celles que le restaurant a créées. */
 export function offresDe(base, o = {}) {
-  return [...base.map((b) => ({ ...b, ...(o?.modifs?.[b.id] || {}), id: b.id, duSite: true })), ...(o?.ajouts || []).map((a) => ({ ...a, duSite: false }))]
+  /* v7.14.0 : une carte cadeau du site dont seul le montant a changé garde un nom juste (« Carte cadeau de 250 € »). */
+  const juste = (b, x) => (b.type === 'cadeau' && x.nom === b.nom && typeof x.prix === 'number' && x.prix !== b.prix ? { ...x, nom: `Carte cadeau de ${String(x.prix).replace('.', ',')} €` } : x);
+  return [...base.map((b) => juste(b, { ...b, ...(o?.modifs?.[b.id] || {}), id: b.id, duSite: true })), ...(o?.ajouts || []).map((a) => ({ ...a, duSite: false }))]
     .sort((a, b) => (a.ordre || 0) - (b.ordre || 0) || a.nom.localeCompare(b.nom, 'fr'));
 }
 /** L'offre est-elle dans sa période, ce jour-là ? (Sans période : toujours.) */
@@ -43,12 +51,18 @@ export const estEpuise = (v, auj, sv = '') => { if (!v || !auj) return false; co
 /** Les offres que le site affiche (page Réceptions) : dans la version lue, montrées sur le site, non archivées, dans leur période. */
 export function offresVitrine(lieux, S, iso = '', apercu = false) {
   const v = vuePublique(S, apercu), arch = S?.offres?.archives || {};
-  return offresDe(offresDeBase(lieux), v.offres).filter((o) => o.type !== 'cadeau' && !arch[o.id] && o.usages?.site && dansPeriode(o, iso || ''));
+  return offresDe(offresDeBase(lieux), v.offres).filter((o) => o.type !== 'cadeau' && o.type !== 'emporter' && !arch[o.id] && o.usages?.site && dansPeriode(o, iso || ''));
 }
 /** Les cartes cadeaux que la page Offrir propose : dans la version lue, visibles, non archivées, avec un montant. */
 export function cadeauxVitrine(lieux, S, iso = '', apercu = false) {
   const v = vuePublique(S, apercu), arch = S?.offres?.archives || {};
   return offresDe(offresDeBase(lieux), v.offres).filter((o) => o.type === 'cadeau' && !arch[o.id] && o.usages?.site && typeof o.prix === 'number' && o.prix > 0 && dansPeriode(o, iso || '')).sort((a, b) => a.prix - b.prix);
+}
+/** Les produits que la page À emporter propose (v7.14.0) : dans la version lue, visibles, non archivés, dans leur période,
+    avec un prix ; dans l'ordre du catalogue. Un produit masqué ou archivé n'est plus proposé à la commande. */
+export function emporterVitrine(lieux, S, iso = '', apercu = false) {
+  const v = vuePublique(S, apercu), arch = S?.offres?.archives || {};
+  return offresDe(offresDeBase(lieux), v.offres).filter((o) => o.type === 'emporter' && !arch[o.id] && o.usages?.site && typeof o.prix === 'number' && o.prix > 0 && dansPeriode(o, iso || ''));
 }
 /** Ce que l'aperçu montre de différent du site : les rubriques qui ont quelque chose en préparation (pour le dire sur le repère). */
 export function preparations(S) {

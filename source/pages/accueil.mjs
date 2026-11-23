@@ -479,8 +479,9 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
         <h3>${c.t('accueil.oe.emporterT')}</h3>
         <p class="oe-carte__texte">${c.t('accueil.oe.emporterX')}</p>
         <ul class="oe-carte__liste" aria-label="${c.s('accueil.oe.emporterListe')}">
-          ${c.s('accueil.oe.incontournables').split('|').map((x) => html`<li>${x}</li>`)}
+          ${c.donnees.emporter.produits.slice(0, 6).map((x) => html`<li>${x.nom}</li>`)}
         </ul>
+        <script type="application/json" data-emporter-base>${brut(JSON.stringify({ produits: c.donnees.emporter.produits.map((x) => ({ id: x.id, nom: x.nom, texte: x.texte, prix: x.prix, unite: x.unite })) }).replace(/</g, '\\u003c'))}</script>
         <p class="oe-carte__actions">${c.lien('a-emporter', { classe: 'bouton', texte: c.t('accueil.oe.commander') })}</p>
       </article>
       <article class="oe-carte">
@@ -497,7 +498,8 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
         <h3>${c.t('accueil.oe.cadeauT')}</h3>
         <p class="oe-carte__texte">${c.t('accueil.oe.cadeauX')}</p>
         <div class="oe-carte__montants" role="group" aria-label="${c.s('accueil.oe.montants')}">
-          ${[25, 50, 100, 150, 200].map((m) => html`<button type="button" class="oe-montant" data-montant="${m}" aria-pressed="${m === 100 ? 'true' : 'false'}">${m} €</button>`)}
+          ${c.donnees.cadeaux.montants.map((m) => html`<button type="button" class="oe-montant" data-montant="${m}" data-cadeau="cadeau-${m}" aria-pressed="${m === 100 ? 'true' : 'false'}">${m} €</button>`)}
+          <script type="application/json" data-cadeaux-base>${brut(JSON.stringify(c.donnees.cadeaux.montants))}</script>
         </div>
         <p class="oe-carte__actions">${c.lien('offrir', { classe: 'bouton bouton--contour', texte: c.t('accueil.oe.offrir') })}</p>
       </article>

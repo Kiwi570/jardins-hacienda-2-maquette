@@ -15,6 +15,7 @@ import { normaliser } from './espace-demandes.js?v=7';
 import { MUTATIONS_RECEPTIONS, dossierDepuisDemande, idDossier, argsRetenue, accepteeDe, commerceDe, nomsEspaces, instantDit, etatRetenue, ligneDepuisOffre, totalProposition, euros } from './espace-receptions.js?v=7';
 import { offre as offreCatalogue } from './espace-offres.js?v=7';
 import { retenueActive } from './disponibilites.js?v=7';
+import { MUTATIONS_COMMERCE, commandeDe, cadeauDe, engagements, capacites, cartes as cartesEmises, soldeCarte, quantite, retraitTexte, euros as eurosC, nomClient } from './commerce.js?v=7';
 
 const SOIR = 'soir', jourSemaine = (iso) => new Date(`${iso}T12:00:00Z`).getUTCDay();
 /** Le prochain vendredi où le soir est ouvert (aujourd'hui compris) : le jour des scénarios 1, 2 et 4. */
@@ -181,11 +182,78 @@ export const SCENARIOS = [
       { titre: 'Une ancienne présentation restaurée', texte: 'Une fois le menu publié à 49 € : Site, onglet « Publication », « Voir ce que rétablirait le contenu d\'avant », puis « Reprendre en brouillon ». Le site reste à 49 € tant que vous ne publiez pas ; les propositions, les réservations et les accords ne changent pas.' },
     ],
     conclusion: (c) => `Le menu de groupe est passé de 45 € à 49 € par personne, et lui seul : le site l'affiche depuis la publication n° ${(c.S.publie?.historique || []).filter((h) => h.id === 'menu-groupe').pop()?.n || 1}. La nouvelle proposition pour Bruno K. reprend ce prix : ${euros(nouvelleSc6(c))} pour 40 personnes. La proposition acceptée par Élise M. est restée à ${euros(ancienneSc6(c))}. Ces montants sont des exemples ; rien n'a été envoyé, signé ni encaissé.` },
+  /* v7.14.0 : une commande à emporter, de la page du site jusqu'à la remise au client. Les capacités sont des exemples. */
+  { id: 'commande', numero: 7, titre: 'Une commande jusqu\'au retrait', duree: '6 minutes', sansDemandesDemo: true,
+    situation: 'Un mercredi de décembre, 10 h. Les produits des fêtes sont publiés sur la page À emporter. Pour le samedi soir, 4 escargots sont déjà promis à Paul D. ; la cuisine peut en produire 6 ce jour-là (un exemple).',
+    montre: 'Une commande passée sur le site arrive avec la même référence, les mêmes lignes et le même total. Validée, elle compte une seule fois dans la production et le créneau de retrait, jusqu\'à la remise au client.',
+    /* La page À emporter propose ses retraits sur une période donnée : le scénario se place trois jours avant son début. */
+    quand: (R, reel, { lieux } = {}) => ({ iso: lieux?.retraits?.debut ? ajouter(lieux.retraits.debut, -3) : prochainMercredi(reel), min: 10 * 60 }), depart: { vue: 'carte', ongletCarte: 'catalogue', filtreOffres: 'emporter' },
+    etat(R, iso, { lieux } = {}) {
+      const jour = jourSc7(lieux, iso), le = (j, h) => `${ajouter(iso, j)}T${h}`, p = (id) => (lieux?.emporter || []).find((x) => x.id === id) || { id, nom: id, prix: 0, unite: 'piece' };
+      const ligne = (id, q) => { const x = p(id); return { offre: `emporter-${id}`, nom: x.nom, unite: x.unite === 'kg' ? 'kilo' : 'piece', prix: x.prix, quantite: q, total: Math.round(x.prix * q * 100) / 100 }; };
+      const dem = (id, cree, prenom, nom, lignes, plus = {}) => ({ id, genre: 'traiteur', cree: `${cree}:00`, produits: lignes.map((l) => ({ nom: l.nom, qte: l.quantite })), lignes, total: lignes.reduce((t, l) => t + l.total, 0), jour, moment: 'soir', prenom, nom, telephone: telephoneDemo(`${prenom} ${nom}`), email: '', remarque: '', publication: 0, source: 'demo', ...plus });
+      const demandes = [dem('sc7-paul', le(-2, '18:05'), 'Paul', 'D.', [ligne('escargots', 4)]), dem('sc7-nadia', le(0, '09:40'), 'Nadia', 'B.', [ligne('escargots', 2)]), dem('sc7-marc', le(-1, '11:20'), 'Marc', 'L.', [ligne('foie-gras', 1)], { jour: ajouter(jour, 6), moment: 'midi' })];
+      /* Des capacités d'exemple, à confirmer par le restaurant : 6 escargots et 4 foies gras par jour, 2 commandes par créneau. */
+      const S = { commerce: { capacites: { production: { 'emporter-escargots': 6, 'emporter-foie-gras': 4 }, retraits: 2, exemple: true } } };
+      /* Paul D. et Marc L. sont déjà validés, par les mêmes gestes que ceux de l'écran ; Nadia B. attend une décision. */
+      for (const [id, quand] of [['sc7-paul', le(-1, '09:00')], ['sc7-marc', le(-1, '15:00')]]) MUTATIONS_COMMERCE.cmdValider(S, { id, base: commandeDe(normaliser(demandes.find((d) => d.id === id)), S, lieux), le: quand });
+      return { etat: S, demandes };
+    },
+    etapes: [
+      { id: 'catalogue', texte: 'Dans Offres, filtre « À emporter » : les produits publiés, chacun avec son prix et son unité (la pièce, le kilo).', fait: (c) => vu(c, 'offre-catalogue') || !!demandeSc7(c) },
+      { id: 'commander', texte: '« Voir le site », page Traiteur : ajoutez 2 escargots et 1,5 kg de pâté lorrain, choisissez le samedi 5 décembre, le soir, vos coordonnées, puis « Valider ma commande ».', fait: (c) => !!demandeSc7(c) },
+      { id: 'arrivee', texte: 'Revenez à l\'espace, rubrique Demandes : « Décider : ouvrir la commande ». La référence, les lignes, le total et le retrait sont ceux du site.', fait: (c) => !!demandeSc7(c) && (vu(c, 'cmd-dossier') || !!commandeSc7(c)) },
+      { id: 'valider', texte: 'Lisez les disponibilités : 4 escargots déjà engagés sur 6, un retrait sur 2. Puis « Valider la commande ».', fait: (c) => ['validee', 'preparation', 'prete', 'retiree'].includes(commandeSc7(c)?.etat) },
+      { id: 'preparer', texte: '« Préparation et retraits » : 6 escargots et 1,5 kg de pâté à préparer pour samedi. « Lancer la préparation », puis « Marquer la commande prête ».', fait: (c) => ['prete', 'retiree'].includes(commandeSc7(c)?.etat) },
+      { id: 'remettre', texte: 'Ouvrez la commande : « Fiche de retrait », puis « Remettre au client ». L\'historique garde chaque étape.', fait: (c) => commandeSc7(c)?.etat === 'retiree' },
+    ],
+    variantes: [
+      { titre: 'La dernière capacité demandée par deux commandes', texte: 'Une fois votre commande validée, ouvrez celle de Nadia B. (2 escargots, même samedi soir) : « Valider la commande » est refusé, avec l\'explication ; rien n\'est enregistré. Dans deux onglets, la première validation l\'emporte, l\'autre apprend pourquoi.' },
+      { titre: 'Une annulation avant la préparation', texte: 'Ouvrez la commande de Marc L. (validée) : « Annuler la commande », avec un motif. La production et le créneau du vendredi sont libérés ; l\'historique garde le motif.' },
+      { titre: 'Un prix qui change après la commande', texte: 'Dans Offres, passez les escargots à 20 € et publiez. La page À emporter affiche 20 € ; les commandes déjà reçues gardent 18 € la pièce et leur total.' },
+      { titre: 'Le créneau complet, vu du site', texte: 'Après deux commandes validées le samedi soir, la page À emporter ne propose plus ce créneau : elle le dit, et laisse choisir un autre moment.' },
+    ],
+    conclusion: (c) => { const k = commandeSc7(c), e = engagements(c.S, k.jour).production['emporter-escargots'] || 0, cap = capacites(c.S).production['emporter-escargots'];
+      return `La commande ${k.ref} de ${nomClient(k.client)} (${k.lignes.map((l) => `${quantite(l.quantite, l.unite)} ${l.nom}`).join(', ')} ; ${k.total == null ? 'total non conservé' : eurosC(k.total)}) a été reçue, validée, préparée, puis remise ${retraitTexte(k)}. Elle a compté une seule fois : ${quantite(e, 'piece')} d'escargots engagées sur ${cap} ce jour-là (capacités d'exemple, à confirmer). Aucune table ni aucun couvert n'a été pris. Rien n'a été envoyé ni encaissé.`; } },
+  /* v7.14.0 : deux cartes cadeaux, de la demande au solde. Le règlement est simulé, les codes sont des codes de démonstration. */
+  { id: 'cadeau', numero: 8, titre: 'Un cadeau qui garde sa valeur', duree: '5 minutes', sansDemandesDemo: true,
+    situation: 'Un mercredi, 10 h. Hugo S. a demandé sur la page Offrir deux cartes cadeaux de 50 € pour Léa : 100 €. Rien n\'est encore validé, réglé ni émis.',
+    montre: 'La demande est validée, le règlement simulé est noté, puis deux cartes distinctes sont émises, chacune avec son code. Une carte s\'utilise en partie ; son solde est suivi, un dépassement est refusé.',
+    quand: (R, reel) => ({ iso: prochainMercredi(reel), min: 10 * 60 }), depart: { vue: 'demandes', filtre: 'cadeau' },
+    etat(R, iso) {
+      const demandes = [{ id: 'sc8-cadeau', genre: 'cadeau', cree: `${ajouter(iso, -1)}T20:10:00`, montant: 50, quantite: 2, total: 100, pour: 'Léa', de: 'Hugo', mot: 'Joyeux anniversaire !', offre: 'cadeau-50', intitule: 'Carte cadeau de 50 €', publication: 0,
+        acheteur: { nom: 'Hugo S.', telephone: telephoneDemo('Hugo S.'), email: 'hugo@exemple.fr' }, source: 'demo' }];
+      /* Une validité d'exemple (6 mois, comme l'annonce le site), à confirmer ; et la carte livrée à 200 € passée à 250 €, pour la variante. */
+      return { etat: { commerce: { validiteMois: 6, exempleValidite: true }, offres: { modifs: { 'cadeau-200': { prix: 250 } } } }, demandes };
+    },
+    etapes: [
+      { id: 'ouvrir', texte: 'Dans Demandes, « Décider : ouvrir la demande » de Hugo S. : 2 cartes de 50 €, 100 €. L\'acheteur, la bénéficiaire et la signature sont notés séparément.', fait: (c) => vu(c, 'cad-dossier') || !!cadeauSc8(c) },
+      { id: 'valider', texte: '« Valider la demande » : l\'acheteur à rappeler est gardé avec elle.', fait: (c) => ['validee', 'reglee', 'emise'].includes(cadeauSc8(c)?.etat) },
+      { id: 'regler', texte: '« Enregistrer le règlement simulé (100 €) » : c\'est une note de l\'équipe, rien n\'est encaissé.', fait: (c) => !!cadeauSc8(c)?.reglement },
+      { id: 'emettre', texte: '« Émettre les 2 cartes » : deux cartes de 50 €, chacune avec son code et son solde.', fait: (c) => cartesSc8(c).length === 2 },
+      { id: 'utiliser', texte: '« Ouvrir la carte » sur la première : utilisez 20 €. Son solde passe à 30 € ; l\'autre carte reste à 50 €.', fait: (c) => { const s = cartesSc8(c).map(soldeCarte).sort((a, b) => a - b); return s.length === 2 && s[0] < 50 && s[1] === 50; } },
+      { id: 'refus', texte: 'Sur la même carte, essayez 35 € : c\'est refusé, rien n\'est débité, le solde reste le même.', fait: (c) => vu(c, 'cad-refus') && cartesSc8(c).some((x) => x.utilisations.length) },
+    ],
+    variantes: [
+      { titre: 'La même opération envoyée deux fois', texte: 'Double-cliquez sur « Confirmer l\'utilisation » : une seule utilisation est enregistrée. Deux utilisations voulues du même montant restent possibles, l\'une après l\'autre.' },
+      { titre: 'Une correction qui laisse une trace', texte: 'Sur une utilisation : « Corriger », un nouveau montant et un motif. L\'ancienne reste lisible, barrée ; la nouvelle dit qu\'elle la remplace. « Annuler cette utilisation » rétablit le solde, avec son motif.' },
+      { titre: 'L\'offre modifiée ou masquée après l\'émission', texte: 'Dans Offres, filtre « Cartes cadeaux » : archivez la carte de 50 €, ou changez son montant et publiez. Les deux cartes émises gardent leur valeur, leur solde et leur code.' },
+      { titre: 'Une carte à 250 € jusqu\'à la demande', texte: '« Voir le site », page Offrir : la carte de 250 € est proposée. Choisissez-la et envoyez : la demande arrive dans Demandes avec son offre et son montant.' },
+    ],
+    conclusion: (c) => { const l = cartesSc8(c), n = l.reduce((t, x) => t + x.utilisations.filter((u) => !u.annulee).length, 0);
+      return `La demande de Hugo S. (2 cartes de 50 €, 100 €) a été validée, son règlement simulé noté, puis deux cartes distinctes ont été émises : ${l.map((x) => `${x.code}, solde ${eurosC(soldeCarte(x))}`).join(' ; ')}. ${n > 1 ? `${n} utilisations sont enregistrées` : 'Une utilisation est enregistrée'} ; le dépassement a été refusé sans rien débiter. La validité de 6 mois est un exemple à confirmer. Aucun paiement réel, aucun message : tout est resté dans ce navigateur.`; } },
 ];
 /* Scénario 6 : le prix du menu de groupe (en préparation ou publié), le total de la nouvelle proposition, celui de l'ancienne. */
 const prixSc6 = (c, version = 'travail') => offreCatalogue(c.lieux, c.S, 'menu-groupe', version)?.prix;
 const nouvelleSc6 = (c) => { const p = (c.S.receptions?.dossiers?.[idDossier('sc6-nouvelle')]?.propositions || []).find((x) => (x.lignes || []).some((l) => l.origine === 'menu-groupe' && l.pu === 49)); return p ? totalProposition(p) : 0; };
 const ancienneSc6 = (c) => { const p = (c.S.receptions?.dossiers?.[idDossier('sc6-ancienne')]?.propositions || []).find((x) => x.v === 1); return p ? p.total ?? totalProposition(p) : 0; };
+/* Scénario 7 : le premier samedi de la période de retrait ; la commande que le visiteur a passée sur le site ; son suivi. */
+const jourSc7 = (lieux, iso) => { let d = lieux?.retraits?.debut && lieux.retraits.debut >= iso ? lieux.retraits.debut : ajouter(iso, 3); while (jourSemaine(d) !== 6) d = ajouter(d, 1); return d; };
+const demandeSc7 = (c) => (c.demandes || []).find((d) => d.genre === 'traiteur' && d.source !== 'demo') || null;
+const commandeSc7 = (c) => { const d = demandeSc7(c); return d ? c.S.commerce?.commandes?.[d.id] || null : null; };
+/* Scénario 8 : le suivi de la demande de Hugo S., et ses cartes émises. */
+const cadeauSc8 = (c) => c.S.commerce?.cadeaux?.['sc8-cadeau'] || null;
+const cartesSc8 = (c) => cartesEmises(c.S).filter((x) => x.demande === 'sc8-cadeau');
 const dossierSc5 = (c) => c.S.receptions?.dossiers?.[idDossier('sc5-demande')] || null;
 /** Le prochain mercredi (aujourd'hui compris) : le jour où commence le scénario 5. */
 export function prochainMercredi(reel) { for (let k = 0; k < 7; k++) { const d = ajouter(reel, k); if (jourSemaine(d) === 3) return d; } return reel; }
@@ -214,16 +282,16 @@ export function sauts(id, { S = {}, iso = '', min = 0 } = {}) {
 }
 
 /** L'état de départ d'un scénario : { etat, venues, horloge }. `reel` : la vraie date du jour (le scénario se cale dessus). */
-export function depart(id, R, reel, config = {}) { const s = scenario(id); if (!s) return null; const h = s.quand(R, reel), d = s.etat(R, h.iso, config); return { etat: d.etat, venues: d.venues || {}, demandes: d.demandes || [], horloge: h }; }
+export function depart(id, R, reel, config = {}) { const s = scenario(id); if (!s) return null; const h = s.quand(R, reel, config), d = s.etat(R, h.iso, config); return { etat: d.etat, venues: d.venues || {}, demandes: d.demandes || [], horloge: h }; }
 
 /**
  * Où en est le scénario, d'après l'état réel (et ce qui a été regardé, `vus`) : les étapes faites, la prochaine à essayer, la conclusion (seulement quand
  * toutes les étapes sont faites).
  * @returns {{ etapes: { id, texte, fait }[], faites: number, prochaine: object|null, fini: boolean, conclusion: string }}
  */
-export function avancement(id, { S = {}, venues = {}, vus = {}, iso = '', lieux = null } = {}) {
+export function avancement(id, { S = {}, venues = {}, vus = {}, iso = '', lieux = null, demandes = [] } = {}) {
   const s = scenario(id); if (!s) return null;
-  const c = { S, venues, vus, iso, lieux }, etapes = s.etapes.map((e) => ({ id: e.id, texte: e.texte, fait: !!e.fait(c) }));
+  const c = { S, venues, vus, iso, lieux, demandes }, etapes = s.etapes.map((e) => ({ id: e.id, texte: e.texte, fait: !!e.fait(c) }));
   const fini = etapes.every((e) => e.fait);
   return { etapes, faites: etapes.filter((e) => e.fait).length, prochaine: etapes.find((e) => !e.fait) || null, fini, conclusion: fini ? s.conclusion(c) : '' };
 }

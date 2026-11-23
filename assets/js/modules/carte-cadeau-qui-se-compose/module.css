@@ -106,7 +106,7 @@
 .ccq__puce input:focus-visible + span { outline: 2px solid var(--couleur-accent); outline-offset: 3px; }
 .ccq__puce:hover span { border-color: var(--couleur-texte); }
 .ccq__libre { display: inline-flex; align-items: center; gap: .4rem; font-weight: 700; }
-.ccq__form :is(input[type="text"], input[type="number"], textarea) { width: 100%; min-height: 44px; padding: .55em .8em; border: 1px solid color-mix(in oklab, var(--couleur-texte) 26%, var(--couleur-fond));
+.ccq__form :is(input[type="text"], input[type="tel"], input[type="email"], input[type="number"], textarea) { width: 100%; min-height: 44px; padding: .55em .8em; border: 1px solid color-mix(in oklab, var(--couleur-texte) 26%, var(--couleur-fond));
   border-radius: calc(var(--rayon) * .6); background: var(--couleur-surface); color: inherit; font: inherit; }
 .ccq__form textarea { resize: vertical; min-height: 4.4em; }
 .ccq__form :is(input, textarea):focus-visible { outline: 2px solid var(--couleur-accent); outline-offset: 1px; }
@@ -134,3 +134,6 @@
 /* Mode calme, « réduire les animations » : la carte suit le formulaire sans mouvement ; l'enveloppe se ferme d'un coup. */
 .calme .ccq__reflet { display: none; }
 @media (prefers-reduced-motion: reduce) and (max-width: 0px) { .ccq__reflet { display: none; } }
+
+/* v7.14.0 : les coordonnées de l'acheteur (facultatives : pour être rappelé). */
+.ccq__acheteur { display: grid; gap: 1.15rem; min-width: 0; margin: 0; padding: 0; border: 0; }

@@ -40,9 +40,10 @@ test('catalogue : les prestations livrées gardent leur identifiant, leur prix d
   assert.deepEqual(BASE.map((o) => o.id), LIEUX.lignes.map((l) => l.id), 'les anciens identifiants sont ceux du catalogue');
   const m = offre(LIEUX, {}, 'menu-groupe'); assert.equal(m.prix, 45); assert.equal(m.unite, 'personne'); assert.equal(m.exemple, true, 'un montant d\'exemple reste marqué'); assert.equal(m.type, 'formule');
   assert.equal(offre(LIEUX, {}, 'privatisation').unite, 'forfait'); assert.ok(BASE.every((o) => o.usages.propositions && !o.usages.site), 'aucune offre d\'exemple n\'est sur le site sans décision du restaurant');
-  const c = catalogue({ ...SRC, produits: [{ id: 'escargots', nom: 'Escargots', prix: 18, unite: 'piece' }] }, {}, AUJ);
+  /* v7.14.0 : les produits à emporter sont des offres du catalogue (modifiables), sous un identifiant stable par produit. */
+  const c = catalogue({ ...SRC, lieux: { ...LIEUX, emporter: [{ id: 'escargots', nom: 'Escargots', texte: 'La douzaine.', prix: 18, unite: 'piece' }, { id: 'pate-lorrain', nom: 'Pâté lorrain', prix: 28, unite: 'kg' }] } }, {}, AUJ);
   assert.deepEqual([...new Set(c.map((x) => x.type))].sort(), ['emporter', 'formule', 'plat', 'prestation', 'soiree'], 'tous les métiers dans un seul catalogue');
-  assert.equal(c.find((x) => x.type === 'emporter').lecture, true); assert.ok(c.every((x) => x.id && x.nom && x.prix), 'chaque offre a un nom et un prix lisible');
+  assert.deepEqual(c.filter((x) => x.type === 'emporter').map((x) => [x.id, x.ou, x.prix]), [['emporter-escargots', 'offre', '18 € la pièce'], ['emporter-pate-lorrain', 'offre', '28 € le kilo']], 'un produit à emporter se modifie comme une offre, avec son unité'); assert.ok(c.every((x) => x.id && x.nom && x.prix), 'chaque offre a un nom et un prix lisible');
 });
 
 test('cas d\'erreur : prix invalide, unité manquante, période incohérente ; un prix vide n\'est jamais gratuit', () => {
@@ -305,7 +306,7 @@ test('critère 15 : le site d\'essai connecté n\'est pas touché par les offres
 });
 
 test('sixième démonstration : une offre prend vie, de 45 € à 49 €, étape par étape', () => {
-  assert.deepEqual(SCENARIOS.map((s) => s.id), ['service', 'attente', 'terrasse', 'client', 'reception', 'offre'], 'les cinq premières démonstrations sont toujours là');
+  assert.deepEqual(SCENARIOS.map((s) => s.id), ['service', 'attente', 'terrasse', 'client', 'reception', 'offre', 'commande', 'cadeau'], 'les cinq premières démonstrations sont toujours là');
   const d = depart('offre', R, AUJ, { lieux: LIEUX, salle: SALLE }), sc = SCENARIOS.find((s) => s.id === 'offre');
   const c = (S, vus = {}) => ({ S, vus, venues: {}, lieux: LIEUX, iso: d.horloge.iso }), faits = (S, vus) => avancement('offre', c(S, vus)).etapes.filter((e) => e.fait).map((e) => e.id);
   let S = d.etat; const A = idDossier('sc6-ancienne'), N = idDossier('sc6-nouvelle');
