@@ -7,7 +7,7 @@ import { lire, estVide, CONTEXTE, horloge, noterVu } from './espace-stock.js?v=7
    moment », cadran, prochains services) lisent ce repère ; hors scénario il n'est pas posé : l'heure réelle sert. */
 if (CONTEXTE && horloge()) globalThis.__jhHorloge = horloge;
 import { equipeDe, exceptionsOuvertures, serviceCourant } from './disponibilites.js?v=7';
-import { vuePublique, offresVitrine, estEpuise, UNITES } from './espace-publie.js?v=7';
+import { vuePublique, offresVitrine, cadeauxVitrine, preparations, estEpuise, UNITES } from './espace-publie.js?v=7';
 
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -189,6 +189,20 @@ if ((!estVide(S) || APERCU) && !document.querySelector('[data-espace]')) {
     gabarit.after(sec);
   });
 
+  /* v7.13.1 : la page Offrir propose les cartes cadeaux publiées du catalogue (montants, visibilité, présentation).
+     Sans changement dans l'espace, la page reste telle qu'elle est livrée. Le formulaire et son envoi ne changent pas. */
+  sur(() => {
+    const zone = document.querySelector('.ccq__montants .ccq__puces'), sc = document.querySelector('script[data-cadeaux-base]'); if (!zone || !sc || !BRUT.offres) return;
+    let montants = []; try { montants = JSON.parse(sc.textContent); } catch { return; }
+    const l = cadeauxVitrine({ cadeaux: montants }, BRUT, instantPresent().slice(0, 10), APERCU), avant = zone.querySelector('input:checked')?.value;
+    const choisi = l.some((o) => String(o.prix) === avant) ? avant : String((l.find((o) => o.prix === 50) || l[0])?.prix ?? '');
+    zone.innerHTML = l.map((o) => `<label class="ccq__puce" data-cadeau="${echap(o.id)}"><input type="radio" name="montant" value="${o.prix}"${String(o.prix) === choisi ? ' checked' : ''}><span>${Number.isInteger(o.prix) ? o.prix : String(o.prix).replace('.', ',')}\u00a0€</span></label>`).join('')
+      || '<p class="ccq__presentation" data-cadeau-aucun>Aucune carte cadeau n\'est proposée en ligne pour le moment\u00a0: appelez-nous.</p>';
+    const p = document.querySelector('[data-cadeau-presentation]');
+    const dire = () => { const o = l.find((x) => String(x.prix) === zone.querySelector('input:checked')?.value); if (!p) return; p.textContent = o?.description ? `${o.nom}\u00a0: ${o.description}` : ''; p.hidden = !p.textContent; };
+    zone.addEventListener('change', dire); dire();
+  });
+
   /* L'annonce du restaurant, puis la pastille qui rappelle que ces changements ne se voient que dans ce navigateur. */
   sur(() => {
     const pile = document.createElement('div'); pile.className = 'apercu-pile';
@@ -201,7 +215,7 @@ if ((!estVide(S) || APERCU) && !document.querySelector('[data-espace]')) {
     /* v7.11.1 : dans un scénario de démonstration, la pastille le dit et ramène à l'espace du scénario. */
     /* v7.13.0 : en aperçu, le repère dit que rien de ceci n'est publié, et ramène à la version publiée. */
     const ici = `${location.pathname}?apercu=0${location.hash}`;
-    pile.insertAdjacentHTML('beforeend', APERCU ? `<div class="apercu-espace apercu-espace--non-publie" role="status" data-apercu-non-publie><span class="apercu-espace__point" aria-hidden="true"></span><b>Aperçu — non publié</b><span class="apercu-espace__detail">Vos visiteurs voient toujours la version publiée.</span><a class="apercu-espace__lien" href="${ici}" data-apercu-quitter>Voir la version publiée</a><a class="apercu-espace__lien" href="/espace">${CONTEXTE ? 'Revenir à l\'espace' : 'Votre espace'}</a></div>`
+    pile.insertAdjacentHTML('beforeend', APERCU ? `<div class="apercu-espace apercu-espace--non-publie" role="status" data-apercu-non-publie><span class="apercu-espace__point" aria-hidden="true"></span><b>Aperçu — non publié</b><span class="apercu-espace__detail" data-apercu-perimetre>${(() => { const q = preparations(BRUT); return q.length ? `Cet aperçu montre vos préparations\u00a0: ${echap(q.join(', '))}.` : 'Rien n\u2019est en préparation\u00a0: cette page est identique à la version publiée.'; })()} Vos visiteurs voient toujours la version publiée.</span><a class="apercu-espace__lien" href="${ici}" data-apercu-quitter>Voir la version publiée</a><a class="apercu-espace__lien" href="/espace">${CONTEXTE ? 'Revenir à l\'espace' : 'Votre espace'}</a></div>`
       : CONTEXTE ? '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Démonstration en cours<span class="apercu-espace__lien">Revenir à l\'espace</span></a>' : '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Version publiée, sur cet appareil<span class="apercu-espace__lien">Votre espace</span></a>');
     document.body.append(pile);
     requestAnimationFrame(() => setTimeout(() => pile.classList.add('est-visible'), 900));

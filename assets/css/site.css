@@ -5774,3 +5774,13 @@ small.esp-erreur { margin-top: 2px; }
 .esp-rec-actu { display: grid; gap: 10px; margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; background: #eef3f7; border: 1px solid #c9d8e4; }
 .esp-rec-actu p, .esp-rec-actu h5 { margin: 0; }
 .esp-rec-actu h5 { font-family: var(--police-titres); font-size: 1.05rem; font-weight: 600; }
+
+/* v7.13.1 · Des accords cohérents, une publication maîtrisée : les zones « en préparation / publié » de la rubrique Site
+   (annonce, textes page par page, chaque photo), la présentation d'une carte cadeau sur la page Offrir. */
+[data-pub-zone] .esp-pub { margin: 0 0 12px; }
+[data-pub-zone]:empty { display: none; }
+.esp-pub__titre { margin: 0 0 6px; font-size: 15px; }
+.esp-pub__resume h4 small { font-family: var(--police-texte, inherit); font-size: 14px; font-weight: 500; color: var(--couleur-texte-doux); }
+.esp-photo__pub { grid-column: 1 / -1; min-width: 0; }
+.esp-photo__pub .esp-pub { margin: 8px 0 0; }
+.ccq__presentation { margin: 10px 0 0; font-size: 15px; line-height: 1.45; }
