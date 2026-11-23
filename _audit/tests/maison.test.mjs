@@ -89,7 +89,10 @@ test('fil de la journée et agenda : une demande datée reste une demande', () =
   const ev = AGENDA[0], jourEv = String(ev.debut).slice(0, 10), a = activitesDuJour(ctx(), {}, jourEv);
   assert.ok(a.some((x) => x.type === 'soiree' && x.titre === ev.titre && x.statut === 'Affichée sur le site' && x.aller.vue === 'carte' && x.aller.onglet === 'soirees'), 'la soirée ouvre son éditeur, dans Offres');
   const S = jouer({}, ['visibilite', { id: ev.id, visible: false, agenda: AGENDA }]);
-  assert.equal(activitesDuJour(ctx(), S, jourEv).find((x) => x.type === 'soiree').statut, 'Masquée sur le site');
+  /* v7.13.0 : masquer une soirée se prépare ; le site ne suit qu'à la publication de cette soirée. */
+  assert.equal(activitesDuJour(ctx(), S, jourEv).find((x) => x.type === 'soiree').statut, 'Modification en préparation');
+  const P = jouer(S, ['offPublier', { perimetre: 'soiree', id: ev.id, le: '2026-11-23T10:00', sources: { agenda: AGENDA } }]);
+  assert.equal(activitesDuJour(ctx(), P, jourEv).find((x) => x.type === 'soiree').statut, 'Masquée sur le site');
   /* Le mariage de Camille R. : une date souhaitée, rien de réservé. */
   const mariage = demandes(ctx(), {}).find((d) => d.id === 'demo-reception-1'), jm = mariage.brut.date, vu = activitesDuJour(ctx(), {}, jm).find((x) => x.type === 'reception');
   assert.ok(vu); assert.match(vu.statut, /^Demande/); assert.equal(vu.ferme, false); assert.match(vu.detail, /rien n'est réservé/);

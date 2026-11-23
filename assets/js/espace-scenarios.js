@@ -12,7 +12,8 @@ import { ajouter, ouvertSite, telephoneDemo } from './espace-regles.js?v=7';
 import { terrasseOuverte, cleSalle } from './espace-salle.js?v=7';
 import { exempleEte } from './espace-repli.js?v=7';
 import { normaliser } from './espace-demandes.js?v=7';
-import { MUTATIONS_RECEPTIONS, dossierDepuisDemande, idDossier, argsRetenue, accepteeDe, commerceDe, nomsEspaces, instantDit, etatRetenue } from './espace-receptions.js?v=7';
+import { MUTATIONS_RECEPTIONS, dossierDepuisDemande, idDossier, argsRetenue, accepteeDe, commerceDe, nomsEspaces, instantDit, etatRetenue, ligneDepuisOffre, totalProposition, euros } from './espace-receptions.js?v=7';
+import { offre as offreCatalogue } from './espace-offres.js?v=7';
 import { retenueActive } from './disponibilites.js?v=7';
 
 const SOIR = 'soir', jourSemaine = (iso) => new Date(`${iso}T12:00:00Z`).getUTCDay();
@@ -138,7 +139,53 @@ export const SCENARIOS = [
     ],
     conclusion: (c) => { const d = dossierSc5(c), r = d.retenue, n = (c.S.taches?.liste || []).filter((t) => t.lien?.type === 'reception' && t.lien.id === d.id);
       return `La demande de Thomas B. est devenue une réception confirmée : ${nomsEspaces(c.lieux, r.espaces).join(', ')}, du ${instantDit(r.debut)} au ${instantDit(r.fin)}. L'agenda la montre${r.salle ? ', la page Réserver n\'ouvre plus ce soir-là' : ''}, et la fiche du jour J rassemble ce que l'équipe doit savoir (${n.length > 1 ? `${n.length} tâches` : n.length ? '1 tâche' : 'aucune tâche'}, dont ${n.filter((t) => t.fait).length} ${n.filter((t) => t.fait).length > 1 ? 'faites' : 'faite'}). ${commerceDe(d, c.venues[d.id] || {}).lignes.map((l) => l.texte).join(' ; ')}. Rien n'a été envoyé, signé ni encaissé.`; } },
+  /* v7.13.0 : une offre se prépare une fois, se publie quand on le décide, et ce qui a été accepté garde son prix. */
+  { id: 'offre', numero: 6, titre: 'Une offre prend vie', duree: '5 minutes', sansDemandesDemo: true,
+    situation: 'Un mercredi, 10 h. Votre menu de groupe (un exemple, à 45 € par personne) est publié sur le site. La réception d\'Élise M., 40 personnes, a été acceptée à ce prix : 1 800 €. Vous décidez de passer le menu à 49 €.',
+    montre: 'Le prix se prépare sans toucher au site, se vérifie dans un aperçu, se publie seul. La nouvelle proposition reprend 49 € ; celle qui a été acceptée reste à 1 800 €.',
+    quand: (R, reel) => ({ iso: prochainMercredi(reel), min: 10 * 60 }), depart: { vue: 'carte', ongletCarte: 'catalogue' },
+    etat(R, iso, { lieux } = {}) {
+      const [s1, s2] = samedisDeReception(R, iso), le = (j, h) => `${ajouter(iso, j)}T${h}`;
+      const demandes = [
+        { id: 'sc6-ancienne', genre: 'reception', cree: `${le(-20, '09:15')}:00`, occasion: 'Un repas d\'entreprise', date: s1, invites: '40', espace: 'La salle du restaurant', message: 'Le repas de fin d\'année de l\'équipe.', prenom: 'Élise', nom: 'M.', telephone: telephoneDemo('Élise M.'), email: 'elise@exemple.fr', source: 'demo', statut: 'signe' },
+        { id: 'sc6-nouvelle', genre: 'reception', cree: `${le(-1, '17:20')}:00`, occasion: 'Un anniversaire', date: s2, invites: '40', espace: 'La salle du restaurant', message: 'Les 60 ans de mon père, un déjeuner en famille.', prenom: 'Bruno', nom: 'K.', telephone: telephoneDemo('Bruno K.'), email: 'bruno@exemple.fr', source: 'demo' }];
+      /* L'offre d'exemple est publiée, et montrée sur le site : c'est l'état d'avant toute modification (ce qui est là est en ligne). */
+      const S = { receptions: { dossiers: {} }, offres: { modifs: { 'menu-groupe': { usages: { propositions: true, site: true } } } },
+        /* Une soirée d'exemple, pour la variante « une réservation garde le lien avec sa soirée ». */
+        evenements: { ajouts: [{ id: 'sc6-soiree', titre: 'Soirée truffe (exemple)', debut: prochainVendredi(R, ajouter(iso, 1)), type: 'Soirée', prix: '55 € hors boissons (exemple)', service: 'soir', image: 'vraie/salle-soir', cadrage: '50% 50%' }] } };
+      S.evenements.liste = S.evenements.ajouts.map(({ id, titre, debut, type, prix, service }) => ({ id, titre, debut, type, prix, service, masque: false }));
+      const menu = offreCatalogue(lieux, S, 'menu-groupe', 'publie');
+      /* La réception d'Élise M. : proposition présentée puis acceptée à 45 € par personne, par les mêmes gestes que ceux de l'écran. */
+      const a = dossierDepuisDemande(normaliser(demandes[0]), { cree: le(-19, '10:00'), lieux });
+      MUTATIONS_RECEPTIONS.recCreer(S, { dossier: a });
+      MUTATIONS_RECEPTIONS.recModifier(S, { id: a.id, champs: { projet: { invitesConfirmes: 40, intitule: 'Repas d\'entreprise · Élise M.' }, qualifie: true } });
+      MUTATIONS_RECEPTIONS.recProposition(S, { id: a.id, proposition: { titre: 'Repas de fin d\'année', presentation: 'Un dîner assis dans la salle du restaurant.', lignes: [ligneDepuisOffre(menu, { id: 'l1', qte: 40, n: 0, le: le(-18, '14:00') })], compris: 'Le service\nLa mise en place de la salle', aPreciser: 'Les boissons' }, le: le(-18, '14:00') });
+      MUTATIONS_RECEPTIONS.recPresenter(S, { id: a.id, le: le(-18, '14:10') }); MUTATIONS_RECEPTIONS.recAccordEquipe(S, { id: a.id, le: le(-15, '11:00') });
+      /* La demande de Bruno K. a déjà son dossier, sans proposition : c'est elle qui recevra le nouveau prix. */
+      const b = dossierDepuisDemande(normaliser(demandes[1]), { cree: le(0, '09:30'), lieux });
+      MUTATIONS_RECEPTIONS.recCreer(S, { dossier: b });
+      MUTATIONS_RECEPTIONS.recModifier(S, { id: b.id, champs: { projet: { invitesConfirmes: 40, intitule: 'Anniversaire · Bruno K.' }, qualifie: true } });
+      return { etat: S, demandes };
+    },
+    etapes: [
+      { id: 'retrouver', texte: 'Dans Offres, onglet « Tout le catalogue » : retrouvez « Menu de groupe, trois plats », publié à 45 € par personne.', fait: (c) => vu(c, 'offre-catalogue') || prixSc6(c) === 49 },
+      { id: 'preparer', texte: '« Modifier » : passez le prix à 49, puis « Enregistrer en préparation ».', fait: (c) => prixSc6(c) === 49 || prixSc6(c, 'publie') === 49 },
+      { id: 'apercu', texte: '« Voir l\'aperçu » (nouvel onglet) : la page Réceptions montre 49 €, sous le repère « Aperçu — non publié ». Puis « Voir la version publiée » : le site affiche toujours 45 €.', fait: (c) => (vu(c, 'offre-apercu') && vu(c, 'offre-site')) || prixSc6(c, 'publie') === 49 },
+      { id: 'publier', texte: 'Revenez à l\'espace : « Publier cette offre », lisez le résumé, puis « Publier maintenant ». Elle seule est publiée.', fait: (c) => prixSc6(c, 'publie') === 49 && (c.S.publie?.historique || []).some((h) => h.perimetre === 'offre' && h.id === 'menu-groupe') },
+      { id: 'nouvelle', texte: 'Dans Demandes, ouvrez le dossier de Bruno K., onglet Proposition : « Préparer une proposition », ajoutez « Menu de groupe, trois plats ». 40 personnes à 49 € : 1 960 €.', fait: (c) => nouvelleSc6(c) === 1960 },
+      { id: 'ancienne', texte: 'Ouvrez le dossier d\'Élise M., onglet Proposition : la version acceptée est restée à 1 800 €.', fait: (c) => vu(c, 'offre-ancienne') && nouvelleSc6(c) === 1960 && ancienneSc6(c) === 1800 },
+    ],
+    variantes: [
+      { titre: 'Un plat épuisé pour un seul service', texte: 'Dans Offres, onglet « La carte » : « Épuisé ce midi » sur un plat. La carte du site l\'indique aussitôt, sans publication. « Aller au service du soir » : le plat est de nouveau proposé, la réservation de tables n\'a pas bougé.' },
+      { titre: 'Une réservation qui garde le lien avec sa soirée', texte: 'Sur le site, page Les fêtes : « Réserver » sur la Soirée truffe (exemple), puis envoyez la demande. Dans l\'agenda de l\'espace, la réservation porte le nom de la soirée ; dans Offres, onglet « Les soirées », la soirée compte une réservation liée, et changer sa date est refusé avec l\'explication.' },
+      { titre: 'Une ancienne présentation restaurée', texte: 'Une fois le menu publié à 49 € : Site, onglet « Publication », « Voir ce que rétablirait le contenu d\'avant », puis « Reprendre en brouillon ». Le site reste à 49 € tant que vous ne publiez pas ; les propositions, les réservations et les accords ne changent pas.' },
+    ],
+    conclusion: (c) => `Le menu de groupe est passé de 45 € à 49 € par personne, et lui seul : le site l'affiche depuis la publication n° ${(c.S.publie?.historique || []).filter((h) => h.id === 'menu-groupe').pop()?.n || 1}. La nouvelle proposition pour Bruno K. reprend ce prix : ${euros(nouvelleSc6(c))} pour 40 personnes. La proposition acceptée par Élise M. est restée à ${euros(ancienneSc6(c))}. Ces montants sont des exemples ; rien n'a été envoyé, signé ni encaissé.` },
 ];
+/* Scénario 6 : le prix du menu de groupe (en préparation ou publié), le total de la nouvelle proposition, celui de l'ancienne. */
+const prixSc6 = (c, version = 'travail') => offreCatalogue(c.lieux, c.S, 'menu-groupe', version)?.prix;
+const nouvelleSc6 = (c) => { const p = (c.S.receptions?.dossiers?.[idDossier('sc6-nouvelle')]?.propositions || []).find((x) => (x.lignes || []).some((l) => l.origine === 'menu-groupe' && l.pu === 49)); return p ? totalProposition(p) : 0; };
+const ancienneSc6 = (c) => { const p = (c.S.receptions?.dossiers?.[idDossier('sc6-ancienne')]?.propositions || []).find((x) => x.v === 1); return p ? p.total ?? totalProposition(p) : 0; };
 const dossierSc5 = (c) => c.S.receptions?.dossiers?.[idDossier('sc5-demande')] || null;
 /** Le prochain mercredi (aujourd'hui compris) : le jour où commence le scénario 5. */
 export function prochainMercredi(reel) { for (let k = 0; k < 7; k++) { const d = ajouter(reel, k); if (jourSemaine(d) === 3) return d; } return reel; }
@@ -153,6 +200,8 @@ export const scenario = (id) => SCENARIOS.find((s) => s.id === id) || null;
  * @returns {{ cle, libelle, cible: { iso, min } | null, raison: string }[]}
  */
 export function sauts(id, { S = {}, iso = '', min = 0 } = {}) {
+  /* v7.13.0 : le scénario 6 n'a qu'un saut, dans la journée : le service du soir (« épuisé ce midi » ne s'y étend pas). */
+  if (id === 'offre') return [{ cle: 'soir', libelle: 'Aller au service du soir', cible: min < 18 * 60 ? { iso, min: 19 * 60 } : null, raison: 'Vous êtes déjà au service du soir.' }];
   const s = scenario(id); if (!s?.dossier) return [];
   const d = S.receptions?.dossiers?.[s.dossier], ici = `${iso}T${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
   const vers = (t) => (t && t > ici ? { iso: t.slice(0, 10), min: +t.slice(11, 13) * 60 + +t.slice(14, 16) } : null);

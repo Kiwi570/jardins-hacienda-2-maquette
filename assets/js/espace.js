@@ -33,6 +33,9 @@ import { comprendre } from './espace-commandes.js?v=7';
 import { installerBarre } from './espace-barre.js?v=7';
 import { creerDemandes } from './espace-vue-demandes.js?v=7';
 import { creerCarte } from './espace-vue-carte.js?v=7';
+import { creerOffres } from './espace-vue-offres.js?v=7';
+import { resasDeSoiree, publie as contenuPublie, attente as attentePub } from './espace-offres.js?v=7';
+import { serviceCourant } from './disponibilites.js?v=7';
 import { creerPropose } from './espace-vue-propose.js?v=7';
 import { creerService } from './espace-vue-service.js?v=7';
 import { creerSalle } from './espace-vue-salle.js?v=7';
@@ -44,11 +47,11 @@ import { creerClients } from './espace-vue-clients.js?v=7';
 import { rechercher } from './espace-recherche.js?v=7';
 import { listeClients, aMigrer, partagesConnus, cleDossier } from './espace-clients.js?v=7';
 import { creerReceptions } from './espace-vue-receptions.js?v=7';
-import { lienReception, receptionsDuJour } from './espace-receptions.js?v=7';
+import { lienReception, receptionsDuJour, retenuesAReprendre } from './espace-receptions.js?v=7';
 import { activitesDuJour, prochainService } from './espace-accueil.js?v=7';
 import { carteDe, platsDe, prixTexte } from './espace-carte.js?v=7';
 import { normaliser, GENRES, demandes as toutesDemandes } from './espace-demandes.js?v=7';
-import { trouverResa, fixerHorloge, SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe, etatDuService, prisesDuServiceCtx, creneauxDuJour, verifierResa, listeEvenements } from './espace-regles.js?v=7';
+import { resasSoirees, trouverResa, fixerHorloge, SEMAINE, STATUTS, CAPACITE, hhmm, heure, ajouter, jourDe, fmt, maj, typo, svDe, pluriel, aujourdhui, servicesDe, creneaux as creneauxDe, ouvert, complet as estComplet, resasDuJour, actives, couverts, aConfirmer, evenements as evenementsDe, etatDuService, prisesDuServiceCtx, creneauxDuJour, verifierResa, listeEvenements } from './espace-regles.js?v=7';
 import { reglesAction } from './espace-garde.js?v=7';
 import { creerDepotServeur } from './espace-serveur.js?v=7';
 
@@ -80,10 +83,12 @@ export function init(root) {
   const A = (() => { let t = 0, v = aujourdhui(); const lire = () => { if (Date.now() - t > 15000) { t = Date.now(); v = aujourdhui(); } return v; }; return { get iso() { return lire().iso; }, get min() { return lire().min; }, relire() { t = 0; return lire(); } }; })();
   /* Le garde-fou : avant d'enregistrer, le dépôt demande aux règles si l'action est possible (d'où qu'elle vienne). */
   const API = document.querySelector('meta[name="jh-api"]')?.content || '', ENVIRONNEMENT = document.querySelector('meta[name="jh-environnement"]')?.content || '';
+  /* v7.13.0 : sur le site connecté, les prestations d'exemple de la démonstration ne font pas partie du catalogue (aucun tarif fictif n'y entre de lui-même). */
+  if (API && D.receptions) D.receptions = { ...D.receptions, lignes: (D.receptions.lignes || []).filter((l) => !l.exemple) };
   const depotLocal = creerDepot(undefined, undefined, {
     /* v7.11.0 : les règles reçoivent tout le contexte (l'heure, les inscriptions venues du site). En mode connecté, ce qui
        n'est noté que sur l'appareil (installé, parti, état des tables) est contrôlé sur les réservations du serveur. */
-    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, minute: A.min, maintenant: `${A.iso}T${hhmm(A.min)}:00`, site: depotLocal.resasSite(), demandes: depotLocal.demandesSite(), exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API, scenario: SC?.id || '', lieux: D.receptions, demandesDemo: !SC?.sansDemandesDemo, agenda: D.agenda,
+    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, minute: A.min, maintenant: `${A.iso}T${hhmm(A.min)}:00`, site: depotLocal.resasSite(), demandes: depotLocal.demandesSite(), exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API, scenario: SC?.id || '', lieux: D.receptions, resasSoirees(etat) { return API ? [] : resasSoirees(this, etat); }, demandesDemo: !SC?.sansDemandesDemo, agenda: D.agenda,
       /* v7.12.0 : ce que le client a fait depuis sa page (accord simulé, demandes de changement), relu au moment de l'action. */
       venues: API ? {} : depotLocal.venues() },
       API ? { ...depot.etat(), ...Object.fromEntries(Object.entries(frais).filter(([k]) => k !== 'resa' && k !== 'horaires')) } : frais, D.salle, nom, args),
@@ -98,9 +103,11 @@ export function init(root) {
   /* v7.8.1 : les plats du site sont désignés par un identifiant, plus par leur rang. Les anciennes références de ce
      navigateur sont traduites une fois, sans rien afficher. */
   { const c = depot.etat().carte || {}; if ([...Object.keys(c.modifs || {}), ...Object.keys(c.epuises || {})].some((k) => /\/\d+$/.test(k))) depot.agir('migrerCarte', { base: D.carte }); }
+  /* v7.13.0 : les retenues posées avant la v7.12.1 retrouvent ce qu'elles prennent de chaque espace (sans rien réinitialiser). */
+  if (!API && retenuesAReprendre(depot.etat(), D.receptions, D.salle).length) depot.agir('recReprendre', { lieux: D.receptions, salle: D.salle });
   /* v7.11.0 : les notes des clients passent sous leur nouvelle clé de téléphone (une seule forme par numéro). */
   if (aMigrer(depot.etat())) depot.agir('migrerClients', {});
-  const ctx = () => (contexte ||= { R, auj: A.iso, get minute() { return A.min; }, get maintenant() { return `${A.iso}T${hhmm(A.min)}:00`; }, site: depot.resasSite(), demandes: depot.demandesSite(), venues: API ? {} : depot.venues(), produits: D.produits || [], exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API, scenario: SC?.id || '', lieux: D.receptions, demandesDemo: !SC?.sansDemandesDemo, agenda: D.agenda,
+  const ctx = () => (contexte ||= { R, auj: A.iso, get minute() { return A.min; }, get maintenant() { return `${A.iso}T${hhmm(A.min)}:00`; }, site: depot.resasSite(), demandes: depot.demandesSite(), venues: API ? {} : depot.venues(), produits: D.produits || [], exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API, scenario: SC?.id || '', lieux: D.receptions, resasSoirees(etat) { return API ? [] : resasSoirees(this, etat); }, demandesDemo: !SC?.sansDemandesDemo, agenda: D.agenda,
     /* v7.12.0 : les téléphones que plusieurs clients connus partagent (calculés à la demande, une fois par rendu). */
     get partages() { if (!this.partagesLus) this.partagesLus = partagesConnus(this, depot.etat(), toutesDemandes(this, depot.etat())); return this.partagesLus; } });
   const services = servicesDe(R);
@@ -203,7 +210,7 @@ export function init(root) {
     const actions = r.statut === 'a-confirmer' ? `<button type="button" class="esp-bouton esp-bouton--ok" data-statut="confirmee" data-id="${e(r.id)}" data-repondre>Confirmer</button><button type="button" class="esp-bouton esp-bouton--non" data-statut="refusee" data-id="${e(r.id)}">Refuser</button>`
       : r.statut === 'confirmee' && r.date === A.iso ? `<button type="button" class="esp-bouton" data-statut="arrivee" data-id="${e(r.id)}">Arrivés</button>`
       : '';
-    const src = r.source === 'site' ? '<span class="esp-source esp-source--site">Depuis le site</span>' : r.source === 'telephone' ? '<span class="esp-source">Au téléphone</span>' : '';
+    const src = `${r.source === 'site' ? '<span class="esp-source esp-source--site">Depuis le site</span>' : r.source === 'telephone' ? '<span class="esp-source">Au téléphone</span>' : ''}${r.soiree?.id ? ` <span class="esp-source esp-source--soiree" data-resa-soiree="${e(r.soiree.id)}">${e(r.soiree.titre || 'Soirée')}${r.soiree.prix ? `, ${e(r.soiree.prix)}` : ''}</span>` : ''}`;
     return `<li class="esp-resa est-${r.statut}" data-resa="${e(r.id)}">
       <p class="esp-resa__heure">${avecJour ? `<small>${e(maj(fmt(r.date, { weekday: 'short', day: 'numeric', month: 'short' })))}</small>` : ''}${heure(r.heure)}</p>
       <div class="esp-resa__qui"><p class="esp-resa__nom">${vClient.nom(r)} ${src}</p><p class="esp-resa__detail">${assiettes(+r.couverts)}<span>${pluriel(+r.couverts, 'couvert')}</span>${r.table ? `<span>· table ${e(r.table)}</span>` : ''}${r.espace === 'terrasse' ? '<span>· terrasse</span>' : ''}${r.demande ? `<span class="esp-resa__demande">· ${e(r.demande)}</span>` : ''}${vClient.allergies(r) ? `<span class="esp-resa__allergie">· ${e(vClient.allergies(r))}</span>` : ''}</p>
@@ -222,10 +229,10 @@ export function init(root) {
 
   // ---------- Vues ----------
   /* L'état des écrans, partagé avec les rubriques écrites dans d'autres fichiers (espace-vue-*.js). */
-  const etat = { vue: 'jour', jour: A.iso, evEdite: null, ajoutOuvert: false, onglet: 'horaires', filtreDemandes: 'tout', demandeOuverte: null, ongletCarte: 'carte', platEdite: null, ongletResas: 'agenda', serviceVu: null, resaEditee: null, resaAPlacer: null, tableVue: null };
+  const etat = { vue: 'jour', jour: A.iso, evEdite: null, ajoutOuvert: false, onglet: 'horaires', filtreDemandes: 'tout', demandeOuverte: null, ongletCarte: 'carte', platEdite: null, pub: null, offreEditee: null, offreArchive: null, offreErreurs: null, offreSaisie: null, histo: null, filtreOffres: 'tout', ongletResas: 'agenda', serviceVu: null, resaEditee: null, resaAPlacer: null, tableVue: null };
   /* Où chaque écran se dessine : sa rubrique, ou le panneau de l'onglet ouvert dans « Site ». */
   /* Les soirées se dessinent dans Offres (v7.10.0) ; les autres onglets, dans Site. */
-  const corps = (v) => (['evenements', 'soirees'].includes(v) ? $('[data-esp-rendu="carte"] [data-esp-panneau]', root) : ['horaires', 'textes', 'messages', 'photos'].includes(v) ? $('[data-esp-rendu="site"] [data-esp-panneau]', root) : $(`[data-esp-rendu="${v}"]`, root));
+  const corps = (v) => (['evenements', 'soirees'].includes(v) ? $('[data-esp-rendu="carte"] [data-esp-panneau]', root) : ['horaires', 'textes', 'messages', 'photos', 'publication'].includes(v) ? $('[data-esp-rendu="site"] [data-esp-panneau]', root) : $(`[data-esp-rendu="${v}"]`, root));
   function enAttenteTotal() { const a = vDemandes.attente(); return a.tables.length + a.autres.length; }
   const X = { root, $, $$, e, S, A, D, ctx, etat, agir, dire, corps, ligneResa, rendre, allerVue, viser, feter, enAttenteTotal, plusTard: (f, cle) => plus_tard(f, cle) };
   const vDemandes = creerDemandes(X);
@@ -238,9 +245,16 @@ export function init(root) {
   X.noticeReception = (iso, sv) => { if (API) return ''; const pris = prisesDuServiceCtx(ctx(), S(), iso, sv); if (!pris.occs.length) return '';
     /* v7.12.1 : plusieurs réceptions peuvent, à elles toutes, retenir tout ce qui est utilisable ce jour-là. */
     const reunion = pris.occs.length > 1 && pris.tout ? '<p class="esp-rec-notice" data-rec-notice-reunion><b>À elles toutes, ces réceptions retiennent toutes les tables utilisables ce service-là :</b> la page Réserver ne le propose pas.</p>' : '';
-    return typo(pris.occs.map((o) => `<p class="esp-rec-notice" data-rec-notice="${e(o.id)}"><span class="esp-pastille esp-pastille--${o.type === 'option' ? 'a-confirmer' : 'confirmee'}">${o.type === 'option' ? 'Réception · option' : 'Réception confirmée'}</span> ${e(o.intitule)} : ${o.salle ? 'toute la salle du restaurant est retenue' : o.tables.length ? `${o.tables.length > 1 ? `les tables ${o.tables.join(', ')} sont retenues` : `la table ${o.tables[0]} est retenue`}` : 'aucune table du restaurant n\'est retenue'} pendant ce service. <button type="button" class="esp-lien" data-rec-ouvrir="${e(o.id)}" data-rec-vers="espaces">Ouvrir le dossier</button></p>`).join('') + reunion); };
+    return typo(pris.occs.map((o) => `<p class="esp-rec-notice" data-rec-notice="${e(o.id)}"><span class="esp-pastille esp-pastille--${o.type === 'option' ? 'a-confirmer' : 'confirmee'}">${o.type === 'option' ? 'Réception · option' : 'Réception confirmée'}</span> ${e(o.intitule)} : ${o.incertain ? 'ses espaces sont à vérifier : tout le restaurant est compté comme pris' : o.salle ? 'toute la salle du restaurant est retenue' : o.tables.length ? `${o.tables.length > 1 ? `les tables ${o.tables.join(', ')} sont retenues` : `la table ${o.tables[0]} est retenue`}` : 'aucune table du restaurant n\'est retenue'} pendant ce service. <button type="button" class="esp-lien" data-rec-ouvrir="${e(o.id)}" data-rec-vers="espaces">Ouvrir le dossier</button></p>`).join('') + reunion); };
   X.ouvrirClient = (d) => { const b = document.createElement('button'); b.dataset.client = cleDossier(d); root.append(b); vClient.clic(b); b.remove(); };
   X.ardoiseHtml = () => cartesSite().ardoise;
+  /* v7.13.0 : les offres, leur publication et leur aperçu. */
+  X.refus = () => depot.raisonRefus() || 'Ce navigateur a refusé d\'enregistrer (mémoire pleine ou stockage bloqué) : rien n\'a été publié ni modifié. Libérez de la place, puis réessayez.'; X.connecte = !!API; X.sv = () => serviceCourant(R, A.min);
+  X.lienApercu = (url) => { const [chemin, ancre] = String(url).split('#'); return avecContexte(`${chemin}${chemin.includes('?') ? '&' : '?'}apercu=1${ancre ? `#${ancre}` : ''}`); };
+  X.resasSoiree = (id) => resasDeSoiree(ctx().resasSoirees(S()), id);
+  const vOffres = creerOffres(X); X.offres = vOffres;
+  /* La barre « en préparation » suit une saisie enregistrée au fil de l'eau, sans redessiner le formulaire (le champ garde le curseur). */
+  X.majBarre = (perimetre) => { const z = $('#panneau-carte > .esp-pub, #panneau-carte > [data-pub-net]', root); if (z && !etat.pub) z.outerHTML = vOffres.barre(perimetre); };
   const vCarte = creerCarte(X);
   X.executer = (p) => executer(p);
   const vPropose = creerPropose(X);
@@ -318,10 +332,14 @@ export function init(root) {
     const l = evenements();
     if (etat.evEdite) return rendreEditeur(l.find((x) => x.id === etat.evEdite) || { id: etat.evEdite, titre: '', debut: ajouter(A.iso, 14), type: 'Soirée', prix: '', service: 'soir', image: 'vraie/salle-pierre', l: largeurs('vraie/salle-pierre'), cadrage: '50% 50%', nouveau: true });
     const venir = l.filter((x) => x.debut.slice(0, 10) >= A.iso), passes = l.filter((x) => x.debut.slice(0, 10) < A.iso);
+    /* v7.13.0 : ce qui est en préparation est dit sur chaque soirée, avec ses réservations liées. */
+    const publiees = new Set(evenementsDe(D.agenda, { evenements: contenuPublie(S(), 'evenements') || {} }).map((x) => x.id)), prepSoiree = (id) => !!attentePub(vOffres.sources(), S(), 'soiree', id);
+    const liees = (id) => { const r = X.resasSoiree(id), n = r.reduce((a, x) => a + (+x.couverts || 0), 0); return r.length ? `<p class="esp-ev__liees" data-ev-liees="${r.length}">${pluriel(r.length, 'réservation')} ${r.length > 1 ? 'liées' : 'liée'} à cette soirée (${pluriel(n, 'couvert')}).</p>` : ''; };
     const carte = (x) => `<li class="esp-ev${x.masque ? ' est-masque' : ''}"><img class="esp-ev__photo" src="${e(imgSrc(x))}" alt="" style="object-position:${e(x.cadrage || '50% 50%')}" loading="lazy">
-      <div class="esp-ev__texte"><p class="esp-ev__type">${e(x.type)}${x.debut.slice(0, 10) < A.iso ? ' · passé' : ''}${x.nouveau ? ' · <span class="esp-pastille">Nouveau</span>' : ''}${x.masque ? ' · <span class="esp-pastille esp-pastille--refusee">Masqué</span>' : ''}</p><h4 class="esp-ev__titre">${e(x.titre)}</h4><p class="esp-ev__date">${e(maj(fmt(x.debut.slice(0, 10))))} · ${x.service === 'midi' ? 'midi' : 'soir'}</p>${x.prix ? `<p class="esp-ev__prix">${e(x.prix)}</p>` : ''}</div>
-      <p class="esp-ev__actions"><button type="button" class="esp-bouton" data-editer="${e(x.id)}">Modifier</button><button type="button" class="esp-bascule" aria-pressed="${!x.masque}" data-visible="${e(x.id)}"><span class="esp-bascule__rail" aria-hidden="true"></span>Sur le site</button></p></li>`;
-    corps('evenements').innerHTML = `<div class="esp-barre"><p class="esp-barre__texte">Ils s'affichent sur la page Les fêtes, dans « Prochaine soirée » de l'accueil et dans le choix des dates de la réservation.</p><button type="button" class="bouton esp-ajouter" data-nouvel-ev>${ICO.plus}<span>Nouvel événement</span></button></div>
+      <div class="esp-ev__texte"><p class="esp-ev__type">${e(x.type)}${x.debut.slice(0, 10) < A.iso ? ' · passé' : ''}${x.nouveau ? ' · <span class="esp-pastille">Nouveau</span>' : ''}${x.masque ? ' · <span class="esp-pastille esp-pastille--refusee">Masqué</span>' : ''}${prepSoiree(x.id) ? ` · <span class="esp-pastille esp-pastille--cours" data-ev-prep>${publiees.has(x.id) ? 'Modification en préparation' : 'Brouillon, pas encore sur le site'}</span>` : ''}</p><h4 class="esp-ev__titre">${e(x.titre)}</h4><p class="esp-ev__date">${e(maj(fmt(x.debut.slice(0, 10))))} · ${x.service === 'midi' ? 'midi' : 'soir'}</p>${x.prix ? `<p class="esp-ev__prix">${e(x.prix)}</p>` : ''}</div>
+      <p class="esp-ev__actions"><button type="button" class="esp-bouton" data-editer="${e(x.id)}">Modifier</button><button type="button" class="esp-bascule" aria-pressed="${!x.masque}" data-visible="${e(x.id)}"><span class="esp-bascule__rail" aria-hidden="true"></span>Sur le site</button></p>
+      ${liees(x.id)}${vOffres.barre('soiree', x.id, { discret: true })}</li>`;
+    corps('evenements').innerHTML = `<div class="esp-barre"><p class="esp-barre__texte">Une soirée n'ouvre pas un service fermé et ne libère aucune table : la réservation suit les règles de l'agenda. Une fois publiées, elles s'affichent sur la page Les fêtes, dans « Prochaine soirée » de l'accueil et dans le choix des dates de la réservation.</p><button type="button" class="bouton esp-ajouter" data-nouvel-ev>${ICO.plus}<span>Nouvel événement</span></button></div>
       <h3 class="esp-sous">À venir</h3><ul class="esp-evs">${venir.map(carte).join('') || '<li class="esp-vide">Aucun événement à venir. <button type="button" class="esp-lien" data-nouvel-ev>Créer une soirée</button></li>'}</ul>
       ${passes.length ? `<h3 class="esp-sous">Passés</h3><ul class="esp-evs esp-evs--passes">${passes.map(carte).join('')}</ul>` : ''}`;
   }
@@ -337,6 +355,10 @@ export function init(root) {
           <div class="esp-champ esp-champ--large"><p class="esp-champ__titre">Photo <small>(touchez la photo pour choisir le point à garder au centre)</small></p>
             <button type="button" class="esp-cadreur" data-cadreur style="--fx:${e((x.cadrage || '50% 50%').split(' ')[0])};--fy:${e((x.cadrage || '50% 50%').split(' ')[1])}" aria-label="Cadrer la photo : touchez le point à garder au centre, ou utilisez les flèches"><img src="${e(imgSrc(x, 1280))}" alt="" style="object-position:${e(x.cadrage || '50% 50%')}"><span class="esp-cadreur__mire" aria-hidden="true"></span></button>
             <p class="esp-editeur__photo-actions"><button type="button" class="esp-bouton" data-choisir-photo="ev">Changer la photo</button></p></div>
+          ${(() => { const r = X.resasSoiree(x.id), n = r.reduce((a, y) => a + (+y.couverts || 0), 0), sv = x.service === 'midi' ? 'midi' : 'soir', ferme = !ouvert(ctx(), S(), x.debut.slice(0, 10), sv);
+            return `${r.length ? `<p class="esp-rec-alerte esp-champ--large" data-ev-liees-detail><b>${pluriel(r.length, 'réservation')} (${pluriel(n, 'couvert')}) ${r.length > 1 ? 'sont liées' : 'est liée'} à cette soirée.</b> Vous pouvez changer son titre, sa photo ou son prix affiché : ces réservations gardent le titre et le prix vus au moment de réserver, et aucun message n'est envoyé aux clients. Sa date et son service ne changent pas tant que ces réservations existent.</p>` : ''}${ferme ? `<p class="esp-rec-alerte esp-champ--large" data-ev-ferme>Ce service est fermé ce jour-là. Publier la soirée ne l'ouvre pas : elle s'affichera, mais la réservation en ligne restera fermée tant que le service n'est pas ouvert dans l'agenda.</p>` : ''}`; })()}
+          <p class="esp-erreur esp-champ--large" role="alert" data-ev-erreur hidden></p>
+          <p class="esp-aide esp-champ--large">Enregistrée en préparation : le site ne change pas tant que vous ne publiez pas cette soirée.</p>
           <p class="esp-editeur__actions"><button type="submit" class="bouton">Enregistrer</button>${x.nouveau && x.titre ? '<button type="button" class="esp-bouton esp-bouton--non" data-supprimer-ev>Supprimer</button>' : ''}</p>
         </div>
         <div class="esp-editeur__apercu"><p class="esp-champ__titre">Sur la page Les fêtes</p>
@@ -392,14 +414,14 @@ export function init(root) {
   function rendreHoraires() { const c = cartesSite(); corps('horaires').innerHTML = `<div class="esp-grille esp-grille--textes">${c.annonce}${c.fermetures}${c.horaires}</div>`; }
   function rendreTextesSite() { corps('textes').innerHTML = cartesSite().textes; }
   /* « Site » : ce que le restaurant change sur son site, en onglets. */
-  const ONGLETS = [['horaires', 'Annonce et horaires'], ['textes', 'Textes'], ['messages', 'Messages'], ['photos', 'Photos']];
+  const ONGLETS = [['horaires', 'Annonce et horaires'], ['textes', 'Textes'], ['messages', 'Messages'], ['photos', 'Photos'], ['publication', 'Publication']];
   function rendreSite() {
     /* Les soirées sont une offre : leur éditeur est dans Offres, et tout ce qui pointait vers « Site, Soirées » y mène. */
     if (etat.onglet === 'soirees') { etat.onglet = 'horaires'; etat.ongletCarte = 'soirees'; allerVue('carte'); return; }
     if (!ONGLETS.some(([id]) => id === etat.onglet)) etat.onglet = 'horaires';
     $('[data-esp-rendu="site"]', root).innerHTML = `<div class="esp-onglets" role="tablist" aria-label="Ce que vous changez sur le site">${ONGLETS.map(([id, nom]) => `<button type="button" class="esp-onglet" role="tab" id="onglet-${id}" aria-selected="${id === etat.onglet}" aria-controls="panneau-site" tabindex="${id === etat.onglet ? 0 : -1}" data-onglet="${id}">${nom}</button>`).join('')}<button type="button" class="esp-onglet esp-onglet--renvoi" role="tab" aria-selected="false" tabindex="-1" data-onglet="soirees">Soirées <span aria-hidden="true">↗</span><span class="visuellement-cache"> : dans Offres</span></button></div>
       <div class="esp-panneau" id="panneau-site" role="tabpanel" aria-labelledby="onglet-${etat.onglet}" data-esp-panneau></div>`;
-    ({ horaires: rendreHoraires, textes: rendreTextesSite, messages: vDemandes.rendreMessages, photos: rendrePhotos })[etat.onglet]();
+    ({ horaires: rendreHoraires, textes: rendreTextesSite, messages: vDemandes.rendreMessages, photos: rendrePhotos, publication: vOffres.rendrePublication })[etat.onglet]();
   }
 
   function rendrePhotos() {
@@ -534,7 +556,7 @@ export function init(root) {
   }
   /* La barre comprend les ordres (espace-commandes.js) et retrouve les objets (espace-recherche.js) : clients, demandes, soirées, plats. */
   const retrouver = (texte) => rechercher(texte, { auj: A.iso, clients: X.clients(), demandes: X.demandes(), evenements: evenements(), plats: platsDe(carteDe(D.carte, S(), A.iso)).map((p) => ({ cle: p.cle, nom: p.nom, rubrique: p.rubriqueTitre, prix: prixTexte(p.prix) })) });
-  installerBarre(root, { comprendre: (texte) => { const ordres = comprendre(texte, { auj: A.iso, R, S: S(), exceptions: D.horaires.exceptions || [], pages: D.pages, carte: D.carte, resas: prochaines() }), trouves = retrouver(texte).filter((x) => !ordres.some((o) => o.aller?.plat && o.aller.plat === x.aller.plat));
+  installerBarre(root, { comprendre: (texte) => { const ordres = comprendre(texte, { auj: A.iso, R, S: S(), exceptions: D.horaires.exceptions || [], pages: D.pages, carte: D.carte, service: X.sv(), resas: prochaines() }), trouves = retrouver(texte).filter((x) => !ordres.some((o) => o.aller?.plat && o.aller.plat === x.aller.plat));
     /* L'ordre : ce qu'on peut faire, la fiche du client, ses réservations (dites comme telles), puis demandes, soirées et plats. */
     const resasNom = ordres.filter((o) => o.genre === 'client').slice(0, 3).map((o) => ({ ...o, detail: `Réservation · ${o.detail}` })), autres = ordres.filter((o) => o.genre !== 'client');
     return [...autres.filter((o) => !o.inactif || !(trouves.length + resasNom.length)), ...trouves.filter((x) => x.genre === 'client'), ...resasNom, ...trouves.filter((x) => x.genre !== 'client')].slice(0, 9); }, executer, actif: () => root.classList.contains('est-connecte') });
@@ -604,6 +626,7 @@ export function init(root) {
     if (t.closest('[data-esp-service]')) { const ps = prochainServiceIci(); etat.evEdite = null; if (ps) { etat.jour = ps.date; etat.serviceVu = ps.service; } etat.ongletResas = 'service'; allerVue('resas'); return; }
     if (t.closest('[data-esp-plusnav-bouton]')) { ouvrirPlusNav($('[data-esp-plusnav]', root).hidden); return; }
     if (t.closest('[data-voir-demande], [data-aller]')) { etat.dossier = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } }
+    if (vOffres.clic(t)) return;
     if (vReceptions.clic(t)) return;
     if (vAccueil.clic(t) || vClients.clic(t)) return;
     const act = t.closest('[data-activite]'); if (act) { const x = X.activites(etat.jour).find((y) => y.cle === act.dataset.activite); if (x) executer({ aller: x.aller }); return; }
@@ -630,7 +653,7 @@ export function init(root) {
     const ed = t.closest('[data-editer]'); if (ed) { etat.evEdite = ed.dataset.editer; rendre(); scrollTo({ top: 0, behavior: 'instant' }); $('#ev-titre', root)?.focus(); return; }
     if (t.closest('[data-nouvel-ev]')) { etat.evEdite = 'ev-' + Date.now().toString(36); rendre(); scrollTo({ top: 0, behavior: 'instant' }); $('#ev-titre', root)?.focus(); return; }
     if (t.closest('[data-fermer-ev]')) { const id = etat.evEdite; etat.evEdite = null; rendre(); ($(`[data-editer="${CSS.escape(id)}"]`, root) || $('[data-nouvel-ev]', root))?.focus(); return; }
-    const vis = t.closest('[data-visible]'); if (vis) { const id = vis.dataset.visible, on = vis.getAttribute('aria-pressed') !== 'true'; agir('visibilite', { id, visible: on, agenda: D.agenda }, { msg: on ? 'Événement affiché sur le site.' : 'Événement masqué sur le site.', lien: D.pages.fetes }); rendre(); $(`[data-visible="${CSS.escape(id)}"]`, root)?.focus(); return; }
+    const vis = t.closest('[data-visible]'); if (vis) { const id = vis.dataset.visible, on = vis.getAttribute('aria-pressed') !== 'true'; agir('visibilite', { id, visible: on, agenda: D.agenda }, { msg: on ? 'Soirée de nouveau prévue sur le site : publiez-la pour que le changement soit en ligne.' : 'Soirée retirée du site, en préparation : publiez-la pour que le changement soit en ligne.' }); rendre(); $(`[data-visible="${CSS.escape(id)}"]`, root)?.focus(); return; }
     if (t.closest('[data-supprimer-ev]')) { const id = etat.evEdite; agir('supprimerEvenement', { id, agenda: D.agenda }, { msg: 'Événement supprimé.' }); etat.evEdite = null; rendre(); $('[data-nouvel-ev]', root)?.focus(); return; }
     const cph = t.closest('[data-choisir-photo]'); if (cph) { ouvrirModale(cph.dataset.choisirPhoto, cph); return; }
     const rph = t.closest('[data-retablir-photo]'); if (rph) { const id = rph.dataset.retablirPhoto; agir('retablirPhoto', { emplacement: id }, { msg: 'Photo d\'origine rétablie.' }); rendre(); $(`[data-choisir-photo="${id}"]`, root)?.focus(); return; }
@@ -645,10 +668,10 @@ export function init(root) {
   });
 
   // ---------- Saisie : enregistrée au fil de l'eau ----------
-  function sauverArdoise(msg = 'Ardoise enregistrée.') {
+  function sauverArdoise(msg = 'Ardoise enregistrée en préparation : publiez-la pour que le site la suive.') {
     const f = $('[data-form-ardoise]', root); if (!f) return;
     const lire1 = (k) => { const fs = $(`[data-ardoise="${k}"]`, f); return { titre: fs.querySelector('[name="titre"]').value, lignes: $$('.esp-ardoise__lignes li', fs).map((li) => ({ plat: li.querySelector('[name="plat"]').value.trim(), prix: li.querySelector('[name="prix"]').value.trim() })).filter((l) => l.plat || l.prix), mot: fs.querySelector('[name="mot"]').value }; };
-    agir('ardoise', { ardoise: { jour: lire1('jour'), soir: lire1('soir') } }, { msg, lien: D.pages.carte, groupe: 'ardoise' });
+    agir('ardoise', { ardoise: { jour: lire1('jour'), soir: lire1('soir') } }, { msg, groupe: 'ardoise' }); X.majBarre('ardoise');
   }
   function sauverHoraires() {
     const f = $('[data-form-horaires]', root); if (!f) return;
@@ -667,6 +690,7 @@ export function init(root) {
   root.addEventListener('change', (ev) => { if (ev.target.closest('[data-form-horaires]')) sauverHoraires(); else if (!vReceptions.change(ev.target) && !vAttente.change(ev.target)) vSalle.change(ev.target); });
   root.addEventListener('submit', (ev) => {
     ev.preventDefault(); const f = ev.target;
+    if (vOffres.soumis(f)) return;
     if (vReceptions.soumettre(f, ev) || vService.envoi(f, ev) || vAccueil.soumettre(f) || vAttente.soumettre(f)) return;
     if (f.matches('[data-esp-connexion]')) {
       if (!API) { try { sessionStorage.setItem('jh-espace-session', '1'); } catch { /* rien */ } montrer(true); return; }
@@ -692,7 +716,8 @@ export function init(root) {
       const v = Object.fromEntries(new FormData(f)); if (!v.titre.trim()) { f.elements.titre.focus(); return; }
       const id = f.dataset.id, p = f._photo, base = D.agenda.find((x) => x.id === id);
       const champs = { titre: v.titre.trim(), type: v.type, debut: v.debut, service: v.service, prix: v.prix.trim(), image: p.image || base?.image || 'vraie/salle-pierre', l: p.l, src: p.src || null, cadrage: p.cadrage };
-      if (agir('evenement', { id, champs, agenda: D.agenda }, { msg: 'Événement enregistré : visible sur la page Les fêtes.', lien: D.pages.fetes })) { etat.evEdite = null; rendre(); $(`[data-editer="${CSS.escape(id)}"]`, root)?.focus(); }
+      if (agir('evenement', { id, champs, agenda: D.agenda }, { msg: 'Soirée enregistrée en préparation : publiez-la pour que le site l\'affiche.' })) { etat.evEdite = null; rendre(); $(`[data-editer="${CSS.escape(id)}"]`, root)?.focus(); }
+      else { const z = $('[data-ev-erreur]', f); if (z) { z.textContent = typo(X.refus()); z.hidden = false; } }
     }
   });
 
@@ -830,7 +855,7 @@ export function init(root) {
   } else {
     let session = false; try { session = sessionStorage.getItem('jh-espace-session') === '1'; } catch { /* rien */ }
     /* Un scénario s'ouvre directement sur son écran de départ (au premier lancement), sans repasser par la porte d'entrée. */
-    if (SC) { if (SC.depart.filtre) etat.filtreDemandes = SC.depart.filtre; etat.ongletResas = SC.depart.onglet || 'agenda'; etat.serviceVu = 'soir'; etat.jour = A.iso; try { sessionStorage.setItem('jh-espace-session', '1'); if (scenarioFrais || !sessionStorage.getItem('jh-espace-vue')) sessionStorage.setItem('jh-espace-vue', SC.depart.vue); } catch { /* rien */ } }
+    if (SC) { if (SC.depart.filtre) etat.filtreDemandes = SC.depart.filtre; if (SC.depart.ongletCarte) etat.ongletCarte = SC.depart.ongletCarte; etat.ongletResas = SC.depart.onglet || 'agenda'; etat.serviceVu = 'soir'; etat.jour = A.iso; try { sessionStorage.setItem('jh-espace-session', '1'); if (scenarioFrais || !sessionStorage.getItem('jh-espace-vue')) sessionStorage.setItem('jh-espace-vue', SC.depart.vue); } catch { /* rien */ } }
     if (session || SC) montrer(true); else document.documentElement.classList.remove('esp-dedans');
   }
 }

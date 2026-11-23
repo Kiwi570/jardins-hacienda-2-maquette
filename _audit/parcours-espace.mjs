@@ -47,7 +47,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { installerOutils, defilerTout, mesurer, mesurerRecouvrements } from './page.mjs';
 
 /* Les écrans à mesurer : les cinq rubriques, et pour « Site » chacun de ses onglets (v7.7.2). */
-const VUES = ['jour', 'demandes', 'resas:agenda', 'resas:service', 'resas:salle', 'resas:bilan', 'carte:carte', 'carte:ardoise', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
+const VUES = ['jour', 'demandes', 'resas:agenda', 'resas:service', 'resas:salle', 'resas:bilan', 'carte:carte', 'carte:ardoise', 'carte:catalogue', 'site:publication', 'site:soirees', 'site:horaires', 'site:textes', 'site:messages', 'site:photos'];
 const P = '/espace';
 
 export default async function ({ contexte, attendrePret, attendre, BASE, R, T }) {
@@ -248,7 +248,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       const nomPlat = (await page.locator('[data-plat="plats/poisson-selon-l-arrivage"] [data-plat-nom]').innerText()).trim();
       await page.locator('[data-epuise="plats/poisson-selon-l-arrivage"]').click(); await attendre(400);
       const jour = Object.values((await carte()).epuises || {})[0];
-      if (!/^\d{4}-\d\d-\d\d$/.test(jour || '') || !(await page.locator('[data-plat="plats/poisson-selon-l-arrivage"].est-epuise').count())) R.echec('espace : carte', `« Épuisé aujourd’hui » : date enregistrée « ${jour} », plat marqué ${await page.locator('[data-plat="plats/poisson-selon-l-arrivage"].est-epuise').count()}`, lieu);
+      if (!/^\d{4}-\d\d-\d\d\/(midi|soir)$/.test(jour || '') || !(await page.locator('[data-plat="plats/poisson-selon-l-arrivage"].est-epuise').count())) R.echec('espace : carte', `« Épuisé aujourd’hui » : date enregistrée « ${jour} », plat marqué ${await page.locator('[data-plat="plats/poisson-selon-l-arrivage"].est-epuise').count()}`, lieu);
       /* Un prix et des allergènes ; un plat ajouté. */
       await page.locator('[data-plat="entrees/foie-gras-de-canard-maison"] [data-editer-plat]').click(); await attendre(300);
       await page.locator('#pl-prix').fill('23,50'); await page.locator('[name="allergene"][value="Gluten"]').check(); await attendre(800);
@@ -256,7 +256,22 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       await page.locator('#pl-nom').fill('Tarte aux mirabelles'); await page.locator('#pl-prix').fill('9'); await attendre(800);
       const c = await carte();
       if (c.modifs?.['entrees/foie-gras-de-canard-maison']?.prix !== 23.5 || c.modifs['entrees/foie-gras-de-canard-maison'].allergenes?.join() !== 'Gluten' || c.ajouts?.[0]?.nom !== 'Tarte aux mirabelles') R.echec('espace : carte', `après les modifications : ${JSON.stringify(c).slice(0, 160)}`, lieu);
-      /* La carte du site suit. */
+      /* v7.13.0 : avant la publication, le site garde le prix et les plats publiés ; « épuisé », lui, est immédiat. */
+      await page.goto(BASE + '/la-carte', { waitUntil: 'load' }); await attendrePret(page); await attendre(300);
+      const avantPub = await page.evaluate(() => ({ prix: document.querySelector('#carte-entrees .carte-resto__prix')?.textContent, ajout: [...document.querySelectorAll('#carte-desserts .carte-resto__plat')].at(-1)?.textContent || '', epuise: document.querySelectorAll('#carte-plats .carte-resto__plat.est-epuise').length, apercu: !!document.querySelector('[data-apercu-non-publie]') }));
+      if (avantPub.prix === '23,50 €' || /Tarte aux mirabelles/.test(avantPub.ajout) || avantPub.epuise !== 1 || avantPub.apercu) R.echec('espace : carte', `avant la publication, le site montre déjà le brouillon ou oublie « épuisé » : ${JSON.stringify(avantPub)}`, { page: '/la-carte', taille: taille.nom });
+      /* L'aperçu montre le brouillon, avec son repère, et ne publie rien. */
+      await page.goto(BASE + '/la-carte?apercu=1', { waitUntil: 'load' }); await attendrePret(page); await attendre(300);
+      const enApercu = await page.evaluate(() => ({ prix: document.querySelector('#carte-entrees .carte-resto__prix')?.textContent, repere: document.querySelector('[data-apercu-non-publie]')?.textContent || '', n: JSON.parse(localStorage.getItem('jh-espace:v1') || '{}').publie?.n || 0 }));
+      if (enApercu.prix !== '23,50 €' || !/Aperçu — non publié/.test(enApercu.repere) || enApercu.n !== 0) R.echec('espace : carte', `l’aperçu ne montre pas le brouillon sous son repère, ou a publié : ${JSON.stringify(enApercu)}`, { page: '/la-carte?apercu=1', taille: taille.nom });
+      await page.goto(BASE + '/la-carte?apercu=0', { waitUntil: 'load' }); await attendrePret(page);
+      await entrer(page); await aller(page, 'carte:carte');
+      await page.locator('#panneau-carte > .esp-pub [data-pub-ouvrir]').click(); await attendre(300);
+      const resume = (await page.locator('[data-pub-resume] .esp-pub__liste').innerText()).replace(/\s+/g, ' ');
+      if (!/Foie gras/.test(resume) || !/Tarte aux mirabelles/.test(resume)) R.echec('espace : carte', `le résumé avant publication : « ${resume.slice(0, 200)} »`, lieu);
+      await page.locator('[data-pub-confirmer]').click(); await attendre(500);
+      if (!(await page.locator('#panneau-carte > [data-pub-net]').count())) R.echec('espace : carte', 'après « Publier maintenant », la carte n’est pas dite publiée', lieu);
+      /* La carte du site suit, une fois publiée. */
       await page.goto(BASE + '/la-carte', { waitUntil: 'load' }); await attendrePret(page); await attendre(300);
       const site = await page.evaluate(() => ({ prix: document.querySelector('#carte-entrees .carte-resto__prix')?.textContent, allergenes: document.querySelector('#carte-entrees .carte-resto__plat .carte-resto__allergenes')?.textContent || '',
         epuise: [...document.querySelectorAll('#carte-plats .carte-resto__plat.est-epuise .carte-resto__plat-nom')].map((x) => x.textContent), ajout: [...document.querySelectorAll('#carte-desserts .carte-resto__plat')].at(-1)?.textContent || '', detail: document.querySelector('#carte-entrees .rubrique-bande__detail')?.textContent || '' }));
@@ -1005,7 +1020,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if ((await page.locator('[data-demo-lancer]:visible').count()) !== 1) R.echec(`${ou} : lanceur`, `« Lancer une démonstration » devrait être visible une fois sur Aujourd'hui (${await page.locator('[data-demo-lancer]:visible').count()})`, lieu);
       await page.locator('[data-demo-lancer]:visible').first().click(); await attendre(350);
       const choix = await page.evaluate(() => ({ n: document.querySelectorAll('[data-demo-choisir]').length, focus: !!document.activeElement?.closest('.esp-modale--demo'), titres: [...document.querySelectorAll('.esp-demo-carte h3')].map((h) => h.textContent.trim()) }));
-      if (choix.n !== 5 || !choix.focus) R.echec(`${ou} : lanceur`, `${choix.n} scénarios proposés (attendu 5), focus ${choix.focus ? 'dans' : 'hors de'} la fenêtre`, lieu);
+      if (choix.n !== 6 || !choix.focus) R.echec(`${ou} : lanceur`, `${choix.n} scénarios proposés (attendu 6), focus ${choix.focus ? 'dans' : 'hors de'} la fenêtre`, lieu);
       /* v7.12.0 : les commandes disent ce qu'elles font. Rien n'a encore été joué : « Lancer depuis le début » partout, aucun « Reprendre ». */
       const libelles = await page.evaluate(() => ({ debut: [...document.querySelectorAll('[data-demo-choisir]')].map((b) => b.textContent.trim()), reprendre: document.querySelectorAll('[data-demo-reprendre]').length }));
       if (libelles.debut.some((t) => t !== 'Lancer depuis le début') || libelles.reprendre) R.echec(`${ou} : lanceur`, `avant tout lancement : ${JSON.stringify(libelles)}`, lieu);
@@ -1110,7 +1125,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click();
       await page.locator('[data-scene-etapes] [data-demo-lancer]').click(); await attendre(350);
       const cmd = await page.evaluate(() => ({ reprendre: [...document.querySelectorAll('[data-demo-reprendre]')].map((b) => b.dataset.demoReprendre).sort(), debut: document.querySelectorAll('[data-demo-choisir]').length }));
-      if (cmd.debut !== 5 || cmd.reprendre.join() !== 'attente,service,terrasse') R.echec(`${ou} : lanceur`, `« Reprendre » devrait être proposé pour les trois scénarios déjà lancés, « Lancer depuis le début » pour tous : ${JSON.stringify(cmd)}`, lieu);
+      if (cmd.debut !== 6 || cmd.reprendre.join() !== 'attente,service,terrasse') R.echec(`${ou} : lanceur`, `« Reprendre » devrait être proposé pour les trois scénarios déjà lancés, « Lancer depuis le début » pour tous : ${JSON.stringify(cmd)}`, lieu);
       await changerDePage(page, () => page.locator('[data-demo-reprendre="attente"]').click()); s = await scene();
       if (s.scenario !== 'attente' || !/19 h/.test(s.heure) || s.faites !== 3) R.echec(`${ou} : reprendre`, `« Reprendre » devrait garder la progression du scénario 2 (3 étapes, 19 h) : ${JSON.stringify(s)}`, lieu);
       await page.goto(`${BASE}/infos-pratiques`, { waitUntil: 'load' }); await attendrePret(page); await attendre(1500);
@@ -1501,6 +1516,174 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (!/le restaurant accueille une réception/.test(r.aide) || r.libres !== 0) R.echec(`${ou} : la saison`, `en juillet, salle et terrasse retenues : le service devrait être privatisé : ${JSON.stringify(r).slice(0, 300)}`, lieu);
       R.ok(`espace : réserver et réceptions (${taille.nom})`);
     } catch (err) { R.echec(`${ou} : parcours interrompu`, String(err.message || err).replace(/\u001b\[[0-9;]*m/g, '').replace(/\s+/g, ' ').slice(0, 420), lieu); }
+  }
+
+  /* ---------- 1 quindecies (v7.13.0). Les offres prennent vie : la sixième démonstration, de bout en bout ----------
+     Une offre d'exemple publiée à 45 €, une proposition acceptée pour 40 personnes à 1 800 €. Le prix passe à 49 € en
+     préparation : le site garde 45 € (même après rechargement), l'aperçu montre 49 € sous son repère, la publication ne
+     publie que cette offre, la nouvelle proposition vaut 1 960 €, l'ancienne reste à 1 800 €. Autour : les cas d'erreur
+     (prix, unité, période) près du champ, « épuisé » pour un seul service, une réservation qui garde le lien avec sa
+     soirée, une date de soirée refusée sous une réservation, l'historique et la reprise en brouillon, l'archivage d'une
+     offre utilisée, les données habituelles intactes. */
+  for (const taille of (!SEUL || SEUL.includes('1-quindecies') ? ['1366×768', '390×844'] : []).map(T)) {
+    const lieu = { page: P, taille: taille.nom }, ou = `offres (${taille.nom})`;
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      const texte = async (sel, pg = page) => (await pg.locator(sel).first().innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
+      const toast = () => texte('[data-esp-toast-texte]');
+      const faites = () => page.locator('[data-esp-scene] .esp-scene__etapes li.est-faite').count();
+      const attendu = async (quoi, n) => { const f = await faites(); if (f !== n) R.echec(`${ou} : étapes`, `${quoi} : ${f} étape(s) faite(s) sur 6, attendu ${n} (« ${(await texte('[data-scene-essayer]')).slice(0, 110)} »)`, lieu); };
+      const etat = () => page.evaluate(() => JSON.parse(localStorage.getItem('jh-demo:offre:espace:v1') || '{}'));
+      const debordement = async (pg, quoi) => { const d = await pg.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - document.documentElement.clientWidth); if (d > 1) R.echec(`${ou} : débordement`, `${quoi} déborde de ${d} px`, lieu); };
+      const site = async (chemin) => { const g = await ctx.newPage(), [avant, ancre] = chemin.split('#'); await g.goto(`${BASE}${avant}${avant.includes('?') ? '&' : '?'}demo=offre${ancre ? `#${ancre}` : ''}`, { waitUntil: 'load' }); await attendrePret(g); await attendre(500); return g; };
+      const ongletOffres = async (id) => { await page.locator(`#onglet-carte-${id}`).click(); await attendre(400); };
+      const prixSite = async (g) => texte('[data-offre-site="menu-groupe"] [data-offre-site-prix]', g);
+      /* Les données habituelles, posées avant : elles ne doivent pas bouger. */
+      await page.goto(BASE + '/la-carte', { waitUntil: 'load' }); await page.evaluate(() => localStorage.setItem('jh-espace:v1', JSON.stringify({ _schema: 2, annonce: { active: false, texte: 'Témoin des données habituelles' } })));
+      const habituel = await page.evaluate(() => localStorage.getItem('jh-espace:v1'));
+      await page.goto(`${BASE}${P}?demo=offre`, { waitUntil: 'load' }); await attendrePret(page);
+      if (await page.locator('[data-esp-app]').isHidden()) await page.locator('[data-esp-connexion] button[type="submit"]').click();
+      await page.locator('[data-esp-app]').waitFor({ state: 'visible', timeout: 5000 }); await attendre(700);
+      /* 1. Retrouver l'offre publiée. */
+      const depart = await texte('[data-offre="menu-groupe"]');
+      if (!/Exemple/.test(depart) || !/Publiée/.test(depart) || !/45 € par personne/.test(depart)) R.echec(`${ou} : catalogue`, `l’offre de départ : « ${depart.slice(0, 160)} »`, lieu);
+      await attendu('à l’ouverture', 1); await debordement(page, 'le catalogue');
+      const types = await page.locator('[data-offres] [data-offre]').evaluateAll((l) => [...new Set(l.map((x) => x.dataset.offreType))].sort().join());
+      if (types !== 'emporter,formule,plat,prestation,soiree') R.echec(`${ou} : catalogue`, `le catalogue commun ne réunit pas tous les métiers (${types})`, lieu);
+      /* 2. Préparer 49 € ; les cas d'erreur restent près du champ, la saisie est gardée. */
+      await page.locator('[data-offre="menu-groupe"] [data-offre-editer]').click(); await attendre(400);
+      for (const [champ, saisir, motif] of [['prix', async () => page.locator('#of-prix').fill('quarante-neuf'), /nombre positif/], ['unite', async () => { await page.locator('#of-prix').fill('49'); await page.locator('#of-unite').selectOption(''); }, /unité/], ['periode', async () => { await page.locator('#of-unite').selectOption('personne'); await page.locator('#of-du').fill('2026-12-20'); await page.locator('#of-au').fill('2026-12-01'); }, /avant de commencer/]]) {
+        await saisir(); await page.locator('[data-form-offre] button[type="submit"]').click(); await attendre(350);
+        const e = await texte(`[data-of-erreur="${champ}"]`), pris = (await etat()).offres?.modifs?.['menu-groupe']?.prix;
+        if (!motif.test(e) || pris === 49 || !(await page.locator('[data-form-offre]').count())) R.echec(`${ou} : erreurs`, `${champ} invalide : message « ${e.slice(0, 90)} », prix enregistré ${pris}, formulaire ouvert ${await page.locator('[data-form-offre]').count()}`, lieu);
+      }
+      if ((await page.locator('#of-prix').inputValue()) !== '49') R.echec(`${ou} : erreurs`, 'après une erreur, la saisie du prix n’est pas gardée', lieu);
+      await page.locator('#of-du').fill(''); await page.locator('#of-au').fill(''); await page.locator('[data-form-offre] button[type="submit"]').click(); await attendre(500);
+      const prep = await texte('[data-offre="menu-groupe"]');
+      if (!/Modification en préparation/.test(prep) || !/49 € par personne/.test(prep) || !/pas encore sur le site/.test(prep)) R.echec(`${ou} : préparation`, `après « Enregistrer en préparation » : « ${prep.slice(0, 200)} »`, lieu);
+      await attendu('prix préparé', 2); await debordement(page, 'l’offre en préparation');
+      /* 3. L'aperçu : 49 € sous son repère ; le site normal : 45 €, même après rechargement. */
+      const [ap] = await Promise.all([ctx.waitForEvent('page'), page.locator('[data-pub="offre:menu-groupe"] [data-pub-apercu]').click()]); await ap.waitForLoadState('load'); await attendrePret(ap); await attendre(600);
+      const vuA = { prix: await prixSite(ap), repere: await texte('[data-apercu-non-publie]', ap), exemple: await texte('[data-offres-site-mention]', ap), n: (await etat()).publie?.n || 0 };
+      if (vuA.prix !== '49 €' || !/Aperçu — non publié/.test(vuA.repere) || !/Exemples de démonstration/.test(vuA.exemple) || vuA.n !== 0) R.echec(`${ou} : aperçu`, `l’aperçu : ${JSON.stringify(vuA)}`, { page: '/receptions?apercu=1', taille: taille.nom });
+      await debordement(ap, 'l’aperçu de la page Réceptions');
+      const cible = await ap.locator('[data-apercu-non-publie] a').evaluateAll((l) => l.map((a) => { const r = a.getBoundingClientRect(); return Math.round(r.height); }));
+      if (cible.some((h) => h < 44)) R.echec(`${ou} : aperçu`, `les liens du repère font moins de 44 px de haut (${cible.join(', ')})`, { page: '/receptions?apercu=1', taille: taille.nom });
+      await ap.locator('[data-apercu-quitter]').click(); await ap.waitForLoadState('load'); await attendrePret(ap); await attendre(600);
+      const p45 = await prixSite(ap); await ap.reload({ waitUntil: 'load' }); await attendrePret(ap); await attendre(600);
+      if (p45 !== '45 €' || (await prixSite(ap)) !== '45 €' || (await ap.locator('[data-apercu-non-publie]').count())) R.echec(`${ou} : site`, `avant la publication, le site normal affiche « ${p45} », puis « ${await prixSite(ap)} » après rechargement (attendu 45 €), repère d’aperçu ${await ap.locator('[data-apercu-non-publie]').count()}`, { page: '/receptions', taille: taille.nom });
+      await page.bringToFront(); await page.reload({ waitUntil: 'load' }); await attendrePret(page); await attendre(700);
+      if (!/49 € par personne/.test(await texte('[data-offre="menu-groupe"] [data-offre-prix]'))) R.echec(`${ou} : préparation`, 'après rechargement de l’espace, le prix en préparation n’est plus 49 €', lieu);
+      await attendu('aperçu et site vus', 3);
+      /* Un autre brouillon, pour vérifier que la publication ne l'emporte pas. */
+      await page.locator('[data-offre="aperitif"] [data-offre-editer]').click(); await attendre(300); await page.locator('#of-prix').fill('14'); await page.locator('[data-form-offre] button[type="submit"]').click(); await attendre(500);
+      /* 4. Publier cette offre, et elle seule. */
+      await page.locator('[data-pub="offre:menu-groupe"] [data-pub-ouvrir]').click(); await attendre(350);
+      const resume = await texte('[data-pub="offre:menu-groupe"] [data-pub-resume]');
+      if (!/45 € → 49 €/.test(resume) || !/Apéritif et bouchées/.test(await texte('[data-pub-reste]')) || !/dans ce navigateur/.test(resume)) R.echec(`${ou} : publication`, `le résumé avant de publier : « ${resume.slice(0, 260)} »`, lieu);
+      if ((await page.evaluate(() => document.activeElement?.id)) !== 'pub-titre') R.echec(`${ou} : clavier`, 'à l’ouverture du résumé, le focus n’est pas sur son titre', lieu);
+      await debordement(page, 'le résumé de publication');
+      /* Une sauvegarde refusée par le navigateur : pas de faux succès, l'erreur est dite près du bouton, rien n'est publié. */
+      await page.evaluate(() => { window.__poser = Storage.prototype.setItem; Storage.prototype.setItem = function () { throw new Error('stockage plein'); }; });
+      await page.locator('[data-pub-confirmer]').click(); await attendre(500);
+      const refusee = { erreur: await texte('[data-pub-erreur]'), toast: await toast(), ouvert: await page.locator('[data-pub-resume]').count() };
+      await page.evaluate(() => { Storage.prototype.setItem = window.__poser; });
+      if (!/refusé d'enregistrer/.test(refusee.erreur) || /Publié/.test(refusee.toast) || !refusee.ouvert || (await etat()).publie?.n) R.echec(`${ou} : erreurs`, `sauvegarde refusée : message « ${refusee.erreur.slice(0, 120)} », toast « ${refusee.toast.slice(0, 80)} », résumé ouvert ${refusee.ouvert}, publication n° ${(await etat()).publie?.n || 0}`, lieu);
+      await page.locator('[data-pub-confirmer]').click(); await attendre(600);
+      const S4 = await etat(), pub = S4.publie?.offres?.modifs || {};
+      if (pub['menu-groupe']?.prix !== 49 || pub.aperitif || S4.offres?.modifs?.aperitif?.prix !== 14 || S4.publie?.n !== 1) R.echec(`${ou} : publication`, `après publication : publié ${JSON.stringify(pub)}, en préparation ${JSON.stringify(S4.offres?.modifs)}, n° ${S4.publie?.n}`, lieu);
+      if (!/Publié/.test(await toast()) || !/Publiée/.test(await texte('[data-offre="menu-groupe"] .esp-offre__etats')) || !/Modification en préparation/.test(await texte('[data-offre="aperitif"] .esp-offre__etats'))) R.echec(`${ou} : publication`, `à l’écran : « ${await toast()} », menu « ${await texte('[data-offre="menu-groupe"] .esp-offre__etats')} », apéritif « ${await texte('[data-offre="aperitif"] .esp-offre__etats')} »`, lieu);
+      await ap.reload({ waitUntil: 'load' }); await attendrePret(ap); await attendre(600);
+      if ((await prixSite(ap)) !== '49 €') R.echec(`${ou} : site`, `après la publication, le site affiche « ${await prixSite(ap)} » (attendu 49 €)`, { page: '/receptions', taille: taille.nom });
+      await ap.close(); await attendu('offre publiée', 4);
+      /* 5. La nouvelle proposition : 40 personnes à 49 €. */
+      await aller(page, 'demandes'); await page.locator('[data-rec-ouvrir="rec-sc6-nouvelle"]').first().click(); await attendre(600);
+      await page.locator('#rec-onglet-proposition').click(); await attendre(300); await page.locator('[data-rec-proposition-creer]').click(); await attendre(400);
+      const choix = await page.locator('[data-rec-catalogue] option').evaluateAll((l) => l.map((x) => x.textContent.replace(/\s+/g, ' ')).join(' | '));
+      if (!/Menu de groupe, trois plats · 49 € par personne/.test(choix) || !/Apéritif et bouchées · 12 € par personne/.test(choix)) R.echec(`${ou} : proposition`, `les offres proposées ne sont pas les versions publiées : ${choix.slice(0, 220)}`, lieu);
+      await page.locator('[data-rec-catalogue]').selectOption('menu-groupe'); await page.locator('[data-rec-ligne-ajouter]').click(); await attendre(500);
+      const total = await texte('[data-rec-total]');
+      if (total !== '1 960 €' || !/Copié du catalogue/.test(await texte('[data-rec-origine]'))) R.echec(`${ou} : proposition`, `la nouvelle proposition : total « ${total} » (attendu 1 960 €), origine « ${await texte('[data-rec-origine]')} »`, lieu);
+      await attendu('nouvelle proposition', 5); await debordement(page, 'la nouvelle proposition');
+      /* 6. L'ancienne proposition, acceptée : toujours 1 800 €. */
+      await page.locator('[data-rec-retour]').first().click(); await attendre(500); await page.locator('[data-rec-ouvrir="rec-sc6-ancienne"]').first().click(); await attendre(600);
+      await page.locator('#rec-onglet-proposition').click(); await attendre(500);
+      const ancienne = await texte('[data-rec-situation]');
+      if (!/Proposition acceptée/.test(ancienne) || !/1 800 €/.test(ancienne)) R.echec(`${ou} : proposition`, `l’ancienne proposition : « ${ancienne.slice(0, 160)} »`, lieu);
+      await attendu('ancienne proposition rouverte', 6);
+      const fin = await texte('[data-esp-scene]');
+      if (!/1 960 €/.test(fin) || !/1 800 €/.test(fin) || !/exemples/.test(fin)) R.echec(`${ou} : conclusion`, `la conclusion : « ${fin.slice(-260)} »`, lieu);
+      /* Variante : épuisé pour un seul service (immédiat, sans publication), puis le service du soir. */
+      await aller(page, 'carte:carte'); const cle = 'plats/poisson-selon-l-arrivage', nAvant = (await etat()).publie.n;
+      await page.locator(`[data-epuise="${cle}"]`).click(); await attendre(500);
+      const g1 = await site('/la-carte'), ep1 = await g1.locator('.carte-resto__plat.est-epuise').evaluateAll((l) => l.map((x) => x.innerText.replace(/\s+/g, ' ')).join(' || ')); await g1.close();
+      const S7 = await etat();
+      if (S7.carte?.epuises?.[cle] !== `${S7.carte?.epuises?.[cle]?.slice(0, 10)}/midi` || S7.publie.n !== nAvant || !/Poisson selon l'arrivage/.test(ep1) || !/Épuisé ce midi/.test(ep1)) R.echec(`${ou} : épuisé`, `« Épuisé ce midi » : enregistré ${JSON.stringify(S7.carte?.epuises)}, publication n° ${S7.publie.n} (attendu ${nAvant}), sur le site « ${ep1.slice(0, 90)} »`, lieu);
+      const g2 = await site('/reserver'), jours = await g2.locator('[data-resa-form] [data-jour]:not(:disabled)').count(); await g2.close();
+      if (!jours) R.echec(`${ou} : épuisé`, 'un plat épuisé a fermé la réservation de tables', { page: '/reserver', taille: taille.nom });
+      if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click(); await attendre(200);
+      await page.locator('[data-scene-saut="soir"]').click(); await attendre(700);
+      const g3 = await site('/la-carte'), ep3 = await g3.locator('.carte-resto__plat.est-epuise').count(); await g3.close();
+      if (ep3 || (await page.locator(`[data-plat="${cle}"].est-epuise`).count()) || !/Épuisé ce soir/.test(await texte(`[data-epuise="${cle}"]`))) R.echec(`${ou} : épuisé`, `au service du soir, le plat est encore épuisé (site ${ep3}, espace ${await page.locator(`[data-plat="${cle}"].est-epuise`).count()}), bouton « ${await texte(`[data-epuise="${cle}"]`)} »`, lieu);
+      /* Variante : une réservation prise depuis une soirée garde son lien ; la date de la soirée ne change pas sous elle. */
+      const g4 = await site('/les-fetes'), lien = await g4.locator('#date-sc6-soiree a.agd__reserver').getAttribute('href').catch(() => ''); await g4.close();
+      if (!/soiree=sc6-soiree/.test(lien || '')) R.echec(`${ou} : soirée`, `le lien de réservation de la soirée ne porte pas son identifiant (« ${lien} »)`, { page: '/les-fetes', taille: taille.nom });
+      const g5 = await site(lien || '/reserver'), rappel = await texte('[data-soiree]', g5);
+      for (let k = 0; k < 4 && !(await g5.locator('[name="prenom"]').isVisible().catch(() => false)); k++) { const h = g5.locator('[data-resa-form] input[name="heure"]:not(:disabled)').first(); if (await h.isVisible().catch(() => false)) await h.check({ force: true }).catch(() => {}); await g5.locator('[data-etape-suivante]').click().catch(() => {}); await attendre(500); }
+      await g5.fill('[name="prenom"]', 'Lina'); await g5.fill('[name="nom"]', 'Essai'); await g5.fill('[name="telephone"]', '06 00 00 00 00'); await g5.fill('[name="email"]', 'lina@exemple.fr');
+      await g5.locator('[data-resa-form] button[type="submit"]').click(); await attendre(700); await g5.locator('[data-resa-confirmer]').click(); await attendre(1800);
+      const resas = await g5.evaluate(() => JSON.parse(localStorage.getItem('jh-demo:offre:espace-resas:v1') || '[]')); await g5.close();
+      if (!/Soirée truffe/.test(rappel) || resas.length !== 1 || resas[0].soiree?.id !== 'sc6-soiree' || !/Soirée truffe/.test(resas[0].soiree?.titre || '')) R.echec(`${ou} : soirée`, `la réservation depuis la soirée : rappel « ${rappel} », ${resas.length} réservation(s), lien ${JSON.stringify(resas[0]?.soiree || null)}`, { page: '/reserver', taille: taille.nom });
+      await page.reload({ waitUntil: 'load' }); await attendrePret(page); await attendre(700); await aller(page, 'carte:soirees');
+      if (!/1 réservation liée/.test(await texte('.esp-ev:has([data-editer="sc6-soiree"])'))) R.echec(`${ou} : soirée`, `la soirée ne compte pas sa réservation liée : « ${(await texte('.esp-ev:has([data-editer="sc6-soiree"])')).slice(0, 160)} »`, lieu);
+      await page.locator('[data-editer="sc6-soiree"]').click(); await attendre(400);
+      const d0 = await page.locator('#ev-date').inputValue(), d1 = new Date(Date.parse(`${d0}T12:00:00Z`) + 7 * 86400000).toISOString().slice(0, 10);
+      await page.locator('#ev-date').fill(d1); await page.locator('#ev-titre').fill('Soirée truffe noire (exemple)'); await page.locator('[data-editeur] button[type="submit"]').click(); await attendre(500);
+      const refus = await texte('[data-ev-erreur]'), S8 = await etat();
+      if (!/ne les déplacerait pas/.test(refus) || !/aucun message ne partirait/.test(refus) || (await page.locator('#ev-titre').inputValue()) !== 'Soirée truffe noire (exemple)' || S8.evenements.ajouts[0].debut.slice(0, 10) !== d0) R.echec(`${ou} : soirée`, `changer la date d’une soirée réservée : message « ${refus.slice(0, 140)} », titre saisi « ${await page.locator('#ev-titre').inputValue()} », date enregistrée ${S8.evenements.ajouts[0].debut}`, lieu);
+      await debordement(page, 'l’éditeur de soirée et son refus');
+      await page.locator('#ev-date').fill(d0); await page.locator('[data-editeur] button[type="submit"]').click(); await attendre(600);
+      if ((await etat()).evenements.ajouts.length !== 1) R.echec(`${ou} : soirée`, 'modifier le titre a créé une deuxième soirée', lieu);
+      const g6 = await site('/les-fetes'), titreSite = await texte('#date-sc6-soiree .agd__titre', g6); await g6.close();
+      if (titreSite !== 'Soirée truffe (exemple)') R.echec(`${ou} : soirée`, `le nouveau titre est sur le site avant la publication (« ${titreSite} »)`, { page: '/les-fetes', taille: taille.nom });
+      await page.locator('[data-pub="soiree:sc6-soiree"] [data-pub-ouvrir]').click(); await attendre(300); await page.locator('[data-pub-confirmer]').click(); await attendre(600);
+      const g7 = await site('/les-fetes'), titreApres = await texte('#date-sc6-soiree .agd__titre', g7); await g7.close();
+      const liee = await page.evaluate(() => JSON.parse(localStorage.getItem('jh-demo:offre:espace-resas:v1') || '[]')[0]);
+      if (titreApres !== 'Soirée truffe noire (exemple)' || liee?.date !== d0 || liee?.soiree?.titre !== 'Soirée truffe (exemple)') R.echec(`${ou} : soirée`, `après « Publier cette soirée » : titre du site « ${titreApres} », réservation ${JSON.stringify({ date: liee?.date, soiree: liee?.soiree })}`, lieu);
+      /* Variante : l'historique, et une ancienne version reprise en brouillon sans toucher au reste. */
+      await aller(page, 'site:publication'); await debordement(page, 'l’onglet Publication');
+      const histo = await page.locator('[data-histo-n]').count(), attentes = await page.locator('[data-attente-pub]').evaluateAll((l) => l.map((x) => x.dataset.attentePub).join());
+      if (histo !== 2 || attentes !== 'offre:aperitif') R.echec(`${ou} : historique`, `${histo} publication(s) dans l’historique (attendu 2), en attente « ${attentes} » (attendu offre:aperitif)`, lieu);
+      const temoin = async () => { const S = await etat(); return JSON.stringify([S.receptions, S.carte?.epuises, S.resa || null, await page.evaluate(() => localStorage.getItem('jh-demo:offre:espace-resas:v1'))]); }, avantReprise = await temoin();
+      await page.locator('[data-histo-n="1"] [data-histo-voir][data-histo-cote="avant"]').click(); await attendre(400);
+      const retablit = await texte('[data-histo-detail]');
+      if (!/49 € → 45 €/.test(retablit) || !/en brouillon/.test(retablit)) R.echec(`${ou} : historique`, `« Voir ce que rétablirait le contenu d’avant » : « ${retablit.slice(0, 200)} »`, lieu);
+      await page.locator('[data-histo-reprendre]').click(); await attendre(600);
+      const S9 = await etat();
+      if (S9.publie.offres.modifs['menu-groupe'].prix !== 49 || S9.offres.modifs['menu-groupe']?.prix !== undefined || (await temoin()) !== avantReprise || !(await page.locator('[data-attente-pub="offre:menu-groupe"]').count())) R.echec(`${ou} : historique`, `après « Reprendre en brouillon » : publié ${S9.publie.offres.modifs['menu-groupe'].prix} €, brouillon ${JSON.stringify(S9.offres.modifs['menu-groupe'] || null)}, le reste intact ${(await temoin()) === avantReprise}, en attente ${await page.locator('[data-attente-pub="offre:menu-groupe"]').count()}`, lieu);
+      const g8 = await site('/receptions'), encore = await prixSite(g8); await g8.close();
+      if (encore !== '49 €') R.echec(`${ou} : historique`, `une version reprise en brouillon a changé le site (« ${encore} »)`, { page: '/receptions', taille: taille.nom });
+      /* Une publication faite ailleurs pendant que le résumé est ouvert (un autre onglet) : refusée, expliquée, rien n'est publié. */
+      await page.locator('[data-pub="offre:menu-groupe"] [data-pub-ouvrir]').click(); await attendre(350);
+      const g10 = await site('/la-carte'); await g10.evaluate(() => { const k = 'jh-demo:offre:espace:v1', d = JSON.parse(localStorage.getItem(k)); d.publie.n += 1; localStorage.setItem(k, JSON.stringify(d)); }); await g10.close(); await attendre(500);
+      await page.locator('[data-pub-confirmer]').click(); await attendre(500);
+      const conflit = await texte('[data-pub-erreur]'), S9b = await etat();
+      if (!/publié ailleurs/.test(conflit) || !/Rien n'a été publié/.test(conflit) || S9b.publie.offres.modifs['menu-groupe'].prix !== 49) R.echec(`${ou} : erreurs`, `publication concurrente : message « ${conflit.slice(0, 140)} », prix publié ${S9b.publie.offres.modifs['menu-groupe'].prix}`, lieu);
+      await page.locator('[data-pub-annuler]').click(); await attendre(300);
+      await page.locator('[data-pub="offre:menu-groupe"] [data-pub-abandonner]').click(); await attendre(500);
+      /* L'archivage d'une offre utilisée : ses usages sont montrés, rien n'est annulé. */
+      await aller(page, 'carte:catalogue'); await page.locator('[data-offre="menu-groupe"] [data-offre-archiver]').click(); await attendre(400);
+      const usages = await texte('[data-offre-archive-panneau]');
+      if (!/Reprise dans 2 propositions/.test(usages) || !/Affichée sur le site/.test(usages) || !/Aucune réservation, aucun dossier, aucun accord/.test(usages)) R.echec(`${ou} : archivage`, `les usages avant d’archiver : « ${usages.slice(0, 260)} »`, lieu);
+      await debordement(page, 'le panneau d’archivage');
+      const dossiersAvant = JSON.stringify((await etat()).receptions); await page.locator('[data-offre-archiver-oui]').click(); await attendre(500);
+      const S10 = await etat(), g9 = await site('/receptions'), bloc = await g9.locator('[data-offres-site]:not([hidden])').count(); await g9.close();
+      if (!S10.offres.archives?.['menu-groupe'] || JSON.stringify(S10.receptions) !== dossiersAvant || bloc || !/Archivée/.test(await texte('[data-offre="menu-groupe"] .esp-offre__etats'))) R.echec(`${ou} : archivage`, `après « Archiver cette offre » : archives ${JSON.stringify(S10.offres.archives || null)}, dossiers intacts ${JSON.stringify(S10.receptions) === dossiersAvant}, bloc du site ${bloc}`, lieu);
+      /* Les données habituelles n'ont pas bougé. */
+      if ((await page.evaluate(() => localStorage.getItem('jh-espace:v1'))) !== habituel) R.echec(`${ou} : isolation`, 'la démonstration a modifié les données habituelles', lieu);
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok(`espace : ${ou}`);
+    } finally { await ctx.close(); }
   }
 
   /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */

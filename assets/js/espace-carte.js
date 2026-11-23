@@ -6,6 +6,8 @@
    « épuisé » pour un jour donné : le lendemain, il revient tout seul.
    Les allergènes sont ceux que le restaurant indique lui-même : rien n'est prérempli. */
 import { simplifier, typo } from './espace-regles.js?v=7';
+import { estEpuise } from './espace-publie.js?v=7';
+export { estEpuise };
 
 /* Les quatorze allergènes à déclaration obligatoire (règlement européen INCO). */
 export const ALLERGENES = ['Gluten', 'Crustacés', 'Œufs', 'Poissons', 'Arachides', 'Soja', 'Lait', 'Fruits à coque', 'Céleri', 'Moutarde', 'Sésame', 'Sulfites', 'Lupin', 'Mollusques'];
@@ -25,12 +27,13 @@ const propre = (p) => ({ nom: typo(String(p.nom || '').trim()), description: typ
 const pareil = (a, b) => JSON.stringify(propre(a)) === JSON.stringify(propre(b));
 
 /** La carte telle que l'espace l'a laissée : [{ id, titre, plats: [{ cle, nom, description, prix, vegetarien, allergenes, masque, epuise, nouveau, modifie }] }]. */
-export function carteDe(base, S, auj) {
+export function carteDe(base, S, auj, sv = '') {
   const c = S.carte || {}, m = c.modifs || {}, ep = c.epuises || {};
-  return base.map((r) => ({ id: r.id, titre: r.titre, plats: [
-    ...r.plats.map((p, i) => { const cle = `${r.id}/${p.id ?? i}`, x = m[cle] || {}; return { cle, ...propre({ ...p, ...x }), masque: !!x.masque, epuise: ep[cle] === auj, nouveau: false, modifie: Object.keys(x).some((k) => k !== 'masque') }; }),
-    ...(c.ajouts || []).filter((p) => p.rubrique === r.id).map((p) => { const cle = `${r.id}/+${p.id}`; return { cle, ...propre(p), masque: false, epuise: ep[cle] === auj, nouveau: true, modifie: false }; }),
-  ] }));
+  return base.map((r) => { const ordre = c.ordre?.[r.id] || [], rang = (p) => { const i = ordre.indexOf(p.cle); return i < 0 ? 1e6 : i; };
+    return { id: r.id, titre: r.titre, plats: [
+      ...r.plats.map((p, i) => { const cle = `${r.id}/${p.id ?? i}`, x = m[cle] || {}; return { cle, ...propre({ ...p, ...x }), masque: !!x.masque, epuise: estEpuise(ep[cle], auj, sv), nouveau: false, modifie: Object.keys(x).some((k) => k !== 'masque') }; }),
+      ...(c.ajouts || []).filter((p) => p.rubrique === r.id).map((p) => { const cle = `${r.id}/+${p.id}`; return { cle, ...propre(p), masque: false, epuise: estEpuise(ep[cle], auj, sv), nouveau: true, modifie: false }; }),
+    ].map((p, i) => ({ p, i })).sort((a, b) => rang(a.p) - rang(b.p) || a.i - b.i).map((x) => x.p) }; });
 }
 export const platsDe = (carte) => carte.flatMap((r) => r.plats.map((p) => ({ ...p, rubrique: r.id, rubriqueTitre: r.titre })));
 /** Le plat de la carte livrée pour une clé (null pour un plat ajouté). */
@@ -63,7 +66,7 @@ export function trouverPlat(carte, texte) {
 }
 
 /* Les actions de la carte (appliquées par espace-donnees.js) : chacune modifie une copie de l'état. */
-const net = (S) => { const c = S.carte; if (!c) return; for (const k of ['modifs', 'epuises']) if (c[k] && !Object.keys(c[k]).length) delete c[k]; if (c.ajouts && !c.ajouts.length) delete c.ajouts; if (!Object.keys(c).length) delete S.carte; };
+const net = (S) => { const c = S.carte; if (!c) return; for (const k of ['modifs', 'epuises', 'ordre']) if (c[k] && !Object.keys(c[k]).length) delete c[k]; if (c.ajouts && !c.ajouts.length) delete c.ajouts; if (!Object.keys(c).length) delete S.carte; };
 export const MUTATIONS_CARTE = {
   /** Traduit les anciennes clés « rubrique/rang » en « rubrique/identifiant » (une fois, à l'ouverture de l'espace). */
   migrerCarte(S, { base }) { migrerCarte(S, base); },
@@ -83,10 +86,21 @@ export const MUTATIONS_CARTE = {
     net(S);
   },
   /** Épuisé pour un jour (date AAAA-MM-JJ) : le lendemain, la date ne correspond plus et le plat revient. */
-  epuise(S, { cle, date, actif }) {
+  /* v7.13.0 : avec un `service` (midi, soir), le plat n'est épuisé que pour ce service-là : il revient au suivant. C'est une
+     disponibilité du moment, appliquée aussitôt : elle ne passe pas par une publication et aucune version ne la restaure. */
+  epuise(S, { cle, date, service = '', actif }) {
     const e = ((S.carte ||= {}).epuises ||= {});
-    for (const k of Object.keys(e)) if (e[k] < date) delete e[k]; /* les jours passés ne s'accumulent pas */
-    if (actif) e[cle] = date; else delete e[cle];
+    for (const k of Object.keys(e)) if (String(e[k]).slice(0, 10) < date) delete e[k]; /* les jours passés ne s'accumulent pas */
+    if (actif) e[cle] = service ? `${date}/${service}` : date; else delete e[cle];
+    net(S);
+  },
+  /** Monte ou descend un plat dans sa rubrique (`sens` : -1 ou 1), parmi ceux qui sont sur la carte. En préparation, comme le reste. */
+  ordrePlat(S, { cle, sens, base }) {
+    const rub = String(cle).split('/')[0], r = carteDe(base, S, '').find((x) => x.id === rub); if (!r) return;
+    const l = r.plats.map((p) => p.cle), vus = r.plats.filter((p) => !p.masque).map((p) => p.cle), i = vus.indexOf(cle), j = i + (sens < 0 ? -1 : 1); if (i < 0 || j < 0 || j >= vus.length) return;
+    const a = l.indexOf(vus[i]), b = l.indexOf(vus[j]); [l[a], l[b]] = [l[b], l[a]];
+    const naturel = carteDe(base, { carte: { ...S.carte, ordre: {} } }, '').find((x) => x.id === rub).plats.map((p) => p.cle);
+    const c = (S.carte ||= {}); (c.ordre ||= {})[rub] = l; if (JSON.stringify(l) === JSON.stringify(naturel)) delete c.ordre[rub];
     net(S);
   },
 };

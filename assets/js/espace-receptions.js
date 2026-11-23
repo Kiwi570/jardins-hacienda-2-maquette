@@ -30,6 +30,7 @@
 import { enMin, hhmm, ajouter, servicesDe, instantDe, seCroisent, retenueActive, occupationsActives, fenetreService, dureeRepas } from './disponibilites.js?v=7';
 import { fmt, maj, heure, pluriel, instantCtx, etatDuService, evenements, fenetreDuService, prisesDuServiceCtx } from './espace-regles.js?v=7';
 import { planDuService, placerTout, placeDe, nomPlace } from './espace-salle.js?v=7';
+import { UNITES } from './espace-publie.js?v=7';
 
 /* ---------- Les mots ---------- */
 export const PHASES = [['a-qualifier', 'À qualifier'], ['proposition', 'Proposition'], ['decision', 'Décision attendue'], ['preparation', 'Préparation'], ['termine', 'Terminé']];
@@ -124,12 +125,33 @@ export function echeanceParDefaut(maintenant, jour, durees = {}) {
 
 /* ---------- Où en est le dossier ---------- */
 /** La retenue des espaces, telle qu'elle est à cet instant : { etat: 'aucune'|'option'|'expiree'|'ferme'|'liberee', libelle, phrase, echeance }. */
+/* ---------- v7.13.0 : les retenues posées avant la v7.12.1 ----------
+   Elles ne disaient pas ce qu'elles prennent de chaque espace proposé à la réservation (`publics`). On le retrouve
+   depuis ce qu'elles ont gardé : leurs tables, sinon leurs espaces, sinon « toute la salle » / « toute la terrasse ».
+   Rien d'autre n'est touché (identifiant, dates, échéance, accords, historique) et la reprise peut être rejouée sans
+   effet. Quand rien ne permet de savoir, la retenue est dite « à vérifier » : la disponibilité la compte alors comme
+   prenant tout (une occupation inconnue ne devient jamais une place libre). */
+export function completerRetenue(ret, lieux, salle) {
+  if (!ret || ret.publics) return ret;
+  const pubs = (lieux?.espaces || []).filter((x) => x.public && (x.tables || []).length), connus = (ret.espaces || []).filter((id) => espaceDe(lieux, id));
+  let tables = (ret.tables || []).map(String), su = tables.length > 0;
+  /* Des espaces tous connus suffisent, même s'ils ne prennent aucune table du restaurant (un salon à part). */
+  if (!su && connus.length && connus.length === (ret.espaces || []).length) { tables = ressources(lieux, salle, connus).tables; su = true; }
+  if (!su) { tables = pubs.filter((x) => ret[x.public]).flatMap((x) => x.tables.map(String)); su = tables.length > 0; }
+  if (!su || !pubs.length) return ret.aVerifier ? ret : { ...ret, aVerifier: true };
+  const publics = Object.fromEntries(pubs.map((x) => [x.public, { tables: x.tables.map(String).filter((t) => tables.includes(t)), sur: x.tables.length }]));
+  const { aVerifier, ...reste } = ret; return { ...reste, publics };
+}
+/** Y a-t-il des retenues à reprendre (encore actives ou non : une option expirée peut être prolongée) ? */
+export const retenuesAReprendre = (S, lieux, salle) => Object.values(S?.receptions?.dossiers || {}).filter((d) => d.retenue && d.retenue.etat !== 'liberee' && completerRetenue(d.retenue, lieux, salle) !== d.retenue).map((d) => d.id);
+
 export function etatRetenue(d, maintenant = '') {
   const r = d?.retenue;
   if (!r) return { etat: 'aucune', libelle: 'Aucun espace retenu', phrase: 'Aucun espace n\'est retenu : rien n\'est bloqué dans l\'agenda.', echeance: '' };
-  if (r.etat === 'ferme') return { etat: 'ferme', libelle: 'Espaces réservés', phrase: `Espaces réservés du ${instantDit(r.debut)} au ${instantDit(r.fin)}.`, echeance: '' };
+  const doute = r.aVerifier ? { aVerifier: true, verifier: 'Cette retenue a été posée avant que l\'espace enregistre les zones retenues, et elle ne dit pas lesquelles. Tant qu\'elle n\'est pas vérifiée, tout le restaurant est compté comme pris sur ce créneau : la page Réserver ne propose pas ce service.' } : {};
+  if (r.etat === 'ferme') return { etat: 'ferme', libelle: 'Espaces réservés', phrase: `Espaces réservés du ${instantDit(r.debut)} au ${instantDit(r.fin)}.`, echeance: '', ...doute };
   if (r.etat === 'liberee') return { etat: 'liberee', libelle: 'Espaces libérés', phrase: `Espaces libérés${r.raison ? ` : ${r.raison}` : ''}.`, echeance: '' };
-  if (retenueActive(r, maintenant)) return { etat: 'option', libelle: 'Option posée', phrase: `Option jusqu'au ${instantDit(r.echeance)} : les espaces sont retenus, pas encore réservés.`, echeance: r.echeance };
+  if (retenueActive(r, maintenant)) return { etat: 'option', libelle: 'Option posée', phrase: `Option jusqu'au ${instantDit(r.echeance)} : les espaces sont retenus, pas encore réservés.`, echeance: r.echeance, ...doute };
   return { etat: 'expiree', libelle: 'Option expirée', phrase: `L'option a expiré le ${instantDit(r.echeance)} : les espaces sont de nouveau libres. Le dossier reste suivi.`, echeance: r.echeance };
 }
 export const versionsDe = (d) => [...(d?.propositions || [])].sort((a, b) => a.v - b.v);
@@ -353,6 +375,7 @@ export function argsRetenue(ctx, salle, d, { type, jour, horaires, espaces, eche
 /** '' si l'action est possible, sinon la phrase qui dit pourquoi. Le dossier et les saisies sont toujours gardés. */
 export function refusReception(ctx, S, salle, nom, args = {}) {
   const d = dossierDe(S, args.id), v = actionsClient(ctx.venues, args.id), maintenant = instantCtx(ctx);
+  if (nom === 'recReprendre') return '';
   if (nom === 'recCreer') return args.dossier?.id && args.dossier?.client?.nom ? '' : 'Ce dossier est incomplet : il lui faut un client.';
   if (!d) return 'Ce dossier est introuvable : il a peut-être été retiré ailleurs.';
   const clos = d.cloture?.etat;
@@ -421,7 +444,42 @@ export function consequences(ctx, S, salle, d, ch) {
 /* ---------- Les mutations ---------- */
 const noter = (d, le, quoi) => { (d.historique ||= []).push({ le: court(le), quoi }); };
 const prendre = (S, id) => S.receptions?.dossiers?.[id] || null;
-const lignePropre = (l, i) => ({ id: String(l.id || `l${i + 1}`), libelle: propre(l.libelle, 120), description: propre(l.description, 300), qte: Math.max(0, Math.round((+l.qte || 0) * 100) / 100), pu: Math.max(0, Math.round((+l.pu || 0) * 100) / 100), unite: propre(l.unite, 30), ...(l.exemple ? { exemple: true } : {}), ...(l.origine ? { origine: String(l.origine).slice(0, 40) } : {}) });
+const lignePropre = (l, i) => ({ id: String(l.id || `l${i + 1}`), libelle: propre(l.libelle, 120), description: propre(l.description, 300), qte: Math.max(0, Math.round((+l.qte || 0) * 100) / 100), pu: Math.max(0, Math.round((+l.pu || 0) * 100) / 100), unite: propre(l.unite, 30), ...(l.exemple ? { exemple: true } : {}), ...(l.origine ? { origine: String(l.origine).slice(0, 40) } : {}),
+  /* v7.13.0 : ce qui a été copié de l'offre, le jour où la ligne a été ajoutée (pour dire ensuite ce que le catalogue a changé, sans rien réécrire). */
+  ...(l.source && typeof l.source === 'object' ? { source: { libelle: propre(l.source.libelle, 120), description: propre(l.source.description, 300), pu: Math.max(0, Math.round((+l.source.pu || 0) * 100) / 100), unite: propre(l.source.unite, 30), n: Math.max(0, Math.round(+l.source.n || 0)), le: court(l.source.le) } } : {}) });
+/* ---------- v7.13.0 : une ligne de proposition est une COPIE explicite d'une offre du catalogue ----------
+   Modifier ou archiver l'offre ne réécrit jamais une ligne. Un brouillon peut être actualisé, à la demande, après avoir
+   vu les différences : seuls les champs restés tels qu'ils ont été copiés suivent le catalogue ; une quantité, une
+   description ou un prix adaptés à la main sont gardés. */
+const CHAMPS_COPIE = [['libelle', 'Libellé'], ['description', 'Description'], ['pu', 'Prix unitaire'], ['unite', 'Unité']];
+const copieDe = (o) => ({ libelle: o.nom, description: o.description || '', pu: Math.round((+o.prix || 0) * 100) / 100, unite: UNITES[o.unite] || '' });
+/** La ligne ajoutée depuis une offre publiée : sa copie, la référence de l'offre (`origine`) et ce qui a été copié (`source`). */
+export function ligneDepuisOffre(o, { id, qte = 1, n = 0, le = '' }) {
+  const c = copieDe(o); return { id, ...c, qte, origine: o.id, source: { ...c, n, le: court(le) }, ...(o.exemple ? { exemple: true } : {}) };
+}
+const ditChamp = (k, v) => (k === 'pu' ? euros(v) : v || 'rien');
+/**
+ * Ce qu'une actualisation changerait dans les lignes d'un brouillon : [{ id, libelle, changements: [{ champ, nom, avant, apres }],
+ * gardes: [nom], avant, apres }] (avant, apres : le total de la ligne). `offres` : les offres publiées du catalogue.
+ * Une ligne sans `source` (ajoutée avant la v7.13.0) ou dont l'offre n'existe plus n'est pas comparée.
+ */
+export function actualisation(lignes = [], offres = []) {
+  return lignes.flatMap((l) => {
+    const o = l.origine && l.source ? offres.find((x) => x.id === l.origine && !x.archive && x.prix !== '' && x.prix != null) : null; if (!o) return [];
+    const c = copieDe(o), diff = CHAMPS_COPIE.filter(([k]) => c[k] !== l.source[k]); if (!diff.length) return [];
+    const suivis = diff.filter(([k]) => l[k] === l.source[k]), gardes = diff.filter(([k]) => l[k] !== l.source[k]);
+    const apres = { ...l, ...Object.fromEntries(suivis.map(([k]) => [k, c[k]])) };
+    return [{ id: l.id, libelle: l.libelle, changements: suivis.map(([k, nom]) => ({ champ: k, nom, avant: ditChamp(k, l[k]), apres: ditChamp(k, c[k]) })), gardes: gardes.map(([, nom]) => nom), avant: totalLigne(l), apres: totalLigne(apres) }];
+  });
+}
+/** Les lignes après actualisation : les champs non adaptés suivent le catalogue, le reste (quantités comprises) ne bouge pas. */
+export function actualiser(lignes = [], offres = [], { n = 0, le = '' } = {}) {
+  return lignes.map((l) => {
+    const o = l.origine && l.source ? offres.find((x) => x.id === l.origine && !x.archive && x.prix !== '' && x.prix != null) : null; if (!o) return l;
+    const c = copieDe(o), suivis = CHAMPS_COPIE.filter(([k]) => c[k] !== l.source[k] && l[k] === l.source[k]);
+    return { ...l, ...Object.fromEntries(suivis.map(([k]) => [k, c[k]])), source: { ...c, n, le: court(le) } };
+  });
+}
 export const MUTATIONS_RECEPTIONS = {
   /** Crée le dossier s'il n'existe pas déjà (même identifiant, ou même demande) : un double clic ne fait rien de plus. */
   recCreer(S, { dossier }) {
@@ -456,6 +514,8 @@ export const MUTATIONS_RECEPTIONS = {
       : deja && avant.etat === 'option' ? `Option modifiée : du ${instantDit(a.debut)} au ${instantDit(a.fin)}, valable jusqu'au ${instantDit(a.echeance)}.` : `Option posée jusqu'au ${instantDit(a.echeance)} : du ${instantDit(a.debut)} au ${instantDit(a.fin)}.`);
   },
   /** Libère les espaces (option abandonnée, réception annulée) : le dossier et son historique restent. */
+  /** v7.13.0 : complète les retenues d'avant la v7.12.1 (idempotent ; voir `completerRetenue`). */
+  recReprendre(S, { lieux, salle }) { for (const d of Object.values(S.receptions?.dossiers || {})) if (d.retenue && d.retenue.etat !== 'liberee') d.retenue = completerRetenue(d.retenue, lieux, salle); },
   recLiberer(S, { id, raison = '', le = '' }) { const d = prendre(S, id); if (!d?.retenue) return; d.retenue = { ...d.retenue, etat: 'liberee', raison: propre(raison, 200), libereeLe: court(le) }; noter(d, le, `Espaces libérés : ${propre(raison, 200)}.`); },
   /** Enregistre le brouillon de proposition (créé au besoin, avec le numéro de version suivant). Une proposition présentée n'est jamais touchée. */
   recProposition(S, { id, proposition = {}, le = '' }) {

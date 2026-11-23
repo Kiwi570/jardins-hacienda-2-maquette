@@ -80,7 +80,9 @@ export const retenueActive = (ret, maintenant = '') => !!ret && (ret.etat === 'f
 /** Les espaces retenus en ce moment : [{ id, type: 'option' | 'ferme', intitule, client, debut, fin, tables, espaces, salle, terrasse, echeance }]. */
 export function occupationsActives(S, maintenant = '') {
   return Object.values(S?.receptions?.dossiers || {}).filter((d) => retenueActive(d.retenue, maintenant)).map((d) => ({ id: d.id, type: d.retenue.etat, intitule: d.projet?.intitule || d.projet?.occasion || 'Réception', client: d.client?.nom || '',
-    debut: court(d.retenue.debut), fin: court(d.retenue.fin), tables: (d.retenue.tables || []).map(String), espaces: d.retenue.espaces || [], salle: !!d.retenue.salle, terrasse: !!d.retenue.terrasse, publics: d.retenue.publics || null, echeance: d.retenue.echeance || '' }));
+    debut: court(d.retenue.debut), fin: court(d.retenue.fin), tables: (d.retenue.tables || []).map(String), espaces: d.retenue.espaces || [], salle: !!d.retenue.salle, terrasse: !!d.retenue.terrasse, publics: d.retenue.publics || null, echeance: d.retenue.echeance || '',
+    /* v7.13.0 : une retenue dont on ne sait pas ce qu'elle prend (posée avant la v7.12.1 et pas encore reprise, ou impossible à reprendre) n'est jamais lue comme « rien n'est pris ». */
+    incertain: !!d.retenue.aVerifier || (!d.retenue.publics && !d.retenue.salle && !d.retenue.terrasse) }));
 }
 /**
  * La fenêtre d'un service ce jour-là : de la première arrivée à la fin du dernier repas possible. Elle suit les
@@ -104,10 +106,10 @@ export function prisesDuService(occupations, R, iso, sv, equipe = R?.equipe || {
   const f = fenetreService(R, iso, sv, equipe), occs = f ? (occupations || []).filter((o) => seCroisent(o, f)) : [], tables = new Map();
   for (const o of occs) for (const t of o.tables) if (!tables.has(t)) tables.set(t, o);
   /* Chaque retenue dit ce qu'elle prend de chaque espace public et combien de tables il compte : la réunion se calcule ici. */
-  const entier = (pub) => { if (occs.some((o) => o[pub])) return true; const sur = Math.max(0, ...occs.map((o) => +o.publics?.[pub]?.sur || 0)); if (!sur) return false;
+  const entier = (pub) => { if (occs.some((o) => o[pub] || o.incertain)) return true; const sur = Math.max(0, ...occs.map((o) => +o.publics?.[pub]?.sur || 0)); if (!sur) return false;
     return new Set(occs.flatMap((o) => (o.publics?.[pub]?.tables || []).map(String))).size >= sur; };
   const salle = entier('salle'), terrasse = entier('terrasse');
-  return { occs, tables, salle, terrasse, tout: salle && (terrasse || !terrasseOuverte(R, iso)) };
+  return { occs, tables, salle, terrasse, tout: salle && (terrasse || !terrasseOuverte(R, iso)), incertain: occs.some((o) => o.incertain) };
 }
 
 const dans = (iso, x) => (x.du || x.date) <= iso && iso <= (x.au || x.du || x.date);
@@ -187,6 +189,14 @@ export function publier(reservation, adresse = {}) {
 
 /** Le service est-il ouvert ce jour-là ? */
 export const estOuvert = (R, iso, sv, equipe) => etatService(R, iso, sv, equipe).ouvert;
+/**
+ * Le service que concerne « épuisé » à cette minute de la journée (v7.13.0) : celui qui n'est pas encore fini, sinon le
+ * dernier. Un service est fini quand son dernier repas possible l'est (dernière arrivée, plus la durée d'un repas).
+ */
+export function serviceCourant(R, min) {
+  const l = servicesDe(R).sort((a, b) => a.d - b.d); if (!l.length) return min < 16 * 60 + 30 ? 'midi' : 'soir';
+  return (l.find((s) => min <= s.f + Math.max(margeDe(R, s.id), dureeRepas(s.id))) || l[l.length - 1]).id;
+}
 /** Les heures d'arrivée possibles d'un service ce jour-là : ['12:00', '12:15', …] ; vide s'il est fermé. */
 export function arrivees(R, iso, sv, equipe) {
   const e = etatService(R, iso, sv, equipe), l = [];

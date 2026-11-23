@@ -1,6 +1,7 @@
 /* « Aujourd'hui », l'accueil de la maison (v7.10.0) : le prochain service, les priorités, le fil de la journée et le
    briefing. Fonctions pures : elles lisent les mêmes réservations, demandes, soirées et tâches que les autres rubriques,
    et ne gardent rien. Un chiffre affiché ici se retrouve donc, à l'unité près, dans la rubrique qu'il ouvre. */
+import { attente as attentePub, publie as contenuPublie, resasDeSoiree } from './espace-offres.js?v=7';
 import { trouverResa, ajouter, servicesDe, ouvert, resasDuJour, actives, couverts, fmt, maj, heure, pluriel, hhmm, enMin, evenements, typo } from './espace-regles.js?v=7';
 import { serviceDuJour, dureeDe } from './espace-service.js?v=7';
 import { planDuService } from './espace-salle.js?v=7';
@@ -108,8 +109,11 @@ const STATUT_EV = (x) => (x.masque ? 'Masquée sur le site' : 'Affichée sur le 
 /** Ce qui a une date ce jour-là, en dehors des réservations de table : soirées, réceptions demandées ou signées, retraits traiteur. */
 export function activitesDuJour(ctx, S, iso) {
   const out = [];
+  /* v7.13.0 : la même soirée partout ; l'équipe voit aussi ses brouillons, avec leur repère, et les réservations qui lui sont liées. */
+  const pub = new Set(evenements(ctx.agenda || [], { evenements: contenuPublie(S, 'evenements') || {} }).filter((x) => !x.masque).map((x) => x.id)), prep = (id) => !!attentePub({ agenda: ctx.agenda || [] }, S, 'soiree', id);
+  const toutes = ctx.resasSoirees ? ctx.resasSoirees(S) : [], liees = (id) => { const r = resasDeSoiree(toutes, id), n = r.reduce((a, y) => a + (+y.couverts || 0), 0); return r.length ? `${pluriel(r.length, 'réservation')} ${r.length > 1 ? 'liées' : 'liée'} (${pluriel(n, 'couvert')})` : ''; };
   for (const x of evenements(ctx.agenda || [], S)) { if (String(x.debut).slice(0, 10) !== iso) continue; const h = String(x.debut).slice(11, 16);
-    out.push({ cle: `ev-${x.id}`, type: 'soiree', libelleType: x.type || 'Soirée', heure: h || (x.service === 'midi' ? '12:00' : '19:00'), heureConnue: !!h, titre: x.titre, detail: x.prix || '', statut: STATUT_EV(x), ferme: !x.masque, aller: { vue: 'carte', onglet: 'soirees', editer: x.id } }); }
+    out.push({ cle: `ev-${x.id}`, type: 'soiree', libelleType: x.type || 'Soirée', heure: h || (x.service === 'midi' ? '12:00' : '19:00'), heureConnue: !!h, titre: x.titre, detail: [x.prix || '', liees(x.id)].filter(Boolean).join(' · '), statut: prep(x.id) ? (pub.has(x.id) ? 'Modification en préparation' : 'Brouillon, pas encore sur le site') : STATUT_EV(x), ferme: !x.masque && pub.has(x.id), brouillon: prep(x.id), aller: { vue: 'carte', onglet: 'soirees', editer: x.id } }); }
   for (const d of demandes(ctx, S)) {
     /* v7.12.0 : une demande qui a un dossier ouvre ce dossier ; dès que le dossier retient des espaces ou est classé, c'est lui qui parle (plus bas). */
     const dossier = d.genre === 'reception' && ctx.exemples !== false ? dossierDeDemande(S, d.id) : null;

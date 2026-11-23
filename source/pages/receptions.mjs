@@ -239,6 +239,23 @@ export default (c) => {
   <script type="application/json" data-oui-textes>${brut(JSON.stringify({ compte: c.s('receptions.oui.compte') }))}</script>
 </section>
 
+<!-- v7.13.0 : les formules que le restaurant choisit de montrer (espace, Offres, « Sur le site »). Le bloc n'existe dans la page
+     que si une formule est publiée pour le site : il est alors posé ici, avec sa photo. -->
+<template data-offres-site-gabarit>
+<section class="offres-site" id="formules" data-offres-site aria-labelledby="formules-titre">
+  <div class="conteneur offres-site__grille">
+    <div class="offres-site__texte">
+      <p class="offres-site__sur">Pour vos réceptions</p>
+      <h2 class="offres-site__titre" id="formules-titre">Nos formules</h2>
+      <p class="offres-site__mention" data-offres-site-mention hidden>Exemples de démonstration : ces montants ne sont pas des tarifs du restaurant.</p>
+      <ul class="offres-site__liste" data-offres-site-liste></ul>
+    </div>
+    <figure class="offres-site__figure"><img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w" sizes="(max-width: 899px) 92vw, 38vw" alt="Sous la pergola, les tables d'un mariage dressées de blanc, guirlandes allumées" width="1280" height="853" loading="lazy" decoding="async"></figure>
+  </div>
+</section>
+</template>
+<script type="application/json" data-offres-base>${brut(JSON.stringify(c.donnees.receptions.lignes).replace(/<\//g, '<\\/'))}</script>
+
 <section class="demande" aria-labelledby="demande-titre">
   <div class="conteneur" id="demande">
     <div class="demande__tete">

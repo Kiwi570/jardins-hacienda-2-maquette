@@ -5179,7 +5179,8 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 .esp-table.est-rapprochee { border-style: double; border-width: 4px; }
 .esp-table__etat, .esp-table__lien { position: absolute; left: 50%; translate: -50% 0; z-index: 1; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-style: normal; font-weight: 800; white-space: nowrap; }
 .esp-table__etat { bottom: -11px; background: var(--couleur-texte); color: var(--couleur-fond); }
-.esp-table__lien { top: -11px; background: var(--couleur-fond); border: 1px solid var(--couleur-texte); color: var(--couleur-texte); }
+/* v7.13.0 : l'étiquette d'un assemblage ne recouvre plus le numéro d'une petite table (elle dépassait d'un pixel sur lui). */
+.esp-table__lien { top: -14px; background: var(--couleur-fond); border: 1px solid var(--couleur-texte); color: var(--couleur-texte); }
 .esp-salle__legende li.est-a-remettre::before { background: repeating-linear-gradient(135deg, #fff 0 4px, var(--esp-attente-clair) 4px 8px); border-color: var(--esp-attente); }
 .esp-salle__choix { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: var(--couleur-surface); }
 .esp-salle__choix p { margin: 0 0 8px; }
@@ -5674,3 +5675,102 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 .venue__details summary::-webkit-details-marker { display: none; }
 .venue__details summary:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 3px; border-radius: 8px; }
 @media print { .esp-feuille--doc .esp-doc__attente { break-inside: avoid; } }
+
+/* ==========================================================================
+   v7.13.0 · Les offres prennent vie : catalogue commun, « en préparation » et « publié », aperçu non publié,
+   historique, « épuisé ce soir », soirées liées à leurs réservations, formules montrées sur le site.
+   ========================================================================== */
+/* La barre d'un périmètre de publication : ce qui attend, l'aperçu, « Publier … », le résumé avant de publier. */
+.esp-pub { display: grid; gap: 10px; margin: 0 0 16px; padding: 14px 16px; border-radius: 16px; background: #eef3f7; border: 1px solid #c9d8e4; grid-column: 1 / -1; }
+.esp-pub p, .esp-pub h4 { margin: 0; }
+.esp-pub--net { display: block; background: var(--esp-vert-clair); border-color: color-mix(in oklab, var(--esp-vert) 30%, transparent); font-size: 15px; }
+.esp-pub__texte { font-size: 15px; line-height: 1.45; }
+.esp-pub__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.esp-pub__publier { min-height: 44px; }
+.esp-pub__resume { display: grid; gap: 10px; padding: 14px 16px; border-radius: 14px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-pub__resume h4 { font-family: var(--police-titres); font-size: 1.15rem; font-weight: 600; }
+.esp-pub__resume h4:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 3px; border-radius: 6px; }
+.esp-pub__liste { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: 15px; line-height: 1.45; }
+.esp-pub__liste--court { font-size: 14px; color: var(--couleur-texte-doux); }
+.esp-pub .esp-aide { margin: 0; }
+.esp-erreur { display: block; margin: 0; padding: 8px 12px; border-radius: 10px; background: #f7e1de; color: #8a231d; font-size: 14px; font-weight: 700; line-height: 1.4; }
+small.esp-erreur { margin-top: 2px; }
+/* Le catalogue commun. */
+.esp-offres { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.esp-offre { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 8px 18px; padding: 12px 14px 12px 18px; border-radius: 16px; background: #fff; border: 1px solid var(--couleur-ligne); scroll-margin-top: calc(var(--esp-barre-h, 68px) + 16px); }
+.esp-offre p { margin: 0; }
+.esp-offre__nom { font-family: var(--police-titres); font-size: 1.15rem; font-weight: 600; line-height: 1.3; }
+.esp-offre__etats { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 4px 0 !important; }
+.esp-offre__detail { font-size: 14px; line-height: 1.4; color: var(--couleur-texte-doux); }
+.esp-offre__prix { font-family: var(--police-titres); font-size: 1.15rem; font-weight: 600; font-variant-numeric: lining-nums tabular-nums; text-align: right; }
+.esp-offre__actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px 10px; }
+.esp-offre__actions .esp-aide { margin: 0; font-size: 14px; max-width: 22ch; text-align: right; }
+.esp-offre.est-archive { background: transparent; border-style: dashed; }
+.esp-offre.est-archive :is(.esp-offre__nom b, .esp-offre__prix) { color: var(--couleur-texte-doux); }
+.esp-offre > :is(.esp-pub, .esp-offre__form, .esp-offre__archive) { grid-column: 1 / -1; margin: 4px 0 0; }
+.esp-offre__form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; padding: 16px; border-radius: 14px; background: var(--couleur-surface); }
+.esp-offre__form :is(fieldset) { grid-column: 1 / -1; margin: 0; padding: 0; border: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; min-width: 0; }
+.esp-offre__form legend { grid-column: 1 / -1; padding: 0; margin-bottom: 4px; font-weight: 800; font-size: 15px; }
+.esp-offre__form legend small, .esp-offre__form label small { font-weight: 400; color: var(--couleur-texte-doux); font-size: 13px; }
+.esp-offre__form .esp-erreur { grid-column: 1 / -1; }
+.esp-offre__form [aria-invalid="true"] { border-color: #b8322c; box-shadow: 0 0 0 1px #b8322c; }
+.esp-offre__form-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.esp-offre__form-actions .esp-aide { margin: 0; flex: 1 1 240px; }
+.esp-offre__archive { display: grid; gap: 10px; padding: 14px 16px; border-radius: 14px; background: #fbf1ef; border: 1px solid color-mix(in oklab, var(--rouge) 30%, transparent); }
+.esp-offre__archive h4 { margin: 0; font-family: var(--police-titres); font-size: 1.1rem; font-weight: 600; }
+/* Site, onglet Publication : ce qui attend, l'historique. */
+.esp-attentes, .esp-histo { list-style: none; margin: 0 0 22px; padding: 0; display: grid; gap: 10px; }
+.esp-attente-pub, .esp-histo__ligne { display: grid; gap: 8px; padding: 14px 16px; border-radius: 16px; background: #fff; border: 1px solid var(--couleur-ligne); }
+.esp-attente-pub p, .esp-histo__ligne p { margin: 0; }
+.esp-attente-pub .esp-pub { margin: 0; }
+.esp-attente-pub__nom, .esp-histo__tete { font-size: 1.05rem; }
+.esp-histo__tete .esp-pastille { margin-left: 4px; }
+/* La carte : monter ou descendre un plat. */
+.esp-plat__ordre { display: inline-flex; gap: 4px; }
+.esp-bouton--icone { width: 44px; min-width: 44px; padding: 0; }
+.esp-bouton--icone svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.esp-bouton--icone:disabled { opacity: .35; cursor: default; }
+/* Les soirées : leurs réservations liées ; la réservation dit de quelle soirée elle vient. */
+.esp-ev > .esp-pub { margin: 6px 0 0; }
+.esp-ev__liees { grid-column: 1 / -1; margin: 0; font-size: 14px; font-weight: 700; color: var(--esp-vert); }
+.esp-source--soiree { background: var(--esp-attente-clair); color: var(--couleur-texte); }
+.esp-rec-alerte--forte { border-style: solid; border-color: #b8322c; background: #fbf1ef; }
+@media (max-width: 760px) {
+  .esp-offre { grid-template-columns: minmax(0, 1fr); }
+  .esp-offre__prix { text-align: left; }
+  .esp-offre__actions { grid-column: 1 / -1; justify-content: flex-start; }
+  .esp-offre__actions .esp-aide { text-align: left; max-width: none; }
+  .esp-offre__form, .esp-offre__form :is(fieldset) { grid-template-columns: minmax(0, 1fr); }
+  .esp-pub__actions > :is(a, button) { flex: 1 1 100%; }
+}
+/* Le site : les formules que le restaurant montre (page Réceptions). */
+.offres-site { padding-block: clamp(56px, 9vh, 110px); background: #f6f1e7; color: #1c1712; }
+.offres-site__grille { display: grid; gap: clamp(24px, 4vw, 56px); align-items: start; }
+.offres-site__figure { margin: 0; }
+.offres-site__figure img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 22px; }
+@media (min-width: 900px) { .offres-site__grille { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); } .offres-site__figure { position: sticky; top: 110px; } .offres-site__figure img { aspect-ratio: 4 / 5; } }
+.offres-site__sur { margin: 0 0 6px; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #9a5a12; }
+.offres-site__titre { margin: 0 0 18px; font-family: var(--police-titres); font-size: clamp(2rem, 1.4rem + 2.4vw, 3.4rem); line-height: 1.08; font-weight: 500; }
+.offres-site__mention { margin: 0 0 18px; padding: 10px 14px; border-radius: 12px; border: 1px dashed #9a5a12; font-size: 15px; max-width: 70ch; }
+.offres-site__liste { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 440px)); gap: 18px; }
+.offres-site__offre { display: grid; align-content: start; gap: 8px; padding: 22px; border-radius: 20px; background: #fffdf8; border: 1px solid #e3d6c1; }
+.offres-site__offre p, .offres-site__offre h3 { margin: 0; }
+.offres-site__photo { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 14px; }
+.offres-site__nom { font-family: var(--police-titres); font-size: 1.45rem; font-weight: 600; line-height: 1.2; }
+.offres-site__exemple { display: inline-block; margin-left: 6px; padding: 2px 10px; border-radius: 999px; border: 1px solid #9a5a12; color: #7a4508; font-family: var(--police-texte, inherit); font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; vertical-align: 4px; }
+.offres-site__desc, .offres-site__conditions { font-size: 16px; line-height: 1.5; color: #4d4238; }
+.offres-site__conditions { font-size: 14px; }
+.offres-site__prix { font-size: 16px; color: #4d4238; }
+.offres-site__prix b { font-family: var(--police-titres); font-size: 1.7rem; font-weight: 600; color: #1c1712; font-variant-numeric: lining-nums; }
+/* L'aperçu avant publication : un repère qu'on ne peut pas manquer, à toutes les largeurs. */
+.apercu-espace--non-publie { max-width: min(92vw, 520px); border-radius: 18px; padding: 10px 14px; background: #1c1712; color: #f6f1e7; font-size: 14px; box-shadow: 0 14px 30px -12px rgba(0, 0, 0, .6), 0 0 0 2px #e9a23b; }
+.apercu-espace--non-publie .apercu-espace__point { background: #e9a23b; box-shadow: 0 0 0 3px rgba(233, 162, 59, .3); }
+.apercu-espace--non-publie .apercu-espace__detail { flex: 1 1 100%; font-weight: 400; font-size: 13px; }
+.apercu-espace--non-publie .apercu-espace__lien { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; color: #f3c877; font-size: 14px; }
+.apercu-espace--non-publie .apercu-espace__lien:focus-visible { outline: 3px solid #e9a23b; outline-offset: 2px; border-radius: 6px; }
+@media print { .apercu-espace--non-publie { display: none; } }
+/* Les propositions : d'où vient une ligne, et l'actualisation depuis le catalogue (à la demande, après avoir vu les différences). */
+.esp-rec-ligne__origine { display: block; margin-top: 4px; font-size: 13px; line-height: 1.35; color: var(--couleur-texte-doux); }
+.esp-rec-actu { display: grid; gap: 10px; margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; background: #eef3f7; border: 1px solid #c9d8e4; }
+.esp-rec-actu p, .esp-rec-actu h5 { margin: 0; }
+.esp-rec-actu h5 { font-family: var(--police-titres); font-size: 1.05rem; font-weight: 600; }

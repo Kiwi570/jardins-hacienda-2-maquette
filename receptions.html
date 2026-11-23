@@ -476,6 +476,22 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
   <script type="application/json" data-oui-donnees>[{"src":"/assets/images/vraie/mariage-ceremonie-960.webp","alt":"Une cérémonie en plein air sous les palmiers, les invités de dos devant une arche de rotin","legende":"Oui, sous les palmiers"},{"src":"/assets/images/vraie/mariage-danse-960.webp","alt":"Les mariés dansent enlacés sous la paillote, les guirlandes allumées","legende":"La première danse"},{"src":"/assets/images/vraie/mariage-table-verte-960.webp","alt":"Une longue table dressée de serviettes vertes, de fleurs blanches et de bougies","legende":"La grande tablée"},{"src":"/assets/images/vraie/mariage-piece-montee-960.webp","alt":"Un grand gâteau blanc et des pièces montées de macarons, entre ballons dorés et fleurs blanches","legende":"La pièce montée"},{"src":"/assets/images/vraie/mariage-table-piscine-960.webp","alt":"Une longue table fleurie de blanc au bord de la piscine","legende":"Le repas au bord de l'eau"},{"src":"/assets/images/vraie/mariage-nid-960.webp","alt":"Un nid de rotin géant posé au bord de la piscine","legende":"Un nid pour deux"},{"src":"/assets/images/vraie/mariage-salle-960.webp","alt":"La salle dressée pour un repas de réception, nappes blanches et fleurs","legende":"La salle dressée"},{"src":"/assets/images/vraie/mariage-table-fleurie-960.webp","alt":"Une table fleurie de roses blanches sous la pergola, la piscine derrière","legende":"Fleurs et verres en cristal"},{"src":"/assets/images/vraie/mariage-buffet-960.webp","alt":"Un buffet de réception servi dans des plats en terre cuite","legende":"Le buffet"}]</script>
   <script type="application/json" data-oui-textes>{"compte":"{n} sur {total}"}</script>
 </section>
+<!-- v7.13.0 : les formules que le restaurant choisit de montrer (espace, Offres, « Sur le site »). Le bloc n'existe dans la page
+     que si une formule est publiée pour le site : il est alors posé ici, avec sa photo. -->
+<template data-offres-site-gabarit>
+<section class="offres-site" id="formules" data-offres-site aria-labelledby="formules-titre">
+  <div class="conteneur offres-site__grille">
+    <div class="offres-site__texte">
+      <p class="offres-site__sur">Pour vos réceptions</p>
+      <h2 class="offres-site__titre" id="formules-titre">Nos formules</h2>
+      <p class="offres-site__mention" data-offres-site-mention hidden>Exemples de démonstration : ces montants ne sont pas des tarifs du restaurant.</p>
+      <ul class="offres-site__liste" data-offres-site-liste></ul>
+    </div>
+    <figure class="offres-site__figure"><img src="/assets/images/vraie/pergola-banquet-1280.webp" srcset="/assets/images/vraie/pergola-banquet-640.webp 640w, /assets/images/vraie/pergola-banquet-1280.webp 1280w" sizes="(max-width: 899px) 92vw, 38vw" alt="Sous la pergola, les tables d'un mariage dressées de blanc, guirlandes allumées" width="1280" height="853" loading="lazy" decoding="async"></figure>
+  </div>
+</section>
+</template>
+<script type="application/json" data-offres-base>[{"id":"menu-groupe","libelle":"Menu de groupe, trois plats","description":"Entrée, plat, dessert. Composition à convenir avec le chef.","unite":"par personne","pu":45,"exemple":true},{"id":"aperitif","libelle":"Apéritif et bouchées","description":"Servi à l'arrivée des invités.","unite":"par personne","pu":12,"exemple":true},{"id":"boissons","libelle":"Boissons du repas","description":"Vins, eaux et café.","unite":"par personne","pu":18,"exemple":true},{"id":"privatisation","libelle":"Mise à disposition de l'espace","description":"Préparation, service et remise en état compris.","unite":"forfait","pu":400,"exemple":true}]</script>
 <section class="demande" aria-labelledby="demande-titre">
   <div class="conteneur" id="demande">
     <div class="demande__tete">

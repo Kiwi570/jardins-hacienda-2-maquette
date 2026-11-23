@@ -303,7 +303,7 @@ function jusquaLOption(d) {
 }
 
 test('scénario 5 · il part toujours du même point : un mercredi à 10 h, une demande, un mariage déjà confirmé le samedi d\'avant', () => {
-  assert.equal(SCENARIOS.length, 5); assert.equal(SCENARIOS[4].titre, 'Une réception aux Jardins');
+  assert.equal(SCENARIOS.length, 6); assert.equal(SCENARIOS[4].titre, 'Une réception aux Jardins');
   for (const reel of ['2026-11-21', '2026-11-25', '2026-12-31', '2027-05-30']) {
     const d = depart('reception', R, reel, CFG); assert.deepEqual(d, depart('reception', R, reel, CFG), 'deux lancements : le même départ');
     assert.ok(d.horloge.iso >= reel && new Date(`${d.horloge.iso}T12:00:00Z`).getUTCDay() === 3 && d.horloge.min === 600, 'un mercredi à 10 h, jamais dans le passé');
