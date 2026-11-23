@@ -16,7 +16,9 @@ test('les étapes de chaque genre', () => {
   assert.deepEqual(suite('reception', 'nouvelle'), { statut: 'rappele', libelle: 'J\'ai rappelé' }); assert.deepEqual(suite('reception', 'devis'), { statut: 'signe', libelle: 'C\'est signé' });
   assert.equal(suite('reception', 'signe'), null); assert.equal(suite('reception', 'perdue'), null); assert.equal(suite('question', 'repondue'), null); assert.equal(suite('inconnu', 'nouvelle'), null);
   assert.equal(libelleEtape('traiteur', 'prete'), 'Prête'); assert.equal(libelleEtape('reception', 'perdue'), 'Sans suite'); assert.equal(libelleEtape('cadeau', 'x'), 'Nouvelle');
-  for (const [g, def] of Object.entries(GENRES)) if (def.etapes) for (const [id] of def.etapes.slice(0, -1)) assert.ok(suite(g, id), `${g} ${id} a une suite`);
+  /* v7.14.0 : la commande à emporter et la carte cadeau se suivent dans leur dossier (commerce.js) : pas d'étape « à la main » ici. */
+  for (const [g, def] of Object.entries(GENRES)) if (def.etapes && def.suite) for (const [id] of def.etapes.slice(0, -1)) assert.ok(suite(g, id), `${g} ${id} a une suite`);
+  assert.equal(suite('traiteur', 'nouvelle'), null); assert.equal(suite('cadeau', 'nouvelle'), null); assert.equal(libelleEtape('traiteur', 'preparation'), 'En préparation'); assert.equal(libelleEtape('cadeau', 'emise'), 'Cartes émises');
   assert.equal(recue(`${AUJ}T08:00:00`, AUJ), 'aujourd\'hui'); assert.equal(recue('2026-11-17T23:00:00', AUJ), 'hier'); assert.equal(recue('2026-11-09T10:00:00', AUJ), 'il y a 9 jours');
 });
 
@@ -36,7 +38,7 @@ test('chaque formulaire du site devient une ligne de la liste', () => {
   assert.deepEqual(r.lignes.map(([k]) => k), ['Occasion', 'Date', 'Invités', 'Espace', 'Message']);
   assert.equal(normaliser({ id: 'R-2', genre: 'reception', occasion: 'Un baptême', periode: 'Printemps 2027', invites: '40' }).titre, 'Baptême · 40 invités · Printemps 2027');
   const t = normaliser({ id: 'T-1', genre: 'traiteur', produits: [{ nom: 'Tourte aux escargots', qte: 2 }, { nom: 'Foie gras', qte: 1 }], total: 109.5, jour: '2026-12-05', jourLibelle: 'samedi 5 décembre', moment: 'soir', prenom: 'Paul', nom: 'E.', tel: '06 01' });
-  assert.equal(t.titre, '3 produits · 109,5 € · retrait samedi 5 décembre, le soir'); assert.equal(t.telephone, '06 01');
+  assert.equal(t.titre, '2 produits · 109,5 € · retrait samedi 5 décembre, le soir'); assert.equal(t.telephone, '06 01');
   const c = normaliser({ id: 'C-1', genre: 'cadeau', montant: 100, quantite: 2, pour: 'Léa', de: 'Hugo S.', mot: '' });
   assert.equal(c.titre, '2 cartes de 100 € pour Léa'); assert.equal(c.qui, 'Hugo S.'); assert.ok(!c.lignes.some(([k]) => k === 'Le mot'), 'un champ vide ne fait pas de ligne');
   assert.equal(normaliser({ id: 'Q-1', genre: 'question', sujet: 'Une allergie', message: 'x' }).qui, 'Sans nom');

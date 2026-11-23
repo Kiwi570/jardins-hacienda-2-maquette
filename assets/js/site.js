@@ -4,12 +4,14 @@
    Effets propres (data-effet) : heure (horloge de l'en-tête), axes (chiffres variables), heure-section, eau (WebGL),
    passe, vraies, apres-midi, terrasse, guirlandes, carton, braises, decompte, carte-apercu. */
 /* v7.6.0 · L'aperçu des modifications de l'espace restaurateur passe avant tout (textes, photos, horaires, événements). */
-import './espace-apercu.js?v=7';
+import { cadeauxPublies, controleEmporter, retraitsComplets } from './espace-apercu.js?v=7';
 /* v7.7.2 · Les demandes faites sur le site (réception, traiteur, carte cadeau, question) arrivent dans l'espace restaurateur. */
 import { ajouterDemandeSite, horloge as horlogeDemo } from './espace-stock.js?v=7';
 /* v7.8.1 · Aucune réussite avant un enregistrement réussi : si la demande n'a pas pu être passée au restaurant
    (mémoire du navigateur pleine ou refusée), c'est dit clairement par-dessus l'écran de confirmation du formulaire. */
 function transmettreDemande(d) {
+  /* v7.14.0 : dans un scénario de démonstration, la demande est datée à l'horloge du scénario (comme tout le reste). */
+  const h = horlogeDemo(); if (h && !d.cree) d = { ...d, cree: `${h.iso}T${String(Math.floor(h.min / 60)).padStart(2, '0')}:${String(h.min % 60).padStart(2, '0')}:00` };
   if (ajouterDemandeSite(d) !== false) return true;
   document.querySelector('.envoi-refuse')?.remove();
   const z = document.createElement('div'); z.className = 'envoi-refuse'; z.setAttribute('role', 'alert');
@@ -146,7 +148,7 @@ const OPTIONS = {
   'plat-fumant': { densite: 1, hauteur: 0.85, vitesse: 0.9, intensite: 2.1, qualite: 0.3 },
   'accords-mets-et-vins': { textes: { avec: 'Avec', signature: "Le vin de l'accord", groupe: 'Les plats du menu' } },
   'plan-de-salle': { reservation: '/reserver#formulaire', couverts: 2, textes: { choix: '{nom} · {zone} · {places} places. ', prise: 'Indisponible (simulation)' } },
-  'carte-cadeau-qui-se-compose': { cachet: 'JH', min: 25, max: 200, textes: {
+  'carte-cadeau-qui-se-compose': { cachet: 'JH', offres: () => cadeauxPublies(), textes: {
     pourQui: ', à remettre à {pour}',
     statut: 'Carte prête{pourQui} : {quoi}, total {total}. Valable 6 mois ; pour la recevoir, appelez-nous au 06 18 21 28 10. {simule}',
   } },
@@ -210,7 +212,9 @@ function rappelSoiree() {
 }
 /* Une question (Infos pratiques) : après l'envoi, le message de fin revient à l'écran. */
 document.addEventListener('formulaire:envoye', (e) => { const v = e.detail?.valeurs || e.detail || {}; transmettreDemande({ genre: 'question', sujet: String((e.detail?.resume || []).flatMap((g) => g.champs || []).find((c) => c.nom === 'sujet')?.valeur || v.sujet || ''), message: v.message || '', date: v.date || '', prenom: v.prenom || '', nom: v.nom || '', telephone: v.telephone || '', email: v.email || '' }); });
-document.addEventListener('ccq:valide', (e) => { const d = e.detail || {}; transmettreDemande({ genre: 'cadeau', montant: d.montant, quantite: d.quantite, total: d.total, pour: d.pour || '', de: d.de || '', mot: d.mot || '' }); });
+document.addEventListener('ccq:valide', (e) => { const d = e.detail || {}; const a = d.acheteur || {}; transmettreDemande({ genre: 'cadeau', montant: d.montant, quantite: d.quantite, total: d.total, pour: d.pour || '', de: d.de || '', mot: d.mot || '',
+  /* v7.14.0 : la demande garde l'offre choisie (identifiant stable, intitulé et version publiée au moment du choix) et l'acheteur. */
+  ...(d.offre ? { offre: d.offre.id, intitule: d.offre.intitule, publication: d.offre.publication } : {}), ...(a.nom || a.telephone || a.email ? { acheteur: { nom: a.nom || '', telephone: a.telephone || '', email: a.email || '' } } : {}) }); });
 document.addEventListener('formulaire:envoye', (e) => { const fin = e.target.closest('[data-module="formulaire-par-etapes"]')?.querySelector('.fpe__fin'); if (fin) setTimeout(() => amenerDansEcran(fin, true), 120); });
 let givreEnAttente = null;
 function givreAuRepos() {
@@ -764,9 +768,10 @@ function carteApercu() {
     /* Le déclencheur est le cadre de la carte, jamais la carte qui tourne (sa boîte change quand elle se retourne). */
     const cadre = c.closest('[data-effet="carte-apercu"]') || c;
     gsap.fromTo(c, { '--ry': '-28deg', '--rx': '14deg' }, { '--ry': '10deg', '--rx': '-4deg', ease: 'none', scrollTrigger: { trigger: cadre, start: 'top bottom', end: 'bottom top', scrub: 0.5 } });
-    /* Offrir : le montant parcourt les cartes de la maison (25 à 200 €) pendant qu'elle se redresse. */
+    /* Offrir : le montant parcourt les cartes cadeaux publiées pendant qu'elle se redresse. */
     const m = $('[data-montant-tournant]', c);
-    if (m) { const v = [25, 50, 100, 150, 200]; ScrollTriggerSimple(cadre, (p) => { m.textContent = `${v[Math.min(4, Math.floor(p * 5))]} €`; }); }
+    if (m) { let v = [25, 50, 100, 150, 200]; try { const x = JSON.parse(m.dataset.montants || 'null'); if (Array.isArray(x) && x.length) v = x; } catch { /* les montants livrés */ }
+      ScrollTriggerSimple(cadre, (p) => { m.textContent = `${String(v[Math.min(v.length - 1, Math.floor(p * v.length))]).replace('.', ',')} €`; }); }
   }
 }
 function ScrollTriggerSimple(el, f) { window.ScrollTrigger.create({ trigger: el, start: 'top 80%', end: 'bottom top', onUpdate: (st) => f(st.progress) }); }
@@ -1567,13 +1572,21 @@ function emporter() {
   const pastille = $('[data-emp-pastille]'), nbEl = $('[data-pastille-nombre]'), ptEl = $('[data-pastille-total]'), annonce = $('[data-emp-annonce]'), merci = $('[data-emp-merci]');
   const euros = (n) => `${(Math.round(n * 100) / 100).toLocaleString('fr-FR', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })} €`;
   const fmt = (t, v) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? '');
-  let lignes = [];
-  try { lignes = JSON.parse(localStorage.getItem(CLE) || '[]').filter((l) => T.produits[l.id] && l.qte > 0); } catch { lignes = []; }
+  let lignes = [], retires = 0;
+  try { const gardees = JSON.parse(localStorage.getItem(CLE) || '[]').filter((l) => l.qte > 0); lignes = gardees.filter((l) => T.produits[l.id]); retires = gardees.length - lignes.length; } catch { lignes = []; }
+  /* v7.14.0 : les quantités suivent le catalogue publié (quantité minimale et pas, dans l'unité du prix) ; l'unité est toujours dite. */
+  const arr3 = (n) => Math.round(n * 1000) / 1000, pasDe = (l) => (l.poids ? 1 : T.produits[l.id].pas || 1), minDe = (l) => (l.poids ? 1 : T.produits[l.id].min || 1);
+  const MOTS = { piece: ['pièce', 'pièces'], formule: ['formule', 'formules'] }, uniteDe = (id) => T.produits[id].unite;
+  const qteTexte = (l) => (l.poids ? `${l.qte} ×` : `${String(l.qte).replace('.', ',')} ${(MOTS[uniteDe(l.id)] || MOTS.piece)[l.qte > 1 ? 1 : 0]}`);
+  const quantiteDite = (x) => `${String(x.quantite).replace('.', ',')} ${x.unite === 'kilo' ? 'kg' : (MOTS[x.unite] || MOTS.piece)[x.quantite > 1 ? 1 : 0]}`;
+  /* La ligne telle qu'elle part au restaurant : le produit du catalogue, la quantité dans son unité, le prix du moment. */
+  const ligneEnvoi = (l) => { const p = T.produits[l.id], q = arr3(l.qte * (l.poids || 1)); return { offre: p.offre || '', cle: l.id, nom: p.nom, unite: p.unite === 'kg' ? 'kilo' : p.unite, prix: p.prix, quantite: q, total: Math.round(p.prix * q * 100) / 100, ...(l.poids ? { detail: `${l.qte} × ${String(l.poids).replace('.', ',')} kg` } : {}) }; };
   const garder = () => { try { localStorage.setItem(CLE, JSON.stringify(lignes)); } catch {} };
   const prixLigne = (l) => T.produits[l.id].prix * (l.poids || 1) * l.qte;
   const nomLigne = (l) => T.produits[l.id].nom + (l.poids ? ` · ${String(l.poids).replace('.', ',')} kg` : '');
   const total = () => lignes.reduce((s, l) => s + prixLigne(l), 0);
-  const nombre = () => lignes.reduce((s, l) => s + l.qte, 0);
+  /* v7.14.0 : on compte les produits de la commande, pas les quantités (2 pièces et 1,5 kg ne s'additionnent pas). */
+  const nombre = () => lignes.length;
   let commandeVue = false;
   /* v7.5.11 · Le tiroir de la commande, à droite : lignes avec vignette du plat, quantités, retrait d'une ligne, total. */
   const tiroir = $('[data-emp-tiroir]'), dansTiroir = (sel) => tiroir && $(sel, tiroir);
@@ -1584,9 +1597,9 @@ function emporter() {
     const v = T.produits[id].vignette;
     if (v) { const i = document.createElement('img'); i.src = v; i.alt = ''; i.width = 64; i.height = 64; i.decoding = 'async'; return i; }
     const sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); sv.setAttribute('viewBox', '70 230 260 160'); sv.setAttribute('aria-hidden', 'true');
-    const u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); u.setAttribute('href', `#pl-${id}`); u.setAttribute('width', '400'); u.setAttribute('height', '430'); sv.append(u); return sv;
+    const u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); u.setAttribute('href', `#pl-${T.produits[id].dessin ?? id}`); u.setAttribute('width', '400'); u.setAttribute('height', '430'); sv.append(u); return sv;
   };
-  const changer = (l, delta) => { l.qte += delta; if (l.qte <= 0) lignes.splice(lignes.indexOf(l), 1); garder(); rendre(); };
+  const changer = (l, delta) => { l.qte = Math.abs(delta) >= l.qte && delta < 0 ? 0 : arr3(l.qte + delta * pasDe(l)); if (l.qte < minDe(l)) lignes.splice(lignes.indexOf(l), 1); garder(); rendre(); };
   const rendreTiroir = (nouvelle) => {
     if (!tiroir) return;
     tLignes.replaceChildren(...lignes.map((l) => {
@@ -1595,9 +1608,9 @@ function emporter() {
       li.innerHTML = '<span class="emp-tl__vignette"></span><span class="emp-tl__corps"><span class="emp-tl__nom"></span><span class="emp-tl__unite"></span></span><span class="emp-tl__prix"></span><span class="emp-tl__qte"><button type="button" data-action="moins"></button><span></span><button type="button" data-action="plus"></button></span><button type="button" class="emp-tl__retirer" data-action="retirer"></button>';
       li.querySelector('.emp-tl__vignette').append(vignette(l.id));
       li.querySelector('.emp-tl__nom').textContent = nom;
-      li.querySelector('.emp-tl__unite').textContent = fmt(p.unite === 'kg' ? T.tiroirKg : T.tiroirUnite, { prix: euros(p.prix) });
+      li.querySelector('.emp-tl__unite').textContent = T.unites?.[p.unite] ? `${euros(p.prix)} ${T.unites[p.unite]}` : fmt(p.unite === 'kg' ? T.tiroirKg : T.tiroirUnite, { prix: euros(p.prix) });
       li.querySelector('.emp-tl__prix').textContent = euros(prixLigne(l));
-      li.querySelector('.emp-tl__qte span').textContent = l.qte;
+      li.querySelector('.emp-tl__qte span').textContent = qteTexte(l);
       const [m, pl, r] = li.querySelectorAll('button');
       m.textContent = '−'; pl.textContent = '+'; r.textContent = T.tiroirRetirerTexte;
       m.setAttribute('aria-label', fmt(T.moins, { nom })); pl.setAttribute('aria-label', fmt(T.plus, { nom })); r.setAttribute('aria-label', fmt(T.tiroirRetirer, { nom }));
@@ -1629,11 +1642,22 @@ function emporter() {
       if (li.dataset.fil === nom) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
     }
     for (const d of $$('[data-form-etape]', form)) d.hidden = d.dataset.formEtape !== nom;
-    retourT.hidden = nom === 'panier' || nom === 'merci';
+    retourT.hidden = nom === 'panier' || nom === 'merci'; relecture();
     if (nom !== 'panier') tAjoute.hidden = true;
     majPied(); retrait();
     dansTiroir('.emp-tiroir__defile').scrollTop = 0;
     if (focus) titreT.focus({ preventScroll: true });
+  };
+  /* v7.14.0 : avant l'envoi, la commande se relit : chaque produit avec sa quantité et son unité, le total, le retrait. */
+  const relecture = () => {
+    const z = $('[data-emp-relecture]', form); if (!z) return;
+    const j = $('[name="jour"]:checked', form), m = $('[name="moment"]:checked', form);
+    z.hidden = !lignes.length; if (z.hidden) return;
+    z.replaceChildren(); const t = document.createElement('p'); t.className = 'emp-form__relecture-titre'; t.textContent = 'Votre commande, à relire'; const ul = document.createElement('ul');
+    for (const l of lignes) { const x = ligneEnvoi(l), li = document.createElement('li'), a = document.createElement('span'), b = document.createElement('span'); a.textContent = `${x.nom} : ${quantiteDite(x)}${x.detail ? ` (${x.detail})` : ''}`; b.textContent = euros(x.total); li.append(a, b); ul.append(li); }
+    const tot = document.createElement('p'); tot.className = 'emp-form__relecture-total'; tot.textContent = `Total : ${euros(total())} · ${j && m ? fmt(T.retraitPanier, { retrait: fmt(T.retrait, { jour: j.dataset.libelle, moment: T[m.value] }) }) : T.retraitAChoisir}`;
+    const note = document.createElement('p'); note.className = 'emp-form__relecture-note'; note.textContent = 'Les quantités et le créneau sont confirmés par le restaurant après votre envoi.';
+    z.append(t, ul, tot, note);
   };
   /* Après un rendu, le focus revient sur le même bouton de la même ligne (ou sur la fermeture si la ligne a disparu). */
   const garderFocus = (faire) => {
@@ -1644,7 +1668,7 @@ function emporter() {
     (meme || $('.emp-tl [data-action="plus"]', tiroir) || $('.emp-tiroir__fermer', tiroir)).focus({ preventScroll: true });
   };
   let nouvelle = '';
-  const rendre = () => garderFocus(() => { rendreListe(); rendreTiroir(nouvelle); nouvelle = ''; });
+  const rendre = () => garderFocus(() => { rendreListe(); rendreTiroir(nouvelle); nouvelle = ''; majJours(); relecture(); });
   const rendreListe = () => {
     lignesEl.replaceChildren(...lignes.map((l, k) => {
       const li = document.createElement('li'); li.className = 'emp-ligne';
@@ -1654,10 +1678,10 @@ function emporter() {
       const [m, p] = li.querySelectorAll('button');
       m.textContent = '−'; p.textContent = '+';
       m.setAttribute('aria-label', fmt(T.moins, { nom })); p.setAttribute('aria-label', fmt(T.plus, { nom }));
-      li.querySelector('.emp-ligne__qte span').textContent = l.qte;
+      li.querySelector('.emp-ligne__qte span').textContent = qteTexte(l);
       li.querySelector('.emp-ligne__prix').textContent = euros(prixLigne(l));
-      m.addEventListener('click', () => { l.qte--; if (l.qte <= 0) lignes.splice(k, 1); garder(); rendre(); });
-      p.addEventListener('click', () => { l.qte++; garder(); rendre(); });
+      m.addEventListener('click', () => changer(l, -1));
+      p.addEventListener('click', () => changer(l, 1));
       return li;
     }));
     vide.hidden = lignes.length > 0;
@@ -1736,7 +1760,7 @@ function emporter() {
     const id = b.dataset.ajouter, carte = b.closest('[data-produit]');
     const poids = T.produits[id].unite === 'kg' ? +($('[data-poids]', carte)?.value || 1) : 0;
     const l = lignes.find((x) => x.id === id && (x.poids || 0) === poids);
-    if (l) l.qte++; else lignes.push(poids ? { id, poids, qte: 1 } : { id, qte: 1 });
+    if (l) l.qte = arr3(l.qte + pasDe(l)); else lignes.push(poids ? { id, poids, qte: 1 } : { id, qte: T.produits[id].min || 1 });
     nouvelle = `${id}|${poids || 0}`; const cle = nouvelle;
     garder(); rendre();
     if (ouvrir(b, 'panier')) {
@@ -1754,7 +1778,14 @@ function emporter() {
   /* Jour et moment : jours passés grisés à la date réelle, midi ou soir selon les horaires du jour choisi. */
   const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(instantSite());
   const jours = $$('[name="jour"]', form), moments = $$('[name="moment"]', form);
-  for (const j of jours) if (j.value < auj) { j.disabled = true; j.closest('label').classList.add('est-passe'); }
+  /* v7.14.0 : un jour passé, ou plus proche que le délai de commande d'un produit choisi, ne peut pas être retenu. */
+  function majJours() {
+    if (!jours) return;
+    const delai = lignes.reduce((n, l) => Math.max(n, +T.produits[l.id]?.delai || 0), 0), premier = delai ? ajouterJours(auj, delai) : auj;
+    for (const j of jours) { const trop = j.value < premier; j.disabled = trop; j.closest('label').classList.toggle('est-passe', trop); if (trop && j.checked) { j.checked = false; for (const m of moments) { m.checked = false; m.disabled = true; } } }
+    const n = $('[data-emp-creneau-note]', form); if (n && delai && !$('[name="jour"]:checked', form)) { n.hidden = false; n.textContent = `Un produit de votre commande se commande au moins ${delai} jour${delai > 1 ? 's' : ''} avant le retrait : les jours plus proches ne sont pas proposés.`; }
+  }
+  majJours();
   const retrait = () => {
     const j = $('[name="jour"]:checked', form), m = $('[name="moment"]:checked', form);
     retraitEl.textContent = j && m ? fmt(T.retraitPanier, { retrait: fmt(T.retrait, { jour: j.dataset.libelle, moment: T[m.value] }) }) : T.retraitAChoisir;
@@ -1763,7 +1794,10 @@ function emporter() {
   form.addEventListener('change', (e) => {
     if (e.target.name === 'jour') {
       const j = e.target;
-      for (const m of moments) { m.disabled = j.dataset[m.value] !== '1'; if (m.disabled) m.checked = false; }
+      /* v7.14.0 : un créneau de retrait complet (mêmes règles que l'espace) n'est pas proposé, et c'est dit. */
+      const pleins = retraitsComplets(j.value), note = $('[data-emp-creneau-note]', form);
+      for (const m of moments) { m.disabled = j.dataset[m.value] !== '1' || pleins.includes(m.value); if (m.disabled) m.checked = false; }
+      if (note) { const dits = pleins.filter((x) => j.dataset[x] === '1'); note.hidden = !dits.length; note.textContent = dits.length ? `Le ${j.dataset.libelle}, les retraits ${dits.map((x) => (x === 'midi' ? 'de midi' : 'du soir')).join(' et ')} sont complets${moments.some((m) => !m.disabled) ? ' : choisissez l\'autre moment.' : ' : choisissez un autre jour.'}` : ''; }
       const ouverts = moments.filter((m) => !m.disabled); if (ouverts.length === 1) ouverts[0].checked = true;
       $('[data-erreur="jour"]', form).hidden = true;
     }
@@ -1791,16 +1825,31 @@ function emporter() {
       return;
     }
     const j = $('[name="jour"]:checked', form), m = $('[name="moment"]:checked', form);
-    const produits = lignes.map((l) => `${l.qte} × ${nomLigne(l)}`).join(', ');
-    /* Démonstration (v7.7.2) : la commande arrive dans l'espace restaurateur de ce navigateur. */
-    transmettreDemande({ genre: 'traiteur', produits: lignes.map((l) => ({ nom: nomLigne(l), qte: l.qte })), total: total(), jour: j.value, jourLibelle: j.dataset.libelle, moment: m.value, prenom: form.elements.prenom?.value.trim() || '', nom: form.elements.nom?.value.trim() || '', telephone: form.elements.tel?.value.trim() || '', email: form.elements.email?.value.trim() || '' });
-    merci.innerHTML = '<p><strong></strong></p><p></p>';
+    /* v7.14.0 : dernier contrôle sur le catalogue publié et les disponibilités du moment (les mêmes règles que l'espace).
+       Si quelque chose a changé pendant la saisie, c'est expliqué ; la saisie est gardée, rien n'est envoyé. */
+    const zc = $('[data-erreur="controle"]', form), ctl = controleEmporter({ lignes: lignes.map(ligneEnvoi), jour: j.value, moment: m.value });
+    if (!ctl.ok) {
+      for (const [cle, prixNeuf] of Object.entries(ctl.prix || {})) if (T.produits[cle]) T.produits[cle].prix = prixNeuf;
+      rendre();
+      if (zc) { zc.replaceChildren(...ctl.messages.map((t) => { const p = document.createElement('span'); p.textContent = t; return p; })); zc.hidden = false; if (tiroir && tiroir.open) etape(ctl.etape || 'coordonnees', { focus: false }); zc.scrollIntoView({ block: 'center' }); zc.focus({ preventScroll: true }); }
+      return;
+    }
+    if (zc) zc.hidden = true;
+    const produits = lignes.map(ligneEnvoi).map((x) => `${quantiteDite(x)} ${x.nom}`).join(', '), id = `T-${Date.now().toString(36)}`;
+    /* Démonstration (v7.7.2) : la commande arrive dans l'espace restaurateur de ce navigateur. v7.14.0 : elle porte sa
+       référence, ses lignes (produit du catalogue, quantité, unité, prix du moment), sa remarque et la version publiée. */
+    if (!transmettreDemande({ id, genre: 'traiteur', produits: lignes.map((l) => ({ nom: nomLigne(l), qte: l.qte })), lignes: lignes.map(ligneEnvoi).map(({ cle, ...x }) => x), total: Math.round(total() * 100) / 100, jour: j.value, jourLibelle: j.dataset.libelle, moment: m.value, prenom: form.elements.prenom?.value.trim() || '', nom: form.elements.nom?.value.trim() || '', telephone: form.elements.tel?.value.trim() || '', email: form.elements.email?.value.trim() || '', remarque: form.elements.remarque?.value.trim() || '', publication: ctl.publication ?? null })) return;
+    /* La demande est partie : la commande commencée n'est plus gardée pour la prochaine visite (l'écran, lui, la montre encore). */
+    try { localStorage.setItem(CLE, '[]'); } catch { /* rien */ }
+    merci.innerHTML = '<p><strong></strong></p><p></p><p class="emp-form__ref">Référence de votre demande : <b data-emp-ref></b></p>'; merci.querySelector('[data-emp-ref]').textContent = id.toUpperCase();
     merci.querySelector('strong').textContent = fmt(T.recap, { produits, total: euros(total()), retrait: fmt(T.retrait, { jour: j.dataset.libelle, moment: T[m.value] }) });
     merci.querySelector('p + p').textContent = T.simule;
     if (tiroir && tiroir.open) etape('merci', { focus: false });
     merci.hidden = false; merci.focus();
   });
   rendre(); if (tiroir) etape('panier', { focus: false }); retrait();
+  /* Un produit resté dans une commande commencée, et qui n'est plus proposé, est retiré : c'est dit. */
+  if (retires) { garder(); annonce.textContent = `${retires > 1 ? `${retires} produits de votre commande ne sont plus proposés : ils ont été retirés` : 'Un produit de votre commande n\'est plus proposé : il a été retiré'}.`; if (tAjoute) { tAjoute.textContent = annonce.textContent; tAjoute.hidden = false; } }
 }
 
 /* v7.5 · Réceptions, « Ce que l'on fête ici » : le défilement par paliers de la maquette de référence (une occasion par palier). */
@@ -2295,8 +2344,10 @@ function offrirEmporter() {
     zone.addEventListener('pointerleave', () => { carte.style.removeProperty('--rx'); carte.style.removeProperty('--ry'); carte.style.setProperty('--lx', '30%'); });
   }
   const montant = $('[data-carte-montant]');
-  for (const b of $$('.oe-montant')) b.addEventListener('click', () => {
-    for (const x of $$('.oe-montant')) x.setAttribute('aria-pressed', String(x === b));
+  /* v7.14.0 : les montants suivent le catalogue publié (ils peuvent être reconstruits) : l'écoute est posée sur leur groupe. */
+  for (const g of $$('.oe-carte__montants')) g.addEventListener('click', (ev) => {
+    const b = ev.target.closest('.oe-montant'); if (!b) return;
+    for (const x of $$('.oe-montant', g)) x.setAttribute('aria-pressed', String(x === b));
     if (!montant) return;
     montant.classList.add('est-change');
     setTimeout(() => { montant.textContent = `${b.dataset.montant} €`; montant.classList.remove('est-change'); }, etat.calme ? 0 : 200);

@@ -84,7 +84,7 @@ export default (c) => html`
       <fieldset class="ccq__champ ccq__montants">
         <legend class="ccq__libelle">Montant</legend>
         <div class="ccq__puces">
-          ${c.donnees.cadeaux.montants.map((m) => html`<label class="ccq__puce"><input type="radio" name="montant" value="${m}"${m === 50 ? html` checked` : ''}><span>${m} €</span></label>`)}
+          ${c.donnees.cadeaux.montants.map((m) => html`<label class="ccq__puce" data-cadeau="cadeau-${m}"><input type="radio" name="montant" value="${m}"${m === 50 ? html` checked` : ''}><span>${m} €</span></label>`)}
         </div>
         <p class="ccq__presentation" data-cadeau-presentation hidden></p>
         <script type="application/json" data-cadeaux-base>${brut(JSON.stringify(c.donnees.cadeaux.montants))}</script>
@@ -107,6 +107,14 @@ export default (c) => html`
         <textarea id="ccq-mot" name="mot" rows="2" maxlength="120" aria-describedby="ccq-reste"></textarea>
         <p class="ccq__aide" id="ccq-reste"><span data-ccq-reste>120</span> caractères au plus</p>
       </div>
+      <fieldset class="ccq__champ ccq__acheteur" data-cadeau-acheteur>
+        <legend class="ccq__libelle">Vos coordonnées <span class="ccq__facultatif">pour vous rappeler</span></legend>
+        <div class="ccq__deux">
+          <div class="ccq__champ"><label class="ccq__libelle" for="ccq-ach-nom">Votre nom</label><input type="text" id="ccq-ach-nom" name="acheteur_nom" maxlength="60" autocomplete="name"></div>
+          <div class="ccq__champ"><label class="ccq__libelle" for="ccq-ach-tel">Téléphone</label><input type="tel" id="ccq-ach-tel" name="acheteur_tel" maxlength="20" autocomplete="tel" inputmode="tel"></div>
+        </div>
+        <div class="ccq__champ"><label class="ccq__libelle" for="ccq-ach-email">E-mail <span class="ccq__facultatif">facultatif</span></label><input type="email" id="ccq-ach-email" name="acheteur_email" maxlength="80" autocomplete="email"></div>
+      </fieldset>
       <p class="ccq__total"><span>Total</span><output data-ccq-total for="ccq-qte">50 €</output></p>
       <p class="socle-sr" aria-live="polite" data-ccq-annonce></p>
       <div class="ccq__actions">

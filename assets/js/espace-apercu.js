@@ -7,7 +7,8 @@ import { lire, estVide, CONTEXTE, horloge, noterVu } from './espace-stock.js?v=7
    moment », cadran, prochains services) lisent ce repère ; hors scénario il n'est pas posé : l'heure réelle sert. */
 if (CONTEXTE && horloge()) globalThis.__jhHorloge = horloge;
 import { equipeDe, exceptionsOuvertures, serviceCourant } from './disponibilites.js?v=7';
-import { vuePublique, offresVitrine, cadeauxVitrine, preparations, estEpuise, UNITES } from './espace-publie.js?v=7';
+import { vuePublique, offresVitrine, cadeauxVitrine, emporterVitrine, preparations, estEpuise, UNITES } from './espace-publie.js?v=7';
+import { disponibilite, creneauxComplets, quantite as quantiteTexte } from './commerce.js?v=7';
 
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -39,7 +40,95 @@ const APERCU = (() => { const p = new URLSearchParams(location.search);
 const BRUT = lire(), S = vuePublique(BRUT, APERCU);
 /* L'instant présent : celui du scénario de démonstration s'il y en a un (la même horloge que l'espace), sinon l'heure du restaurant. */
 const instantPresent = (fuseau = 'Europe/Paris') => { const h = CONTEXTE ? horloge() : null; if (h) return `${h.iso}T${String(Math.floor(h.min / 60)).padStart(2, '0')}:${String(h.min % 60).padStart(2, '0')}`;
+
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: fuseau, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map((x) => [x.type, x.value])); return `${p.year}-${p.month}-${p.day}T${String(+p.hour % 24).padStart(2, '0')}:${p.minute}`; };
+/** Les cartes cadeaux réellement proposées sur le site (v7.14.0) : celles du catalogue publié — ou de l'aperçu, quand on
+    regarde l'aperçu. Relues à chaque appel (un autre onglet a pu publier entre-temps) : c'est la référence du formulaire.
+    Chaque offre porte le numéro de la publication en cours (`publication`), gardé par la demande. */
+export function cadeauxPublies() {
+  const sc = document.querySelector('script[data-cadeaux-base]'); if (!sc) return [];
+  let montants = []; try { montants = JSON.parse(sc.textContent); } catch { return []; }
+  let E = BRUT; try { E = lire(); } catch { /* l'état lu à l'ouverture */ }
+  return cadeauxVitrine({ cadeaux: montants }, E, instantPresent().slice(0, 10), APERCU).map((o) => ({ id: o.id, nom: o.nom, prix: o.prix, description: o.description || '', publication: E.publie?.n ?? 0 }));
+}
+/* ---------- À emporter (v7.14.0) : le catalogue publié et les disponibilités, les mêmes règles que l'espace ---------- */
+const baseEmporter = () => { const sc = document.querySelector('script[data-emporter-base]'); if (!sc) return null; try { return JSON.parse(sc.textContent).produits || null; } catch { return null; } };
+const etatFrais = () => { try { return lire(); } catch { return BRUT; } };
+const eurosSite = (n) => `${String(Math.round(n * 100) / 100).replace('.', ',')}\u00a0€`;
+/** Les produits réellement proposés à la commande : ceux du catalogue publié (ou de l'aperçu), relus à chaque appel. */
+export function emporterPublies() {
+  const base = baseEmporter(); if (!base) return []; const E = etatFrais();
+  return emporterVitrine({ emporter: base }, E, instantPresent().slice(0, 10), APERCU).map((o) => ({ id: o.id, cle: o.produit || o.id, nom: o.nom, description: o.description || '', prix: o.prix, unite: o.unite, min: o.vente?.min || 1, pas: o.vente?.pas || 1, delai: o.vente?.delai ?? '', conditions: o.conditions || '', visuel: o.visuel || null, produit: o.produit || '', publication: E.publie?.n ?? 0 }));
+}
+/**
+ * Le dernier contrôle d'une commande avant son envoi, sur l'état du moment : le produit est-il toujours proposé, à ce
+ * prix ? le jour est-il encore possible (jour passé, délai de commande) ? la production et le créneau de retrait sont-ils
+ * disponibles ? Renvoie { ok, messages, prix: { [produit]: prix du moment }, etape, publication }. Rien n'est envoyé si
+ * quelque chose a changé : c'est expliqué, et la saisie est gardée.
+ */
+export function controleEmporter({ lignes = [], jour = '', moment = '' }) {
+  const E = etatFrais(), pub = emporterPublies(), auj = instantPresent().slice(0, 10), messages = [], prix = {}; let etape = 'coordonnees', delai = 0;
+  for (const l of lignes) {
+    const o = pub.find((x) => x.id === l.offre);
+    if (!o) { messages.push(`« ${l.nom} » n'est plus proposé à la commande : retirez-le de votre commande pour continuer.`); etape = 'panier'; continue; }
+    if (o.prix !== l.prix) { messages.push(`Le prix de « ${o.nom} » a changé pendant votre commande : ${eurosSite(l.prix)} → ${eurosSite(o.prix)}. Le total a été mis à jour : relisez-le, puis validez à nouveau.`); prix[l.cle || o.cle] = o.prix; }
+    if (typeof o.delai === 'number') delai = Math.max(delai, o.delai);
+  }
+  const plus = (iso, n) => { const d = new Date(`${iso}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  if (jour && jour < auj) { messages.push('Ce jour de retrait est passé : choisissez-en un autre.'); etape = 'retrait'; }
+  else if (jour && delai && jour < plus(auj, delai)) { messages.push(`Un produit de votre commande se commande au moins ${delai} jour${delai > 1 ? 's' : ''} avant le retrait : choisissez un jour plus éloigné.`); etape = 'retrait'; }
+  else if (jour && !messages.length) {
+    const d = disponibilite(E, { jour, moment, lignes });
+    for (const x of d.production) if (x.capacite != null && x.demande > x.reste) { messages.push(x.reste > 0 ? `« ${x.nom} » : il n'en reste que ${quantiteTexte(x.reste, x.unite)} pour ce jour-là. Réduisez la quantité ou choisissez un autre jour.` : `« ${x.nom} » n'est plus disponible pour ce jour-là : choisissez un autre jour.`); etape = 'panier'; }
+    if (d.retrait.capacite != null && d.retrait.reste <= 0) { messages.push('Ce créneau de retrait vient de se remplir : choisissez un autre moment ou un autre jour.'); etape = 'retrait'; }
+  }
+  return { ok: !messages.length, messages, prix, etape, publication: E.publie?.n ?? 0 };
+}
+/** Les créneaux de retrait complets ce jour-là (['soir']), d'après les commandes validées ; vide si rien n'est réglé. */
+export const retraitsComplets = (jour) => creneauxComplets(etatFrais(), jour);
+
+/* La page À emporter et l'accueil suivent le catalogue traiteur PUBLIÉ : noms, prix, unités, quantités, ordre ; un produit
+   masqué ou archivé n'est plus proposé. Sans changement dans l'espace, la page reste telle qu'elle est livrée. */
+if (BRUT.offres && !document.querySelector('[data-espace]')) sur(() => {
+  const base = baseEmporter(); if (!base) return; const l = emporterPublies();
+  for (const ul of $$('.oe-carte__liste')) ul.innerHTML = l.slice(0, 6).map((o) => `<li>${echap(o.nom)}</li>`).join('') || '<li>Sur demande\u00a0: appelez-nous.</li>';
+  const grille = document.querySelector('.emp-produits__grille'), scT = document.querySelector('script[data-emp-textes]'); if (!grille || !scT) return;
+  let T; try { T = JSON.parse(scT.textContent); } catch { return; }
+  const dit = (t, nom) => String(t || '').replace('{nom}', nom), u = (o) => (o.unite === 'kilo' ? 'kg' : o.unite), nb = (n) => String(n).replace('.', ',');
+  const origine = new Map($$('[data-produit]', grille).map((li) => [li.dataset.produit, li])), neuves = new Map([...origine].map(([k, li]) => [k, li.cloneNode(true)])), produits = {};
+  if (!origine.size) return;
+  const cartes = l.map((o, i) => {
+    const ref = o.visuel?.nom?.startsWith('traiteur/') ? o.visuel.nom.slice(9) : o.produit, li = origine.get(o.produit) || [...neuves.values()][0].cloneNode(true);
+    li.dataset.produit = o.cle;
+    if (!origine.has(o.produit) || ref !== o.produit) {
+      const cloche = li.querySelector('.emp-cloche'), modele = neuves.get(ref)?.querySelector('.emp-cloche');
+      if (modele) cloche.replaceWith(modele.cloneNode(true)); else for (const x of cloche.querySelectorAll('.emp-cloche__plat, .emp-cloche__vapeur, .emp-cloche__mention')) x.remove();
+    }
+    const q = (sel) => li.querySelector(sel), plat = q('.emp-cloche__plat'), alt = o.visuel?.alt || dit(T.illustration, o.nom);
+    if (plat) { if (plat.tagName.toLowerCase() === 'img') plat.alt = alt; else plat.setAttribute('aria-label', alt); }
+    q('.emp-cloche__verre')?.setAttribute('aria-label', dit(T.soulever, o.nom));
+    q('.emp-produit__num').textContent = `N° ${String(i + 1).padStart(2, '0')}`; q('.emp-produit__nom').textContent = o.nom; q('.emp-produit__prix').textContent = eurosSite(o.prix); q('.emp-produit__texte').textContent = o.description;
+    const un = q('[data-emp-unite]'); if (un) un.textContent = T.unites?.[u(o)] || '';
+    const cond = [typeof o.delai === 'number' && o.delai > 0 ? `À commander au moins ${o.delai} jour${o.delai > 1 ? 's' : ''} avant le retrait.` : '', o.conditions].filter(Boolean).join(' ');
+    q('[data-emp-cond]')?.remove(); if (cond) q('.emp-produit__texte').insertAdjacentHTML('afterend', `<p class="emp-produit__cond" data-emp-cond>${echap(cond)}</p>`);
+    const bas = q('.emp-produit__bas'), bouton = q('[data-ajouter]'); q('.emp-produit__poids')?.remove();
+    if (o.unite === 'kilo') { const poids = [0, 1, 2, 3].map((k) => Math.round((o.min + k * o.pas) * 1000) / 1000), choisi = poids.includes(1) ? 1 : poids[0];
+      bas.insertAdjacentHTML('afterbegin', `<label class="emp-produit__poids"><span class="visuellement-cache">${echap(dit(T.poidsDe, o.nom))}</span><select data-poids>${poids.map((k) => `<option value="${k}"${k === choisi ? ' selected' : ''}>${nb(k)} kg</option>`).join('')}</select></label>`); }
+    bouton.dataset.ajouter = o.cle; bouton.setAttribute('aria-label', dit(T.ajouterA, o.nom));
+    produits[o.cle] = { nom: o.nom, prix: o.prix, unite: u(o), vignette: T.produits?.[ref]?.vignette || null, dessin: ref || '', offre: o.id, min: o.min, pas: o.pas, delai: o.delai };
+    return li;
+  });
+  if (cartes.length) grille.replaceChildren(...cartes); else grille.innerHTML = '<li class="emp-produit emp-produit--aucun"><p class="emp-produit__texte" data-emp-aucun>Aucun produit n\'est proposé à la commande pour le moment\u00a0: appelez-nous.</p></li>';
+  T.produits = produits; scT.textContent = JSON.stringify(T).replace(/</g, '\\u003c');
+  /* La ronde de l'ouverture : les plats qui ne sont plus proposés la quittent ; les autres disent leur nom et leur prix du moment. */
+  let k = 0;
+  for (const el of $$('.ronde__cloche')) {
+    const o = l.find((x) => x.produit === el.dataset.id); if (!o) { el.remove(); continue; }
+    el.dataset.nom = o.nom; el.dataset.prix = `${eurosSite(o.prix)}${o.unite === 'kilo' ? ' le kg' : ''}`; el.dataset.rondeI = String(k); el.dataset.num = String(l.indexOf(o) + 1).padStart(2, '0'); el.classList.toggle('est-devant', k === 0);
+    el.querySelector('[data-ronde-bouton]')?.setAttribute('aria-label', dit(T.rondeVoir, o.nom)); k++;
+  }
+});
+
 if ((!estVide(S) || APERCU) && !document.querySelector('[data-espace]')) {
   /* Textes */
   sur(() => { for (const el of $$('[data-edit]')) { const v = S.textes?.[el.dataset.edit]; if (v) el.textContent = v; } });
@@ -189,35 +278,61 @@ if ((!estVide(S) || APERCU) && !document.querySelector('[data-espace]')) {
     gabarit.after(sec);
   });
 
-  /* v7.13.1 : la page Offrir propose les cartes cadeaux publiées du catalogue (montants, visibilité, présentation).
-     Sans changement dans l'espace, la page reste telle qu'elle est livrée. Le formulaire et son envoi ne changent pas. */
+  /* v7.13.1, v7.14.0 : les cartes cadeaux proposées sont celles du catalogue PUBLIÉ, partout où le site les montre : les
+     pastilles du formulaire (page Offrir), les montants de l'accueil et des fêtes, les idées. Le formulaire valide l'offre
+     choisie contre cette même liste (`cadeauxPublies`), relue au moment de l'envoi. */
   sur(() => {
-    const zone = document.querySelector('.ccq__montants .ccq__puces'), sc = document.querySelector('script[data-cadeaux-base]'); if (!zone || !sc || !BRUT.offres) return;
-    let montants = []; try { montants = JSON.parse(sc.textContent); } catch { return; }
-    const l = cadeauxVitrine({ cadeaux: montants }, BRUT, instantPresent().slice(0, 10), APERCU), avant = zone.querySelector('input:checked')?.value;
-    const choisi = l.some((o) => String(o.prix) === avant) ? avant : String((l.find((o) => o.prix === 50) || l[0])?.prix ?? '');
-    zone.innerHTML = l.map((o) => `<label class="ccq__puce" data-cadeau="${echap(o.id)}"><input type="radio" name="montant" value="${o.prix}"${String(o.prix) === choisi ? ' checked' : ''}><span>${Number.isInteger(o.prix) ? o.prix : String(o.prix).replace('.', ',')}\u00a0€</span></label>`).join('')
-      || '<p class="ccq__presentation" data-cadeau-aucun>Aucune carte cadeau n\'est proposée en ligne pour le moment\u00a0: appelez-nous.</p>';
-    const p = document.querySelector('[data-cadeau-presentation]');
-    const dire = () => { const o = l.find((x) => String(x.prix) === zone.querySelector('input:checked')?.value); if (!p) return; p.textContent = o?.description ? `${o.nom}\u00a0: ${o.description}` : ''; p.hidden = !p.textContent; };
-    zone.addEventListener('change', dire); dire();
+    const euros = (n) => `${Number.isInteger(n) ? n : String(n).replace('.', ',')}\u00a0€`, l = cadeauxPublies();
+    if (!document.querySelector('script[data-cadeaux-base]') || !BRUT.offres) return;
+    const zone = document.querySelector('.ccq__montants .ccq__puces');
+    if (zone) {
+      const avant = zone.querySelector('input:checked')?.value;
+      const choisi = l.some((o) => String(o.prix) === avant) ? avant : String((l.find((o) => o.prix === 50) || l[0])?.prix ?? '');
+      zone.innerHTML = l.map((o) => `<label class="ccq__puce" data-cadeau="${echap(o.id)}"><input type="radio" name="montant" value="${o.prix}"${String(o.prix) === choisi ? ' checked' : ''}><span>${euros(o.prix)}</span></label>`).join('')
+        || '<p class="ccq__presentation" data-cadeau-aucun>Aucune carte cadeau n\'est proposée en ligne pour le moment\u00a0: appelez-nous.</p>';
+      const p = document.querySelector('[data-cadeau-presentation]');
+      const dire = () => { const o = l.find((x) => String(x.prix) === zone.querySelector('input:checked')?.value); if (!p) return; p.textContent = o?.description ? `${o.nom}\u00a0: ${o.description}` : ''; p.hidden = !p.textContent; };
+      zone.addEventListener('change', dire); dire();
+      /* Une idée dont le montant n'est plus proposé ne s'affiche plus. */
+      for (const b of $$('[data-idee-montant]')) b.hidden = !l.some((o) => String(o.prix) === b.dataset.ideeMontant);
+    }
+    for (const g of $$('.oe-carte__montants')) {
+      const sc = g.querySelector('script[data-cadeaux-base]'), garde = l.find((o) => o.prix === 100) || l[Math.floor((l.length - 1) / 2)];
+      g.innerHTML = l.map((o) => `<button type="button" class="oe-montant" data-montant="${o.prix}" data-cadeau="${echap(o.id)}" aria-pressed="${o === garde}">${euros(o.prix)}</button>`).join('') || '<p class="oe-carte__texte" data-cadeau-aucun>Sur demande\u00a0: appelez-nous.</p>';
+      if (sc) g.append(sc);
+      const m = g.closest('.oe-carte, section')?.querySelector('[data-carte-montant]'); if (m && garde) m.textContent = euros(garde.prix);
+    }
+    for (const m of $$('[data-montant-tournant]')) if (l.length) { m.dataset.montants = JSON.stringify(l.map((o) => o.prix)); m.textContent = euros((l.find((o) => o.prix === 100) || l[0]).prix); }
   });
 
-  /* L'annonce du restaurant, puis la pastille qui rappelle que ces changements ne se voient que dans ce navigateur. */
+  /* L'annonce du restaurant et le repère d'aperçu (v7.14.0) : ils ont leur propre bande en haut de la page, sous
+     l'en-tête, et défilent avec elle. La page descend de la hauteur de cette bande (--bandeaux-h) : rien n'est recouvert,
+     même avec une annonce longue. Un petit rappel apparaît en bas à gauche une fois la bande sortie de l'écran. */
   sur(() => {
     const pile = document.createElement('div'); pile.className = 'apercu-pile';
-    const a = S.annonce;
+    const haut = document.createElement('div'); haut.className = 'bandeaux-site'; haut.setAttribute('data-bandeaux', '');
+    const a = S.annonce, ici = `${location.pathname}?apercu=0${location.hash}`, q = APERCU ? preparations(BRUT) : [];
     let fermee = ''; try { fermee = sessionStorage.getItem('jh-annonce-fermee') || ''; } catch { /* rien */ }
+    if (APERCU) haut.insertAdjacentHTML('beforeend', `<div class="bandeau-apercu" role="status" data-apercu-non-publie><p class="bandeau-apercu__texte"><b>Aperçu — non publié</b> <span data-apercu-perimetre>${q.length ? `Cet aperçu montre vos préparations\u00a0: ${echap(q.join(', '))}.` : 'Rien n\u2019est en préparation\u00a0: cette page est identique à la version publiée.'} Vos visiteurs voient toujours la version publiée.</span></p><p class="bandeau-apercu__liens"><a href="${ici}" data-apercu-quitter>Voir la version publiée</a><a href="/espace">${CONTEXTE ? 'Revenir à l\'espace' : 'Votre espace'}</a></p></div>`);
     if (a?.active && a.texte && fermee !== a.texte) {
-      pile.insertAdjacentHTML('beforeend', `<aside class="annonce-site" aria-label="Annonce du restaurant"><p class="annonce-site__sur">Annonce</p><p class="annonce-site__texte">${echap(a.texte)}</p><button type="button" class="annonce-site__fermer" aria-label="Fermer l'annonce">×</button></aside>`);
-      pile.querySelector('.annonce-site__fermer').addEventListener('click', (ev) => { ev.currentTarget.closest('.annonce-site').remove(); try { sessionStorage.setItem('jh-annonce-fermee', a.texte); } catch { /* rien */ } });
+      haut.insertAdjacentHTML('beforeend', `<aside class="annonce-site annonce-site--bandeau" aria-label="Annonce du restaurant"><p class="annonce-site__sur">Annonce</p><p class="annonce-site__texte">${echap(a.texte)}</p><button type="button" class="annonce-site__fermer" aria-label="Fermer l'annonce">×</button></aside>`);
+      haut.querySelector('.annonce-site__fermer').addEventListener('click', (ev) => { ev.currentTarget.closest('.annonce-site').remove(); if (!haut.children.length) haut.remove(); try { sessionStorage.setItem('jh-annonce-fermee', a.texte); } catch { /* rien */ } });
     }
-    /* v7.11.1 : dans un scénario de démonstration, la pastille le dit et ramène à l'espace du scénario. */
-    /* v7.13.0 : en aperçu, le repère dit que rien de ceci n'est publié, et ramène à la version publiée. */
-    const ici = `${location.pathname}?apercu=0${location.hash}`;
-    pile.insertAdjacentHTML('beforeend', APERCU ? `<div class="apercu-espace apercu-espace--non-publie" role="status" data-apercu-non-publie><span class="apercu-espace__point" aria-hidden="true"></span><b>Aperçu — non publié</b><span class="apercu-espace__detail" data-apercu-perimetre>${(() => { const q = preparations(BRUT); return q.length ? `Cet aperçu montre vos préparations\u00a0: ${echap(q.join(', '))}.` : 'Rien n\u2019est en préparation\u00a0: cette page est identique à la version publiée.'; })()} Vos visiteurs voient toujours la version publiée.</span><a class="apercu-espace__lien" href="${ici}" data-apercu-quitter>Voir la version publiée</a><a class="apercu-espace__lien" href="/espace">${CONTEXTE ? 'Revenir à l\'espace' : 'Votre espace'}</a></div>`
+    if (haut.children.length) {
+      const html = document.documentElement; document.body.prepend(haut); html.classList.add('a-bandeaux');
+      /* La page descend de la hauteur des bandeaux, remesurée à chaque changement (largeur, annonce fermée). */
+      const ajuster = () => { if (!haut.isConnected) { html.classList.remove('a-bandeaux'); html.style.removeProperty('--bandeaux-h'); return; }
+        html.style.setProperty('--bandeaux-h', `${Math.round(haut.getBoundingClientRect().height)}px`); };
+      haut.addEventListener('click', (ev) => { if (ev.target.closest('.annonce-site__fermer')) setTimeout(ajuster, 0); });
+      new ResizeObserver(ajuster).observe(haut); addEventListener('resize', ajuster); ajuster();
+    }
+    /* Le rappel du bas : en aperçu, il le redit en une ligne (le repère du haut peut sortir de l'écran avec l'en-tête, en défilant). */
+    pile.insertAdjacentHTML('beforeend', APERCU ? `<a class="apercu-espace apercu-espace--court" href="${ici}" data-apercu-rappel><span class="apercu-espace__point" aria-hidden="true"></span>Aperçu — non publié<span class="apercu-espace__lien">Version publiée</span></a>`
       : CONTEXTE ? '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Démonstration en cours<span class="apercu-espace__lien">Revenir à l\'espace</span></a>' : '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Version publiée, sur cet appareil<span class="apercu-espace__lien">Votre espace</span></a>');
     document.body.append(pile);
-    requestAnimationFrame(() => setTimeout(() => pile.classList.add('est-visible'), 900));
+    /* En aperçu, le rappel n'apparaît qu'une fois le repère du haut sorti de l'écran : en haut de page, rien ne flotte sur le contenu. */
+    const repere = haut.querySelector('[data-apercu-non-publie]');
+    if (APERCU && repere && 'IntersectionObserver' in window) new IntersectionObserver(([x]) => pile.classList.toggle('est-visible', !x.isIntersecting)).observe(repere);
+    else requestAnimationFrame(() => setTimeout(() => pile.classList.add('est-visible'), 900));
   });
 }

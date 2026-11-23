@@ -20,6 +20,7 @@ import { MUTATIONS_REPLI } from './espace-repli.js?v=7';
 import { MUTATIONS_VENUE } from './espace-venue.js?v=7';
 import { MUTATIONS_RECEPTIONS } from './espace-receptions.js?v=7';
 import { MUTATIONS_OFFRES, ACTIONS_CONTENU, assurerPublication, allegerPublication } from './espace-offres.js?v=7';
+import { MUTATIONS_COMMERCE } from './commerce.js?v=7';
 export { estVide } from './espace-stock.js?v=7';
 
 const basculer = (liste = [], valeur, actif) => [...new Set([...liste.filter((x) => x !== valeur), ...(actif ? [valeur] : [])])];
@@ -72,6 +73,8 @@ export const MUTATIONS = {
   ...MUTATIONS_RECEPTIONS,
   /* v7.13.0 : le catalogue des offres, la publication, l'historique (espace-offres.js). */
   ...MUTATIONS_OFFRES,
+  /* v7.14.0 : les commandes à emporter (cycle, capacités) et les cartes cadeaux (émission, solde, utilisations). */
+  ...MUTATIONS_COMMERCE,
   /* Photos */
   photo(S, { emplacement, photo }) { (S.photos ||= {})[emplacement] = { ...(S.photos[emplacement] || {}), nom: photo.nom || null, l: photo.l || null, src: photo.src || null }; },
   cadrage(S, { emplacement, cadrage, origine }) { (S.photos ||= {})[emplacement] = { ...origine, ...(S.photos[emplacement] || {}), cadrage }; },
@@ -235,7 +238,7 @@ export function creerDepot(stockage = stockLocal, horloge = () => Date.now(), { 
       deriver(suivant);
       if (!stockage.ecrire(suivant)) { prevenir({ type: 'refus', nom, raison: '' }); return false; }
       const changements = difference(sansDerives(frais), sansDerives(suivant));
-      if (changements.length) retenir({ changements }, meta);
+      if (changements.length && !meta?.sansRetour) retenir({ changements }, meta);
       etat = suivant; note = avis.note || ''; prevenir({ type: 'action', nom, t: horloge() });
       return true;
     },

@@ -121,8 +121,11 @@ export function activitesDuJour(ctx, S, iso) {
     if (d.genre === 'reception' && d.brut.date === iso && d.statut !== 'perdue') { const signee = d.statut === 'signe';
       /* Une demande avec une date souhaitée reste une demande : elle n'occupe rien tant qu'elle n'est pas signée. */
       out.push({ cle: `dem-${d.id}`, type: 'reception', libelleType: 'Réception', heure: '', heureConnue: false, titre: `${d.qui} · ${d.titre}`, detail: signee ? '' : 'Date souhaitée par le client : rien n\'est réservé.', statut: signee ? 'Signée' : `Demande · ${libelleEtape(d.genre, d.statut)}`, ferme: signee, aller: dossier ? { dossier: dossier.id } : { vue: 'demandes', filtre: 'tout', demande: d.id } }); }
-    if (d.genre === 'traiteur' && d.brut.jour === iso && !['annulee', 'retiree'].includes(d.statut)) { const conf = d.statut !== 'nouvelle';
-      out.push({ cle: `dem-${d.id}`, type: 'retrait', libelleType: 'Retrait traiteur', heure: d.brut.moment === 'midi' ? '12:00' : d.brut.moment === 'soir' ? '19:00' : '', heureConnue: false, titre: `${d.qui} · ${(d.brut.produits || []).map((p) => `${p.qte} × ${p.nom}`).join(', ')}`, detail: d.brut.moment === 'midi' ? 'À midi' : d.brut.moment === 'soir' ? 'Le soir' : '', statut: conf ? libelleEtape(d.genre, d.statut) : 'Commande à confirmer', ferme: conf, aller: { vue: 'demandes', filtre: 'traiteur', demande: d.id } }); }
+    /* v7.14.0 : le retrait d'une commande à emporter se lit sur la commande telle que l'équipe la suit (jour et créneau
+       modifiés compris) ; il mène à son dossier. Une commande ne compte dans aucun couvert. */
+    if (d.genre === 'traiteur') { const k = S.commerce?.commandes?.[d.id], jour = k?.jour || d.brut.jour, moment = k?.moment || d.brut.moment, conf = d.statut !== 'nouvelle';
+      if (jour === iso && !['annulee', 'retiree', 'refusee'].includes(d.statut)) out.push({ cle: `dem-${d.id}`, type: 'retrait', libelleType: 'Retrait traiteur', heure: moment === 'midi' ? '12:00' : moment === 'soir' ? '19:00' : '', heureConnue: false,
+        titre: `${d.qui} · ${k ? k.lignes.map((l) => l.nom).join(', ') : (d.brut.produits || []).map((p) => `${p.qte} × ${p.nom}`).join(', ')}`, detail: moment === 'midi' ? 'À midi' : moment === 'soir' ? 'Le soir' : '', statut: conf ? libelleEtape(d.genre, d.statut) : 'Demande à décider', ferme: conf, aller: { commande: d.id } }); }
   }
   /* v7.12.0 : les visites, les options encore valables et les réceptions confirmées, relues depuis les dossiers. Le libellé dit l'état ; la couleur ne fait que l'accompagner. */
   if (ctx.exemples !== false) for (const x of receptionsDuJour(ctx, S, iso))

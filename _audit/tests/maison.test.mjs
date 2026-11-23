@@ -100,7 +100,7 @@ test('fil de la journée et agenda : une demande datée reste une demande', () =
   assert.ok(!activitesDuJour(ctx(), jouer({}, ['etapeDemande', { id: 'demo-reception-1', statut: 'perdue' }]), jm).some((x) => x.type === 'reception'), 'sans suite : plus dans l\'agenda');
   /* Le retrait traiteur de Julien M. */
   const traiteur = demandes(ctx(), {}).find((d) => d.genre === 'traiteur'), r = activitesDuJour(ctx(), {}, traiteur.brut.jour).find((x) => x.type === 'retrait');
-  assert.equal(r.statut, 'Commande à confirmer'); assert.equal(r.aller.demande, traiteur.id);
+  assert.equal(r.statut, 'Demande à décider'); assert.equal(r.aller.commande, traiteur.id, 'v7.14.0 : le retrait mène au dossier de la commande');
   /* Le fil du jour : les services dans l'ordre de l'horloge, avec leur état. */
   const fil = filDuJour(ctx(), {}, AUJ, 15 * 60).filter((x) => x.type === 'service');
   assert.deepEqual(fil.map((x) => x.service), ['midi', 'soir']); assert.equal(fil[1].statut, 'À venir'); assert.ok(['Terminé', 'En cours'].includes(fil[0].statut), 'à 15 h, le midi n\'est plus « à venir »');

@@ -100,7 +100,9 @@ function avent(c, E) {
 export default (c) => {
   const E = c.donnees.emporter;
   const textes = { articles: c.s('emporter.articles'), annonce: c.s('emporter.annonce'), moins: c.s('emporter.moins'), plus: c.s('emporter.plus'), retrait: c.s('emporter.retraitResume'), retraitPanier: c.s('emporter.retraitPanier'), retraitAChoisir: c.s('emporter.retraitAChoisir'), midi: c.s('emporter.midi').toLowerCase(), soir: c.s('emporter.soir').toLowerCase(), recap: c.s('emporter.recap'), simule: c.s('emporter.simule'), ajoute: c.s('emporter.ajoute'), ajouter: c.s('emporter.ajouter'), tiroirAjoute: c.s('emporter.tiroirAjoute'), tiroirNombre: c.s('emporter.tiroirNombre'), tiroirNombreUn: c.s('emporter.tiroirNombreUn'), tiroirRetirer: c.s('emporter.tiroirRetirer'), tiroirRetirerTexte: c.s('emporter.tiroirRetirerTexte'), tiroirUnite: c.s('emporter.tiroirUnite'), tiroirKg: c.s('emporter.tiroirKg'),
-    produits: Object.fromEntries(E.produits.map((p) => [p.id, { nom: p.nom, prix: p.prix, unite: p.unite, vignette: photoPlat(p.id) ? `/assets/images/grok/traiteur/${p.id}-480.webp` : null }])) };
+    /* v7.14.0 : chaque produit porte son offre du catalogue, sa quantité minimale et son pas ; les libellés pour reconstruire une fiche. */
+    produits: Object.fromEntries(E.produits.map((p) => [p.id, { nom: p.nom, prix: p.prix, unite: p.unite, vignette: photoPlat(p.id) ? `/assets/images/grok/traiteur/${p.id}-480.webp` : null, offre: `emporter-${p.id}`, min: p.unite === 'kg' ? 0.5 : 1, pas: p.unite === 'kg' ? 0.5 : 1 }])),
+    unites: { piece: 'la pièce', kg: 'le kg', formule: 'la formule' }, soulever: c.s('emporter.soulever', { nom: '{nom}' }), ajouterA: c.s('emporter.ajouterA', { nom: '{nom}' }), illustration: c.s('emporter.illustration', { nom: '{nom}' }), poidsDe: c.s('emporter.poidsDe', { nom: '{nom}' }), rondeVoir: c.s('emporter.rondeVoir', { nom: '{nom}' }) };
   const ronde = E.produits.filter((p) => photoPlat(p.id));
   const jourLong = (iso) => new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`));
   return html`
@@ -158,7 +160,7 @@ export default (c) => {
         <div class="emp-produit__corps">
           <p class="emp-produit__num">N° ${String(i + 1).padStart(2, '0')}</p>
           <h3 class="emp-produit__nom">${p.nom}</h3>
-          <p class="emp-produit__meta"><span class="emp-produit__prix">${euros(p.prix)}</span>${p.unite === 'kg' ? html`<small>${c.t('emporter.parKg')}</small>` : ''}</p>
+          <p class="emp-produit__meta"><span class="emp-produit__prix">${euros(p.prix)}</span><small data-emp-unite>${p.unite === 'kg' ? c.t('emporter.parKg') : 'la pièce'}</small></p>
           <p class="emp-produit__texte">${p.texte}</p>
           <p class="emp-produit__bas">
             ${p.unite === 'kg' ? html`<label class="emp-produit__poids"><span class="visuellement-cache">${c.s('emporter.poidsDe', { nom: p.nom })}</span><select data-poids>${[0.5, 1, 1.5, 2].map((k) => html`<option value="${k}"${k === 1 ? brut(' selected') : ''}>${String(k).replace('.', ',')} kg</option>`)}</select></label>` : ''}
@@ -189,6 +191,7 @@ ${avent(c, E)}
         <label class="puce"><input type="radio" name="moment" value="soir" disabled><span>${c.t('emporter.soir')}</span></label>
       </fieldset>
       <p class="emp-form__erreur" data-erreur="moment" hidden>${c.t('emporter.choisirMoment')}</p>
+      <p class="emp-form__note" data-emp-creneau-note role="status" hidden></p>
       </div>
       <div class="emp-form__etape" data-form-etape="coordonnees">
       <fieldset class="emp-form__coord">
@@ -197,7 +200,10 @@ ${avent(c, E)}
         <label><span>${c.t('emporter.nom')}</span><input name="nom" autocomplete="family-name" required></label>
         <label><span>${c.t('emporter.telephone')}</span><input name="tel" type="tel" autocomplete="tel" required></label>
         <label><span>${c.t('emporter.email')}</span><input name="email" type="email" autocomplete="email"></label>
+        <label class="emp-form__remarque"><span>Une remarque <small>facultatif</small></span><textarea name="remarque" rows="2" maxlength="300"></textarea></label>
       </fieldset>
+      <div class="emp-form__relecture" data-emp-relecture hidden></div>
+      <p class="emp-form__erreur" data-erreur="controle" role="alert" tabindex="-1" hidden></p>
       <p class="emp-form__note">${c.t('emporter.donnees')} ${c.t('emporter.paiement')}</p>
       <p class="emp-form__erreur" data-erreur="panier" hidden>${c.t('emporter.choisirProduit')}</p>
       <button type="submit" class="bouton emp-form__envoyer">${c.t('emporter.valider')}</button>
@@ -250,6 +256,7 @@ ${avent(c, E)}
   </div>
 </dialog>
 <p class="visuellement-cache" aria-live="polite" data-emp-annonce></p>
+<script type="application/json" data-emporter-base>${brut(JSON.stringify({ produits: E.produits.map((p) => ({ id: p.id, nom: p.nom, texte: p.texte, prix: p.prix, unite: p.unite })) }).replace(/</g, '\\u003c'))}</script>
 <script type="application/json" data-emp-textes>${brut(JSON.stringify(textes).replace(/</g, '\\u003c'))}</script>
 `;
 };
