@@ -1,17 +1,17 @@
 {
- "id": "20261123-165251-complet-cible-partiel",
- "date": "2026-11-23T17:26:14.293Z",
+ "id": "20261123-184510-complet-cible-partiel",
+ "date": "2026-11-23T19:29:49.707Z",
  "niveau": "complet",
- "pages": "/espace,/receptions",
+ "pages": "/,/404,/offrir,/espace",
  "etapes": [
   "fichiers",
   "mesures",
   "parcours"
  ],
  "version": "7",
- "echecs": 0,
- "aRegarder": 0,
+ "echecs": 1,
+ "aRegarder": 2,
  "nonLances": 0,
  "manquants": 0,
- "statut": "complet"
+ "statut": "échecs"
 }

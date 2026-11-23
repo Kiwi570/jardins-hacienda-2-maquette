@@ -85,6 +85,7 @@ export function init(root) {
   const API = document.querySelector('meta[name="jh-api"]')?.content || '', ENVIRONNEMENT = document.querySelector('meta[name="jh-environnement"]')?.content || '';
   /* v7.13.0 : sur le site connecté, les prestations d'exemple de la démonstration ne font pas partie du catalogue (aucun tarif fictif n'y entre de lui-même). */
   if (API && D.receptions) D.receptions = { ...D.receptions, lignes: (D.receptions.lignes || []).filter((l) => !l.exemple) };
+  /* v7.13.1 : les prestations d'exemple du catalogue sont toujours marquées ; les cartes cadeaux reprennent les montants de la page Offrir. */
   const depotLocal = creerDepot(undefined, undefined, {
     /* v7.11.0 : les règles reçoivent tout le contexte (l'heure, les inscriptions venues du site). En mode connecté, ce qui
        n'est noté que sur l'appareil (installé, parti, état des tables) est contrôlé sur les réservations du serveur. */
@@ -254,6 +255,8 @@ export function init(root) {
   X.resasSoiree = (id) => resasDeSoiree(ctx().resasSoirees(S()), id);
   const vOffres = creerOffres(X); X.offres = vOffres;
   /* La barre « en préparation » suit une saisie enregistrée au fil de l'eau, sans redessiner le formulaire (le champ garde le curseur). */
+  /* v7.13.1 : les zones « en préparation / publié » de la rubrique Site suivent une saisie enregistrée au fil de l'eau. */
+  X.majZones = () => { if (etat.pub) return; for (const z of $$('[data-pub-zone]', root)) z.innerHTML = vOffres.zone(z.dataset.pubZone); };
   X.majBarre = (perimetre) => { const z = $('#panneau-carte > .esp-pub, #panneau-carte > [data-pub-net]', root); if (z && !etat.pub) z.outerHTML = vOffres.barre(perimetre); };
   const vCarte = creerCarte(X);
   X.executer = (p) => executer(p);
@@ -392,7 +395,9 @@ export function init(root) {
       <p class="esp-champ"><label for="ar-${k}-m">Le mot du chef</label><input id="ar-${k}-m" name="mot" value="${e(ard[k].mot)}"></p></fieldset>`;
     return {
       annonce: `<article class="esp-carte" aria-labelledby="t-annonce"><h3 id="t-annonce">L'annonce</h3><p class="esp-aide">Un petit mot qui apparaît sur toutes les pages : une fermeture, une soirée complète, le menu de la Saint-Valentin…</p>
+        <div data-pub-zone="annonce">${vOffres.zone('annonce')}</div>
         <form data-form-annonce><p><button type="button" class="esp-bascule" aria-pressed="${!!an.active}" data-annonce-active><span class="esp-bascule__rail" aria-hidden="true"></span>Afficher l'annonce</button></p>
+        <p class="esp-aide" data-annonce-aide>Préparé ici ; le site suit quand vous publiez l'annonce.</p>
         <p class="esp-champ esp-champ--large"><label for="an-texte">Texte <small data-compte>${(an.texte || '').length} / 160</small></label><textarea id="an-texte" name="texte" maxlength="160" rows="3" placeholder="Fermeture annuelle du 4 au 18 janvier : à très vite !">${e(an.texte || '')}</textarea></p></form>
         <div class="esp-annonce-apercu" aria-hidden="true"><p class="annonce-site__sur">Annonce</p><p data-annonce-apercu>${e(an.texte || 'Fermeture annuelle du 4 au 18 janvier : à très vite !')}</p></div>
       </article>`,
@@ -407,6 +412,7 @@ export function init(root) {
         <form class="esp-ardoises" data-form-ardoise>${ardoise('jour', 'Le midi')}${ardoise('soir', 'Le soir')}</form>
       </article>`,
       textes: `<article class="esp-carte esp-carte--large" aria-labelledby="t-textes"><h3 id="t-textes">Les textes du site</h3>
+        <div data-pub-zone="textes">${vOffres.zone('textes')}</div>
         <form class="esp-textes" data-form-textes>${D.textes.map((t, i) => `<div class="esp-texte"><p class="esp-texte__lieu">${e(t.lieu)} <a href="${e(t.url)}" class="esp-voir">${ICO.oeil}<span>Voir</span></a></p><p class="esp-champ esp-champ--large"><label for="tx-${i}">${e(t.libelle)}</label>${t.long ? `<textarea id="tx-${i}" name="${e(t.cle)}" rows="3">${e(typo(s.textes?.[t.cle] || t.defaut))}</textarea>` : `<input id="tx-${i}" name="${e(t.cle)}" value="${e(typo(s.textes?.[t.cle] || t.defaut))}">`}</p>${s.textes?.[t.cle] ? `<p><button type="button" class="esp-lien" data-retablir-texte="${e(t.cle)}">Revenir au texte d'origine</button></p>` : ''}</div>`).join('')}</form>
       </article>`,
     };
@@ -426,11 +432,12 @@ export function init(root) {
 
   function rendrePhotos() {
     const s = S();
-    corps('photos').innerHTML = `<p class="esp-aide esp-aide--haut">Remplacez une photo par une autre de votre photothèque ou de votre téléphone, puis touchez-la pour choisir le point à garder au centre.</p>
+    corps('photos').innerHTML = `<p class="esp-aide esp-aide--haut">Remplacez une photo par une autre de votre photothèque ou de votre téléphone, puis touchez-la pour choisir le point à garder au centre. Chaque photo se prépare ici, puis se publie : le site ne change pas avant.</p>
       <ul class="esp-photos">${D.photos.map((p) => { const m = s.photos?.[p.id] || {}, nom = m.src ? null : (m.nom || p.nom), cad = m.cadrage || p.cadrage, [fx, fy] = cad.split(' ');
         return `<li class="esp-photo"><button type="button" class="esp-cadreur" data-cadreur-slot="${p.id}" style="--fx:${fx};--fy:${fy}" aria-label="Cadrer : ${e(p.lieu)}, ${e(p.libelle)}. Touchez le point à garder au centre, ou utilisez les flèches"><img src="${e(m.src || vignette(nom))}" alt="" style="object-position:${e(cad)}" loading="lazy"><span class="esp-cadreur__mire" aria-hidden="true"></span></button>
           <div class="esp-photo__texte"><p class="esp-photo__lieu">${e(p.lieu)}</p><h3 class="esp-photo__titre">${e(p.libelle)}</h3>${s.photos?.[p.id] ? '<p><span class="esp-pastille">Modifiée</span></p>' : ''}</div>
-          <p class="esp-photo__actions"><button type="button" class="esp-bouton" data-choisir-photo="${p.id}">Changer</button>${s.photos?.[p.id] ? `<button type="button" class="esp-bouton esp-bouton--discret" data-retablir-photo="${p.id}">Rétablir</button>` : ''}<a class="esp-voir" href="${e(p.url)}">${ICO.oeil}<span>Voir</span></a></p></li>`; }).join('')}</ul>`;
+          <p class="esp-photo__actions"><button type="button" class="esp-bouton" data-choisir-photo="${p.id}">Changer</button>${s.photos?.[p.id] ? `<button type="button" class="esp-bouton esp-bouton--discret" data-retablir-photo="${p.id}">Rétablir</button>` : ''}<a class="esp-voir" href="${e(p.url)}">${ICO.oeil}<span>Voir</span></a></p>
+          <div class="esp-photo__pub" data-pub-zone="photo:${p.id}">${vOffres.zone(`photo:${p.id}`)}</div></li>`; }).join('')}</ul>`;
   }
 
   /* v7.12.0 : un rendu ne s'emboîte jamais dans un autre. Un champ en cours de saisie, retiré de l'écran par un rendu, peut déclencher
@@ -485,7 +492,7 @@ export function init(root) {
   function choisie(photo) {
     if (pourQui === 'ev') { const f = $('[data-editeur]', root); if (f) { f._photo = { ...f._photo, ...photo, image: photo.nom || null, src: photo.src || null }; apercuBillet(f); } fermerModale(); return; }
     const emplacement = pourQui;
-    const ok = agir('photo', { emplacement, photo }, { msg: 'Photo changée : visible sur le site, dans ce navigateur.', lien: D.photos.find((p) => p.id === emplacement)?.url });
+    const ok = agir('photo', { emplacement, photo }, { msg: 'Photo changée, en préparation : publiez-la pour que le site la montre.' });
     fermerModale(); if (ok) { rendre(); $(`[data-choisir-photo="${emplacement}"]`, root)?.focus(); }
   }
   function reduire(fichier) {
@@ -509,7 +516,7 @@ export function init(root) {
   function cadrer(btn, x, y) {
     const c = `${Math.round(x)}% ${Math.round(y)}%`; btn.style.setProperty('--fx', `${Math.round(x)}%`); btn.style.setProperty('--fy', `${Math.round(y)}%`); $('img', btn).style.objectPosition = c;
     const id = btn.dataset.cadreurSlot;
-    if (id) { const p = D.photos.find((q) => q.id === id); agir('cadrage', { emplacement: id, cadrage: c, origine: { nom: p.nom, l: largeurs(p.nom) } }, { msg: 'Cadrage enregistré.', lien: p.url, groupe: `cadrage-${id}` }); }
+    if (id) { const p = D.photos.find((q) => q.id === id); agir('cadrage', { emplacement: id, cadrage: c, origine: { nom: p.nom, l: largeurs(p.nom) } }, { msg: 'Cadrage enregistré en préparation : publiez cette photo pour que le site le suive.', groupe: `cadrage-${id}` }); X.majZones(); }
     else { const f = btn.closest('[data-editeur]'); if (f) { f._photo.cadrage = c; apercuBillet(f); } }
   }
   root.addEventListener('pointerdown', (ev) => {
@@ -656,13 +663,13 @@ export function init(root) {
     const vis = t.closest('[data-visible]'); if (vis) { const id = vis.dataset.visible, on = vis.getAttribute('aria-pressed') !== 'true'; agir('visibilite', { id, visible: on, agenda: D.agenda }, { msg: on ? 'Soirée de nouveau prévue sur le site : publiez-la pour que le changement soit en ligne.' : 'Soirée retirée du site, en préparation : publiez-la pour que le changement soit en ligne.' }); rendre(); $(`[data-visible="${CSS.escape(id)}"]`, root)?.focus(); return; }
     if (t.closest('[data-supprimer-ev]')) { const id = etat.evEdite; agir('supprimerEvenement', { id, agenda: D.agenda }, { msg: 'Événement supprimé.' }); etat.evEdite = null; rendre(); $('[data-nouvel-ev]', root)?.focus(); return; }
     const cph = t.closest('[data-choisir-photo]'); if (cph) { ouvrirModale(cph.dataset.choisirPhoto, cph); return; }
-    const rph = t.closest('[data-retablir-photo]'); if (rph) { const id = rph.dataset.retablirPhoto; agir('retablirPhoto', { emplacement: id }, { msg: 'Photo d\'origine rétablie.' }); rendre(); $(`[data-choisir-photo="${id}"]`, root)?.focus(); return; }
+    const rph = t.closest('[data-retablir-photo]'); if (rph) { const id = rph.dataset.retablirPhoto; agir('retablirPhoto', { emplacement: id }, { msg: 'Retour à la photo d\'origine, en préparation : publiez cette photo pour que le site le suive.' }); rendre(); $(`[data-choisir-photo="${id}"]`, root)?.focus(); return; }
     // Textes et horaires
-    const ann = t.closest('[data-annonce-active]'); if (ann) { const on = ann.getAttribute('aria-pressed') !== 'true', champ = $('#an-texte', root), txt = champ.value.trim() || 'Fermeture annuelle du 4 au 18 janvier : à très vite !'; if (!agir('annonce', { active: on, texte: txt }, { msg: on ? 'Annonce affichée sur toutes les pages.' : 'Annonce retirée.', lien: D.pages.accueil })) return; /* refusé : la bascule ne bouge pas */ ann.setAttribute('aria-pressed', String(on)); if (on && !champ.value.trim()) champ.value = txt; return; }
+    const ann = t.closest('[data-annonce-active]'); if (ann) { const on = ann.getAttribute('aria-pressed') !== 'true', champ = $('#an-texte', root), txt = champ.value.trim() || 'Fermeture annuelle du 4 au 18 janvier : à très vite !'; if (!agir('annonce', { active: on, texte: txt }, { msg: on ? 'Annonce prête à s\'afficher : publiez-la pour que le site la montre.' : 'Retrait de l\'annonce préparé : publiez-la pour que le site la retire.' })) return; /* refusé : la bascule ne bouge pas */ ann.setAttribute('aria-pressed', String(on)); if (on && !champ.value.trim()) champ.value = txt; X.majZones(); return; }
     const rf = t.closest('[data-retirer-fermeture]'); if (rf) { agir('retirerFermeture', { index: +rf.dataset.retirerFermeture }, { msg: 'Fermeture retirée.', lien: D.pages.infos }); rendre(); $('#fe-du', root)?.focus(); return; }
     if (t.closest('[data-ajouter-plat]')) { const ol = $('.esp-ardoise__lignes', t.closest('[data-ardoise]')), n = ol.children.length + 1; ol.insertAdjacentHTML('beforeend', `<li><input name="plat" aria-label="Plat ${n}" placeholder="Nouveau plat"><input name="prix" aria-label="Prix du plat ${n}" class="esp-prix" placeholder="00 €"><button type="button" class="esp-rond esp-rond--petit" data-retirer-plat aria-label="Retirer ce plat">×</button></li>`); ol.lastElementChild.querySelector('input').focus(); return; }
     if (t.closest('[data-retirer-plat]')) { const li = t.closest('li'), fs = li.closest('[data-ardoise]'); li.remove(); sauverArdoise('Plat retiré de l\'ardoise.'); $('[data-ajouter-plat]', fs)?.focus(); return; }
-    const rt = t.closest('[data-retablir-texte]'); if (rt) { const cle = rt.dataset.retablirTexte; agir('texte', { cle, valeur: '' }, { msg: 'Texte d\'origine rétabli.', lien: D.textes.find((x) => x.cle === cle)?.url }); rendre(); $(`[name="${CSS.escape(cle)}"]`, root)?.focus(); return; }
+    const rt = t.closest('[data-retablir-texte]'); if (rt) { const cle = rt.dataset.retablirTexte; agir('texte', { cle, valeur: '' }, { msg: 'Retour au texte d\'origine, en préparation : publiez les textes de cette page pour que le site le suive.' }); rendre(); $(`[name="${CSS.escape(cle)}"]`, root)?.focus(); return; }
     if (t.closest('[data-esp-quitter]')) { try { sessionStorage.removeItem('jh-espace-session'); } catch { /* rien */ } ouvrirPlus(false, false); if (API) { depot.deconnecter(); viderEcrans(); } montrer(false); return; }
     if (t.closest('[data-tout-effacer]')) { ouvrirPlus(false, false); if (!depot.toutEffacer({ libelle: 'Tout remettre comme livré' })) { dire('Votre navigateur a refusé d\'effacer : rien n\'a été remis comme livré.'); return; } contexte = null; etat.evEdite = null; dire('Tout est revenu comme à la livraison.', { annuler: true }); rendre(); $(`#vue-${etat.vue}`, root)?.focus({ preventScroll: true }); }
   });
@@ -682,9 +689,9 @@ export function init(root) {
   root.addEventListener('input', (ev) => {
     const t = ev.target;
     if (vReceptions.saisieTexte(t) || vDemandes.saisie(t) || vCarte.saisie(t)) return;
-    if (t.id === 'an-texte') { $('[data-compte]', root).textContent = `${t.value.length} / 160`; $('[data-annonce-apercu]', root).textContent = t.value || '…'; plus_tard(() => agir('annonce', { texte: t.value.trim() }, { msg: 'Annonce enregistrée.', lien: D.pages.accueil, groupe: 'annonce-texte' }), 'annonce'); return; }
+    if (t.id === 'an-texte') { $('[data-compte]', root).textContent = `${t.value.length} / 160`; $('[data-annonce-apercu]', root).textContent = t.value || '…'; plus_tard(() => { agir('annonce', { texte: t.value.trim() }, { msg: 'Annonce enregistrée en préparation : publiez-la pour que le site la suive.', groupe: 'annonce-texte' }); X.majZones(); }, 'annonce'); return; }
     if (t.closest('[data-form-ardoise]')) { plus_tard(() => sauverArdoise(), 'ardoise'); return; }
-    if (t.closest('[data-form-textes]')) { const cle = t.name, x = D.textes.find((y) => y.cle === cle); plus_tard(() => agir('texte', { cle, valeur: t.value, defaut: x?.defaut }, { msg: 'Texte enregistré : visible sur le site, dans ce navigateur.', lien: x?.url, groupe: `texte-${cle}` }), `texte-${cle}`); return; }
+    if (t.closest('[data-form-textes]')) { const cle = t.name, x = D.textes.find((y) => y.cle === cle); plus_tard(() => { agir('texte', { cle, valeur: t.value, defaut: x?.defaut }, { msg: 'Texte enregistré en préparation : le site ne change pas tant que vous ne publiez pas les textes de cette page.', groupe: `texte-${cle}` }); X.majZones(); }, `texte-${cle}`); return; }
     if (t.closest('[data-editeur]')) apercuBillet(t.closest('[data-editeur]'));
   });
   root.addEventListener('change', (ev) => { if (ev.target.closest('[data-form-horaires]')) sauverHoraires(); else if (!vReceptions.change(ev.target) && !vAttente.change(ev.target)) vSalle.change(ev.target); });

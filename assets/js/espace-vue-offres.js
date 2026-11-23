@@ -10,16 +10,19 @@ import { UNITES, TYPES, catalogue, enPreparation, attente, offre as offreDe, off
 import { pluriel, typo } from './espace-regles.js?v=7';
 import { instantDit } from './espace-receptions.js?v=7';
 
-const LIEU = { carte: 'la carte', ardoise: 'l\'ardoise', soiree: 'cette soirée', offre: 'cette offre' };
-const FILTRES = [['tout', 'Tout'], ['formule', 'Formules et menus'], ['prestation', 'Prestations'], ['plat', 'Plats'], ['soiree', 'Soirées'], ['emporter', 'À emporter']];
+const LIEU = { carte: 'la carte', ardoise: 'l\'ardoise', soiree: 'cette soirée', offre: 'cette offre', annonce: 'l\'annonce', textes: 'ces textes', photo: 'cette photo' };
+const ENTIER = ['carte', 'ardoise', 'annonce', 'textes', 'photo'];
+const FILTRES = [['tout', 'Tout'], ['formule', 'Formules et menus'], ['prestation', 'Prestations'], ['plat', 'Plats'], ['soiree', 'Soirées'], ['cadeau', 'Cartes cadeaux'], ['emporter', 'À emporter']];
 const ETAT_PROP = { brouillon: 'brouillon', presentee: 'présentée', retiree: 'retirée' };
 
 export function creerOffres(X) {
   const { root, $, $$, e, S, A, D, etat, agir, corps } = X;
-  const sources = () => ({ carte: D.carte, agenda: D.agenda, lieux: D.receptions, produits: D.produits, ardoise: D.ardoise });
+  const sources = () => ({ carte: D.carte, agenda: D.agenda, lieux: D.receptions, produits: D.produits, ardoise: D.ardoise, textes: D.textes, photos: D.photos });
   const base = () => offresDeBase(D.receptions);
   const maintenant = () => String(X.ctx().maintenant).slice(0, 16);
-  const pageDe = (perimetre) => (perimetre === 'soiree' ? D.pages.fetes : perimetre === 'offre' ? D.pages.receptions : D.pages.carte);
+  /* La page du site où un périmètre se voit (pour l'aperçu et le lien « Voir »). Une carte cadeau se voit sur Offrir. */
+  const pageDe = (perimetre, id = '') => (perimetre === 'soiree' ? D.pages.fetes : perimetre === 'offre' ? (offreDe(D.receptions, S(), id)?.type === 'cadeau' ? D.pages.offrir : D.pages.receptions)
+    : perimetre === 'annonce' ? D.pages.accueil : perimetre === 'textes' ? D.textes.find((t) => t.page === id)?.url || D.pages.accueil : perimetre === 'photo' ? D.photos.find((x) => x.id === id)?.url || D.pages.accueil : D.pages.carte);
   const local = X.connecte ? 'Ce contenu n\'est pas encore partagé entre vos appareils : il est gardé dans ce navigateur.' : 'Dans cette démonstration, la publication est enregistrée dans ce navigateur, pas sur un serveur.';
   const cleP = (perimetre, id = '') => `${perimetre}:${id || ''}`;
 
@@ -30,13 +33,13 @@ export function creerOffres(X) {
     const autres = enPreparation(sources(), S()).filter((x) => cleP(x.perimetre, x.id) !== cleP(perimetre, id)), n = d.changements.length;
     return typo(`<div class="esp-pub" data-pub="${e(cleP(perimetre, id))}">
       <p class="esp-pub__texte"><span class="esp-pastille esp-pastille--cours">En préparation</span> <span data-pub-compte>${pluriel(n, 'changement')}</span> ${n > 1 ? 'ne sont' : 'n\'est'} pas encore sur le site : les visiteurs voient toujours la version publiée.</p>
-      <p class="esp-pub__actions"><a class="esp-bouton" href="${e(X.lienApercu(pageDe(perimetre)))}" target="_blank" rel="noopener" data-pub-apercu>Voir l'aperçu <span aria-hidden="true">↗</span><span class="visuellement-cache"> (nouvel onglet, non publié)</span></a>
+      <p class="esp-pub__actions"><a class="esp-bouton" href="${e(X.lienApercu(pageDe(perimetre, id)))}" target="_blank" rel="noopener" data-pub-apercu>Voir l'aperçu <span aria-hidden="true">↗</span><span class="visuellement-cache"> (nouvel onglet, non publié)</span></a>
         <button type="button" class="bouton esp-pub__publier" data-pub-ouvrir="${e(perimetre)}" data-pub-id="${e(id)}" aria-expanded="${ouvert}">${e(d.bouton)}</button>
         <button type="button" class="esp-bouton esp-bouton--discret" data-pub-abandonner="${e(perimetre)}" data-pub-id="${e(id)}">Abandonner ces changements</button></p>
       ${ouvert ? `<div class="esp-pub__resume" role="group" aria-labelledby="pub-titre" data-pub-resume>
-        <h4 id="pub-titre" tabindex="-1">Ce qui va changer sur le site</h4>
+        <h4 id="pub-titre" tabindex="-1">Ce qui va changer sur le site${d.ou ? ` <small data-pub-ou>(${e(d.ou)})</small>` : ''}</h4>
         <ul class="esp-pub__liste">${d.changements.map((c) => `<li>${e(c)}</li>`).join('')}</ul>
-        <p class="esp-aide" data-pub-reste>${autres.length ? `Reste en préparation, sans être publié : ${e(autres.map((x) => (x.perimetre === 'carte' || x.perimetre === 'ardoise' ? x.libelle.toLowerCase() : `« ${x.libelle} »`)).join(', '))}.` : 'Rien d\'autre n\'est en préparation.'}</p>
+        <p class="esp-aide" data-pub-reste>${autres.length ? `Reste en préparation, sans être publié : ${e(autres.map((x) => (ENTIER.includes(x.perimetre) ? x.libelle.toLowerCase() : `« ${x.libelle} »`)).join(', '))}.` : 'Rien d\'autre n\'est en préparation.'}</p>
         <p class="esp-aide"><span class="esp-pastille">Sur cet appareil</span> ${e(local)}</p>
         ${etat.pub.erreur ? `<p class="esp-erreur" role="alert" data-pub-erreur>${e(etat.pub.erreur)}</p>` : ''}
         <p class="esp-pub__actions"><button type="button" class="bouton" data-pub-confirmer>Publier maintenant</button><button type="button" class="esp-bouton" data-pub-annuler>Pas maintenant</button></p>
@@ -51,7 +54,7 @@ export function creerOffres(X) {
     const s = etat.offreSaisie?.id === o.id ? etat.offreSaisie.champs : { nom: o.nom, type: o.type, prix: o.prix === '' || o.prix == null ? '' : String(o.prix).replace('.', ','), unite: o.unite, description: o.description, categorie: o.categorie, ordre: o.ordre || '', du: o.periode?.du || '', au: o.periode?.au || '', conditions: o.conditions, propositions: o.usages?.propositions !== false, site: !!o.usages?.site, visuel: o.visuel?.nom || '', alt: o.visuel?.alt || '' };
     return `<form class="esp-offre__form" data-form-offre="${e(o.id)}" novalidate aria-label="Modifier ${e(o.nom || 'la nouvelle offre')}">
       <p class="esp-champ esp-champ--large"><label for="of-nom">Nom</label><input id="of-nom" name="nom" value="${e(s.nom)}" autocomplete="off"${inv('nom')}>${msg('nom')}</p>
-      <p class="esp-champ"><label for="of-type">Genre d'offre</label><select id="of-type" name="type">${['formule', 'prestation'].map((t) => `<option value="${t}"${t === s.type ? ' selected' : ''}>${TYPES[t]}</option>`).join('')}</select></p>
+      <p class="esp-champ"><label for="of-type">Genre d'offre</label><select id="of-type" name="type">${(o.type === 'cadeau' ? ['cadeau'] : ['formule', 'prestation']).map((t) => `<option value="${t}"${t === s.type ? ' selected' : ''}>${TYPES[t]}</option>`).join('')}</select></p>
       <p class="esp-champ"><label for="of-prix">Prix <small>en euros ; vide : « à définir », jamais gratuit</small></label><input id="of-prix" name="prix" inputmode="decimal" value="${e(s.prix)}" autocomplete="off"${inv('prix')}>${msg('prix')}</p>
       <p class="esp-champ"><label for="of-unite">Unité du prix</label><select id="of-unite" name="unite"${inv('unite')}><option value="">Choisir…</option>${Object.entries(UNITES).map(([k, v]) => `<option value="${k}"${k === s.unite ? ' selected' : ''}>${v}</option>`).join('')}</select>${msg('unite')}</p>
       <p class="esp-champ esp-champ--large"><label for="of-desc">Description <small>ce que le client lira</small></label><textarea id="of-desc" name="description" rows="2">${e(s.description)}</textarea></p>
@@ -61,8 +64,9 @@ export function creerOffres(X) {
         <p class="esp-champ"><label for="of-du">Du</label><input id="of-du" name="du" type="date" value="${e(s.du)}"${inv('periode')}></p><p class="esp-champ"><label for="of-au">Au</label><input id="of-au" name="au" type="date" value="${e(s.au)}"${inv('periode')}></p>${msg('periode')}</fieldset>
       <p class="esp-champ esp-champ--large"><label for="of-cond">Conditions <small>facultatives : effectif minimum, délai…</small></label><textarea id="of-cond" name="conditions" rows="2">${e(s.conditions)}</textarea></p>
       <fieldset class="esp-offre__usages"><legend>Où cette offre sert</legend>
-        <label class="esp-coche"><input type="checkbox" name="propositions"${s.propositions ? ' checked' : ''}><span>Dans les propositions de réception</span></label>
-        <label class="esp-coche"><input type="checkbox" name="site"${s.site ? ' checked' : ''}><span>Sur le site, page Réceptions</span></label></fieldset>
+        ${o.type === 'cadeau' ? `<input type="hidden" name="propositions" value="">` : `<label class="esp-coche"><input type="checkbox" name="propositions"${s.propositions ? ' checked' : ''}><span>Dans les propositions de réception</span></label>`}
+        <label class="esp-coche"><input type="checkbox" name="site"${s.site ? ' checked' : ''}><span>${o.type === 'cadeau' ? 'Proposée sur le site, page Offrir' : 'Sur le site, page Réceptions'}</span></label>
+        ${o.type === 'cadeau' ? '<p class="esp-aide">La demande de carte cadeau garde son parcours actuel : le client choisit ce montant, puis envoie sa demande. La validité et les conditions restent celles que le restaurant aura confirmées.</p>' : ''}</fieldset>
       <p class="esp-champ"><label for="of-visuel">Photo <small>de votre photothèque</small></label><select id="of-visuel" name="visuel"><option value="">Aucune</option>${D.phototheque.map((p) => `<option value="${e(p.nom)}"${p.nom === s.visuel ? ' selected' : ''}>${e(p.nom.split('/')[1].replace(/-/g, ' '))}</option>`).join('')}</select></p>
       <p class="esp-champ"><label for="of-alt">Ce que montre la photo <small>pour les lecteurs d'écran</small></label><input id="of-alt" name="alt" value="${e(s.alt)}" autocomplete="off"></p>
       ${etat.offreErreurs?.id === o.id && etat.offreErreurs.refus ? `<p class="esp-erreur esp-champ--large" role="alert" data-of-refus>${e(etat.offreErreurs.refus)}</p>` : ''}
@@ -71,13 +75,14 @@ export function creerOffres(X) {
     </form>`;
   }
   function panneauArchive(o) {
-    const u = usagesOffre(D.receptions, S(), o.id), n = u.propositions.length;
+    const u = usagesOffre(D.receptions, S(), o.id), n = u.propositions.length, dem = u.cadeau ? (X.demandes?.() || []).filter((x) => x.genre === 'cadeau' && +x.montant === +offreDe(D.receptions, S(), o.id, 'publie')?.prix).length : 0;
     return `<div class="esp-offre__archive" role="group" aria-labelledby="arch-titre" data-offre-archive-panneau>
       <h4 id="arch-titre" tabindex="-1">Archiver « ${e(o.nom)} » ?</h4>
       <ul class="esp-pub__liste">
-        <li data-usage="propositions">${n ? `Reprise dans ${pluriel(n, 'proposition')} de réception (${e(u.propositions.slice(0, 4).map((p) => `${p.intitule}, version ${p.version} ${ETAT_PROP[p.etat] || p.etat}`).join(' ; '))}${n > 4 ? '…' : ''}) : ${n > 1 ? 'elles gardent leurs lignes et leurs prix' : 'elle garde ses lignes et ses prix'}, rien n'y est réécrit.` : 'Aucune proposition de réception ne la reprend.'}</li>
-        <li data-usage="site">${u.site ? 'Affichée sur le site (page Réceptions) : elle en est retirée tout de suite.' : 'Elle n\'est pas affichée sur le site.'}</li>
-        <li>Elle n'est plus proposée dans les nouvelles propositions. Vous pouvez la remettre au catalogue quand vous voulez.</li>
+        ${u.cadeau ? `<li data-usage="demandes">${dem ? `${pluriel(dem, 'demande reçue')} ${dem > 1 ? 'portent' : 'porte'} ce montant : ${dem > 1 ? 'elles gardent' : 'elle garde'} le montant choisi par le client.` : 'Aucune demande reçue ne porte ce montant.'}</li>` : ''}
+        <li data-usage="propositions"${u.cadeau ? ' hidden' : ''}>${n ? `Reprise dans ${pluriel(n, 'proposition')} de réception (${e(u.propositions.slice(0, 4).map((p) => `${p.intitule}, version ${p.version} ${ETAT_PROP[p.etat] || p.etat}`).join(' ; '))}${n > 4 ? '…' : ''}) : ${n > 1 ? 'elles gardent leurs lignes et leurs prix' : 'elle garde ses lignes et ses prix'}, rien n'y est réécrit.` : 'Aucune proposition de réception ne la reprend.'}</li>
+        <li data-usage="site">${u.site ? `${u.cadeau ? 'Proposée sur la page Offrir' : 'Affichée sur le site (page Réceptions)'} : elle en est retirée tout de suite.` : 'Elle n\'est pas affichée sur le site.'}</li>
+        <li>${u.cadeau ? 'Le client ne peut plus choisir ce montant.' : 'Elle n\'est plus proposée dans les nouvelles propositions.'} Vous pouvez la remettre au catalogue quand vous voulez.</li>
         <li>Aucune réservation, aucun dossier, aucun accord n'est annulé ni modifié.</li></ul>
       <p class="esp-pub__actions"><button type="button" class="bouton" data-offre-archiver-oui="${e(o.id)}">Archiver cette offre</button><button type="button" class="esp-bouton" data-offre-archiver-non>Ne pas archiver</button></p></div>`;
   }
@@ -85,7 +90,7 @@ export function creerOffres(X) {
     const ouvert = etat.offreEditee === x.id && x.ou === 'offre', arch = etat.offreArchive === x.id;
     const o = x.ou === 'offre' ? offreDe(D.receptions, S(), x.id) : null;
     const pastilles = [x.exemple ? '<span class="esp-pastille" data-offre-exemple>Exemple</span>' : '', x.archive ? '<span class="esp-pastille esp-pastille--refusee">Archivée</span>' : x.preparation ? `<span class="esp-pastille esp-pastille--cours">${x.publie ? 'Modification en préparation' : 'Brouillon, pas encore sur le site'}</span>` : x.ou === 'offre' ? `<span class="esp-pastille esp-pastille--confirmee">Publiée</span>` : x.publie ? '<span class="esp-pastille esp-pastille--confirmee">Sur le site</span>' : '<span class="esp-pastille">Pas sur le site</span>'].filter(Boolean).join(' ');
-    const ou = x.ou === 'offre' ? [x.usages?.propositions !== false ? 'propositions de réception' : '', x.usages?.site ? 'site' : ''].filter(Boolean).join(' et ') || 'nulle part pour l\'instant' : x.ou === 'carte' ? 'la carte du site' : x.ou === 'soirees' ? 'Les fêtes, l\'accueil, Réserver' : 'la page À emporter et les propositions';
+    const ou = x.type === 'cadeau' ? (x.usages?.site ? 'la page Offrir' : 'nulle part pour l\'instant (masquée sur la page Offrir)') : x.ou === 'offre' ? [x.usages?.propositions !== false ? 'propositions de réception' : '', x.usages?.site ? 'site' : ''].filter(Boolean).join(' et ') || 'nulle part pour l\'instant' : x.ou === 'carte' ? 'la carte du site' : x.ou === 'soirees' ? 'Les fêtes, l\'accueil, Réserver' : 'la page À emporter et les propositions';
     const actions = x.ou === 'offre' ? `${x.archive ? `<button type="button" class="esp-bouton" data-offre-remettre="${e(x.id)}">Remettre au catalogue</button>` : `<button type="button" class="esp-bouton" data-offre-editer="${e(x.id)}" aria-expanded="${ouvert}">Modifier</button><button type="button" class="esp-bouton esp-bouton--discret" data-offre-archiver="${e(x.id)}" aria-expanded="${arch}">Archiver</button>`}`
       : x.ou === 'carte' ? `<button type="button" class="esp-bouton" data-offre-aller="carte" data-offre-cle="${e(x.id)}">Ouvrir dans La carte</button>` : x.ou === 'soirees' ? `<button type="button" class="esp-bouton" data-offre-aller="soirees" data-offre-cle="${e(x.id)}">Ouvrir dans Les soirées</button>` : '<span class="esp-aide">Prix de la page À emporter : lecture seule à ce stade.</span>';
     return `<li class="esp-offre${x.archive ? ' est-archive' : ''}${ouvert ? ' est-ouvert' : ''}" data-offre="${e(x.id)}" data-offre-type="${e(x.type)}">
@@ -107,7 +112,8 @@ export function creerOffres(X) {
   }
 
   /* ---------- Site, onglet « Publication » : ce qui attend, l'historique, la reprise en brouillon ---------- */
-  const NOM_P = { carte: 'La carte', ardoise: 'L\'ardoise', soiree: 'Soirée', offre: 'Offre' };
+  const NOM_P = { carte: 'La carte', ardoise: 'L\'ardoise', soiree: 'Soirée', offre: 'Offre', annonce: 'L\'annonce', textes: 'Textes', photo: 'Photo' };
+  const nomP = (x) => (ENTIER.includes(x.perimetre) ? x.libelle : `${NOM_P[x.perimetre]} : ${x.libelle}`);
   function rendrePublication() {
     const prep = enPreparation(sources(), S()), h = historique(S()), premiers = new Set(), enLigne = new Set();
     for (const x of [...h].reverse()) { const k = cleP(x.perimetre, x.id); if (!premiers.has(k)) { premiers.add(k); x.premier = true; } }
@@ -121,16 +127,16 @@ export function creerOffres(X) {
           <p class="esp-pub__actions">${r.changements.length ? `<button type="button" class="bouton" data-histo-reprendre="${x.n}" data-histo-cote="${cote}">Reprendre en brouillon</button>` : ''}<button type="button" class="esp-bouton" data-histo-fermer>Fermer</button></p></div>` : ''}`; };
     corps('publication').innerHTML = typo(`<p class="esp-aide esp-aide--haut">Ce que vous préparez dans Offres reste ici en attente : le site ne change qu'à la publication, et vous publiez une chose à la fois. <span class="esp-pastille">Sur cet appareil</span> ${e(local)}</p>
       <h3 class="esp-sous">À publier</h3>
-      ${prep.length ? `<ul class="esp-attentes" data-attentes>${prep.map((x) => `<li class="esp-attente-pub" data-attente-pub="${e(cleP(x.perimetre, x.id))}"><p class="esp-attente-pub__nom"><b>${e(x.perimetre === 'carte' || x.perimetre === 'ardoise' ? x.libelle : `${NOM_P[x.perimetre]} : ${x.libelle}`)}</b></p>
+      ${prep.length ? `<ul class="esp-attentes" data-attentes>${prep.map((x) => `<li class="esp-attente-pub" data-attente-pub="${e(cleP(x.perimetre, x.id))}"><p class="esp-attente-pub__nom"><b>${e(nomP(x))}</b></p>
         <ul class="esp-pub__liste esp-pub__liste--court">${x.changements.slice(0, 4).map((c) => `<li>${e(c)}</li>`).join('')}${x.changements.length > 4 ? `<li>… et ${pluriel(x.changements.length - 4, 'autre changement')}.</li>` : ''}</ul>${barre(x.perimetre, x.id)}</li>`).join('')}</ul>` : '<p class="esp-vide" data-attentes-vide>Rien n\'attend : le site affiche tout ce que vous avez préparé. Pour préparer un changement, ouvrez <button type="button" class="esp-lien" data-aller="carte">Offres</button>.</p>'}
       <h3 class="esp-sous">Historique des publications</h3>
-      ${h.length ? `<ol class="esp-histo" data-histo>${h.map((x) => `<li class="esp-histo__ligne" data-histo-n="${x.n}"><p class="esp-histo__tete"><b>N° ${x.n}</b> · ${e(x.le ? instantDit(x.le) : '')} · ${e(x.perimetre === 'carte' || x.perimetre === 'ardoise' ? x.libelle : `${NOM_P[x.perimetre]} : ${x.libelle}`)} ${x.enLigne ? '<span class="esp-pastille esp-pastille--confirmee">En ligne</span>' : ''}</p>
+      ${h.length ? `<ol class="esp-histo" data-histo>${h.map((x) => `<li class="esp-histo__ligne" data-histo-n="${x.n}"><p class="esp-histo__tete"><b>N° ${x.n}</b> · ${e(x.le ? instantDit(x.le) : '')} · ${e(nomP(x))} ${x.enLigne ? '<span class="esp-pastille esp-pastille--confirmee">En ligne</span>' : ''}</p>
         <ul class="esp-pub__liste esp-pub__liste--court">${x.resume.slice(0, 3).map((c) => `<li>${e(c)}</li>`).join('')}${x.resume.length > 3 ? `<li>… et ${pluriel(x.resume.length - 3, 'autre changement')}.</li>` : ''}</ul>
         ${voir(x, 'apres')}${x.premier ? voir(x, 'avant') : ''}</li>`).join('')}</ol>` : '<p class="esp-vide" data-histo-vide>Aucune publication pour l\'instant : chaque publication s\'inscrira ici, avec ce qu\'elle a changé, et pourra être reprise en brouillon.</p>'}`);
   }
 
   /* ---------- Les gestes ---------- */
-  const lireOffre = (f) => ({ nom: f.elements.nom.value, type: f.elements.type.value, prix: f.elements.prix.value, unite: f.elements.unite.value, description: f.elements.description.value, categorie: f.elements.categorie.value, ordre: f.elements.ordre.value, du: f.elements.du.value, au: f.elements.au.value, conditions: f.elements.conditions.value, propositions: f.elements.propositions.checked, site: f.elements.site.checked, visuel: f.elements.visuel.value, alt: f.elements.alt.value });
+  const lireOffre = (f) => ({ nom: f.elements.nom.value, type: f.elements.type.value, prix: f.elements.prix.value, unite: f.elements.unite.value, description: f.elements.description.value, categorie: f.elements.categorie.value, ordre: f.elements.ordre.value, du: f.elements.du.value, au: f.elements.au.value, conditions: f.elements.conditions.value, propositions: f.elements.propositions.type === 'checkbox' ? f.elements.propositions.checked : false, site: f.elements.site.checked, visuel: f.elements.visuel.value, alt: f.elements.alt.value });
   function soumis(f) {
     if (!f.matches('[data-form-offre]')) return false;
     const id = f.dataset.formOffre, s = lireOffre(f), saisie = { nom: s.nom, prix: s.prix, unite: s.unite, periode: { du: s.du, au: s.au } }, liste = validerOffre(saisie);
@@ -147,7 +153,7 @@ export function creerOffres(X) {
     if (t.closest('[data-pub-annuler]')) { const cle = etat.pub?.cle; etat.pub = null; X.rendre(); $(`[data-pub="${CSS.escape(cle || '')}"] [data-pub-ouvrir]`, root)?.focus(); return true; }
     if (t.closest('[data-pub-confirmer]') && etat.pub) {
       const { perimetre, id, vu, cle } = etat.pub, d = attente(sources(), S(), perimetre, id);
-      const ok = agir('offPublier', { perimetre, id, vu, le: maintenant(), sources: sources() }, { msg: `Publié : ${d ? (perimetre === 'carte' || perimetre === 'ardoise' ? d.libelle.toLowerCase() : `« ${d.libelle} »`) : 'ce contenu'} est en ligne, dans ce navigateur.${enPreparation(sources(), S()).length > 1 ? ' Le reste est resté en préparation.' : ''}`, lien: pageDe(perimetre) });
+      const ok = agir('offPublier', { perimetre, id, vu, le: maintenant(), sources: sources() }, { msg: `Publié : ${d ? (ENTIER.includes(perimetre) ? d.libelle.toLowerCase() : `« ${d.libelle} »`) : 'ce contenu'} est en ligne, dans ce navigateur.${enPreparation(sources(), S()).length > 1 ? ' Le reste est resté en préparation.' : ''}`, lien: pageDe(perimetre, id) });
       if (ok) { etat.pub = null; X.rendre(); ($(`[data-pub-net="${CSS.escape(cle)}"]`, root) || $('[data-attentes] [data-pub-ouvrir], [data-attentes-vide], [data-offres]', root))?.focus?.(); }
       else { etat.pub = { ...etat.pub, vu: S().publie?.n || 0, erreur: X.refus() }; X.rendre(); $('[data-pub-erreur]', root)?.scrollIntoView?.({ block: 'nearest' }); }
       return true;
@@ -182,5 +188,12 @@ export function creerOffres(X) {
     }
     return false;
   }
-  return { barre, rendreCatalogue, rendrePublication, clic, soumis, sources };
+  /* v7.13.1 : ce que la rubrique Site affiche à côté de ses éditeurs. `zone` : « annonce », « textes » ou « photo:<emplacement> ». */
+  function zone(z) {
+    if (z === 'annonce') return barre('annonce');
+    if (z.startsWith('photo:')) return barre('photo', z.slice(6), { discret: true });
+    const l = enPreparation(sources(), S()).filter((x) => x.perimetre === 'textes');
+    return l.length ? l.map((x) => `<p class="esp-pub__titre"><b>${e(x.libelle)}</b></p>${barre('textes', x.id)}`).join('') : typo('<p class="esp-pub esp-pub--net" data-pub-net="textes:"><span class="esp-pastille esp-pastille--confirmee">Publié</span> Le site affiche ces textes : rien n\'attend ici. Une modification se prépare d\'abord, puis se publie page par page.</p>');
+  }
+  return { barre, zone, rendreCatalogue, rendrePublication, clic, soumis, sources };
 }

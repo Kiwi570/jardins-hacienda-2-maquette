@@ -4,11 +4,10 @@
    (module carte-cadeau-qui-se-compose, montants du site actuel) et part dans son enveloppe (code gardé de la v5).
    v7.5.21 · une seule carte partout (vert de nuit et or, comme l'accueil, Les fêtes et la carte composée) ; partir d'une
    idée ; la carte reste à l'écran pendant qu'on écrit ; « Pour la recevoir » en trois étapes ; l'enveloppe rouge et or. */
-import { html } from '../../outils/gabarit.mjs';
+import { html, brut } from '../../outils/gabarit.mjs';
 
 export const page = { cle: 'offrir', fichier: 'offrir', theme: 'nuit', imagePartage: 'vraie/salle-midi-1280.webp', modules: ['carte-cadeau-qui-se-compose'] };
 
-const MONTANTS = [25, 50, 100, 150, 200];
 /* v7.5.21 · Partir d'une idée : trois moments avec les vrais prix de la carte et des fêtes ; un toucher choisit le montant
    et écrit un mot suggéré sur la carte. */
 const IDEES = [
@@ -85,8 +84,10 @@ export default (c) => html`
       <fieldset class="ccq__champ ccq__montants">
         <legend class="ccq__libelle">Montant</legend>
         <div class="ccq__puces">
-          ${MONTANTS.map((m) => html`<label class="ccq__puce"><input type="radio" name="montant" value="${m}"${m === 50 ? html` checked` : ''}><span>${m} €</span></label>`)}
+          ${c.donnees.cadeaux.montants.map((m) => html`<label class="ccq__puce"><input type="radio" name="montant" value="${m}"${m === 50 ? html` checked` : ''}><span>${m} €</span></label>`)}
         </div>
+        <p class="ccq__presentation" data-cadeau-presentation hidden></p>
+        <script type="application/json" data-cadeaux-base>${brut(JSON.stringify(c.donnees.cadeaux.montants))}</script>
         <p class="ccq__erreur" id="ccq-erreur-montant" data-ccq-erreur="montant" aria-live="polite"></p>
       </fieldset>
       <div class="ccq__champ">

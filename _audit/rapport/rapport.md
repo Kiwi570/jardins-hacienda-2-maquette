@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 23/11/2026 18:26:14 · 33 min · 2 page(s) · audit complet ciblé sur /espace,/receptions (étapes : fichiers, mesures, parcours)
+Projet : `jardins-hacienda-2-maquette` · 23/11/2026 20:29:49 · 45 min · 4 page(s) · audit complet ciblé sur /,/404,/offrir,/espace (étapes : fichiers, mesures, parcours)
 
 ## Résumé
 
-- Statut : **tout a tourné, aucun échec**
-- Passe : `20261123-165251-complet-cible-partiel` · version ?v=7
-- Échecs : **0**
-- À regarder : **0**
+- Statut : **1 échec(s)**
+- Passe : `20261123-184510-complet-cible-partiel` · version ?v=7
+- Échecs : **1**
+- À regarder : **2**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (78), balayage (2), intro accélérable et passable (7), menu (1), clavier (2), liens et boutons (2), liens profonds (4), liens vers la page en cours (2), changements de hauteur (1), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : un service parfaitement accompagné (1366×768) (1), espace : un service parfaitement accompagné (390×844) (1), espace : démonstrations (1366×768) (1), espace : démonstrations (390×844) (1), espace : réceptions (1366×768) (1), espace : réceptions (390×844) (1), espace : réserver et réceptions (390×844) (1), espace : offres (1366×768) (1), espace : offres (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (156), balayage (3), intro accélérable et passable (7), menu (1), clavier (4), liens et boutons (4), liens profonds (12), liens vers la page en cours (3), changements de hauteur (2), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : un service parfaitement accompagné (1366×768) (1), espace : un service parfaitement accompagné (390×844) (1), espace : démonstrations (1366×768) (1), espace : démonstrations (390×844) (1), espace : réceptions (1366×768) (1), espace : réceptions (390×844) (1), espace : réserver et réceptions (390×844) (1), espace : offres (1366×768) (1), espace : offres (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
 
 ## Passes de cette version (?v=7)
 
@@ -167,15 +167,21 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261122-175509-complet-partiel | complet | toutes | fichiers, fluidite | 0 | 3 | 0 | complet |
 | 20261123-144630-complet | complet | toutes | toutes | 7 | 76 | 1 | échecs |
 | 20261123-160901-complet-cible-partiel | complet | /,/404,/receptions,/espace | fichiers, mesures, parcours | 0 | 58 | 0 | complet |
-| **20261123-165251-complet-cible-partiel** (celle-ci) | complet | /espace,/receptions | fichiers, mesures, parcours | 0 | 0 | 0 | complet |
+| 20261123-165251-complet-cible-partiel | complet | /espace,/receptions | fichiers, mesures, parcours | 0 | 0 | 0 | complet |
+| **20261123-184510-complet-cible-partiel** (celle-ci) | complet | /,/404,/offrir,/espace | fichiers, mesures, parcours | 1 | 2 | 0 | échecs |
 
 ## Échecs
 
-Aucun.
+### textes qui se chevauchent (1)
+
+- **textes qui se chevauchent** — `/espace` — article.esp-carte:nth-of-type(1) > form > p:nth-of-type(1) > button.esp-bascule « Afficher l'annonce » — rubrique site:horaires : avec article.esp-carte:nth-of-type(1) > form > p:nth-of-type(1) > small.esp-aide « Préparé ici ; le site suit quand vous publiez l'an » _(390×844, 768×1024, 1366×768, 1920×1080)_
 
 ## À regarder
 
-Rien.
+### typographie française (2)
+
+- **typographie française** — `/espace` — article.esp-carte:nth-of-type(1) > form > p:nth-of-type(1) > small.esp-aide « Préparé ici ; le site suit quand vous publiez l'an » — rubrique site:horaires : espace insécable manquante avant ou après « ; » _(1366×768)_
+- **typographie française** — `/espace` — div#panneau-site > p.esp-aide.esp-aide--haut « Remplacez une photo par une autre de votre phototh » — rubrique site:photos : espace insécable manquante avant ou après « : » _(1366×768)_
 
 ## Non lancé
 
@@ -200,3 +206,12 @@ Tout a été lancé.
 - Films : `films/` (planches contact de l’ouverture, des transitions, des retours, des ancres et des épinglages ; ⚠ = image signalée)
 - Comparaisons : `comparaisons/`
 - Détail complet : `rapport.json`
+
+
+## Relancer seulement ce qui a échoué
+
+Après correction, si elle ne touche que ces pages (sinon, relancer l’audit standard en entier) :
+
+```
+node _audit/audit.mjs --complet --pages=/,/espace --seulement=fichiers,parcours
+```

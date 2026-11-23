@@ -1,6 +1,47 @@
 {
-  "echecs": [],
-  "aRegarder": [],
+  "echecs": [
+    {
+      "niveau": "echec",
+      "controle": "textes qui se chevauchent",
+      "detail": "rubrique site:horaires : avec article.esp-carte:nth-of-type(1) > form > p:nth-of-type(1) > small.esp-aide « Préparé ici ; le site suit quand vous publiez l'an »",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "390×844",
+      "selecteur": "article.esp-carte:nth-of-type(1) > form > p:nth-of-type(1) > button.esp-bascule « Afficher l'annonce »",
+      "lieux": [
+        "390×844",
+        "768×1024",
+        "1366×768",
+        "1920×1080"
+      ]
+    }
+  ],
+  "aRegarder": [
+    {
+      "niveau": "regarder",
+      "controle": "typographie française",
+      "detail": "rubrique site:horaires : espace insécable manquante avant ou après « ; »",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "1366×768",
+      "selecteur": "article.esp-carte:nth-of-type(1) > form > p:nth-of-type(1) > small.esp-aide « Préparé ici ; le site suit quand vous publiez l'an »",
+      "lieux": [
+        "1366×768"
+      ]
+    },
+    {
+      "niveau": "regarder",
+      "controle": "typographie française",
+      "detail": "rubrique site:photos : espace insécable manquante avant ou après « : »",
+      "etape": "parcours",
+      "page": "/espace",
+      "taille": "1366×768",
+      "selecteur": "div#panneau-site > p.esp-aide.esp-aide--haut « Remplacez une photo par une autre de votre phototh »",
+      "lieux": [
+        "1366×768"
+      ]
+    }
+  ],
   "nonLances": [],
   "oks": {
     "vercel.json": 1,
@@ -8,15 +49,15 @@
     "robots.txt": 1,
     "numéro de version": 1,
     "langues": 1,
-    "mesures": 78,
-    "balayage": 2,
+    "mesures": 156,
+    "balayage": 3,
     "intro accélérable et passable": 7,
     "menu": 1,
-    "clavier": 2,
-    "liens et boutons": 2,
-    "liens profonds": 4,
-    "liens vers la page en cours": 2,
-    "changements de hauteur": 1,
+    "clavier": 4,
+    "liens et boutons": 4,
+    "liens profonds": 12,
+    "liens vers la page en cours": 3,
+    "changements de hauteur": 2,
     "espace : réserver puis confirmer": 1,
     "espace : barre « Que voulez-vous faire ? »": 2,
     "espace : tout arrive ici": 1,

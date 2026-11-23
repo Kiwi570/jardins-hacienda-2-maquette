@@ -1,0 +1,4 @@
+{
+  "_source": "Montants proposés sur la page Offrir, repris du site actuel du restaurant. Chaque montant d'origine a un identifiant stable dans le catalogue : cadeau-<montant>.",
+  "montants": [25, 50, 100, 150, 200]
+}

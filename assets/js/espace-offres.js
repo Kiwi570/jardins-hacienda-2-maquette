@@ -18,11 +18,11 @@
                  periode { du, au }, conditions, usages { propositions, site }, visuel { nom, alt }, exemple }. */
 import { typo, evenements as evenementsDe, listeEvenements, fmt } from './espace-regles.js?v=7';
 import { carteDe, platsDe, prixTexte } from './espace-carte.js?v=7';
-import { UNITES, cleUnite, offresDeBase, offresDe, dansPeriode, vuePublique, offresVitrine } from './espace-publie.js?v=7';
-export { UNITES, cleUnite, offresDeBase, offresDe, dansPeriode, vuePublique };
+import { UNITES, EDITORIAL, cleUnite, offresDeBase, offresDe, dansPeriode, vuePublique, offresVitrine, cadeauxVitrine } from './espace-publie.js?v=7';
+export { UNITES, EDITORIAL, cleUnite, offresDeBase, offresDe, dansPeriode, vuePublique, cadeauxVitrine };
 
 
-export const TYPES = { formule: 'Formule ou menu', prestation: 'Prestation', plat: 'Plat de la carte', soiree: 'Soirée', emporter: 'À emporter' };
+export const TYPES = { formule: 'Formule ou menu', prestation: 'Prestation', plat: 'Plat de la carte', soiree: 'Soirée', emporter: 'À emporter', cadeau: 'Carte cadeau' };
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 const net = (t, n) => typo(String(t ?? '').trim()).slice(0, n);
 const egal = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
@@ -66,7 +66,7 @@ export function validerOffre(saisie = {}) {
 export const prixOffre = (o) => (o.prix === '' || o.prix == null ? 'Prix à définir' : `${prixTexte(o.prix)} ${UNITES[o.unite] || ''}`.trim());
 
 /* ---------- Publié / en préparation ---------- */
-const SECTIONS = ['carte', 'ardoise', 'evenements', 'offres'];
+const SECTIONS = ['carte', 'ardoise', 'evenements', 'offres', ...EDITORIAL];
 /** Le contenu éditorial d'une rubrique, sans ce qui est opérationnel (épuisés, archives) ni calculé (liste des soirées). */
 export function contenu(S, k) {
   const x = S?.[k]; if (!x) return undefined;
@@ -75,12 +75,16 @@ export function contenu(S, k) {
   return sansVide(x);
 }
 /** Le contenu publié d'une rubrique. Sans `S.publie` (état d'avant la v7.13.0), ce qui est là est ce qui était en ligne. */
-export const publie = (S, k) => (S?.publie ? sansVide(k === 'evenements' && S.publie.evenements ? { modifs: S.publie.evenements.modifs, ajouts: S.publie.evenements.ajouts } : S.publie[k]) : contenu(S, k));
+export const publie = (S, k) => (!S?.publie || (EDITORIAL.includes(k) && !S.publie.editorial) ? contenu(S, k)
+  : sansVide(k === 'evenements' && S.publie.evenements ? { modifs: S.publie.evenements.modifs, ajouts: S.publie.evenements.ajouts } : S.publie[k]));
 /** Fige la version publiée avant la première modification (ne fait rien ensuite). */
 export function assurerPublication(S) {
-  if (S.publie) return false;
-  S.publie = { n: 0 }; for (const k of SECTIONS) { const c = contenu(S, k); if (c) S.publie[k] = clone(k === 'evenements' ? { ...c, ...(S.evenements?.liste ? { liste: S.evenements.liste } : {}) } : c); }
-  return true;
+  const figer = (l) => { for (const k of l) { const c = contenu(S, k); if (c) S.publie[k] = clone(k === 'evenements' ? { ...c, ...(S.evenements?.liste ? { liste: S.evenements.liste } : {}) } : c); } };
+  if (!S.publie) { S.publie = { n: 0, editorial: 1 }; figer(SECTIONS); return true; }
+  /* v7.13.1 : un état publié avant cette version ne figeait pas les textes, les photos ni l'annonce (ils étaient en direct).
+     Ce qui est visible aujourd'hui devient leur version publiée, une seule fois ; le rejouer ne change rien. */
+  if (!S.publie.editorial) { for (const k of EDITORIAL) delete S.publie[k]; figer(EDITORIAL); S.publie.editorial = 1; return true; }
+  return false;
 }
 /** Une version publiée qui ne dit rien de plus que le contenu présent (jamais publiée ici, rien en préparation) ne laisse rien. */
 export function allegerPublication(S) {
@@ -103,7 +107,7 @@ export const offresDuSite = (lieux, S, iso = '', apercu = false) => offresVitrin
 const dit = (v) => (v === '' || v == null ? 'rien' : String(v));
 const CHAMPS_OFFRE = [['nom', 'Nom'], ['description', 'Description'], ['prix', 'Prix'], ['unite', 'Unité'], ['categorie', 'Catégorie'], ['ordre', 'Ordre'], ['periode', 'Période'], ['conditions', 'Conditions'], ['usages', 'Endroits d\'usage'], ['visuel', 'Photo']];
 const valOffre = (o, k) => (k === 'prix' ? (o.prix === '' || o.prix == null ? 'à définir' : prixTexte(o.prix)) : k === 'unite' ? UNITES[o.unite] || 'aucune' : k === 'periode' ? (o.periode ? `du ${o.periode.du || '…'} au ${o.periode.au || '…'}` : 'toute l\'année')
-  : k === 'usages' ? [o.usages?.propositions !== false ? 'propositions' : '', o.usages?.site ? 'site' : ''].filter(Boolean).join(' et ') || 'nulle part' : k === 'visuel' ? (o.visuel?.nom ? `photo « ${o.visuel.alt || o.visuel.nom} »` : 'aucune') : dit(o[k]));
+  : k === 'usages' ? (o.type === 'cadeau' ? (o.usages?.site ? 'proposée sur la page Offrir' : 'masquée sur la page Offrir') : [o.usages?.propositions !== false ? 'propositions' : '', o.usages?.site ? 'site' : ''].filter(Boolean).join(' et ') || 'nulle part') : k === 'visuel' ? (o.visuel?.nom ? `photo « ${o.visuel.alt || o.visuel.nom} »` : 'aucune') : dit(o[k]));
 function changementsOffre(a, b) {
   if (!a) return [`Nouvelle offre : ${b.nom}, ${prixOffre(b)}.`];
   if (!b) return [`Offre retirée : ${a.nom}.`];
@@ -155,39 +159,62 @@ export function changementsSoiree(a, b) {
 /**
  * Tout ce qui est en préparation et pas encore publié, par périmètre de publication :
  * [{ perimetre: 'offre' | 'carte' | 'ardoise' | 'soiree', id, libelle, bouton, changements: [phrase], cles }].
- * `sources` : { carte (rubriques livrées), agenda (soirées livrées), lieux (prestations livrées), ardoise (ardoise livrée) }.
+ * `sources` : { carte (rubriques livrées), agenda (soirées livrées), lieux (prestations livrées), ardoise (ardoise livrée),
+ *   textes, photos (les textes et les photos modifiables du site) }.
  */
 export function enPreparation(sources, S) {
   const l = [], { carte: base = [], agenda = [], lieux } = sources || {};
   const oa = offresDe(offresDeBase(lieux), publie(S, 'offres')), ob = offresDe(offresDeBase(lieux), contenu(S, 'offres'));
-  for (const id of new Set([...oa, ...ob].map((o) => o.id))) { const a = oa.find((o) => o.id === id), b = ob.find((o) => o.id === id), ch = changementsOffre(a, b); if (ch.length) l.push({ perimetre: 'offre', id, libelle: (b || a).nom, bouton: 'Publier cette offre', changements: ch }); }
+  for (const id of new Set([...oa, ...ob].map((o) => o.id))) { const a = oa.find((o) => o.id === id), b = ob.find((o) => o.id === id), ch = changementsOffre(a, b); if (ch.length) l.push({ perimetre: 'offre', id, libelle: (b || a).nom, bouton: 'Publier cette offre', changements: ch, ...((b || a).type === 'cadeau' ? { ou: 'Page Offrir' } : {}) }); }
   const c = changementsCarte(base, publie(S, 'carte'), contenu(S, 'carte'));
   if (c.phrases.length) l.push({ perimetre: 'carte', id: '', libelle: 'La carte', bouton: 'Publier les modifications de la carte', changements: c.phrases, cles: [...c.cles] });
   const ar = changementsArdoise(publie(S, 'ardoise'), contenu(S, 'ardoise'), sources?.ardoise);
   if (ar.length) l.push({ perimetre: 'ardoise', id: '', libelle: 'L\'ardoise', bouton: 'Publier l\'ardoise', changements: ar });
   const sa = evenementsDe(agenda, { evenements: publie(S, 'evenements') || {} }), sb = evenementsDe(agenda, { evenements: contenu(S, 'evenements') || {} });
   for (const id of new Set([...sa, ...sb].map((x) => x.id))) { const a = sa.find((x) => x.id === id), b = sb.find((x) => x.id === id), ch = changementsSoiree(a, b); if (ch.phrases.length) l.push({ perimetre: 'soiree', id, libelle: (b || a).titre || 'Soirée', bouton: 'Publier cette soirée', changements: ch.phrases, engage: ch.engage, nouvelle: !!ch.nouvelle }); }
+  /* v7.13.1 : les contenus éditoriaux du Site. */
+  const court = (t) => { const x = String(t ?? ''); return x.length > 70 ? `${x.slice(0, 68)}…` : x; };
+  const aa = publie(S, 'annonce') || {}, ab = contenu(S, 'annonce') || {}, an = [];
+  if (!!aa.active !== !!ab.active) an.push(ab.active ? 'L\'annonce s\'affiche sur toutes les pages du site.' : 'L\'annonce est retirée du site.');
+  if ((aa.texte || '') !== (ab.texte || '') && (ab.active || aa.active)) an.push(`Texte : « ${court(aa.texte) || 'aucun'} » → « ${court(ab.texte) || 'aucun'} »`);
+  else if ((aa.texte || '') !== (ab.texte || '')) an.push(`Texte préparé (l'annonce reste masquée) : « ${court(ab.texte) || 'aucun'} »`);
+  if (an.length) l.push({ perimetre: 'annonce', id: '', libelle: 'L\'annonce', bouton: 'Publier l\'annonce', changements: an, ou: 'Toutes les pages du site' });
+  const ta = publie(S, 'textes') || {}, tb = contenu(S, 'textes') || {}, pages = new Map();
+  for (const t of sources?.textes || []) { if ((ta[t.cle] || '') === (tb[t.cle] || '')) continue; const nom = String(t.lieu || t.page).split(' · ')[0];
+    if (!pages.has(t.page)) pages.set(t.page, { nom, ch: [] }); pages.get(t.page).ch.push(`${t.lieu}, ${String(t.libelle).toLowerCase()} : « ${court(ta[t.cle] || t.defaut)} » → « ${court(tb[t.cle] || t.defaut)} »`); }
+  for (const [page, x] of pages) l.push({ perimetre: 'textes', id: page, libelle: `Textes de la page ${x.nom}`, bouton: `Publier les textes de la page ${x.nom}`, changements: x.ch, ou: `Page ${x.nom}` });
+  const pa = publie(S, 'photos') || {}, pb = contenu(S, 'photos') || {};
+  for (const ph of sources?.photos || []) { const a = pa[ph.id], b = pb[ph.id]; if (pareil(a, b)) continue; const ch = [];
+    if (!b) ch.push('La photo livrée avec le site revient.'); else { if ((a?.src || a?.nom || '') !== (b.src || b.nom || '')) ch.push(b.src ? 'Nouvelle photo, envoyée depuis votre appareil.' : b.nom ? 'Nouvelle photo, choisie dans la photothèque.' : 'La photo livrée avec le site revient.'); if ((a?.cadrage || ph.cadrage || '') !== (b.cadrage || ph.cadrage || '')) ch.push(`Cadrage : ${a?.cadrage || ph.cadrage} → ${b.cadrage || ph.cadrage}`); }
+    l.push({ perimetre: 'photo', id: ph.id, libelle: `Photo · ${ph.lieu}, ${ph.libelle}`, bouton: 'Publier cette photo', changements: ch.length ? ch : ['La photo change.'], ou: `Page ${ph.lieu}` }); }
   return l;
 }
 export const attente = (sources, S, perimetre, id = '') => enPreparation(sources, S).find((x) => x.perimetre === perimetre && (x.id || '') === (id || '')) || null;
 
 /* ---------- Publier, reprendre une version, abandonner un brouillon ---------- */
-const RUBRIQUE = { offre: 'offres', soiree: 'evenements', carte: 'carte', ardoise: 'ardoise' };
+const RUBRIQUE = { offre: 'offres', soiree: 'evenements', carte: 'carte', ardoise: 'ardoise', annonce: 'annonce', textes: 'textes', photo: 'photos' };
 /** La part d'un contenu que couvre un périmètre : la rubrique entière (carte, ardoise) ou une seule entrée (offre, soirée). */
-function extrait(c, perimetre, id) {
-  if (perimetre === 'carte' || perimetre === 'ardoise') return clone(sansVide(c)) ?? null;
+function extrait(c, perimetre, id, cles = []) {
+  if (perimetre === 'carte' || perimetre === 'ardoise' || perimetre === 'annonce') return clone(sansVide(c)) ?? null;
+  /* Les textes d'une page (`cles` : leurs clés) ; une photo (son emplacement). */
+  if (perimetre === 'textes') return clone(sansVide(Object.fromEntries(cles.filter((k) => c?.[k] != null).map((k) => [k, c[k]])))) ?? null;
+  if (perimetre === 'photo') return clone(sansVide(c?.[id])) ?? null;
   return sansVide({ modif: c?.modifs?.[id], ajout: (c?.ajouts || []).find((x) => x.id === id) }) ? clone({ modif: c?.modifs?.[id] ?? null, ajout: (c?.ajouts || []).find((x) => x.id === id) ?? null }) : null;
 }
 /** Pose cette part dans un objet qui porte les rubriques (l'état, ou `S.publie`). La disponibilité opérationnelle n'est jamais touchée. */
-function poser(cible, perimetre, id, x) {
+function poser(cible, perimetre, id, x, cles = []) {
   const k = RUBRIQUE[perimetre];
-  if (perimetre === 'ardoise') { if (x) cible.ardoise = clone(x); else delete cible.ardoise; return; }
+  if (perimetre === 'ardoise' || perimetre === 'annonce') { if (x) cible[k] = clone(x); else delete cible[k]; return; }
+  if (perimetre === 'textes') { const t = { ...(cible.textes || {}) }; for (const c of cles) delete t[c]; Object.assign(t, clone(x) || {}); if (Object.keys(t).length) cible.textes = t; else delete cible.textes; return; }
+  if (perimetre === 'photo') { const t = { ...(cible.photos || {}) }; if (x) t[id] = clone(x); else delete t[id]; if (Object.keys(t).length) cible.photos = t; else delete cible.photos; return; }
   if (perimetre === 'carte') { const garde = cible.carte?.epuises; cible.carte = { ...(clone(x) || {}), ...(garde ? { epuises: garde } : {}) }; if (!Object.keys(cible.carte).length) delete cible.carte; return; }
   const c = (cible[k] ||= {});
   if (x?.modif) (c.modifs ||= {})[id] = clone(x.modif); else if (c.modifs) delete c.modifs[id];
   c.ajouts = (c.ajouts || []).filter((a) => a.id !== id); if (x?.ajout) c.ajouts.push(clone(x.ajout));
   if (c.modifs && !Object.keys(c.modifs).length) delete c.modifs; if (!c.ajouts.length) delete c.ajouts; if (!Object.keys(c).length) delete cible[k];
 }
+/** Les clés des textes d'une page (`sources.textes` : la liste des textes modifiables du site). */
+const clesTextes = (sources, page) => (sources?.textes || []).filter((t) => t.page === page).map((t) => t.cle);
 const HISTORIQUE_MAX = 40;
 /** Les versions publiées d'un périmètre, de la plus récente à la plus ancienne ; la dernière est « le contenu d'avant ». */
 export function versions(S, perimetre, id = '') {
@@ -201,7 +228,7 @@ export const historique = (S) => [...(S?.publie?.historique || [])].reverse();
 /** Ce qu'une version rétablirait si on la reprenait en brouillon : les changements par rapport au contenu en préparation d'aujourd'hui. */
 export function retablirait(sources, S, n, cote = 'apres') {
   const x = (S?.publie?.historique || []).find((h) => h.n === n); if (!x) return null;
-  const essai = clone(S); poser(essai, x.perimetre, x.id, x[cote]); delete essai.publie; essai.publie = { n: 0, [RUBRIQUE[x.perimetre]]: clone(contenuBrut(S, RUBRIQUE[x.perimetre])) };
+  const essai = clone(S); poser(essai, x.perimetre, x.id, x[cote], x.cles); delete essai.publie; essai.publie = { n: 0, editorial: 1, [RUBRIQUE[x.perimetre]]: clone(contenuBrut(S, RUBRIQUE[x.perimetre])) };
   const d = attente(sources, essai, x.perimetre, x.id);
   return { perimetre: x.perimetre, id: x.id, libelle: x.libelle, changements: d ? d.changements : [], contenu: x[cote] };
 }
@@ -223,26 +250,26 @@ export const MUTATIONS_OFFRES = {
    */
   offPublier(S, { perimetre, id = '', le = '', sources = {} }) {
     assurerPublication(S); const d = attente(sources, S, perimetre, id); if (!d) return;
-    const k = RUBRIQUE[perimetre], p = S.publie, avant = extrait(k === 'evenements' && p.evenements ? { modifs: p.evenements.modifs, ajouts: p.evenements.ajouts } : p[k], perimetre, id), apres = extrait(contenu(S, k), perimetre, id);
-    poser(p, perimetre, id, apres); p.n = (p.n || 0) + 1;
+    const k = RUBRIQUE[perimetre], p = S.publie, cles = perimetre === 'textes' ? clesTextes(sources, id) : [], avant = extrait(k === 'evenements' && p.evenements ? { modifs: p.evenements.modifs, ajouts: p.evenements.ajouts } : p[k], perimetre, id, cles), apres = extrait(contenu(S, k), perimetre, id, cles);
+    poser(p, perimetre, id, apres, cles); p.n = (p.n || 0) + 1;
     if (k === 'evenements') { if (p.evenements) p.evenements.liste = listeEvenements(sources.agenda || [], { evenements: p.evenements }); }
-    (p.historique ||= []).push({ n: p.n, le: String(le || '').slice(0, 16), perimetre, id, libelle: d.libelle, resume: d.changements.slice(0, 12), avant, apres });
+    (p.historique ||= []).push({ n: p.n, le: String(le || '').slice(0, 16), perimetre, id, libelle: d.libelle, resume: d.changements.slice(0, 12), avant, apres, ...(cles.length ? { cles } : {}) });
     if (p.historique.length > HISTORIQUE_MAX) p.historique.splice(0, p.historique.length - HISTORIQUE_MAX);
   },
   /** Reprend une version de l'historique EN BROUILLON : le site ne change pas tant qu'on ne publie pas. Rien d'opérationnel n'est restauré. */
   offReprendre(S, { n, cote = 'apres', sources = {} }) {
     const x = (S.publie?.historique || []).find((h) => h.n === n); if (!x) return;
-    poser(S, x.perimetre, x.id, x[cote]); if (S.evenements) S.evenements.liste = listeEvenements(sources.agenda || [], S);
+    poser(S, x.perimetre, x.id, x[cote], x.cles); if (S.evenements) S.evenements.liste = listeEvenements(sources.agenda || [], S);
   },
   /** Abandonne ce qui est en préparation pour un périmètre : il redevient ce qui est publié. */
   offAbandonner(S, { perimetre, id = '', sources = {} }) {
-    assurerPublication(S); const k = RUBRIQUE[perimetre], p = S.publie;
-    poser(S, perimetre, id, extrait(k === 'evenements' && p.evenements ? { modifs: p.evenements.modifs, ajouts: p.evenements.ajouts } : p[k], perimetre, id));
+    assurerPublication(S); const k = RUBRIQUE[perimetre], p = S.publie, cles = perimetre === 'textes' ? clesTextes(sources, id) : [];
+    poser(S, perimetre, id, extrait(k === 'evenements' && p.evenements ? { modifs: p.evenements.modifs, ajouts: p.evenements.ajouts } : p[k], perimetre, id, cles), cles);
     if (S.evenements) S.evenements.liste = listeEvenements(sources.agenda || [], S);
   },
 };
 /** Les actions qui modifient un contenu en préparation : la version publiée est figée juste avant la première. */
-export const ACTIONS_CONTENU = new Set(['plat', 'ajouterPlat', 'platVisible', 'ordrePlat', 'ardoise', 'evenement', 'visibilite', 'supprimerEvenement', 'offre', 'offReprendre']);
+export const ACTIONS_CONTENU = new Set(['plat', 'ajouterPlat', 'platVisible', 'ordrePlat', 'ardoise', 'evenement', 'visibilite', 'supprimerEvenement', 'offre', 'offReprendre', 'texte', 'photo', 'cadrage', 'retablirPhoto', 'annonce']);
 
 /* ---------- Les usages d'une offre, les soirées et leurs réservations ---------- */
 /** Où une offre est utilisée : les propositions de réception qui la reprennent, et le site. */
@@ -250,7 +277,7 @@ export function usagesOffre(lieux, S, id) {
   const props = [];
   for (const d of Object.values(S?.receptions?.dossiers || {})) for (const p of d.propositions || []) { const n = (p.lignes || []).filter((l) => l.origine === id).length; if (n) props.push({ dossier: d.id, client: d.client?.nom || '', intitule: d.projet?.intitule || d.projet?.occasion || 'Réception', version: p.v, etat: p.etat }); }
   const pub = offre(lieux, S, id, 'publie');
-  return { propositions: props, site: !!pub?.usages?.site && !pub.archive, nouvelles: !!pub && pub.usages?.propositions !== false };
+  return { propositions: props, site: !!pub?.usages?.site && !pub.archive, nouvelles: !!pub && pub.usages?.propositions !== false, cadeau: pub?.type === 'cadeau' || offre(lieux, S, id)?.type === 'cadeau' };
 }
 const INACTIFS = ['refusee', 'annulee', 'absente'];
 /** Les réservations encore actives prises depuis une soirée (`resas` : toutes celles que l'espace connaît). */
@@ -276,17 +303,30 @@ export function refusOffre(S, nom, args = {}, { resas = [] } = {}) {
   }
   if (nom === 'offPublier') {
     if (args.vu != null && (S.publie?.n || 0) !== args.vu) return 'Le site a été publié ailleurs pendant que cet écran était ouvert (un autre onglet). Rien n\'a été publié ici : relisez les changements, puis publiez de nouveau.';
-    return attente(sources, S, args.perimetre, args.id) ? '' : 'Il n\'y a rien à publier ici : le site affiche déjà ce contenu.';
-  }
-  if (nom === 'offReprendre') {
-    const x = (S.publie?.historique || []).find((h) => h.n === args.n); if (!x) return 'Cette version n\'est plus dans l\'historique.';
-    if (x.perimetre === 'soiree') { const s = (c) => evenementsDe(sources.agenda || [], { evenements: c || {} }).find((y) => y.id === x.id), essai = clone(S); poser(essai, 'soiree', x.id, x[args.cote || 'apres']); return refusSoiree(s(contenu(S, 'evenements')), s(contenu(essai, 'evenements')), resasDeSoiree(resas, x.id)); }
+    if (!attente(sources, S, args.perimetre, args.id)) return 'Il n\'y a rien à publier ici : le site affiche déjà ce contenu.';
+    /* v7.13.1 : une soirée est recontrôlée au moment où elle devient publique, avec les réservations liées présentes à cet
+       instant (elles ont pu arriver après la préparation, ou la version vient de l'historique, ou d'un autre onglet). */
+    if (args.perimetre === 'soiree') {
+      const s = (c) => evenementsDe(sources.agenda || [], { evenements: c || {} }).find((y) => y.id === args.id), pub = s(publie(S, 'evenements')), neuf = s(contenu(S, 'evenements')), liees = resasDeSoiree(resas, args.id);
+      if (pub && liees.length && refusSoiree(pub, neuf, liees)) {
+        const n = liees.length, couverts = liees.reduce((a, r) => a + (+r.couverts || 0), 0), quoi = !neuf ? 'Elle ne peut plus être retirée' : String(pub.debut).slice(0, 10) !== String(neuf.debut).slice(0, 10) ? 'Sa date ne peut plus être modifiée' : 'Son service ne peut plus être modifié';
+        return `Cette soirée a reçu ${n} réservation${n > 1 ? 's' : ''} (${couverts} couvert${couverts > 1 ? 's' : ''}) pour le ${fmt(String(pub.debut).slice(0, 10))}. ${quoi} par cette publication : rien n'a été publié, le site et ${n > 1 ? 'ces réservations' : 'cette réservation'} n'ont pas changé, et votre brouillon est conservé. Remettez la date et le service publiés pour publier le reste (titre, photo, prix), ou traitez d'abord ${n > 1 ? 'ces réservations' : 'cette réservation'} dans l'agenda.`;
+      }
+    }
     return '';
   }
-  if (nom === 'offAbandonner' && args.perimetre === 'soiree') { const s = (c) => evenementsDe(sources.agenda || [], { evenements: c || {} }).find((y) => y.id === args.id); return refusSoiree(s(contenu(S, 'evenements')), s(publie(S, 'evenements')), resasDeSoiree(resas, args.id)); }
+  /* v7.13.1 : une soirée déjà réservée se compare à sa version PUBLIÉE (celle que les clients ont réservée), pas au brouillon :
+     revenir à la date publiée est toujours possible ; s'en écarter ne l'est pas tant que des réservations y sont liées. */
+  const soireeDe = (c, id, agenda) => evenementsDe(agenda || [], { evenements: c || {} }).find((y) => y.id === id);
+  const reference = (id, agenda) => soireeDe(publie(S, 'evenements'), id, agenda) || soireeDe(contenu(S, 'evenements'), id, agenda);
+  if (nom === 'offReprendre') {
+    const x = (S.publie?.historique || []).find((h) => h.n === args.n); if (!x) return 'Cette version n\'est plus dans l\'historique.';
+    if (x.perimetre === 'soiree') { const essai = clone(S); poser(essai, 'soiree', x.id, x[args.cote || 'apres']); return refusSoiree(reference(x.id, sources.agenda), soireeDe(contenu(essai, 'evenements'), x.id, sources.agenda), resasDeSoiree(resas, x.id)); }
+    return '';
+  }
   if (nom === 'evenement' || nom === 'supprimerEvenement') {
-    const avant = evenementsDe(args.agenda || [], { evenements: contenu(S, 'evenements') || {} }).find((y) => y.id === args.id);
-    return refusSoiree(avant, nom === 'supprimerEvenement' ? null : { ...avant, ...(args.champs || {}) }, resasDeSoiree(resas, args.id));
+    const ref = reference(args.id, args.agenda), brouillon = soireeDe(contenu(S, 'evenements'), args.id, args.agenda);
+    return refusSoiree(ref, nom === 'supprimerEvenement' ? null : { ...(brouillon || ref), ...(args.champs || {}) }, resasDeSoiree(resas, args.id));
   }
   return '';
 }

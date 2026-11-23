@@ -171,6 +171,13 @@ try {
   await vue(Rc, 'carte'); await Rc.locator('#onglet-carte-catalogue').click(); await attendre(400);
   const catC = await Rc.evaluate(() => ({ exemples: document.querySelectorAll('[data-offre-exemple]').length, types: [...new Set([...document.querySelectorAll('[data-offre]')].map((x) => x.dataset.offreType))].sort().join() }));
   verifier('v7.13.0 : aucune offre d\'exemple dans le catalogue du site connecté', catC.exemples === 0 && !/formule|prestation/.test(catC.types) && /plat/.test(catC.types), JSON.stringify(catC));
+  /* v7.13.1 : les cartes cadeaux (montants de la page Offrir) sont dans le catalogue ; l'annonce se prépare sans s'afficher. */
+  const cadeauxC = await Rc.locator('[data-offre][data-offre-type="cadeau"]').count();
+  await vue(Rc, 'site'); await Rc.locator('#onglet-horaires').click(); await attendre(300); await Rc.locator('#an-texte').fill('Annonce de recette'); await attendre(1300); await Rc.locator('[data-annonce-active]').click(); await attendre(500);
+  const zoneC = await texte(Rc, '[data-pub-zone="annonce"]'), Pa = await A.context().newPage(); await Pa.goto(`${BASE}/la-carte`, { waitUntil: 'load' }); await attendre(1500); const annonceC = await Pa.locator('.annonce-site').count(); await Pa.close();
+  verifier('v7.13.1 : cartes cadeaux au catalogue ; une annonce préparée ne s\'affiche pas sur le site avant sa publication', cadeauxC === 5 && /En préparation/.test(zoneC) && annonceC === 0, `${cadeauxC} cartes | ${zoneC.slice(0, 80)} | annonce sur le site : ${annonceC}`);
+  await Rc.evaluate(() => { const d = JSON.parse(localStorage.getItem('jh-espace:v1') || '{}'); delete d.annonce; delete d.publie; localStorage.setItem('jh-espace:v1', JSON.stringify(d)); });
+  await Rc.reload({ waitUntil: 'load' }); await pret(Rc); await vue(Rc, 'carte'); await Rc.locator('#onglet-carte-catalogue').click(); await attendre(400);
   await Rc.locator('[data-offre-nouvelle]').first().click(); await attendre(400); await Rc.locator('#of-nom').fill('Cocktail de recette'); await Rc.locator('#of-prix').fill('20'); await Rc.locator('[data-form-offre] button[type="submit"]').click(); await attendre(500);
   await Rc.locator('[data-pub-ouvrir]').first().click(); await attendre(300);
   const resumeC = await texte(Rc, '[data-pub-resume]'); await Rc.locator('[data-pub-confirmer]').click(); await attendre(600);

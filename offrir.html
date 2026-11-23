@@ -196,6 +196,8 @@ setTimeout(function () { if (!d.classList.contains('demarre')) d.classList.add('
         <div class="ccq__puces">
           <label class="ccq__puce"><input type="radio" name="montant" value="25"><span>25 €</span></label><label class="ccq__puce"><input type="radio" name="montant" value="50" checked><span>50 €</span></label><label class="ccq__puce"><input type="radio" name="montant" value="100"><span>100 €</span></label><label class="ccq__puce"><input type="radio" name="montant" value="150"><span>150 €</span></label><label class="ccq__puce"><input type="radio" name="montant" value="200"><span>200 €</span></label>
         </div>
+        <p class="ccq__presentation" data-cadeau-presentation hidden></p>
+        <script type="application/json" data-cadeaux-base>[25,50,100,150,200]</script>
         <p class="ccq__erreur" id="ccq-erreur-montant" data-ccq-erreur="montant" aria-live="polite"></p>
       </fieldset>
       <div class="ccq__champ">

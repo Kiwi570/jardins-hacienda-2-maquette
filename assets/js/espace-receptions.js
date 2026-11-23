@@ -162,9 +162,9 @@ export const totalLigne = (l) => Math.round((+l.qte || 0) * (+l.pu || 0) * 100) 
 export const totalProposition = (p) => Math.round((p?.lignes || []).reduce((n, l) => n + totalLigne(l), 0) * 100) / 100;
 /** L'accord sur la version courante : { version, le, par: 'client' | 'equipe' } ou null. Un accord sur une ancienne version ne vaut plus. */
 export function accordDe(d, v = {}) {
-  const c = couranteDe(d); if (!c) return null;
-  if (v.accord?.version === c.v) return { version: c.v, le: v.accord.le, par: 'client' };
-  return d.accordEquipe?.version === c.v ? { version: c.v, le: d.accordEquipe.le, par: 'equipe' } : null;
+  /* v7.13.1 : une seule règle de lecture. L'accord de la version courante est celui que `accordsDe` reconnaît pour cette
+     version exacte : donné par le client sur sa page, noté par l'équipe (`d.accords`), ou gardé dans un ancien format. */
+  const c = couranteDe(d); return c ? accordsDe(d, v)[c.v] || null : null;
 }
 /**
  * Tous les accords donnés, version par version : { [version]: { version, le, par: 'client' | 'equipe' } }.
@@ -543,7 +543,8 @@ export const MUTATIONS_RECEPTIONS = {
     noter(d, le, `Proposition version ${v} : brouillon repris de la version ${c.v}.`);
   },
   /** L'équipe note un accord reçu autrement (au téléphone, sur place) sur la version courante. Simulation : rien n'est signé. */
-  recAccordEquipe(S, { id, le = '' }) { const d = prendre(S, id), c = d && couranteDe(d); if (!c) return; (d.accords ||= {})[c.v] = { le: court(le) }; noter(d, le, `Accord du client sur la version ${c.v}, noté par l'équipe (simulation).`); },
+  /* v7.13.1 : noter deux fois le même accord ne crée ni seconde date ni seconde ligne d'historique. */
+  recAccordEquipe(S, { id, le = '' }) { const d = prendre(S, id), c = d && couranteDe(d); if (!c || d.accords?.[c.v] || d.accordEquipe?.version === c.v) return; (d.accords ||= {})[c.v] = { le: court(le) }; noter(d, le, `Accord du client sur la version ${c.v}, noté par l'équipe (simulation).`); },
   /** Retire la dernière version présentée, restée sans accord (révision refusée ou abandonnée) : elle reste consultable ; la version présentée avant elle redevient la version courante, avec ses accords. */
   recRetirerVersion(S, { id, version, raison = '', le = '' }) {
     const d = prendre(S, id), c = d && couranteDe(d); if (!c || c.v !== +version) return;
