@@ -2187,6 +2187,16 @@ label.emp-jour input { position: absolute; inset: 0; opacity: 0; margin: 0; curs
 label.emp-jour:has(input:checked) { background: #e9cf8e; color: #1c1712; box-shadow: none; }
 label.emp-jour:has(input:focus-visible) { outline: 3px solid #e9cf8e; outline-offset: 2px; }
 label.emp-jour.est-passe { cursor: not-allowed; background: transparent; box-shadow: none; color: rgba(246, 239, 226, .62); }
+/* v7.14.1 · La période des retraits se règle dans l'espace : plusieurs mois, un titre par mois ; et la phrase qui dit pourquoi aucun retrait n'est possible. */
+.emp-calendrier__titre-mois { margin: 14px 0 6px; font-weight: 700; font-size: .95rem; color: #e9cf8e; text-transform: capitalize; }
+.emp-calendrier__titre-mois:first-of-type { margin-top: 6px; }
+.emp-tiroir .emp-calendrier__titre-mois { color: #9a5a12; }
+label.emp-jour.est-complet span:first-of-type { text-decoration: line-through; text-decoration-style: dotted; text-decoration-thickness: 1px; }
+.emp-memoire { margin: 0 0 18px; padding: 12px 16px; border-radius: 12px; border: 1px solid #e9cf8e; background: rgba(233, 207, 142, .12); color: inherit; font-weight: 600; }
+.emp-memoire[hidden] { display: none; }
+.emp-form__sans-retrait { margin: 10px 0 0; padding: 12px 14px; border-radius: 12px; border: 1px solid currentColor; font-weight: 600; }
+.emp-form__sans-retrait[hidden], .avent__note[hidden] { display: none; }
+.avent__note { margin: 16px 0 0; font-weight: 600; }
 .emp-form__moment { display: flex; flex-wrap: wrap; gap: 10px; }
 .emp-form__moment legend { width: 100%; }
 .emp-form__moment .puce:has(input:disabled) span { opacity: .6; text-decoration: line-through; cursor: not-allowed; }
@@ -5904,6 +5914,33 @@ html.js[data-arrivee="intro"]:not(.calme):not(.secours):not(.intro-finie) .bande
   .esp-feuille--commerce .esp-com-feuille__sous { margin: 14pt 0 4pt; font-family: var(--police-titres); font-size: 14pt; }
   .esp-feuille--commerce .esp-com-feuille__ref { font-size: 13pt; }
   .esp-feuille--commerce p { margin: 6pt 0; }
+}
+/* v7.14.1 · L'onglet ne peut pas retenir la démonstration : la page le dit, sous le repère. */
+.apercu-espace--note { display: block; max-width: min(92vw, 420px); margin: 0; border-radius: 16px; white-space: normal; font-size: 14px; font-weight: 600; line-height: 1.4; }
+/* v7.14.1 · La production engagée, la période des retraits, les repères « à vérifier » et « hors période ». */
+.esp-com-alerte { margin: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--esp-attente, #9a5a12); background: var(--esp-attente-clair, #fbefd9); color: var(--couleur-texte); }
+.esp-com-alerte p { margin: 0 0 8px; }
+.esp-com-alerte p:last-child { margin-bottom: 0; }
+div.esp-com-alerte.esp-carte { display: grid; gap: 4px; }
+.esp-com-prod { display: grid; gap: 10px; }
+.esp-com-prod > :is(h4, p) { margin: 0; }
+.esp-com-prod h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.esp-com-prod .esp-com-ligne .esp-com-rectif { grid-column: 1 / -1; }
+.esp-com-ligne .esp-com-rectif .esp-com-actions { grid-column: 1 / -1; grid-row: auto; justify-content: flex-start; }
+.esp-com-rectif > .esp-champ__titre { grid-column: 1 / -1; margin: 0; font-weight: 700; }
+.esp-com-ecart { margin-top: 4px; color: var(--esp-attente, #9a5a12) !important; font-weight: 600; }
+.esp-com-periode > summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; font-family: var(--police-titres); font-size: 1.2rem; font-weight: 600; }
+.esp-com-periode form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; margin-top: 10px; }
+.esp-com-periode form > :is(.esp-aide, .esp-com-effets, .esp-erreur, .esp-com-actions) { grid-column: 1 / -1; margin: 0; }
+.esp-com-periode input[type="date"], .esp-com-rectif input[type="date"] { min-height: 44px; }
+.esp-com-exception .esp-case { display: flex; align-items: flex-start; gap: 10px; min-height: 44px; cursor: pointer; }
+.esp-com-exception .esp-case input { flex: none; width: 22px; height: 22px; margin-top: 2px; accent-color: var(--or-fonce, #9a5a12); }
+.esp-com-exception small { display: block; color: var(--couleur-texte-doux); font-size: 13px; }
+.esp-com-note-carte { margin: 0 0 10px; font-size: 15px; color: var(--couleur-texte-doux); }
+@media (max-width: 760px) {
+  .esp-com-periode form { grid-template-columns: minmax(0, 1fr); }
+  /* Sur téléphone, chaque quantité du tableau de préparation porte son nom de colonne. */
+  .esp-com-lignes--prep td[data-titre]::before { content: attr(data-titre) "\00a0: "; color: var(--couleur-texte-doux); font-size: 13px; font-weight: 600; }
 }
 /* Sur un écran étroit, l'état d'une demande (« Demande reçue ») et « reçue il y a 2 jours » passent à la ligne au lieu d'être coupés. */
 @media (max-width: 720px) { .esp-dem__etat { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; } }

@@ -4,9 +4,11 @@
    Effets propres (data-effet) : heure (horloge de l'en-tête), axes (chiffres variables), heure-section, eau (WebGL),
    passe, vraies, apres-midi, terrasse, guirlandes, carton, braises, decompte, carte-apercu. */
 /* v7.6.0 · L'aperçu des modifications de l'espace restaurateur passe avant tout (textes, photos, horaires, événements). */
-import { cadeauxPublies, controleEmporter, retraitsComplets } from './espace-apercu.js?v=7';
+import { cadeauxPublies, controleEmporter, retraitsComplets, retraitsSite } from './espace-apercu.js?v=7';
 /* v7.7.2 · Les demandes faites sur le site (réception, traiteur, carte cadeau, question) arrivent dans l'espace restaurateur. */
-import { ajouterDemandeSite, horloge as horlogeDemo } from './espace-stock.js?v=7';
+import { ajouterDemandeSite, horloge as horlogeDemo, temporaire, scenarioRecommence, MESSAGE_RECOMMENCE, porterContexte, etatDuContexte } from './espace-stock.js?v=7';
+/* v7.14.1 : si l'onglet ne peut pas retenir la démonstration demandée par l'adresse, ses liens la portent. */
+porterContexte();
 /* v7.8.1 · Aucune réussite avant un enregistrement réussi : si la demande n'a pas pu être passée au restaurant
    (mémoire du navigateur pleine ou refusée), c'est dit clairement par-dessus l'écran de confirmation du formulaire. */
 function transmettreDemande(d) {
@@ -15,7 +17,8 @@ function transmettreDemande(d) {
   if (ajouterDemandeSite(d) !== false) return true;
   document.querySelector('.envoi-refuse')?.remove();
   const z = document.createElement('div'); z.className = 'envoi-refuse'; z.setAttribute('role', 'alert');
-  const p = document.createElement('p'); p.textContent = 'Votre demande n\u2019a pas pu être transmise au restaurant depuis ce navigateur. Elle n\u2019est pas enregistrée\u00a0: réessayez, ou appelez-nous.';
+  /* v7.14.1 : une page d'une démonstration recommencée depuis ne dépose rien dans le nouveau départ, et dit pourquoi. */
+  const p = document.createElement('p'); p.textContent = scenarioRecommence() ? MESSAGE_RECOMMENCE : 'Votre demande n\u2019a pas pu être transmise au restaurant depuis ce navigateur. Elle n\u2019est pas enregistrée\u00a0: réessayez, ou appelez-nous.';
   const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Fermer'; b.addEventListener('click', () => z.remove());
   z.append(p, b); document.body.append(z); b.focus({ preventScroll: true });
   return false;
@@ -1567,13 +1570,17 @@ function vitrineCloches() {
 function emporter() {
   const src = $('[data-emp-textes]'); if (!src) return;
   let T; try { T = JSON.parse(src.textContent); } catch { return; }
-  const CLE = 'hacienda-emporter';
+  /* v7.14.1 : la commande commencée appartient à SON contexte. Hors démonstration, la clé historique `hacienda-emporter`
+     (les paniers existants sont retrouvés tels quels) ; dans un scénario, une clé à son nom : le panier normal n'y est
+     ni lu, ni copié, ni effacé. Lecture, sauvegarde, autres onglets, vidage après l'envoi : tout passe par ce magasin. */
+  const magasin = temporaire('hacienda-emporter');
   const form = $('[data-emp-form]'), lignesEl = $('[data-panier-lignes]'), vide = $('[data-panier-vide]'), totalEl = $('[data-panier-total]'), retraitEl = $('[data-panier-retrait]');
   const pastille = $('[data-emp-pastille]'), nbEl = $('[data-pastille-nombre]'), ptEl = $('[data-pastille-total]'), annonce = $('[data-emp-annonce]'), merci = $('[data-emp-merci]');
   const euros = (n) => `${(Math.round(n * 100) / 100).toLocaleString('fr-FR', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })} €`;
   const fmt = (t, v) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? '');
   let lignes = [], retires = 0;
-  try { const gardees = JSON.parse(localStorage.getItem(CLE) || '[]').filter((l) => l.qte > 0); lignes = gardees.filter((l) => T.produits[l.id]); retires = gardees.length - lignes.length; } catch { lignes = []; }
+  const lirePanier = () => { const v = magasin.lire(); return (Array.isArray(v) ? v : []).filter((l) => l && l.qte > 0); };
+  { const gardees = lirePanier(); lignes = gardees.filter((l) => T.produits[l.id]); retires = gardees.length - lignes.length; }
   /* v7.14.0 : les quantités suivent le catalogue publié (quantité minimale et pas, dans l'unité du prix) ; l'unité est toujours dite. */
   const arr3 = (n) => Math.round(n * 1000) / 1000, pasDe = (l) => (l.poids ? 1 : T.produits[l.id].pas || 1), minDe = (l) => (l.poids ? 1 : T.produits[l.id].min || 1);
   const MOTS = { piece: ['pièce', 'pièces'], formule: ['formule', 'formules'] }, uniteDe = (id) => T.produits[id].unite;
@@ -1581,7 +1588,13 @@ function emporter() {
   const quantiteDite = (x) => `${String(x.quantite).replace('.', ',')} ${x.unite === 'kilo' ? 'kg' : (MOTS[x.unite] || MOTS.piece)[x.quantite > 1 ? 1 : 0]}`;
   /* La ligne telle qu'elle part au restaurant : le produit du catalogue, la quantité dans son unité, le prix du moment. */
   const ligneEnvoi = (l) => { const p = T.produits[l.id], q = arr3(l.qte * (l.poids || 1)); return { offre: p.offre || '', cle: l.id, nom: p.nom, unite: p.unite === 'kg' ? 'kilo' : p.unite, prix: p.prix, quantite: q, total: Math.round(p.prix * q * 100) / 100, ...(l.poids ? { detail: `${l.qte} × ${String(l.poids).replace('.', ',')} kg` } : {}) }; };
-  const garder = () => { try { localStorage.setItem(CLE, JSON.stringify(lignes)); } catch {} };
+  /* Si la commande ne peut pas être gardée (mémoire refusée ou pleine, contexte incertain), la page le dit une fois :
+     elle continue de fonctionner, sans rien écrire ailleurs. Une démonstration recommencée depuis a son propre message. */
+  const memoireEl = $('[data-emp-memoire]');
+  const direMemoire = (texte) => { if (memoireEl) { memoireEl.textContent = texte; memoireEl.hidden = !texte; } const t = $('[data-emp-tiroir] [data-tiroir-ajoute]'); if (t && texte) { t.textContent = texte; t.hidden = false; } };
+  const NON_GARDEE = 'La mémoire de ce navigateur est indisponible : votre commande reste sur cette page, elle ne sera pas retrouvée si vous la quittez.';
+  const garder = () => { if (scenarioRecommence()) return false; const ok = magasin.ecrire(lignes); if (!ok) direMemoire(NON_GARDEE); return ok; };
+  if (!magasin.persistant) direMemoire(etatDuContexte() === 'incertain' ? 'Ce navigateur ne permet pas de savoir si cet onglet est en démonstration : votre commande reste sur cette page, rien n\'est lu ni écrit dans vos données habituelles.' : NON_GARDEE);
   const prixLigne = (l) => T.produits[l.id].prix * (l.poids || 1) * l.qte;
   const nomLigne = (l) => T.produits[l.id].nom + (l.poids ? ` · ${String(l.poids).replace('.', ',')} kg` : '');
   const total = () => lignes.reduce((s, l) => s + prixLigne(l), 0);
@@ -1757,6 +1770,7 @@ function emporter() {
     v.animate([{ transform: `translate(${x0}px, ${y0}px) scale(1)` }, { transform: `translate(${mx}px, ${my}px) scale(1.25)`, offset: 0.5 }, { transform: `translate(${x1}px, ${y1}px) scale(.5)`, opacity: 0.6 }], { duration: 720, easing: 'cubic-bezier(.4, 0, .2, 1)' }).finished.then(() => { v.remove(); toucher(); }, () => v.remove());
   };
   for (const b of $$('[data-ajouter]')) b.addEventListener('click', () => {
+    if (recommencee || scenarioRecommence()) { reconnaitreRecommence(); memoireEl?.scrollIntoView({ block: 'center' }); return; }
     const id = b.dataset.ajouter, carte = b.closest('[data-produit]');
     const poids = T.produits[id].unite === 'kg' ? +($('[data-poids]', carte)?.value || 1) : 0;
     const l = lignes.find((x) => x.id === id && (x.poids || 0) === poids);
@@ -1772,18 +1786,88 @@ function emporter() {
     if (!tiroir) annonce.textContent = fmt(T.annonce, { nom: nomLigne({ id, poids }), total: euros(total()) });
     $('[data-erreur="panier"]', form).hidden = true;
   });
-  addEventListener('storage', (e) => { if (e.key !== CLE) return; try { lignes = JSON.parse(e.newValue || '[]'); } catch { lignes = []; } rendre(); });
+  /* Un autre onglet du MÊME contexte a changé la commande : cette page la suit. Si la démonstration a été recommencée
+     ailleurs, cette page date d'avant : sa commande est remise à zéro (rien n'est réinjecté), et c'est dit. */
+  let recommencee = false;
+  const reconnaitreRecommence = () => {
+    if (recommencee || !scenarioRecommence()) return recommencee; recommencee = true; lignes = [];
+    for (const j of $$('[name="jour"]', form)) j.checked = false; for (const m of $$('[name="moment"]', form)) { m.checked = false; m.disabled = true; }
+    direMemoire(MESSAGE_RECOMMENCE.replace(' Rien n\'a été envoyé.', ' La commande commencée ici a été remise à zéro.')); annonce.textContent = memoireEl?.textContent || ''; rendre(); return true;
+  };
+  magasin.ecouter((quoi) => { if (quoi === 'recommence') { reconnaitreRecommence(); return; } lignes = lirePanier().filter((l) => T.produits[l.id]); rendre(); });
+  /* L'espace a pu changer la période des retraits, les capacités ou les horaires dans un autre onglet : le calendrier suit. */
+  addEventListener('storage', (e) => { if (e.key === null || /espace:v1$/.test(e.key || '')) majJours(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { reconnaitreRecommence(); majJours(); } });
   const sectionCommande = $('#commande');
   if (sectionCommande) new IntersectionObserver(([e]) => { commandeVue = e.isIntersecting; rendre(); }, { threshold: 0.12 }).observe(sectionCommande);
   /* Jour et moment : jours passés grisés à la date réelle, midi ou soir selon les horaires du jour choisi. */
   const auj = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(instantSite());
-  const jours = $$('[name="jour"]', form), moments = $$('[name="moment"]', form);
-  /* v7.14.0 : un jour passé, ou plus proche que le délai de commande d'un produit choisi, ne peut pas être retenu. */
+  const moments = $$('[name="moment"]', form);
+  /* v7.14.1 : la période des retraits se règle dans l'espace. Les deux calendriers (celui de la commande, celui de la
+     page) sont redessinés d'après la règle commune (commerce.js), relue à l'instant : période, bornes comprises ; horaires
+     et fermetures ; jours passés à l'horloge de la page (celle du scénario en démonstration) ; délai de commande des
+     produits choisis ; créneaux complets. S'il n'y a plus rien à proposer, la page dit pourquoi. */
+  const calEl = $('[data-emp-calendrier]', form), sansRetrait = $('[data-emp-sans-retrait]', form), TC = T.calendrier || {};
+  const dateDite = (iso, o) => new Intl.DateTimeFormat('fr-FR', { ...o, timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`));
+  const sur = (t) => String(t ?? '').replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]);
+  const POURQUOI = { passe: 'jour passé', delai: 'trop proche pour votre commande', complet: 'retraits complets' };
+  let retraits = null, signature = '', jourPerdu = '';
+  const DISPARU = { passe: 'ce jour est passé', delai: 'il est trop proche pour un produit de votre commande', complet: 'ses retraits sont complets', ferme: 'le restaurant est fermé ce jour-là' };
+  function rendreAvent(R, choisi) {
+    const sec = $('[data-avent]'), ol = sec && $('.avent__cases', sec); if (!ol) return;
+    /* Le mur montre toute la période si elle tient en 45 jours ; sinon les 45 prochains, et c'est dit. */
+    const MAX = 45, debut = R.jours.length > MAX ? Math.max(0, Math.min(R.jours.length - MAX, R.jours.findIndex((j) => j.iso >= R.auj))) : 0, vus = R.jours.slice(debut, debut + MAX), plusieursMois = new Set(vus.map((j) => j.iso.slice(0, 7))).size > 1;
+    let moisVu = '';
+    ol.innerHTML = vus.map((j, i) => {
+      const n = +j.iso.slice(8), long = dateDite(j.iso, { weekday: 'long', day: 'numeric', month: 'long' }), mois = j.iso.slice(0, 7), nouveauMois = plusieursMois && i > 0 && mois !== moisVu; moisVu = mois;
+      const sem = `${dateDite(j.iso, { weekday: 'short' }).replace('.', '')}${nouveauMois ? ` · ${dateDite(j.iso, { month: 'short' }).replace('.', '')}` : ''}`;
+      const tete = `<span class="avent__date"><span class="avent__sem">${sur(sem)}</span><span class="avent__jour">${n}</span></span>`, porte = `<span class="avent__porte" aria-hidden="true" data-superpose><span class="avent__porte-num">${n}</span></span>`;
+      const libres = [j.prevus.midi && (TC.midi || 'Midi'), j.prevus.soir && (TC.soir || 'Soir')].filter(Boolean);
+      if (!libres.length) return `<li class="avent__case est-ferme" style="--i:${i}"><span class="avent__cellule" role="img" aria-label="${sur(fmt(TC.aventLabelFerme || '{jour} : fermé', { jour: long }))}">${tete}<span class="avent__services"><span class="avent__ferme">${sur(TC.aventFerme || 'Fermé')}</span></span>${porte}</span></li>`;
+      /* Un jour passé ou trop proche n'est pas proposé. Un jour dont les créneaux sont complets reste touchable : le choisir dit pourquoi, et invite à en prendre un autre. */
+      const non = j.etat === 'passe' || j.etat === 'delai', dits = libres.map((x) => `${sec.dataset.le} ${x.toLowerCase()}`).join(` ${sec.dataset.ou} `);
+      return `<li class="avent__case${non ? ' est-passe' : ''}${j.iso === choisi ? ' est-choisi' : ''}" style="--i:${i}"><button type="button" class="avent__cellule" data-avent-jour="${j.iso}" aria-pressed="${j.iso === choisi}"${non ? ' disabled' : ''} aria-label="${sur(fmt(TC.aventLabel || '{jour} : retrait {moments}', { jour: long, moments: dits }))}${j.etat !== 'ouvert' ? `, ${POURQUOI[j.etat]}` : ''}">${tete}<span class="avent__services">${libres.map((x) => `<span class="avent__service">${sur(x)}</span>`).join('')}</span><span class="avent__votre">${sur(TC.aventVotre || '')}</span>${porte}</button></li>`;
+    }).join('');
+    const note = $('[data-avent-note]', sec); if (note) { const t = R.raison ? R.raisonTexte : R.jours.length > MAX ? `Le mur montre ${MAX} jours ; les suivants (jusqu'au ${dateDite(R.periode.fin, { day: 'numeric', month: 'long', year: 'numeric' })}) se choisissent dans votre commande.` : ''; note.hidden = !t; note.textContent = t; }
+  }
   function majJours() {
-    if (!jours) return;
-    const delai = lignes.reduce((n, l) => Math.max(n, +T.produits[l.id]?.delai || 0), 0), premier = delai ? ajouterJours(auj, delai) : auj;
-    for (const j of jours) { const trop = j.value < premier; j.disabled = trop; j.closest('label').classList.toggle('est-passe', trop); if (trop && j.checked) { j.checked = false; for (const m of moments) { m.checked = false; m.disabled = true; } } }
-    const n = $('[data-emp-creneau-note]', form); if (n && delai && !$('[name="jour"]:checked', form)) { n.hidden = false; n.textContent = `Un produit de votre commande se commande au moins ${delai} jour${delai > 1 ? 's' : ''} avant le retrait : les jours plus proches ne sont pas proposés.`; }
+    const delai = lignes.reduce((n, l) => Math.max(n, +T.produits[l.id]?.delai || 0), 0), R = retraitsSite({ delai }); retraits = R; if (!R || !calEl) return;
+    let choisi = $('[name="jour"]:checked', form)?.value || '';
+    const sig = JSON.stringify([R.periode, R.auj, delai, R.jours.map((j) => `${j.etat[0]}${+j.prevus.midi}${+j.prevus.soir}`).join('')]);
+    if (sig !== signature) {
+      signature = sig;
+      /* Le jour déjà choisi n'est plus proposé (période changée, créneaux remplis, délai) : c'est dit, avec la raison. */
+      if (choisi) { const j = R.jours.find((x) => x.iso === choisi); if (j?.etat !== 'ouvert' && j?.etat !== 'complet') { jourPerdu = `Le ${dateDite(choisi, { weekday: 'long', day: 'numeric', month: 'long' })} n'est plus proposé au retrait : ${j ? DISPARU[j.etat] : `il est hors de la période des retraits (${R.texte})`}. Choisissez un autre jour.`; choisi = ''; } }
+      const parMois = new Map(); for (const j of R.jours) { const k = j.iso.slice(0, 7); if (!parMois.has(k)) parMois.set(k, new Map()); parMois.get(k).set(j.iso, j); }
+      const tete = $('.emp-calendrier__tete', calEl)?.outerHTML || '', plusieurs = parMois.size > 1;
+      const blocs = [...parMois].map(([mois, jours]) => {
+        const [a, m] = mois.split('-').map(Number), decalage = (new Date(Date.UTC(a, m - 1, 1)).getUTCDay() + 6) % 7, nb = new Date(Date.UTC(a, m, 0)).getUTCDate(), cases = [];
+        for (let i = 0; i < decalage; i++) cases.push({ h: '<span class="emp-jour emp-jour--vide" aria-hidden="true"></span>' });
+        for (let d = 1; d <= nb; d++) {
+          const iso = `${mois}-${String(d).padStart(2, '0')}`, j = jours.get(iso);
+          if (!j) cases.push({ h: `<span class="emp-jour emp-jour--hors" aria-hidden="true"><span>${d}</span></span>` });
+          else if (j.etat === 'ferme') cases.push({ dedans: true, h: `<span class="emp-jour emp-jour--ferme" aria-hidden="true" title="${sur(TC.ferme || 'fermé')}"><span>${d}</span></span>` });
+          else { const lib = dateDite(iso, { weekday: 'long', day: 'numeric', month: 'long' }), non = j.etat === 'passe' || j.etat === 'delai', plein = j.etat === 'complet';
+            cases.push({ dedans: true, h: `<label class="emp-jour${non ? ' est-passe' : plein ? ' est-complet' : ''}"${non || plein ? ` title="${POURQUOI[j.etat]}"` : ''}><input type="radio" name="jour" value="${iso}" data-libelle="${sur(lib)}" data-midi="${j.prevus.midi ? 1 : 0}" data-soir="${j.prevus.soir ? 1 : 0}"${non ? ' disabled' : ''}${!non && iso === choisi ? ' checked' : ''}><span>${d}</span><span class="visuellement-cache">${sur(lib)}${non || plein ? `, ${POURQUOI[j.etat]}` : ''}</span></label>` }); }
+        }
+        /* Une semaine entière hors de la période n'est pas dessinée : le calendrier reste court. */
+        const semaines = []; for (let i = 0; i < cases.length; i += 7) { const sem = cases.slice(i, i + 7); if (sem.some((x) => x.dedans)) semaines.push(sem.map((x) => x.h).join('')); }
+        const html = semaines.join('');
+        return `${plusieurs ? `<p class="emp-calendrier__titre-mois">${sur(dateDite(`${mois}-01`, { month: 'long', year: 'numeric' }))}</p>` : ''}${tete}<div class="emp-calendrier__jours">${html}</div>`;
+      });
+      for (const el of $$('.emp-calendrier__tete, .emp-calendrier__jours, .emp-calendrier__titre-mois', calEl)) el.remove();
+      calEl.insertAdjacentHTML('beforeend', blocs.join(''));
+      const mois = [...parMois.keys()], label = $('.emp-calendrier__mois', calEl);
+      if (label && mois.length) label.textContent = mois.length > 1 ? `${dateDite(`${mois[0]}-01`, { month: 'long', year: 'numeric' })} – ${dateDite(`${mois.at(-1)}-01`, { month: 'long', year: 'numeric' })}` : dateDite(`${mois[0]}-01`, { month: 'long', year: 'numeric' });
+      if (!choisi) for (const m of moments) { m.checked = false; m.disabled = true; }
+      rendreAvent(R, choisi);
+      /* Le rappel du tiroir (« À retirer au restaurant, du … au … ») suit la période en vigueur. */
+      const tr = $('[data-tiroir-retrait]'); if (tr && TC.tiroirRetrait) { const avant = tr.dataset.defaut; tr.dataset.defaut = fmt(TC.tiroirRetrait, { debut: dateDite(R.periode.debut, { weekday: 'long', day: 'numeric', month: 'long' }), fin: dateDite(R.periode.fin, { weekday: 'long', day: 'numeric', month: 'long' }) }); if (tr.textContent === avant) tr.textContent = tr.dataset.defaut; }
+    }
+    if (sansRetrait) { sansRetrait.hidden = !R.raison; sansRetrait.textContent = R.raison ? R.raisonTexte : ''; }
+    const n = $('[data-emp-creneau-note]', form);
+    if (n && jourPerdu && !R.raison && !$('[name="jour"]:checked', form)) { n.hidden = false; n.textContent = jourPerdu; retraitEl.textContent = T.retraitAChoisir; }
+    else if (n && delai && !R.raison && !$('[name="jour"]:checked', form)) { n.hidden = false; n.textContent = `Un produit de votre commande se commande au moins ${delai} jour${delai > 1 ? 's' : ''} avant le retrait : les jours plus proches ne sont pas proposés.`; }
   }
   majJours();
   const retrait = () => {
@@ -1799,7 +1883,7 @@ function emporter() {
       for (const m of moments) { m.disabled = j.dataset[m.value] !== '1' || pleins.includes(m.value); if (m.disabled) m.checked = false; }
       if (note) { const dits = pleins.filter((x) => j.dataset[x] === '1'); note.hidden = !dits.length; note.textContent = dits.length ? `Le ${j.dataset.libelle}, les retraits ${dits.map((x) => (x === 'midi' ? 'de midi' : 'du soir')).join(' et ')} sont complets${moments.some((m) => !m.disabled) ? ' : choisissez l\'autre moment.' : ' : choisissez un autre jour.'}` : ''; }
       const ouverts = moments.filter((m) => !m.disabled); if (ouverts.length === 1) ouverts[0].checked = true;
-      $('[data-erreur="jour"]', form).hidden = true;
+      $('[data-erreur="jour"]', form).hidden = true; jourPerdu = '';
     }
     if (e.target.name === 'moment') $('[data-erreur="moment"]', form).hidden = true;
     /* Un seul moment possible ce jour-là : il est coché d'office, son message d'erreur disparaît aussi. */
@@ -1810,6 +1894,9 @@ function emporter() {
     e.preventDefault();
     const manques = [];
     const err = (n, ok) => { $(`[data-erreur="${n}"]`, form).hidden = ok; if (!ok) manques.push(n); };
+    if (reconnaitreRecommence()) { memoireEl?.scrollIntoView({ block: 'center' }); memoireEl?.focus?.({ preventScroll: true }); return; }
+    majJours();
+    { const ej = $('[data-erreur="jour"]', form); if (ej && TC.choisirJour) ej.textContent = retraits?.raison ? retraits.raisonTexte : (!$('[name="jour"]:checked', form) && jourPerdu) || TC.choisirJour; if (!$('[name="jour"]:checked', form) && jourPerdu) { const n = $('[data-emp-creneau-note]', form); if (n) n.hidden = true; } }
     err('panier', lignes.length > 0); err('jour', !!$('[name="jour"]:checked', form)); err('moment', !!$('[name="moment"]:checked', form));
     let premierChamp = null;
     for (const i of $$('input[required]', form)) { const ok = !!i.value.trim(); i.setAttribute('aria-invalid', ok ? 'false' : 'true'); if (!ok && !premierChamp) premierChamp = i; }
@@ -1840,7 +1927,7 @@ function emporter() {
        référence, ses lignes (produit du catalogue, quantité, unité, prix du moment), sa remarque et la version publiée. */
     if (!transmettreDemande({ id, genre: 'traiteur', produits: lignes.map((l) => ({ nom: nomLigne(l), qte: l.qte })), lignes: lignes.map(ligneEnvoi).map(({ cle, ...x }) => x), total: Math.round(total() * 100) / 100, jour: j.value, jourLibelle: j.dataset.libelle, moment: m.value, prenom: form.elements.prenom?.value.trim() || '', nom: form.elements.nom?.value.trim() || '', telephone: form.elements.tel?.value.trim() || '', email: form.elements.email?.value.trim() || '', remarque: form.elements.remarque?.value.trim() || '', publication: ctl.publication ?? null })) return;
     /* La demande est partie : la commande commencée n'est plus gardée pour la prochaine visite (l'écran, lui, la montre encore). */
-    try { localStorage.setItem(CLE, '[]'); } catch { /* rien */ }
+    magasin.ecrire([]);
     merci.innerHTML = '<p><strong></strong></p><p></p><p class="emp-form__ref">Référence de votre demande : <b data-emp-ref></b></p>'; merci.querySelector('[data-emp-ref]').textContent = id.toUpperCase();
     merci.querySelector('strong').textContent = fmt(T.recap, { produits, total: euros(total()), retrait: fmt(T.retrait, { jour: j.dataset.libelle, moment: T[m.value] }) });
     merci.querySelector('p + p').textContent = T.simule;

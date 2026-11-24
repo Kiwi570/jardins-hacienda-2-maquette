@@ -6,6 +6,7 @@
    de la piscine, le coin du feu (la vraie cheminée ; la réservation arrive après l'ouverture du titre) et « En ce moment »
    (les vraies affiches de Noël et de la Saint-Sylvestre, la carte cadeau). La terrasse du soir est passée sur Réceptions. */
 import { html, brut } from '../../outils/gabarit.mjs';
+import { baseRetraits } from '../gabarits/retraits.mjs';
 
 export const page = { cle: 'accueil', fichier: 'index', theme: 'jour', imagePartage: 'grok/midi-piscine-1280.webp', modules: ['plat-fumant'] };
 
@@ -481,7 +482,7 @@ if(k==='hiver-jour')return;var a='data-t-'+k,l=document.querySelectorAll('#midi 
         <ul class="oe-carte__liste" aria-label="${c.s('accueil.oe.emporterListe')}">
           ${c.donnees.emporter.produits.slice(0, 6).map((x) => html`<li>${x.nom}</li>`)}
         </ul>
-        <script type="application/json" data-emporter-base>${brut(JSON.stringify({ produits: c.donnees.emporter.produits.map((x) => ({ id: x.id, nom: x.nom, texte: x.texte, prix: x.prix, unite: x.unite })) }).replace(/</g, '\\u003c'))}</script>
+        <script type="application/json" data-emporter-base>${brut(JSON.stringify({ produits: c.donnees.emporter.produits.map((x) => ({ id: x.id, nom: x.nom, texte: x.texte, prix: x.prix, unite: x.unite })), ...baseRetraits(c) }).replace(/</g, '\\u003c'))}</script>
         <p class="oe-carte__actions">${c.lien('a-emporter', { classe: 'bouton', texte: c.t('accueil.oe.commander') })}</p>
       </article>
       <article class="oe-carte">

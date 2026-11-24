@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 24/11/2026 00:10:04 · 52 min · 5 page(s) · audit complet ciblé sur /,/a-emporter,/offrir,/les-fetes,/espace (étapes : fichiers, mesures, parcours)
+Projet : `jardins-hacienda-2-maquette` · 24/11/2026 07:34:54 · 54 min · 2 page(s) · audit complet ciblé sur /,/espace (étapes : fichiers, parcours)
 
 ## Résumé
 
-- Statut : **13 échec(s)**
-- Passe : `20261123-221826-complet-cible-partiel` · version ?v=7
-- Échecs : **13**
-- À regarder : **5**
+- Statut : **tout a tourné, aucun échec**
+- Passe : `20261124-054048-complet-cible-partiel` · version ?v=7
+- Échecs : **0**
+- À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (195), balayage (5), intro accélérable et passable (7), menu (1), clavier (5), liens et boutons (5), liens profonds (16), liens vers la page en cours (5), changements de hauteur (3), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : un service parfaitement accompagné (1366×768) (1), espace : un service parfaitement accompagné (390×844) (1), espace : démonstrations (1366×768) (1), espace : démonstrations (390×844) (1), espace : réceptions (1366×768) (1), espace : réceptions (390×844) (1), espace : réserver et réceptions (390×844) (1), espace : offres (1366×768) (1), espace : offres (390×844) (1), espace : commerce (1366×768) (1), espace : commerce (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), intro accélérable et passable (7), menu (1), clavier (2), liens et boutons (2), liens profonds (12), liens vers la page en cours (2), changements de hauteur (1), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : un service parfaitement accompagné (1366×768) (1), espace : un service parfaitement accompagné (390×844) (1), espace : démonstrations (1366×768) (1), espace : démonstrations (390×844) (1), espace : réceptions (1366×768) (1), espace : réceptions (390×844) (1), espace : réserver et réceptions (390×844) (1), espace : offres (1366×768) (1), espace : offres (390×844) (1), espace : commerce (1366×768) (1), espace : commerce (390×844) (1), espace : consolidation (1366×768) (1), espace : consolidation (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
 
 ## Passes de cette version (?v=7)
 
@@ -172,41 +172,17 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261123-215140-complet-cible-partiel | complet | /,/a-emporter,/offrir,/les-fetes,/espace | fichiers, mesures, parcours | 1 | 3 | 1 | échecs |
 | 20261123-221540-complet-cible-partiel | complet | /a-emporter | fichiers, mesures | 0 | 0 | 0 | complet |
 | 20261123-221652-complet-cible-partiel | complet | /a-emporter | fichiers, mesures | 0 | 0 | 0 | complet |
-| **20261123-221826-complet-cible-partiel** (celle-ci) | complet | /,/a-emporter,/offrir,/les-fetes,/espace | fichiers, mesures, parcours | 13 | 5 | 0 | échecs |
+| 20261123-221826-complet-cible-partiel | complet | /,/a-emporter,/offrir,/les-fetes,/espace | fichiers, mesures, parcours | 13 | 5 | 0 | échecs |
+| 20261124-040521-complet-cible-partiel | complet | /,/a-emporter,/reserver,/offrir,/espace | fichiers, mesures, parcours | 2 | 1 | 0 | échecs |
+| **20261124-054048-complet-cible-partiel** (celle-ci) | complet | /,/espace | fichiers, parcours | 0 | 0 | 0 | complet |
 
 ## Échecs
 
-### texte coupé (13)
-
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(1) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue il y a 2 jours » — rubrique jour : coupé par main#contenu « DÉMO Votre espace Tout est enregistré Vous présent » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(4) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue aujourd'hui » — rubrique jour : coupé par main#contenu « DÉMO Votre espace Tout est enregistré Vous présent » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(4) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue il y a 2 jours » — rubrique demandes : coupé par main#contenu « DÉMO Votre espace Tout est enregistré Jour Demande » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(1) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue il y a 2 jours » — message « Annuler » : coupé par main#contenu « DÉMO Votre espace Enregistré à 00 h 00 Vous présen » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(4) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue aujourd'hui » — message « Annuler » : coupé par main#contenu « DÉMO Votre espace Enregistré à 00 h 00 Vous présen » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(1) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue il y a 2 jours » — menu « Plus d’actions » : coupé par main#contenu « DÉMO Votre espace Enregistré à 00 h 00 Voir le sit » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(4) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue aujourd'hui » — menu « Plus d’actions » : coupé par main#contenu « DÉMO Votre espace Enregistré à 00 h 00 Voir le sit » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(1) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue il y a 2 jours » — fenêtre « Sur l’écran d’accueil » : coupé par main#contenu « DÉMO Votre espace Enregistré à 00 h 00 Vous présen » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(4) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue aujourd'hui » — fenêtre « Sur l’écran d’accueil » : coupé par main#contenu « DÉMO Votre espace Enregistré à 00 h 00 Vous présen » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(1) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue il y a 2 jours » — barre : exemples : coupé par main#contenu « DÉMO Votre espace Enregistré à 00 h 00 Vous présen » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(4) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue aujourd'hui » — barre : exemples : coupé par main#contenu « DÉMO Votre espace Enregistré à 00 h 00 Vous présen » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(1) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue il y a 2 jours » — barre : proposition : coupé par main#contenu « DÉMO Votre espace Enregistré à 00 h 00 Vous présen » _(320×568)_
-- **texte coupé** — `/espace` — li.esp-dem.est-nouvelle:nth-of-type(4) > button.esp-dem__tete > span.esp-dem__etat:nth-of-type(3) > span.esp-dem__recue:nth-of-type(2) « reçue aujourd'hui » — barre : proposition : coupé par main#contenu « DÉMO Votre espace Enregistré à 00 h 00 Vous présen » _(320×568)_
+Aucun.
 
 ## À regarder
 
-### bouton sans effet visible (2)
-
-- **bouton sans effet visible** — `/les-fetes` — IPour commencer _(1366×768)_
-- **bouton sans effet visible** — `/les-fetes` — IIEntrée _(1366×768)_
-
-### rechargement au milieu de la page (1)
-
-- **rechargement au milieu de la page** — `/les-fetes` — écran différent à la même position après rechargement (8.6 %), voir comparaisons/rechargement-les-fetes-*.png _(1366×768)_
-
-### typographie française (2)
-
-- **typographie française** — `/espace` — ul.esp-dems:nth-of-type(2) > li.esp-dem.est-nouvelle:nth-of-type(1) > p.esp-dem__actions > button.esp-bouton.esp-bouton--ok « Décider : ouvrir la commande » — rubrique demandes : espace insécable manquante avant ou après « : » _(1366×768)_
-- **typographie française** — `/espace` — ul.esp-dems:nth-of-type(2) > li.esp-dem.est-nouvelle:nth-of-type(4) > p.esp-dem__actions > button.esp-bouton.esp-bouton--ok « Décider : ouvrir la demande » — rubrique demandes : espace insécable manquante avant ou après « : » _(1366×768)_
+Rien.
 
 ## Non lancé
 
@@ -222,7 +198,6 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Changements de hauteur /a-emporter : aucun effet ScrollTrigger, rien à recalculer.
 - Changements de hauteur /espace : aucun effet ScrollTrigger, rien à recalculer.
 - Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
 
@@ -232,12 +207,3 @@ Tout a été lancé.
 - Films : `films/` (planches contact de l’ouverture, des transitions, des retours, des ancres et des épinglages ; ⚠ = image signalée)
 - Comparaisons : `comparaisons/`
 - Détail complet : `rapport.json`
-
-
-## Relancer seulement ce qui a échoué
-
-Après correction, si elle ne touche que ces pages (sinon, relancer l’audit standard en entier) :
-
-```
-node _audit/audit.mjs --complet --pages=/,/espace --seulement=fichiers,parcours
-```

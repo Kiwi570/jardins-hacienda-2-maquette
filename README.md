@@ -78,7 +78,9 @@ Transition entre les pages (v7.5) : un papier crème qui monte en cloche depuis 
 | Dates des pool parties | « Les dates sont annoncées sur Instagram. » |
 | Assiettes générées | jamais présentées comme un plat de la carte : les plats gardent leurs noms et leurs prix à côté, l'image porte « Illustration générée » |
 
-## L'espace restaurateur (démonstration, v7.14.0)
+## L'espace restaurateur (démonstration, v7.14.1)
+
+> **v7.14.1 — des démonstrations isolées, une préparation fiable.** Le panier de la page À emporter et le brouillon de la page Réserver sont propres à chaque contexte : une démonstration ne touche plus aux vôtres, et une page restée ouverte reconnaît un « Recommencer ». Ce que la cuisine a lancé en préparation est gardé à part de la commande : corriger une quantité ou déplacer un retrait ne le fait plus disparaître ; une erreur se rectifie par une action distincte, avec un motif. La période des retraits se règle dans l'espace, et la page À emporter la suit. Une utilisation passée se corrige sur une carte cadeau expirée, sans la réactiver. Tout reste une maquette locale : aucun paiement, aucun message. Détail : `_exploitation/livraison-v7.14.1.md`.
 
 > **v7.14.0 — du catalogue à la remise au client.** Les produits à emporter se modifient et se publient comme les autres offres ; la page À emporter et l'accueil lisent la version publiée. Une commande passée sur le site devient un dossier suivi : demande reçue, validée, en préparation, prête, retirée, avec des capacités de production et de retrait explicites (le restaurant n'y perd aucun couvert), une feuille de préparation et une fiche de retrait. Une demande de carte cadeau est validée, son règlement simulé noté, puis chaque carte est émise avec son code de démonstration, sa valeur et son solde ; les utilisations se corrigent avec une trace. Aujourd'hui et la fiche du client réunissent le tout. Deux nouvelles démonstrations (7 et 8). Tout reste local : aucun paiement, aucun message. Détail : `_exploitation/livraison-v7.14.0.md` ; règles : `_exploitation/regles-commerce.md`.
 
