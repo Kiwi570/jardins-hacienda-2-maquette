@@ -8,7 +8,7 @@
 // et de pizzalyght-maquette/panier (créneaux calculés à l'heure du lieu avec un délai, état relu, focus rendu après rendu).
 // Sans JavaScript : un formulaire ordinaire d'un seul tenant (calendrier, liste d'heures, nombre). Mode calme : sans transition.
 import { pret } from '../../socle/socle.js?v=7';
-import { ajouterResaSite, ajouterDemandeSite, horloge as horlogeDemo, avecContexte } from '../../espace-stock.js?v=7';
+import { ajouterResaSite, ajouterDemandeSite, horloge as horlogeDemo, avecContexte, temporaire, scenarioRecommence, MESSAGE_RECOMMENCE } from '../../espace-stock.js?v=7';
 // v7.8.0 : ouvertures, heures d'arrivée et « complet » viennent des règles communes au site et à l'espace.
 import { etatService, arrivees, faisabilite, alternatives } from '../../disponibilites.js?v=7';
 import { codeVenue } from '../../espace-venue.js?v=7';
@@ -433,7 +433,10 @@ export async function init(root, options = {}) {
   function suivante() { if (verifier(pas)) allerEtape(pas + 1); }
 
   // ---------- Brouillon et adresse ----------
-  const CLE = 'resa-brouillon:' + location.pathname;
+  /* v7.14.1 : le brouillon appartient à son contexte. Hors démonstration, la clé historique de l'onglet
+     (`resa-brouillon:` + la page) ; dans un scénario, une clé à son nom. Un brouillon normal n'est jamais repris ni
+     effacé par une démonstration ; un brouillon d'une démonstration recommencée depuis n'est pas relu. */
+  const brouillonGarde = temporaire('resa-brouillon:' + location.pathname, { session: true });
   const GARDES = ['date', 'service', 'heure', 'couverts', 'espace', 'table', 'message', 'prenom', 'nom', 'telephone', 'email'];
   function poser(n, v) {
     const els = form.querySelectorAll(`[name="${n}"]`);
@@ -441,7 +444,7 @@ export async function init(root, options = {}) {
     if (els[0].type === 'radio' || els[0].type === 'checkbox') els.forEach((e) => { e.checked = Array.isArray(v) ? v.includes(e.value) : e.value === v; });
     else els[0].value = v;
   }
-  function sauver() { try { const v = val(); rappelSoiree(v); sessionStorage.setItem(CLE, JSON.stringify({ ...Object.fromEntries(GARDES.map((k) => [k, v[k]])), demandes: v.demandes })); } catch { /* stockage indisponible : on garde en mémoire */ } }
+  function sauver() { const v = val(); rappelSoiree(v); brouillonGarde.ecrire({ ...Object.fromEntries(GARDES.map((k) => [k, v[k]])), demandes: v.demandes }); }
   const params = new URLSearchParams(location.search);
   /* v7.13.0 : la réservation garde le lien avec la soirée d'où elle vient (« ?soiree=… »), tant que le jour et le service
      restent ceux de la soirée. Elle garde aussi le titre et le prix affichés à ce moment-là. Le lien n'ouvre aucune
@@ -451,7 +454,7 @@ export async function init(root, options = {}) {
     const x = L.find((d) => d.id === id); return x && String(x.d).slice(0, 10) === v.date && (!x.s || x.s === v.service) ? { id: x.id, titre: x.t || '', prix: x.p || '' } : null; };
   const rappelSoiree = (v) => { const el = document.querySelector('[data-soiree]'); if (el && params.get('soiree') && el.textContent) el.hidden = !soireeDe(v); };
   const depuisAdresse = ['date', 'service', 'heure', 'couverts', 'espace', 'demande', 'table'].some((k) => params.has(k));
-  let brouillon = null; try { brouillon = depuisAdresse ? null : JSON.parse(sessionStorage.getItem(CLE) || 'null'); } catch { brouillon = null; }
+  let brouillon = depuisAdresse ? null : brouillonGarde.lire(); if (!brouillon || typeof brouillon !== 'object' || Array.isArray(brouillon)) brouillon = null;
   const depart = brouillon || {};
   if (depuisAdresse) { for (const k of ['date', 'service', 'heure', 'couverts', 'espace', 'table']) if (params.has(k)) depart[k] = params.get(k); if (params.has('demande')) depart.demandes = params.get('demande').split(','); }
   // Table choisie sur un plan de salle (module plan-de-salle, ?table=…) : champ caché, montrée avec l'installation, envoyée avec la demande.
@@ -536,6 +539,8 @@ export async function init(root, options = {}) {
       b.disabled = true; b.textContent = 'Envoi…';
       /* Aucune réussite avant un enregistrement réussi : la référence n'existe qu'une fois la demande enregistrée. */
       const echec = (m) => { b.disabled = false; b.textContent = 'Envoyer ma demande'; erreur(b, m); };
+      /* v7.14.1 : la démonstration a été recommencée dans un autre onglet : cette page date d'avant, elle n'envoie rien. */
+      if (scenarioRecommence()) { echec(MESSAGE_RECOMMENCE); return; }
       let ref = '';
       try { ref = (o.envoyer ? (await o.envoyer(v))?.reference : `R-${v.date.slice(5).replace('-', '')}-${String(1000 + Math.floor(Math.random() * 9000))}`) || ''; }
       catch (err) { echec(err?.pourClient || 'L\'envoi n\'a pas abouti. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }
@@ -547,7 +552,7 @@ export async function init(root, options = {}) {
       reference = ref; envoi = v; etape = 'envoye'; root.classList.remove('est-verification'); root.classList.add('est-envoye');
       for (const el of form.elements) el.disabled = true;
       prog?.querySelectorAll('button').forEach((x) => { x.disabled = true; });
-      try { sessionStorage.removeItem(CLE); } catch { /* rien */ }
+      brouillonGarde.effacer();
       rendreRecap(); recap.querySelector('[data-resa-focus]')?.focus({ preventScroll: true }); montrer();
       root.dispatchEvent(new CustomEvent('reservation:envoyee', { detail: { ...v, reference }, bubbles: true }));
       return;

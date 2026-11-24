@@ -1077,7 +1077,7 @@ await tache('parcours:projet', async () => {
   const m = await import(f);
   await m.default({ contexte, attendrePret, attendre, BASE, R, T, pages: PAGES_CONTENU });
   R.ok('parcours du projet');
-}, 75 * 60000);
+}, 100 * 60000);
 
 /* ---------- 6. Tient dans l'écran (sections épinglées et plein écran), film de chaque épinglage ---------- */
 await tache('ecran', async () => {

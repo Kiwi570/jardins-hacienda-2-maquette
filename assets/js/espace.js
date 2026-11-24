@@ -27,7 +27,8 @@
    v7.8.0 : le garde-fou métier du dépôt (une réservation impossible n'entre pas dans l'agenda), les heures d'arrivée du
    jour, l'ouverture exceptionnelle, l'annulation ciblée, les écritures différées jamais perdues. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
-import { CONTEXTE, horloge as horlogeDemo, reglerHorloge, semer, viderContexte, viderScenario, scenarioEntame, avecContexte, vusDemo, noterVu } from './espace-stock.js?v=7';
+import { CONTEXTE, horloge as horlogeDemo, reglerHorloge, semer, viderContexte, viderScenario, scenarioEntame, avecContexte, vusDemo, noterVu, scenarioRecommence, porterContexte } from './espace-stock.js?v=7';
+porterContexte();
 import { SCENARIOS, scenario as scenarioDe, depart as departScenario, avancement, sauts as sautsScenario } from './espace-scenarios.js?v=7';
 import { comprendre } from './espace-commandes.js?v=7';
 import { installerBarre } from './espace-barre.js?v=7';
@@ -48,7 +49,7 @@ import { rechercher } from './espace-recherche.js?v=7';
 import { listeClients, aMigrer, partagesConnus, cleDossier } from './espace-clients.js?v=7';
 import { creerReceptions } from './espace-vue-receptions.js?v=7';
 import { creerCommerce } from './espace-vue-commerce.js?v=7';
-import { commandeDe, cadeauDe } from './commerce.js?v=7';
+import { commandeDe, cadeauDe, repriseProductionAFaire } from './commerce.js?v=7';
 import { lienReception, receptionsDuJour, retenuesAReprendre } from './espace-receptions.js?v=7';
 import { activitesDuJour, prochainService } from './espace-accueil.js?v=7';
 import { carteDe, platsDe, prixTexte } from './espace-carte.js?v=7';
@@ -91,7 +92,7 @@ export function init(root) {
   const depotLocal = creerDepot(undefined, undefined, {
     /* v7.11.0 : les règles reçoivent tout le contexte (l'heure, les inscriptions venues du site). En mode connecté, ce qui
        n'est noté que sur l'appareil (installé, parti, état des tables) est contrôlé sur les réservations du serveur. */
-    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, minute: A.min, maintenant: `${A.iso}T${hhmm(A.min)}:00`, site: depotLocal.resasSite(), demandes: depotLocal.demandesSite(), exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API, scenario: SC?.id || '', lieux: D.receptions, resasSoirees(etat) { return API ? [] : resasSoirees(this, etat); }, demandesDemo: !SC?.sansDemandesDemo, agenda: D.agenda,
+    regle: (nom, args, frais) => reglesAction({ R, auj: A.iso, minute: A.min, maintenant: `${A.iso}T${hhmm(A.min)}:00`, site: depotLocal.resasSite(), demandes: depotLocal.demandesSite(), exceptions: API ? [] : D.horaires.exceptions || [], semaine: D.horaires.semaine, connecte: !!API, exemples: !API, scenario: SC?.id || '', lieux: D.receptions, resasSoirees(etat) { return API ? [] : resasSoirees(this, etat); }, demandesDemo: !SC?.sansDemandesDemo, agenda: D.agenda,
       /* v7.12.0 : ce que le client a fait depuis sa page (accord simulé, demandes de changement), relu au moment de l'action. */
       venues: API ? {} : depotLocal.venues() },
       API ? { ...depot.etat(), ...Object.fromEntries(Object.entries(frais).filter(([k]) => k !== 'resa' && k !== 'horaires')) } : frais, D.salle, nom, args),
@@ -110,7 +111,7 @@ export function init(root) {
   if (!API && retenuesAReprendre(depot.etat(), D.receptions, D.salle).length) depot.agir('recReprendre', { lieux: D.receptions, salle: D.salle });
   /* v7.11.0 : les notes des clients passent sous leur nouvelle clé de téléphone (une seule forme par numéro). */
   if (aMigrer(depot.etat())) depot.agir('migrerClients', {});
-  const ctx = () => (contexte ||= { R, auj: A.iso, get minute() { return A.min; }, get maintenant() { return `${A.iso}T${hhmm(A.min)}:00`; }, site: depot.resasSite(), demandes: depot.demandesSite(), venues: API ? {} : depot.venues(), produits: D.produits || [], exceptions: API ? [] : D.horaires.exceptions || [], exemples: !API, scenario: SC?.id || '', lieux: D.receptions, resasSoirees(etat) { return API ? [] : resasSoirees(this, etat); }, demandesDemo: !SC?.sansDemandesDemo, agenda: D.agenda,
+  const ctx = () => (contexte ||= { R, auj: A.iso, get minute() { return A.min; }, get maintenant() { return `${A.iso}T${hhmm(A.min)}:00`; }, site: depot.resasSite(), demandes: depot.demandesSite(), venues: API ? {} : depot.venues(), produits: D.produits || [], exceptions: API ? [] : D.horaires.exceptions || [], semaine: D.horaires.semaine, connecte: !!API, exemples: !API, scenario: SC?.id || '', lieux: D.receptions, resasSoirees(etat) { return API ? [] : resasSoirees(this, etat); }, demandesDemo: !SC?.sansDemandesDemo, agenda: D.agenda,
     /* v7.12.0 : les téléphones que plusieurs clients connus partagent (calculés à la demande, une fois par rendu). */
     get partages() { if (!this.partagesLus) this.partagesLus = partagesConnus(this, depot.etat(), toutesDemandes(this, depot.etat())); return this.partagesLus; } });
   const services = servicesDe(R);
@@ -287,6 +288,10 @@ export function init(root) {
     const cmd = site.filter((d) => d.genre === 'traiteur' && !E.commerce?.commandes?.[d.id]).map((d) => ({ id: d.id, statut: st[d.id], base: commandeDe(d, E, D.receptions) }));
     const cad = site.filter((d) => d.genre === 'cadeau' && st[d.id] === 'envoyee' && !E.commerce?.cadeaux?.[d.id]).map((d) => ({ id: d.id, statut: st[d.id], base: cadeauDe(d, E, D.receptions) }));
     if (cmd.length || cad.length) { depot.agir('comReprendre', { commandes: cmd, cadeaux: cad, le: `${A.iso}T${hhmm(A.min)}` }); contexte = null; } }
+  /* v7.14.1 : la production engagée est gardée à part des lignes. Les commandes déjà en préparation, prêtes, retirées ou
+     annulées après préparation reçoivent leurs lots une fois (rejouée, la reprise ne change rien) ; celles dont une
+     correction a pu écraser l'origine sont marquées « à vérifier », sans rien reconstituer. */
+  if (repriseProductionAFaire(depot.etat())) { depot.agir('comReprendreProduction', { le: `${A.iso}T${hhmm(A.min)}` }, { sansRetour: true }); contexte = null; }
   X.activites = (iso) => activitesDuJour({ ...ctx(), agenda: D.agenda }, S(), iso); X.rendreSoirees = () => rendreEvenements();
   const vAccueil = creerAccueil(X);
   X.tachesDe = vAccueil.tachesDe;
@@ -775,8 +780,8 @@ export function init(root) {
       <details class="esp-scene__plus" data-scene-etapes${ouvert ? ' open' : ''}><summary>Étapes ${a.faites} sur ${a.etapes.length}, et commandes</summary>
         <ol class="esp-scene__etapes">${a.etapes.map((x) => `<li class="${x.fait ? 'est-faite' : ''}"><span class="esp-scene__coche" aria-hidden="true">${x.fait ? '✓' : ''}</span><span>${e(x.texte)}<span class="visuellement-cache">${x.fait ? ' (fait)' : ' (à faire)'}</span></span></li>`).join('')}</ol>
         ${SC.variante ? `<p class="esp-scene__variante">${e(SC.variante)}</p>` : ''}
-        ${SC.variantes ? `<div class="esp-scene__variantes"><p class="esp-scene__sous">Trois variantes à rejouer</p><ul>${SC.variantes.map((x) => `<li><b>${e(x.titre)}.</b> ${e(x.texte)}</li>`).join('')}</ul></div>` : ''}
-        ${sautsScenario(SC.id, { S: S(), iso: A.iso, min: A.min }).length ? `<div class="esp-scene__sauts" data-scene-sauts><p class="esp-scene__sous">Avancer dans le temps</p><p class="esp-scene__commandes">${sautsScenario(SC.id, { S: S(), iso: A.iso, min: A.min }).map((x) => `<button type="button" class="esp-bouton" data-scene-saut="${x.cle}"${x.cible ? '' : ` aria-disabled="true" title="${e(x.raison)}"`}>${e(x.libelle)}</button>`).join('')}</p><p class="esp-aide">Avancer l'heure n'accepte rien et ne confirme rien : seules ses conséquences s'appliquent (une option qui arrive à échéance expire).</p></div>` : ''}
+        ${SC.variantes ? `<div class="esp-scene__variantes"><p class="esp-scene__sous">${['', 'Une variante', 'Deux variantes', 'Trois variantes', 'Quatre variantes', 'Cinq variantes', 'Six variantes', 'Sept variantes', 'Huit variantes'][SC.variantes.length] || `${SC.variantes.length} variantes`} à rejouer</p><ul>${SC.variantes.map((x) => `<li><b>${e(x.titre)}.</b> ${e(x.texte)}</li>`).join('')}</ul></div>` : ''}
+        ${sautsScenario(SC.id, { S: S(), iso: A.iso, min: A.min }).length ? `<div class="esp-scene__sauts" data-scene-sauts><p class="esp-scene__sous">Avancer dans le temps</p><p class="esp-scene__commandes">${sautsScenario(SC.id, { S: S(), iso: A.iso, min: A.min }).map((x) => `<button type="button" class="esp-bouton" data-scene-saut="${x.cle}"${x.cible ? '' : ` aria-disabled="true" title="${e(x.raison)}"`}>${e(x.libelle)}</button>`).join('')}</p><p class="esp-aide">Avancer l'heure n'accepte rien et ne confirme rien : seules ses conséquences s'appliquent (une option qui arrive à échéance expire, une carte cadeau atteint sa date de fin).</p></div>` : ''}
         <p class="esp-scene__commandes"><button type="button" class="esp-bouton" data-scene-recommencer>Recommencer ce scénario</button><button type="button" class="esp-bouton" data-demo-lancer>Changer de scénario</button><button type="button" class="esp-bouton esp-bouton--discret" data-scene-quitter>Quitter la démonstration</button></p>
         <p class="esp-aide">Données fictives, dans un espace à part : vos données habituelles ne sont pas touchées. Rien n'est envoyé.</p></details>`);
   }
@@ -842,6 +847,9 @@ export function init(root) {
   const idsSite = () => [...depot.resasSite(), ...depot.demandesSite()].map((x) => x.id);
   let connus = new Set(idsSite());
   depot.ecouter(() => {
+    /* v7.14.1 : le scénario a été recommencé (ou effacé) dans un autre onglet : cette page date d'avant. Elle se recharge
+       sur le nouveau départ plutôt que d'y mêler son ancien état. */
+    if (scenarioRecommence()) { location.reload(); return; }
     A.relire(); /* l'heure simulée a pu avancer dans un autre onglet du même scénario */
     contexte = null; const neufs = idsSite().filter((id) => !connus.has(id)); connus = new Set(idsSite());
     if (!root.classList.contains('est-connecte')) return;

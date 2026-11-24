@@ -31,6 +31,11 @@
    1 decies (v7.10.0). Toute la maison au même endroit : la navigation, Aujourd'hui (priorité, compteurs), une demande,
    la fiche client, le service, le briefing, les tâches (créées, liées, terminées, retrouvées après rechargement), la
    recherche, Offres et Site, l'aperçu des vues métier ; sur ordinateur et sur téléphone.
+   1 septdecies (v7.14.1). Des démonstrations isolées, une préparation fiable : un panier normal, un brouillon normal
+      et un état habituel restent identiques pendant et après deux démonstrations (lancer, envoyer, reprendre,
+      recommencer, quitter) ; une ancienne page ne réinjecte ni n'envoie rien ; un contexte ou un stockage en panne
+      n'écrit rien dans les données normales ; une commande prête, réduite, déplacée, rectifiée puis annulée garde sa
+      production ; la période des retraits se règle et le site la suit ; une utilisation se corrige sur une carte expirée.
    1 nonies (v7.8.1). La stabilisation, dans le navigateur. Page Réserver : la demande n'est dite envoyée qu'une fois
       enregistrée (un enregistrement refusé garde la saisie et permet de reprendre), l'écran dit « demande », pas
       « réservation confirmée » ; une heure devenue trop proche est refusée au moment d'envoyer ; une table de deux
@@ -1067,7 +1072,10 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       /* Recommencer : le même point de départ, et lui seul. */
       await recommencer(); const redepart1 = await stock(); s = await attendu('après « Recommencer »', 0);
       if (!/20 h 10/.test(s.heure)) R.echec(`${ou} : recommencer`, `l'heure devrait revenir à 20 h 10 : « ${s.heure} »`, lieu);
-      for (const k of Object.keys(depart1).filter((x) => x.startsWith('jh-demo:service:'))) if (redepart1[k] !== depart1[k]) R.echec(`${ou} : recommencer`, `« ${k} » ne retrouve pas son état de départ`, lieu);
+      /* v7.14.1 : chaque départ d'un scénario porte une nouvelle « époque » (une page restée ouverte reconnaît ainsi un « Recommencer ») : tout le reste doit être identique, et l'époque doit avoir changé. */
+      const sansEpoque = (k, v) => (/:horloge:v1$/.test(k) && v ? JSON.stringify({ ...JSON.parse(v), epoque: '' }) : v);
+      for (const k of Object.keys(depart1).filter((x) => x.startsWith('jh-demo:service:'))) if (sansEpoque(k, redepart1[k]) !== sansEpoque(k, depart1[k])) R.echec(`${ou} : recommencer`, `« ${k} » ne retrouve pas son état de départ`, lieu);
+      if (!JSON.parse(redepart1['jh-demo:service:horloge:v1'] || '{}').epoque || JSON.parse(redepart1['jh-demo:service:horloge:v1']).epoque === JSON.parse(depart1['jh-demo:service:horloge:v1'] || '{}').epoque) R.echec(`${ou} : recommencer`, '« Recommencer » devrait ouvrir un nouveau départ (une nouvelle époque du scénario)', lieu);
       if (redepart1['jh-espace:v1'] !== habituel['jh-espace:v1']) R.echec(`${ou} : recommencer`, '« Recommencer » a touché aux données habituelles', lieu);
 
       /* ===== Scénario 2 : une place se libère (et l'expiration, en avançant l'heure) ===== */
@@ -1834,10 +1842,10 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       await page.locator(`[data-demande="${id7}"] [data-com-ouvrir="commande"]`).click(); await attendre(450);
       const dossier = { ref: await texte('[data-cmd-ref]'), total: await texte('[data-cmd-total]'), retrait: await texte('[data-cmd-retrait]'), lignes: await texte('[data-cmd-lignes] tbody'), dispo: await texte('[data-cmd-dispo]'), actions: await texte('[data-cmd-actions]') };
       faux('démo 7', dossier.ref === ref && /78 €/.test(dossier.total) && /Samedi 5 décembre/.test(dossier.retrait) && /2 pièces 18 € la pièce 36 €/.test(dossier.lignes) && /1,5 kg .*28 € le kilo 42 €/.test(dossier.lignes), `le dossier ne reprend pas la commande du site : ${JSON.stringify(dossier)}`);
-      faux('démo 7', /déjà engagés ailleurs 4 pièces sur 6 pièces/.test(dossier.dispo) && /1 autre commande sur 2/.test(dossier.dispo) && /exemple/i.test(dossier.dispo) && /aucune table ni aucun couvert/.test(dossier.dispo) && /Valider la commande/.test(dossier.actions) && !/Lancer la préparation|Remettre/.test(dossier.actions), `disponibilités ou boutons : ${JSON.stringify(dossier)}`);
+      faux('démo 7', /déjà comptés ailleurs 4 pièces sur 6 pièces/.test(dossier.dispo) && /1 autre commande sur 2/.test(dossier.dispo) && /exemple/i.test(dossier.dispo) && /aucune table ni aucun couvert/.test(dossier.dispo) && /Valider la commande/.test(dossier.actions) && !/Lancer la préparation|Remettre/.test(dossier.actions), `disponibilités ou boutons : ${JSON.stringify(dossier)}`);
       faux('démo 7', (await faites()) === 3, `après l'ouverture du dossier : ${await faites()} étape(s) sur 6`); await debordement(page, 'le dossier d’une commande');
       /* La dernière capacité demandée par deux commandes : le second onglet affichait encore Nadia B. comme possible. */
-      const o2 = await ctx.newPage(); await ouvrirDemo('commande', o2); await aller(o2, 'demandes'); await o2.locator('[data-demande="sc7-nadia"] [data-com-ouvrir="commande"]').click(); await attendre(450);
+      const o2 = await ctx.newPage(); await ouvrirDemo('commande', o2); await aller(o2, 'demandes'); await o2.locator('[data-demande="sc7-nadia"] [data-com-ouvrir="commande"]').first().click(); await attendre(450);
       const avant2 = await texte('[data-cmd-dispo]', o2);
       await page.bringToFront(); await page.locator('[data-cmd-avancer="validee"]').click(); await attendre(600);
       faux('démo 7', /validée/.test(await toast()) && /Aucun message/.test(await toast()) && /Validée/.test(await texte('[data-cmd-pastille]')) && (await page.locator('[data-esp-toast-annuler]:visible').count()) === 0 && (await faites()) === 4, `validation : « ${await toast()} », ${await faites()} étape(s)`);
@@ -1849,7 +1857,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       const g8 = await cmdSite(0, 1); await g8.locator('[data-tiroir-valider]').click(); await attendre(400); await g8.evaluate(() => document.querySelector('[name="jour"][value="2026-12-05"]').click()); await attendre(350);
       faux('créneau complet', /retraits du soir sont complets/.test(await texte('[data-emp-creneau-note]', g8)) && await g8.locator('[name="moment"][value="soir"]').isDisabled(), `le site devrait refuser le samedi soir : « ${await texte('[data-emp-creneau-note]', g8)} »`); await g8.close();
       /* Une annulation avant la préparation libère la production et le créneau. */
-      await page.locator('[data-com-retour]').click(); await attendre(350); await page.locator('[data-demande="sc7-marc"] [data-com-ouvrir="commande"]').click(); await attendre(450);
+      await page.locator('[data-com-retour]').click(); await attendre(350); await page.locator('[data-demande="sc7-marc"] [data-com-ouvrir="commande"]').first().click(); await attendre(450);
       await page.locator('[data-cmd-motif="annuler"]').click(); await attendre(300); await page.locator('[data-com-motif] button[type="submit"]').click(); await attendre(350); const sansMotif = await refus();
       await page.locator('#com-motif').fill('Le client a annulé par téléphone.'); await page.locator('[data-com-motif] button[type="submit"]').click(); await attendre(600);
       const e3 = await etat(), marc = e3.commerce.commandes['sc7-marc'];
@@ -1881,7 +1889,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       /* ===== Démonstration 8 · Un cadeau qui garde sa valeur ===== */
       await ouvrirDemo('cadeau');
       faux('démo 8', /Démonstration 8 sur 8/.test(await texte('[data-esp-scene]')) && (await faites()) === 0, `au départ : ${await faites()} étape(s)`);
-      await page.locator('[data-demande="sc8-cadeau"] [data-com-ouvrir="cadeau"]').click(); await attendre(450);
+      await page.locator('[data-demande="sc8-cadeau"] [data-com-ouvrir="cadeau"]').first().click(); await attendre(450);
       faux('démo 8', /Hugo S\./.test(await texte('[data-cad-acheteur]')) && /100 €/.test(await texte('[data-cad-total]')) && /Non enregistré/.test(await texte('[data-cad-reglement]')) && !(await page.locator('[data-cad-emettre], [data-cad-regler]').count()) && (await faites()) === 1, `la demande : « ${await texte('.esp-com-etats')} »`);
       await page.locator('[data-form-cad-valider] button[type="submit"]').click(); await attendre(500); faux('démo 8', !(await page.locator('[data-cad-emettre]').count()) && (await page.locator('[data-cad-regler]').count()) === 1 && (await faites()) === 2, 'après la validation : seul le règlement simulé devrait être proposé');
       await page.locator('[data-cad-regler]').click(); await attendre(500); faux('démo 8', /Simulé, 100 €/.test(await texte('[data-cad-reglement]')) && /Aucun paiement réel/.test(await toast()) && /exemple à confirmer/.test(await texte('[data-cad-validite]')) && (await faites()) === 3, `règlement : « ${await texte('[data-cad-reglement]')} », « ${await toast()} »`);
@@ -1921,6 +1929,265 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if ((await page.evaluate(() => localStorage.getItem('jh-espace:v1'))) !== habituel) R.echec(`${ou} : isolation`, 'les démonstrations ont modifié les données habituelles', lieu);
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
       R.ok(`espace : ${ou}`);
+    } finally { await ctx.close(); }
+  }
+
+  /* ---------- 1-septdecies. v7.14.1 : des démonstrations isolées, une préparation fiable (ordinateur et largeur de téléphone) ----------
+     A. L'isolation, en partant de données déjà là : un panier normal non vide, un brouillon normal de réservation, un état
+        habituel de l'espace, des paniers distincts dans deux scénarios ; puis lancer, modifier, envoyer, reprendre,
+        recommencer, quitter — et comparer. Une ancienne page ne réinjecte rien ; un contexte ou un stockage en panne
+        n'écrit rien dans les données normales.
+     B. La production engagée : une commande prête, réduite, déplacée, rectifiée, annulée ; ce qui est préparé reste compté.
+     C. La période des retraits : réglée dans l'espace, suivie par la page À emporter (deux mois, contrôle final, aucune disponibilité).
+     D. Une utilisation corrigée sur une carte expirée : solde historique, carte toujours expirée.
+     Toutes les données sont fictives et créées ici, dans le navigateur de test. */
+  for (const taille of (!SEUL || SEUL.includes('1-septdecies') ? ['1366×768', '390×844'] : []).map(T)) {
+    const lieu = { page: P, taille: taille.nom }, ou = `consolidation (${taille.nom})`, tel = taille.w < 1000;
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      const texte = async (sel, pg = page) => (await pg.locator(sel).first().innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
+      const toast = () => texte('[data-esp-toast-texte]'), refus = (pg = page) => texte('[data-com-erreur]', pg);
+      const debordement = async (pg, quoi) => { const d = await pg.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - document.documentElement.clientWidth); if (d > 1) R.echec(`${ou} : débordement`, `${quoi} déborde de ${d} px`, lieu); };
+      const faux = (titre, cond, detail) => { if (!cond) R.echec(`${ou} : ${titre}`, String(detail).slice(0, 460), lieu); };
+      const stock = (pg = page) => pg.evaluate(() => ({ L: Object.fromEntries(Object.keys(localStorage).sort().map((k) => [k, localStorage.getItem(k)])), S: Object.fromEntries(Object.keys(sessionStorage).sort().map((k) => [k, sessionStorage.getItem(k)])) }));
+      const ouvrirSite = async (chemin, demo = null, pg = null, pause = 1400) => { const g = pg || await ctx.newPage(), [avant, ancre] = chemin.split('#'); await g.goto(`${BASE}${avant}${demo === null ? '' : `${avant.includes('?') ? '&' : '?'}demo=${demo}`}${ancre ? `#${ancre}` : ''}`, { waitUntil: 'load' }); await attendrePret(g); await attendre(pause); return g; };
+      const ouvrirDemo = async (id, pg = page) => { await pg.goto(`${BASE}${P}?demo=${id}`, { waitUntil: 'load' }); await attendrePret(pg); if (await pg.locator('[data-esp-app]').isHidden()) await pg.locator('[data-esp-connexion] button[type="submit"]').click(); await pg.locator('[data-esp-app]').waitFor({ state: 'visible', timeout: 5000 }); await attendre(700); };
+      const etat = (demo) => page.evaluate((d) => JSON.parse(localStorage.getItem(`jh-demo:${d}:espace:v1`) || '{}'), demo);
+      const ajouter = async (g, id) => { await g.locator(`[data-ajouter="${id}"]`).click(); await attendre(1100); await g.locator('.emp-tiroir__continuer').click({ force: true }); await attendre(600); };
+      const panierVu = (g) => g.evaluate(() => [...document.querySelectorAll('[data-tiroir-lignes] .emp-tl')].map((x) => x.dataset.cle).join(','));
+      const brouillon = (g, t) => g.evaluate((t) => { const el = document.querySelector('[data-resa-form] [name="message"]'); if (t !== undefined) { el.value = t; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); } return el.value; }, t);
+      const changerDePage = async (pg, action) => { await pg.evaluate(() => { window.__ancienne = true; }); await action(); await pg.waitForFunction(() => !window.__ancienne && document.readyState === 'complete' && !!document.querySelector('[data-esp-app]') && !document.querySelector('[data-esp-app]').hidden, null, { timeout: 15000 }); await attendre(600); };
+      const TEMOIN = JSON.stringify({ _schema: 2, annonce: { active: false, texte: 'Témoin des données habituelles' }, commerce: { capacites: { production: { 'emporter-tataki-boeuf': 9 } } } });
+
+      /* ===== A · 0. Les données habituelles, présentes AVANT tout : un panier, un brouillon, un état de l'espace ===== */
+      await page.goto(BASE + '/la-carte', { waitUntil: 'load' }); await page.evaluate((t) => { localStorage.clear(); sessionStorage.clear(); localStorage.setItem('jh-espace:v1', t); }, TEMOIN);
+      await ouvrirSite('/a-emporter#produits', null, page); await ajouter(page, 'tataki-boeuf'); await page.locator('[data-ajouter="tataki-boeuf"]').click(); await attendre(1100); await page.locator('.emp-tiroir__continuer').click({ force: true }); await attendre(500); await ajouter(page, 'tourte-escargots');
+      await ouvrirSite('/reserver#formulaire', null, page); await brouillon(page, 'Brouillon habituel : une table près de la cheminée'); await attendre(400);
+      const normal = await stock();
+      faux('préparation', normal.L['hacienda-emporter'] === '[{"id":"tataki-boeuf","qte":2},{"id":"tourte-escargots","qte":1}]' && /table près de la cheminée/.test(normal.S['resa-brouillon:/reserver'] || '') && normal.L['jh-espace:v1'] === TEMOIN, `les données habituelles de départ ne sont pas celles attendues : ${JSON.stringify(normal).slice(0, 380)}`);
+      const intact = async (quand, pg = page) => { const s = await stock(pg); faux('données habituelles', s.L['hacienda-emporter'] === normal.L['hacienda-emporter'] && s.L['jh-espace:v1'] === normal.L['jh-espace:v1'] && !s.L['jh-espace-demandes:v1'] && !s.L['jh-espace-resas:v1'], `${quand} : le panier normal, l'état habituel ou les demandes habituelles ont changé (${JSON.stringify({ panier: s.L['hacienda-emporter'], demandes: s.L['jh-espace-demandes:v1'] || '' }).slice(0, 300)})`); return s; };
+      /* Un onglet ordinaire, laissé ouvert sur la page À emporter : il ne doit jamais recevoir le panier d'une démonstration. */
+      const ordinaire = await ouvrirSite('/a-emporter#produits'); const vuOrdinaire = await panierVu(ordinaire);
+      faux('préparation', vuOrdinaire === 'tataki-boeuf|0,tourte-escargots|0', `l'onglet ordinaire devrait montrer le panier normal : « ${vuOrdinaire} »`);
+
+      /* ===== A · 1. Démonstration 7 : son panier est le sien ; une commande envoyée ne touche à rien d'habituel ===== */
+      await ouvrirDemo('commande');
+      const g = await ouvrirSite('/a-emporter#produits', 'commande');
+      faux('isolation', (await panierVu(g)) === '' && !(await g.locator('[data-emp-memoire]').isVisible()), `la démonstration ne doit pas se remplir du panier normal : « ${await panierVu(g)} »`);
+      await ajouter(g, 'escargots'); await g.locator('[data-ajouter="escargots"]').click(); await attendre(1100);
+      await g.locator('[data-tiroir-valider]').click(); await attendre(450); await g.evaluate(() => document.querySelector('[name="jour"][value="2026-12-05"]').click()); await attendre(350); await g.evaluate(() => document.querySelector('[name="moment"][value="soir"]').click()); await attendre(250); await g.locator('[data-tiroir-suite]').click(); await attendre(450);
+      await g.locator('[name="prenom"]').fill('Julie'); await g.locator('[name="nom"]').fill('Martin (exemple)'); await g.locator('[name="tel"]').fill('06 00 00 00 01'); await g.locator('.emp-tiroir__pied button[type="submit"]').click(); await attendre(800);
+      const ref = await texte('[data-emp-ref]', g), s1 = await intact('après une commande envoyée dans la démonstration 7', g);
+      faux('envoi', /^T-[A-Z0-9]+$/.test(ref) && JSON.parse(s1.L['jh-demo:commande:tmp:hacienda-emporter'] || '{}').valeur?.length === 0 && (JSON.parse(s1.L['jh-demo:commande:espace-demandes:v1'] || '[]').some((d) => d.id === `T-${ref.slice(2).toLowerCase()}`)), `la commande devrait être partie dans le scénario, et son panier vidé : réf « ${ref} », ${JSON.stringify(s1.L['jh-demo:commande:tmp:hacienda-emporter'])}`);
+      faux('isolation', (await panierVu(ordinaire)) === vuOrdinaire, `l'onglet ordinaire a reçu le panier de la démonstration : « ${await panierVu(ordinaire)} »`);
+
+      /* ===== A · 2 et 3. Deux scénarios, deux paniers ; deux onglets du même scénario se suivent, les autres non ===== */
+      await g.reload({ waitUntil: 'load' }); await attendrePret(g); await attendre(1200); await ajouter(g, 'foie-gras');
+      const h = await ouvrirSite('/a-emporter#produits', 'cadeau'); faux('deux scénarios', (await panierVu(h)) === '', `la démonstration 8 ne doit pas voir le panier de la 7 : « ${await panierVu(h)} »`); await ajouter(h, 'gravlax');
+      const g2 = await ouvrirSite('/a-emporter#produits', 'commande'); faux('même scénario', (await panierVu(g2)) === 'foie-gras|0', `un second onglet du scénario devrait reprendre son panier : « ${await panierVu(g2)} »`);
+      await g.bringToFront(); await ajouter(g, 'tourte-grenouilles'); await attendre(500);
+      const vus = { g2: await panierVu(g2), h: await panierVu(h), ordinaire: await panierVu(ordinaire) };
+      faux('onglets', vus.g2 === 'foie-gras|0,tourte-grenouilles|0' && vus.h === 'gravlax|0' && vus.ordinaire === vuOrdinaire, `la synchronisation doit rester dans le contexte : ${JSON.stringify(vus)}`);
+      const s2 = await intact('avec deux scénarios ouverts', g);
+      faux('deux scénarios', /foie-gras/.test(s2.L['jh-demo:commande:tmp:hacienda-emporter']) && /gravlax/.test(s2.L['jh-demo:cadeau:tmp:hacienda-emporter']) && !/gravlax/.test(s2.L['jh-demo:commande:tmp:hacienda-emporter']), `chaque scénario devrait garder son panier : ${JSON.stringify([s2.L['jh-demo:commande:tmp:hacienda-emporter'], s2.L['jh-demo:cadeau:tmp:hacienda-emporter']]).slice(0, 300)}`);
+      /* Le brouillon de réservation d'une démonstration, dans le même onglet que le brouillon habituel. */
+      await ouvrirSite('/reserver#formulaire', 'commande', page);
+      faux('brouillon', (await brouillon(page)) === '', `la démonstration ne doit pas reprendre le brouillon habituel : « ${await brouillon(page)} »`);
+      await brouillon(page, 'Brouillon de la démonstration 7'); await attendre(400);
+      const s3 = await stock(); faux('brouillon', s3.S['resa-brouillon:/reserver'] === normal.S['resa-brouillon:/reserver'] && /démonstration 7/.test(s3.S['jh-demo:commande:tmp:resa-brouillon:/reserver'] || ''), `le brouillon habituel ne doit pas être réécrit : ${JSON.stringify(s3.S).slice(0, 320)}`);
+
+      /* ===== A · 4. « Reprendre » conserve le scénario ===== */
+      await page.goto(`${BASE}${P}?demo=`, { waitUntil: 'load' }); await attendrePret(page); if (await page.locator('[data-esp-app]').isHidden()) await page.locator('[data-esp-connexion] button[type="submit"]').click(); await attendre(800);
+      await aller(page, 'jour'); await page.locator('[data-demo-lancer]:visible').first().click(); await attendre(400);
+      await changerDePage(page, () => page.locator('[data-demo-reprendre="commande"]').click());
+      const s4 = await intact('après « Reprendre »');
+      faux('reprendre', /tourte-grenouilles/.test(s4.L['jh-demo:commande:tmp:hacienda-emporter'] || '') && JSON.parse(s4.L['jh-demo:commande:espace-demandes:v1'] || '[]').length === 4 && /démonstration 7/.test(s4.S['jh-demo:commande:tmp:resa-brouillon:/reserver'] || ''), `« Reprendre » devrait garder le panier, la commande envoyée et le brouillon du scénario : ${JSON.stringify(s4.L['jh-demo:commande:tmp:hacienda-emporter'])}`);
+
+      /* ===== A · 5 et 6. « Recommencer » remet à zéro CE scénario ; une ancienne page ne réinjecte rien, n'envoie rien ===== */
+      /* Une ancienne page de réservation du scénario, restée ouverte avec une demande prête à partir. */
+      const rv = await ouvrirSite('/reserver#formulaire', 'commande');
+      await rv.locator('[data-resa-form] [data-jour]:not(:disabled)').first().click(); await attendre(250); await rv.locator('[data-etape-suivante]').click(); await attendre(500);
+      await rv.locator('[data-resa-form] input[name="heure"]:not(:disabled)').first().check({ force: true }); await attendre(250); await rv.locator('[data-etape-suivante]').click(); await attendre(500); await rv.locator('[data-etape-suivante]').click(); await attendre(500);
+      await rv.fill('[name="prenom"]', 'Ancien'); await rv.fill('[name="nom"]', 'Brouillon (exemple)'); await rv.fill('[name="telephone"]', '06 00 00 00 09'); await rv.fill('[name="email"]', 'ancien@exemple.fr'); await rv.locator('[data-resa-form] button[type="submit"]').click(); await attendre(700);
+      await page.bringToFront(); if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click();
+      await changerDePage(page, () => page.locator('[data-scene-recommencer]').click());
+      const s5 = await intact('après « Recommencer »');
+      faux('recommencer', !s5.L['jh-demo:commande:tmp:hacienda-emporter'] && !s5.S['jh-demo:commande:tmp:resa-brouillon:/reserver'] && JSON.parse(s5.L['jh-demo:commande:espace-demandes:v1'] || '[]').length === 3 && /gravlax/.test(s5.L['jh-demo:cadeau:tmp:hacienda-emporter'] || ''), `« Recommencer » doit effacer le panier et le brouillon de CE scénario, et lui seul : ${JSON.stringify({ sept: s5.L['jh-demo:commande:tmp:hacienda-emporter'] || '', huit: s5.L['jh-demo:cadeau:tmp:hacienda-emporter'] || '' }).slice(0, 260)}`);
+      await attendre(600);
+      const vieux = { panier: await panierVu(g), dit: await texte('[data-emp-memoire]', g) };
+      faux('ancienne page', vieux.panier === '' && /a été recommencée/.test(vieux.dit) && /remise à zéro/.test(vieux.dit), `l'ancienne page du scénario devrait reconnaître la remise à zéro : ${JSON.stringify(vieux)}`);
+      await g.bringToFront(); await g.locator('[data-ajouter="escargots"]').click(); await attendre(900);
+      const s6 = await intact('après un ajout depuis une ancienne page', g);
+      faux('ancienne page', !s6.L['jh-demo:commande:tmp:hacienda-emporter'] && (await panierVu(g)) === '', `une ancienne page ne doit rien réinjecter dans le nouveau départ : ${JSON.stringify(s6.L['jh-demo:commande:tmp:hacienda-emporter'] || '')}, « ${await panierVu(g)} »`);
+      await rv.bringToFront(); await rv.locator('[data-resa-confirmer]').click(); await attendre(900);
+      const envoiVieux = { erreur: (await rv.locator('[data-resa-form] [role="alert"], .resa__erreur').allInnerTexts()).join(' ').replace(/\s+/g, ' '), envoye: await rv.locator('.est-envoye').count(), resas: (await stock(rv)).L['jh-demo:commande:espace-resas:v1'] || '' };
+      faux('ancienne page', /a été recommencée/.test(envoiVieux.erreur) && !envoiVieux.envoye && !envoiVieux.resas, `une ancienne page ne doit pas envoyer son ancien brouillon : ${JSON.stringify(envoiVieux).slice(0, 300)}`);
+      await rv.close(); await g2.close();
+
+      /* ===== A · 7. « Quitter » : le brouillon et le panier habituels sont retrouvés tels quels ===== */
+      await page.bringToFront(); if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click();
+      await changerDePage(page, () => page.locator('[data-scene-quitter]').click());
+      await ouvrirSite('/reserver#formulaire', null, page);
+      faux('quitter', (await brouillon(page)) === 'Brouillon habituel : une table près de la cheminée', `le brouillon habituel devrait être retrouvé après la démonstration : « ${await brouillon(page)} »`);
+      await ouvrirSite('/a-emporter#produits', null, page); faux('quitter', (await panierVu(page)) === vuOrdinaire && (await panierVu(ordinaire)) === vuOrdinaire, `le panier habituel devrait être retrouvé : « ${await panierVu(page)} »`);
+      const fin = await intact('après avoir quitté la démonstration'); faux('quitter', fin.S['resa-brouillon:/reserver'] === normal.S['resa-brouillon:/reserver'], 'le brouillon habituel a été modifié');
+      await g.close(); await h.close(); await ordinaire.close();
+
+      /* ===== A · 8. Un contexte ou un stockage en panne n'écrit rien dans les données normales, et le dit ===== */
+      /* a) L'onglet ne peut pas retenir la démonstration (mémoire de session en écriture refusée) : elle vaut pour la page, par l'adresse. */
+      const f1 = await ctx.newPage(); await f1.addInitScript(() => { const poser = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (this === sessionStorage) throw new DOMException('refusé', 'QuotaExceededError'); return poser.call(this, k, v); }; });
+      await ouvrirSite('/a-emporter#produits', 'commande', f1);
+      const fragile = { panier: await panierVu(f1), note: await texte('[data-contexte-fragile]', f1) };
+      faux('contexte fragile', fragile.panier === '' && /mémoire de cet onglet est indisponible/.test(fragile.note), `sans mémoire d'onglet, la démonstration ne doit pas retomber sur le panier normal, et doit le dire : ${JSON.stringify(fragile)}`);
+      await ajouter(f1, 'escargots'); const sf = await intact('avec une mémoire d\'onglet refusée', f1);
+      faux('contexte fragile', /escargots/.test(sf.L['jh-demo:commande:tmp:hacienda-emporter'] || ''), 'le panier de la démonstration devrait être gardé sous sa propre clé');
+      await f1.locator('a[href="/offrir"], a[href$="/offrir"]').first().evaluate((a) => a.click()); await f1.waitForURL(/offrir/, { timeout: 10000 }).catch(() => {}); await attendre(600);
+      faux('contexte fragile', /[?&]demo=commande/.test(f1.url()), `les liens devraient porter la démonstration dans leur adresse : ${f1.url()}`); await f1.close();
+      /* b) La mémoire de session est illisible : on ne sait pas si l'onglet est en démonstration → rien n'est lu ni écrit. */
+      const f2 = await ctx.newPage(); await f2.addInitScript(() => { const lire = Storage.prototype.getItem; Storage.prototype.getItem = function (k) { if (this === sessionStorage) throw new DOMException('refusé', 'SecurityError'); return lire.call(this, k); }; });
+      await ouvrirSite('/a-emporter#produits', null, f2);
+      const flou = { panier: await panierVu(f2), dit: await texte('[data-emp-memoire]', f2) };
+      faux('contexte incertain', flou.panier === '' && /rien n'est lu ni écrit dans vos données habituelles/.test(flou.dit), `contexte incertain : le panier normal ne doit pas être lu, et la page doit le dire : ${JSON.stringify(flou)}`);
+      await ajouter(f2, 'gravlax'); await intact('avec une mémoire de session illisible', f2); faux('contexte incertain', (await panierVu(f2)) === 'gravlax|0', 'la commande devrait rester utilisable sur la page'); await f2.close();
+      /* c) Usage normal, navigateur plein : l'ajout reste sur la page, c'est dit, et le panier gardé n'est pas abîmé. */
+      const f3 = await ctx.newPage(); await f3.addInitScript(() => { const poser = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (this === localStorage && k === 'hacienda-emporter' && window.__plein) throw new DOMException('plein', 'QuotaExceededError'); return poser.call(this, k, v); }; });
+      await ouvrirSite('/a-emporter#produits', null, f3); await f3.evaluate(() => { window.__plein = true; }); await ajouter(f3, 'gravlax');
+      const plein = await intact('avec un navigateur plein', f3); faux('stockage plein', /indisponible/.test(await texte('[data-emp-memoire]', f3)) && /gravlax/.test(await panierVu(f3)) && plein.L['hacienda-emporter'] === normal.L['hacienda-emporter'], `stockage plein : « ${await texte('[data-emp-memoire]', f3)} »`); await debordement(f3, 'la page À emporter avec son message'); await f3.close();
+
+      /* ===== B. La production engagée (démonstration 7, repartie de son début) ===== */
+      await ouvrirDemo('commande'); await aller(page, 'demandes');
+      await page.locator('[data-demande="sc7-paul"] [data-com-ouvrir="commande"]:visible').first().click(); await attendre(450);
+      await page.locator('[data-cmd-avancer="preparation"]').click(); await attendre(500);
+      const lance = { toast: await toast(), lots: await texte('[data-prod-lots]') };
+      faux('lancement', /engagées en production pour le 5 décembre/.test(lance.toast) && /4 pièces/.test(lance.lots) && /samedi 5 décembre/.test(lance.lots) && /Préparation lancée/.test(lance.lots), `le lancement devrait engager 4 pièces pour le samedi 5 : ${JSON.stringify(lance).slice(0, 300)}`);
+      await page.locator('[data-cmd-avancer="prete"]').click(); await attendre(450);
+      /* Au clavier : « Corriger » s'ouvre à Entrée, le titre du formulaire reçoit le focus. */
+      await page.locator('[data-cmd-modifier]').focus(); await page.keyboard.press('Enter'); await attendre(400);
+      faux('clavier', await page.evaluate(() => document.activeElement?.id === 'cmd-ed-titre'), 'ouvrir « Corriger » au clavier devrait amener le focus sur le formulaire');
+      await page.locator('[data-cmd-q="0"]').fill('1'); await attendre(300);
+      const ef = await texte('[data-cmd-effets]');
+      faux('effets', /4 pièces → 1 pièce à remettre/.test(ef) && /production déjà engagée le samedi 5 décembre \(4 pièces\) reste comptée/.test(ef) && /à remettre : 1 pièce/.test(ef), `l'effet devrait être dit avant d'enregistrer : « ${ef.slice(0, 300)} »`);
+      await page.locator('#cmd-jour').focus(); await page.keyboard.press('Enter'); await attendre(450);
+      const sansMotif = await refus(), gardee = await page.locator('[data-cmd-q="0"]').inputValue();
+      faux('motif', /motif de cette correction/.test(sansMotif) && gardee === '1' && (await etat('commande')).commerce.commandes['sc7-paul'].lignes[0].quantite === 4, `sans motif : « ${sansMotif} », saisie gardée « ${gardee} »`);
+      await page.locator('#cmd-motif').fill('Le client n\'en retire qu\'une.'); await page.locator('[data-form-cmd] button[type="submit"]').click(); await attendre(600);
+      const e1 = (await etat('commande')).commerce, k1 = e1.commandes['sc7-paul'], dit1 = { toast: await toast(), ecart: await texte('[data-cmd-ecart]'), dispo: await texte('[data-cmd-dispo]'), etatVu: await texte('[data-cmd-pastille]') };
+      faux('réduction', k1.lignes[0].quantite === 1 && k1.total === 18 && k1.etat === 'prete' && k1.production.lots[0].quantite === 4 && k1.production.lots[0].jour === '2026-12-05' && /production déjà engagée reste comptée/.test(dit1.toast) && /À remettre : Escargots à la crème d'ail, 1 pièce/.test(dit1.ecart) && /\(4 pièces\) reste comptée/.test(dit1.ecart) && /production comptée ce jour 4 pièces sur 6 pièces/.test(dit1.dispo), `après la réduction : ${JSON.stringify({ lignes: k1.lignes[0].quantite, lots: k1.production.lots, ...dit1 }).slice(0, 420)}`);
+      await debordement(page, 'le dossier d’une commande corrigée');
+      /* Une nouvelle commande qui dépasserait la capacité du samedi reste refusée (4 engagés + 2 de Nadia = 6 : elle passe ; 3 de plus non). */
+      await page.locator('[data-com-retour]').click(); await attendre(350); await page.locator('[data-demande="sc7-nadia"] [data-com-ouvrir="commande"]:visible').first().click(); await attendre(450);
+      await page.locator('[data-cmd-modifier]').click(); await attendre(350); await page.locator('[data-cmd-q="0"]').fill('3'); await page.locator('[data-form-cmd] button[type="submit"]').click(); await attendre(500);
+      await page.locator('[data-cmd-avancer="validee"]').click(); await attendre(500);
+      faux('capacité', /il ne reste que 2 pièces à produire pour le samedi 5 décembre/.test(await refus()) && !(await etat('commande')).commerce.commandes['sc7-nadia']?.etat?.match(/validee/), `3 escargots de plus le samedi devraient être refusés (4 préparés restent comptés) : « ${await refus()} »`);
+      /* Le retrait déplacé au dimanche midi : rien ne s'ajoute à la production du dimanche ; le créneau suit. */
+      await page.locator('[data-com-retour]').click(); await attendre(350); await page.locator('[data-demande="sc7-paul"] [data-com-ouvrir="commande"]:visible').first().click(); await attendre(450);
+      await page.locator('[data-cmd-modifier]').click(); await attendre(350); await page.locator('#cmd-jour').fill('2026-12-06'); await page.locator('#cmd-moment').selectOption('midi'); await page.locator('#cmd-motif').fill('Il passe dimanche midi.'); await attendre(250);
+      const ef2 = await texte('[data-cmd-effets]'); await page.locator('[data-form-cmd] button[type="submit"]').click(); await attendre(600);
+      const k2 = (await etat('commande')).commerce.commandes['sc7-paul'], lots2 = await texte('[data-prod-lots]');
+      faux('déplacement', /samedi 5 décembre, le soir → dimanche 6 décembre, à midi/.test(ef2) && /reste comptée ce jour-là/.test(ef2) && k2.jour === '2026-12-06' && k2.moment === 'midi' && k2.production.lots.length === 1 && k2.production.lots[0].jour === '2026-12-05' && /à remettre au client : 1 pièce, le dimanche 6 décembre/.test(lots2), `après le déplacement : ${JSON.stringify({ jour: k2.jour, lots: k2.production.lots }).slice(0, 260)}, « ${lots2.slice(0, 160)} »`);
+      /* La rectification : une action à part, au clavier, avec son motif ; un double envoi ne l'applique qu'une fois. */
+      await page.locator('[data-prod-rectifier="l1"]').focus(); await page.keyboard.press('Enter'); await attendre(400);
+      faux('clavier', await page.evaluate(() => document.activeElement?.id === 'rectif-titre'), 'ouvrir « Rectifier la production » au clavier devrait amener le focus sur son formulaire');
+      await page.locator('#rectif-q').fill('3'); await attendre(250); const efR = await texte('[data-rectif-effets]');
+      await page.locator('[data-form-rectifier] button[type="submit"]').click(); await attendre(450); const sansMotifR = await refus();
+      await page.locator('#rectif-motif').fill('Trois pièces seulement ont été cuites.'); await page.locator('[data-form-rectifier] button[type="submit"]').dblclick(); await attendre(700);
+      const k3 = (await etat('commande')).commerce.commandes['sc7-paul'];
+      faux('rectification', /Avant : 4 pièces le samedi 5 décembre\. Après : 3 pièces/.test(efR) && /4 pièces → 3 pièces sur 6 pièces/.test(efR) && /motif de la rectification/.test(sansMotifR) && k3.production.lots[0].quantite === 3 && k3.production.rectifications.length === 1 && k3.production.rectifications[0].avant.quantite === 4 && k3.lignes[0].quantite === 1 && /rectifiée/.test(await toast()) && /Production rectifiée/.test(await texte('[data-com-histo] li')), `rectification : effets « ${efR.slice(0, 160)} », sans motif « ${sansMotifR} », ${JSON.stringify(k3.production).slice(0, 220)}`);
+      /* Préparation et retraits lit les mêmes informations : 3 pièces engagées le 5, à remettre 1 pièce le 6. */
+      await page.locator('[data-com-retour]').click(); await attendre(350); await page.locator('[data-com-ouvrir="preparation"]:visible').first().click(); await attendre(450); await page.locator('[data-prep-jour="2026-12-05"]').click(); await attendre(350);
+      const prep5 = await texte('[data-prep-produits]'); await debordement(page, 'préparation et retraits');
+      faux('préparation', /production engagée 3 pièces pour le 5 décembre ; à remettre : 1 pièce, retrait le 6 décembre/.test(prep5) && /3 pièces sur 6 pièces/.test(prep5), `le tableau du 5 décembre : « ${prep5.slice(0, 300)} »`);
+      await page.locator('[data-prep-jour="2026-12-06"]').click(); await attendre(350); const prep6 = await texte('[data-prep-produits]');
+      faux('préparation', /1 pièce/.test(await texte('[data-prep-pret]')) && /—/.test(await texte('[data-prep-engage]')), `le dimanche 6 : 1 pièce prête à remettre, aucune production : « ${prep6.slice(0, 200)} »`);
+      if (tel) faux('téléphone', await page.evaluate(() => getComputedStyle(document.querySelector('[data-prep-engage]'), '::before').content.includes('Engagé')), 'sur téléphone, chaque quantité du tableau devrait porter le nom de sa colonne');
+      /* L'annulation : les lots restent, le créneau est libéré. */
+      await page.locator('[data-prep-commande="sc7-paul"] [data-com-ouvrir="commande"]').click(); await attendre(450); await page.locator('[data-cmd-motif="annuler"]').click(); await attendre(300); await page.locator('#com-motif').fill('Finalement annulée.'); await page.locator('[data-com-motif] button[type="submit"]').click(); await attendre(600);
+      const k4 = (await etat('commande')).commerce.commandes['sc7-paul'], histo4 = await texte('[data-com-histo] li');
+      faux('annulation', k4.etat === 'annulee' && k4.production.lots[0].quantite === 3 && /production engagée reste comptée \(Escargots à la crème d'ail, 3 pièces le samedi 5 décembre\)/.test(histo4) && /créneau de retrait est libéré/.test(histo4), `après l'annulation : ${k4.etat}, « ${histo4.slice(0, 220)} »`);
+
+      /* ===== C. La période des retraits : réglée dans l'espace, suivie par le site ===== */
+      const site7 = await ouvrirSite('/a-emporter#calendrier', 'commande');
+      const cal = (pg) => pg.evaluate(() => { const l = [...document.querySelectorAll('[name="jour"]')], o = l.filter((x) => !x.disabled); return { radios: l.length, ouverts: o.length, premier: o[0]?.value || '', dernier: o.at(-1)?.value || '', mois: document.querySelector('.emp-calendrier__mois')?.textContent || '', titres: document.querySelectorAll('.emp-calendrier__titre-mois').length, avent: document.querySelectorAll('.avent__case').length, sur: document.querySelector('.avent .surtitre')?.textContent || '', info: document.querySelector('.ouv-traiteur__info')?.textContent || '' }; });
+      const c0 = await cal(site7);
+      faux('période de départ', c0.ouverts === 19 && c0.premier === '2026-12-05' && c0.dernier === '2026-12-31' && c0.mois === 'décembre 2026' && c0.avent === 27 && /5 au 31 décembre/.test(c0.sur), `la page devrait proposer le 5–31 décembre 2026 au départ : ${JSON.stringify(c0)}`);
+      await page.bringToFront(); await page.locator('[data-com-retour]').click(); await attendre(350); if (!(await page.locator('[data-com-preparation]').count())) { await page.locator('[data-com-ouvrir="preparation"]:visible').first().click(); await attendre(450); }
+      /* Au clavier : le réglage s'ouvre à Entrée sur son titre. */
+      await page.locator('[data-periode] > summary').focus(); await page.keyboard.press('Enter'); await attendre(300);
+      faux('clavier', await page.locator('[data-periode]').evaluate((d) => d.open), 'la période des retraits devrait s’ouvrir au clavier');
+      const regler = async (debut, fin2) => { await page.bringToFront(); await page.locator('#per-debut').fill(debut); await page.locator('#per-fin').fill(fin2); await attendre(250); const effets = await texte('[data-periode-effets]'); await page.locator('[data-form-periode] button[type="submit"]').click(); await attendre(500); return { effets, toast: await toast(), refus: await refus(), actuelle: await texte('[data-periode-actuelle]') }; };
+      const inv = await regler('2026-12-20', '2026-12-10');
+      faux('période invalide', /sera refusée/.test(inv.effets) && /avant le premier/.test(inv.refus) && /du 5 au 31 décembre 2026/.test(inv.actuelle) && !(await etat('commande')).commerce.retraits, `une période à l'envers devrait être refusée : ${JSON.stringify(inv).slice(0, 300)}`);
+      const p1 = await regler('2026-12-28', '2027-01-10');
+      faux('période réglée', /Du 28 décembre 2026 au 10 janvier 2027, bornes comprises/.test(p1.effets) && /SC7-MARC/.test(p1.effets) && /reste telle quelle/.test(p1.effets) && /SC7-NADIA/.test(p1.effets) && /avant validation/.test(p1.effets) && /enregistrée : du 28 décembre 2026 au 10 janvier 2027/.test(p1.toast) && /28 décembre 2026 au 10 janvier 2027/.test(p1.actuelle), `le réglage devrait dire son effet puis s'enregistrer : ${JSON.stringify(p1).slice(0, 420)}`);
+      await debordement(page, 'le réglage de la période');
+      /* La page déjà ouverte suit sans rechargement ; rechargée, ses textes citent la nouvelle période. */
+      await site7.bringToFront(); await attendre(700); const c1 = await cal(site7);
+      faux('page ouverte', c1.premier === '2026-12-30' && c1.dernier === '2027-01-10' && c1.titres === 2 && /décembre 2026 – janvier 2027/.test(c1.mois) && c1.avent === 14, `la page déjà ouverte devrait suivre la nouvelle période : ${JSON.stringify(c1)}`);
+      await site7.reload({ waitUntil: 'load' }); await attendrePret(site7); await attendre(1500); const c2 = await cal(site7);
+      faux('période sur le site', c2.ouverts === 10 && /28 décembre 2026 au 10 janvier 2027/i.test(c2.sur) && /28 décembre 2026 au 10 janvier 2027/.test(c2.info) && /dimanche 10 janvier/.test(await site7.locator('[data-tiroir-retrait]').first().textContent()), `les deux bornes et les textes devraient suivre : ${JSON.stringify(c2)}`); await debordement(site7, 'la page À emporter sur deux mois');
+      /* Une commande pour janvier ; pendant la saisie, la période est raccourcie : le jour choisi est retiré, avec la raison. */
+      await ajouter(site7, 'escargots'); await site7.locator('[data-ajouter="escargots"]').click(); await attendre(1100); await site7.locator('[data-tiroir-valider]').click(); await attendre(450);
+      await site7.evaluate(() => document.querySelector('[name="jour"][value="2027-01-08"]').click()); await attendre(350); await site7.evaluate(() => document.querySelector('[name="moment"][value="soir"]').click()); await attendre(250); await site7.locator('[data-tiroir-suite]').click(); await attendre(450);
+      await site7.locator('[name="prenom"]').fill('Julie'); await site7.locator('[name="nom"]').fill('Martin (exemple)'); await site7.locator('[name="tel"]').fill('06 00 00 00 01');
+      await regler('2026-12-28', '2027-01-05'); await site7.bringToFront(); await attendre(500); await site7.locator('.emp-tiroir__pied button[type="submit"]').click(); await attendre(800);
+      const perdu = { dit: await texte('[data-erreur="jour"]', site7), merci: await site7.locator('[data-emp-merci]').isVisible(), demandes: JSON.parse((await stock(site7)).L['jh-demo:commande:espace-demandes:v1'] || '[]').length };
+      faux('contrôle final', /vendredi 8 janvier n'est plus proposé au retrait : il est hors de la période des retraits \(du 28 décembre 2026 au 5 janvier 2027\)/.test(perdu.dit) && !perdu.merci && perdu.demandes === 3, `un jour sorti de la période pendant la saisie ne doit pas partir, et la raison doit être dite : ${JSON.stringify(perdu).slice(0, 320)}`);
+      await site7.evaluate(() => document.querySelector('[name="jour"][value="2027-01-02"]').click()); await attendre(350); await site7.locator('[data-tiroir-suite]').click().catch(() => {}); await attendre(400); await site7.locator('.emp-tiroir__pied button[type="submit"]').click(); await attendre(800);
+      faux('contrôle final', /^T-/.test(await texte('[data-emp-ref]', site7)) && /samedi 2 janvier/.test(await texte('[data-emp-merci]', site7)), `un jour resté dans la période devrait partir : « ${(await texte('[data-emp-merci]', site7)).slice(0, 140)} »`);
+      /* Une commande déjà validée hors de la nouvelle période reste traitable ; une demande en attente demande une décision. */
+      await page.bringToFront(); await page.locator('[data-com-retour]').click(); await attendre(350); await page.locator('[data-demande="sc7-marc"] [data-com-ouvrir="commande"]:visible').first().click(); await attendre(450);
+      const marc = { note: await texte('[data-cmd-hors-note]'), etatVu: await texte('[data-cmd-pastille]') }; await page.locator('[data-cmd-avancer="preparation"]').click(); await attendre(450);
+      faux('commande préservée', /reste telle quelle/.test(marc.note) && /Validée/.test(marc.etatVu) && (await etat('commande')).commerce.commandes['sc7-marc'].etat === 'preparation' && (await etat('commande')).commerce.commandes['sc7-marc'].jour === '2026-12-11', `la commande de Marc L. (11 décembre) devrait rester validée et traitable : ${JSON.stringify(marc).slice(0, 260)}`);
+      await page.locator('[data-com-retour]').click(); await attendre(350); if (await page.locator('[data-com-preparation]').count()) { await page.locator('[data-com-retour]').click(); await attendre(350); }
+      await page.locator('[data-demande="sc7-nadia"] [data-com-ouvrir="commande"]:visible').first().click(); await attendre(450);
+      const nadia = { alerte: await texte('[data-cmd-hors]'), valider: await page.locator('[data-cmd-actions] [data-cmd-avancer="validee"]').count(), boutons: (await page.locator('[data-cmd-hors] button').allInnerTexts()).join(' | ') };
+      faux('demande incompatible', /Retrait à revoir avant de valider/.test(nadia.alerte) && /hors de la période des retraits/.test(nadia.alerte) && !nadia.valider && /Convenir d'un autre retrait/.test(nadia.boutons) && /à titre exceptionnel/.test(nadia.boutons) && /Refuser/.test(nadia.boutons), `la demande de Nadia B. devrait demander une décision explicite : ${JSON.stringify(nadia).slice(0, 320)}`);
+      if (tel) faux('cibles', (await page.locator('[data-cmd-hors] button').evaluateAll((l) => l.map((b) => Math.round(b.getBoundingClientRect().height)))).every((x) => x >= 44), 'sur téléphone, les trois décisions devraient mesurer au moins 44 px'); await debordement(page, 'une demande au retrait hors période');
+      await page.locator('[data-cmd-exception]').focus(); await page.keyboard.press('Enter'); await attendre(600);
+      const kn = (await etat('commande')).commerce.commandes['sc7-nadia'];
+      faux('décision explicite', kn.etat === 'validee' && kn.horsPeriode === true && /à titre exceptionnel/.test(kn.historique.at(-1).texte) && /acceptée à titre exceptionnel/.test(await texte('[data-cmd-hors-note]')), `accepter à titre exceptionnel devrait être noté : ${JSON.stringify({ etat: kn.etat, hors: kn.horsPeriode }).slice(0, 200)}`);
+      /* Plus aucune disponibilité : période terminée (le scénario est au 2 décembre 2026), puis période faite de jours fermés. */
+      await page.locator('[data-com-retour]').click(); await attendre(350); await page.locator('[data-com-ouvrir="preparation"]:visible').first().click(); await attendre(450); if (!(await page.locator('[data-periode]').evaluate((d) => d.open))) await page.locator('[data-periode] > summary').click();
+      const p2 = await regler('2026-11-01', '2026-11-20'); await site7.bringToFront(); await site7.reload({ waitUntil: 'load' }); await attendrePret(site7); await attendre(1200);
+      const term = { cal: await cal(site7), dit: await texte('[data-emp-sans-retrait]', site7), avent: await texte('[data-avent-note]', site7) };
+      faux('période terminée', /déjà terminée/.test(p2.effets) && term.cal.ouverts === 0 && /est terminée : les commandes à emporter ne sont plus prises/.test(term.dit) && /est terminée/.test(term.avent), `période terminée : ${JSON.stringify(term).slice(0, 360)}`); await debordement(site7, 'la page À emporter sans retrait possible');
+      await regler('2026-12-07', '2026-12-08'); await site7.bringToFront(); await site7.reload({ waitUntil: 'load' }); await attendrePret(site7); await attendre(1200);
+      faux('aucun jour ouvert', /fermé pendant toute la période des retraits/.test(await texte('[data-emp-sans-retrait]', site7)), `période de jours fermés : « ${await texte('[data-emp-sans-retrait]', site7)} »`);
+      /* Retour au réglage de départ ; la démonstration et l'usage normal suivent chacun leur horloge. */
+      await page.bringToFront(); await page.locator('[data-periode-defaut]').click(); await attendre(500);
+      faux('retour au départ', /retour au réglage de départ \(du 5 au 31 décembre 2026\)/.test(await toast()) && !(await etat('commande')).commerce.retraits, `« Revenir à la période de départ » : « ${await toast()} »`);
+      await regler('2026-11-27', '2026-12-31'); await site7.bringToFront(); await site7.reload({ waitUntil: 'load' }); await attendrePret(site7); await attendre(1200);
+      const horlogeDemo = await site7.evaluate(() => [...document.querySelectorAll('[name="jour"]')].filter((x) => x.disabled).map((x) => x.value).join(','));
+      faux('horloge du scénario', horlogeDemo === '2026-11-27,2026-11-28,2026-11-29', `en démonstration (2 décembre 2026), les jours d'avant devraient être passés : « ${horlogeDemo} »`); await site7.close();
+      const reelle = await ctx.newPage(); await reelle.clock.setFixedTime(new Date('2026-11-28T10:00:00+01:00')); await reelle.goto(`${BASE}/a-emporter?demo=#calendrier`, { waitUntil: 'load' }); await attendre(1500);
+      await reelle.evaluate(() => { const d = JSON.parse(localStorage.getItem('jh-espace:v1')); d.commerce.retraits = { debut: '2026-11-27', fin: '2026-12-31' }; localStorage.setItem('jh-espace:v1', JSON.stringify(d)); }); await reelle.reload({ waitUntil: 'load' }); await attendre(1500);
+      const horlogeReelle = await reelle.evaluate(() => [...document.querySelectorAll('[name="jour"]')].filter((x) => x.disabled).map((x) => x.value).join(','));
+      faux('horloge normale', horlogeReelle === '2026-11-27', `hors démonstration, à la date du jour (28 novembre 2026), seul le 27 devrait être passé : « ${horlogeReelle} »`);
+      await reelle.evaluate((t) => localStorage.setItem('jh-espace:v1', t), TEMOIN); await reelle.close();
+
+      /* ===== D. Une utilisation corrigée sur une carte expirée (démonstration 8) ===== */
+      await ouvrirDemo('cadeau'); await aller(page, 'demandes'); await page.locator('[data-demande="sc8-cadeau"] [data-com-ouvrir="cadeau"]:visible').first().click(); await attendre(450);
+      await page.locator('[data-form-cad-valider] button[type="submit"]').click(); await attendre(450); await page.locator('[data-cad-regler]').click(); await attendre(450); await page.locator('[data-cad-emettre]').click(); await attendre(500);
+      await page.locator('[data-cad-cartes] [data-com-ouvrir="carte"]').first().click(); await attendre(450);
+      await page.locator('#util-montant').fill('20'); await page.locator('#util-ref').fill('Déjeuner (exemple)'); await page.locator('[data-form-carte-utiliser] button[type="submit"]').click(); await attendre(600);
+      faux('utilisation', /30 €/.test(await texte('[data-carte-solde]')), `après 20 € : « ${await texte('[data-carte-solde]')} »`);
+      /* Le saut d'horloge du scénario : le lendemain de la fin de validité. */
+      if (!(await page.locator('[data-scene-etapes]').evaluate((d) => d.open))) await page.locator('[data-scene-etapes] > summary').click();
+      const variantes = await texte('.esp-scene__variantes .esp-scene__sous'); await page.locator('[data-scene-saut="expiration"]').click(); await attendre(600);
+      if (tel && await page.locator('[data-scene-etapes]').evaluate((d) => d.open)) await page.locator('[data-scene-etapes] > summary').click();
+      const exp = { etatVu: await texte('[data-carte-pastille]'), bloquee: await texte('[data-carte-bloquee]'), formulaire: await page.locator('[data-form-carte-utiliser]').count(), note: await texte('[data-carte-note-historique]'), boutons: await page.locator('[data-usage-corriger]').count(), solde: await texte('.esp-com-etats li:nth-child(2)') };
+      faux('carte expirée', /Cinq variantes/i.test(variantes) && /Expirée/.test(exp.etatVu) && /a expiré/.test(exp.bloquee) && !exp.formulaire && /aucune nouvelle utilisation/.test(exp.note) && /la carte reste expirée/.test(exp.note) && exp.boutons === 1 && /Solde à l'expiration/i.test(exp.solde) && /non utilisable/.test(exp.solde), `la carte devrait être expirée, sans formulaire d'utilisation, avec la correction possible : ${JSON.stringify(exp).slice(0, 420)}`);
+      await page.locator('[data-usage-corriger]').focus(); await page.keyboard.press('Enter'); await attendre(400);
+      faux('clavier', await page.evaluate(() => document.activeElement?.id === 'usage-montant'), 'ouvrir « Corriger » au clavier devrait amener le focus sur le montant');
+      await page.locator('#usage-montant').fill('15'); await page.locator('[data-form-usage] button[type="submit"]').click(); await attendre(450); const sansMotifD = await refus(), gardeD = await page.locator('#usage-montant').inputValue();
+      await page.locator('#usage-motif').fill('L\'addition était de 15 €, pas de 20 €.'); await page.locator('[data-form-usage] button[type="submit"]').dblclick(); await attendre(700);
+      const cartesD = Object.values((await etat('cadeau')).commerce.cartes), c1D = cartesD.find((x) => x.utilisations.length), apres = { toast: await toast(), etatVu: await texte('[data-carte-pastille]'), solde: await texte('[data-carte-solde]'), validite: await texte('[data-carte-validite]'), formulaire: await page.locator('[data-form-carte-utiliser]').count(), histo: await texte('[data-com-histo] li') };
+      faux('correction historique', /motif/.test(sansMotifD) && gardeD === '15' && c1D.utilisations.length === 2 && c1D.utilisations[0].annulee?.remplaceePar === 'u2' && c1D.utilisations[1].montant === 15 && !c1D.desactivee && /35 €/.test(apres.solde) && /Expirée/.test(apres.etatVu) && !apres.formulaire && /La carte reste expirée/.test(apres.toast) && /20 € → 15 €/.test(apres.histo) && /reste expirée/.test(apres.histo) && (await page.locator('[data-usages] li.est-annulee').count()) === 1, `correction après expiration : ${JSON.stringify({ sansMotifD, gardeD, usages: c1D.utilisations.map((u) => [u.id, u.montant, !!u.annulee]), ...apres }).slice(0, 460)}`);
+      faux('expiration inchangée', c1D.expire === cartesD.find((x) => !x.utilisations.length).expire && /Jusqu'au/.test(apres.validite), `la date de fin ne doit pas changer : ${c1D.expire}, « ${apres.validite} »`); await debordement(page, 'une carte expirée corrigée');
+      await intact('à la fin du parcours');
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok(`espace : ${ou}`);
+    } catch (err) { R.echec(`${ou} : parcours interrompu`, String(err?.message || err).slice(0, 400), lieu);
     } finally { await ctx.close(); }
   }
 

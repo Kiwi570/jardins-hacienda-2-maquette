@@ -81,10 +81,10 @@ test('annulation : avant la préparation tout est libéré ; après, la producti
   S = ok(S, 'cmdValider', { id: a.id, base: base(a), le: LE });
   assert.match(agir(S, 'cmdAnnuler', { id: a.id, motif: '', le: LE }).refus, /motif/);
   let T = ok(S, 'cmdAnnuler', { id: a.id, motif: 'Le client a changé d\'avis.', le: LE });
-  assert.deepEqual(engagements(T, JOUR), { production: {}, retraits: { midi: 0, soir: 0 } }); assert.match(T.commerce.commandes[a.id].historique.at(-1).texte, /libérés/);
+  { const eT = engagements(T, JOUR); assert.deepEqual([eT.production, eT.retraits], [{}, { midi: 0, soir: 0 }]); } assert.match(T.commerce.commandes[a.id].historique.at(-1).texte, /libérés/);
   T = ok(S, 'cmdAvancer', { id: a.id, vers: 'preparation', le: LE }); T = ok(T, 'cmdAnnuler', { id: a.id, motif: 'Annulée après cuisson.', le: LE });
   assert.equal(engagements(T, JOUR).production['emporter-escargots'], 4, 'ce qui a été produit ne redevient pas une capacité'); assert.equal(engagements(T, JOUR).retraits.soir, 0, 'le créneau est libéré');
-  assert.match(T.commerce.commandes[a.id].historique.at(-1).texte, /production reste comptée/);
+  assert.match(T.commerce.commandes[a.id].historique.at(-1).texte, /production engagée reste comptée/);
 });
 
 test('modification : les effets sont dits, les contraintes revérifiées, l\'engagement remplacé ; après la préparation, une trace et un motif', () => {

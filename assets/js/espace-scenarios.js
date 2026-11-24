@@ -203,7 +203,7 @@ export const SCENARIOS = [
       { id: 'catalogue', texte: 'Dans Offres, filtre « À emporter » : les produits publiés, chacun avec son prix et son unité (la pièce, le kilo).', fait: (c) => vu(c, 'offre-catalogue') || !!demandeSc7(c) },
       { id: 'commander', texte: '« Voir le site », page Traiteur : ajoutez 2 escargots et 1,5 kg de pâté lorrain, choisissez le samedi 5 décembre, le soir, vos coordonnées, puis « Valider ma commande ».', fait: (c) => !!demandeSc7(c) },
       { id: 'arrivee', texte: 'Revenez à l\'espace, rubrique Demandes : « Décider : ouvrir la commande ». La référence, les lignes, le total et le retrait sont ceux du site.', fait: (c) => !!demandeSc7(c) && (vu(c, 'cmd-dossier') || !!commandeSc7(c)) },
-      { id: 'valider', texte: 'Lisez les disponibilités : 4 escargots déjà engagés sur 6, un retrait sur 2. Puis « Valider la commande ».', fait: (c) => ['validee', 'preparation', 'prete', 'retiree'].includes(commandeSc7(c)?.etat) },
+      { id: 'valider', texte: 'Lisez les disponibilités : 4 escargots déjà comptés sur 6, un retrait sur 2. Puis « Valider la commande ».', fait: (c) => ['validee', 'preparation', 'prete', 'retiree'].includes(commandeSc7(c)?.etat) },
       { id: 'preparer', texte: '« Préparation et retraits » : 6 escargots et 1,5 kg de pâté à préparer pour samedi. « Lancer la préparation », puis « Marquer la commande prête ».', fait: (c) => ['prete', 'retiree'].includes(commandeSc7(c)?.etat) },
       { id: 'remettre', texte: 'Ouvrez la commande : « Fiche de retrait », puis « Remettre au client ». L\'historique garde chaque étape.', fait: (c) => commandeSc7(c)?.etat === 'retiree' },
     ],
@@ -212,6 +212,10 @@ export const SCENARIOS = [
       { titre: 'Une annulation avant la préparation', texte: 'Ouvrez la commande de Marc L. (validée) : « Annuler la commande », avec un motif. La production et le créneau du vendredi sont libérés ; l\'historique garde le motif.' },
       { titre: 'Un prix qui change après la commande', texte: 'Dans Offres, passez les escargots à 20 € et publiez. La page À emporter affiche 20 € ; les commandes déjà reçues gardent 18 € la pièce et leur total.' },
       { titre: 'Le créneau complet, vu du site', texte: 'Après deux commandes validées le samedi soir, la page À emporter ne propose plus ce créneau : elle le dit, et laisse choisir un autre moment.' },
+      /* v7.14.1 : ce qui est préparé reste compté ; la production se rectifie à part ; la période des retraits se règle ici. */
+      { titre: 'Une commande corrigée après la préparation', texte: 'Ouvrez la commande de Paul D. (4 escargots) : « Lancer la préparation », « Marquer la commande prête », puis « Corriger » : 1 escargot, avec un motif. Le client retire 1 pièce ; les 4 pièces préparées restent comptées le samedi, et la commande de Nadia B. reste refusée. Déplacez ensuite le retrait au dimanche midi : rien ne s\'ajoute à la production du dimanche.' },
+      { titre: 'Une production mal notée, rectifiée à part', texte: 'Dans la commande de Paul D., « Production engagée » : « Rectifier la production », 3 pièces, avec un motif. L\'avant et l\'après sont gardés dans l\'historique ; la capacité du samedi suit ; la commande du client ne change pas.' },
+      { titre: 'La période des retraits, réglée ici', texte: 'Dans « Préparation et retraits », ouvrez « Période des retraits » : écrivez du 10 décembre au 10 janvier. L\'effet est dit avant d\'enregistrer : les commandes déjà acceptées pour le 5 restent telles quelles, la demande de Nadia B. demandera une décision. La page À emporter propose alors les jours jusqu\'au 10 janvier.' },
     ],
     conclusion: (c) => { const k = commandeSc7(c), e = engagements(c.S, k.jour).production['emporter-escargots'] || 0, cap = capacites(c.S).production['emporter-escargots'];
       return `La commande ${k.ref} de ${nomClient(k.client)} (${k.lignes.map((l) => `${quantite(l.quantite, l.unite)} ${l.nom}`).join(', ')} ; ${k.total == null ? 'total non conservé' : eurosC(k.total)}) a été reçue, validée, préparée, puis remise ${retraitTexte(k)}. Elle a compté une seule fois : ${quantite(e, 'piece')} d'escargots engagées sur ${cap} ce jour-là (capacités d'exemple, à confirmer). Aucune table ni aucun couvert n'a été pris. Rien n'a été envoyé ni encaissé.`; } },
@@ -239,6 +243,8 @@ export const SCENARIOS = [
       { titre: 'Une correction qui laisse une trace', texte: 'Sur une utilisation : « Corriger », un nouveau montant et un motif. L\'ancienne reste lisible, barrée ; la nouvelle dit qu\'elle la remplace. « Annuler cette utilisation » rétablit le solde, avec son motif.' },
       { titre: 'L\'offre modifiée ou masquée après l\'émission', texte: 'Dans Offres, filtre « Cartes cadeaux » : archivez la carte de 50 €, ou changez son montant et publiez. Les deux cartes émises gardent leur valeur, leur solde et leur code.' },
       { titre: 'Une carte à 250 € jusqu\'à la demande', texte: '« Voir le site », page Offrir : la carte de 250 € est proposée. Choisissez-la et envoyez : la demande arrive dans Demandes avec son offre et son montant.' },
+      /* v7.14.1 : une utilisation passée se corrige sur une carte expirée, sans la réactiver. */
+      { titre: 'Une utilisation corrigée après l\'expiration', texte: 'Une fois 20 € utilisés sur la première carte : « Aller après la fin de validité des cartes » (plus haut). La carte est expirée, son solde de 30 € n\'est plus utilisable. Sur l\'utilisation de 20 € : « Corriger », 15 €, avec un motif. Le solde historique passe à 35 € ; la carte reste expirée, et utiliser 1 € reste refusé.' },
     ],
     conclusion: (c) => { const l = cartesSc8(c), n = l.reduce((t, x) => t + x.utilisations.filter((u) => !u.annulee).length, 0);
       return `La demande de Hugo S. (2 cartes de 50 €, 100 €) a été validée, son règlement simulé noté, puis deux cartes distinctes ont été émises : ${l.map((x) => `${x.code}, solde ${eurosC(soldeCarte(x))}`).join(' ; ')}. ${n > 1 ? `${n} utilisations sont enregistrées` : 'Une utilisation est enregistrée'} ; le dépassement a été refusé sans rien débiter. La validité de 6 mois est un exemple à confirmer. Aucun paiement réel, aucun message : tout est resté dans ce navigateur.`; } },
@@ -270,6 +276,9 @@ export const scenario = (id) => SCENARIOS.find((s) => s.id === id) || null;
 export function sauts(id, { S = {}, iso = '', min = 0 } = {}) {
   /* v7.13.0 : le scénario 6 n'a qu'un saut, dans la journée : le service du soir (« épuisé ce midi » ne s'y étend pas). */
   if (id === 'offre') return [{ cle: 'soir', libelle: 'Aller au service du soir', cible: min < 18 * 60 ? { iso, min: 19 * 60 } : null, raison: 'Vous êtes déjà au service du soir.' }];
+  /* v7.14.1 : le scénario 8 a un saut : le lendemain de la fin de validité de ses cartes (pour corriger une utilisation passée). */
+  if (id === 'cadeau') { const fins = cartesEmises(S).filter((x) => x.demande === 'sc8-cadeau' && x.expire).map((x) => x.expire).sort(), fin = fins.at(-1) || '';
+    return [{ cle: 'expiration', libelle: 'Aller après la fin de validité des cartes', cible: fin && fin >= iso ? { iso: ajouter(fin, 1), min: 10 * 60 } : null, raison: fin ? 'Les cartes ont déjà expiré.' : 'Aucune carte avec une date de fin n\'est encore émise.' }]; }
   const s = scenario(id); if (!s?.dossier) return [];
   const d = S.receptions?.dossiers?.[s.dossier], ici = `${iso}T${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
   const vers = (t) => (t && t > ici ? { iso: t.slice(0, 10), min: +t.slice(11, 13) * 60 + +t.slice(14, 16) } : null);

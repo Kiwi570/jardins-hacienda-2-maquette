@@ -14,6 +14,7 @@
    venir, clic sur celle de devant pour la retrouver dans la vitrine. Animations réduites : la ronde ne tourne pas seule. */
 import { readFileSync, existsSync } from 'node:fs';
 import { html, brut } from '../../outils/gabarit.mjs';
+import { baseRetraits } from '../gabarits/retraits.mjs';
 
 export const page = { cle: 'a-emporter', fichier: 'a-emporter', theme: 'nuit', imagePartage: 'vraie/plat-cheminee-1280.webp', modules: [] };
 
@@ -93,6 +94,7 @@ function avent(c, E) {
     <div class="avent__mur" data-visuel>
       <ol class="avent__cases" data-effet="avent">${cases}</ol>
     </div>
+    <p class="avent__note" data-avent-note role="status" hidden></p>
   </div>
 </section>`;
 }
@@ -102,6 +104,8 @@ export default (c) => {
   const textes = { articles: c.s('emporter.articles'), annonce: c.s('emporter.annonce'), moins: c.s('emporter.moins'), plus: c.s('emporter.plus'), retrait: c.s('emporter.retraitResume'), retraitPanier: c.s('emporter.retraitPanier'), retraitAChoisir: c.s('emporter.retraitAChoisir'), midi: c.s('emporter.midi').toLowerCase(), soir: c.s('emporter.soir').toLowerCase(), recap: c.s('emporter.recap'), simule: c.s('emporter.simule'), ajoute: c.s('emporter.ajoute'), ajouter: c.s('emporter.ajouter'), tiroirAjoute: c.s('emporter.tiroirAjoute'), tiroirNombre: c.s('emporter.tiroirNombre'), tiroirNombreUn: c.s('emporter.tiroirNombreUn'), tiroirRetirer: c.s('emporter.tiroirRetirer'), tiroirRetirerTexte: c.s('emporter.tiroirRetirerTexte'), tiroirUnite: c.s('emporter.tiroirUnite'), tiroirKg: c.s('emporter.tiroirKg'),
     /* v7.14.0 : chaque produit porte son offre du catalogue, sa quantité minimale et son pas ; les libellés pour reconstruire une fiche. */
     produits: Object.fromEntries(E.produits.map((p) => [p.id, { nom: p.nom, prix: p.prix, unite: p.unite, vignette: photoPlat(p.id) ? `/assets/images/grok/traiteur/${p.id}-480.webp` : null, offre: `emporter-${p.id}`, min: p.unite === 'kg' ? 0.5 : 1, pas: p.unite === 'kg' ? 0.5 : 1 }])),
+    /* v7.14.1 : de quoi redessiner les deux calendriers quand la période des retraits change. */
+    calendrier: { ferme: c.s('emporter.ferme'), midi: c.s('emporter.midi'), soir: c.s('emporter.soir'), aventFerme: c.s('emporter.aventFerme'), aventLabel: c.s('emporter.aventLabel'), aventLabelFerme: c.s('emporter.aventLabelFerme'), aventVotre: c.s('emporter.aventVotre'), tiroirRetrait: c.s('emporter.tiroirRetrait'), choisirJour: c.s('emporter.choisirJour') },
     unites: { piece: 'la pièce', kg: 'le kg', formule: 'la formule' }, soulever: c.s('emporter.soulever', { nom: '{nom}' }), ajouterA: c.s('emporter.ajouterA', { nom: '{nom}' }), illustration: c.s('emporter.illustration', { nom: '{nom}' }), poidsDe: c.s('emporter.poidsDe', { nom: '{nom}' }), rondeVoir: c.s('emporter.rondeVoir', { nom: '{nom}' }) };
   const ronde = E.produits.filter((p) => photoPlat(p.id));
   const jourLong = (iso) => new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`));
@@ -146,6 +150,7 @@ export default (c) => {
       </div>
       <p class="emp-produits__note">${c.t('emporter.allergenes')}</p>
     </div>
+    <p class="emp-memoire" data-emp-memoire role="status" tabindex="-1" hidden></p>
     <ul class="emp-produits__grille" data-anime="cascade" data-effet="emporter">
       ${E.produits.map((p, i) => html`<li class="emp-produit" data-produit="${p.id}">
         <div class="emp-cloche" data-emp-cloche data-superpose>
@@ -184,6 +189,7 @@ ${avent(c, E)}
       <div class="emp-form__etape" data-form-etape="retrait">
       <p class="emp-form__texte">${c.t('emporter.retraitTexte')}</p>
       ${calendrier(c, E)}
+      <p class="emp-form__note emp-form__sans-retrait" data-emp-sans-retrait role="status" hidden></p>
       <p class="emp-form__erreur" data-erreur="jour" hidden>${c.t('emporter.choisirJour')}</p>
       <fieldset class="emp-form__moment" data-emp-moment>
         <legend>${c.t('emporter.moment')}</legend>
@@ -256,7 +262,7 @@ ${avent(c, E)}
   </div>
 </dialog>
 <p class="visuellement-cache" aria-live="polite" data-emp-annonce></p>
-<script type="application/json" data-emporter-base>${brut(JSON.stringify({ produits: E.produits.map((p) => ({ id: p.id, nom: p.nom, texte: p.texte, prix: p.prix, unite: p.unite })) }).replace(/</g, '\\u003c'))}</script>
+<script type="application/json" data-emporter-base>${brut(JSON.stringify({ produits: E.produits.map((p) => ({ id: p.id, nom: p.nom, texte: p.texte, prix: p.prix, unite: p.unite })), ...baseRetraits(c) }).replace(/</g, '\\u003c'))}</script>
 <script type="application/json" data-emp-textes>${brut(JSON.stringify(textes).replace(/</g, '\\u003c'))}</script>
 `;
 };

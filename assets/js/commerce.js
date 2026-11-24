@@ -1,4 +1,4 @@
-/* Du catalogue à la remise au client (v7.14.0) : les commandes à emporter et les cartes cadeaux, en fonctions pures
+/* Du catalogue à la remise au client (v7.14.0, consolidé en v7.14.1) : les commandes à emporter et les cartes cadeaux, en fonctions pures
    (testées par `node --test _audit/tests/*.test.mjs`). Le site et l'espace lisent les mêmes règles.
 
    Trois objets, bien séparés :
@@ -12,7 +12,12 @@
    Rien ici n'est un paiement réel, un message envoyé ou une signature : les règlements sont des simulations notées par
    l'équipe, les codes sont des codes de démonstration. L'état est gardé dans ce navigateur (`S.commerce`) :
      { capacites: { production: { [offre]: n }, retraits: n, exemple }, validiteMois, exempleValidite,
-       commandes: { [demande]: commande }, cadeaux: { [demande]: suivi }, cartes: { [id]: carte } } */
+       commandes: { [demande]: commande }, cadeaux: { [demande]: suivi }, cartes: { [id]: carte } }
+
+   v7.14.1 : la PRODUCTION ENGAGÉE d'une commande est gardée à part de ses lignes (`commande.production.lots`) : corriger
+   ce que le client retire, ou quand il le retire, ne réécrit jamais ce que l'équipe a déjà lancé en préparation. La
+   PÉRIODE DES RETRAITS est un réglage (`S.commerce.retraits`), lu par le site et par l'espace avec la même règle. Une
+   utilisation passée d'une carte se corrige même après son expiration, sans la réactiver. */
 import { offresDeBase, offresDe } from './espace-publie.js?v=7';
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -25,7 +30,9 @@ const NOMS_UNITE = { piece: ['pièce', 'pièces'], kilo: ['kg', 'kg'], formule: 
 export const quantite = (q, unite) => { const u = NOMS_UNITE[unite]; return u ? `${nb(q)} ${+q > 1 ? u[1] : u[0]}` : `${nb(q)} (unité à préciser)`; };
 const MOMENTS = { midi: 'à midi', soir: 'le soir' };
 export const momentTexte = (m) => MOMENTS[m] || 'moment à préciser';
-const jourTexte = (iso) => (ISO.test(iso || '') ? new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`)) : 'date à préciser');
+/* « 1er », comme on l'écrit : « jeudi 1er janvier », « du 1er au 15 ». */
+const premier = (t) => String(t).replace(/(^|\s)1(?=\s|$)/, '$11er');
+const jourTexte = (iso) => (ISO.test(iso || '') ? premier(new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`))) : 'date à préciser');
 export const retraitTexte = (c) => `${jourTexte(c.jour)}, ${momentTexte(c.moment)}`;
 const commerce = (S) => (S.commerce ||= {});
 const trace = (o, le, quoi, texte) => { (o.historique ||= []).push({ le: String(le || '').slice(0, 16), quoi, texte }); };
@@ -84,52 +91,106 @@ export const nomClient = (c) => [c?.prenom, c?.nom].filter(Boolean).join(' ').tr
 /* ---------- Les capacités : la production (par produit et par jour) et les retraits (par créneau) ---------- */
 /** Les capacités réglées. Une capacité non définie ne limite rien : elle est dite « non définie », jamais inventée. */
 export function capacites(S) { const c = S?.commerce?.capacites || {}; return { production: c.production || {}, retraits: typeof c.retraits === 'number' ? c.retraits : null, exemple: !!c.exemple }; }
+/* ---------- La production engagée (v7.14.1) ----------
+   Trois informations, tenues séparées :
+   - ce que le client doit recevoir : les lignes de la commande ;
+   - quand il le retire : le jour et le créneau de la commande ;
+   - ce que l'équipe a déjà engagé en préparation : des LOTS (produit, unité, quantité, jour de production), gardés dans
+     `commande.production = { lots: [{ id, offre, nom, unite, jour, quantite, le, quoi }], aVerifier, rectifications }`.
+   Corriger ou déplacer la commande ne réécrit jamais un lot ; seule une rectification explicite, motivée et tracée, le
+   change. `quoi` : 'preparation' (au lancement), 'supplement' (ajout après le lancement), 'reprise' (commande d'avant la
+   v7.14.1), 'ajout' (lot complété à la main par une rectification). */
+const DEMARREES = ['preparation', 'prete', 'retiree'];
+/** La préparation de cette commande a-t-elle commencé (elle a pu être annulée ensuite) ? */
+export const preparationCommencee = (c) => !!c && (DEMARREES.includes(c.etat) || !!c.produite || !!c.production);
+const lotsDeLignes = (c, le, quoi) => (c.lignes || []).map((l, i) => ({ id: `l${i + 1}`, offre: l.offre || '', nom: l.nom, unite: l.unite || '', jour: c.jour || '', quantite: arr3(l.quantite), le: String(le || '').slice(0, 16), quoi }));
+/* Une commande corrigée après le début de sa préparation, avant la v7.14.1 : ses quantités ou son jour d'origine ont pu être écrasés. */
+const corrigeeAvant = (c) => (c.historique || []).some((h) => h.quoi === 'correction');
+const lanceeLe = (c) => (c.historique || []).find((h) => h.quoi === 'preparation')?.le || '';
+/** Les lots de production d'une commande. Une commande d'avant la v7.14.1, pas encore reprise, est lue comme elle était comptée : ses lignes, à son jour. */
+export function lotsDe(c) { return c?.production ? c.production.lots || [] : preparationCommencee(c) ? lotsDeLignes(c, lanceeLe(c), 'reprise') : []; }
+/** La production de cette commande est-elle « à vérifier » (son historique ne permet pas de la reconstituer avec certitude) ? */
+export const productionAVerifier = (c) => (c?.production ? !!c.production.aVerifier : preparationCommencee(c) && corrigeeAvant(c));
+const cleProduit = (x) => x.offre || `nom:${x.nom}`;
+const parProduit = (liste) => { const m = new Map(); for (const x of liste || []) { const k = cleProduit(x), y = m.get(k) || { offre: x.offre || '', nom: x.nom, unite: x.unite, quantite: 0 }; y.quantite = arr3(y.quantite + (+x.quantite || 0)); m.set(k, y); } return m; };
+/** Ce qu'il reste à lancer en production pour une commande : ses lignes, moins ce qui est déjà engagé pour elle, produit par produit. */
+export function resteAProduire(c, lignes = c?.lignes) {
+  const fait = parProduit(lotsDe(c));
+  return [...parProduit(lignes).values()].map((x) => ({ ...x, quantite: Math.max(0, arr3(x.quantite - (fait.get(cleProduit(x))?.quantite || 0))) })).filter((x) => x.quantite > 0);
+}
 /**
- * Ce qui est déjà engagé un jour de retrait. Une demande non validée n'engage rien ; une commande validée compte une
- * fois, jusqu'à sa remise ; annulée avant la préparation, elle libère tout ; annulée après (`produite`), ce qui a été
- * produit reste compté dans la production, et le créneau de retrait est libéré.
+ * Ce qui compte un jour donné. Pour un produit et un jour : les quantités RÉSERVÉES restant à produire (commandes
+ * validées dont la préparation n'est pas lancée, à leur jour de retrait) + les quantités ENGAGÉES en préparation (les
+ * lots, à leur jour de production). Le lancement fait passer d'une catégorie à l'autre : rien n'est compté deux fois.
+ * Une demande non validée n'engage rien. Annulée avant la préparation, une commande libère tout ; annulée après, ses lots
+ * restent comptés et son créneau de retrait est libéré. `sauf` : la commande que l'on modifie (sa réservation et son
+ * créneau sont recalculés par l'appelant ; ses lots, eux, restent comptés : ils sont produits).
  */
 export function engagements(S, jour, sauf = '') {
-  const production = {}, retraits = { midi: 0, soir: 0 };
+  const engagee = {}, reservee = {}, retraits = { midi: 0, soir: 0 }, aVerifier = [], plus = (o, k, q) => { o[k] = arr3((o[k] || 0) + q); };
   for (const c of Object.values(S?.commerce?.commandes || {})) {
+    for (const l of lotsDe(c)) if (l.offre && l.jour === jour && l.quantite > 0) plus(engagee, l.offre, l.quantite);
+    if (productionAVerifier(c)) aVerifier.push(c.ref);
     if (c.id === sauf || c.jour !== jour) continue;
-    const active = ENGAGEES.includes(c.etat);
-    if (active || (c.etat === 'annulee' && c.produite)) for (const l of c.lignes || []) if (l.offre) production[l.offre] = arr3((production[l.offre] || 0) + l.quantite);
-    if (active && c.moment) retraits[c.moment] = (retraits[c.moment] || 0) + 1;
+    if (c.etat === 'validee') for (const r of resteAProduire(c)) if (r.offre) plus(reservee, r.offre, r.quantite);
+    if (ENGAGEES.includes(c.etat) && c.moment) retraits[c.moment] = (retraits[c.moment] || 0) + 1;
   }
-  return { production, retraits };
+  const production = { ...engagee }; for (const [k, q] of Object.entries(reservee)) plus(production, k, q);
+  return { production, engagee, reservee, retraits, aVerifier };
 }
 /**
  * Cette commande tient-elle dans les capacités de son jour de retrait ? `sauf` : la commande elle-même quand on la
- * modifie (son nouvel engagement remplace l'ancien). Renvoie { ok, refus: [phrases], production: [...], retrait }.
+ * modifie. Ce qui est demandé à la production, c'est seulement ce qui n'est pas déjà engagé pour elle (`demande` : le
+ * supplément) ; ses lots restent comptés là où ils ont été produits. Renvoie { ok, refus: [phrases], production: [{
+ * offre, nom, unite, aRemettre, dejaEngage, demande, engage, engagee, reservee, capacite, reste }], retrait, aVerifier }.
  */
 export function disponibilite(S, { jour, moment, lignes = [], sauf = '' }) {
-  const cap = capacites(S), e = engagements(S, jour, sauf), refus = [], production = [], voulu = new Map();
-  for (const l of lignes) if (l.offre) { const x = voulu.get(l.offre) || { offre: l.offre, nom: l.nom, unite: l.unite, demande: 0 }; x.demande = arr3(x.demande + l.quantite); voulu.set(l.offre, x); }
-  for (const x of voulu.values()) {
-    const c = cap.production[x.offre]; if (typeof c !== 'number') { production.push({ ...x, engage: e.production[x.offre] || 0, capacite: null, reste: null }); continue; }
-    const engage = e.production[x.offre] || 0, reste = Math.max(0, arr3(c - engage)); production.push({ ...x, engage, capacite: c, reste });
-    if (x.demande > reste) refus.push(reste > 0 ? `« ${x.nom} » : il ne reste que ${quantite(reste, x.unite)} à produire pour le ${jourTexte(jour)} (${quantite(x.demande, x.unite)} demandés, capacité ${quantite(c, x.unite)}).` : `« ${x.nom} » : la production du ${jourTexte(jour)} est complète (capacité ${quantite(c, x.unite)}).`);
+  const cap = capacites(S), e = engagements(S, jour, sauf), refus = [], production = [];
+  const propre = sauf ? S?.commerce?.commandes?.[sauf] : null, deja = parProduit(propre ? lotsDe(propre) : []);
+  for (const x of parProduit(lignes.filter((l) => l.offre)).values()) {
+    const fait = deja.get(x.offre)?.quantite || 0, demande = Math.max(0, arr3(x.quantite - fait)), c = cap.production[x.offre], engage = e.production[x.offre] || 0;
+    const ligne = { offre: x.offre, nom: x.nom, unite: x.unite, aRemettre: x.quantite, dejaEngage: fait, demande, engage, engagee: e.engagee[x.offre] || 0, reservee: e.reservee[x.offre] || 0 };
+    if (typeof c !== 'number') { production.push({ ...ligne, capacite: null, reste: null }); continue; }
+    const reste = Math.max(0, arr3(c - engage)); production.push({ ...ligne, capacite: c, reste });
+    if (demande > reste) refus.push(reste > 0 ? `« ${x.nom} » : il ne reste que ${quantite(reste, x.unite)} à produire pour le ${jourTexte(jour)} (${quantite(demande, x.unite)} demandés${fait ? ' en plus' : ''}, capacité ${quantite(c, x.unite)}).` : `« ${x.nom} » : la production du ${jourTexte(jour)} est complète (capacité ${quantite(c, x.unite)}).`);
   }
   const pris = moment ? e.retraits[moment] || 0 : 0, retrait = { engage: pris, capacite: cap.retraits, reste: cap.retraits == null ? null : Math.max(0, cap.retraits - pris) };
   if (cap.retraits != null && moment && pris >= cap.retraits) refus.push(`Les retraits du ${jourTexte(jour)}, ${momentTexte(moment)}, sont complets (${pris} sur ${cap.retraits}).`);
-  return { ok: !refus.length, refus, production, retrait };
+  return { ok: !refus.length, refus, production, retrait, aVerifier: e.aVerifier.filter((r) => r !== propre?.ref) };
 }
 /** Les créneaux de retrait complets un jour donné : ['soir'] ; vide si la capacité n'est pas définie. */
 export function creneauxComplets(S, jour) { const cap = capacites(S).retraits, e = engagements(S, jour).retraits; return cap == null ? [] : ['midi', 'soir'].filter((m) => (e[m] || 0) >= cap); }
 
 /**
- * Ce qu'il faut préparer : les quantités regroupées par produit, pour un jour (et un créneau si on le précise), à partir
- * des commandes validées. { produits: [{ offre, nom, unite, aPreparer, pret, remis, commandes }], commandes }.
+ * Préparation et retraits d'un jour (et d'un créneau si on le précise). Par produit :
+ * - ce que les clients retirent (`aRemettre`), réparti selon l'état des commandes : `aPreparer` (validées ou en
+ *   préparation), `pret`, `remis` ;
+ * - ce que l'équipe a engagé en production CE JOUR-LÀ (`engage` : les lots, y compris ceux d'une commande corrigée,
+ *   déplacée ou annulée depuis), avec les `ecarts` quand ce qui est engagé n'est pas ce qui sera remis ce jour-là.
+ * { produits: [{ offre, nom, unite, aRemettre, aPreparer, pret, remis, engage, capacite, commandes, ecarts }], commandes, aVerifier }.
  */
 export function preparation(S, { jour = '', moment = '' } = {}) {
-  const l = Object.values(S?.commerce?.commandes || {}).filter((c) => ENGAGEES.includes(c.etat) && (!jour || c.jour === jour) && (!moment || c.moment === moment));
-  const par = new Map();
+  const toutes = Object.values(S?.commerce?.commandes || {}), cap = capacites(S).production;
+  const l = toutes.filter((c) => ENGAGEES.includes(c.etat) && (!jour || c.jour === jour) && (!moment || c.moment === moment));
+  const par = new Map(), produit = (x) => { const k = cleProduit(x); if (!par.has(k)) par.set(k, { offre: x.offre || '', nom: x.nom, unite: x.unite, aRemettre: 0, aPreparer: 0, pret: 0, remis: 0, engage: 0, capacite: typeof cap[x.offre] === 'number' ? cap[x.offre] : null, commandes: [], ecarts: [] }); return par.get(k); };
   for (const c of l) for (const x of c.lignes || []) {
-    const k = x.offre || `nom:${x.nom}`, p = par.get(k) || { offre: x.offre, nom: x.nom, unite: x.unite, aPreparer: 0, pret: 0, remis: 0, commandes: [] };
-    const ou = c.etat === 'retiree' ? 'remis' : c.etat === 'prete' ? 'pret' : 'aPreparer'; p[ou] = arr3(p[ou] + x.quantite); if (!p.commandes.includes(c.ref)) p.commandes.push(c.ref); par.set(k, p);
+    const p = produit(x), ou = c.etat === 'retiree' ? 'remis' : c.etat === 'prete' ? 'pret' : 'aPreparer'; p[ou] = arr3(p[ou] + x.quantite); p.aRemettre = arr3(p.aRemettre + x.quantite); if (!p.commandes.includes(c.ref)) p.commandes.push(c.ref);
   }
-  return { produits: [...par.values()].sort((a, b) => a.nom.localeCompare(b.nom, 'fr')), commandes: l.sort((a, b) => `${a.jour}${a.moment === 'midi' ? 0 : 1}`.localeCompare(`${b.jour}${b.moment === 'midi' ? 0 : 1}`) || a.ref.localeCompare(b.ref)) };
+  for (const c of toutes) {
+    const tous = lotsDe(c).filter((x) => x.quantite > 0), lots = tous.filter((x) => !jour || x.jour === jour); if (!lots.length) continue;
+    const remet = c.etat === 'annulee' ? new Map() : parProduit(c.lignes), total = parProduit(tous);
+    for (const x of parProduit(lots).values()) {
+      const p = produit(x), k = cleProduit(x), r = remet.get(k)?.quantite || 0; p.engage = arr3(p.engage + x.quantite);
+      if (c.etat === 'annulee' || total.get(k).quantite !== r || lots.some((y) => cleProduit(y) === k && y.jour !== c.jour)) p.ecarts.push({ id: c.id, ref: c.ref, etat: c.etat, engage: x.quantite, aRemettre: r, retrait: c.jour, moment: c.moment, jours: [...new Set(lots.filter((y) => cleProduit(y) === k).map((y) => y.jour))] });
+    }
+  }
+  return { produits: [...par.values()].sort((a, b) => a.nom.localeCompare(b.nom, 'fr')), commandes: l.sort((a, b) => `${a.jour}${a.moment === 'midi' ? 0 : 1}`.localeCompare(`${b.jour}${b.moment === 'midi' ? 0 : 1}`) || a.ref.localeCompare(b.ref)),
+    aVerifier: toutes.filter(productionAVerifier).map((c) => ({ id: c.id, ref: c.ref })) };
+}
+/** Les jours où quelque chose est à préparer, à remettre ou déjà engagé en production. */
+export function joursDeProduction(S) {
+  const j = new Set(); for (const c of Object.values(S?.commerce?.commandes || {})) { if (ENGAGEES.includes(c.etat) && c.jour) j.add(c.jour); for (const l of lotsDe(c)) if (l.jour && l.quantite > 0) j.add(l.jour); }
+  return [...j].sort();
 }
 /** Combien de commandes reprennent ce produit (pour dire ce qu'un archivage ne change pas). */
 export const commandesDeOffre = (S, offre) => Object.values(S?.commerce?.commandes || {}).filter((c) => (c.lignes || []).some((l) => l.offre === offre)).length;
@@ -138,15 +199,110 @@ export const commandesDeOffre = (S, offre) => Object.values(S?.commerce?.command
 export function lignesPropres(lignes) {
   return (lignes || []).map((l) => { const q = arr3(l.quantite), prix = typeof l.prix === 'number' ? arr(l.prix) : null; return { offre: String(l.offre || ''), nom: net(l.nom, 120), unite: NOMS_UNITE[l.unite] ? l.unite : '', prix, quantite: q, total: prix == null ? null : arr(prix * q), ...(l.detail ? { detail: net(l.detail, 60) } : {}) }; }).filter((l) => l.nom && l.quantite > 0);
 }
-/** Ce que change une modification, dit avant de l'enregistrer : produits, total, créneau, quantités à préparer. */
+/**
+ * Ce que change une modification, dit avant de l'enregistrer : produits, total, créneau. Avant la préparation, les
+ * quantités sont « à préparer » ; après son lancement, elles sont « à remettre » : la production, elle, est dite à part
+ * (`effetsProduction`).
+ */
 export function effetsModification(avant, apres) {
-  const l = [], q = (c) => { const m = new Map(); for (const x of c.lignes || []) { const k = x.offre || x.nom, y = m.get(k) || { nom: x.nom, unite: x.unite, q: 0 }; y.q = arr3(y.q + x.quantite); m.set(k, y); } return m; }, a = q(avant), b = q(apres);
-  for (const [k, x] of b) { const o = a.get(k); if (!o) l.push(`Produit ajouté : ${x.nom}, ${quantite(x.q, x.unite)}.`); else if (o.q !== x.q) l.push(`${x.nom} : ${quantite(o.q, o.unite)} → ${quantite(x.q, x.unite)} à préparer.`); }
-  for (const [k, o] of a) if (!b.has(k)) l.push(`Produit retiré : ${o.nom} (${quantite(o.q, o.unite)} ne sont plus à préparer).`);
+  const l = [], lancee = preparationCommencee(avant), mot = lancee ? 'à remettre' : 'à préparer', a = parProduit(avant.lignes), b = parProduit(apres.lignes);
+  for (const [k, x] of b) { const o = a.get(k); if (!o) l.push(`Produit ajouté : ${x.nom}, ${quantite(x.quantite, x.unite)}.`); else if (o.quantite !== x.quantite) l.push(`${x.nom} : ${quantite(o.quantite, o.unite)} → ${quantite(x.quantite, x.unite)} ${mot}.`); }
+  for (const [k, o] of a) if (!b.has(k)) l.push(lancee ? `Produit retiré de la commande : ${o.nom} (${quantite(o.quantite, o.unite)} ne seront pas remis).` : `Produit retiré : ${o.nom} (${quantite(o.quantite, o.unite)} ne sont plus à préparer).`);
   if (avant.jour !== apres.jour || avant.moment !== apres.moment) l.push(`Retrait : ${retraitTexte(avant)} → ${retraitTexte(apres)}.`);
   const ta = avant.total, tb = totalLignes(apres.lignes || []); if (tb != null && ta !== tb) l.push(`Total : ${ta == null ? 'non conservé' : euros(ta)} → ${euros(tb)}.`);
   if (net(avant.remarque, 400) !== net(apres.remarque, 400)) l.push('La remarque change.');
   return l;
+}
+/**
+ * Ce qu'une correction fait à la production d'une commande dont la préparation a commencé :
+ * `garde` : les phrases qui disent ce qui reste compté (un lot ne suit ni la quantité à remettre, ni le jour du retrait) ;
+ * `supplement` : ce qu'il faut produire en plus, au nouveau jour de retrait (à contrôler dans les capacités) ;
+ * `retour` : la commande était prête, elle repasse en préparation (le supplément n'est pas prêt tout seul).
+ */
+export function effetsProduction(c, apres) {
+  if (!preparationCommencee(c) || ['retiree', 'refusee', 'annulee'].includes(c.etat)) return { garde: [], supplement: [], retour: false };
+  const remet = parProduit(apres.lignes), tous = parProduit(lotsDe(c)), garde = [], vus = new Map();
+  for (const x of lotsDe(c)) if (x.quantite > 0) { const k = `${cleProduit(x)}|${x.jour}`, y = vus.get(k) || { ...x, quantite: 0 }; y.quantite = arr3(y.quantite + x.quantite); vus.set(k, y); }
+  for (const x of vus.values()) { const k = cleProduit(x), r = remet.get(k)?.quantite || 0, total = tous.get(k).quantite;
+    if (total !== r || x.jour !== apres.jour) garde.push(`${x.nom} : la production déjà engagée le ${jourTexte(x.jour)} (${quantite(x.quantite, x.unite)}) reste comptée ce jour-là${total > r ? ` ; à remettre : ${r ? quantite(r, x.unite) : 'rien'}` : ''}.`); }
+  const supplement = resteAProduire(c, apres.lignes).map((x) => ({ ...x, jour: apres.jour }));
+  return { garde, supplement, retour: c.etat === 'prete' && supplement.length > 0 };
+}
+
+/* ---------- La période des retraits (v7.14.1) ----------
+   Un réglage de l'espace : `S.commerce.retraits = { debut, fin }` (bornes comprises). Sans réglage, la période livrée
+   avec le site (`lieux.retraits`) s'applique. Rien n'est glissant : aucun jour ne s'ouvre tout seul. La même règle sert
+   au calendrier du site, au dernier contrôle avant l'envoi, aux décisions de l'espace et aux phrases qui expliquent. */
+const JOURS_SEMAINE = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+const plusJours = (iso, n) => { const d = new Date(`${iso}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const dateExiste = (iso) => ISO.test(iso || '') && new Date(`${iso}T12:00:00Z`).toISOString().slice(0, 10) === iso;
+const jourEntier = (iso) => (ISO.test(iso || '') ? premier(new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`))) : 'date à préciser');
+/**
+ * Les horaires qui décident des créneaux de retrait : la semaine telle que l'équipe l'a réglée (sinon celle du site) et
+ * les fermetures exceptionnelles. `ctx` : { semaine, exceptions, connecte }. En mode connecté, les horaires viennent du
+ * site d'essai : ce que ce navigateur a gardé d'une démonstration n'y est pas mêlé.
+ */
+export const ouvertureRetraits = (ctx = {}, S = {}) => ({ semaine: (!ctx.connecte && S.horaires?.semaine) || ctx.semaine || {}, fermetures: ctx.connecte ? [...(ctx.exceptions || [])] : [...(S.horaires?.exceptions || []), ...(ctx.exceptions || [])] });
+/** La période des retraits en vigueur : celle réglée dans l'espace, sinon celle livrée avec le site. { debut, fin, reglee }. */
+export function periodeRetraits(S, lieux) {
+  const r = S?.commerce?.retraits, b = lieux?.retraits || {};
+  return r && dateExiste(r.debut) && dateExiste(r.fin) && r.debut <= r.fin ? { debut: r.debut, fin: r.fin, reglee: true } : { debut: b.debut || '', fin: b.fin || '', reglee: false };
+}
+/** « du 5 au 31 décembre 2026 », « du 28 décembre 2026 au 10 janvier 2027 », « le 24 décembre 2026 ». */
+export function periodeTexte(p) {
+  if (!p?.debut || !p?.fin) return 'période à préciser'; if (p.debut === p.fin) return `le ${jourEntier(p.debut)}`;
+  const f = (iso, o) => premier(new Intl.DateTimeFormat('fr-FR', { ...o, timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`))), memeAn = p.debut.slice(0, 4) === p.fin.slice(0, 4), memeMois = memeAn && p.debut.slice(5, 7) === p.fin.slice(5, 7);
+  return `du ${memeMois ? f(p.debut, { day: 'numeric' }) : memeAn ? f(p.debut, { day: 'numeric', month: 'long' }) : jourEntier(p.debut)} au ${jourEntier(p.fin)}`;
+}
+/**
+ * Les créneaux de retrait d'un jour, d'après les horaires de la maison (`ouverture` : { semaine, fermetures }) : midi
+ * (un service qui commence avant 15 h), soir (à partir de 18 h). Un jour de fermeture exceptionnelle n'en a aucun.
+ */
+export function creneauxDuJour(ouverture, iso) {
+  const o = ouverture || {}, f = (o.fermetures || []).find((x) => x && x.du <= iso && iso <= (x.au || x.du) && !(x.creneaux || []).length);
+  if (f) return { midi: false, soir: false, motif: f.motif || 'Fermeture exceptionnelle' };
+  const special = (o.fermetures || []).find((x) => x && x.du <= iso && iso <= (x.au || x.du) && (x.creneaux || []).length);
+  const cr = special ? special.creneaux : (o.semaine || {})[JOURS_SEMAINE[new Date(`${iso}T12:00:00Z`).getUTCDay()]] || [];
+  return { midi: cr.some((c) => String(c).slice(0, 5) < '15:00'), soir: cr.some((c) => String(c).slice(0, 5) >= '18:00'), motif: '' };
+}
+/**
+ * Un retrait ce jour-là, à ce créneau, est-il possible ? '' si oui, sinon la phrase qui dit pourquoi. `auj` : la date de
+ * référence (celle du scénario en démonstration) ; `delai` : le plus long délai de commande des produits choisis.
+ * `moment` vide : on ne juge que le jour.
+ */
+export function refusRetrait(periode, ouverture, { jour, moment = '', auj = '', delai = 0 } = {}) {
+  if (!dateExiste(jour)) return 'Le jour du retrait est à préciser.';
+  if (!periode?.debut || !periode?.fin) return 'La période des retraits n\'est pas définie.';
+  if (jour < periode.debut || jour > periode.fin) return `Le ${jourEntier(jour)} est hors de la période des retraits (${periodeTexte(periode)}).`;
+  if (auj && jour < auj) return 'Ce jour de retrait est passé.';
+  if (auj && delai > 0 && jour < plusJours(auj, delai)) return `Un produit de la commande se commande au moins ${delai} jour${delai > 1 ? 's' : ''} avant le retrait : le ${jourEntier(jour)} est trop proche.`;
+  const c = creneauxDuJour(ouverture, jour);
+  if (!c.midi && !c.soir) return c.motif ? `Le restaurant est fermé le ${jourEntier(jour)} (${c.motif}) : aucun retrait ce jour-là.` : `Le restaurant est fermé le ${jourTexte(jour)} : aucun retrait ce jour-là.`;
+  if (moment && !c[moment]) return `Le ${jourTexte(jour)}, le restaurant n'est pas ouvert ${momentTexte(moment)} : choisissez l'autre créneau.`;
+  return '';
+}
+/**
+ * Le calendrier des retraits, jour par jour, sur toute la période : [{ iso, midi, soir, etat, pourquoi }], avec
+ * `etat` : 'ouvert', 'ferme' (jour fermé), 'passe', 'delai' (trop proche pour les produits choisis), 'complet' (tous ses
+ * créneaux sont pleins). `complets(iso)` : les créneaux déjà pleins ce jour-là (capacité de retrait).
+ * `raison` dit pourquoi aucun retrait n'est possible : 'indefinie', 'terminee', 'aucun-jour', 'aucun-creneau', 'delai' ; '' sinon.
+ */
+export function calendrierRetraits(periode, ouverture, { auj = '', delai = 0, complets = () => [] } = {}) {
+  const jours = []; if (!periode?.debut || !periode?.fin || periode.debut > periode.fin) return { jours, ouverts: 0, raison: 'indefinie', premier: '' };
+  for (let iso = periode.debut, n = 0; iso <= periode.fin && n < 400; iso = plusJours(iso, 1), n++) {
+    const c = creneauxDuJour(ouverture, iso), pleins = c.midi || c.soir ? complets(iso) || [] : [], midi = c.midi && !pleins.includes('midi'), soir = c.soir && !pleins.includes('soir');
+    const etat = !c.midi && !c.soir ? 'ferme' : auj && iso < auj ? 'passe' : auj && delai > 0 && iso < plusJours(auj, delai) ? 'delai' : !midi && !soir ? 'complet' : 'ouvert';
+    jours.push({ iso, midi, soir, prevus: { midi: c.midi, soir: c.soir }, etat, motif: c.motif || '' });
+  }
+  const ouverts = jours.filter((j) => j.etat === 'ouvert'), avenir = jours.filter((j) => j.etat !== 'passe' && (!auj || j.iso >= auj)), a = (e) => avenir.some((j) => j.etat === e);
+  const raison = ouverts.length ? '' : !avenir.length ? 'terminee' : avenir.every((j) => j.etat === 'ferme') ? 'aucun-jour' : a('complet') ? 'aucun-creneau' : a('delai') ? 'delai' : 'aucun-jour';
+  return { jours, ouverts: ouverts.length, raison, premier: ouverts[0]?.iso || '' };
+}
+/** La phrase qui explique, au client, pourquoi aucun retrait ne peut être choisi. */
+export function raisonRetraitsTexte(raison, periode, delai = 0) {
+  return ({ indefinie: 'La période des retraits n\'est pas encore annoncée.', terminee: `La période des retraits (${periodeTexte(periode)}) est terminée : les commandes à emporter ne sont plus prises pour l'instant.`,
+    'aucun-jour': `Le restaurant est fermé pendant toute la période des retraits (${periodeTexte(periode)}) : aucun jour ne peut être proposé.`, 'aucun-creneau': 'Tous les créneaux de retrait sont complets : aucun jour ne peut plus être proposé.',
+    delai: `Un produit de votre commande se commande au moins ${delai} jour${delai > 1 ? 's' : ''} avant le retrait : il ne reste aucun jour assez éloigné dans la période des retraits (${periodeTexte(periode)}).` })[raison] || '';
 }
 
 /* ====================================================================================================================
@@ -214,6 +370,8 @@ export function priorites(demandes, S, lieux, auj) {
     retraits: cmd.filter((c) => c.jour === auj && ENGAGEES.includes(c.etat)),
     cadeauxATraiter: cad.filter((c) => ['recue', 'validee'].includes(c.etat)),
     cartesAEmettre: cad.filter((c) => c.etat === 'reglee'),
+    /* v7.14.1 : les commandes dont la production d'origine n'a pas pu être reprise avec certitude. */
+    aVerifier: cmd.filter(productionAVerifier),
   };
 }
 const tel = (t) => String(t || '').replace(/\D/g, '').replace(/^33/, '0');
@@ -240,29 +398,77 @@ const statut = (S, id, s) => { ((S.demandes ||= {}).statuts ||= {})[id] = s; };
 const commandeA = (S, id, base) => { const l = (commerce(S).commandes ||= {}); if (!l[id] && base) { const { source, ...b } = base; l[id] = JSON.parse(JSON.stringify({ ...b, id, ref: reference(id) })); } return l[id]; };
 const cadeauA = (S, id, base) => { const l = (commerce(S).cadeaux ||= {}); if (!l[id] && base) { const { source, lienCertain, ...b } = base; l[id] = JSON.parse(JSON.stringify({ ...b, id, ref: reference(id) })); } return l[id]; };
 
+/* Une rectification faite sur une carte expirée le dit : la carte ne redevient pas utilisable. */
+const resteExpiree = (c, le) => (c.expire && String(le || '').slice(0, 10) > c.expire ? ` La carte reste expirée depuis le ${jourEntier(c.expire)} : son solde ne redevient pas utilisable, rien n'est remboursé.` : '');
+const lotsTexte = (lots, avecJour = false) => (lots || []).filter((x) => x.quantite > 0).map((x) => `${x.nom}, ${quantite(x.quantite, x.unite)}${avecJour ? ` le ${jourTexte(x.jour)}` : ''}`).join(' ; ');
+/* Donne ses lots à une commande d'avant la v7.14.1 (une seule fois). Renvoie true si quelque chose a été écrit. */
+function reprendreProduction(c, le) {
+  if (!c || c.production || !preparationCommencee(c)) return false;
+  const flou = corrigeeAvant(c); c.production = { lots: lotsDeLignes(c, lanceeLe(c) || le, 'reprise'), ...(flou ? { aVerifier: true } : {}) }; c.produite = true;
+  trace(c, le, 'reprise-production', flou ? 'Production historique à vérifier : cette commande a été corrigée après le début de sa préparation, avant que la production engagée soit gardée à part. Les quantités et le jour encore connus sont conservés ; ceux d\'origine ne sont pas reconstitués.' : `Production engagée reprise telle qu'elle était comptée : ${lotsTexte(c.production.lots, true) || 'aucune quantité'}.`);
+  return true;
+}
+/** Une commande attend-elle sa reprise (production d'avant la v7.14.1) ? Pour ne lancer la reprise que s'il y a lieu. */
+export const repriseProductionAFaire = (S) => Object.values(S?.commerce?.commandes || {}).some((c) => !c.production && preparationCommencee(c));
+
 export const MUTATIONS_COMMERCE = {
   /** Valide une commande : elle entre dans les capacités de son jour de retrait (revérifiées juste avant, sur l'état frais). */
-  cmdValider(S, { id, base, le }) { const c = commandeA(S, id, base); if (!c || c.etat !== 'recue') return; c.etat = 'validee'; trace(c, le, 'validee', `Commande validée : retrait ${retraitTexte(c)}. Elle compte désormais dans la production et les retraits de ce jour.`); statut(S, id, STATUT.validee); },
+  cmdValider(S, { id, base, exception, le }) { const c = commandeA(S, id, base); if (!c || c.etat !== 'recue') return; c.etat = 'validee'; if (exception) c.horsPeriode = true; trace(c, le, 'validee', `Commande validée : retrait ${retraitTexte(c)}. Elle compte désormais dans la production et les retraits de ce jour.${exception ? ' Retrait accepté hors de la période ou des jours habituels, à titre exceptionnel.' : ''}`); statut(S, id, STATUT.validee); },
   cmdRefuser(S, { id, base, motif, le }) { const c = commandeA(S, id, base); if (!c || c.etat !== 'recue') return; c.etat = 'refusee'; c.motif = net(motif, 300); trace(c, le, 'refusee', `Demande refusée. Motif : ${c.motif}`); statut(S, id, STATUT.refusee); },
-  /** Fait avancer une commande d'une étape : en préparation, prête, retirée. */
+  /** Fait avancer une commande d'une étape : en préparation, prête, retirée. Le lancement de la préparation ENGAGE la
+      production : les lignes du moment deviennent des lots, au jour pour lequel ils sont prévus (le jour du retrait à cet
+      instant, pas l'heure du clic). « Prête » et « Retirée » n'engagent rien de plus. */
   cmdAvancer(S, { id, vers, le }) {
     const c = commerce(S).commandes?.[id]; if (!c || SUITES[c.etat]?.vers !== vers) return;
-    c.etat = vers; if (vers === 'preparation') c.produite = true;
-    trace(c, le, vers, vers === 'preparation' ? 'Préparation lancée.' : vers === 'prete' ? 'Commande prête : elle attend le client.' : 'Commande remise au client.'); statut(S, id, STATUT[vers]);
+    c.etat = vers;
+    if (vers === 'preparation') { c.produite = true; c.production ||= { lots: lotsDeLignes(c, le, 'preparation') }; }
+    trace(c, le, vers, vers === 'preparation' ? `Préparation lancée. Engagé en production pour le ${jourTexte(c.jour)} : ${lotsTexte(c.production.lots) || 'aucune quantité'}.` : vers === 'prete' ? 'Commande prête : elle attend le client.' : 'Commande remise au client.'); statut(S, id, STATUT[vers]);
   },
-  /** Annule une commande, avec son motif. Avant la préparation, tout est libéré ; après, ce qui a été produit reste compté. */
+  /** Annule une commande, avec son motif. Avant la préparation, tout est libéré ; après, les lots engagés restent comptés. */
   cmdAnnuler(S, { id, base, motif, le }) {
     const c = commandeA(S, id, base); if (!c || ['retiree', 'refusee', 'annulee'].includes(c.etat)) return;
-    const avant = c.etat; c.etat = 'annulee'; c.motif = net(motif, 300);
-    trace(c, le, 'annulee', `Commande annulée (elle était « ${ETATS[avant].toLowerCase()} »). Motif : ${c.motif}${c.produite ? ' La préparation avait commencé : la production reste comptée, le créneau de retrait est libéré.' : avant === 'recue' ? '' : ' La production et le créneau de retrait sont libérés.'}`); statut(S, id, STATUT.annulee);
+    reprendreProduction(c, le);
+    const avant = c.etat, lots = lotsDe(c).filter((x) => x.quantite > 0); c.etat = 'annulee'; c.motif = net(motif, 300);
+    trace(c, le, 'annulee', `Commande annulée (elle était « ${ETATS[avant].toLowerCase()} »). Motif : ${c.motif}${lots.length ? ` La préparation avait commencé : la production engagée reste comptée (${lotsTexte(lots, true)}), le créneau de retrait est libéré.` : avant === 'recue' ? '' : ' La production et le créneau de retrait sont libérés.'}`); statut(S, id, STATUT.annulee);
   },
-  /** Modifie une commande : ses lignes, son retrait, sa remarque. Le nouvel engagement remplace l'ancien ; la trace dit ce qui a changé. */
-  cmdModifier(S, { id, base, lignes, jour, moment, remarque, motif, le }) {
+  /**
+   * Modifie une commande : ses lignes, son retrait, sa remarque. Avant la préparation, le nouvel engagement remplace
+   * l'ancien. Après son lancement, c'est une correction : ce qui est déjà engagé en production ne change pas ; seul un
+   * supplément (une hausse, un produit ajouté) engage de nouveaux lots, au jour du retrait corrigé, et une commande prête
+   * repasse alors en préparation. `exception` : l'équipe a choisi un retrait hors de la période ou d'un jour fermé.
+   */
+  cmdModifier(S, { id, base, lignes, jour, moment, remarque, motif, exception, le }) {
     const c = commandeA(S, id, base); if (!c || ['retiree', 'refusee', 'annulee'].includes(c.etat)) return;
+    reprendreProduction(c, le);
     const apres = { lignes: lignes ? lignesPropres(lignes) : c.lignes, jour: jour ?? c.jour, moment: moment ?? c.moment, remarque: remarque ?? c.remarque }, effets = effetsModification(c, apres); if (!effets.length) return;
+    const lancee = preparationCommencee(c), ep = effetsProduction(c, apres), bouge = apres.jour !== c.jour || apres.moment !== c.moment;
     c.lignes = apres.lignes; c.jour = apres.jour; c.moment = apres.moment; c.remarque = net(apres.remarque, 400); const t = totalLignes(c.lignes); if (t != null) c.total = t;
-    trace(c, le, c.produite ? 'correction' : 'modification', `${c.produite ? 'Correction après le début de la préparation' : 'Commande modifiée'} : ${effets.join(' ')}${motif ? ` Motif : ${net(motif, 300)}` : ''}`);
+    if (bouge) { if (exception) c.horsPeriode = true; else delete c.horsPeriode; }
+    for (const x of ep.supplement) c.production.lots.push({ id: `l${c.production.lots.length + 1}`, offre: x.offre, nom: x.nom, unite: x.unite || '', jour: c.jour, quantite: x.quantite, le: String(le || '').slice(0, 16), quoi: 'supplement' });
+    if (ep.retour) { c.etat = 'preparation'; statut(S, id, STATUT.preparation); }
+    trace(c, le, lancee ? 'correction' : 'modification', `${lancee ? 'Correction après le début de la préparation' : 'Commande modifiée'} : ${effets.join(' ')}${ep.garde.length ? ` Production conservée : ${ep.garde.join(' ')}` : ''}${ep.supplement.length ? ` Supplément engagé en production pour le ${jourTexte(c.jour)} : ${lotsTexte(ep.supplement)}.` : ''}${ep.retour ? ' La commande était prête : elle repasse en préparation, le supplément n\'est pas prêt.' : ''}${bouge && exception ? ' Retrait noté hors de la période ou des jours habituels, à titre exceptionnel.' : ''}${motif ? ` Motif : ${net(motif, 300)}` : ''}`);
   },
+  /**
+   * Rectifie la production enregistrée d'une commande (une erreur de saisie, un jour mal noté) : une action à part, avec
+   * son motif, qui garde l'avant et l'après. `lot` : le lot rectifié ; vide, un lot est ajouté (production oubliée).
+   * `op` : la clé de l'opération ; la même rectification renvoyée n'est appliquée qu'une fois.
+   */
+  cmdRectifier(S, { id, lot, offre, nom, unite, jour, quantite: q, motif, op, le }) {
+    const c = commerce(S).commandes?.[id]; if (!c || !preparationCommencee(c)) return;
+    reprendreProduction(c, le); const P = c.production, R = (P.rectifications ||= []); if (op && R.some((r) => r.op === op)) return;
+    let x = P.lots.find((y) => y.id === lot), avant = null;
+    if (x) avant = { jour: x.jour, quantite: x.quantite }; else { x = { id: `l${P.lots.length + 1}`, offre: String(offre || ''), nom: net(nom, 120), unite: NOMS_UNITE[unite] ? unite : '', jour: '', quantite: 0, le: String(le || '').slice(0, 16), quoi: 'ajout' }; P.lots.push(x); }
+    x.jour = jour; x.quantite = arr3(q);
+    R.push({ id: `r${R.length + 1}`, ...(op ? { op } : {}), le: String(le || '').slice(0, 16), lot: x.id, offre: x.offre, nom: x.nom, unite: x.unite, avant, apres: { jour: x.jour, quantite: x.quantite }, motif: net(motif, 300) });
+    trace(c, le, 'rectification', `Production rectifiée, ${x.nom} : ${avant ? `${quantite(avant.quantite, x.unite)} le ${jourTexte(avant.jour)}` : 'rien d\'enregistré'} → ${quantite(x.quantite, x.unite)} le ${jourTexte(x.jour)}. La commande du client ne change pas. Motif : ${net(motif, 300)}`);
+  },
+  /** Confirme la production d'une commande reprise « à vérifier » : les quantités et le jour enregistrés sont les bons. */
+  cmdProductionVerifiee(S, { id, le }) {
+    const c = commerce(S).commandes?.[id]; if (!c) return; reprendreProduction(c, le); if (!c.production?.aVerifier) return;
+    delete c.production.aVerifier; trace(c, le, 'production-verifiee', `Production vérifiée par l'équipe : ${lotsTexte(c.production.lots.filter((x) => x.quantite > 0), true) || 'aucune quantité engagée'}.`);
+  },
+  /** Règle la période des retraits (bornes comprises). Vide : retour à la période livrée avec le site. Les commandes déjà acceptées ne bougent pas. */
+  cmdRetraits(S, { debut, fin }) { const c = commerce(S); if (dateExiste(debut) && dateExiste(fin) && debut <= fin) c.retraits = { debut, fin }; else delete c.retraits; },
   /** Règle les capacités : une quantité par produit et par jour, un nombre de commandes par créneau de retrait. Vide : non définie. */
   cmdCapacites(S, { production, retraits, exemple }) {
     const c = (commerce(S).capacites ||= {});
@@ -277,9 +483,17 @@ export const MUTATIONS_COMMERCE = {
    * sans règlement ni carte émise, car rien de cela n'avait été enregistré.
    */
   comReprendre(S, { commandes: l = [], cadeaux: g = [], le }) {
-    for (const { id, statut: st, base } of l) { const etat = DEPUIS_STATUT[st]; if (!etat || commerce(S).commandes?.[id]) continue; const c = commandeA(S, id, base); c.etat = etat; if (['preparation', 'prete', 'retiree'].includes(etat)) c.produite = true; trace(c, le, 'reprise', `Commande reprise à l'étape « ${ETATS[etat].toLowerCase()} », telle qu'elle était suivie auparavant.`); }
+    for (const { id, statut: st, base } of l) { const etat = DEPUIS_STATUT[st]; if (!etat || commerce(S).commandes?.[id]) continue; const c = commandeA(S, id, base); c.etat = etat; if (['preparation', 'prete', 'retiree'].includes(etat)) c.produite = true; trace(c, le, 'reprise', `Commande reprise à l'étape « ${ETATS[etat].toLowerCase()} », telle qu'elle était suivie auparavant.`); reprendreProduction(c, le); }
     for (const { id, statut: st, base } of g) { if (st !== 'envoyee' || commerce(S).cadeaux?.[id]) continue; const c = cadeauA(S, id, base); c.etat = 'ancienne'; trace(c, le, 'reprise', 'Demande notée « carte envoyée » avant le suivi des cartes : aucun règlement ni aucune carte n\'avait été enregistré, rien n\'est ajouté.'); }
   },
+
+  /**
+   * Reprend la production des commandes suivies avant la v7.14.1 (une fois : une commande déjà reprise n'est plus touchée).
+   * Sans correction dans son historique, ses lignes à son jour sont ce qui avait été lancé : elles deviennent ses lots.
+   * Corrigée après le début de la préparation, ses quantités ou son jour d'origine ont pu être écrasés : ce qui est encore
+   * connu est gardé, marqué « à vérifier », et rien n'est reconstitué.
+   */
+  comReprendreProduction(S, { le }) { for (const c of Object.values(commerce(S).commandes || {})) reprendreProduction(c, le); },
 
   /** Valide une demande de carte cadeau, avec l'acheteur à rappeler. */
   cadValider(S, { id, base, acheteur, le }) { const c = cadeauA(S, id, base); if (!c || c.etat !== 'recue') return; if (acheteur) c.acheteur = { nom: net(acheteur.nom, 80), telephone: net(acheteur.telephone, 30), email: net(acheteur.email, 80) }; c.etat = 'validee'; trace(c, le, 'validee', `Demande validée. Acheteur : ${[c.acheteur.nom, c.acheteur.telephone, c.acheteur.email].filter(Boolean).join(', ')}.`); statut(S, id, STATUT_CADEAU.validee); },
@@ -312,14 +526,15 @@ export const MUTATIONS_COMMERCE = {
   /** Annule une utilisation, avec son motif : elle reste dans l'historique, barrée, et le solde est rétabli. */
   carteAnnulerUtilisation(S, { carte, utilisation, motif, par, le }) {
     const c = commerce(S).cartes?.[carte], u = c?.utilisations.find((x) => x.id === utilisation); if (!u || u.annulee) return;
-    u.annulee = { le: String(le || '').slice(0, 16), motif: net(motif, 300), par: net(par, 60) }; trace(c, le, 'annulation', `Utilisation de ${euros(u.montant)} du ${u.le.replace('T', ' à ')} annulée. Motif : ${u.annulee.motif} Solde : ${euros(soldeCarte(c))}.`);
+    u.annulee = { le: String(le || '').slice(0, 16), motif: net(motif, 300), par: net(par, 60) }; trace(c, le, 'annulation', `Utilisation de ${euros(u.montant)} du ${u.le.replace('T', ' à ')} annulée. Motif : ${u.annulee.motif} Solde : ${euros(soldeCarte(c))}.${resteExpiree(c, le)}`);
   },
-  /** Corrige une utilisation : l'ancienne est annulée (elle reste lisible), la nouvelle la remplace et le dit. */
+  /** Corrige une utilisation passée : l'ancienne est annulée (elle reste lisible), la nouvelle la remplace et le dit.
+      C'est une rectification de l'historique : elle ne touche ni à la date d'expiration ni à l'état de la carte. */
   carteCorriger(S, { carte, utilisation, montant, motif, par, op, le }) {
     const c = commerce(S).cartes?.[carte], u = c?.utilisations.find((x) => x.id === utilisation); if (!u || u.annulee || (op && c.utilisations.some((x) => x.op === op))) return;
     const m = arr(montant), n = { id: `u${c.utilisations.length + 1}`, le: String(le || '').slice(0, 16), montant: m, ref: u.ref, par: net(par, 60), corrige: u.id, ...(op ? { op } : {}) };
     u.annulee = { le: n.le, motif: net(motif, 300), par: n.par, remplaceePar: n.id }; c.utilisations.push(n);
-    trace(c, le, 'correction', `Utilisation corrigée : ${euros(u.montant)} → ${euros(m)}. Motif : ${u.annulee.motif} Solde : ${euros(soldeCarte(c))}.`);
+    trace(c, le, 'correction', `Utilisation du ${u.le.replace('T', ' à ')} corrigée : ${euros(u.montant)} → ${euros(m)}. Motif : ${u.annulee.motif} Solde : ${euros(soldeCarte(c))}.${resteExpiree(c, le)}`);
   },
   /** Désactive une carte (perdue, émise par erreur…) ou la réactive. Ses utilisations restent lisibles. */
   carteActiver(S, { carte, actif, motif, le }) {
@@ -333,10 +548,21 @@ export const MUTATIONS_COMMERCE = {
 /**
  * Les règles consultées avant chaque action de commerce, sur l'état frais (celui que le navigateur vient de relire :
  * un autre onglet a pu agir entre-temps). '' si l'action peut se faire, sinon la phrase qui dit pourquoi.
- * `ctx` : { auj } (le jour de l'espace, celui du scénario s'il y en a un).
+ * `ctx` : { auj, lieux, ouverture } : le jour de l'espace (celui du scénario s'il y en a un), les données livrées (la
+ * période de retrait de départ) et les horaires de la maison ({ semaine, fermetures }), pour juger un jour de retrait.
  */
 export function refusCommerce(S, nom, args = {}, ctx = {}) {
   const auj = ctx.auj || '', K = S?.commerce || {};
+  /* Un retrait hors de la période ou d'un jour fermé : l'équipe peut l'accepter, mais seulement par une décision explicite (`exception`). */
+  const horsRetrait = (jour, moment) => (ctx.lieux || ctx.ouverture ? refusRetrait(periodeRetraits(S, ctx.lieux), ctx.ouverture, { jour, moment }) : '');
+  if (nom === 'cmdRetraits') {
+    const { debut, fin } = args; if (!debut && !fin) return '';
+    if (!dateExiste(debut) || !dateExiste(fin)) return 'Écrivez les deux dates de la période, le premier et le dernier jour de retrait. Rien n\'a été changé.';
+    if (debut > fin) return 'Le dernier jour de retrait est avant le premier : corrigez les dates. Rien n\'a été changé.';
+    if (plusJours(debut, 366) < fin) return 'Une période de retrait couvre au plus un an : raccourcissez-la. Rien n\'a été changé.';
+    return '';
+  }
+  if (nom === 'comReprendreProduction') return '';
   if (nom.startsWith('cmd') && nom !== 'cmdCapacites') {
     const c = K.commandes?.[args.id] || args.base; if (!c) return 'Cette commande est introuvable : elle a peut-être été effacée ailleurs.';
     const fini = ['retiree', 'refusee', 'annulee'].includes(c.etat), dit = `Cette commande est maintenant « ${ETATS[c.etat].toLowerCase()} » : l'écran a été mis à jour, rien d'autre n'a changé.`;
@@ -345,6 +571,7 @@ export function refusCommerce(S, nom, args = {}, ctx = {}) {
       if (!c.lignes?.length) return 'Cette commande n\'a aucune ligne : ajoutez un produit avant de la valider.';
       if (!ISO.test(c.jour || '') || !MOMENTS[c.moment]) return 'Le jour et le créneau du retrait sont à préciser avant de valider.';
       if (auj && c.jour < auj) return `La date du retrait (${jourTexte(c.jour)}) est passée : modifiez-la avant de valider.`;
+      const hors = horsRetrait(c.jour, c.moment); if (hors && !args.exception) return `${hors} La commande n'a pas été validée : convenez d'un autre retrait avec le client, refusez-la, ou acceptez ce retrait à titre exceptionnel.`;
       const d = disponibilite(S, { jour: c.jour, moment: c.moment, lignes: c.lignes, sauf: c.id }); if (!d.ok) return `${d.refus[0]} La commande n'a pas été validée.`;
       return '';
     }
@@ -358,10 +585,33 @@ export function refusCommerce(S, nom, args = {}, ctx = {}) {
       if (args.lignes && args.lignes.some((l) => !(+l.quantite > 0))) return 'Chaque quantité est un nombre plus grand que zéro.';
       if (!ISO.test(jour || '') || !MOMENTS[moment]) return 'Choisissez le jour et le créneau du retrait.';
       if (auj && jour < auj && jour !== c.jour) return 'Le nouveau jour de retrait est déjà passé.';
-      if (c.produite && !net(args.motif)) return 'La préparation a commencé : écrivez le motif de cette correction, il est gardé dans l\'historique.';
-      if (ENGAGEES.includes(c.etat)) { const d = disponibilite(S, { jour, moment, lignes, sauf: c.id }); if (!d.ok) return `${d.refus[0]} La commande n'a pas été modifiée.`; }
+      if (preparationCommencee(c) && !net(args.motif)) return 'La préparation a commencé : écrivez le motif de cette correction, il est gardé dans l\'historique.';
+      if (jour !== c.jour || moment !== c.moment) { const hors = horsRetrait(jour, moment); if (hors && !args.exception) return `${hors} La commande n'a pas été modifiée : choisissez un autre retrait, ou cochez le retrait exceptionnel.`; }
+      /* Les capacités : avant la préparation, toute la commande ; après, seulement le supplément (ce qui est engagé le reste). */
+      if (ENGAGEES.includes(c.etat)) { const d = disponibilite(S, { jour, moment, lignes, sauf: c.id }), memeCreneau = jour === c.jour && moment === c.moment, refus = d.refus.filter((r) => !(memeCreneau && r.startsWith('Les retraits du'))); if (refus.length) return `${refus[0]} La commande n'a pas été modifiée.`; }
       return '';
     }
+    if (nom === 'cmdRectifier') {
+      if (!K.commandes?.[args.id] || !preparationCommencee(c)) return 'La préparation de cette commande n\'a pas commencé : il n\'y a pas de production à rectifier.';
+      const R = c.production?.rectifications || []; if (args.op && R.some((r) => r.op === args.op)) return 'Cette rectification est déjà enregistrée : elle n\'a pas été appliquée une seconde fois.';
+      const lots = lotsDe(c), x = args.lot ? lots.find((y) => y.id === args.lot) : null;
+      if (args.lot && !x) return 'Cette ligne de production est introuvable : l\'écran a été mis à jour, rien n\'a changé.';
+      if (!x && !(args.offre && net(args.nom))) return 'Choisissez le produit concerné par la rectification.';
+      if (!dateExiste(args.jour)) return 'Écrivez le jour de production concerné.';
+      if (!(typeof args.quantite === 'number' && args.quantite >= 0)) return 'La quantité produite est un nombre, par exemple 4 ou 1,5 ; écrivez 0 si rien n\'a été produit.';
+      if (!net(args.motif)) return 'Écrivez le motif de la rectification : il est gardé dans l\'historique, avec l\'avant et l\'après.';
+      if (x && args.vu && (args.vu.jour !== x.jour || arr3(args.vu.quantite) !== x.quantite)) return `Cette production a changé ailleurs : elle est maintenant de ${quantite(x.quantite, x.unite)} le ${jourTexte(x.jour)}. Vérifiez, puis recommencez ; rien n'a été changé.`;
+      const q = arr3(args.quantite); if (x && x.jour === args.jour && x.quantite === q) return 'Rien ne change : la quantité et le jour sont ceux déjà enregistrés.';
+      if (!x && q <= 0) return 'Pour ajouter une production oubliée, écrivez une quantité plus grande que zéro.';
+      /* Une hausse ou un déplacement de charge revérifie la capacité du produit, le jour visé. */
+      const offre = x ? x.offre : args.offre, unite = x ? x.unite : args.unite, cap = capacites(S).production[offre];
+      if (offre && typeof cap === 'number' && (!x || args.jour !== x.jour || q > x.quantite)) {
+        const ailleurs = arr3((engagements(S, args.jour).production[offre] || 0) - (x && x.jour === args.jour ? x.quantite : 0));
+        if (arr3(ailleurs + q) > cap) return `« ${x ? x.nom : net(args.nom)} » : la capacité du ${jourTexte(args.jour)} est de ${quantite(cap, unite)}, et la production déjà comptée ce jour-là est de ${quantite(ailleurs, unite)}. Avec ${quantite(q, unite)} de plus, elle serait dépassée : rien n'a été changé.`;
+      }
+      return '';
+    }
+    if (nom === 'cmdProductionVerifiee') return productionAVerifier(c) ? '' : 'La production de cette commande n\'est pas à vérifier : rien n\'a changé.';
   }
   if (nom === 'cmdCapacites') { const p = Object.values(args.production || {}); return p.some((v) => v !== '' && v != null && !(typeof v === 'number' && v >= 0)) || (args.retraits != null && args.retraits !== '' && !(typeof args.retraits === 'number' && args.retraits >= 0)) ? 'Une capacité est un nombre positif ; laissez vide si elle n\'est pas définie.' : ''; }
   if (nom.startsWith('cad') && nom !== 'cadValidite') {
@@ -377,18 +627,29 @@ export function refusCommerce(S, nom, args = {}, ctx = {}) {
   if (nom.startsWith('carte')) {
     const c = K.cartes?.[args.carte]; if (!c) return 'Cette carte est introuvable : vérifiez son code.';
     const solde = soldeCarte(c), e = etatCarte(c, auj);
-    if (nom === 'carteUtiliser' || nom === 'carteCorriger') {
+    /* Une NOUVELLE utilisation : seulement sur une carte active. */
+    if (nom === 'carteUtiliser') {
       if (args.op && c.utilisations.some((u) => u.op === args.op)) return 'Cette opération est déjà enregistrée : rien n\'a été débité une seconde fois.';
       if (e === 'desactivee') return `Cette carte est désactivée (${c.desactivee.motif || 'sans motif noté'}) : elle ne peut pas être utilisée.`;
       if (e === 'expiree') return `Cette carte a expiré le ${jourTexte(c.expire)} : elle ne peut plus être utilisée.`;
       const m = arr(args.montant); if (!(typeof args.montant === 'number' && m > 0)) return 'Le montant utilisé est un nombre plus grand que zéro.';
       if (args.vu != null && arr(args.vu) !== solde) return `Le solde de cette carte a changé ailleurs : il est maintenant de ${euros(solde)}. Vérifiez, puis recommencez ; rien n'a été débité.`;
-      if (nom === 'carteUtiliser') { if (e === 'epuisee') return 'Cette carte est épuisée : son solde est de 0 €.'; return m > solde ? `Le solde de cette carte est de ${euros(solde)} : ${euros(m)} ne peuvent pas être utilisés. Rien n'a été débité.` : ''; }
-      const u = c.utilisations.find((x) => x.id === args.utilisation); if (!u || u.annulee) return 'Cette utilisation a déjà été annulée ou corrigée : l\'écran a été mis à jour.';
-      if (!net(args.motif)) return 'Écrivez le motif de la correction : il est gardé dans l\'historique.';
-      return m > arr(solde + u.montant) ? `Après correction, le montant dépasserait la valeur restante (${euros(arr(solde + u.montant))}). Rien n'a été changé.` : '';
+      if (e === 'epuisee') return 'Cette carte est épuisée : son solde est de 0 €.';
+      return m > solde ? `Le solde de cette carte est de ${euros(solde)} : ${euros(m)} ne peuvent pas être utilisés. Rien n'a été débité.` : '';
     }
-    if (nom === 'carteAnnulerUtilisation') { const u = c.utilisations.find((x) => x.id === args.utilisation); return !u || u.annulee ? 'Cette utilisation a déjà été annulée : l\'écran a été mis à jour.' : net(args.motif) ? '' : 'Écrivez le motif de l\'annulation : il est gardé dans l\'historique.'; }
+    /* Une RECTIFICATION de l'historique (corriger ou annuler une utilisation passée) : possible sur une carte active,
+       épuisée ou expirée — elle ne change ni la date d'expiration ni l'état de la carte, et n'ouvre aucune nouvelle
+       utilisation. Une carte désactivée est figée : on la réactive d'abord, par une décision explicite. */
+    if (nom === 'carteCorriger' || nom === 'carteAnnulerUtilisation') {
+      if (nom === 'carteCorriger' && args.op && c.utilisations.some((u) => u.op === args.op)) return 'Cette correction est déjà enregistrée : elle n\'a pas été appliquée une seconde fois.';
+      const u = c.utilisations.find((x) => x.id === args.utilisation); if (!u || u.annulee) return `Cette utilisation a déjà été annulée ou corrigée : l'écran a été mis à jour, rien d'autre n'a changé.`;
+      if (e === 'desactivee') return `Cette carte est désactivée (${c.desactivee.motif || 'sans motif noté'}) : son historique est figé. Réactivez-la d'abord pour rectifier une utilisation ; rien n'a été changé.`;
+      if (!net(args.motif)) return nom === 'carteCorriger' ? 'Écrivez le motif de la correction : il est gardé dans l\'historique.' : 'Écrivez le motif de l\'annulation : il est gardé dans l\'historique.';
+      if (nom === 'carteAnnulerUtilisation') return '';
+      const m = arr(args.montant); if (!(typeof args.montant === 'number' && m > 0)) return 'Le montant corrigé est un nombre plus grand que zéro ; pour effacer l\'utilisation, annulez-la.';
+      if (m === u.montant) return 'Le montant corrigé est le même que celui enregistré : rien n\'a été changé.';
+      return m > arr(solde + u.montant) ? `Après correction, le montant dépasserait la valeur restante de la carte (${euros(arr(solde + u.montant))}). Rien n'a été changé.` : '';
+    }
     if (nom === 'carteActiver') return args.actif ? '' : c.desactivee ? 'Cette carte est déjà désactivée.' : net(args.motif) ? '' : 'Écrivez le motif : il est gardé dans l\'historique de la carte.';
   }
   return '';

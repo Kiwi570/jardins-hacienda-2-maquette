@@ -2,13 +2,13 @@
    Chargé avant tout le reste (premier import de site.js) : textes [data-edit], photos [data-edit-photo], ardoise,
    horaires et fermetures (les JSON que lisent le statut et la réservation), événements, la carte (v7.7.3), puis l'annonce et une
    petite pastille « Aperçu de vos modifications ». Ne fait rien si l'espace n'a rien changé. */
-import { lire, estVide, CONTEXTE, horloge, noterVu } from './espace-stock.js?v=7';
+import { lire, estVide, CONTEXTE, horloge, noterVu, etatDuContexte } from './espace-stock.js?v=7';
 /* v7.12.0 : une même horloge pour le scénario et ses pages publiques. Les calculs d'ouverture (badge « ouvert en ce
    moment », cadran, prochains services) lisent ce repère ; hors scénario il n'est pas posé : l'heure réelle sert. */
 if (CONTEXTE && horloge()) globalThis.__jhHorloge = horloge;
 import { equipeDe, exceptionsOuvertures, serviceCourant } from './disponibilites.js?v=7';
 import { vuePublique, offresVitrine, cadeauxVitrine, emporterVitrine, preparations, estEpuise, UNITES } from './espace-publie.js?v=7';
-import { disponibilite, creneauxComplets, quantite as quantiteTexte } from './commerce.js?v=7';
+import { disponibilite, creneauxComplets, quantite as quantiteTexte, periodeRetraits, periodeTexte, refusRetrait, calendrierRetraits, raisonRetraitsTexte, ouvertureRetraits } from './commerce.js?v=7';
 
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const echap = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -68,15 +68,17 @@ export function emporterPublies() {
  */
 export function controleEmporter({ lignes = [], jour = '', moment = '' }) {
   const E = etatFrais(), pub = emporterPublies(), auj = instantPresent().slice(0, 10), messages = [], prix = {}; let etape = 'coordonnees', delai = 0;
+  const br = baseRetraits();
   for (const l of lignes) {
     const o = pub.find((x) => x.id === l.offre);
     if (!o) { messages.push(`« ${l.nom} » n'est plus proposé à la commande : retirez-le de votre commande pour continuer.`); etape = 'panier'; continue; }
     if (o.prix !== l.prix) { messages.push(`Le prix de « ${o.nom} » a changé pendant votre commande : ${eurosSite(l.prix)} → ${eurosSite(o.prix)}. Le total a été mis à jour : relisez-le, puis validez à nouveau.`); prix[l.cle || o.cle] = o.prix; }
     if (typeof o.delai === 'number') delai = Math.max(delai, o.delai);
   }
-  const plus = (iso, n) => { const d = new Date(`${iso}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
-  if (jour && jour < auj) { messages.push('Ce jour de retrait est passé : choisissez-en un autre.'); etape = 'retrait'; }
-  else if (jour && delai && jour < plus(auj, delai)) { messages.push(`Un produit de votre commande se commande au moins ${delai} jour${delai > 1 ? 's' : ''} avant le retrait : choisissez un jour plus éloigné.`); etape = 'retrait'; }
+  /* v7.14.1 : le jour et le créneau passent par la règle des retraits (période réglée, horaires, fermetures, jour passé,
+     délai de commande) : la même que celle qui dessine le calendrier, relue à l'instant. */
+  const hors = jour && br ? refusRetrait(periodeRetraits(E, { retraits: br.retraits }), ouvertureSite(br, E), { jour, moment, auj, delai }) : '';
+  if (hors) { messages.push(`${hors} Choisissez un autre jour de retrait.`); etape = 'retrait'; }
   else if (jour && !messages.length) {
     const d = disponibilite(E, { jour, moment, lignes });
     for (const x of d.production) if (x.capacite != null && x.demande > x.reste) { messages.push(x.reste > 0 ? `« ${x.nom} » : il n'en reste que ${quantiteTexte(x.reste, x.unite)} pour ce jour-là. Réduisez la quantité ou choisissez un autre jour.` : `« ${x.nom} » n'est plus disponible pour ce jour-là : choisissez un autre jour.`); etape = 'panier'; }
@@ -86,6 +88,27 @@ export function controleEmporter({ lignes = [], jour = '', moment = '' }) {
 }
 /** Les créneaux de retrait complets ce jour-là (['soir']), d'après les commandes validées ; vide si rien n'est réglé. */
 export const retraitsComplets = (jour) => creneauxComplets(etatFrais(), jour);
+/* ---------- La période des retraits (v7.14.1) : un réglage de l'espace, lu ici avec la même règle (commerce.js) ---------- */
+const baseRetraits = () => { const sc = document.querySelector('script[data-emporter-base]'); if (!sc) return null; try { const d = JSON.parse(sc.textContent); return d.retraits ? { retraits: d.retraits, semaine: d.semaine || {}, exceptions: d.exceptions || [], dite: d.periodeDite || '' } : null; } catch { return null; } };
+const ouvertureSite = (b, E) => ouvertureRetraits({ semaine: b.semaine, exceptions: b.exceptions, connecte: !!document.querySelector('meta[name="jh-api"]') }, E);
+/**
+ * Les retraits que la page peut proposer, à l'instant : la période en vigueur, le calendrier jour par jour (ouvert,
+ * fermé, passé, trop proche pour les produits choisis, complet) et, s'il n'y a plus rien à proposer, la phrase qui dit
+ * pourquoi. `delai` : le plus long délai de commande des produits du panier. null si la page n'a pas de retraits.
+ */
+export function retraitsSite({ delai = 0 } = {}) {
+  const b = baseRetraits(); if (!b) return null;
+  const E = etatFrais(), periode = periodeRetraits(E, { retraits: b.retraits }), auj = instantPresent().slice(0, 10);
+  const cal = calendrierRetraits(periode, ouvertureSite(b, E), { auj, delai, complets: (iso) => creneauxComplets(E, iso) });
+  return { periode, texte: periodeTexte(periode), auj, ...cal, raisonTexte: raisonRetraitsTexte(cal.raison, periode, delai) };
+}
+/* Là où les textes livrés citent la période (« du 5 au 31 décembre »), la période réglée la remplace. Sans réglage, rien ne bouge. */
+if (!document.querySelector('[data-espace]')) sur(() => {
+  const b = baseRetraits(); if (!b?.dite) return; const p = periodeRetraits(etatFrais(), { retraits: b.retraits }); if (!p.reglee || (p.debut === b.retraits.debut && p.fin === b.retraits.fin)) return;
+  const neuf = periodeTexte(p), maj = (t) => t.charAt(0).toUpperCase() + t.slice(1), racine = document.querySelector('main') || document.body, marche = document.createTreeWalker(racine, NodeFilter.SHOW_TEXT);
+  const aChanger = []; for (let n = marche.nextNode(); n; n = marche.nextNode()) if (n.nodeValue.includes(b.dite) || n.nodeValue.includes(maj(b.dite))) aChanger.push(n);
+  for (const n of aChanger) if (!n.parentElement?.closest('script, style')) n.nodeValue = n.nodeValue.split(maj(b.dite)).join(maj(neuf)).split(b.dite).join(neuf);
+});
 
 /* La page À emporter et l'accueil suivent le catalogue traiteur PUBLIÉ : noms, prix, unités, quantités, ordre ; un produit
    masqué ou archivé n'est plus proposé. Sans changement dans l'espace, la page reste telle qu'elle est livrée. */
@@ -328,7 +351,9 @@ if ((!estVide(S) || APERCU) && !document.querySelector('[data-espace]')) {
     }
     /* Le rappel du bas : en aperçu, il le redit en une ligne (le repère du haut peut sortir de l'écran avec l'en-tête, en défilant). */
     pile.insertAdjacentHTML('beforeend', APERCU ? `<a class="apercu-espace apercu-espace--court" href="${ici}" data-apercu-rappel><span class="apercu-espace__point" aria-hidden="true"></span>Aperçu — non publié<span class="apercu-espace__lien">Version publiée</span></a>`
-      : CONTEXTE ? '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Démonstration en cours<span class="apercu-espace__lien">Revenir à l\'espace</span></a>' : '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Version publiée, sur cet appareil<span class="apercu-espace__lien">Votre espace</span></a>');
+      : CONTEXTE ? '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Démonstration en cours<span class="apercu-espace__lien">Revenir à l\'espace</span></a>'
+        /* v7.14.1 : l'onglet ne peut pas retenir la démonstration : elle vaut pour cette page, ses liens la portent, et c'est dit. */
+        + (etatDuContexte() === 'fragile' ? '<p class="apercu-espace apercu-espace--note" data-contexte-fragile role="status">La mémoire de cet onglet est indisponible : la démonstration est suivie par l\'adresse de chaque page. Vos données habituelles ne sont ni lues ni modifiées.</p>' : '') : '<a class="apercu-espace" href="/espace"><span class="apercu-espace__point" aria-hidden="true"></span>Version publiée, sur cet appareil<span class="apercu-espace__lien">Votre espace</span></a>');
     document.body.append(pile);
     /* En aperçu, le rappel n'apparaît qu'une fois le repère du haut sorti de l'écran : en haut de page, rien ne flotte sur le contenu. */
     const repere = haut.querySelector('[data-apercu-non-publie]');

@@ -36,14 +36,33 @@ export const SCHEMA = 2;
    onglet le portent dans leur adresse (`avecContexte`).
    Jamais en mode connecté : une page reliée au serveur n'a pas de contexte de démonstration. */
 const CLE_CONTEXTE = 'jh-demo';
+/* v7.14.1 : le contexte ne retombe plus en silence sur les données habituelles. Quatre états :
+   - 'normal' : l'usage habituel ;
+   - 'demo' : un scénario, retenu par l'onglet ;
+   - 'fragile' : l'adresse nomme un scénario mais l'onglet ne peut pas le retenir (mémoire de session refusée) : le
+     scénario vaut pour cette page, ses liens le portent dans leur adresse (`porterContexte`), et c'est dit ;
+   - 'incertain' : la mémoire de session est illisible et l'adresse ne dit rien : on ne sait pas si l'onglet est en
+     démonstration. Les saisies temporaires (`temporaire`) ne sont alors ni lues ni écrites : elles restent sur la page. */
+let etatContexte = 'normal';
 export const CONTEXTE = (() => {
+  let demande = null;   /* null : l'adresse ne dit rien ; '' : elle quitte la démonstration ; 'nom' : elle nomme un scénario */
   try {
     if (typeof document !== 'undefined' && document.querySelector('meta[name="jh-api"]')) return '';
     const q = new URLSearchParams(location.search);
-    if (q.has('demo')) { const v = q.get('demo') || ''; if (/^[a-z0-9-]{1,24}$/.test(v)) sessionStorage.setItem(CLE_CONTEXTE, v); else sessionStorage.removeItem(CLE_CONTEXTE); }
-    return sessionStorage.getItem(CLE_CONTEXTE) || '';
+    if (q.has('demo')) { const v = q.get('demo') || ''; demande = /^[a-z0-9-]{1,24}$/.test(v) ? v : ''; }
   } catch { return ''; }
+  try {
+    if (demande !== null) { if (demande) sessionStorage.setItem(CLE_CONTEXTE, demande); else sessionStorage.removeItem(CLE_CONTEXTE); }
+    const garde = sessionStorage.getItem(CLE_CONTEXTE) || '';
+    if (demande && garde !== demande) { etatContexte = 'fragile'; return demande; }
+    etatContexte = garde ? 'demo' : 'normal'; return garde;
+  } catch {
+    if (demande) { etatContexte = 'fragile'; return demande; }
+    etatContexte = demande === '' ? 'normal' : 'incertain'; return '';
+  }
 })();
+/** L'état du contexte de cet onglet : 'normal', 'demo', 'fragile' ou 'incertain' (voir plus haut). */
+export const etatDuContexte = () => etatContexte;
 const P = CONTEXTE ? `jh-demo:${CONTEXTE}:` : 'jh-';
 const CLE = `${P}espace:v1`, CLE_RESAS = `${P}espace-resas:v1`, CLE_DEMANDES = `${P}espace-demandes:v1`, CLE_VENUES = `${P}espace-venues:v1`, CLE_HORLOGE = `${P}horloge:v1`;
 /** Une adresse du site, avec le contexte de démonstration de cet onglet (pour un lien qui ouvre un nouvel onglet). */
@@ -56,18 +75,75 @@ export function reglerHorloge(h) { if (!CONTEXTE) return false; try { localStora
    « à essayer », gardés avec l'horloge, hors de l'état de l'espace (ils ne s'annulent pas avec « Annuler »). */
 export const vusDemo = () => (CONTEXTE ? journal().vus || {} : {});
 export function noterVu(cle) { if (!CONTEXTE) return false; try { const j = journal(); if (j.vus?.[cle]) return false; localStorage.setItem(CLE_HORLOGE, JSON.stringify({ ...j, vus: { ...(j.vus || {}), [cle]: true } })); return true; } catch { return false; } }
+
+/* ---------- L'époque d'un scénario, et les saisies temporaires des pages publiques (v7.14.1) ----------
+   Chaque lancement d'un scénario (son premier départ, puis chaque « Recommencer ») porte une ÉPOQUE, gardée avec son
+   horloge. Une page du scénario restée ouverte la compare à celle de son chargement : si elle a changé, le scénario a
+   été recommencé ailleurs. La page le reconnaît : elle ne réinjecte pas son ancien panier, n'envoie pas son ancien
+   brouillon ni une ancienne demande. */
+const lireEpoque = () => { if (!CONTEXTE) return ''; try { return String(JSON.parse(localStorage.getItem(CLE_HORLOGE) || 'null')?.epoque || ''); } catch { return ''; } };
+let EPOQUE_PAGE = lireEpoque();
+/** Le scénario de cet onglet a-t-il été recommencé (ou effacé) depuis le chargement de cette page ? Toujours false hors démonstration. */
+export const scenarioRecommence = () => !!CONTEXTE && lireEpoque() !== EPOQUE_PAGE;
+export const MESSAGE_RECOMMENCE = 'Cette démonstration a été recommencée dans un autre onglet. Cette page date d\'avant : rechargez-la pour reprendre le parcours. Rien n\'a été envoyé.';
+const PREFIXE_TMP = (nom) => `jh-demo:${nom}:tmp:`;
+/* Efface les saisies temporaires d'un scénario : celles du navigateur (partagées entre ses onglets) et celles de cet onglet. */
+function viderTemporaires(nom) {
+  for (const magasin of [() => localStorage, () => sessionStorage]) { try { const m = magasin(), cles = []; for (let i = 0; i < m.length; i++) { const k = m.key(i); if (k && k.startsWith(PREFIXE_TMP(nom))) cles.push(k); } for (const k of cles) m.removeItem(k); } catch { /* stockage indisponible : rien à effacer */ } }
+}
+/**
+ * Une saisie temporaire d'une page publique : le panier À emporter, le brouillon de réservation. Chaque contexte a la
+ * sienne ; aucune n'est lue, copiée ou effacée depuis un autre.
+ * - Contexte normal : la clé HISTORIQUE (`nom`), avec sa valeur telle quelle — les paniers et brouillons existants sont
+ *   retrouvés à l'identique.
+ * - Scénario : `jh-demo:<scénario>:tmp:<nom>`, avec l'époque du scénario ; une valeur d'une autre époque n'est pas lue.
+ * - Contexte incertain : rien n'est lu ni écrit ; la valeur reste sur la page (`persistant` est false : la page le dit).
+ * `session` : la saisie appartient à l'onglet (mémoire de session) au lieu du navigateur.
+ */
+export function temporaire(nom, { session = false } = {}) {
+  const magasin = () => (session ? sessionStorage : localStorage), cle = CONTEXTE ? `${PREFIXE_TMP(CONTEXTE)}${nom}` : nom, muet = etatContexte === 'incertain';
+  let memoire = null;
+  return {
+    cle, persistant: !muet,
+    /** La valeur gardée, ou null. */
+    lire() {
+      if (muet) return memoire;
+      try { const brut = magasin().getItem(cle); if (brut == null) return null; const v = JSON.parse(brut); return CONTEXTE ? (v && v.epoque === lireEpoque() ? v.valeur ?? null : null) : v; } catch { return memoire; }
+    },
+    /** Garde la valeur ; false si elle n'a pas pu l'être (stockage refusé, contexte incertain, scénario recommencé depuis). */
+    ecrire(valeur) {
+      memoire = valeur; if (muet || scenarioRecommence()) return false;
+      try { magasin().setItem(cle, JSON.stringify(CONTEXTE ? { epoque: EPOQUE_PAGE, valeur } : valeur)); return true; } catch { return false; }
+    },
+    effacer() { memoire = null; if (muet || scenarioRecommence()) return false; try { magasin().removeItem(cle); return true; } catch { return false; } },
+    /** Prévient quand la valeur change dans un autre onglet du MÊME contexte ('valeur'), ou quand le scénario est recommencé ('recommence'). */
+    ecouter(f) {
+      const sur = (ev) => { if (ev.key === CLE_HORLOGE && CONTEXTE) { if (scenarioRecommence()) f('recommence'); } else if (!session && !muet && (ev.key === cle || ev.key === null) && !scenarioRecommence()) f('valeur'); };
+      try { addEventListener('storage', sur); } catch { return () => {}; }
+      return () => removeEventListener('storage', sur);
+    },
+  };
+}
+/** En contexte 'fragile', l'onglet ne retient pas le scénario : chaque lien du site le porte dans son adresse. */
+export function porterContexte() {
+  if (etatContexte !== 'fragile' || typeof document === 'undefined') return false;
+  document.addEventListener('click', (ev) => { const a = ev.target.closest?.('a[href]'); if (!a) return; try { const u = new URL(a.href, location.href); if (u.origin === location.origin && !u.searchParams.has('demo')) { u.searchParams.set('demo', CONTEXTE); a.href = u.href; } } catch { /* adresse illisible : le lien reste tel quel */ } }, true);
+  return true;
+}
 /** Efface les données du scénario de cet onglet, et elles seules (jamais les données habituelles). */
-export function viderContexte() { if (!CONTEXTE) return false; try { for (const k of [CLE, CLE_RESAS, CLE_DEMANDES, CLE_VENUES, CLE_HORLOGE]) localStorage.removeItem(k); return true; } catch { return false; } }
+export function viderContexte() { if (!CONTEXTE) return false; try { for (const k of [CLE, CLE_RESAS, CLE_DEMANDES, CLE_VENUES, CLE_HORLOGE]) localStorage.removeItem(k); viderTemporaires(CONTEXTE); return true; } catch { return false; } }
 /** Efface les données d'un scénario nommé (pour le relancer depuis le début), où que l'on soit. Le préfixe `jh-demo:<nom>:`
     est le seul touché : les données habituelles (`jh-espace…`) ne peuvent pas l'être. */
 /** Ce scénario a-t-il déjà été lancé sur cet appareil (une progression est gardée) ? */
 export function scenarioEntame(nom) { try { return /^[a-z0-9-]{1,24}$/.test(nom || '') && !!localStorage.getItem(`jh-demo:${nom}:horloge:v1`); } catch { return false; } }
 export function viderScenario(nom) { if (!/^[a-z0-9-]{1,24}$/.test(nom || '') || document.querySelector('meta[name="jh-api"]')) return false;
-  try { for (const fin of ['espace:v1', 'espace-resas:v1', 'espace-demandes:v1', 'espace-venues:v1', 'horloge:v1']) localStorage.removeItem(`jh-demo:${nom}:${fin}`); return true; } catch { return false; } }
+  try { for (const fin of ['espace:v1', 'espace-resas:v1', 'espace-demandes:v1', 'espace-venues:v1', 'horloge:v1']) localStorage.removeItem(`jh-demo:${nom}:${fin}`); viderTemporaires(nom); return true; } catch { return false; } }
 /** Écrit l'état de départ d'un scénario (son contexte uniquement). */
 export function semer({ etat, venues: v = {}, horloge: h, demandes = [] }) {
   if (!CONTEXTE) return false;
-  try { localStorage.setItem(CLE, JSON.stringify({ ...etat, _schema: SCHEMA })); if (Object.keys(v).length) localStorage.setItem(CLE_VENUES, JSON.stringify(v)); if (demandes.length) localStorage.setItem(CLE_DEMANDES, JSON.stringify(demandes)); localStorage.setItem(CLE_HORLOGE, JSON.stringify({ iso: h.iso, min: h.min, vus: {} })); return true; } catch { return false; }
+  try { localStorage.setItem(CLE, JSON.stringify({ ...etat, _schema: SCHEMA })); if (Object.keys(v).length) localStorage.setItem(CLE_VENUES, JSON.stringify(v)); if (demandes.length) localStorage.setItem(CLE_DEMANDES, JSON.stringify(demandes)); /* Un nouveau départ : une nouvelle époque. La page qui sème en fait partie ; les autres pages déjà ouvertes datent d'avant. */
+    const epoque = `e${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
+    localStorage.setItem(CLE_HORLOGE, JSON.stringify({ iso: h.iso, min: h.min, vus: {}, epoque })); EPOQUE_PAGE = epoque; return true; } catch { return false; }
 }
 
 /** Met un objet lu au schéma courant (fonction pure : ne touche pas au stockage).
@@ -101,7 +177,8 @@ export const estVide = (d) => !d || !Object.keys(d).some((k) => !k.startsWith('_
    est pleine, l'écriture échoue et le dit (false), elle ne jette plus de données. */
 export function resasSite() { try { const l = JSON.parse(localStorage.getItem(CLE_RESAS) || '[]'); return Array.isArray(l) ? l : []; } catch { return []; } }
 export function ecrireResasSite(l) { try { if (l?.length) localStorage.setItem(CLE_RESAS, JSON.stringify(l)); else localStorage.removeItem(CLE_RESAS); return true; } catch { return false; } }
-export function ajouterResaSite(r) { const l = resasSite().filter((x) => x.id !== r.id); l.push(r); return ecrireResasSite(l); }
+/* v7.14.1 : une page d'un scénario recommencé depuis ne dépose plus rien dans le nouveau départ. */
+export function ajouterResaSite(r) { if (scenarioRecommence()) return false; const l = resasSite().filter((x) => x.id !== r.id); l.push(r); return ecrireResasSite(l); }
 
 /* Les autres demandes faites sur le site de ce navigateur (v7.7.2) : réception, commande traiteur, carte cadeau, question.
    Chacune porte son genre, un identifiant et l'heure de sa création. */
@@ -109,6 +186,7 @@ const liste = (cle) => { try { const l = JSON.parse(localStorage.getItem(cle) ||
 export const demandesSite = () => liste(CLE_DEMANDES);
 export function ecrireDemandesSite(l) { try { if (l?.length) localStorage.setItem(CLE_DEMANDES, JSON.stringify(l)); else localStorage.removeItem(CLE_DEMANDES); return true; } catch { return false; } }
 export function ajouterDemandeSite(d) {
+  if (scenarioRecommence()) return false;
   const maintenant = new Date();
   return ecrireDemandesSite([...demandesSite(), { id: `${(d.genre || 'demande').charAt(0).toUpperCase()}-${maintenant.getTime().toString(36)}`, cree: maintenant.toISOString(), ...d }]);
 }
@@ -120,6 +198,7 @@ export function ajouterDemandeSite(d) {
    Démonstration : ce navigateur seulement. Demain : des appels au serveur, protégés par un jeton propre à la réservation. */
 export function venues() { try { const o = JSON.parse(localStorage.getItem(CLE_VENUES) || '{}'); return o && typeof o === 'object' && !Array.isArray(o) ? o : {}; } catch { return {}; } }
 export function noterVenue(id, champs) {
+  if (scenarioRecommence()) return false;
   try { const o = venues(); o[id] = { ...(o[id] || {}), ...champs }; for (const k of Object.keys(o[id])) if (o[id][k] == null) delete o[id][k]; localStorage.setItem(CLE_VENUES, JSON.stringify(o)); return true; } catch { return false; }
 }
 
