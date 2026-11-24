@@ -27,9 +27,9 @@
    v7.8.0 : le garde-fou métier du dépôt (une réservation impossible n'entre pas dans l'agenda), les heures d'arrivée du
    jour, l'ouverture exceptionnelle, l'annulation ciblée, les écritures différées jamais perdues. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
-import { CONTEXTE, horloge as horlogeDemo, reglerHorloge, semer, viderContexte, viderScenario, scenarioEntame, avecContexte, vusDemo, noterVu, scenarioRecommence, porterContexte } from './espace-stock.js?v=7';
+import { CONTEXTE, horloge as horlogeDemo, reglerHorloge, semer, viderContexte, viderScenario, scenarioEntame, avecContexte, vusDemo, noterVu, scenarioRecommence, porterContexte, refusEnregistrement } from './espace-stock.js?v=7';
 porterContexte();
-import { SCENARIOS, scenario as scenarioDe, depart as departScenario, avancement, sauts as sautsScenario } from './espace-scenarios.js?v=7';
+import { SCENARIOS, scenario as scenarioDe, depart as departScenario, avancement, sauts as sautsScenario, VISITE, etapeVisite } from './espace-scenarios.js?v=7';
 import { comprendre } from './espace-commandes.js?v=7';
 import { installerBarre } from './espace-barre.js?v=7';
 import { creerDemandes } from './espace-vue-demandes.js?v=7';
@@ -44,6 +44,8 @@ import { creerAttente } from './espace-vue-attente.js?v=7';
 import { lienVenue, venuesATraiter } from './espace-venue.js?v=7';
 import { creerClient } from './espace-vue-client.js?v=7';
 import { creerAccueil } from './espace-vue-accueil.js?v=7';
+import { creerBilan } from './espace-vue-bilan.js?v=7';
+import { assister, nonCompris, exemplesPour } from './espace-assistant.js?v=7';
 import { creerClients } from './espace-vue-clients.js?v=7';
 import { rechercher } from './espace-recherche.js?v=7';
 import { listeClients, aMigrer, partagesConnus, cleDossier } from './espace-clients.js?v=7';
@@ -162,7 +164,7 @@ export function init(root) {
     /* Mode connecté : l'action est partie au serveur. Rien n'est dit « enregistré » avant sa réponse (voir finServeur). */
     if (ok === 'attente') { etatSauve('cours', 'Enregistrement…'); root.setAttribute('aria-busy', 'true'); return false; }
     /* Ce que les règles ont fait en plus (une table retirée) est dit avec le message. */
-    if (ok) dire([msg, depot.noteAction()].filter(Boolean).join(' '), { lien, annuler: !trace }); else dire(depot.raisonRefus() || REFUS);
+    if (ok) dire([msg, depot.noteAction()].filter(Boolean).join(' '), { lien, annuler: !trace }); else dire(depot.raisonRefus() || refusEnregistrement() || REFUS);
     return ok;
   }
   /* La réponse du serveur à une action. Réussie : l'écran est redessiné depuis ce qu'il a confirmé, les formulaires se
@@ -256,7 +258,7 @@ export function init(root) {
   X.ouvrirClient = (d) => { const b = document.createElement('button'); b.dataset.client = cleDossier(d); root.append(b); vClient.clic(b); b.remove(); };
   X.ardoiseHtml = () => cartesSite().ardoise;
   /* v7.13.0 : les offres, leur publication et leur aperçu. */
-  X.refus = () => depot.raisonRefus() || 'Ce navigateur a refusé d\'enregistrer (mémoire pleine ou stockage bloqué) : rien n\'a été publié ni modifié. Libérez de la place, puis réessayez.'; X.connecte = !!API; X.sv = () => serviceCourant(R, A.min);
+  X.refus = () => depot.raisonRefus() || refusEnregistrement() || 'Ce navigateur a refusé d\'enregistrer (mémoire pleine ou stockage bloqué) : rien n\'a été publié ni modifié. Libérez de la place, puis réessayez.'; X.connecte = !!API; X.sv = () => serviceCourant(R, A.min);
   X.lienApercu = (url) => { const [chemin, ancre] = String(url).split('#'); return avecContexte(`${chemin}${chemin.includes('?') ? '&' : '?'}apercu=1${ancre ? `#${ancre}` : ''}`); };
   X.resasSoiree = (id) => resasDeSoiree(ctx().resasSoirees(S()), id);
   const vOffres = creerOffres(X); X.offres = vOffres;
@@ -294,11 +296,13 @@ export function init(root) {
   if (repriseProductionAFaire(depot.etat())) { depot.agir('comReprendreProduction', { le: `${A.iso}T${hhmm(A.min)}` }, { sansRetour: true }); contexte = null; }
   X.activites = (iso) => activitesDuJour({ ...ctx(), agenda: D.agenda }, S(), iso); X.rendreSoirees = () => rendreEvenements();
   const vAccueil = creerAccueil(X);
+  /* v7.15.0 : les bilans, un écran d'Aujourd'hui (la navigation principale ne change pas). */
+  const vBilan = creerBilan(X); X.ouvrirBilan = vBilan.ouvrir;
   X.tachesDe = vAccueil.tachesDe;
   const vClients = creerClients(X);
 
   /* « Aujourd'hui » (v7.10.0) : dessiné par espace-vue-accueil.js. */
-  function rendreJour() { vAccueil.rendre(); }
+  function rendreJour() { if (etat.ecranJour === 'bilan') vBilan.rendre(); else vAccueil.rendre(); }
 
   function rendreResas() {
     const og = (id, nom) => `<button type="button" class="esp-onglet" role="tab" id="onglet-resas-${id}" aria-selected="${id === etat.ongletResas}" aria-controls="panneau-resas" tabindex="${id === etat.ongletResas ? 0 : -1}" data-onglet="${id}" data-onglets-resas>${nom}</button>`;
@@ -486,6 +490,7 @@ export function init(root) {
     if (service) sv.setAttribute('aria-current', 'page'); else sv.removeAttribute('aria-current'); if (plus) pl.setAttribute('aria-current', 'page'); else pl.removeAttribute('aria-current');
   }
   function allerVue(v, focus = true) {
+    if (v !== 'jour') etat.ecranJour = '';
     etat.vue = v; try { sessionStorage.setItem('jh-espace-vue', v); } catch { /* rien */ }
     for (const s of $$('.esp-vue', root)) s.hidden = s.dataset.vue !== v;
     for (const b of $$('[data-esp-vue]', root)) { if (b.dataset.espVue === v) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); }
@@ -561,11 +566,18 @@ export function init(root) {
       if (p.action.nom === 'evenement') { args.agenda = D.agenda; args.champs = { ...args.champs, l: largeurs(args.champs.image) }; }
       if (p.action.nom === 'plat') args.base = D.carte;
       if (p.action.nom === 'ajouterResa') { resa = 'tel-' + Date.now().toString(36); args.resa = { ...args.resa, id: resa }; }
+      if (p.action.nom === 'tacheAjouter') args.tache = { ...args.tache, id: `t-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}` };
       ok = agir(p.action.nom, args, { msg: p.action.msg, lien: p.action.lien });
     }
     /* v7.12.0 : une priorité, une ligne d'agenda ou une tâche qui mène à un dossier de réception ouvre CE dossier. */
     if (p.aller?.dossier) { vReceptions.ouvrir(p.aller.dossier, p.aller.onglet || 'projet'); return; }
     if (p.aller?.commande) { vCommerce.ouvrir('commande', p.aller.commande); return; }
+    /* v7.15.0 : le briefing d'un service, un bilan, un écran des commandes et cartes (préparation d'un jour, carte, demande de carte). */
+    if (p.aller?.briefing) { vAccueil.ouvrirBriefing(p.aller.briefing, $('[data-esp-quoi]', root)); return; }
+    if (p.aller?.bilan) { vBilan.ouvrir(p.aller.bilan.periode, p.aller.bilan.jour); return; }
+    if (p.aller?.commerce) { vCommerce.ouvrir(p.aller.commerce.ecran, p.aller.commerce.id || ''); if (p.aller.commerce.jour) { etat.commerce.jour = p.aller.commerce.jour; rendre(); $('#com-titre', root)?.focus({ preventScroll: true }); } return; }
+    /* Une action refusée (règle ou enregistrement) n'ouvre rien : le message dit pourquoi, et l'écran reste où il était. */
+    if (p.action && ok === false) { rendre(); return; }
     etat.dossier = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ }
     const a = p.aller; if (!a?.vue) { rendre(); return; }
     if (a.jour) etat.jour = a.jour; if (a.service) etat.serviceVu = a.service; if (a.onglet) { if (a.vue === 'carte') etat.ongletCarte = a.onglet; else if (a.vue === 'resas') etat.ongletResas = a.onglet; else etat.onglet = a.onglet; }
@@ -583,9 +595,16 @@ export function init(root) {
   /* La barre comprend les ordres (espace-commandes.js) et retrouve les objets (espace-recherche.js) : clients, demandes, soirées, plats. */
   const retrouver = (texte) => rechercher(texte, { auj: A.iso, clients: X.clients(), demandes: X.demandes(), evenements: evenements(), plats: platsDe(carteDe(D.carte, S(), A.iso)).map((p) => ({ cle: p.cle, nom: p.nom, rubrique: p.rubriqueTitre, prix: prixTexte(p.prix) })) });
   installerBarre(root, { comprendre: (texte) => { const ordres = comprendre(texte, { auj: A.iso, R, S: S(), exceptions: D.horaires.exceptions || [], pages: D.pages, carte: D.carte, service: X.sv(), resas: prochaines() }), trouves = retrouver(texte).filter((x) => !ordres.some((o) => o.aller?.plat && o.aller.plat === x.aller.plat));
+    /* v7.15.0 : l'assistant (espace-assistant.js) répond d'abord aux intentions qu'il prend en charge, avec les dossiers qui justifient sa réponse. */
+    const aide = assister(texte, { ctx: ctx(), S: S(), salle: D.salle, minute: A.min, demandes: X.demandes(), clients: X.clients(), resas: prochaines() });
+    if (aide.length) { const deja = new Set(aide.map((p) => p.titre));
+      /* Quand l'assistant demande une précision, il ne mêle aucune autre proposition à ses choix. */
+      return aide.some((p) => p.aChoisir) ? aide.slice(0, 12) : [...aide, ...ordres.filter((o) => !o.inactif && o.genre !== 'client' && !deja.has(o.titre)).slice(0, 2)].slice(0, 12); }
     /* L'ordre : ce qu'on peut faire, la fiche du client, ses réservations (dites comme telles), puis demandes, soirées et plats. */
     const resasNom = ordres.filter((o) => o.genre === 'client').slice(0, 3).map((o) => ({ ...o, detail: `Réservation · ${o.detail}` })), autres = ordres.filter((o) => o.genre !== 'client');
-    return [...autres.filter((o) => !o.inactif || !(trouves.length + resasNom.length)), ...trouves.filter((x) => x.genre === 'client'), ...resasNom, ...trouves.filter((x) => x.genre !== 'client')].slice(0, 9); }, executer, actif: () => root.classList.contains('est-connecte') });
+    const tout = [...autres.filter((o) => !o.inactif || !(trouves.length + resasNom.length)), ...trouves.filter((x) => x.genre === 'client'), ...resasNom, ...trouves.filter((x) => x.genre !== 'client')].slice(0, 9);
+    /* Rien de compris : c'est dit, rien n'est fait, et ce qui existe vraiment est proposé. */
+    return tout.length ? tout : nonCompris(texte, X.vueMetier()); }, executer, actif: () => root.classList.contains('est-connecte'), exemples: () => exemplesPour(X.vueMetier()) });
 
   /** Une petite fête quand la dernière demande a sa réponse : des assiettes dorées s'envolent de la tuile « À confirmer ». */
   function feter() {
@@ -647,11 +666,13 @@ export function init(root) {
   root.addEventListener('click', (ev) => {
     const t = ev.target;
     if (t.closest('[data-esp-plus]')) { ouvrirPlus(panneauPlus.hidden); return; }
-    const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; etat.dossier = null; etat.commerce = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } if (nav.dataset.espVue === 'resas' && nav.closest('[data-esp-plusnav]')) etat.ongletResas = 'agenda'; allerVue(nav.dataset.espVue); return; }
+    const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; etat.dossier = null; etat.commerce = null; etat.ecranJour = ''; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } if (nav.dataset.espVue === 'resas' && nav.closest('[data-esp-plusnav]')) etat.ongletResas = 'agenda'; allerVue(nav.dataset.espVue); return; }
     /* Téléphone : « Service » ouvre le service en cours ou le prochain ; « Plus », les autres rubriques. */
     if (t.closest('[data-esp-service]')) { const ps = prochainServiceIci(); etat.evEdite = null; if (ps) { etat.jour = ps.date; etat.serviceVu = ps.service; } etat.ongletResas = 'service'; allerVue('resas'); return; }
     if (t.closest('[data-esp-plusnav-bouton]')) { ouvrirPlusNav($('[data-esp-plusnav]', root).hidden); return; }
     if (t.closest('[data-voir-demande], [data-aller], [data-rec-ouvrir], [data-voir-resa]')) etat.commerce = null;
+    if (t.closest('[data-bilan-ouvrir]')) { ouvrirPlus(false, false); ouvrirPlusNav(false); }
+    if (vBilan.clic(t)) return;
     if (vCommerce.clic(t)) return;
     if (t.closest('[data-voir-demande], [data-aller]')) { etat.dossier = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } }
     if (vOffres.clic(t)) return;
@@ -715,7 +736,7 @@ export function init(root) {
     if (t.closest('[data-form-textes]')) { const cle = t.name, x = D.textes.find((y) => y.cle === cle); plus_tard(() => { agir('texte', { cle, valeur: t.value, defaut: x?.defaut }, { msg: 'Texte enregistré en préparation : le site ne change pas tant que vous ne publiez pas les textes de cette page.', groupe: `texte-${cle}` }); X.majZones(); }, `texte-${cle}`); return; }
     if (t.closest('[data-editeur]')) apercuBillet(t.closest('[data-editeur]'));
   });
-  root.addEventListener('change', (ev) => { if (ev.target.closest('[data-form-horaires]')) sauverHoraires(); else if (!vReceptions.change(ev.target) && !vAttente.change(ev.target)) vSalle.change(ev.target); });
+  root.addEventListener('change', (ev) => { if (ev.target.closest('[data-form-horaires]')) sauverHoraires(); else if (!vBilan.change(ev.target) && !vReceptions.change(ev.target) && !vAttente.change(ev.target)) vSalle.change(ev.target); });
   root.addEventListener('submit', (ev) => {
     ev.preventDefault(); const f = ev.target;
     if (vOffres.soumis(f) || vCommerce.soumettre(f)) return;
@@ -764,20 +785,52 @@ export function init(root) {
   /* L'indication « À essayer maintenant » est redessinée à chaque action : son annonce passe par une zone stable, mise à jour seulement quand le texte change. */
   const annonceScene = document.createElement('p'); annonceScene.className = 'visuellement-cache'; annonceScene.setAttribute('role', 'status'); zoneScene.after(annonceScene); let ditScene = null;
   const heureSimulee = () => `${maj(fmt(A.iso, { weekday: 'long', day: 'numeric', month: 'long' }))}, ${heure(hhmm(A.min))}`;
+  /* ---------- v7.15.0 · La visite guidée ----------
+     Cinq étapes qui relient trois démonstrations existantes. La visite ne garde que deux repères, hors de tout scénario :
+     l'étape où l'on en est (pour reprendre : `jh-demo:visite:v1`, dans ce navigateur) et « cet onglet suit la visite »
+     (mémoire de l'onglet, ou l'adresse `&visite=N`). Elle ne lit, ne copie et n'efface aucune donnée : passer d'une étape
+     à l'autre REPREND la démonstration concernée là où elle en est. */
+  const CLE_VISITE = 'jh-demo:visite:v1';
+  const visite = {
+    memoire() { try { const v = JSON.parse(localStorage.getItem(CLE_VISITE) || 'null'); return v && Number.isInteger(v.etape) ? v : null; } catch { return null; } },
+    noter(n) { try { localStorage.setItem(CLE_VISITE, JSON.stringify({ etape: n })); } catch { /* la visite continue sans mémoire */ } },
+    parAdresse() { try { const v = new URLSearchParams(location.search).get('visite'); return v && /^[1-9]$/.test(v) ? +v - 1 : null; } catch { return null; } },
+    active() { if (API) return false; if (this.parAdresse() !== null) return true; try { return sessionStorage.getItem('jh-visite') === '1'; } catch { return false; } },
+    suivre(on) { try { if (on) sessionStorage.setItem('jh-visite', '1'); else sessionStorage.removeItem('jh-visite'); } catch { /* rien */ } },
+    etape() { const n = this.parAdresse() ?? this.memoire()?.etape ?? 0; return etapeVisite(n, { S: S(), venues: depot.venues(), vus: vusDemo(), demandes: depot.demandesSite() }); },
+    /** Aller à l'étape n : même démonstration → on reste ; une autre → on la REPREND (son adresse la nomme, rien n'est effacé). */
+    aller(n) { const e = etapeVisite(n); this.noter(e.n); this.suivre(true); try { sessionStorage.setItem('jh-espace-vue', 'jour'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ }
+      if (SC?.id === e.scenario && this.parAdresse() === null) { etat.dossier = null; etat.commerce = null; etat.ecranJour = ''; allerVue('jour', false); $('[data-visite-titre]', root)?.focus({ preventScroll: true }); scrollTo({ top: 0, behavior: 'instant' }); return; }
+      location.assign(`/espace?demo=${e.scenario}&visite=${e.numero}`); },
+    quitter() { this.suivre(false); if (this.parAdresse() !== null) { location.assign(`/espace?demo=${SC?.id || ''}`); return; } rendreScene(); $('[data-scene-etapes] > summary', root)?.focus({ preventScroll: true }); dire('Visite guidée quittée : la démonstration en cours reste ouverte, telle qu\'elle est.'); },
+  };
+  if (visite.parAdresse() !== null) { visite.suivre(true); visite.noter(visite.parAdresse()); }
+  function visiteHtml() {
+    const v = visite.etape(), ici = SC?.id === v.scenario;
+    return `<div class="esp-visite" data-visite="${v.numero}" data-visite-scenario="${e(v.scenario)}" role="group" aria-labelledby="visite-titre">
+      <p class="esp-visite__ou"><span class="esp-source esp-source--site">Visite guidée · étape ${v.numero} sur ${v.total}</span> <b id="visite-titre" tabindex="-1" data-visite-titre>${e(v.titre)}</b></p>
+      ${ici ? `<p class="esp-visite__consigne" data-visite-consigne>${e(v.consigne)}</p>${v.reserve ? `<p class="esp-visite__reserve" data-visite-reserve role="status">${e(v.reserve)}</p>` : ''}<p class="esp-visite__montre"><b>Ce que cela montre&nbsp;:</b> ${e(v.montre)}</p>`
+        : `<p class="esp-visite__consigne" data-visite-ailleurs>Cette étape se joue dans la démonstration ${v.demo.numero}, « ${e(v.demo.titre)} ». Vous êtes dans une autre démonstration : rien n'y est changé.</p>`}
+      <p class="esp-visite__commandes">${v.precedente ? `<button type="button" class="esp-bouton" data-visite-aller="${v.n - 1}">Étape précédente</button>` : ''}
+        ${!ici ? `<button type="button" class="esp-bouton esp-bouton--ok" data-visite-aller="${v.n}">Aller à l'étape ${v.numero}</button>` : v.suivante ? `<button type="button" class="esp-bouton esp-bouton--ok" data-visite-aller="${v.n + 1}">Étape suivante&nbsp;: ${e(v.suivante.titre)}</button>` : '<button type="button" class="esp-bouton esp-bouton--ok" data-visite-finir>Terminer la visite</button>'}
+        <button type="button" class="esp-bouton esp-bouton--discret" data-visite-quitter>Quitter la visite</button></p>
+      <p class="esp-aide esp-visite__aide">Passer d'une étape à l'autre reprend chaque démonstration là où elle en est : la visite ne remet rien à zéro. Chaque démonstration garde sa date, son heure et ses données.</p></div>`;
+  }
   const etatScene = () => avancement(SC.id, { S: S(), venues: depot.venues(), vus: vusDemo(), iso: horlogeDemo()?.iso || A.iso, lieux: D.receptions, demandes: depot.demandesSite() });
   function rendreScene() {
     if (API) { zoneScene.hidden = true; return; }
     if (!SC) { zoneScene.hidden = etat.vue !== 'jour' || !!CONTEXTE;
-      if (!zoneScene.hidden && !zoneScene.firstChild) zoneScene.innerHTML = typo('<p class="esp-scene__invite"><span>Vous présentez la maquette ?</span> <button type="button" class="esp-bouton" data-demo-lancer>Lancer une démonstration</button></p>');
+      if (!zoneScene.hidden && !zoneScene.firstChild) zoneScene.innerHTML = typo(`<p class="esp-scene__invite"><span>Vous présentez la maquette ?</span> <button type="button" class="esp-bouton esp-bouton--ok" data-visite-lancer aria-label="Visite guidée (${VISITE.duree})"><span class="esp-long">Visite guidée (${VISITE.duree})</span><span class="esp-court" aria-hidden="true">Visite guidée</span></button> <button type="button" class="esp-bouton" data-demo-lancer aria-label="Lancer une démonstration"><span class="esp-long">Lancer une démonstration</span><span class="esp-court" aria-hidden="true">Démonstrations</span></button></p>`);
       return; }
     const a = etatScene(), ouvert = zoneScene.querySelector('[data-scene-etapes]')?.open;
     zoneScene.hidden = false; zoneScene.dataset.scenario = SC.id; zoneScene.classList.toggle('est-finie', a.fini); zoneScene.setAttribute('role', 'region'); zoneScene.setAttribute('aria-label', `Démonstration : ${SC.titre}`);
-    { const dit = typo(a.fini ? `Démonstration terminée. ${a.conclusion}` : `À essayer maintenant : ${a.prochaine.texte}`); if (ditScene === null) ditScene = dit; else if (dit !== ditScene) { ditScene = dit; annonceScene.textContent = dit; } }
+    { const dit = typo(visite.active() ? `Visite guidée, étape ${visite.etape().numero} sur ${visite.etape().total} : ${visite.etape().titre}.` : a.fini ? `Démonstration terminée. ${a.conclusion}` : `À essayer maintenant : ${a.prochaine.texte}`); if (ditScene === null) ditScene = dit; else if (dit !== ditScene) { ditScene = dit; annonceScene.textContent = dit; } }
     zoneScene.innerHTML = typo(`<div class="esp-scene__tete"><p class="esp-scene__nom"><span class="esp-source">Démonstration ${SC.numero} sur ${SCENARIOS.length}</span> <b>${e(SC.titre)}</b></p>
         <p class="esp-scene__heure" data-scene-heure><span class="visuellement-cache">Date et heure simulées : </span><span class="esp-long">${e(heureSimulee())}</span><span class="esp-court" aria-hidden="true">${e(maj(fmt(A.iso, { weekday: 'short', day: 'numeric', month: 'short' })))}, ${heure(hhmm(A.min))}</span> <small>heure simulée</small></p>
         <button type="button" class="esp-bouton esp-scene__avancer" data-scene-avancer aria-label="Avancer de 15 minutes"><span class="esp-long">Avancer de 15 minutes</span><span class="esp-court" aria-hidden="true">+ 15 min</span></button></div>
-      <p class="esp-scene__essayer" data-scene-essayer>${a.fini ? `<b>C'est fait.</b> ${e(a.conclusion)}` : `<b>À essayer maintenant&nbsp;:</b> ${e(a.prochaine.texte)}`}</p>
-      <details class="esp-scene__plus" data-scene-etapes${ouvert ? ' open' : ''}><summary>Étapes ${a.faites} sur ${a.etapes.length}, et commandes</summary>
+      ${visite.active() ? visiteHtml() : `<p class="esp-scene__essayer" data-scene-essayer>${a.fini ? `<b>C'est fait.</b> ${e(a.conclusion)}` : `<b>À essayer maintenant&nbsp;:</b> ${e(a.prochaine.texte)}`}</p>`}
+      <details class="esp-scene__plus" data-scene-etapes${ouvert ? ' open' : ''}><summary>${visite.active() ? `Démonstration ${SC.numero} : étapes ${a.faites} sur ${a.etapes.length}, et commandes` : `Étapes ${a.faites} sur ${a.etapes.length}, et commandes`}</summary>
+        ${visite.active() ? `<p class="esp-scene__variante" data-scene-essayer>${a.fini ? `Démonstration terminée. ${e(a.conclusion)}` : `Dans cette démonstration, l'étape suivante serait : ${e(a.prochaine.texte)}`}</p>` : ''}
         <ol class="esp-scene__etapes">${a.etapes.map((x) => `<li class="${x.fait ? 'est-faite' : ''}"><span class="esp-scene__coche" aria-hidden="true">${x.fait ? '✓' : ''}</span><span>${e(x.texte)}<span class="visuellement-cache">${x.fait ? ' (fait)' : ' (à faire)'}</span></span></li>`).join('')}</ol>
         ${SC.variante ? `<p class="esp-scene__variante">${e(SC.variante)}</p>` : ''}
         ${SC.variantes ? `<div class="esp-scene__variantes"><p class="esp-scene__sous">${['', 'Une variante', 'Deux variantes', 'Trois variantes', 'Quatre variantes', 'Cinq variantes', 'Six variantes', 'Sept variantes', 'Huit variantes'][SC.variantes.length] || `${SC.variantes.length} variantes`} à rejouer</p><ul>${SC.variantes.map((x) => `<li><b>${e(x.titre)}.</b> ${e(x.texte)}</li>`).join('')}</ul></div>` : ''}
@@ -803,15 +856,26 @@ export function init(root) {
     fenDemo.innerHTML = typo(`<div class="esp-modale__fond" data-fermer-demo></div><div class="esp-modale__boite" role="dialog" aria-modal="true" aria-labelledby="demo-titre">
       <header class="esp-modale__tete"><h2 id="demo-titre">Lancer une démonstration</h2><button type="button" class="esp-rond" data-fermer-demo aria-label="Fermer">×</button></header>
       <div class="esp-demo-choix"><p class="esp-demo-choix__intro">${['', 'Une situation prête', 'Deux situations prêtes', 'Trois situations prêtes', 'Quatre situations prêtes', 'Cinq situations prêtes', 'Six situations prêtes', 'Sept situations prêtes', 'Huit situations prêtes'][SCENARIOS.length] || 'Des situations prêtes'} à montrer, avec leurs données fictives, leur date et leur heure. Vos données habituelles restent à part&nbsp;: vous les retrouvez en quittant.</p>
+        ${(() => { const m = visite.memoire(), v = etapeVisite(m?.etape || 0), utilises = [...new Set(VISITE.etapes.map((x) => scenarioDe(x.scenario).numero))].sort();
+          return `<section class="esp-demo-visite" aria-labelledby="visite-carte-titre" data-visite-carte><h3 id="visite-carte-titre">${VISITE.titre} <span class="esp-source">${VISITE.duree}</span></h3>
+            <p>Cinq étapes pour montrer l'ensemble : comprendre sa journée, préparer le service, traiter une priorité, retrouver un dossier avec l'assistant, consulter un bilan. Elle passe par les démonstrations ${utilises.slice(0, -1).join(', ')} et ${utilises.at(-1)}, qui gardent chacune leur date, leur heure et leurs données.</p>
+            <ol class="esp-demo-visite__etapes">${VISITE.etapes.map((x, i) => `<li${m && i === v.n ? ' aria-current="step"' : ''}><b>${e(x.titre)}</b> <span>démonstration ${scenarioDe(x.scenario).numero}</span></li>`).join('')}</ol>
+            <p class="esp-demo-carte__actions">${m ? `<button type="button" class="bouton" data-visite-aller="${v.n}">Reprendre la visite à l'étape ${v.numero}</button><button type="button" class="esp-bouton" data-visite-aller="0">Reprendre à l'étape 1</button>` : '<button type="button" class="bouton" data-visite-aller="0">Commencer la visite</button>'}</p>
+            <p class="esp-aide">La visite ne remet rien à zéro : elle reprend chaque démonstration là où elle en est. Pour repartir d'un état neuf, « Lancer depuis le début » la démonstration voulue, ci-dessous.</p></section>
+            <h3 class="esp-demo-choix__sous">Les huit démonstrations complètes</h3>`; })()}
         <ol class="esp-demo-choix__liste">${SCENARIOS.map((x) => `<li class="esp-demo-carte${SC?.id === x.id ? ' est-en-cours' : ''}"><p class="esp-demo-carte__num" aria-hidden="true">${x.numero}</p><div><h3>${e(x.titre)}${SC?.id === x.id ? ' <span class="esp-source">En cours</span>' : ''}</h3>
             <p class="esp-demo-carte__situation">${e(x.situation)}</p><p class="esp-demo-carte__montre"><b>À montrer&nbsp;:</b> ${e(x.montre)}</p>
             <p class="esp-demo-carte__actions"><a class="bouton" href="/espace?demo=${x.id}" data-demo-choisir="${x.id}" aria-label="Lancer depuis le début la démonstration ${x.numero}, ${e(x.titre)}">Lancer depuis le début</a>${scenarioEntame(x.id) ? `<a class="esp-bouton" href="/espace?demo=${x.id}" data-demo-reprendre="${x.id}" aria-label="Reprendre la démonstration ${x.numero}, ${e(x.titre)}, là où elle en était">Reprendre</a>` : ''}<span class="esp-demo-carte__duree">${x.etapes.length} étapes · ${e(x.duree)}</span></p></div></li>`).join('')}</ol>
         ${SC ? '<p class="esp-plus"><button type="button" class="esp-lien" data-scene-quitter>Quitter la démonstration et retrouver mon espace</button></p>' : ''}</div></div>`);
-    fenDemo.hidden = false; document.documentElement.classList.add('esp-modale-ouverte'); $('[data-demo-choisir]', fenDemo)?.focus();
+    fenDemo.hidden = false; document.documentElement.classList.add('esp-modale-ouverte'); ($('[data-visite-aller]', fenDemo) || $('[data-demo-choisir]', fenDemo))?.focus();
   }
   function fermerLanceur() { if (!fenDemo || fenDemo.hidden) return; fenDemo.hidden = true; document.documentElement.classList.remove('esp-modale-ouverte'); retourDemo?.focus?.(); }
   root.addEventListener('click', (ev) => {
     const t = ev.target;
+    if (t.closest('[data-visite-lancer]')) { ouvrirPlus?.(false, false); ouvrirPlusNav(false); const m = visite.memoire(); if (m) ouvrirLanceur(t.closest('[data-visite-lancer]')); else visite.aller(0); return; }
+    const va = t.closest('[data-visite-aller]'); if (va) { fermerLanceur(); visite.aller(+va.dataset.visiteAller); return; }
+    if (t.closest('[data-visite-quitter]')) { visite.quitter(); return; }
+    if (t.closest('[data-visite-finir]')) { visite.suivre(false); visite.noter(0); if (visite.parAdresse() !== null) { location.assign(`/espace?demo=${SC?.id || ''}`); return; } rendreScene(); dire('Visite terminée. Les huit démonstrations complètes restent disponibles : « Changer de scénario ».'); $('[data-scene-etapes] > summary', root)?.focus({ preventScroll: true }); return; }
     const lancer = t.closest('[data-demo-lancer]'); if (lancer) { ouvrirPlus?.(false, false); ouvrirLanceur(lancer.closest('[data-esp-plus-panneau]') ? $('[data-esp-plus]', root) : lancer); return; }
     if (t.closest('[data-scene-avancer]') && SC) { const h = horlogeDemo(); if (!h) return; if (h.min + 15 >= 24 * 60) { dire('La journée simulée se termine : recommencez le scénario pour revenir au début.'); return; }
       reglerHorloge({ iso: h.iso, min: h.min + 15 }); A.relire(); contexte = null; rendre(); dire(`Il est maintenant ${heure(hhmm(A.min))} (heure simulée).`); $('[data-scene-avancer]', root)?.focus(); return; }
@@ -821,11 +885,12 @@ export function init(root) {
       reglerHorloge(x.cible); A.relire(); contexte = null; rendre(); dire(`Nous sommes maintenant le ${fmt(A.iso, { weekday: 'long', day: 'numeric', month: 'long' })}, ${heure(hhmm(A.min))} (heure simulée).`); $(`[data-scene-saut="${x.cle}"]`, root)?.focus(); return; }
     /* Recommencer : seules les données fictives de CE scénario sont effacées, puis réécrites à leur état de départ. */
     if (t.closest('[data-scene-recommencer]') && SC) { viderContexte(); try { sessionStorage.removeItem('jh-espace-vue'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } location.assign(`/espace?demo=${SC.id}`); return; }
-    if (t.closest('[data-scene-quitter]')) { try { sessionStorage.removeItem('jh-espace-vue'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } location.assign('/espace?demo='); }
+    if (t.closest('[data-scene-quitter]')) { visite.suivre(false); try { sessionStorage.removeItem('jh-espace-vue'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } location.assign('/espace?demo='); }
   });
   /* Dans un scénario : « Voir le site » garde le contexte ; « Tout remettre comme livré » laisse la place à « Recommencer ». */
   if (SC) { for (const a of $$('a.esp-outils__site, [data-esp-plus-panneau] a, [data-esp-toast-lien]', root)) a.href = avecContexte(a.getAttribute('href')); const b = $('[data-tout-effacer]', root); if (b) b.hidden = true; }
   for (const b of $$('.esp-tete [data-demo-lancer]', root)) b.hidden = !!API || (!!SC && !b.matches('[data-demo-menu]'));
+  for (const b of $$('[data-demo-seulement]', root)) b.hidden = !!API;
 
   /* v7.11.0 : ce que les clients ont fait depuis « Votre venue » (démonstration). Une annulation annule la réservation,
      une précision s'ajoute à sa note, une seule fois chacune ; une demande de changement attend la décision de l'équipe. */
@@ -886,7 +951,9 @@ export function init(root) {
   } else {
     let session = false; try { session = sessionStorage.getItem('jh-espace-session') === '1'; } catch { /* rien */ }
     /* Un scénario s'ouvre directement sur son écran de départ (au premier lancement), sans repasser par la porte d'entrée. */
-    if (SC) { if (SC.depart.filtre) etat.filtreDemandes = SC.depart.filtre; if (SC.depart.ongletCarte) etat.ongletCarte = SC.depart.ongletCarte; if (SC.depart.filtreOffres) etat.filtreOffres = SC.depart.filtreOffres; etat.ongletResas = SC.depart.onglet || 'agenda'; etat.serviceVu = 'soir'; etat.jour = A.iso; try { sessionStorage.setItem('jh-espace-session', '1'); if (scenarioFrais || !sessionStorage.getItem('jh-espace-vue')) sessionStorage.setItem('jh-espace-vue', SC.depart.vue); } catch { /* rien */ } }
+    if (SC) { if (SC.depart.filtre) etat.filtreDemandes = SC.depart.filtre; if (SC.depart.ongletCarte) etat.ongletCarte = SC.depart.ongletCarte; if (SC.depart.filtreOffres) etat.filtreOffres = SC.depart.filtreOffres; etat.ongletResas = SC.depart.onglet || 'agenda'; etat.serviceVu = 'soir'; etat.jour = A.iso; try { sessionStorage.setItem('jh-espace-session', '1'); if (scenarioFrais || !sessionStorage.getItem('jh-espace-vue')) sessionStorage.setItem('jh-espace-vue', SC.depart.vue);
+      /* v7.15.0 : une étape de la visite guidée arrive toujours sur Aujourd'hui, d'où part sa consigne. */
+      if (visite.parAdresse() !== null) sessionStorage.setItem('jh-espace-vue', 'jour'); } catch { /* rien */ } }
     if (session || SC) montrer(true); else document.documentElement.classList.remove('esp-dedans');
   }
 }

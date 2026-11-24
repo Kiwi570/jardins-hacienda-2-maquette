@@ -57,6 +57,7 @@ const VUES = [
 ];
 const ICO_LOUPE = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
 const ICO_SERVICE = '<svg viewBox="0 0 24 24"><path d="M4 17.5h16M5.5 17.5a6.5 6.5 0 0 1 13 0M12 8V6M10 6h4M3 20.5h18"/></svg>';
+const ICO_BILAN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5h15M7.5 16.5v-5M12 16.5v-9M16.5 16.5v-6.5"/></svg>';
 const ICO_PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
 
 export default (c) => {
@@ -101,6 +102,8 @@ export default (c) => {
           <button type="button" class="esp-rond esp-menu__bouton" data-esp-plus aria-expanded="false" aria-controls="esp-menu-panneau" aria-label="Plus d'actions">${brut(ICO_PLUS)}</button>
           <div class="esp-menu__panneau" id="esp-menu-panneau" data-esp-plus-panneau hidden>
             <a href="${c.url('accueil')}">Voir le site <span aria-hidden="true">↗</span></a>
+            <button type="button" data-bilan-ouvrir="semaine">Bilans</button>
+            <button type="button" data-visite-lancer data-demo-seulement>Visite guidée</button>
             <button type="button" data-demo-lancer data-demo-menu>Lancer une démonstration</button>
             <button type="button" data-esp-installer>Installer sur cet appareil</button>
             <button type="button" data-esp-quitter>Se déconnecter</button>
@@ -133,7 +136,8 @@ export default (c) => {
         <div class="esp-plusnav" id="esp-plusnav" data-esp-plusnav hidden>
           <p class="esp-plusnav__titre">Les autres rubriques</p>
           <ul>${VUES.filter(([id]) => !['jour', 'demandes'].includes(id)).map(([id, nom, , ico]) => html`<li><button type="button" class="esp-plusnav__lien" data-esp-vue="${id}"><span class="esp-ico" aria-hidden="true">${brut(ico)}</span>${nom}</button></li>`)}
-            <li><button type="button" class="esp-plusnav__lien esp-plusnav__lien--raccourci" data-aller="carte" data-onglet-carte="carte"><span class="esp-ico" aria-hidden="true">${brut(VUES[3][3])}</span>Modifier la carte</button></li></ul>
+            <li><button type="button" class="esp-plusnav__lien esp-plusnav__lien--raccourci" data-aller="carte" data-onglet-carte="carte"><span class="esp-ico" aria-hidden="true">${brut(VUES[3][3])}</span>Modifier la carte</button></li>
+            <li><button type="button" class="esp-plusnav__lien esp-plusnav__lien--raccourci" data-bilan-ouvrir="semaine"><span class="esp-ico" aria-hidden="true">${brut(ICO_BILAN)}</span>Bilans</button></li></ul>
         </div>
       </nav>
       <button type="button" class="esp-fab" data-esp-quoi aria-label="Que voulez-vous faire ?"><span aria-hidden="true">${brut(ICO_LOUPE)}</span></button>

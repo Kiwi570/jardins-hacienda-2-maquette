@@ -33,6 +33,8 @@ export const momentTexte = (m) => MOMENTS[m] || 'moment à préciser';
 /* « 1er », comme on l'écrit : « jeudi 1er janvier », « du 1er au 15 ». */
 const premier = (t) => String(t).replace(/(^|\s)1(?=\s|$)/, '$11er');
 const jourTexte = (iso) => (ISO.test(iso || '') ? premier(new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${iso}T12:00:00Z`))) : 'date à préciser');
+/* v7.15.0 : un instant dit en clair dans l'historique (« mercredi 25 novembre à 10 h », jamais « 2026-11-25T10:00 »). */
+const instantTexte = (t) => { const x = String(t || ''), h = x.slice(11, 16); return `${jourTexte(x.slice(0, 10))}${/^\d{2}:\d{2}$/.test(h) ? ` à ${+h.slice(0, 2)} h${h.slice(3) === '00' ? '' : ` ${h.slice(3)}`}` : ''}`; };
 export const retraitTexte = (c) => `${jourTexte(c.jour)}, ${momentTexte(c.moment)}`;
 const commerce = (S) => (S.commerce ||= {});
 const trace = (o, le, quoi, texte) => { (o.historique ||= []).push({ le: String(le || '').slice(0, 16), quoi, texte }); };
@@ -101,6 +103,9 @@ export function capacites(S) { const c = S?.commerce?.capacites || {}; return { 
    change. `quoi` : 'preparation' (au lancement), 'supplement' (ajout après le lancement), 'reprise' (commande d'avant la
    v7.14.1), 'ajout' (lot complété à la main par une rectification). */
 const DEMARREES = ['preparation', 'prete', 'retiree'];
+/* Une commande encore à honorer : ce qui lui manque en production reste RÉSERVÉ dans la capacité de son jour de retrait
+   (v7.15.0 : aussi après le lancement, quand une rectification a ramené la production sous ce que le client retire). */
+const ACTIVES = ['validee', 'preparation', 'prete'];
 /** La préparation de cette commande a-t-elle commencé (elle a pu être annulée ensuite) ? */
 export const preparationCommencee = (c) => !!c && (DEMARREES.includes(c.etat) || !!c.produite || !!c.production);
 const lotsDeLignes = (c, le, quoi) => (c.lignes || []).map((l, i) => ({ id: `l${i + 1}`, offre: l.offre || '', nom: l.nom, unite: l.unite || '', jour: c.jour || '', quantite: arr3(l.quantite), le: String(le || '').slice(0, 16), quoi }));
@@ -113,15 +118,17 @@ export function lotsDe(c) { return c?.production ? c.production.lots || [] : pre
 export const productionAVerifier = (c) => (c?.production ? !!c.production.aVerifier : preparationCommencee(c) && corrigeeAvant(c));
 const cleProduit = (x) => x.offre || `nom:${x.nom}`;
 const parProduit = (liste) => { const m = new Map(); for (const x of liste || []) { const k = cleProduit(x), y = m.get(k) || { offre: x.offre || '', nom: x.nom, unite: x.unite, quantite: 0 }; y.quantite = arr3(y.quantite + (+x.quantite || 0)); m.set(k, y); } return m; };
+/** Une commande dont la préparation a commencé et à laquelle il manque de la production (après une rectification) : ce qui manque, produit par produit. Vide pour une commande terminée. */
+export const manqueDe = (c) => (c && ['preparation', 'prete'].includes(c.etat) ? resteAProduire(c) : []);
 /** Ce qu'il reste à lancer en production pour une commande : ses lignes, moins ce qui est déjà engagé pour elle, produit par produit. */
 export function resteAProduire(c, lignes = c?.lignes) {
   const fait = parProduit(lotsDe(c));
   return [...parProduit(lignes).values()].map((x) => ({ ...x, quantite: Math.max(0, arr3(x.quantite - (fait.get(cleProduit(x))?.quantite || 0))) })).filter((x) => x.quantite > 0);
 }
 /**
- * Ce qui compte un jour donné. Pour un produit et un jour : les quantités RÉSERVÉES restant à produire (commandes
- * validées dont la préparation n'est pas lancée, à leur jour de retrait) + les quantités ENGAGÉES en préparation (les
- * lots, à leur jour de production). Le lancement fait passer d'une catégorie à l'autre : rien n'est compté deux fois.
+ * Ce qui compte un jour donné. Pour un produit et un jour : les quantités RÉSERVÉES restant à produire (ce qui manque
+ * encore à une commande validée, en préparation ou prête, à son jour de retrait : toute la commande avant le lancement,
+ * le complément après une rectification) + les quantités ENGAGÉES en préparation (les lots, à leur jour de production). Le lancement fait passer d'une catégorie à l'autre : rien n'est compté deux fois.
  * Une demande non validée n'engage rien. Annulée avant la préparation, une commande libère tout ; annulée après, ses lots
  * restent comptés et son créneau de retrait est libéré. `sauf` : la commande que l'on modifie (sa réservation et son
  * créneau sont recalculés par l'appelant ; ses lots, eux, restent comptés : ils sont produits).
@@ -132,7 +139,7 @@ export function engagements(S, jour, sauf = '') {
     for (const l of lotsDe(c)) if (l.offre && l.jour === jour && l.quantite > 0) plus(engagee, l.offre, l.quantite);
     if (productionAVerifier(c)) aVerifier.push(c.ref);
     if (c.id === sauf || c.jour !== jour) continue;
-    if (c.etat === 'validee') for (const r of resteAProduire(c)) if (r.offre) plus(reservee, r.offre, r.quantite);
+    if (ACTIVES.includes(c.etat)) for (const r of resteAProduire(c)) if (r.offre) plus(reservee, r.offre, r.quantite);
     if (ENGAGEES.includes(c.etat) && c.moment) retraits[c.moment] = (retraits[c.moment] || 0) + 1;
   }
   const production = { ...engagee }; for (const [k, q] of Object.entries(reservee)) plus(production, k, q);
@@ -152,7 +159,7 @@ export function disponibilite(S, { jour, moment, lignes = [], sauf = '' }) {
     const ligne = { offre: x.offre, nom: x.nom, unite: x.unite, aRemettre: x.quantite, dejaEngage: fait, demande, engage, engagee: e.engagee[x.offre] || 0, reservee: e.reservee[x.offre] || 0 };
     if (typeof c !== 'number') { production.push({ ...ligne, capacite: null, reste: null }); continue; }
     const reste = Math.max(0, arr3(c - engage)); production.push({ ...ligne, capacite: c, reste });
-    if (demande > reste) refus.push(reste > 0 ? `« ${x.nom} » : il ne reste que ${quantite(reste, x.unite)} à produire pour le ${jourTexte(jour)} (${quantite(demande, x.unite)} demandés${fait ? ' en plus' : ''}, capacité ${quantite(c, x.unite)}).` : `« ${x.nom} » : la production du ${jourTexte(jour)} est complète (capacité ${quantite(c, x.unite)}).`);
+    if (demande > reste) refus.push(reste > 0 ? `« ${x.nom} » : il ne reste que ${quantite(reste, x.unite)} à produire pour le ${jourTexte(jour)} (demande : ${quantite(demande, x.unite)}${fait ? ' en plus' : ''} ; capacité : ${quantite(c, x.unite)}).` : `« ${x.nom} » : la production du ${jourTexte(jour)} est complète (capacité ${quantite(c, x.unite)}).`);
   }
   const pris = moment ? e.retraits[moment] || 0 : 0, retrait = { engage: pris, capacite: cap.retraits, reste: cap.retraits == null ? null : Math.max(0, cap.retraits - pris) };
   if (cap.retraits != null && moment && pris >= cap.retraits) refus.push(`Les retraits du ${jourTexte(jour)}, ${momentTexte(moment)}, sont complets (${pris} sur ${cap.retraits}).`);
@@ -181,7 +188,7 @@ export function preparation(S, { jour = '', moment = '' } = {}) {
     const remet = c.etat === 'annulee' ? new Map() : parProduit(c.lignes), total = parProduit(tous);
     for (const x of parProduit(lots).values()) {
       const p = produit(x), k = cleProduit(x), r = remet.get(k)?.quantite || 0; p.engage = arr3(p.engage + x.quantite);
-      if (c.etat === 'annulee' || total.get(k).quantite !== r || lots.some((y) => cleProduit(y) === k && y.jour !== c.jour)) p.ecarts.push({ id: c.id, ref: c.ref, etat: c.etat, engage: x.quantite, aRemettre: r, retrait: c.jour, moment: c.moment, jours: [...new Set(lots.filter((y) => cleProduit(y) === k).map((y) => y.jour))] });
+      if (c.etat === 'annulee' || total.get(k).quantite !== r || lots.some((y) => cleProduit(y) === k && y.jour !== c.jour)) p.ecarts.push({ id: c.id, ref: c.ref, etat: c.etat, engage: x.quantite, aRemettre: r, manque: ACTIVES.includes(c.etat) ? Math.max(0, arr3(r - total.get(k).quantite)) : 0, retrait: c.jour, moment: c.moment, jours: [...new Set(lots.filter((y) => cleProduit(y) === k).map((y) => y.jour))] });
     }
   }
   return { produits: [...par.values()].sort((a, b) => a.nom.localeCompare(b.nom, 'fr')), commandes: l.sort((a, b) => `${a.jour}${a.moment === 'midi' ? 0 : 1}`.localeCompare(`${b.jour}${b.moment === 'midi' ? 0 : 1}`) || a.ref.localeCompare(b.ref)),
@@ -225,7 +232,10 @@ export function effetsProduction(c, apres) {
   for (const x of lotsDe(c)) if (x.quantite > 0) { const k = `${cleProduit(x)}|${x.jour}`, y = vus.get(k) || { ...x, quantite: 0 }; y.quantite = arr3(y.quantite + x.quantite); vus.set(k, y); }
   for (const x of vus.values()) { const k = cleProduit(x), r = remet.get(k)?.quantite || 0, total = tous.get(k).quantite;
     if (total !== r || x.jour !== apres.jour) garde.push(`${x.nom} : la production déjà engagée le ${jourTexte(x.jour)} (${quantite(x.quantite, x.unite)}) reste comptée ce jour-là${total > r ? ` ; à remettre : ${r ? quantite(r, x.unite) : 'rien'}` : ''}.`); }
-  const supplement = resteAProduire(c, apres.lignes).map((x) => ({ ...x, jour: apres.jour }));
+  /* Le supplément d'une correction : ce qu'elle ajoute à produire. Un complément déjà manquant (après une rectification)
+     n'est pas engagé en passant : il reste réservé, jusqu'à ce que l'équipe l'engage. */
+  const dejaManque = parProduit(resteAProduire(c));
+  const supplement = resteAProduire(c, apres.lignes).map((x) => ({ ...x, jour: apres.jour, quantite: Math.max(0, arr3(x.quantite - (dejaManque.get(cleProduit(x))?.quantite || 0))) })).filter((x) => x.quantite > 0);
   return { garde, supplement, retour: c.etat === 'prete' && supplement.length > 0 };
 }
 
@@ -370,6 +380,8 @@ export function priorites(demandes, S, lieux, auj) {
     retraits: cmd.filter((c) => c.jour === auj && ENGAGEES.includes(c.etat)),
     cadeauxATraiter: cad.filter((c) => ['recue', 'validee'].includes(c.etat)),
     cartesAEmettre: cad.filter((c) => c.etat === 'reglee'),
+    /* v7.15.0 : les commandes auxquelles il manque de la production (après une rectification) : un complément à engager. */
+    aCompleter: cmd.filter((c) => manqueDe(c).length > 0),
     /* v7.14.1 : les commandes dont la production d'origine n'a pas pu être reprise avec certitude. */
     aVerifier: cmd.filter(productionAVerifier),
   };
@@ -460,7 +472,21 @@ export const MUTATIONS_COMMERCE = {
     if (x) avant = { jour: x.jour, quantite: x.quantite }; else { x = { id: `l${P.lots.length + 1}`, offre: String(offre || ''), nom: net(nom, 120), unite: NOMS_UNITE[unite] ? unite : '', jour: '', quantite: 0, le: String(le || '').slice(0, 16), quoi: 'ajout' }; P.lots.push(x); }
     x.jour = jour; x.quantite = arr3(q);
     R.push({ id: `r${R.length + 1}`, ...(op ? { op } : {}), le: String(le || '').slice(0, 16), lot: x.id, offre: x.offre, nom: x.nom, unite: x.unite, avant, apres: { jour: x.jour, quantite: x.quantite }, motif: net(motif, 300) });
-    trace(c, le, 'rectification', `Production rectifiée, ${x.nom} : ${avant ? `${quantite(avant.quantite, x.unite)} le ${jourTexte(avant.jour)}` : 'rien d\'enregistré'} → ${quantite(x.quantite, x.unite)} le ${jourTexte(x.jour)}. La commande du client ne change pas. Motif : ${net(motif, 300)}`);
+    /* v7.15.0 : la commande doit rester cohérente. Si elle est encore à honorer et que la production engagée ne couvre
+       plus ce que le client retire, le manque reste à produire (réservé au jour du retrait, aucun lot n'est inventé) et
+       une commande prête repasse en préparation. Une commande retirée ou annulée garde son état : c'est de l'historique. */
+    const manque = manqueDe(c), retour = c.etat === 'prete' && manque.length > 0; if (retour) { c.etat = 'preparation'; statut(S, id, STATUT.preparation); }
+    trace(c, le, 'rectification', `Production rectifiée, ${x.nom} : ${avant ? `${quantite(avant.quantite, x.unite)} le ${jourTexte(avant.jour)}` : 'rien d\'enregistré'} → ${quantite(x.quantite, x.unite)} le ${jourTexte(x.jour)}. La commande du client ne change pas.${manque.length ? ` Il reste à produire pour l'honorer : ${lotsTexte(manque)} (réservé dans la capacité du ${jourTexte(c.jour)}).` : ''}${retour ? ' La commande était prête : elle repasse en préparation.' : ''} Motif : ${net(motif, 300)}`);
+  },
+  /**
+   * Engage en production le complément qui manque à une commande (après une rectification) : ce qui était réservé au
+   * jour du retrait devient un lot, ce même jour. Les mêmes pièces ne sont pas comptées deux fois. Renvoyée deux fois,
+   * l'action n'a plus rien à engager.
+   */
+  cmdCompleter(S, { id, le }) {
+    const c = commerce(S).commandes?.[id], manque = manqueDe(c); if (!c || !manque.length) return;
+    for (const x of manque) c.production.lots.push({ id: `l${c.production.lots.length + 1}`, offre: x.offre, nom: x.nom, unite: x.unite || '', jour: c.jour, quantite: x.quantite, le: String(le || '').slice(0, 16), quoi: 'complement' });
+    trace(c, le, 'complement', `Complément engagé en production pour le ${jourTexte(c.jour)} : ${lotsTexte(manque)}. La production engagée couvre de nouveau ce que le client retire.`);
   },
   /** Confirme la production d'une commande reprise « à vérifier » : les quantités et le jour enregistrés sont les bons. */
   cmdProductionVerifiee(S, { id, le }) {
@@ -526,7 +552,7 @@ export const MUTATIONS_COMMERCE = {
   /** Annule une utilisation, avec son motif : elle reste dans l'historique, barrée, et le solde est rétabli. */
   carteAnnulerUtilisation(S, { carte, utilisation, motif, par, le }) {
     const c = commerce(S).cartes?.[carte], u = c?.utilisations.find((x) => x.id === utilisation); if (!u || u.annulee) return;
-    u.annulee = { le: String(le || '').slice(0, 16), motif: net(motif, 300), par: net(par, 60) }; trace(c, le, 'annulation', `Utilisation de ${euros(u.montant)} du ${u.le.replace('T', ' à ')} annulée. Motif : ${u.annulee.motif} Solde : ${euros(soldeCarte(c))}.${resteExpiree(c, le)}`);
+    u.annulee = { le: String(le || '').slice(0, 16), motif: net(motif, 300), par: net(par, 60) }; trace(c, le, 'annulation', `Utilisation de ${euros(u.montant)} du ${instantTexte(u.le)} annulée. Motif : ${u.annulee.motif} Solde : ${euros(soldeCarte(c))}.${resteExpiree(c, le)}`);
   },
   /** Corrige une utilisation passée : l'ancienne est annulée (elle reste lisible), la nouvelle la remplace et le dit.
       C'est une rectification de l'historique : elle ne touche ni à la date d'expiration ni à l'état de la carte. */
@@ -534,7 +560,7 @@ export const MUTATIONS_COMMERCE = {
     const c = commerce(S).cartes?.[carte], u = c?.utilisations.find((x) => x.id === utilisation); if (!u || u.annulee || (op && c.utilisations.some((x) => x.op === op))) return;
     const m = arr(montant), n = { id: `u${c.utilisations.length + 1}`, le: String(le || '').slice(0, 16), montant: m, ref: u.ref, par: net(par, 60), corrige: u.id, ...(op ? { op } : {}) };
     u.annulee = { le: n.le, motif: net(motif, 300), par: n.par, remplaceePar: n.id }; c.utilisations.push(n);
-    trace(c, le, 'correction', `Utilisation du ${u.le.replace('T', ' à ')} corrigée : ${euros(u.montant)} → ${euros(m)}. Motif : ${u.annulee.motif} Solde : ${euros(soldeCarte(c))}.${resteExpiree(c, le)}`);
+    trace(c, le, 'correction', `Utilisation du ${instantTexte(u.le)} corrigée : ${euros(u.montant)} → ${euros(m)}. Motif : ${u.annulee.motif} Solde : ${euros(soldeCarte(c))}.${resteExpiree(c, le)}`);
   },
   /** Désactive une carte (perdue, émise par erreur…) ou la réactive. Ses utilisations restent lisibles. */
   carteActiver(S, { carte, actif, motif, le }) {
@@ -545,6 +571,8 @@ export const MUTATIONS_COMMERCE = {
   comLier(S, { quoi, id, client }) { const l = (commerce(S).liens ||= {}), k = `${quoi}:${id}`; if (client) l[k] = String(client); else delete l[k]; if (!Object.keys(l).length) delete S.commerce.liens; },
 };
 
+/* L'état que produirait une rectification (calcul pur, pour juger les capacités avant d'écrire). */
+function effetRectification(S, args) { const T = JSON.parse(JSON.stringify({ commerce: S.commerce || {}, demandes: S.demandes || {} })); MUTATIONS_COMMERCE.cmdRectifier(T, { ...args, op: '' }); return T; }
 /**
  * Les règles consultées avant chaque action de commerce, sur l'état frais (celui que le navigateur vient de relire :
  * un autre onglet a pu agir entre-temps). '' si l'action peut se faire, sinon la phrase qui dit pourquoi.
@@ -576,7 +604,17 @@ export function refusCommerce(S, nom, args = {}, ctx = {}) {
       return '';
     }
     if (nom === 'cmdRefuser') return c.etat !== 'recue' ? dit : net(args.motif) ? '' : 'Écrivez le motif du refus : il est gardé dans l\'historique.';
-    if (nom === 'cmdAvancer') return SUITES[c.etat]?.vers === args.vers ? '' : dit;
+    if (nom === 'cmdAvancer') {
+      if (SUITES[c.etat]?.vers !== args.vers) return dit;
+      /* v7.15.0 : ni « prête » ni « remise » tant qu'il manque de la production pour honorer la commande. */
+      const manque = ['prete', 'retiree'].includes(args.vers) ? manqueDe(c) : [];
+      return manque.length ? `Il reste à produire pour cette commande : ${lotsTexte(manque)}. Engagez le complément en production, ou corrigez ce que le client retire, avant de la ${args.vers === 'prete' ? 'marquer prête' : 'remettre'}.` : '';
+    }
+    if (nom === 'cmdCompleter') {
+      if (!K.commandes?.[args.id] || !preparationCommencee(c)) return 'La préparation de cette commande n\'a pas commencé : il n\'y a pas de complément à engager.';
+      if (fini) return dit;
+      return manqueDe(c).length ? '' : 'La production engagée couvre déjà ce que le client retire : il n\'y a plus de complément à engager.';
+    }
     if (nom === 'cmdAnnuler') return fini ? dit : net(args.motif) ? '' : 'Écrivez le motif de l\'annulation : il est gardé dans l\'historique.';
     if (nom === 'cmdModifier') {
       if (fini) return dit;
@@ -603,11 +641,18 @@ export function refusCommerce(S, nom, args = {}, ctx = {}) {
       if (x && args.vu && (args.vu.jour !== x.jour || arr3(args.vu.quantite) !== x.quantite)) return `Cette production a changé ailleurs : elle est maintenant de ${quantite(x.quantite, x.unite)} le ${jourTexte(x.jour)}. Vérifiez, puis recommencez ; rien n'a été changé.`;
       const q = arr3(args.quantite); if (x && x.jour === args.jour && x.quantite === q) return 'Rien ne change : la quantité et le jour sont ceux déjà enregistrés.';
       if (!x && q <= 0) return 'Pour ajouter une production oubliée, écrivez une quantité plus grande que zéro.';
-      /* Une hausse ou un déplacement de charge revérifie la capacité du produit, le jour visé. */
-      const offre = x ? x.offre : args.offre, unite = x ? x.unite : args.unite, cap = capacites(S).production[offre];
-      if (offre && typeof cap === 'number' && (!x || args.jour !== x.jour || q > x.quantite)) {
-        const ailleurs = arr3((engagements(S, args.jour).production[offre] || 0) - (x && x.jour === args.jour ? x.quantite : 0));
-        if (arr3(ailleurs + q) > cap) return `« ${x ? x.nom : net(args.nom)} » : la capacité du ${jourTexte(args.jour)} est de ${quantite(cap, unite)}, et la production déjà comptée ce jour-là est de ${quantite(ailleurs, unite)}. Avec ${quantite(q, unite)} de plus, elle serait dépassée : rien n'a été changé.`;
+      /* La capacité est revérifiée sur l'état que la rectification produirait, les jours concernés : le lot (là où il
+         était, là où il va) et, pour une commande encore à honorer, le complément qui resterait à produire au jour du
+         retrait. Un jour n'est refusé que si la rectification y AJOUTE de la charge au-delà de sa capacité. */
+      const offre = x ? x.offre : args.offre, unite = x ? x.unite : args.unite, cap = capacites(S).production[offre], nomP = x ? x.nom : net(args.nom);
+      if (offre && typeof cap === 'number') {
+        const apres = effetRectification(S, args);
+        for (const j of [...new Set([x?.jour, args.jour, c.jour].filter(Boolean))]) {
+          const a = engagements(S, j).production[offre] || 0, b = engagements(apres, j).production[offre] || 0;
+          if (b > cap && b > a) return j === args.jour && (!x || args.jour !== x.jour || q > x.quantite)
+            ? `« ${nomP} » : la capacité du ${jourTexte(j)} est de ${quantite(cap, unite)}, et la production déjà comptée ce jour-là est de ${quantite(arr3(a - (x && x.jour === j ? x.quantite : 0)), unite)}. Avec ${quantite(q, unite)} de plus, elle serait dépassée : rien n'a été changé.`
+            : `« ${nomP} » : après cette rectification, il resterait ${quantite(arr3(b - a), unite)} de plus à produire pour le ${jourTexte(j)}, jour du retrait, où la capacité est de ${quantite(cap, unite)} (déjà ${quantite(a, unite)} comptés). Rien n'a été changé : corrigez d'abord ce que le client retire, ou le jour du retrait.`;
+        }
       }
       return '';
     }

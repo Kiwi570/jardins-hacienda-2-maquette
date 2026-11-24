@@ -10,13 +10,13 @@
 import { typo, pluriel, fmt, maj } from './espace-regles.js?v=7';
 import { UNITES, emporterVitrine } from './espace-publie.js?v=7';
 import { lireNombre } from './espace-offres.js?v=7';
-import { ETATS, SUITES, PROCHAINE, ETATS_CADEAU, PROCHAINE_CADEAU, ETATS_CARTE, commandes, cadeaux, cartes, capacites, disponibilite, preparation, effetsModification, totalLignes, quantite, euros, retraitTexte, momentTexte, nomClient, soldeCarte, etatCarte, carteParCode, validite, commandesDeOffre, priorites, commerceDuClient, lotsDe, productionAVerifier, preparationCommencee, effetsProduction, joursDeProduction, engagements, periodeRetraits, periodeTexte, refusRetrait, calendrierRetraits, ouvertureRetraits } from './commerce.js?v=7';
+import { ETATS, SUITES, PROCHAINE, ETATS_CADEAU, PROCHAINE_CADEAU, ETATS_CARTE, commandes, cadeaux, cartes, capacites, disponibilite, preparation, effetsModification, totalLignes, quantite, euros, retraitTexte, momentTexte, nomClient, soldeCarte, etatCarte, carteParCode, validite, commandesDeOffre, priorites, commerceDuClient, lotsDe, manqueDe, productionAVerifier, preparationCommencee, effetsProduction, joursDeProduction, engagements, periodeRetraits, periodeTexte, refusRetrait, calendrierRetraits, ouvertureRetraits } from './commerce.js?v=7';
 
 const PASTILLE = { recue: 'a-confirmer', validee: 'cours', preparation: 'cours', prete: 'confirmee', retiree: 'confirmee', refusee: 'refusee', annulee: 'refusee' };
 const PASTILLE_CAD = { recue: 'a-confirmer', validee: 'cours', reglee: 'cours', emise: 'confirmee', refusee: 'refusee', annulee: 'refusee', ancienne: 'r-non-tentee' };
 const PASTILLE_CARTE = { active: 'confirmee', epuisee: 'r-non-tentee', expiree: 'refusee', desactivee: 'refusee' };
 const FINIES = ['retiree', 'refusee', 'annulee'];
-const QUOI_LOT = { preparation: 'Préparation lancée', supplement: 'Supplément', reprise: 'Repris de l\'ancien suivi', ajout: 'Ajouté par rectification' };
+const QUOI_LOT = { preparation: 'Préparation lancée', supplement: 'Supplément', complement: 'Complément', reprise: 'Repris de l\'ancien suivi', ajout: 'Ajouté par rectification' };
 
 export function creerCommerce(X) {
   const { root, $, $$, e, S, A, D, etat, agir } = X;
@@ -54,7 +54,7 @@ export function creerCommerce(X) {
     if (!c.jour) return '';
     const d = disponibilite(S(), { jour: c.jour, moment: c.moment, lignes: c.lignes, sauf: c.id }), cap = capacites(S()), lancee = preparationCommencee(c);
     const prod = (x) => (x.capacite == null ? 'capacité de production non définie (aucune limite appliquée)'
-      : lancee ? `à remettre ${e(quantite(x.aRemettre, x.unite))} ; déjà engagé pour cette commande ${e(quantite(x.dejaEngage, x.unite))}${x.demande ? ` ; <b>supplément à produire ${e(quantite(x.demande, x.unite))}</b>` : ''} ; production comptée ce jour ${e(quantite(x.engage, x.unite))} sur ${e(quantite(x.capacite, x.unite))}`
+      : lancee ? `à remettre ${e(quantite(x.aRemettre, x.unite))} ; déjà engagé pour cette commande ${e(quantite(x.dejaEngage, x.unite))}${x.demande ? ` ; <b>reste à produire ${e(quantite(x.demande, x.unite))}</b> (réservé dans la capacité, pas encore engagé)` : ''} ; production comptée ce jour ${e(quantite(arr3(x.engage + x.demande), x.unite))} sur ${e(quantite(x.capacite, x.unite))}`
       : `${e(quantite(x.demande, x.unite))} pour cette commande ; déjà comptés ailleurs ${e(quantite(x.engage, x.unite))} sur ${e(quantite(x.capacite, x.unite))}${x.demande > x.reste ? ` — <b>il manque ${e(quantite(arr3(x.demande - x.reste), x.unite))}</b>` : ''}`);
     return `<div class="esp-com-dispo" data-cmd-dispo="${d.ok ? 'ok' : 'refus'}"><p class="esp-champ__titre">Disponibilités du ${e(fmt(c.jour, { day: 'numeric', month: 'long' }))} ${cap.exemple ? '<span class="esp-pastille" data-cap-exemple>Capacités d\'exemple, à confirmer</span>' : ''}</p>
       <ul class="esp-pub__liste">${d.production.map((x) => `<li data-cmd-dispo-produit="${e(x.offre)}">${e(x.nom)} : ${prod(x)}</li>`).join('')}
@@ -115,6 +115,9 @@ export function creerCommerce(X) {
     for (const j of jours) { const compte = engagements(S(), j).production[p.offre] || 0, apres = arr3(compte - (lot && lot.jour === j ? lot.quantite : 0) + (r.jour === j ? q : 0));
       l.push(`Production comptée le ${jourCourt(j)} : ${quantite(compte, p.unite)} → ${quantite(apres, p.unite)}${typeof cap === 'number' ? ` sur ${quantite(cap, p.unite)}${apres > cap ? ' — la capacité serait dépassée : la rectification sera refusée' : ''}` : ' (capacité non définie)'}.`); }
     l.push('La commande du client (ce qu\'il retire, et quand) ne change pas.');
+    /* v7.15.0 : si la production engagée ne couvre plus ce que le client retire, le dire avant d'enregistrer. */
+    if (['preparation', 'prete'].includes(c.etat)) { const aRemettre = c.lignes.filter((x) => x.offre === p.offre).reduce((n, x) => n + x.quantite, 0), engage = arr3(lotsDe(c).filter((x) => x.offre === p.offre).reduce((n, x) => n + x.quantite, 0) - (lot ? lot.quantite : 0) + q), manque = Math.max(0, arr3(aRemettre - engage));
+      if (manque > 0) l.push(`Le client retire toujours ${quantite(aRemettre, p.unite)} : ${quantite(manque, p.unite)} resteront à produire, réservés dans la capacité du ${jourCourt(c.jour)}.${c.etat === 'prete' ? ' La commande ne sera plus « prête » : elle repassera en préparation.' : ''} Vous pourrez ensuite engager ce complément, ou corriger ce que le client retire.`); }
     return `<p class="esp-champ__titre">Ce que cette rectification change</p><ul class="esp-pub__liste">${l.map((x) => `<li>${e(x)}</li>`).join('')}</ul>`;
   }
   function rectifHtml(c) {
@@ -131,7 +134,7 @@ export function creerCommerce(X) {
   }
   function productionHtml(c) {
     if (!preparationCommencee(c)) return '';
-    const k = C(), lots = lotsDe(c), flou = productionAVerifier(c), remet = new Map(), annulee = c.etat === 'annulee';
+    const k = C(), lots = lotsDe(c), flou = productionAVerifier(c), remet = new Map(), annulee = c.etat === 'annulee', manque = manqueDe(c);
     for (const x of c.lignes) remet.set(x.offre || `nom:${x.nom}`, arr3((remet.get(x.offre || `nom:${x.nom}`) || 0) + x.quantite));
     const lotHtml = (x) => { const r = annulee ? 0 : remet.get(x.offre || `nom:${x.nom}`) || 0;
       return `<li class="esp-com-ligne" data-prod-lot="${e(x.id)}"><p class="esp-com-ligne__qui"><b>${e(x.nom)}</b> : <span data-prod-quantite>${e(quantite(x.quantite, x.unite))}</span> <span class="esp-pastille${x.quoi === 'supplement' ? ' esp-pastille--cours' : ''}">${e(QUOI_LOT[x.quoi] || 'Engagé')}</span></p>
@@ -141,6 +144,8 @@ export function creerCommerce(X) {
       <p class="esp-aide">Ce que l'équipe a lancé en préparation, au jour pour lequel c'était prévu. Corriger la commande ou déplacer le retrait ne change pas ces quantités : elles restent comptées dans la production de leur jour.</p>
       ${flou ? `<div class="esp-com-alerte" data-prod-flou><p><b>À vérifier :</b> cette commande a été corrigée après le début de sa préparation, avant que la production soit gardée à part. Les quantités et le jour ci-dessous sont ceux connus aujourd'hui ; ceux d'origine n'ont pas été conservés, et rien n'a été reconstitué. Tant que ce n'est pas vérifié, les capacités de ces produits sont à confirmer.</p>
         <p class="esp-com-actions"><button type="button" class="esp-bouton esp-bouton--ok" data-prod-verifiee>Confirmer ces quantités</button><button type="button" class="esp-bouton" data-prod-rectifier="">Ajouter une production oubliée</button></p></div>` : ''}
+      ${manque.length ? `<div class="esp-com-alerte" data-prod-manque><p><b>Il manque de la production pour honorer cette commande.</b> ${manque.map((x) => { const r = remet.get(x.offre || `nom:${x.nom}`) || 0; return `${e(x.nom)} : à remettre ${e(quantite(r, x.unite))} ; en production ${e(quantite(arr3(r - x.quantite), x.unite))} ; <b>reste à produire ${e(quantite(x.quantite, x.unite))}</b>.`; }).join(' ')} Ce reste est réservé dans la capacité du ${e(jourCourt(c.jour))} : aucune autre commande ne peut le prendre. La commande ne peut être ni marquée prête ni remise tant qu'il manque.</p>
+        <p class="esp-com-actions"><button type="button" class="bouton" data-prod-complement>Engager le complément en production</button><button type="button" class="esp-bouton" data-cmd-modifier>Corriger ce que le client retire</button></p></div>` : ''}
       ${lots.length ? `<ul class="esp-com-cartes" data-prod-lots>${lots.map(lotHtml).join('')}</ul>` : '<p class="esp-vide">Aucune quantité engagée n\'est enregistrée pour cette commande.</p>'}
       ${k.rectif && !k.rectif.lot ? rectifHtml(c) : flou || FINIES.includes(c.etat) && !annulee ? '' : '<p class="esp-com-actions"><button type="button" class="esp-bouton esp-bouton--discret" data-prod-rectifier="">Ajouter une production oubliée</button></p>'}</section>`;
   }
@@ -148,7 +153,9 @@ export function creerCommerce(X) {
   function ecartHtml(c) {
     if (!preparationCommencee(c) || c.etat === 'annulee') return '';
     const ep = effetsProduction({ ...c, etat: FINIES.includes(c.etat) ? 'prete' : c.etat }, c); if (!ep.garde.length) return '';
-    return `<p class="esp-com-alerte" data-cmd-ecart><b>Commande corrigée après la préparation.</b> À remettre : ${e(c.lignes.map((l) => `${l.nom}, ${quantite(l.quantite, l.unite)}`).join(' ; '))}, ${e(retraitTexte(c))}. En cuisine : ${ep.garde.map((x) => e(x.replace(/ ; à remettre : [^.]*\./, '.'))).join(' ')}</p>`;
+    /* v7.15.0 : quand c'est la production qui a été rectifiée à la baisse, le titre le dit (la commande, elle, n'a pas changé). */
+    const manque = manqueDe(c);
+    return `<p class="esp-com-alerte" data-cmd-ecart><b>${manque.length ? 'La production engagée ne couvre plus la commande.' : 'Commande corrigée après la préparation.'}</b> À remettre : ${e(c.lignes.map((l) => `${l.nom}, ${quantite(l.quantite, l.unite)}`).join(' ; '))}, ${e(retraitTexte(c))}. En cuisine : ${ep.garde.map((x) => e(x.replace(/ ; à remettre : [^.]*\./, '.'))).join(' ')}${manque.length ? ` Reste à produire : ${e(manque.map((x) => `${x.nom}, ${quantite(x.quantite, x.unite)}`).join(' ; '))}.` : ''}</p>`;
   }
   function rendreCommande() {
     const c = commande(C().id); if (!c) { fermer(); return false; }
@@ -164,13 +171,13 @@ export function creerCommerce(X) {
         <li><span class="esp-rec-etats__quoi">État</span><b class="esp-pastille esp-pastille--${PASTILLE[c.etat]}" data-cmd-pastille>${e(ETATS[c.etat])}</b>${c.motif ? `<span class="esp-rec-etats__detail">Motif : ${e(c.motif)}</span>` : ''}</li>
         <li><span class="esp-rec-etats__quoi">Retrait</span><b data-cmd-retrait>${e(jourDit(c.jour))}</b><span class="esp-rec-etats__detail">${e(momentTexte(c.moment))}</span></li>
         <li><span class="esp-rec-etats__quoi">Total</span><b data-cmd-total>${c.total == null ? 'Non conservé' : e(euros(c.total))}</b><span class="esp-rec-etats__detail">à régler au retrait ; rien n'est encaissé en ligne</span></li></ul>
-      <p class="esp-rec-suite" data-cmd-suite><b>Prochaine action&nbsp;:</b> ${e(aDecider || (c.etat === 'recue' && hors) ? 'Le retrait demandé n\'est plus possible tel quel : à décider avec le client.' : PROCHAINE[c.etat])}</p>
+      <p class="esp-rec-suite" data-cmd-suite><b>Prochaine action&nbsp;:</b> ${e(aDecider || (c.etat === 'recue' && hors) ? 'Le retrait demandé n\'est plus possible tel quel : à décider avec le client.' : manqueDe(c).length ? 'Engager le complément qui reste à produire, ou corriger ce que le client retire.' : PROCHAINE[c.etat])}</p>
       ${ecartHtml(c)}
       ${hors && c.etat !== 'recue' ? `<p class="esp-com-alerte" data-cmd-hors-note><b>Retrait hors des jours proposés aujourd'hui.</b> ${e(hors)} Cette commande déjà acceptée reste telle quelle : rien n'a été déplacé ni annulé.${c.horsPeriode ? ' Elle avait été acceptée à titre exceptionnel.' : ''}</p>` : ''}
       ${aDecider ? `<div class="esp-carte esp-com-alerte" data-cmd-hors><p><b>Retrait à revoir avant de valider.</b> ${e(hors)}</p><p class="esp-aide">Rien n'a été changé sur cette demande. Trois décisions possibles :</p>
         <p class="esp-com-actions"><button type="button" class="bouton" data-cmd-modifier>Convenir d'un autre retrait</button><button type="button" class="esp-bouton" data-cmd-exception>Accepter ce retrait à titre exceptionnel</button><button type="button" class="esp-bouton" data-cmd-motif="refuser">Refuser la demande</button></p></div>` : ''}
       ${k.erreur && !k.edition && !k.motif && !k.rectif ? `<p class="esp-erreur" role="alert" tabindex="-1" data-com-erreur>${e(k.erreur)}</p>` : ''}
-      ${fini || k.edition || aDecider ? '' : `<p class="esp-com-actions" data-cmd-actions>${s && !(c.etat === 'recue' && hors) ? `<button type="button" class="bouton" data-cmd-avancer="${s.vers}">${e(s.libelle)}</button>` : ''}
+      ${fini || k.edition || aDecider ? '' : `<p class="esp-com-actions" data-cmd-actions>${s && !(c.etat === 'recue' && hors) && !manqueDe(c).length ? `<button type="button" class="bouton" data-cmd-avancer="${s.vers}">${e(s.libelle)}</button>` : ''}
         ${c.etat === 'recue' ? '<button type="button" class="esp-bouton" data-cmd-motif="refuser">Refuser la demande</button>' : ''}
         <button type="button" class="esp-bouton" data-cmd-modifier>${lancee ? 'Corriger' : 'Modifier'}</button>
         <button type="button" class="esp-bouton esp-bouton--discret" data-cmd-motif="annuler">Annuler la commande</button>
@@ -204,7 +211,7 @@ export function creerCommerce(X) {
   const joursEngages = () => joursDeProduction(S());
   const q0 = (n, u) => (n ? e(quantite(n, u)) : '—');
   /* Quand ce qui est engagé un jour n'est pas ce qui sera remis ce jour-là : la phrase qui le dit, commande par commande. */
-  const ecartTexte = (x, u) => `${x.ref} : production engagée ${quantite(x.engage, u)}${x.jours?.length === 1 ? ` pour le ${fmt(x.jours[0], { day: 'numeric', month: 'long' })}` : ''} ; ${x.etat === 'annulee' ? 'commande annulée, rien à remettre' : `à remettre : ${x.aRemettre ? quantite(x.aRemettre, u) : 'rien'}${x.retrait && !(x.jours || []).includes(x.retrait) ? `, retrait le ${fmt(x.retrait, { day: 'numeric', month: 'long' })}` : ''}`}`;
+  const ecartTexte = (x, u) => `${x.ref} : production engagée ${quantite(x.engage, u)}${x.jours?.length === 1 ? ` pour le ${fmt(x.jours[0], { day: 'numeric', month: 'long' })}` : ''} ; ${x.etat === 'annulee' ? 'commande annulée, rien à remettre' : `à remettre : ${x.aRemettre ? quantite(x.aRemettre, u) : 'rien'}${x.retrait && !(x.jours || []).includes(x.retrait) ? `, retrait le ${fmt(x.retrait, { day: 'numeric', month: 'long' })}` : ''}${x.manque ? ` ; reste à produire : ${quantite(x.manque, u)}` : ''}`}`;
   function feuillePreparation(p, jour, moment) {
     return `<header><p class="esp-feuille__maison">Les Jardins de l'Hacienda</p><h1>Feuille de préparation</h1><p class="esp-feuille__quand">${jour ? e(jourDit(jour)) : 'Tous les jours'}${moment ? `, ${e(momentTexte(moment))}` : ''}</p></header>
       <table><thead><tr><th>Produit</th><th>Reste à préparer</th><th>Prêt</th><th>Remis</th><th>Engagé en production${jour ? ' ce jour' : ''}</th><th>Commandes</th></tr></thead><tbody>${p.produits.map((x) => `<tr><td>${e(x.nom)}${x.ecarts.length ? `<br><small>${x.ecarts.map((y) => e(ecartTexte(y, x.unite))).join(' · ')}</small>` : ''}</td><td>${q0(x.aPreparer, x.unite)}</td><td>${q0(x.pret, x.unite)}</td><td>${q0(x.remis, x.unite)}</td><td>${q0(x.engage, x.unite)}${x.capacite != null && jour ? ` sur ${e(quantite(x.capacite, x.unite))}` : ''}</td><td>${e(x.commandes.join(', '))}</td></tr>`).join('') || '<tr><td colspan="6">Aucune commande validée.</td></tr>'}</tbody></table>
@@ -382,8 +389,12 @@ export function creerCommerce(X) {
       <button type="button" class="esp-bouton" data-com-ouvrir="cartes">Cartes cadeaux émises${nc ? ` <span class="esp-filtre__n" aria-label="${nc} cartes">${nc}</span>` : ''}${p.cartesAEmettre.length ? ` <span class="esp-pastille esp-pastille--a-confirmer">${pluriel(p.cartesAEmettre.length, 'demande')} à émettre</span>` : ''}</button></p>`;
   }
   /** Le bloc « Traiteur et cadeaux » de la rubrique Aujourd'hui : ce qui attend l'équipe, sans effet sur les couverts. */
-  function aujourdhui() {
+  /* v7.15.0 : `sansDemandes` — les demandes à décider sont déjà listées juste au-dessus (« Les demandes qui attendent une
+     réponse ») ; `production` — la vue Cuisine ne garde que ce qui se prépare et se remet. */
+  function aujourdhui({ sansDemandes = false, production = false } = {}) {
     const p = priorites(dem(), S(), lieux(), A.iso), l = [];
+    if (sansDemandes || production) { p.aDecider = []; p.cadeauxATraiter = p.cadeauxATraiter.filter((c) => c.etat !== 'recue'); }
+    if (production) { p.cadeauxATraiter = []; p.cartesAEmettre = []; }
     const cmd = (c, quoi) => `<li class="esp-com-ligne" data-auj-cmd="${e(c.id)}"><p class="esp-com-ligne__qui"><b>${e(c.ref)}</b> · ${e(nomClient(c.client))} <span class="esp-pastille esp-pastille--${PASTILLE[c.etat]}">${e(ETATS[c.etat])}</span></p><p class="esp-com-ligne__quoi">${e(quoi)} · ${e(c.lignes.map((x) => `${quantite(x.quantite, x.unite)} ${x.nom}`).join(' ; '))}</p><p class="esp-com-actions"><button type="button" class="esp-bouton" data-com-ouvrir="commande" data-com-id="${e(c.id)}">Ouvrir</button></p></li>`;
     const cad = (c, quoi) => `<li class="esp-com-ligne" data-auj-cad="${e(c.id)}"><p class="esp-com-ligne__qui"><b>${e(c.ref)}</b> · ${e(c.acheteur.nom || c.de || 'Acheteur à préciser')} <span class="esp-pastille esp-pastille--${PASTILLE_CAD[c.etat]}">${e(ETATS_CADEAU[c.etat])}</span></p><p class="esp-com-ligne__quoi">${e(quoi)} · ${e(pluriel(c.quantite, 'carte'))} de ${e(euros(c.montant))}</p><p class="esp-com-actions"><button type="button" class="esp-bouton" data-com-ouvrir="cadeau" data-com-id="${e(c.id)}">Ouvrir</button></p></li>`;
     if (p.aDecider.length) l.push(`<h4>Demandes traiteur à décider</h4><ul class="esp-com-cartes" data-auj="a-decider">${p.aDecider.map((c) => cmd(c, `Retrait ${retraitTexte(c)}`)).join('')}</ul>`);
@@ -391,11 +402,12 @@ export function creerCommerce(X) {
     const attente = p.pretes.filter((c) => c.jour !== A.iso); if (attente.length) l.push(`<h4>Commandes prêtes, en attente de retrait</h4><ul class="esp-com-cartes" data-auj="pretes">${attente.map((c) => cmd(c, `Retrait ${retraitTexte(c)}`)).join('')}</ul>`);
     if (p.cadeauxATraiter.length) l.push(`<h4>Demandes de cartes cadeaux à traiter</h4><ul class="esp-com-cartes" data-auj="cadeaux">${p.cadeauxATraiter.map((c) => cad(c, c.etat === 'recue' ? 'À valider' : 'Règlement simulé à enregistrer')).join('')}</ul>`);
     if (p.cartesAEmettre.length) l.push(`<h4>Cartes à émettre</h4><ul class="esp-com-cartes" data-auj="a-emettre">${p.cartesAEmettre.map((c) => cad(c, 'Réglée : cartes à émettre')).join('')}</ul>`);
+    if (p.aCompleter?.length) l.push(`<h4>Commandes à compléter</h4><ul class="esp-com-cartes" data-auj="a-completer">${p.aCompleter.map((c) => cmd(c, `Il reste à produire : ${manqueDe(c).map((x) => `${x.nom}, ${quantite(x.quantite, x.unite)}`).join(' ; ')}`)).join('')}</ul>`);
     if (p.aVerifier?.length) l.push(`<h4>Production historique à vérifier</h4><ul class="esp-com-cartes" data-auj="a-verifier">${p.aVerifier.map((c) => cmd(c, 'Corrigée après la préparation, avant le suivi de la production : quantités engagées à confirmer')).join('')}</ul>`);
     if (!l.length) return '';
-    return typo(`<section class="esp-carte esp-com-auj" aria-labelledby="com-auj-titre" data-com-auj><h3 id="com-auj-titre" class="esp-com-auj__titre">Traiteur et cartes cadeaux</h3>
+    return typo(`<section class="esp-carte esp-com-auj" aria-labelledby="com-auj-titre" data-com-auj><h3 id="com-auj-titre" class="esp-com-auj__titre">${production ? 'Préparations traiteur' : 'Traiteur et cartes cadeaux'}</h3>
       <p class="esp-aide">Ces commandes ne prennent ni table ni couvert : elles ne changent pas le remplissage du restaurant.</p>${l.join('')}
-      <p class="esp-com-actions"><button type="button" class="esp-bouton" data-com-ouvrir="preparation">Préparation et retraits</button><button type="button" class="esp-bouton" data-com-ouvrir="cartes">Cartes cadeaux émises</button></p></section>`);
+      <p class="esp-com-actions"><button type="button" class="esp-bouton" data-com-ouvrir="preparation">Préparation et retraits</button>${production ? '' : '<button type="button" class="esp-bouton" data-com-ouvrir="cartes">Cartes cadeaux émises</button>'}</p></section>`);
   }
   /** Dans la fiche d'un client : ses commandes, les cadeaux qu'il a achetés, les cartes reçues, leurs utilisations. */
   function fiche(client) {
@@ -441,6 +453,7 @@ export function creerCommerce(X) {
     if (pr) { const c = commande(k.id), lot = c && lotsDe(c).find((x) => x.id === pr.dataset.prodRectifier), connus = c ? produitsConnus(c) : [];
       k.rectif = lot ? { lot: lot.id, jour: lot.jour, q: String(lot.quantite).replace('.', ','), motif: '', op: nouvelleOpProd(), vu: { jour: lot.jour, quantite: lot.quantite } } : { lot: '', offre: connus[0]?.offre || '', jour: c?.jour || '', q: '', motif: '', op: nouvelleOpProd() };
       k.erreur = ''; k.edition = null; k.motif = null; X.rendre(); $('#rectif-titre', root)?.focus(); return true; }
+    if (t.closest('[data-prod-complement]')) { const c = commande(k.id), manque = c ? manqueDe(c) : []; if (c) faire('cmdCompleter', { id: k.id, le: maintenant() }, `Complément engagé en production pour ${c.ref} : ${manque.map((x) => `${x.nom}, ${quantite(x.quantite, x.unite)}`).join(' ; ')}. La commande peut reprendre son cours.`); $('#com-titre', root)?.focus({ preventScroll: true }); return true; }
     if (t.closest('[data-prod-fermer]')) { k.rectif = null; k.erreur = ''; X.rendre(); $('#cmd-prod-titre', root)?.scrollIntoView({ block: 'nearest' }); $('[data-prod-rectifier]', root)?.focus(); return true; }
     if (t.closest('[data-prod-verifiee]')) { const c = commande(k.id); if (c) faire('cmdProductionVerifiee', { id: k.id, le: maintenant() }, `Production de ${c.ref} vérifiée : les quantités enregistrées sont confirmées.`); $('#com-titre', root)?.focus({ preventScroll: true }); return true; }
     if (t.closest('[data-periode-defaut]')) { k.perOuvert = true; if (faire('cmdRetraits', { debut: '', fin: '' }, `Période des retraits : retour au réglage de départ (${periodeTexte(lieux().retraits)}). Les commandes déjà acceptées ne changent pas.`)) k.periode = null; X.rendre(); $('[data-periode] summary', root)?.focus(); return true; }
@@ -487,7 +500,7 @@ export function creerCommerce(X) {
       const r = k.rectif, c = commande(k.id); if (!r || !c) return true; const lot = lotsDe(c).find((x) => x.id === r.lot), p = lot || produitsConnus(c).find((x) => x.offre === r.offre), q = lireNombre(r.q);
       r.jour = f.elements.jour.value; r.q = f.elements.q.value; r.motif = f.elements.motif.value; if (f.elements.offre) r.offre = f.elements.offre.value;   /* la saisie est gardée si l'action est refusée */
       const q2 = lireNombre(r.q);
-      if (faire('cmdRectifier', { id: k.id, lot: r.lot, offre: p?.offre || '', nom: p?.nom || '', unite: p?.unite || '', jour: r.jour, quantite: typeof q2 === 'number' ? q2 : NaN, motif: r.motif, op: r.op, vu: r.vu, le: maintenant() }, `Production de ${c.ref} rectifiée${p ? ` (${p.nom})` : ''} : l'avant et l'après sont dans l'historique. La commande du client n'a pas changé.`)) { k.rectif = null; X.rendre(); $('#cmd-prod-titre', root)?.scrollIntoView({ block: 'nearest' }); $('#com-titre', root)?.focus({ preventScroll: true }); }
+      if (faire('cmdRectifier', { id: k.id, lot: r.lot, offre: p?.offre || '', nom: p?.nom || '', unite: p?.unite || '', jour: r.jour, quantite: typeof q2 === 'number' ? q2 : NaN, motif: r.motif, op: r.op, vu: r.vu, le: maintenant() }, `Production de ${c.ref} rectifiée${p ? ` (${p.nom})` : ''} : l'avant et l'après sont dans l'historique. La commande du client n'a pas changé.`)) { k.rectif = null; const m = manqueDe(commande(k.id) || {}); if (m.length) X.dire(`Production de ${c.ref} rectifiée. Il reste à produire pour l'honorer : ${m.map((x) => `${x.nom}, ${quantite(x.quantite, x.unite)}`).join(' ; ')}. La commande est en préparation.`); X.rendre(); $('#cmd-prod-titre', root)?.scrollIntoView({ block: 'nearest' }); $('#com-titre', root)?.focus({ preventScroll: true }); }
       return true;
     }
     if (f.matches('[data-form-periode]')) {

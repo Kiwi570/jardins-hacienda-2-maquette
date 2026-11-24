@@ -8,9 +8,10 @@ import { planDuService } from './espace-salle.js?v=7';
 import { accueilDuService } from './espace-presence.js?v=7';
 import { listeAttente, compatiblesPour, attenteAvecPossibles } from './espace-attente.js?v=7';
 import { conseils } from './espace-conseils.js?v=7';
-import { demandes, GENRES, libelleEtape } from './espace-demandes.js?v=7';
+import { demandes, GENRES, libelleEtape, aTraiter } from './espace-demandes.js?v=7';
 import { marques } from './espace-clients.js?v=7';
-import { tachesEnRetard, tachesLiees, tachesDuJour } from './espace-taches.js?v=7';
+import { tachesEnRetard, tachesLiees, tachesDuJour, tachesDe } from './espace-taches.js?v=7';
+import { commandes as commandesCommerce, manqueDe, nomClient, quantite, momentTexte, preparation as preparationCommerce, ETATS as ETATS_COMMANDE } from './commerce.js?v=7';
 import { receptionsDuJour, prioritesReceptions, dossierDeDemande, etatRetenue } from './espace-receptions.js?v=7';
 import { instantCtx } from './espace-regles.js?v=7';
 
@@ -55,6 +56,11 @@ export function resumeService(ctx, S, salle, iso, sv) {
     /* Ce que l'équipe doit savoir : la note de la réservation, les allergies et la note de la fiche client. Rien d'autre. */
     attentions: tenues.map(avecNote).filter((r) => r.demande || r.allergies.length || r.noteClient).sort(parHeure),
     resas: [...tenues, ...dem].sort(parHeure), taches: tachesLiees(S, 'service', cleService(iso, sv)),
+    /* v7.15.0 : les réceptions, visites, soirées et retraits de commandes du même jour (ceux du créneau d'abord), relus dans leurs dossiers. */
+    autour: activitesDuJour(ctx, S, iso).filter((x) => x.type !== 'retrait' || !x.moment || x.moment === sv).map((x) => ({ ...x, engagement: engagementDe(x) })),
+    /* Une absence d'information n'est pas une information : on dit combien d'allergies sont signalées, jamais « aucune allergie ». */
+    /* Une allergie peut être notée sur la fiche du client ou écrite dans la note de la réservation : les deux sont comptées. */
+    allergies: ((n) => ({ connues: n, phrase: n ? `${pluriel(n, 'réservation')} ${n > 1 ? 'signalent' : 'signale'} une allergie ou une intolérance. Pour les autres, on ne sait pas : sans mention ne veut pas dire « aucune allergie ».` : 'Aucune allergie signalée sur ces réservations : cela ne veut pas dire « aucune allergie ».' }))(tenues.map(avecNote).filter((r) => r.allergies.length || /allerg|intol[ée]r|sans gluten|c(?:œ|oe)liaque/i.test(`${r.demande || ''} ${r.noteClient || ''}`)).length),
     /* v7.11.0 : où en sont les groupes et les tables (le jour même), et la liste d'attente de ce service. */
     presence: presenceDuService(ctx, S, salle, iso, sv, plan) };
 }
@@ -95,14 +101,64 @@ export function priorites(ctx, S, salle, minute) {
   if (ctx.exemples !== false) { const lib = { visite: 'Une visite aujourd\'hui.', echeance: 'À l\'échéance, les espaces sont libérés ; le dossier reste suivi.', client: 'Tant que vous n\'avez pas répondu, ce qui est convenu reste inchangé.', preparatifs: 'Le jour J approche.', jourj: 'La fiche du jour J rassemble tout ce que l\'équipe doit savoir.', relance: 'Une action notée dans le dossier a dépassé sa date.' };
     const vers = { visite: 'projet', echeance: 'espaces', client: 'client', preparatifs: 'jourj', jourj: 'jourj', relance: 'projet' };
     for (const p of prioritesReceptions(ctx, S, (id) => tachesLiees(S, 'reception', id)).reverse()) { const c = { id: `rec-${p.genre}-${p.dossier}`, genre: 'dossier', titre: p.texte, raison: lib[p.genre] || '', bouton: 'Ouvrir le dossier', aller: { dossier: p.dossier, onglet: /accord/.test(p.texte) ? 'espaces' : vers[p.genre] } }; if (p.urgent) out.unshift(c); else out.push(c); } }
-  /* 3. Une tâche en retard : la plus ancienne. */
-  const retard = tachesEnRetard(S, ctx.auj);
-  if (retard.length) out.push({ id: `tache-${retard[0].id}`, genre: 'tache', titre: `En retard : ${retard[0].titre}`, raison: `Prévue pour ${fmt(retard[0].echeance)}.${retard.length > 1 ? ` ${pluriel(retard.length - 1, 'autre tâche')} dans le même cas.` : ''}`, bouton: 'Voir la tâche', aller: { vue: 'jour', ancre: 't-taches' } });
+  /* 2 quater (v7.15.0). Les commandes à emporter, regroupées par situation : une carte par situation, jamais une par commande. */
+  out.push(...prioritesCommandes(ctx, S, minute));
+  /* 2 quinquies (v7.15.0). Les demandes qui attendent une décision, toutes activités confondues : une seule carte, le même compte que la rubrique Demandes. */
+  { const att = aTraiter(ctx, S), total = att.tables.length + att.autres.length;
+    if (total) { const par = [['table', att.tables.length, 'table à confirmer', 'tables à confirmer'], ...['reception', 'traiteur', 'cadeau', 'question'].map((g) => [g, att.autres.filter((d) => d.genre === g).length, { reception: 'réception', traiteur: 'commande à emporter', cadeau: 'carte cadeau', question: 'question' }[g], { reception: 'réceptions', traiteur: 'commandes à emporter', cadeau: 'cartes cadeaux', question: 'questions' }[g]])].filter((x) => x[1]);
+      const proches = att.tables.filter((r) => r.date <= ajouter(ctx.auj, 1)).length, anciennes = [...att.autres].sort((a, b) => String(a.cree).localeCompare(String(b.cree)));
+      out.push({ id: 'demandes-attente', genre: 'demandes', titre: `${pluriel(total, 'demande')} ${total > 1 ? 'attendent' : 'attend'} une décision`,
+        raison: `${par.map(([, n, un, des]) => `${n} ${n > 1 ? des : un}`).join(', ')}.${proches ? ` ${proches > 1 ? `${proches} tables sont` : 'Une table est'} pour aujourd'hui ou demain.` : ''}${anciennes.length ? ` La plus ancienne : ${anciennes[0].qui}, reçue le ${fmt(String(anciennes[0].cree).slice(0, 10), { day: 'numeric', month: 'long' })}.` : ''} Tant qu'une demande n'a pas de réponse, rien n'est réservé ni engagé pour elle.`,
+        concerne: par.length === 1 ? `Demandes · ${par[0][1] > 1 ? par[0][3] : par[0][2]}` : 'Rubrique Demandes', bouton: 'Ouvrir les demandes', aller: { vue: 'demandes', filtre: par.length === 1 ? par[0][0] : 'tout' } }); } }
+  /* 3. Les tâches arrivées à échéance : celles en retard et celles du jour, en une carte. */
+  { const retard = tachesEnRetard(S, ctx.auj), jour = tachesDuJour(S, ctx.auj).filter((t) => t.etat === 'jour'), l = [...retard, ...jour];
+    if (l.length) out.push({ id: 'taches-echeance', genre: 'tache', titre: l.length === 1 ? `${retard.length ? 'En retard' : 'Pour aujourd\'hui'} : ${l[0].titre}` : `${pluriel(l.length, 'tâche')} ${l.length > 1 ? 'sont arrivées' : 'est arrivée'} à échéance`,
+      raison: l.length === 1 ? `${retard.length ? `Prévue pour ${fmt(l[0].echeance)}` : 'À faire aujourd\'hui'}${l[0].responsable ? ` (${l[0].responsable})` : ''}${l[0].lien?.libelle ? `. Liée à : ${l[0].lien.libelle}` : ''}.` : `${[retard.length ? `${retard.length} en retard` : '', jour.length ? `${jour.length} pour aujourd'hui` : ''].filter(Boolean).join(', ')} : ${l.slice(0, 3).map((t) => t.titre).join(' · ')}${l.length > 3 ? ' …' : ''}.`,
+      concerne: l.length === 1 && l[0].lien?.libelle ? l[0].lien.libelle : 'Les tâches de l\'équipe', bouton: l.length > 1 ? 'Voir les tâches' : 'Voir la tâche', aller: { vue: 'jour', ancre: 't-taches' } }); }
   /* 4. Le reste de ce que l'espace sait déduire : service presque plein, demande sans réponse, soirée sans prix, fermeture sans annonce. */
   out.push(...proches.filter((c) => c.genre !== 'table'));
   /* « Plus tard » : une priorité mise de côté revient demain si elle est toujours vraie (comme les suggestions). */
   const tu = S.conseils?.ignores || {};
-  return out.filter((c) => tu[c.id] !== ctx.auj).map((c) => ({ ...c, raison: c.raison || c.detail || '', directe: /^(placer|tache|installer|retard|table|remettre|attente|venue|rec)-/.test(c.id) }));
+  /* v7.15.0 : chaque priorité dit ce qu'elle concerne (un service, un dossier, un groupe) ; ce n'est jamais le fait de
+     l'avoir ouverte qui la fait disparaître, seulement la situation elle-même (ou « Plus tard », jusqu'à demain). */
+  const svDit = ps ? nomService(ctx, ps.date, ps.service) : '';
+  const concerne = (c) => c.concerne || (/^(placer|installer|retard|table|remettre)-/.test(c.id) ? `Service : ${svDit.toLowerCase()}` : /^venue-/.test(c.id) ? 'Une réservation' : c.genre === 'attente' ? 'Liste d\'attente' : c.genre === 'dossier' ? 'Dossier de réception'
+    : c.genre === 'complet' ? 'Un service de la semaine' : c.genre === 'table' ? 'Demandes de table' : c.genre === 'evenement' ? 'Une soirée' : c.genre === 'annonce' ? 'Le site' : GENRES[c.genre] ? `Demande · ${GENRES[c.genre].nom.toLowerCase()}` : '');
+  return out.filter((c) => tu[c.id] !== ctx.auj).map((c) => ({ ...c, raison: c.raison || c.detail || '', concerne: concerne(c), directe: /^(placer|taches|installer|retard|table|remettre|attente|venue|rec|cmd|demandes)-/.test(c.id) }));
+}
+
+/**
+ * Les priorités des commandes à emporter (v7.15.0), une par situation : un complément de production à engager, un
+ * retrait dépassé, des commandes à préparer pour un créneau d'aujourd'hui ou de demain, des commandes prêtes dont le
+ * retrait est aujourd'hui. Elles lisent les commandes telles que l'équipe les suit (`commerce.js`), jamais une copie.
+ */
+export function prioritesCommandes(ctx, S, minute = 0) {
+  const out = [], cmd = commandesCommerce(demandes(ctx, S), S, ctx.lieux), demain = ajouter(ctx.auj, 1), refs = (l) => `${l.slice(0, 3).map((c) => `${c.ref} (${nomClient(c.client)})`).join(' · ')}${l.length > 3 ? ' …' : ''}`;
+  const jourDit = (iso) => (iso === ctx.auj ? 'aujourd\'hui' : iso === demain ? 'demain' : fmt(iso, { weekday: 'long', day: 'numeric', month: 'long' })), creneau = (iso, m) => (iso === ctx.auj ? (m === 'midi' ? 'ce midi' : m === 'soir' ? 'ce soir' : 'aujourd\'hui') : iso === demain ? `demain${m ? ` ${m}` : ''}` : `${jourDit(iso)}${m ? `, ${momentTexte(m)}` : ''}`);
+  const ouvrir = (l, jour) => (l.length === 1 ? { bouton: 'Ouvrir la commande', aller: { commande: l[0].id } } : { bouton: 'Ouvrir Préparation et retraits', aller: { commerce: { ecran: 'preparation', jour } } });
+  /* a) Il manque de la production (après une rectification) : un complément à engager. */
+  const manque = cmd.filter((c) => manqueDe(c).length);
+  if (manque.length) out.push({ id: `cmd-completer-${manque.map((c) => c.id).join('+')}`, genre: 'commande', titre: manque.length === 1 ? `La commande ${manque[0].ref} attend un complément de production` : `${manque.length} commandes attendent un complément de production`,
+    raison: `${manque.slice(0, 2).map((c) => `${c.ref} : il reste à produire ${manqueDe(c).map((x) => `${x.nom}, ${quantite(x.quantite, x.unite)}`).join(' ; ')} pour le retrait de ${jourDit(c.jour)}`).join('. ')}. Tant que le complément n'est pas engagé, la commande ne peut être ni marquée prête ni remise.`,
+    concerne: manque.length === 1 ? `Commande ${manque[0].ref} · ${nomClient(manque[0].client)}` : 'Commandes à emporter', ...ouvrir(manque, manque[0].jour) });
+  /* b) Le retrait est dépassé : la commande est validée, en préparation ou prête, et son jour est passé. */
+  const depassees = cmd.filter((c) => ['validee', 'preparation', 'prete'].includes(c.etat) && c.jour && c.jour < ctx.auj);
+  if (depassees.length) out.unshift({ id: `cmd-depasse-${depassees.map((c) => c.id).join('+')}`, genre: 'commande', titre: depassees.length === 1 ? `Le retrait de la commande ${depassees[0].ref} est dépassé` : `${depassees.length} commandes ont un retrait dépassé`,
+    raison: `${depassees.slice(0, 3).map((c) => `${c.ref} (${nomClient(c.client)}) : ${ETATS_COMMANDE[c.etat].toLowerCase()}, retrait prévu ${fmt(c.jour, { weekday: 'long', day: 'numeric', month: 'long' })}`).join(' · ')}. À remettre, à déplacer ou à annuler : rien n'est fait à votre place.`,
+    concerne: depassees.length === 1 ? `Commande ${depassees[0].ref} · ${nomClient(depassees[0].client)}` : 'Commandes à emporter', ...ouvrir(depassees, depassees[0].jour) });
+  /* c) À préparer pour un créneau d'aujourd'hui ou de demain : une carte par créneau. */
+  for (const iso of [ctx.auj, demain]) for (const m of ['midi', 'soir', '']) { const l = cmd.filter((c) => c.jour === iso && (c.moment || '') === m && ['validee', 'preparation'].includes(c.etat) && !manqueDe(c).length); if (!l.length) continue;
+    const p = preparationCommerce(S, { jour: iso, moment: m }).produits.filter((x) => x.aPreparer > 0);
+    out.push({ id: `cmd-preparer-${iso}-${m || 'jour'}`, genre: 'commande', titre: `${pluriel(l.length, 'commande')} ${l.length > 1 ? 'restent' : 'reste'} à préparer pour les retraits de ${creneau(iso, m)}`,
+      raison: `${refs(l)}.${p.length ? ` À produire : ${p.slice(0, 4).map((x) => `${x.nom}, ${quantite(x.aPreparer, x.unite)}`).join(' ; ')}${p.length > 4 ? ' …' : ''}.` : ''} Une commande validée n'est pas encore une commande prête.`,
+      concerne: `Retraits de ${creneau(iso, m)}`, bouton: 'Ouvrir Préparation et retraits', aller: { commerce: { ecran: 'preparation', jour: iso } } }); }
+  /* d) Prêtes, et le retrait est aujourd'hui : elles attendent le client. (Midi passé de trois heures : c'est dit.) */
+  const pretes = cmd.filter((c) => c.etat === 'prete' && c.jour === ctx.auj && !manqueDe(c).length);
+  if (pretes.length) { const tard = pretes.filter((c) => c.moment === 'midi' && minute >= 15 * 60);
+    out.push({ id: `cmd-pretes-${ctx.auj}`, genre: 'commande', titre: `${pluriel(pretes.length, 'commande prête').replace('commande prêtes', 'commandes prêtes')} ${pretes.length > 1 ? 'attendent' : 'attend'} son retrait aujourd'hui`.replace('attendent son', 'attendent leur'),
+      raison: `${pretes.slice(0, 3).map((c) => `${c.ref} (${nomClient(c.client)}), ${momentTexte(c.moment)}`).join(' · ')}.${tard.length ? ` ${tard.length > 1 ? `${tard.length} étaient attendues` : 'Une était attendue'} à midi.` : ''} « Remettre au client » se fait depuis la commande, au moment du retrait.`,
+      concerne: pretes.length === 1 ? `Commande ${pretes[0].ref} · ${nomClient(pretes[0].client)}` : 'Retraits du jour', ...ouvrir(pretes, ctx.auj) }); }
+  return out;
 }
 
 const STATUT_EV = (x) => (x.masque ? 'Masquée sur le site' : 'Affichée sur le site');
@@ -124,7 +180,7 @@ export function activitesDuJour(ctx, S, iso) {
     /* v7.14.0 : le retrait d'une commande à emporter se lit sur la commande telle que l'équipe la suit (jour et créneau
        modifiés compris) ; il mène à son dossier. Une commande ne compte dans aucun couvert. */
     if (d.genre === 'traiteur') { const k = S.commerce?.commandes?.[d.id], jour = k?.jour || d.brut.jour, moment = k?.moment || d.brut.moment, conf = d.statut !== 'nouvelle';
-      if (jour === iso && !['annulee', 'retiree', 'refusee'].includes(d.statut)) out.push({ cle: `dem-${d.id}`, type: 'retrait', libelleType: 'Retrait traiteur', heure: moment === 'midi' ? '12:00' : moment === 'soir' ? '19:00' : '', heureConnue: false,
+      if (jour === iso && !['annulee', 'retiree', 'refusee'].includes(d.statut)) out.push({ cle: `dem-${d.id}`, type: 'retrait', moment, etatCommande: k?.etat || 'recue', libelleType: 'Retrait traiteur', heure: moment === 'midi' ? '12:00' : moment === 'soir' ? '19:00' : '', heureConnue: false,
         titre: `${d.qui} · ${k ? k.lignes.map((l) => l.nom).join(', ') : (d.brut.produits || []).map((p) => `${p.qte} × ${p.nom}`).join(', ')}`, detail: moment === 'midi' ? 'À midi' : moment === 'soir' ? 'Le soir' : '', statut: conf ? libelleEtape(d.genre, d.statut) : 'Demande à décider', ferme: conf, aller: { commande: d.id } }); }
   }
   /* v7.12.0 : les visites, les options encore valables et les réceptions confirmées, relues depuis les dossiers. Le libellé dit l'état ; la couleur ne fait que l'accompagner. */
@@ -142,7 +198,26 @@ export function filDuJour(ctx, S, iso, minute = -1) {
     out.push({ cle: `sv-${s.id}`, type: 'service', libelleType: 'Service', heure: hhmm(s.d), heureConnue: true, titre: s.id === 'midi' ? 'Service du midi' : 'Service du soir',
       detail: sd.ouvert ? `${pluriel(sd.attendus + sd.arrives, 'réservation confirmée').replace('réservation confirmées', 'réservations confirmées')} · ${pluriel(couverts(sd.resas.filter((r) => ['confirmee', 'arrivee'].includes(r.statut))), 'couvert')}${sd.aConfirmer ? ` · ${pluriel(sd.aConfirmer, 'demande')} à traiter` : ''}` : 'Fermé',
       statut: !sd.ouvert ? 'Fermé' : sd.complet ? 'Complet' : quand, ferme: true, service: s.id, aller: { vue: 'resas', onglet: 'service', jour: iso, service: s.id } }); }
-  return out.sort((a, b) => (a.heure || '99').localeCompare(b.heure || '99') || a.cle.localeCompare(b.cle));
+  /* v7.15.0 : les tâches datées de ce jour (à faire, ou terminées ce jour-là), lues dans les tâches de l'équipe : jamais une seconde liste. */
+  for (const t of tachesDe(S).filter((x) => x.echeance === iso && (!x.fait || x.faitLe === iso)))
+    out.push({ cle: `tache-${t.id}`, type: 'tache', libelleType: 'Tâche', heure: '', heureConnue: false, titre: t.titre, detail: [t.responsable || '', t.lien?.libelle || ''].filter(Boolean).join(' · '), statut: t.fait ? 'Faite' : '', ferme: true, fait: !!t.fait, aller: { vue: 'jour', ancre: 't-taches' } });
+  return out.map((x) => ({ ...x, engagement: engagementDe(x) })).sort((a, b) => (a.heure || '99').localeCompare(b.heure || '99') || a.cle.localeCompare(b.cle));
+}
+/**
+ * Le niveau d'engagement d'une ligne du fil, dit en mots (la couleur ne fait qu'accompagner) : une demande n'engage
+ * rien, une option retient des espaces jusqu'à son échéance, une réception confirmée est ferme, une commande validée
+ * est à retirer, un service porte des réservations.
+ */
+export function engagementDe(x) {
+  if (x.type === 'service') return 'Réservations';
+  if (x.type === 'tache') return x.fait ? 'Tâche faite' : 'Tâche à faire';
+  if (x.type === 'visite') return 'Visite';
+  if (x.type === 'option') return 'Option : espaces retenus, pas encore réservés';
+  if (x.type === 'reception-ferme') return 'Réception confirmée';
+  if (x.type === 'reception') return x.ferme ? 'Réception signée' : 'Demande : rien n\'est réservé';
+  if (x.type === 'retrait') return !x.ferme ? 'Demande : rien n\'est engagé' : x.etatCommande === 'prete' ? 'Commande prête, à retirer' : x.etatCommande === 'preparation' ? 'Commande en préparation, à retirer' : 'Commande validée, à retirer';
+  if (x.type === 'soiree') return x.brouillon ? 'Soirée en préparation' : x.ferme ? 'Soirée affichée sur le site' : 'Soirée masquée';
+  return '';
 }
 
 /** Ce que montre l'accueil : tout vient d'ici, pour que les compteurs correspondent aux listes. */

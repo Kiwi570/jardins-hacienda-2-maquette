@@ -5,7 +5,7 @@
    Champ vide : des exemples à toucher, qui remplissent le champ sans rien lancer.
    v7.7.4 : la dictée. Quand le navigateur sait reconnaître la parole (Chrome, Edge, Safari), un bouton micro écrit dans le
    champ ce qui est dit ; rien n'est lancé sans Entrée ou un toucher. Sans cette capacité, le bouton n'apparaît pas. */
-import { EXEMPLES } from './espace-commandes.js?v=7';
+import { EXEMPLES } from './espace-commandes.js?v=7';   /* les exemples d'origine, quand aucune vue métier n'en propose */
 import { typo } from './espace-regles.js?v=7';
 
 const e = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -19,6 +19,12 @@ const ICONES = {
   loupe: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
   micro: '<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5M8.5 20.5h7"/>',
   carte: '<path d="M6 3.5h9.5L19 7v13.5H6zM15 3.5V7.5h4M9 11.5h6.5M9 14.8h6.5M9 18h4"/>',
+  /* v7.15.0 : l'assistant. */
+  reponse: '<path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9zM18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/>',
+  briefing: '<path d="M7 4.5h10a1.5 1.5 0 0 1 1.5 1.5v14H5.5V6A1.5 1.5 0 0 1 7 4.5zM9 3v3M15 3v3M8.5 10.5h7M8.5 14h7M8.5 17.5h4"/>',
+  bilan: '<path d="M4.5 19.5h15M7.5 16.5v-5M12 16.5v-9M16.5 16.5v-6.5"/>', tache: '<rect x="4.5" y="4.5" width="15" height="15" rx="3"/><path d="M8.5 12.2l2.5 2.5 4.6-5"/>',
+  commande: '<path d="M5 8.5h14l-1.2 10.5H6.2zM8.5 8.5V7a3.5 3.5 0 0 1 7 0v1.5"/>', dossier: '<path d="M3.5 7.5a1.5 1.5 0 0 1 1.5-1.5h4l2 2.2h8a1.5 1.5 0 0 1 1.5 1.5V17.5A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/>',
+  demande: '<path d="M4 6.5h16v11H4zM4 7l8 6.2L20 7"/>',
 };
 const ico = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONES[k] || ICONES.aller}</svg>`;
 
@@ -26,7 +32,7 @@ const ico = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false
  * @param {HTMLElement} root  la section de l'espace
  * @param {{ comprendre: (texte: string) => object[], executer: (proposition: object) => void, actif: () => boolean }} o
  */
-export function installerBarre(root, { comprendre, executer, actif }) {
+export function installerBarre(root, { comprendre, executer, actif, exemples: listeExemples = () => EXEMPLES }) {
   const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '');
   for (const k of root.querySelectorAll('[data-esp-quoi-touche]')) k.textContent = mac ? '⌘ K' : 'Ctrl K';
   const el = document.createElement('div');
@@ -41,7 +47,7 @@ export function installerBarre(root, { comprendre, executer, actif }) {
       <ul class="esp-cmd__liste" id="barre-liste" role="listbox" aria-label="Ce que l'espace a compris" hidden></ul>
       <p class="esp-cmd__aide" role="status" aria-live="polite" data-barre-aide hidden></p>
       <div class="esp-cmd__exemples" data-barre-exemples><p class="esp-cmd__sur">Écrivez comme vous le diriez. Par exemple\u00a0:</p>
-        <ul>${EXEMPLES.map((x) => `<li><button type="button" class="esp-cmd__exemple" data-exemple="${e(x)}">${e(typo(x))}</button></li>`).join('')}</ul></div>
+        <ul data-barre-exemples-liste></ul><p class="esp-cmd__note">L'assistant est local : il lit les dossiers de l'espace et applique ses règles. Rien n'est lancé sans votre validation.</p></div>
     </div>`;
   root.append(el);
   const champ = el.querySelector('#barre-champ'), liste = el.querySelector('#barre-liste'), aide = el.querySelector('[data-barre-aide]'), exemples = el.querySelector('[data-barre-exemples]');
@@ -53,9 +59,9 @@ export function installerBarre(root, { comprendre, executer, actif }) {
     /* Des choix à faire (une précision demandée) : aucun n'est retenu d'office, Entrée ne valide rien tant qu'on n'a pas choisi. */
     choisi = !props.length || props.some((p) => p.aChoisir) ? -1 : Math.max(0, props.findIndex((p) => !p.inactif));
     liste.hidden = !props.length; champ.setAttribute('aria-expanded', String(!!props.length));
-    liste.innerHTML = props.map((p, i) => `<li class="esp-cmd__option${p.inactif ? ' est-inactive' : ''}${p.action ? ' est-action' : ''}" role="option" id="barre-o-${i}" data-option="${i}" aria-selected="${i === choisi}">
-      <span class="esp-cmd__ico">${ico(p.genre)}</span><span class="esp-cmd__quoi"><b>${e(p.titre)}</b><small>${e(p.detail)}</small></span>
-      ${p.action || p.aller ? `<span class="esp-cmd__entree" aria-hidden="true">${p.action ? 'Faire' : 'Ouvrir'}</span>` : ''}</li>`).join('');
+    liste.innerHTML = props.map((p, i) => `<li class="esp-cmd__option${p.inactif ? ' est-inactive' : ''}${p.action ? ' est-action' : ''}${p.entete ? ' est-entete' : ''}" role="option" id="barre-o-${i}" data-option="${i}" aria-selected="${i === choisi}"${p.inactif ? ' aria-disabled="true"' : ''}${p.entete ? ' data-barre-entete' : ''}>
+      <span class="esp-cmd__ico">${ico(p.genre)}</span><span class="esp-cmd__quoi"><b>${e(typo(p.titre))}</b><small>${e(typo(p.detail))}</small></span>
+      ${p.action || p.aller || p.completer ? `<span class="esp-cmd__entree" aria-hidden="true">${p.action ? 'Valider' : p.completer ? 'Choisir' : 'Ouvrir'}</span>` : ''}</li>`).join('');
     if (choisi >= 0) champ.setAttribute('aria-activedescendant', `barre-o-${choisi}`); else champ.removeAttribute('aria-activedescendant');
     exemples.hidden = texte.length >= 2;
     aide.hidden = !(texte.length >= 2 && !props.length);
@@ -68,6 +74,7 @@ export function installerBarre(root, { comprendre, executer, actif }) {
   }
   function ouvrir(depuis) {
     if (!el.hidden) return; retour = depuis || document.activeElement;
+    el.querySelector('[data-barre-exemples-liste]').innerHTML = listeExemples().map((x) => `<li><button type="button" class="esp-cmd__exemple" data-exemple="${e(x)}">${e(typo(x))}</button></li>`).join('');
     el.hidden = false; document.documentElement.classList.add('esp-modale-ouverte'); champ.value = ''; rendre(); champ.focus();
   }
   function fermer(rendreFocus = true) {
@@ -92,7 +99,8 @@ export function installerBarre(root, { comprendre, executer, actif }) {
   if (Parole) micro.hidden = false;
 
   /* Une ligne d'explication (ni action ni rubrique) ne ferme pas la barre : on corrige sa phrase. */
-  function lancer(i = choisi) { const p = props[i]; if (!p || (!p.action && !p.aller)) return; fermer(false); executer(p); }
+  /* v7.15.0 : un choix proposé par l'assistant (une précision demandée) écrit la phrase complète dans le champ ; rien n'est lancé. */
+  function lancer(i = choisi) { const p = props[i]; if (!p) return; if (p.completer) { champ.value = p.completer; rendre(); champ.focus(); return; } if (!p.action && !p.aller) return; fermer(false); executer(p); }
 
   champ.addEventListener('input', rendre);
   el.addEventListener('click', (ev) => {

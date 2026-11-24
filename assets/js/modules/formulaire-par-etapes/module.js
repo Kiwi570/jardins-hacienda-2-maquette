@@ -234,7 +234,8 @@ export async function init(root, options = {}) {
   // ---------- Envoi simulé ----------
   function terminer() {
     const d = donnees();
-    root.dispatchEvent(new CustomEvent('formulaire:envoye', { bubbles: true, detail: d }));
+    /* L'hôte peut annuler l'événement quand la demande n'a pas pu être enregistrée : aucune réussite n'est alors annoncée, la saisie reste. */
+    if (!root.dispatchEvent(new CustomEvent('formulaire:envoye', { bubbles: true, cancelable: true, detail: d }))) { annoncer('La demande n\'a pas été enregistrée.'); return; }
     if (!fin) { annoncer('Demande prête.'); return; }
     const res = fin.querySelector('[data-resume]');
     if (res) res.textContent = d.resume.map(g => g.champs.find(c => c.valeur)?.valeur).filter(Boolean).join(' · ');

@@ -251,7 +251,8 @@ export async function init(root, options = {}) {
     occupe = true; el.offrir?.setAttribute('aria-busy', 'true');
     const choisie = offreDe(v);
     const detail = { montant: v.montant, quantite: v.quantite, total: v.total, pour: v.pour, de: v.de, mot: v.mot, acheteur: v.acheteur, offre: choisie ? { id: choisie.id, intitule: choisie.nom, publication: choisie.publication ?? null } : null };
-    root.dispatchEvent(new CustomEvent('ccq:valide', { detail, bubbles: true }));
+    /* L'hôte peut annuler l'événement quand la demande n'a pas pu être enregistrée : aucune réussite n'est alors annoncée, la saisie reste. */
+    if (!root.dispatchEvent(new CustomEvent('ccq:valide', { detail, bubbles: true, cancelable: true }))) { occupe = false; el.offrir?.removeAttribute('aria-busy'); erreur('Votre demande n\'a pas été enregistrée. Votre saisie est gardée.'); return; }
     if (typeof o.envoyer === 'function') {
       if (el.statut) { el.statut.hidden = false; el.statut.textContent = T.preparation; }
       let ok = false; try { ok = (await o.envoyer(detail)) !== false; } catch { ok = false; }
