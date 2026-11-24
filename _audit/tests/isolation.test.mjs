@@ -112,3 +112,45 @@ test('contexte en panne : jamais de repli silencieux sur les données normales',
   try { const c = await onglet('?demo=commande', magasin()); assert.equal(c.M.CONTEXTE, ''); assert.equal(c.M.etatDuContexte(), 'normal'); assert.equal(c.M.temporaire('hacienda-emporter').cle, 'hacienda-emporter'); }
   finally { globalThis.document = { querySelector: () => null, addEventListener() {} }; }
 });
+
+/* v7.15.0 · Correctif B : la décision de contexte vaut jusqu'au dernier enregistrement. */
+test('contexte indéterminable : aucune écriture métier n\'atteint les données habituelles, par aucun chemin', async () => {
+  LOCAL.clear(); LOCAL.setItem('hacienda-emporter', PANIER_NORMAL);
+  LOCAL.setItem('jh-espace:v1', '{"annonce":{"active":false,"texte":"habituel"},"_schema":2}');
+  LOCAL.setItem('jh-espace-demandes:v1', '[{"id":"T-habituelle","genre":"traiteur"}]'); LOCAL.setItem('jh-espace-resas:v1', '[{"id":"w-habituelle"}]'); LOCAL.setItem('jh-espace-venues:v1', '{"w-habituelle":{"reconfirmee":"2026-11-20T10:00:00.000Z"}}');
+  const avant = JSON.stringify(LOCAL.dump());
+  /* La mémoire de session est illisible, l'adresse ne nomme aucun scénario, la mémoire locale reste accessible. */
+  const { M } = await onglet('', magasin({ refuseLecture: true }));
+  assert.equal(M.CONTEXTE, ''); assert.equal(M.etatDuContexte(), 'incertain');
+  assert.match(M.refusEnregistrement(), /ne permet pas de savoir/); assert.equal(M.refusEnregistrement(), M.MESSAGE_INCERTAIN);
+  assert.equal(M.ajouterDemandeSite({ id: 'T-neuve', genre: 'traiteur', lignes: [{ nom: 'Escargots', qte: 2 }], total: 24 }), false, 'une commande à emporter');
+  assert.equal(M.ajouterDemandeSite({ genre: 'cadeau', montant: 80 }), false, 'une carte cadeau');
+  assert.equal(M.ajouterDemandeSite({ genre: 'reception', invites: '40' }), false, 'une demande de réception');
+  assert.equal(M.ajouterResaSite({ id: 'w-neuve', date: '2026-12-04', heure: '20:00', couverts: 2, nom: 'Test' }), false, 'une réservation');
+  assert.equal(M.noterVenue('w-habituelle', { annulee: '2026-11-24T10:00:00.000Z' }), false, 'une réponse du client');
+  assert.equal(M.ecrire({ annonce: { active: true, texte: 'écrit par erreur' } }), false, 'l\'état de l\'espace');
+  assert.equal(M.ecrireDemandesSite([]), false); assert.equal(M.ecrireResasSite([]), false); assert.equal(M.vider(), false, 'ni effacement');
+  assert.equal(M.temporaire('hacienda-emporter').ecrire([]), false, 'ni vidage du panier');
+  assert.equal(JSON.stringify(LOCAL.dump()), avant, 'toutes les données habituelles sont restées identiques, octet pour octet');
+});
+
+test('les cas préservés : démonstration nommée par l\'adresse, usage normal, ancienne page d\'un scénario recommencé', async () => {
+  LOCAL.clear(); LOCAL.setItem('jh-espace-demandes:v1', '[{"id":"T-habituelle","genre":"traiteur"}]');
+  const habituel = LOCAL.getItem('jh-espace-demandes:v1');
+  /* 1. La mémoire de session est illisible mais l'adresse nomme le scénario : la démonstration fonctionne (« fragile »). */
+  const f = await onglet('?demo=commande', magasin({ refuseLecture: true }));
+  assert.equal(f.M.etatDuContexte(), 'fragile'); assert.equal(f.M.semer(DEPART), true); assert.equal(f.M.refusEnregistrement(), '');
+  assert.notEqual(f.M.ajouterDemandeSite({ id: 'T-demo', genre: 'traiteur' }), false); assert.equal(f.M.demandesSite().length, 1);
+  assert.equal(LOCAL.getItem('jh-espace-demandes:v1'), habituel, 'la demande est allée dans le scénario, pas dans les données habituelles');
+  /* 2. L'usage normal enregistre comme avant. */
+  const n = await onglet('');
+  assert.equal(n.M.etatDuContexte(), 'normal'); assert.equal(n.M.refusEnregistrement(), ''); assert.notEqual(n.M.ajouterDemandeSite({ id: 'T-normale', genre: 'traiteur' }), false);
+  assert.equal(n.M.demandesSite().length, 2);
+  /* 3. Une page ouverte avant « Recommencer » reste arrêtée, avec son propre message. */
+  const sess = magasin(), a = await onglet('?demo=commande', sess); a.M.semer(DEPART);
+  const b = await onglet('', sess); b.M.semer(DEPART);
+  assert.equal(a.M.scenarioRecommence(), true); assert.equal(a.M.refusEnregistrement(), a.M.MESSAGE_RECOMMENCE); assert.equal(a.M.ajouterDemandeSite({ id: 'T-ancienne', genre: 'traiteur' }), false);
+  assert.equal(b.M.refusEnregistrement(), '');
+  /* 4. L'adresse qui quitte la démonstration (« ?demo= ») vaut un usage normal, même si la mémoire de session est illisible. */
+  const q = await onglet('?demo=', magasin({ refuseLecture: true })); assert.equal(q.M.etatDuContexte(), 'normal'); assert.equal(q.M.refusEnregistrement(), '');
+});

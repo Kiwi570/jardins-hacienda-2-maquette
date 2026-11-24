@@ -6,7 +6,7 @@
 /* v7.6.0 · L'aperçu des modifications de l'espace restaurateur passe avant tout (textes, photos, horaires, événements). */
 import { cadeauxPublies, controleEmporter, retraitsComplets, retraitsSite } from './espace-apercu.js?v=7';
 /* v7.7.2 · Les demandes faites sur le site (réception, traiteur, carte cadeau, question) arrivent dans l'espace restaurateur. */
-import { ajouterDemandeSite, horloge as horlogeDemo, temporaire, scenarioRecommence, MESSAGE_RECOMMENCE, porterContexte, etatDuContexte } from './espace-stock.js?v=7';
+import { ajouterDemandeSite, horloge as horlogeDemo, temporaire, scenarioRecommence, MESSAGE_RECOMMENCE, porterContexte, etatDuContexte, refusEnregistrement } from './espace-stock.js?v=7';
 /* v7.14.1 : si l'onglet ne peut pas retenir la démonstration demandée par l'adresse, ses liens la portent. */
 porterContexte();
 /* v7.8.1 · Aucune réussite avant un enregistrement réussi : si la demande n'a pas pu être passée au restaurant
@@ -18,9 +18,11 @@ function transmettreDemande(d) {
   document.querySelector('.envoi-refuse')?.remove();
   const z = document.createElement('div'); z.className = 'envoi-refuse'; z.setAttribute('role', 'alert');
   /* v7.14.1 : une page d'une démonstration recommencée depuis ne dépose rien dans le nouveau départ, et dit pourquoi. */
-  const p = document.createElement('p'); p.textContent = scenarioRecommence() ? MESSAGE_RECOMMENCE : 'Votre demande n\u2019a pas pu être transmise au restaurant depuis ce navigateur. Elle n\u2019est pas enregistrée\u00a0: réessayez, ou appelez-nous.';
+  /* v7.15.0 : contexte indéterminable → rien n'atteint les données habituelles, et la raison est dite. */
+  const p = document.createElement('p'); p.textContent = refusEnregistrement() || 'Votre demande n\u2019a pas pu être transmise au restaurant depuis ce navigateur. Elle n\u2019est pas enregistrée\u00a0: réessayez, ou appelez-nous.';
   const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Fermer'; b.addEventListener('click', () => z.remove());
-  z.append(p, b); document.body.append(z); b.focus({ preventScroll: true });
+  /* Une fenêtre ouverte par-dessus la page (le tiroir de la commande) masquerait le message : il s'affiche dedans. */
+  z.append(p, b); (document.querySelector('dialog[open]') || document.body).append(z); b.focus({ preventScroll: true });
   return false;
 }
 /* v7.8.0 · Les règles de disponibilité communes au site et à l'espace (ouvertures, dernière arrivée, complet). */
@@ -214,10 +216,11 @@ function rappelSoiree() {
   el.textContent = `Pour\u00a0: ${x.t}, ${jour}${x.p ? ` · ${x.p}` : ''}.`; el.hidden = false;
 }
 /* Une question (Infos pratiques) : après l'envoi, le message de fin revient à l'écran. */
-document.addEventListener('formulaire:envoye', (e) => { const v = e.detail?.valeurs || e.detail || {}; transmettreDemande({ genre: 'question', sujet: String((e.detail?.resume || []).flatMap((g) => g.champs || []).find((c) => c.nom === 'sujet')?.valeur || v.sujet || ''), message: v.message || '', date: v.date || '', prenom: v.prenom || '', nom: v.nom || '', telephone: v.telephone || '', email: v.email || '' }); });
-document.addEventListener('ccq:valide', (e) => { const d = e.detail || {}; const a = d.acheteur || {}; transmettreDemande({ genre: 'cadeau', montant: d.montant, quantite: d.quantite, total: d.total, pour: d.pour || '', de: d.de || '', mot: d.mot || '',
+/* v7.15.0 : si la demande n'a pas pu être enregistrée, le formulaire n'annonce pas de réussite (l'événement est annulé). */
+document.addEventListener('formulaire:envoye', (e) => { const v = e.detail?.valeurs || e.detail || {}; if (!transmettreDemande({ genre: 'question', sujet: String((e.detail?.resume || []).flatMap((g) => g.champs || []).find((c) => c.nom === 'sujet')?.valeur || v.sujet || ''), message: v.message || '', date: v.date || '', prenom: v.prenom || '', nom: v.nom || '', telephone: v.telephone || '', email: v.email || '' })) e.preventDefault(); });
+document.addEventListener('ccq:valide', (e) => { const d = e.detail || {}; const a = d.acheteur || {}; if (!transmettreDemande({ genre: 'cadeau', montant: d.montant, quantite: d.quantite, total: d.total, pour: d.pour || '', de: d.de || '', mot: d.mot || '',
   /* v7.14.0 : la demande garde l'offre choisie (identifiant stable, intitulé et version publiée au moment du choix) et l'acheteur. */
-  ...(d.offre ? { offre: d.offre.id, intitule: d.offre.intitule, publication: d.offre.publication } : {}), ...(a.nom || a.telephone || a.email ? { acheteur: { nom: a.nom || '', telephone: a.telephone || '', email: a.email || '' } } : {}) }); });
+  ...(d.offre ? { offre: d.offre.id, intitule: d.offre.intitule, publication: d.offre.publication } : {}), ...(a.nom || a.telephone || a.email ? { acheteur: { nom: a.nom || '', telephone: a.telephone || '', email: a.email || '' } } : {}) })) e.preventDefault(); });
 document.addEventListener('formulaire:envoye', (e) => { const fin = e.target.closest('[data-module="formulaire-par-etapes"]')?.querySelector('.fpe__fin'); if (fin) setTimeout(() => amenerDansEcran(fin, true), 120); });
 let givreEnAttente = null;
 function givreAuRepos() {
@@ -2059,9 +2062,9 @@ function demande() {
   let envoye = false;
   f.addEventListener('submit', (e) => {
     e.preventDefault(); if (envoye || !valide(etapes[k])) return;
+    /* v7.15.0 : la demande est enregistrée AVANT d'annoncer quoi que ce soit ; sinon la saisie reste, et la raison est dite. */
+    { const d = new FormData(f); if (!transmettreDemande({ genre: 'reception', occasion: $('[name="occasion"]:checked', f)?.dataset.un || d.get('occasion') || '', date: d.get('date') || '', periode: d.get('date') ? '' : d.get('periode') || '', invites: d.get('invites') || '', espace: d.get('espace') || '', message: (d.get('message') || '').trim(), prenom: (d.get('prenom') || '').trim(), nom: (d.get('nom') || '').trim(), telephone: (d.get('telephone') || '').trim(), email: (d.get('email') || '').trim() })) return; }
     envoye = true; recap();
-    /* Démonstration (v7.7.2) : la demande de réception arrive dans l'espace restaurateur de ce navigateur. */
-    { const d = new FormData(f); transmettreDemande({ genre: 'reception', occasion: $('[name="occasion"]:checked', f)?.dataset.un || d.get('occasion') || '', date: d.get('date') || '', periode: d.get('date') ? '' : d.get('periode') || '', invites: d.get('invites') || '', espace: d.get('espace') || '', message: (d.get('message') || '').trim(), prenom: (d.get('prenom') || '').trim(), nom: (d.get('nom') || '').trim(), telephone: (d.get('telephone') || '').trim(), email: (d.get('email') || '').trim() }); }
     $$('button', f).forEach((b) => { b.disabled = true; });
     inv.classList.add('est-tamponnee');
     msg.hidden = false; msg.focus({ preventScroll: true });

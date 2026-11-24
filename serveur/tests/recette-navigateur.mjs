@@ -285,6 +285,19 @@ try {
   verifier('complet : la page Réserver ne propose plus ce service', await client.evaluate(() => { const s = document.querySelector('input[name="service"][value="soir"]'); return !!s && (s.disabled || !s.checked); }));
   await photo(client, '10-site-service-complet');
 
+  /* ---------- 13 bis. v7.15.0 : Aujourd'hui, l'assistant et les bilans en mode connecté ---------- */
+  await vue(A, 'jour');
+  const auj715 = await A.evaluate(() => ({ tempsFort: !!document.querySelector('.esp-acc__service'), priorites: !!document.getElementById('t-priorites'), vues: document.querySelectorAll('[data-vue-metier]').length, visite: [...document.querySelectorAll('[data-visite-lancer]')].filter((b) => b.offsetParent).length, allergies: document.querySelector('[data-acc-allergies]')?.textContent || '' }));
+  verifier('v7.15 connecté : Aujourd\'hui montre le temps fort et les priorités ; ni vues de démonstration ni visite guidée', auj715.tempsFort && auj715.priorites && auj715.vues === 0 && auj715.visite === 0 && /aucune allergie/.test(auj715.allergies), JSON.stringify(auj715));
+  await A.keyboard.press('Control+k'); await attendre(300); await A.locator('#barre-champ').fill('quelles options arrivent à échéance cette semaine ?'); await attendre(350);
+  const opt715 = await A.evaluate(() => [...document.querySelectorAll('#barre-liste li b')].map((b) => b.textContent.replace(/\s+/g, ' ')));
+  verifier('v7.15 connecté : l\'assistant dit que les options de réception ne sont pas disponibles ici (pas un faux « aucune »)', /ne sont pas disponibles ici/.test(opt715[0] || '') && !opt715.some((x) => /Aucune option|Compris/.test(x)), JSON.stringify(opt715));
+  await A.locator('#barre-champ').fill('bilan de la semaine'); await attendre(350); await A.keyboard.press('Enter'); await attendre(700);
+  const bil715 = await A.evaluate(() => ({ dates: document.querySelector('[data-bilan-dates]')?.textContent.replace(/\s+/g, ' ') || '', rec: [...document.querySelectorAll('[data-bilan-domaine="receptions"] .esp-bilan__valeur b')].map((b) => b.textContent.trim()), resa: document.querySelector('[data-bilan-ind="resa-reserves"] .esp-bilan__valeur b')?.textContent.trim(), local: [...document.querySelectorAll('[data-bilan-domaine] h4 .esp-source')].map((x) => x.textContent), note: document.querySelector('.esp-bilan .esp-note-demo')?.textContent || '' }));
+  verifier('v7.15 connecté : le bilan dit sa période et l\'heure de la maison ; les réceptions sont « Non disponible », les réservations un vrai chiffre', /Période : du lundi/.test(bil715.dates) && /heure de la maison/.test(bil715.dates) && bil715.rec.length === 3 && bil715.rec.every((x) => x === 'Non disponible') && /^\d+$/.test(bil715.resa || ''), JSON.stringify(bil715).slice(0, 300));
+  verifier('v7.15 connecté : ce qui reste local est dit « Sur cet appareil »', bil715.local.filter((x) => /Sur cet appareil/.test(x)).length === 3 && /Site d'essai/.test(bil715.note), JSON.stringify(bil715.local));
+  await photo(A, '11-bilan-connecte');
+
   /* ---------- 14. La déconnexion et la session expirée ---------- */
   await A.evaluate(() => document.querySelector('[data-esp-quitter]').click()); await attendre(900);
   const apresSortie = await api(A, `/reservations?du=${vendredi}&au=${vendredi}`);

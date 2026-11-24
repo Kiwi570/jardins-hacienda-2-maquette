@@ -2,7 +2,7 @@
    Les règles sont dans espace-venue.js (fonctions pures, testées). Démonstration : la page lit les réservations de ce
    navigateur et note ce que le client fait dans le stockage commun ; l'espace du restaurant le voit aussitôt.
    Rien n'est envoyé. En mode connecté, la page ne lit rien en local : elle renvoie vers le téléphone. */
-import { lire, resasSite, venues, noterVenue, ecouter, CONTEXTE, horloge as horlogeDemo } from './espace-stock.js?v=7';
+import { lire, resasSite, venues, noterVenue, ecouter, CONTEXTE, horloge as horlogeDemo, refusEnregistrement } from './espace-stock.js?v=7';
 import { equipeDe } from './disponibilites.js?v=7';
 import { trouverResa, aujourdhui, fixerHorloge, fmt, maj, heure, hhmm, typo, pluriel } from './espace-regles.js?v=7';
 import { codeVenue, etatVenue, actionsVenue, heuresVenue, refusModifVenue } from './espace-venue.js?v=7';
@@ -69,17 +69,25 @@ export function init(root) {
     if (focus) corps.querySelector(focus)?.focus({ preventScroll: focus === '[data-venue-focus]' });
   }
   const dire = (m) => { etat.message = m; etat.outil = ''; etat.erreur = ''; rendre('[data-venue-focus]'); };
+  /* v7.15.0 : quand cette page ne peut rien enregistrer (contexte de l'onglet indéterminable, démonstration recommencée
+     ailleurs), le geste est arrêté AVANT toute écriture : la raison est dite à côté, sans redessiner la page (la saisie reste). */
+  const bloque = (pres) => { const r = refusEnregistrement(); if (!r) return false;
+    corps.querySelector('[data-enregistrement-refuse]')?.remove();
+    const p = document.createElement('p'); p.className = 'venue__erreur'; p.setAttribute('role', 'alert'); p.dataset.enregistrementRefuse = ''; p.tabIndex = -1; p.textContent = r;
+    (pres.closest('form') || pres.closest('p') || pres).after(p); p.focus({ preventScroll: false }); return true; };
   const maintenantIso = () => new Date().toISOString();
   corps.addEventListener('click', (ev) => {
     const t = ev.target, o = t.closest('[data-venue-outil]');
     if (o) { etat.outil = o.dataset.venueOutil; etat.message = ''; etat.erreur = ''; rendre('.venue__form select, .venue__form textarea, .venue__form button'); return; }
     if (t.closest('[data-venue-fermer]')) { const k = etat.outil; etat.outil = ''; etat.erreur = ''; rendre(`[data-venue-outil="${k}"]`); return; }
+    { const geste = t.closest('[data-venue-reconfirmer], [data-venue-annuler-oui], [data-venue-retirer]'); if (geste && bloque(geste)) return; }
     if (t.closest('[data-venue-reconfirmer]')) { if (noterVenue(id, { reconfirmee: maintenantIso() })) dire('Merci : votre venue est confirmée de votre côté.'); else dire('Votre confirmation n\'a pas pu être enregistrée : appelez-nous.'); return; }
     if (t.closest('[data-venue-annuler-oui]')) { if (noterVenue(id, { annulee: maintenantIso(), modif: null })) dire('Votre réservation est annulée. Le restaurant est prévenu.'); else dire('L\'annulation n\'a pas pu être enregistrée : appelez-nous.'); return; }
     if (t.closest('[data-venue-retirer]')) { if (noterVenue(id, { modif: null })) dire('Votre demande de changement est retirée : votre réservation ne change pas.'); return; }
   });
   corps.addEventListener('submit', (ev) => {
     ev.preventDefault(); const f = ev.target.closest('[data-venue-form]'); if (!f) return;
+    if (bloque(f)) return;
     const { r, maintenant, equipe } = lireResa(); if (!r) { introuvable(); return; }
     if (f.dataset.venueForm === 'modifier') {
       const modif = { heure: f.elements.heure.value, service: f.elements.heure.selectedOptions[0]?.dataset.sv || r.service, couverts: Math.round(+f.elements.couverts.value) || 0, cree: maintenantIso() };

@@ -4,7 +4,7 @@
    fait dans le stockage commun (`venues`, sous l'identifiant du dossier) ; l'espace du restaurant le voit aussitôt.
    Un accord donné ici est une simulation : il ne vaut ni signature ni paiement, et ne confirme rien. Rien n'est envoyé.
    En mode connecté, la page ne lit rien en local : elle renvoie vers le téléphone. */
-import { lire, venues, noterVenue, ecouter, CONTEXTE, horloge as horlogeDemo, noterVu } from './espace-stock.js?v=7';
+import { lire, venues, noterVenue, ecouter, CONTEXTE, horloge as horlogeDemo, noterVu, refusEnregistrement } from './espace-stock.js?v=7';
 import { aujourdhui, fixerHorloge, fmt, heure, hhmm, typo } from './espace-regles.js?v=7';
 import { dossierDe, actionsClient, vueClient, refusChangement, codeReception, euros, totalLigne, instantDit, TYPES_CHANGEMENT } from './espace-receptions.js?v=7';
 
@@ -89,13 +89,19 @@ export function init(root) {
     if (focus) corps.querySelector(focus)?.focus({ preventScroll: focus === '[data-reception-focus]' });
   }
   const dire = (m) => { etat.message = m; etat.outil = ''; etat.erreur = ''; etat.accord = false; rendre('[data-reception-focus]'); };
+  /* v7.15.0 : quand cette page ne peut rien enregistrer (contexte de l'onglet indéterminable, démonstration recommencée
+     ailleurs), le geste est arrêté AVANT toute écriture : la raison est dite à côté, sans redessiner la page (la saisie reste). */
+  const bloque = (pres) => { const r = refusEnregistrement(); if (!r) return false;
+    corps.querySelector('[data-enregistrement-refuse]')?.remove();
+    const p = document.createElement('p'); p.className = 'venue__erreur'; p.setAttribute('role', 'alert'); p.dataset.enregistrementRefuse = ''; p.tabIndex = -1; p.textContent = r;
+    (pres.closest('form') || pres.closest('p') || pres).after(p); p.focus({ preventScroll: false }); return true; };
   root.addEventListener('click', (ev) => {
     const t = ev.target, o = t.closest('[data-reception-outil]');
     if (o) { etat.outil = o.dataset.receptionOutil; etat.erreur = ''; etat.message = ''; rendre(etat.outil === 'question' ? '#rc-question' : '#rc-type'); return; }
     if (t.closest('[data-reception-fermer]')) { const k = etat.outil; etat.outil = ''; etat.erreur = ''; rendre(`[data-reception-outil="${k}"]`); return; }
     if (t.closest('[data-reception-accorder]')) { etat.accord = true; rendre('[data-reception-accord-oui]'); return; }
     if (t.closest('[data-reception-accord-non]')) { etat.accord = false; rendre('[data-reception-accorder]'); return; }
-    const oui = t.closest('[data-reception-accord-oui]'); if (oui) { const x = lireDossier(); if (!x) return; const vue = vueClient(x.ctx, x.d, x.v);
+    const oui = t.closest('[data-reception-accord-oui]'); if (oui) { if (bloque(oui)) return; const x = lireDossier(); if (!x) return; const vue = vueClient(x.ctx, x.d, x.v);
       /* L'accord porte sur la version affichée : si elle n'est plus la version courante, on le dit au lieu de l'enregistrer. */
       if (!vue.peutAccorder || vue.proposition?.v !== +oui.dataset.receptionAccordOui) { dire('La proposition a changé entre-temps : relisez la version affichée.'); return; }
       const le = instant(), deja = (x.v.accords || []).concat(x.v.accord && !(x.v.accords || []).some((a) => a.version === x.v.accord.version) ? [x.v.accord] : []);
@@ -104,7 +110,7 @@ export function init(root) {
   });
   root.addEventListener('change', (ev) => { if (ev.target.matches('[data-reception-type]')) { etat.type = ev.target.value; etat.erreur = ''; rendre('#rc-type'); } });
   root.addEventListener('submit', (ev) => {
-    ev.preventDefault(); const f = ev.target.closest('[data-reception-form]'); if (!f) return; const x = lireDossier(); if (!x) return; const fd = new FormData(f), le = instant(), cle = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
+    ev.preventDefault(); const f = ev.target.closest('[data-reception-form]'); if (!f) return; if (bloque(f)) return; const x = lireDossier(); if (!x) return; const fd = new FormData(f), le = instant(), cle = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
     if (f.dataset.receptionForm === 'question') { const texte = String(fd.get('texte') || '').trim(); if (!texte) { etat.erreur = 'Écrivez votre question.'; rendre('#rc-question'); return; }
       if (noterVenue(id, { questions: [...x.v.questions, { id: `q-${cle}`, le, texte: texte.slice(0, 600) }] })) dire('Votre question est transmise au restaurant.'); return; }
     if (f.dataset.receptionForm === 'info') { const valeur = String(fd.get('valeur') || '').trim(); if (!valeur) return;

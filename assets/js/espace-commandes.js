@@ -84,7 +84,7 @@ const RUBRIQUES = [
   [/\b(aujourd'?hui|accueil|tableau|jour)\b/, 'jour', 'Ouvrir « Aujourd\'hui »', 'Le service du jour et les demandes en attente.'],
   [/\b(salle|plan|tables|placer|placement)\b/, 'resas', 'Ouvrir le plan de salle', 'Asseoir chaque réservation à sa table, pour le service choisi.', null, 'salle'],
   [/\b(service|frise|coup de feu|feuille|imprimer|absents?)\b/, 'resas', 'Ouvrir le service en frise', 'Les couverts à table, arrivés, absent, la feuille de service à imprimer.', null, 'service'],
-  [/\b(bilan|chiffres|statistiques?|stats|remplissage)\b/, 'resas', 'Ouvrir le bilan de la semaine', 'Couverts, remplissage, service le plus chargé.', null, 'bilan'],
+  [/\b(bilan|chiffres|statistiques?|stats|remplissage)\b/, 'resas', 'Ouvrir le remplissage de la semaine', 'Agenda, onglet Bilan : couverts, remplissage, service le plus chargé.', null, 'bilan'],
   [/\b(agenda|reservations?|resas?|planning|semaine)\b/, 'resas', 'Ouvrir les réservations', 'L\'agenda de la semaine, midi et soir.'],
   [/\b(demandes?|boite|a traiter)\b/, 'demandes', 'Ouvrir les demandes', 'Tout ce que le site envoie : tables, réceptions, traiteur, cartes cadeaux, questions.', null, null, 'tout'],
   [/\b(receptions?|mariages?|bapteme|anniversaires?|seminaires?)\b/, 'demandes', 'Ouvrir les demandes de réception', 'Mariages, anniversaires, baptêmes : où en est chacune.', null, null, 'reception'],

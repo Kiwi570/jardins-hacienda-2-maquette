@@ -268,6 +268,27 @@ export function samedisDeReception(R, iso) { let d = ajouter(iso, 17); while (jo
 export const scenario = (id) => SCENARIOS.find((s) => s.id === id) || null;
 
 /**
+ * La visite guidée (v7.15.0) : cinq étapes, cinq à sept minutes, pour montrer la valeur de l'ensemble. Elle ne crée
+ * aucun scénario : elle relie trois des démonstrations existantes, qui gardent chacune leur contexte, leur horloge et
+ * leurs données (rien n'est fusionné, rien n'est remis à zéro par la visite). Les consignes reprennent les libellés
+ * réellement présents à l'écran. `pret(c)` : '' si l'étape peut être jouée telle qu'elle est écrite, sinon pourquoi
+ * elle ne correspond plus (le scénario a déjà été joué), avec le geste explicite qui le remet à son début, lui seul.
+ */
+export const VISITE = { titre: 'Visite guidée', duree: '5 à 7 minutes', etapes: [
+  { id: 'journee', scenario: 'service', titre: 'Comprendre sa journée', consigne: 'Dans Aujourd\'hui, lisez « Le temps fort en cours » : le service de ce soir, ses réservations, ses couverts, ce qui se passe en ce moment. Puis « Les priorités » : chaque carte dit pourquoi elle est là, ce qu\'elle concerne et où agir. Essayez « Voir comme » : Salle, puis Cuisine.', montre: 'Ce qui se passe, ce qui mérite l\'attention, l\'action possible maintenant.', pret: () => '' },
+  { id: 'briefing', scenario: 'service', titre: 'Préparer le service', consigne: 'Cliquez « Préparer le service » : le briefing réunit les volumes, les grandes tablées, les informations signalées, ce qui reste à traiter et les tâches. « Imprimer le briefing » en fait une feuille. Fermez-le, choisissez « Voir comme » : Cuisine, puis rouvrez-le : mêmes informations, autre ordre.', montre: 'Un briefing prêt, relu depuis les dossiers.', pret: () => '' },
+  { id: 'priorite', scenario: 'commande', titre: 'Traiter une priorité', consigne: 'Dans Aujourd\'hui, la priorité « 1 demande attend une décision » : cliquez « Ouvrir les demandes », puis « Décider : ouvrir la commande » de Nadia B. Lisez les disponibilités du 5 décembre, puis « Valider la commande ». Revenez à Aujourd\'hui : la priorité a disparu, parce que la situation est réglée.', montre: 'Une priorité s\'explique, mène au bon dossier et disparaît une fois traitée.',
+    pret: (c) => (c.S.commerce?.commandes?.['sc7-nadia'] || (c.S.demandes?.statuts?.['sc7-nadia'] && c.S.demandes.statuts['sc7-nadia'] !== 'nouvelle') ? 'Cette démonstration a déjà été jouée : la demande de Nadia B. est déjà décidée. Pour rejouer l\'étape, « Recommencer ce scénario » (dans « Étapes et commandes ») remet cette démonstration à son début, et elle seule.' : '') },
+  { id: 'assistant', scenario: 'reception', titre: 'Retrouver un dossier avec l\'assistant', consigne: 'Ouvrez « Que voulez-vous faire ? » (en haut, ou Ctrl K) et écrivez « retrouve le dossier de Camille » : l\'assistant dit ce qu\'il a compris, puis propose sa fiche et son dossier de réception. Ouvrez « Dossier de réception ». Essayez ensuite « quelles demandes attendent une décision ? ».', montre: 'Une phrase suffit ; la réponse cite les dossiers et ouvre le bon écran.', pret: () => '' },
+  { id: 'bilan', scenario: 'commande', titre: 'Consulter un bilan et retrouver les dossiers comptés', consigne: 'Dans Aujourd\'hui, cliquez « Voir le bilan de la semaine ». Sous Traiteur, cliquez « Commandes validées » : les dossiers comptés s\'affichent, chacun avec son bouton « Ouvrir ». « Comment est-ce compté ? » donne la définition du chiffre. « Le jour » et « La semaine précédente » changent la période, toujours dite avec ses dates.', montre: 'Des chiffres définis, datés, et les dossiers qui les composent.', pret: () => '' },
+] };
+/** Où en est la visite à l'étape `n` (0 à 4) : l'étape, son scénario, ce qui précède et suit, et si elle est jouable telle qu'écrite. */
+export function etapeVisite(n, c = { S: {} }) {
+  const l = VISITE.etapes, i = Math.max(0, Math.min(l.length - 1, Math.round(+n) || 0)), e = l[i], sc = scenario(e.scenario);
+  return { ...e, n: i, numero: i + 1, total: l.length, demo: sc ? { id: sc.id, numero: sc.numero, titre: sc.titre } : null, precedente: i > 0 ? l[i - 1] : null, suivante: i < l.length - 1 ? l[i + 1] : null, reserve: e.pret(c) };
+}
+
+/**
  * Les sauts dans le temps d'un scénario qui dure des semaines (v7.12.0) : à l'échéance de l'option, à la veille, au jour J.
  * Un saut n'est proposé que vers l'avenir. Avancer l'horloge ne fait qu'avancer l'heure : ses conséquences (une option
  * qui expire) se déduisent de l'état ; rien n'est accepté, confirmé ni coché à la place de l'utilisateur.

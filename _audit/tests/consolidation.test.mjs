@@ -114,9 +114,12 @@ test('B · rectification de production : une action à part, motivée, tracée, 
   non(S, 'cmdRectifier', { ...R, motif: 'x', quantite: 4 }, /Rien ne change/); non(S, 'cmdRectifier', { ...R, motif: 'x', vu: { jour: J, quantite: 5 } }, /a changé ailleurs/);
   S = ok(S, 'cmdRectifier', { ...R, motif: 'Trois pièces seulement ont été cuites.' });
   const k = S.commerce.commandes[a.id];
-  assert.equal(prod(S, J), 3, 'la capacité suit'); assert.equal(k.lignes[0].quantite, 4, 'la commande du client ne change pas');
+  /* v7.15.0 : la commande reste de 4 pièces : 3 engagées + 1 restant à produire = 4 comptées ; elle n'est plus « prête ». */
+  assert.equal(prod(S, J), 4); assert.deepEqual([engagements(S, J).engagee['emporter-escargots'], engagements(S, J).reservee['emporter-escargots']], [3, 1]); assert.equal(k.etat, 'preparation'); assert.equal(k.lignes[0].quantite, 4, 'la commande du client ne change pas');
+  /* Le client n'en retire finalement que trois : plus rien ne manque, la capacité suit. */
+  S = ok(S, 'cmdModifier', { id: a.id, lignes: [L.esc(3)], motif: 'Le client en retire trois.', le: LE }); assert.equal(prod(S, J), 3, 'la capacité suit');
   assert.deepEqual(k.production.rectifications.map((r) => [r.avant, r.apres, r.motif, r.le]), [[{ jour: J, quantite: 4 }, { jour: J, quantite: 3 }, 'Trois pièces seulement ont été cuites.', LE]], 'l\'avant, l\'après, le motif et la date sont gardés');
-  assert.match(k.historique.at(-1).texte, /Production rectifiée.*4 pièces le vendredi 11 décembre → 3 pièces le vendredi 11 décembre.*Motif/); assert.equal(k.historique.at(-1).quoi, 'rectification');
+  assert.match(k.historique.at(-1).texte, /Production rectifiée.*4 pièces le vendredi 11 décembre → 3 pièces le vendredi 11 décembre.*Il reste à produire.*1 pièce.*repasse en préparation.*Motif/); assert.equal(k.historique.at(-1).quoi, 'rectification');
   /* La même opération renvoyée : refusée par les règles ; même rejouée telle quelle, elle n'est pas appliquée deux fois. */
   non(S, 'cmdRectifier', { ...R, motif: 'Trois pièces seulement ont été cuites.' }, /déjà enregistrée/);
   assert.deepEqual(appliquer(S, 'cmdRectifier', { ...R, quantite: 1, motif: 'rejeu' }).commerce.commandes[a.id].production, k.production);
@@ -126,7 +129,7 @@ test('B · rectification de production : une action à part, motivée, tracée, 
   const c = demande('T-C', [L.esc(5)], { jour: J1 }); S = jusqua(S, c, 'preparation');
   non(S, 'cmdRectifier', { id: a.id, lot, jour: J1, quantite: 3, motif: 'Cuit samedi.', op: 'rp-3', le: LE }, /capacité du samedi 12 décembre/);
   S = ok(S, 'cmdRectifier', { id: a.id, lot, jour: J1, quantite: 1, motif: 'Une seule, cuite samedi.', op: 'rp-4', le: LE });
-  assert.equal(prod(S, J), 3); assert.equal(prod(S, J1), 6);
+  assert.equal(prod(S, J), 5, '3 de l\'autre commande + 2 restant à produire pour celle-ci, au jour de son retrait'); assert.equal(prod(S, J1), 6);
   /* Ajouter une production oubliée (sans lot). */
   non(S, 'cmdRectifier', { id: a.id, lot: '', jour: J, quantite: 2, motif: 'Oubli.', op: 'rp-5', le: LE }, /Choisissez le produit/);
   S = ok(S, 'cmdRectifier', { id: a.id, lot: '', offre: 'emporter-foie-gras', nom: 'Foie gras de canard maison', unite: 'piece', jour: J, quantite: 2, motif: 'Deux foies gras lancés par erreur.', op: 'rp-5', le: LE });

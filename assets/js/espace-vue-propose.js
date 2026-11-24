@@ -39,10 +39,11 @@ export function creerPropose(X) {
         : `<p class="esp-note-demo"><span class="esp-source">Démonstration</span> Les réservations de cette semaine sont des exemples : ces chiffres montrent ce que l'outil calcule, pas l'activité réelle du restaurant. La capacité (${b.capacite} couverts par service) est à remplacer par la vôtre.</p>`}
       <div class="esp-tuiles">
         ${tuile('Couverts', b.couverts, `${pluriel(b.tables, 'table')} dans la semaine`)}
-        ${tuile('Remplissage', pc(b.remplissage), `sur ${pluriel(b.servicesOuverts, 'service')} ouvert${b.servicesOuverts > 1 ? 's' : ''}`)}
+        ${b.servicesOuverts ? tuile('Remplissage', pc(b.remplissage), `${b.couverts} couverts sur ${b.servicesOuverts * b.capacite} (${pluriel(b.servicesOuverts, 'service')} ouvert${b.servicesOuverts > 1 ? 's' : ''} × ${b.capacite})`) : tuile('Remplissage', '<small>Non disponible</small>', 'aucun service ouvert cette semaine : pas de pourcentage')}
         ${tuile('Le plus chargé', b.plusCharge ? `${b.plusCharge.couverts}<small> couv.</small>` : '—', b.plusCharge ? `${e(fmt(b.plusCharge.iso, { weekday: 'long', day: 'numeric' }))}, ${svNom(b.plusCharge.service)}` : 'aucune réservation')}
         ${tuile('À confirmer', b.aConfirmer, b.aConfirmer ? 'cette semaine' : 'tout est à jour')}
       </div>
+      <p class="esp-plus"><button type="button" class="esp-lien" data-bilan-ouvrir="semaine">Voir les bilans : restaurant, réceptions, traiteur, cartes cadeaux, suivi</button></p>
       <div class="esp-grille esp-grille--bilan">
         <article class="esp-carte esp-carte--large" aria-labelledby="t-jauges"><h3 id="t-jauges">Service par service</h3>
           ${lignes.length ? `<ul class="esp-jauges">${lignes.map((x) => `<li class="esp-jauge${x.part >= SEUIL_PLEIN ? ' est-pleine' : ''}"><span class="esp-jauge__nom">${e(maj(fmt(x.iso, { weekday: 'long', day: 'numeric' })))} <small>${svNom(x.sv)}</small></span><span class="esp-jauge__barre" aria-hidden="true" style="--v:${x.part.toFixed(3)}"></span><span class="esp-jauge__valeur"><b>${x.couverts}</b> / ${b.capacite}${x.complet ? ' <span class="esp-pastille esp-pastille--refusee">Complet</span>' : x.part >= SEUIL_PLEIN ? ' <span class="esp-pastille esp-pastille--a-confirmer">Presque plein</span>' : ''}</span></li>`).join('')}</ul>` : '<p class="esp-vide">Aucun service ouvert cette semaine.</p>'}

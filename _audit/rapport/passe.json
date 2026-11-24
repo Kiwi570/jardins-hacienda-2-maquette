@@ -1,15 +1,16 @@
 {
- "id": "20261124-054048-complet-cible-partiel",
- "date": "2026-11-24T06:34:54.028Z",
+ "id": "20261124-203413-complet-cible-partiel",
+ "date": "2026-11-24T21:37:04.970Z",
  "niveau": "complet",
- "pages": "/,/espace",
+ "pages": "/,/a-emporter,/espace",
  "etapes": [
   "fichiers",
+  "mesures",
   "parcours"
  ],
  "version": "7",
  "echecs": 0,
- "aRegarder": 0,
+ "aRegarder": 2,
  "nonLances": 0,
  "manquants": 0,
  "statut": "complet"

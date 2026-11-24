@@ -8,7 +8,7 @@
 // et de pizzalyght-maquette/panier (créneaux calculés à l'heure du lieu avec un délai, état relu, focus rendu après rendu).
 // Sans JavaScript : un formulaire ordinaire d'un seul tenant (calendrier, liste d'heures, nombre). Mode calme : sans transition.
 import { pret } from '../../socle/socle.js?v=7';
-import { ajouterResaSite, ajouterDemandeSite, horloge as horlogeDemo, avecContexte, temporaire, scenarioRecommence, MESSAGE_RECOMMENCE } from '../../espace-stock.js?v=7';
+import { ajouterResaSite, ajouterDemandeSite, horloge as horlogeDemo, avecContexte, temporaire, refusEnregistrement } from '../../espace-stock.js?v=7';
 // v7.8.0 : ouvertures, heures d'arrivée et « complet » viennent des règles communes au site et à l'espace.
 import { etatService, arrivees, faisabilite, alternatives } from '../../disponibilites.js?v=7';
 import { codeVenue } from '../../espace-venue.js?v=7';
@@ -298,7 +298,7 @@ export async function init(root, options = {}) {
       if (telephone.replace(/\D/g, '').length < 9 && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return dire('Indiquez un téléphone ou une adresse e-mail : sans cela, le restaurant ne peut pas vous prévenir.', q('telephone'));
       const fiche = { genre: 'attente', date: s.date, periode: s.service, heure: q('heure').value, souplesse: +q('souplesse').value, espaces: [...zoneAlt.querySelectorAll('[data-att="espace"]:checked')].map((x) => x.value), couverts: val().couverts, prenom, nom, telephone, email, message: val().message };
       env.disabled = true; /* un double clic n'inscrit qu'une fois */
-      if (ajouterDemandeSite(fiche) === false) { env.disabled = false; return dire('Votre inscription n\'a pas pu être enregistrée. Votre saisie est gardée : réessayez, ou appelez-nous.', env); }
+      if (ajouterDemandeSite(fiche) === false) { env.disabled = false; return dire(refusEnregistrement() || 'Votre inscription n\'a pas pu être enregistrée. Votre saisie est gardée : réessayez, ou appelez-nous.', env); }
       attenteFaite = fiche; attente = null; rendreAlternatives(); zoneAlt.querySelector('[data-resa-alt-fait]')?.focus({ preventScroll: true });
       root.dispatchEvent(new CustomEvent('reservation:attente', { detail: fiche, bubbles: true })); }
   });
@@ -540,7 +540,8 @@ export async function init(root, options = {}) {
       /* Aucune réussite avant un enregistrement réussi : la référence n'existe qu'une fois la demande enregistrée. */
       const echec = (m) => { b.disabled = false; b.textContent = 'Envoyer ma demande'; erreur(b, m); };
       /* v7.14.1 : la démonstration a été recommencée dans un autre onglet : cette page date d'avant, elle n'envoie rien. */
-      if (scenarioRecommence()) { echec(MESSAGE_RECOMMENCE); return; }
+      /* v7.15.0 : de même si le contexte de l'onglet est indéterminable : rien n'est envoyé ni enregistré, la saisie reste. */
+      { const refus = refusEnregistrement(); if (refus) { echec(refus); return; } }
       let ref = '';
       try { ref = (o.envoyer ? (await o.envoyer(v))?.reference : `R-${v.date.slice(5).replace('-', '')}-${String(1000 + Math.floor(Math.random() * 9000))}`) || ''; }
       catch (err) { echec(err?.pourClient || 'L\'envoi n\'a pas abouti. Votre saisie est gardée : réessayez, ou appelez-nous.'); return; }

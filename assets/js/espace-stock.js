@@ -85,6 +85,14 @@ const lireEpoque = () => { if (!CONTEXTE) return ''; try { return String(JSON.pa
 let EPOQUE_PAGE = lireEpoque();
 /** Le scénario de cet onglet a-t-il été recommencé (ou effacé) depuis le chargement de cette page ? Toujours false hors démonstration. */
 export const scenarioRecommence = () => !!CONTEXTE && lireEpoque() !== EPOQUE_PAGE;
+/* v7.15.0 : la même décision de contexte vaut jusqu'au dernier enregistrement. Quand le contexte est indéterminable
+   (« incertain »), aucune écriture métier n'atteint les données habituelles : ni une saisie temporaire, ni une demande,
+   ni une réservation, ni une réponse du client, ni l'état de l'espace. La protection est posée ici, dans le chemin
+   commun, quel que soit l'écran ou le geste (bouton, touche Entrée) qui déclenche l'enregistrement. */
+const indeterminable = () => etatContexte === 'incertain';
+export const MESSAGE_INCERTAIN = 'Ce navigateur ne permet pas de savoir si cet onglet est en démonstration ou en usage normal. Pour ne rien mêler à vos données habituelles, rien n\'a été enregistré. Votre saisie reste sur cette page : rechargez-la, ou ouvrez le site dans une nouvelle fenêtre, puis recommencez.';
+/** Pourquoi cette page ne peut rien enregistrer en ce moment ('' si elle le peut) : contexte indéterminable, ou démonstration recommencée ailleurs. */
+export const refusEnregistrement = () => (indeterminable() ? MESSAGE_INCERTAIN : scenarioRecommence() ? MESSAGE_RECOMMENCE : '');
 export const MESSAGE_RECOMMENCE = 'Cette démonstration a été recommencée dans un autre onglet. Cette page date d\'avant : rechargez-la pour reprendre le parcours. Rien n\'a été envoyé.';
 const PREFIXE_TMP = (nom) => `jh-demo:${nom}:tmp:`;
 /* Efface les saisies temporaires d'un scénario : celles du navigateur (partagées entre ses onglets) et celles de cet onglet. */
@@ -161,6 +169,7 @@ export function migrer(d) {
 export function lire() { try { return migrer(JSON.parse(localStorage.getItem(CLE) || 'null')); } catch { return {}; } }
 /** Enregistre tout l'objet ; renvoie false si le navigateur refuse (mémoire pleine, stockage bloqué). */
 export function ecrire(d) {
+  if (indeterminable()) return false;
   try {
     if (estVide(d)) localStorage.removeItem(CLE); else localStorage.setItem(CLE, JSON.stringify({ ...d, _schema: SCHEMA }));
     return true;
@@ -169,24 +178,24 @@ export function ecrire(d) {
 /** Lit, change (f reçoit l'objet), enregistre ; renvoie false si l'enregistrement a échoué (et ne change rien). */
 export function changer(f) { const d = lire(); f(d); return ecrire(d); }
 /** Efface tout ; false si le navigateur a refusé (rien ne doit alors être annoncé comme effacé). */
-export function vider() { try { localStorage.removeItem(CLE); localStorage.removeItem(CLE_RESAS); localStorage.removeItem(CLE_DEMANDES); localStorage.removeItem(CLE_VENUES); return true; } catch { return false; } }
+export function vider() { if (indeterminable()) return false; try { localStorage.removeItem(CLE); localStorage.removeItem(CLE_RESAS); localStorage.removeItem(CLE_DEMANDES); localStorage.removeItem(CLE_VENUES); return true; } catch { return false; } }
 export const estVide = (d) => !d || !Object.keys(d).some((k) => !k.startsWith('_') && d[k] && (typeof d[k] !== 'object' || Object.keys(d[k]).length));
 
 /* Les réservations faites sur la page Réserver de ce navigateur : elles arrivent dans l'agenda de l'espace.
    v7.8.0 : plus de limite à 80 entrées (les plus anciennes étaient effacées sans rien dire) ; si la mémoire du navigateur
    est pleine, l'écriture échoue et le dit (false), elle ne jette plus de données. */
 export function resasSite() { try { const l = JSON.parse(localStorage.getItem(CLE_RESAS) || '[]'); return Array.isArray(l) ? l : []; } catch { return []; } }
-export function ecrireResasSite(l) { try { if (l?.length) localStorage.setItem(CLE_RESAS, JSON.stringify(l)); else localStorage.removeItem(CLE_RESAS); return true; } catch { return false; } }
+export function ecrireResasSite(l) { if (indeterminable()) return false; try { if (l?.length) localStorage.setItem(CLE_RESAS, JSON.stringify(l)); else localStorage.removeItem(CLE_RESAS); return true; } catch { return false; } }
 /* v7.14.1 : une page d'un scénario recommencé depuis ne dépose plus rien dans le nouveau départ. */
-export function ajouterResaSite(r) { if (scenarioRecommence()) return false; const l = resasSite().filter((x) => x.id !== r.id); l.push(r); return ecrireResasSite(l); }
+export function ajouterResaSite(r) { if (refusEnregistrement()) return false; const l = resasSite().filter((x) => x.id !== r.id); l.push(r); return ecrireResasSite(l); }
 
 /* Les autres demandes faites sur le site de ce navigateur (v7.7.2) : réception, commande traiteur, carte cadeau, question.
    Chacune porte son genre, un identifiant et l'heure de sa création. */
 const liste = (cle) => { try { const l = JSON.parse(localStorage.getItem(cle) || '[]'); return Array.isArray(l) ? l : []; } catch { return []; } };
 export const demandesSite = () => liste(CLE_DEMANDES);
-export function ecrireDemandesSite(l) { try { if (l?.length) localStorage.setItem(CLE_DEMANDES, JSON.stringify(l)); else localStorage.removeItem(CLE_DEMANDES); return true; } catch { return false; } }
+export function ecrireDemandesSite(l) { if (indeterminable()) return false; try { if (l?.length) localStorage.setItem(CLE_DEMANDES, JSON.stringify(l)); else localStorage.removeItem(CLE_DEMANDES); return true; } catch { return false; } }
 export function ajouterDemandeSite(d) {
-  if (scenarioRecommence()) return false;
+  if (refusEnregistrement()) return false;
   const maintenant = new Date();
   return ecrireDemandesSite([...demandesSite(), { id: `${(d.genre || 'demande').charAt(0).toUpperCase()}-${maintenant.getTime().toString(36)}`, cree: maintenant.toISOString(), ...d }]);
 }
@@ -198,7 +207,7 @@ export function ajouterDemandeSite(d) {
    Démonstration : ce navigateur seulement. Demain : des appels au serveur, protégés par un jeton propre à la réservation. */
 export function venues() { try { const o = JSON.parse(localStorage.getItem(CLE_VENUES) || '{}'); return o && typeof o === 'object' && !Array.isArray(o) ? o : {}; } catch { return {}; } }
 export function noterVenue(id, champs) {
-  if (scenarioRecommence()) return false;
+  if (refusEnregistrement()) return false;
   try { const o = venues(); o[id] = { ...(o[id] || {}), ...champs }; for (const k of Object.keys(o[id])) if (o[id][k] == null) delete o[id][k]; localStorage.setItem(CLE_VENUES, JSON.stringify(o)); return true; } catch { return false; }
 }
 

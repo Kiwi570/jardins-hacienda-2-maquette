@@ -78,8 +78,8 @@ test('priorités : déduites des données, une par situation, à jour après une
   assert.ok(!priorites(ctx(), S, SALLE, 17 * 60).some((x) => x.id.startsWith('placer-')));
   /* Une tâche en retard devient une priorité ; terminée, elle ne l'est plus. */
   const t = nouvelleTache({ id: 't9', titre: 'Rappeler le fleuriste', echeance: ajouter(AUJ, -1), cree: 'x' }), S2 = jouer({}, ['tacheAjouter', { tache: t }]);
-  assert.ok(priorites(ctx(), S2, SALLE, 17 * 60).some((x) => x.id === 'tache-t9' && /En retard/.test(x.titre)));
-  assert.ok(!priorites(ctx(), jouer(S2, ['tacheTerminer', { id: 't9', fait: true, le: AUJ }]), SALLE, 17 * 60).some((x) => x.id === 'tache-t9'));
+  assert.ok(priorites(ctx(), S2, SALLE, 17 * 60).some((x) => x.id === 'taches-echeance' && /En retard/.test(x.titre)));
+  assert.ok(!priorites(ctx(), jouer(S2, ['tacheTerminer', { id: 't9', fait: true, le: AUJ }]), SALLE, 17 * 60).some((x) => x.id === 'taches-echeance'));
   /* Aujourd'hui et demain fermés : le prochain service est plus loin, on ne demande pas de placer une salle de dans deux jours. */
   const ferme = jouer({}, ['fermer', { date: AUJ, services: ['midi', 'soir'], actif: true }], ['fermer', { date: ajouter(AUJ, 1), services: ['midi', 'soir'], actif: true }]);
   assert.ok(prochainService(ctx(), ferme, 9 * 60).date > ajouter(AUJ, 1)); assert.ok(!priorites(ctx(), ferme, SALLE, 9 * 60).some((x) => x.id.startsWith('placer-')));

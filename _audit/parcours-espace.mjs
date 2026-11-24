@@ -167,7 +167,9 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (((await memoire()).evenements?.ajouts || []).length) R.echec('espace : barre', '« Annuler » ne retire pas la soirée créée depuis la barre', lieu);
       /* Une phrase inconnue le dit ; Échap ferme et rend le focus. */
       await ouvrir(); await ecrire('xyzzy quux');
-      if (!/Rien trouvé/.test(await page.locator('[data-barre-aide]').innerText().catch(() => ''))) R.echec('espace : barre', 'une phrase inconnue ne dit pas « Rien trouvé »', lieu);
+      /* v7.15.0 : la barre dit qu'elle n'a pas compris, que rien n'a été fait, et propose des phrases réellement prises en charge (rien n'est présélectionné). */
+      { const inconnu = await page.evaluate(() => ({ titre: document.querySelector('#barre-liste li b')?.textContent.replace(/\s+/g, ' ') || '', detail: document.querySelector('#barre-liste li small')?.textContent || '', choisi: document.querySelectorAll('#barre-liste li[aria-selected="true"]').length, choix: document.querySelectorAll('#barre-liste li:not([data-barre-entete])').length }));
+        if (!/^Je n'ai pas compris « xyzzy quux »$/.test(inconnu.titre) || !/Rien n'a été fait/.test(inconnu.detail) || inconnu.choisi || inconnu.choix < 3) R.echec('espace : barre', `une phrase inconnue devrait être dite non comprise, sans rien lancer : ${JSON.stringify(inconnu)}`, lieu); }
       await page.keyboard.press('Escape'); await attendre(250);
       const fin = await page.evaluate(() => ({ ferme: document.querySelector('.esp-cmd').hidden, focus: document.activeElement && document.activeElement !== document.body, bloque: document.documentElement.classList.contains('esp-modale-ouverte') }));
       if (!fin.ferme || !fin.focus || fin.bloque) R.echec('espace : barre', `Échap : barre fermée ${fin.ferme}, focus rendu ${fin.focus}, page encore bloquée ${fin.bloque}`, lieu);
@@ -760,7 +762,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       await page.keyboard.press('Enter'); await attendre(500);
       const offre = await page.evaluate(() => ({ vue: document.querySelector('.esp-vue:not([hidden])')?.dataset.vue, onglet: document.querySelector('[data-onglets-carte][aria-selected="true"]')?.dataset.onglet, titre: document.querySelector('#ev-titre')?.value || '' }));
       if (offre.vue !== 'carte' || offre.onglet !== 'soirees' || !/raclette/i.test(offre.titre)) R.echec(`${ou} : recherche → offre`, `la soirée trouvée ouvre ${offre.vue}/${offre.onglet} « ${offre.titre} »`, lieu);
-      await chercher('zzzzqq'); if (!/Rien trouvé pour « zzzzqq »/.test(await texte('[data-barre-aide]'))) R.echec(`${ou} : recherche`, 'une recherche sans résultat ne le dit pas', lieu);
+      await chercher('zzzzqq'); if (!/^Je n'ai pas compris « zzzzqq »$/.test((await texte('#barre-liste li b')).replace(/\s+/g, ' '))) R.echec(`${ou} : recherche`, `une recherche sans résultat ne le dit pas : « ${await texte('#barre-liste li b')} »`, lieu);
       await page.keyboard.press('Escape'); await attendre(200);
       /* Offres et Site : un seul éditeur pour les soirées ; les outils du site sont toujours là. */
       await aller(page, 'carte'); const onglets = await texte('[data-esp-rendu="carte"] [role="tablist"]');
@@ -772,7 +774,7 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       if (renvoi.vue !== 'carte' || renvoi.onglet !== 'soirees') R.echec(`${ou} : Site → Offres`, `« Soirées » dans Site ouvre ${renvoi.vue}/${renvoi.onglet}`, lieu);
       /* Les vues métier : un aperçu qui change la mise en avant, pas les données. */
       await aller(page, 'jour');
-      for (const [v, absent] of [['cuisine', 't-priorites'], ['salle', 't-attente'], ['accueil', null], ['direction', null]]) { if (tel && !(await page.locator('[data-metier-tel]').evaluate((d) => d.open))) { await page.locator('[data-metier-tel] > summary').click(); await attendre(150); } await page.locator(`[data-vue-metier="${v}"]:visible`).click(); await attendre(300);
+      for (const [v, absent] of [['cuisine', 't-attente'], ['salle', 't-attente'], ['accueil', null], ['direction', null]]) { if (tel && !(await page.locator('[data-metier-tel]').evaluate((d) => d.open))) { await page.locator('[data-metier-tel] > summary').click(); await attendre(150); } await page.locator(`[data-vue-metier="${v}"]:visible`).click(); await attendre(300);
         const vu = await page.evaluate((a) => ({ presse: [...document.querySelectorAll('[data-vue-metier][aria-pressed="true"]')].find((b) => b.offsetParent)?.dataset.vueMetier || document.querySelector('[data-vue-metier][aria-pressed="true"]')?.dataset.vueMetier, la: a ? !!document.getElementById(a) : false, service: !!document.getElementById('t-prochain') }), absent);
         if (vu.presse !== v || vu.la || !vu.service) R.echec(`${ou} : vues métier`, `« ${v} » : ${JSON.stringify(vu)}`, lieu); }
       const large = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); if (large > 1) R.echec(`${ou} : débordement`, `Aujourd'hui dépasse de ${large} px`, lieu);
@@ -2191,6 +2193,170 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
     } finally { await ctx.close(); }
   }
 
+  /* ---------- 1-octodecies. v7.15.0 : « La journée en main » (ordinateur et largeur de téléphone) ----------
+     A. Correctif : une production rectifiée laisse une commande cohérente (manque expliqué, complément explicite, pas de contournement).
+     B. Correctif : un contexte indéterminable n'enregistre rien, jusqu'à une soumission complète (bouton et touche Entrée).
+     C. Aujourd'hui : des priorités expliquées, qui ne disparaissent qu'une fois la situation réglée ; les vues métiers.
+     D. L'assistant : intentions comprises, précision demandée, choix sur une recherche ambiguë, tâche créée après validation, phrase non comprise.
+     E. Les bilans : périodes datées, chiffres détaillables jusqu'au dossier, « Non disponible » distinct de zéro.
+     F. La visite guidée : cinq étapes sur trois démonstrations, reprise, aucune remise à zéro cachée.
+     Toutes les données sont fictives et créées ici, dans le navigateur de test ; un état habituel fictif sert de témoin. */
+  for (const taille of (!SEUL || SEUL.includes('1-octodecies') ? ['1366×768', '390×844'] : []).map(T)) {
+    const lieu = { page: P, taille: taille.nom }, ou = `la journée en main (${taille.nom})`, tel = taille.w < 1000;
+    const { ctx, page, erreurs } = await contexte({ taille });
+    try {
+      const texte = async (sel, pg = page) => (await pg.locator(sel).first().innerText({ timeout: 4000 }).catch(() => '')).replace(/\s+/g, ' ').trim();
+      const toast = () => texte('[data-esp-toast-texte]');
+      const debordement = async (pg, quoi) => { const d = await pg.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - document.documentElement.clientWidth); if (d > 1) R.echec(`${ou} : débordement`, `${quoi} déborde de ${d} px`, lieu); };
+      const faux = (titre, cond, detail) => { if (!cond) R.echec(`${ou} : ${titre}`, String(detail).slice(0, 460), lieu); };
+      const ouvrirDemo = async (id, pg = page, plus = '') => { await pg.goto(`${BASE}${P}?demo=${id}${plus}`, { waitUntil: 'load' }); await attendrePret(pg); if (await pg.locator('[data-esp-app]').isHidden()) await pg.locator('[data-esp-connexion] button[type="submit"]').click(); await pg.locator('[data-esp-app]').waitFor({ state: 'visible', timeout: 5000 }); await attendre(700); };
+      const etat = (demo) => page.evaluate((d) => JSON.parse(localStorage.getItem(`jh-demo:${d}:espace:v1`) || '{}'), demo);
+      const habituel = (pg = page) => pg.evaluate(() => JSON.stringify(Object.keys(localStorage).filter((k) => !k.startsWith('jh-demo:')).sort().map((k) => [k, localStorage.getItem(k)])));
+      const ouvrirCmd = async (id) => { await page.locator(`[data-demande="${id}"] [data-com-ouvrir="commande"]:visible`).first().click(); await attendre(450); };
+      const barre = async (phrase) => { if (await page.locator('.esp-cmd').isHidden()) { await page.keyboard.press('Control+k'); await attendre(300); } await page.locator('#barre-champ').fill(phrase); await attendre(350);
+        return page.evaluate(() => [...document.querySelectorAll('#barre-liste li')].map((li) => ({ titre: li.querySelector('b').textContent.replace(/\s+/g, ' '), detail: li.querySelector('small').textContent.replace(/\s+/g, ' '), bouton: li.querySelector('.esp-cmd__entree')?.textContent || '', choisi: li.getAttribute('aria-selected') === 'true', entete: li.hasAttribute('data-barre-entete') }))); };
+      const fermerBarre = async () => { if (!(await page.locator('.esp-cmd').isHidden())) { await page.keyboard.press('Escape'); await attendre(200); } };
+
+      /* Un état habituel fictif, posé avant tout : il doit se retrouver identique à la fin. */
+      await page.goto(BASE + P, { waitUntil: 'load' }); await attendrePret(page);
+      await page.evaluate(() => { localStorage.setItem('hacienda-emporter', '[{"id":"gravlax","qte":1}]'); localStorage.setItem('jh-espace:v1', JSON.stringify({ _schema: 2, annonce: { active: false, texte: 'Témoin des données habituelles (fictif)' } })); localStorage.setItem('jh-espace-demandes:v1', '[]'); localStorage.setItem('jh-espace-resas:v1', '[]'); });
+      const temoin = await habituel();
+
+      /* ===== A. La production rectifiée (démonstration 7) ===== */
+      await ouvrirDemo('commande'); await aller(page, 'demandes'); await ouvrirCmd('sc7-paul');
+      await page.locator('[data-cmd-avancer="preparation"]').click(); await attendre(450); await page.locator('[data-cmd-avancer="prete"]').click(); await attendre(450);
+      await page.locator('[data-prod-rectifier="l1"]').focus(); await page.keyboard.press('Enter'); await attendre(400);
+      await page.locator('#rectif-q').fill('1'); await attendre(250); const efA = await texte('[data-rectif-effets]');
+      await page.locator('#rectif-motif').fill('Une seule pièce a été réellement cuite.'); await page.locator('[data-form-rectifier] button[type="submit"]').focus(); await page.keyboard.press('Enter'); await attendre(700);
+      let k = (await etat('commande')).commerce.commandes['sc7-paul']; const vuA = { pastille: await texte('[data-cmd-pastille]'), manque: await texte('[data-prod-manque]'), dispo: await texte('[data-cmd-dispo]'), ecart: await texte('[data-cmd-ecart]') };
+      faux('rectification', /3 pièces/.test(efA) && k.etat === 'preparation' && /préparation/i.test(vuA.pastille) && k.production.lots.length === 1 && k.production.lots[0].quantite === 1 && k.lignes[0].quantite === 4, `prête de 4 rectifiée à 1 : ${JSON.stringify({ etat: k.etat, lots: k.production.lots, ...vuA }).slice(0, 380)}`);
+      faux('manque expliqué', /Il manque de la production/.test(vuA.manque) && /reste à produire 3 pièces/.test(vuA.manque) && /4 pièces sur 6 pièces/.test(vuA.dispo) && /ne couvre plus la commande/.test(vuA.ecart), `le manque devrait être dit, et le jour compter 4 pièces : ${JSON.stringify(vuA).slice(0, 400)}`);
+      faux('pas de contournement', !(await page.locator('[data-cmd-avancer="prete"]:visible').count()) && !(await page.locator('[data-cmd-avancer="retiree"]:visible').count()), '« Marquer prête » et « Remettre » ne doivent pas être proposés tant qu\'il manque de la production');
+      await debordement(page, 'le dossier d’une commande à compléter');
+      await page.locator('[data-com-retour]').click(); await attendre(350); await ouvrirCmd('sc7-nadia');
+      await page.locator('[data-cmd-modifier]').click(); await attendre(350); await page.locator('[data-cmd-q="0"]').fill('3'); await page.locator('[data-form-cmd] button[type="submit"]').click(); await attendre(500);
+      await page.locator('[data-cmd-avancer="validee"]').click(); await attendre(500); const refusA = await texte('[data-com-erreur]') || await toast();
+      faux('réserve comptée', /il ne reste que 2 pièces à produire/.test(refusA) && (await etat('commande')).commerce.commandes['sc7-nadia']?.etat !== 'validee', `une commande de 3 pièces le même jour devrait être refusée : « ${refusA} »`);
+      /* La priorité correspondante, sur Aujourd'hui ; puis le complément, engagé au clavier. */
+      await aller(page, 'jour'); const prioA = await texte('[data-conseil^="cmd-completer"]');
+      faux('priorité « à compléter »', /attend un complément de production/.test(prioA) && /Concerne Commande SC7-PAUL/i.test(prioA), `Aujourd'hui devrait signaler le complément : « ${prioA} »`);
+      await page.locator('[data-conseil^="cmd-completer"] [data-faire-priorite]').click(); await attendre(500);
+      faux('priorité → dossier', /SC7-PAUL/.test(await texte('#com-titre')), `la priorité devrait ouvrir la commande : « ${await texte('#com-titre')} »`);
+      await page.locator('[data-prod-complement]').focus(); await page.keyboard.press('Enter'); await attendre(600);
+      k = (await etat('commande')).commerce.commandes['sc7-paul'];
+      faux('complément', k.production.lots.length === 2 && k.production.lots[1].quantite === 3 && k.production.lots[1].quoi === 'complement' && !(await page.locator('[data-prod-manque]').count()) && /4 pièces sur 6 pièces/.test(await texte('[data-cmd-dispo]')), `le complément devrait devenir un lot, sans double compte : ${JSON.stringify(k.production.lots).slice(0, 300)}`);
+      await page.locator('[data-cmd-avancer="prete"]').click(); await attendre(450); await page.locator('[data-cmd-avancer="retiree"]').click(); await attendre(450);
+      faux('suite du parcours', (await etat('commande')).commerce.commandes['sc7-paul'].etat === 'retiree' && /Complément engagé/.test(await texte('[data-com-histo]')), 'une fois complétée, la commande devrait pouvoir être prête puis remise, avec son historique');
+      await aller(page, 'jour'); faux('priorité résolue', !(await page.locator('[data-conseil^="cmd-completer"]').count()), 'le complément engagé, la priorité devrait avoir disparu');
+
+      /* ===== B. Le contexte indéterminable : une commande et une réservation complètes ne créent rien ===== */
+      { const g = await ctx.newPage(); await g.addInitScript(() => { const lire = Storage.prototype.getItem; Storage.prototype.getItem = function (c) { if (this === sessionStorage) throw new DOMException('refusé', 'SecurityError'); return lire.call(this, c); }; });
+        await g.goto(`${BASE}/a-emporter#produits`, { waitUntil: 'load' }); await attendrePret(g); await attendre(1300); const avantB = await habituel(g);
+        await g.locator('[data-ajouter="escargots"]').click(); await attendre(1100); await g.locator('[data-tiroir-valider]').click(); await attendre(450);
+        const jourB = await g.evaluate(() => { const j = document.querySelector('[data-emp-form] [name="jour"]:not(:disabled)'); j?.click(); return j?.value || ''; }); await attendre(350);
+        await g.evaluate(() => document.querySelector('[data-emp-form] [name="moment"]:not(:disabled)')?.click()); await attendre(250); await g.locator('[data-tiroir-suite]').click(); await attendre(450);
+        await g.locator('[name="prenom"]').fill('Julie'); await g.locator('[name="nom"]').fill('Martin (exemple)'); await g.locator('[name="tel"]').fill('06 00 00 00 01');
+        faux('contexte indéterminable', !!jourB && await g.evaluate(() => document.querySelector('[data-emp-form]').checkValidity()), 'la commande d\'essai devrait être complète et valide avant l\'envoi');
+        for (const geste of ['bouton', 'Entrée']) { await g.locator('.envoi-refuse button').click().catch(() => {});
+          if (geste === 'bouton') await g.locator('.emp-tiroir__pied button[type="submit"]').click(); else { await g.locator('[name="nom"]').focus(); await g.keyboard.press('Enter'); } await attendre(800);
+          const vu = await g.evaluate(() => ({ ref: document.querySelector('[data-emp-ref]')?.textContent || '', nom: document.querySelector('[data-emp-form] [name="nom"]').value, tel: document.querySelector('[data-emp-form] [name="tel"]').value, panier: document.querySelectorAll('[data-tiroir-lignes] .emp-tl').length, dit: (document.querySelector('.envoi-refuse p')?.textContent || '').replace(/\s+/g, ' '), role: document.querySelector('.envoi-refuse')?.getAttribute('role') }));
+          faux(`contexte indéterminable (${geste})`, /ne permet pas de savoir/.test(vu.dit) && /rien n'a été enregistré/i.test(vu.dit) && vu.role === 'alert' && !vu.ref && vu.nom === 'Martin (exemple)' && vu.tel === '06 00 00 00 01' && vu.panier > 0 && (await habituel(g)) === avantB, `commande complète envoyée par ${geste} : ${JSON.stringify(vu).slice(0, 380)}`); }
+        await debordement(g, 'la page À emporter avec son refus'); await g.goto(`${BASE}/reserver#formulaire`, { waitUntil: 'load' }); await attendrePret(g); await attendre(900);
+        await g.locator('[data-resa-form] [data-jour]:not(:disabled)').first().click(); await attendre(250); await g.locator('[data-etape-suivante]').click(); await attendre(500);
+        await g.locator('[data-resa-form] input[name="heure"]:not(:disabled)').first().check({ force: true }); await attendre(250); await g.locator('[data-etape-suivante]').click(); await attendre(500); await g.locator('[data-etape-suivante]').click(); await attendre(500);
+        await g.fill('[name="prenom"]', 'Claire'); await g.fill('[name="nom"]', 'Essai (exemple)'); await g.fill('[name="telephone"]', '06 00 00 00 00'); await g.fill('[name="email"]', 'claire@exemple.fr'); await g.locator('[data-resa-form] button[type="submit"]').click(); await attendre(700);
+        for (const geste of ['bouton', 'Entrée']) { if (geste === 'bouton') await g.locator('[data-resa-confirmer]').click(); else { await g.locator('[data-resa-confirmer]').focus(); await g.keyboard.press('Enter'); } await attendre(1300);
+          const vu = await g.evaluate(() => ({ envoye: document.querySelector('[data-module="reservation-de-table"]')?.classList.contains('est-envoye'), dit: (document.querySelector('[data-module="reservation-de-table"] [role="alert"]:not([hidden])')?.innerText || document.querySelector('[data-resa-recap]')?.innerText || '').replace(/\s+/g, ' '), nom: document.querySelector('[name="nom"]')?.value }));
+          faux(`contexte indéterminable (réservation, ${geste})`, !vu.envoye && /ne permet pas de savoir/.test(vu.dit) && vu.nom === 'Essai (exemple)' && (await habituel(g)) === avantB, `réservation complète envoyée par ${geste} : ${JSON.stringify(vu).slice(0, 340)}`); }
+        await g.close(); }
+
+      /* ===== C. Aujourd'hui : priorités expliquées, vues métiers (démonstration 7, repartie de son début) ===== */
+      await page.bringToFront(); await page.evaluate(() => { for (const c of Object.keys(localStorage)) if (c.startsWith('jh-demo:commande:')) localStorage.removeItem(c); }); await ouvrirDemo('commande'); await aller(page, 'jour');
+      const prio = await page.evaluate(() => [...document.querySelectorAll('[data-prio-liste] > li')].map((li) => ({ id: li.dataset.conseil, titre: li.querySelector('.esp-conseil__titre').textContent, raison: li.querySelector('.esp-conseil__detail').textContent, concerne: li.querySelector('[data-prio-concerne]')?.textContent.replace(/\s+/g, ' ') || '', bouton: li.querySelector('.esp-bouton--ok').textContent })));
+      faux('priorités', prio.length >= 1 && prio.every((x) => x.titre && x.raison && x.concerne && x.bouton) && prio.some((x) => x.id === 'demandes-attente' && /1 demande attend une décision/.test(x.titre) && /commande à emporter/.test(x.raison)), `chaque priorité devrait dire quoi, pourquoi, ce qu'elle concerne et où agir : ${JSON.stringify(prio).slice(0, 420)}`);
+      faux('temps fort', /prochain temps fort/i.test(await texte('.esp-acc__service')) && /ne veut pas dire « aucune allergie »/.test(await texte('[data-acc-allergies]')), `le prochain temps fort et sa réserve sur les allergies : « ${(await texte('.esp-acc__service')).slice(0, 200)} »`);
+      /* L'ouvrir ne la traite pas : revenir la retrouve. La décider la fait disparaître. */
+      await page.locator('[data-conseil="demandes-attente"] [data-faire-priorite]').click(); await attendre(500);
+      faux('priorité → rubrique', (await page.locator('.esp-vue:not([hidden])').getAttribute('data-vue')) === 'demandes' && await page.locator('[data-demande="sc7-nadia"]').count() > 0, 'la priorité devrait ouvrir les demandes, avec celle de Nadia B.');
+      await aller(page, 'jour'); faux('priorité ouverte', (await page.locator('[data-conseil="demandes-attente"]').count()) === 1, 'ouvrir une priorité ne doit pas la faire disparaître');
+      await aller(page, 'demandes'); await ouvrirCmd('sc7-nadia'); await page.locator('[data-cmd-avancer="validee"]').click(); await attendre(600); await aller(page, 'jour');
+      faux('priorité résolue', (await page.locator('[data-conseil="demandes-attente"]').count()) === 0 && (await etat('commande')).commerce.commandes['sc7-nadia'].etat === 'validee', 'la demande décidée, la priorité devrait disparaître');
+      /* Les vues métiers : mêmes données, autres raccourcis et autre ordre ; le briefing suit la vue. */
+      const vues = {}; for (const v of ['direction', 'accueil', 'salle', 'cuisine']) { if (tel && !(await page.locator('[data-metier-tel]').evaluate((d) => d.open))) { await page.locator('[data-metier-tel] > summary').click(); await attendre(150); } await page.locator(`[data-vue-metier="${v}"]:visible`).click(); await attendre(300);
+        vues[v] = await page.evaluate(() => ({ raccourcis: [...document.querySelectorAll('[data-raccourcis] button')].map((b) => b.textContent.trim().replace(/\s+\d+$/, '')).join(' | '), blocs: [...document.querySelectorAll('.esp-acc > :not([data-raccourcis])')].map((x) => x.querySelector('h3')?.id || x.dataset.comAuj !== undefined && 'commerce' || '').join(','), couverts: document.querySelector('.esp-acc__chiffres li b')?.textContent })); await debordement(page, `Aujourd'hui, vue ${v}`); }
+      faux('vues métiers', new Set(Object.values(vues).map((x) => x.raccourcis)).size === 4 && /bilan/.test(vues.direction.raccourcis) && /Préparation et retraits/.test(vues.cuisine.raccourcis) && /Ouvrir la salle/.test(vues.salle.raccourcis) && /Ouvrir les demandes/.test(vues.accueil.raccourcis) && new Set(Object.values(vues).map((x) => x.couverts)).size === 1 && vues.accueil.blocs.startsWith('t-priorites') && vues.cuisine.blocs.startsWith('t-prochain'), `chaque vue devrait avoir ses raccourcis et son ordre, sur les mêmes chiffres : ${JSON.stringify(vues).slice(0, 440)}`);
+      await page.locator('[data-raccourcis="cuisine"] [data-briefing]').click(); await attendre(450);
+      const brief = await page.evaluate(() => ({ vue: document.querySelector('[data-brief-vue]')?.dataset.briefVue, blocs: [...document.querySelectorAll('.esp-brief__bloc h3')].map((h) => h.textContent.trim().slice(0, 30)), imprimer: !!document.querySelector('[data-brief-imprimer]') }));
+      faux('briefing par vue', brief.vue === 'cuisine' && /^Occasions, allergies/.test(brief.blocs[0]) && brief.blocs.some((b) => /^Préparations et retraits/.test(b)) && brief.imprimer, `le briefing de la vue Cuisine : ${JSON.stringify(brief)}`); await debordement(page, 'le briefing');
+      await page.keyboard.press('Escape'); await attendre(250);
+      if (tel && !(await page.locator('[data-metier-tel]').evaluate((d) => d.open))) { await page.locator('[data-metier-tel] > summary').click(); await attendre(150); } await page.locator('[data-vue-metier="direction"]:visible').click(); await attendre(300);
+
+      /* ===== D. L'assistant ===== */
+      let r = await barre('montre les commandes à retirer samedi');
+      faux('assistant : retraits', r[0]?.entete && /^Compris : les commandes à retirer samedi 5 décembre$/.test(r[0].titre) && /2 commandes à retirer/.test(r[0].detail) && r[1]?.choisi && /Préparation et retraits du samedi 5 décembre/.test(r[1].titre) && r.some((x) => /^SC7-NADIA/.test(x.titre)), `« commandes à retirer samedi » : ${JSON.stringify(r).slice(0, 420)}`);
+      await page.keyboard.press('Enter'); await attendre(600);
+      faux('assistant : bon écran', /Préparation et retraits/.test(await texte('#com-titre')) && (await page.locator('[data-prep-jour="2026-12-05"][aria-pressed="true"], [data-prep-jour="2026-12-05"][aria-current]').count()) >= 0 && /samedi 5 décembre/i.test(await texte('[data-esp-rendu="demandes"]')), `Entrée devrait ouvrir Préparation et retraits au samedi 5 : « ${await texte('#com-titre')} »`);
+      r = await barre('commandes à retirer'); faux('assistant : précision demandée', /quel jour/.test(r[0]?.titre) && !r.some((x) => x.choisi) && r.slice(1).every((x) => x.bouton === 'Choisir'), `sans jour, l'assistant devrait le demander sans rien choisir : ${JSON.stringify(r).slice(0, 300)}`);
+      await page.keyboard.press('Enter'); await attendre(250); faux('assistant : rien d\'office', !(await page.locator('.esp-cmd').isHidden()), 'Entrée sur une question ne doit rien lancer');
+      await page.locator('#barre-liste li', { hasText: 'Demain' }).click(); await attendre(350);
+      faux('assistant : choix', (await page.locator('#barre-champ').inputValue()) === 'montre les commandes à retirer demain' && /^Compris/.test((await page.locator('#barre-liste li b').first().textContent()).replace(/\s+/g, ' ')), 'choisir « Demain » devrait écrire la phrase complète et y répondre');
+      r = await barre('bilan'); faux('assistant : bilan', r[0]?.titre === 'Quel bilan voulez-vous ?' && r.filter((x) => /^Ouvrir le bilan/.test(x.titre)).length === 3 && r.some((x) => /du lundi 30 novembre au dimanche 6 décembre 2026/.test(x.titre)), `« bilan » devrait proposer trois périodes datées : ${JSON.stringify(r.map((x) => x.titre)).slice(0, 320)}`);
+      r = await barre('appelle un taxi pour les musiciens'); faux('assistant : non compris', /^Je n'ai pas compris « appelle un taxi pour les musiciens »$/.test(r[0]?.titre) && /Rien n'a été fait/.test(r[0].detail) && r.slice(1).length >= 4 && r.slice(1).every((x) => x.bouton === 'Choisir') && !r.some((x) => x.choisi), `une phrase non comprise : ${JSON.stringify(r).slice(0, 300)}`);
+      /* Une tâche : rien n'existe avant la validation ; après, elle est dans les tâches de l'équipe. */
+      r = await barre('tâche : sortir les boîtes de retrait samedi'); const avantT = ((await etat('commande')).taches?.liste || []).length;
+      faux('assistant : tâche proposée', /^Compris : créer une tâche$/.test(r[0]?.titre) && /^Créer la tâche « Sortir les boîtes de retrait », pour samedi 5 décembre$/.test(r[1]?.titre) && r[1].bouton === 'Valider' && avantT === 0, `la tâche devrait être proposée, pas créée : ${JSON.stringify(r).slice(0, 300)}`);
+      await page.keyboard.press('Enter'); await attendre(600); const tachesT = (await etat('commande')).taches?.liste || [];
+      faux('assistant : tâche créée', tachesT.length === 1 && tachesT[0].titre === 'Sortir les boîtes de retrait' && tachesT[0].echeance === '2026-12-05' && /Sortir les boîtes de retrait/.test(await texte('.esp-taches')) && /Tâche ajoutée/.test(await toast()), `après validation : ${JSON.stringify(tachesT).slice(0, 200)}, « ${await toast()} »`);
+      r = await barre('pourquoi la commande SC7-NADIA est bloquée ?'); faux('assistant : blocage', /SC7-NADIA/.test(r[0]?.titre) && r[1] && /^Ouvrir la commande SC7-NADIA/.test(r[1].titre), `l'explication d'une commande : ${JSON.stringify(r).slice(0, 300)}`);
+      if (taille.nom === '390×844') { const b = await page.evaluate(() => { const x = document.querySelector('.esp-cmd__boite').getBoundingClientRect(); return x.left < 0 || x.right > document.documentElement.clientWidth + 1 || x.bottom > innerHeight + 1; }); faux('assistant : écran', !b, 'la réponse de l\'assistant sort de l\'écran'); }
+      await fermerBarre();
+      /* Une recherche ambiguë (démonstration 5, avec une seconde « Camille » notée au téléphone) : un choix, rien n'est ouvert d'office. */
+      await ouvrirDemo('reception'); await aller(page, 'jour');
+      r = await barre('retrouve le dossier de Camille'); faux('assistant : dossier', /^Compris : retrouver le dossier de Camille R\.$/.test(r[0]?.titre) && r.some((x) => /^Dossier de réception/.test(x.titre)), `« retrouve le dossier de Camille » : ${JSON.stringify(r.map((x) => x.titre))}`);
+      r = await barre('table pour 2 vendredi 20 h au nom de Camille Durand'); await page.keyboard.press('Enter'); await attendre(600); await aller(page, 'jour');
+      r = await barre('retrouve le dossier de Camille'); faux('assistant : ambiguïté', /^Plusieurs personnes correspondent à « Camille »/.test(r[0]?.titre) && !r.some((x) => x.choisi) && r.slice(1).some((x) => /^Camille Durand/.test(x.titre)) && r.slice(1).some((x) => /^Camille R\./.test(x.titre)), `deux Camille : l'assistant devrait demander laquelle : ${JSON.stringify(r).slice(0, 360)}`);
+      await page.locator('#barre-liste li:not([data-barre-entete])', { hasText: 'Camille R.' }).click(); await attendre(700);
+      faux('assistant : dossier ouvert', await page.locator('.esp-cmd').isHidden() && /Camille R\./.test(await texte('.esp-modale:not([hidden]) h2, [data-esp-rendu="clients"]')), 'choisir « Camille R. » devrait ouvrir sa fiche'); await page.keyboard.press('Escape'); await attendre(250);
+
+      /* ===== E. Les bilans (démonstration 7 : deux commandes validées, dont une retirée) ===== */
+      await ouvrirDemo('commande'); await aller(page, 'jour');
+      if (tel) { await page.locator('[data-esp-plusnav-bouton]').click(); await attendre(250); await page.locator('[data-esp-plusnav] [data-bilan-ouvrir]').click(); } else await page.locator('[data-raccourcis] [data-bilan-ouvrir]').click(); await attendre(500);
+      const bil = async () => page.evaluate(() => ({ dates: document.querySelector('[data-bilan-dates]')?.textContent.replace(/\s+/g, ' '), periode: document.querySelector('[data-bilan]')?.dataset.bilan, v: Object.fromEntries([...document.querySelectorAll('[data-bilan-ind]')].map((b) => [b.dataset.bilanInd, b.querySelector('.esp-bilan__valeur b').textContent.trim()])), montant: document.querySelector('[data-bilan-ind="cmd-validees"] .esp-bilan__montant')?.textContent.replace(/\s+/g, ' ') }));
+      let b = await bil();
+      faux('bilan : période', b.periode === 'semaine' && /Période : du lundi 30 novembre au dimanche 6 décembre 2026/.test(b.dates) && /heure simulée du scénario/.test(b.dates), `la semaine en cours devrait être dite avec ses dates et son horloge : « ${b.dates} »`);
+      faux('bilan : chiffres', b.v['cmd-validees'] === '2' && b.v['cmd-retirees'] === '0' && b.v['cmd-a-preparer'] === '2' && /Montant des commandes concernées : 108 €/.test(b.montant) && b.v['carte-soldes'] === 'Non disponible' && b.v['carte-emises'] === '0' && b.v['suivi-taches'] === '1', `les chiffres du bilan : ${JSON.stringify(b).slice(0, 420)}`);
+      await page.locator('[data-bilan-ind="cmd-validees"]').focus(); await page.keyboard.press('Enter'); await attendre(400);
+      const det = await texte('[data-bilan-detail="cmd-validees"]'); faux('bilan : dossiers comptés', /2 dossiers comptés/.test(det) && /SC7-PAUL/.test(det) && /SC7-NADIA/.test(det) && await page.evaluate(() => document.activeElement?.matches('[data-bilan-detail]')), `le chiffre devrait s'ouvrir sur ses dossiers : « ${det.slice(0, 220)} »`);
+      await page.locator('[data-bilan-definition] > summary').click(); await attendre(200); faux('bilan : définition', /Date de rattachement Le jour de retrait de la commande/.test(await texte('[data-bilan-definition]')) && /Exclus/.test(await texte('[data-bilan-definition]')), `la définition devrait être lisible : « ${(await texte('[data-bilan-definition]')).slice(0, 200)} »`);
+      await debordement(page, 'le bilan, un chiffre détaillé');
+      await page.locator('[data-bilan-periode="precedente"]').click(); await attendre(350); b = await bil(); faux('bilan : semaine précédente', b.periode === 'precedente' && /du lundi 23 novembre au dimanche 29 novembre 2026/.test(b.dates) && b.v['cmd-validees'] === '0', `la semaine précédente : ${JSON.stringify(b).slice(0, 260)}`);
+      await page.locator('[data-bilan-periode="jour"]').click(); await attendre(350); await page.locator('[data-bilan-jour="1"]').click(); await attendre(300); b = await bil(); faux('bilan : le jour', b.periode === 'jour' && /Période : jeudi 3 décembre 2026/.test(b.dates) && b.v['resa-recus'] === 'Non disponible', `le jour suivant : ${JSON.stringify(b).slice(0, 260)}`);
+      await page.locator('[data-bilan-periode="semaine"]').click(); await attendre(300); await page.locator('[data-bilan-ind="cmd-validees"]').click(); await attendre(350); await page.locator('[data-bilan-dossier="0"]').click(); await attendre(600);
+      faux('bilan → dossier', /Commande SC7-/.test(await texte('#com-titre')), `« Ouvrir » devrait mener à la commande comptée : « ${await texte('#com-titre')} »`);
+
+      /* ===== F. La visite guidée ===== */
+      await page.goto(`${BASE}${P}?demo=`, { waitUntil: 'load' }); await attendrePret(page); if (await page.locator('[data-esp-app]').isHidden()) await page.locator('[data-esp-connexion] button[type="submit"]').click(); await attendre(800); await aller(page, 'jour');
+      if (tel) await page.locator('[data-visite-lancer]:visible').first().click(); else { await page.locator('.esp-tete [data-demo-lancer]:visible').first().click(); await attendre(400);
+        faux('visite : lanceur', /Commencer la visite/.test(await texte('[data-visite-carte]')) && (await page.locator('[data-demo-choisir]').count()) === 8, `le lanceur devrait proposer la visite et garder les huit démonstrations : « ${(await texte('[data-visite-carte]')).slice(0, 160)} »`); await page.locator('[data-visite-aller="0"]').click(); }
+      await page.waitForURL(/demo=service/, { timeout: 8000 }); await attendrePret(page); await attendre(1300);
+      const etape = async () => ({ n: await page.locator('[data-visite]').getAttribute('data-visite').catch(() => ''), sc: await page.locator('[data-esp-scene]').getAttribute('data-scenario'), titre: await texte('[data-visite-titre]'), vue: await page.locator('.esp-vue:not([hidden])').getAttribute('data-vue') });
+      let ev = await etape(); faux('visite : étape 1', ev.n === '1' && ev.sc === 'service' && ev.vue === 'jour' && /temps fort en cours/i.test(await texte('.esp-acc__service')) && /Voir comme/.test(await texte(tel ? '[data-metier-tel] summary' : '#t-metier')), `étape 1 : ${JSON.stringify(ev)}`); await debordement(page, 'la visite guidée, étape 1');
+      await page.locator('[data-visite-aller="1"]').focus(); await page.keyboard.press('Enter'); await attendre(600); ev = await etape(); faux('visite : étape 2', ev.n === '2' && ev.sc === 'service' && (await page.locator('[data-briefing]:visible').count()) >= 1, `étape 2 : ${JSON.stringify(ev)}`);
+      await page.locator('[data-visite-aller="2"]').click(); await page.waitForURL(/demo=commande/, { timeout: 8000 }); await attendrePret(page); await attendre(1300); ev = await etape();
+      faux('visite : étape 3', ev.n === '3' && ev.sc === 'commande' && ev.vue === 'jour' && /2 déc/.test(await texte('[data-scene-heure]')) && /déjà été jouée/.test(await texte('[data-visite-reserve]')) && (await etat('commande')).commerce.commandes['sc7-nadia']?.etat === 'validee', `étape 3 : la démonstration 7 devrait être reprise telle quelle (déjà jouée, et c'est dit) : ${JSON.stringify(ev)}`);
+      await page.locator('[data-visite-aller="3"]').click(); await page.waitForURL(/demo=reception/, { timeout: 8000 }); await attendrePret(page); await attendre(1300); ev = await etape(); faux('visite : étape 4', ev.n === '4' && ev.sc === 'reception', `étape 4 : ${JSON.stringify(ev)}`);
+      await page.locator('[data-visite-aller="4"]').click(); await page.waitForURL(/demo=commande/, { timeout: 8000 }); await attendrePret(page); await attendre(1300); ev = await etape(); faux('visite : étape 5', ev.n === '5' && ev.sc === 'commande' && (await page.locator('[data-visite-finir]').count()) === 1 && (await page.locator('[data-bilan-ouvrir]:visible').count()) >= (tel ? 0 : 1), `étape 5 : ${JSON.stringify(ev)}`);
+      await page.locator('[data-visite-quitter]').click(); await attendre(500); faux('visite : quitter', (await page.locator('[data-visite]').count()) === 0 && (await page.locator('[data-esp-scene]').getAttribute('data-scenario')) === 'commande', 'quitter la visite devrait laisser la démonstration ouverte');
+      await page.locator('[data-scene-etapes] > summary').click(); await page.locator('[data-scene-etapes] [data-demo-lancer]').click(); await attendre(400);
+      faux('visite : reprise', /Reprendre la visite à l'étape 5/.test(await texte('[data-visite-carte]')) && /ne remet rien à zéro/.test(await texte('[data-visite-carte]')), `le lanceur devrait proposer la reprise : « ${(await texte('[data-visite-carte]')).slice(0, 200)} »`); await debordement(page, 'le lanceur avec la visite');
+      await page.keyboard.press('Escape'); await attendre(250);
+      faux('données habituelles', (await habituel()) === temoin, 'les données habituelles (fictives) ont changé pendant le parcours');
+      [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, lieu));
+      R.ok(`espace : ${ou}`);
+    } catch (err) { R.echec(`${ou} : parcours interrompu`, String(err?.message || err).slice(0, 400), lieu);
+    } finally { await ctx.close(); }
+  }
+
   /* ---------- 2. Chaque rubrique, mesurée dans l'espace ---------- */
   async function mesurerEcran(page, taille, ou, complet) {
     await page.evaluate(installerOutils);
@@ -2249,6 +2415,12 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
       await page.locator('#barre-champ').fill('table pour 4 vendredi 20 h au nom de Martin'); await attendre(300); await mesurerEcran(page, taille, 'barre : proposition', false);
       const cmd = await page.evaluate(() => { const r = document.querySelector('.esp-cmd__boite').getBoundingClientRect(); return r.left < 0 || r.right > document.documentElement.clientWidth + 1 || r.bottom > innerHeight + 1; });
       if (cmd) R.echec('espace : barre', 'la barre sort de l’écran', { page: P, taille: taille.nom });
+      /* v7.15.0 : la réponse de l'assistant, un bilan détaillé, le lanceur avec la visite guidée. */
+      await page.locator('#barre-champ').fill('quelles demandes attendent une décision ?'); await attendre(300); await mesurerEcran(page, taille, 'assistant : une réponse', complet);
+      await page.locator('#barre-champ').fill('bilan de la semaine'); await attendre(300); await page.keyboard.press('Enter'); await attendre(500);
+      await page.locator('[data-bilan-ind="resa-reserves"]').click(); await attendre(350); await mesurerEcran(page, taille, 'bilan : un chiffre détaillé', complet);
+      await page.locator('[data-bilan-retour]').click(); await attendre(300);
+      await page.locator('[data-esp-plus]').click(); await attendre(250); await page.locator('[data-esp-plus-panneau] [data-demo-lancer]').click(); await attendre(400); await mesurerEcran(page, taille, 'lanceur : la visite guidée', complet);
       await page.keyboard.press('Escape');
       [...new Set(erreurs)].forEach((x) => R.echec('erreur de console ou ressource', x, { page: P, taille: taille.nom }));
       R.ok('espace : mesures');
