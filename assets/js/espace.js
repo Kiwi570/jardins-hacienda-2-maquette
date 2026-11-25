@@ -27,7 +27,7 @@
    v7.8.0 : le garde-fou métier du dépôt (une réservation impossible n'entre pas dans l'agenda), les heures d'arrivée du
    jour, l'ouverture exceptionnelle, l'annulation ciblée, les écritures différées jamais perdues. */
 import { creerDepot, estVide } from './espace-donnees.js?v=7';
-import { CONTEXTE, horloge as horlogeDemo, reglerHorloge, semer, viderContexte, viderScenario, scenarioEntame, avecContexte, vusDemo, noterVu, scenarioRecommence, porterContexte, refusEnregistrement } from './espace-stock.js?v=7';
+import { CONTEXTE, horloge as horlogeDemo, reglerHorloge, semer, viderContexte, viderScenario, scenarioEntame, avecContexte, vusDemo, noterVu, scenarioRecommence, porterContexte, refusEnregistrement, adopterEpoque } from './espace-stock.js?v=7';
 porterContexte();
 import { SCENARIOS, scenario as scenarioDe, depart as departScenario, avancement, sauts as sautsScenario, VISITE, etapeVisite } from './espace-scenarios.js?v=7';
 import { comprendre } from './espace-commandes.js?v=7';
@@ -45,6 +45,7 @@ import { lienVenue, venuesATraiter } from './espace-venue.js?v=7';
 import { creerClient } from './espace-vue-client.js?v=7';
 import { creerAccueil } from './espace-vue-accueil.js?v=7';
 import { creerBilan } from './espace-vue-bilan.js?v=7';
+import { creerMise } from './espace-vue-mise.js?v=7';
 import { assister, nonCompris, exemplesPour } from './espace-assistant.js?v=7';
 import { creerClients } from './espace-vue-clients.js?v=7';
 import { rechercher } from './espace-recherche.js?v=7';
@@ -83,7 +84,7 @@ export function init(root) {
   /* Un nom de scénario inconnu (lien ancien ou mal recopié) : retour à l'espace habituel, sans contexte vide. */
   if (CONTEXTE && !SC) { try { sessionStorage.removeItem('jh-demo'); } catch { /* rien */ } location.replace('/espace'); return; }
   let scenarioFrais = false;
-  if (SC) { if (!horlogeDemo()) scenarioFrais = semer(departScenario(SC.id, R, aujourdhui(new Date()).iso, { lieux: D.receptions, salle: D.salle })); fixerHorloge(() => horlogeDemo()); }
+  if (SC) { if (!horlogeDemo()) scenarioFrais = semer(departScenario(SC.id, R, aujourdhui(new Date()).iso, { lieux: D.receptions, salle: D.salle })); else adopterEpoque(); fixerHorloge(() => horlogeDemo()); }
   /* Aujourd'hui, à Moineville : relu au fil du temps (v7.8.1). Une page restée ouverte après minuit ne garde plus la veille. */
   const A = (() => { let t = 0, v = aujourdhui(); const lire = () => { if (Date.now() - t > 15000) { t = Date.now(); v = aujourdhui(); } return v; }; return { get iso() { return lire().iso; }, get min() { return lire().min; }, relire() { t = 0; return lire(); } }; })();
   /* Le garde-fou : avant d'enregistrer, le dépôt demande aux règles si l'action est possible (d'où qu'elle vienne). */
@@ -298,11 +299,14 @@ export function init(root) {
   const vAccueil = creerAccueil(X);
   /* v7.15.0 : les bilans, un écran d'Aujourd'hui (la navigation principale ne change pas). */
   const vBilan = creerBilan(X); X.ouvrirBilan = vBilan.ouvrir;
+  /* v7.16.0 : « Préparer l'outil pour votre restaurant », la mise en main des réglages existants (un écran d'Aujourd'hui, lui aussi). */
+  const vMise = creerMise(X); X.ouvrirMise = vMise.ouvrir;
+  const zoneRetourMise = document.createElement('p'); zoneRetourMise.className = 'esp-retour esp-mise__revenir'; zoneRetourMise.hidden = true; $('.esp-vues', root).prepend(zoneRetourMise);
   X.tachesDe = vAccueil.tachesDe;
   const vClients = creerClients(X);
 
   /* « Aujourd'hui » (v7.10.0) : dessiné par espace-vue-accueil.js. */
-  function rendreJour() { if (etat.ecranJour === 'bilan') vBilan.rendre(); else vAccueil.rendre(); }
+  function rendreJour() { if (etat.ecranJour === 'bilan') vBilan.rendre(); else if (etat.ecranJour === 'mise') vMise.rendre(); else vAccueil.rendre(); }
 
   function rendreResas() {
     const og = (id, nom) => `<button type="button" class="esp-onglet" role="tab" id="onglet-resas-${id}" aria-selected="${id === etat.ongletResas}" aria-controls="panneau-resas" tabindex="${id === etat.ongletResas ? 0 : -1}" data-onglet="${id}" data-onglets-resas>${nom}</button>`;
@@ -447,7 +451,7 @@ export function init(root) {
     /* Les soirées sont une offre : leur éditeur est dans Offres, et tout ce qui pointait vers « Site, Soirées » y mène. */
     if (etat.onglet === 'soirees') { etat.onglet = 'horaires'; etat.ongletCarte = 'soirees'; allerVue('carte'); return; }
     if (!ONGLETS.some(([id]) => id === etat.onglet)) etat.onglet = 'horaires';
-    $('[data-esp-rendu="site"]', root).innerHTML = `<div class="esp-onglets" role="tablist" aria-label="Ce que vous changez sur le site">${ONGLETS.map(([id, nom]) => `<button type="button" class="esp-onglet" role="tab" id="onglet-${id}" aria-selected="${id === etat.onglet}" aria-controls="panneau-site" tabindex="${id === etat.onglet ? 0 : -1}" data-onglet="${id}">${nom}</button>`).join('')}<button type="button" class="esp-onglet esp-onglet--renvoi" role="tab" aria-selected="false" tabindex="-1" data-onglet="soirees">Soirées <span aria-hidden="true">↗</span><span class="visuellement-cache"> : dans Offres</span></button></div>
+    $('[data-esp-rendu="site"]', root).innerHTML = `<p class="esp-mise__acces" data-mise-acces><button type="button" class="esp-lien" data-mise-ouvrir>Préparer l'outil pour votre restaurant</button> <span>Relire, rubrique par rubrique, les horaires, les capacités, les retraits, les tarifs et les cartes cadeaux.</span></p><div class="esp-onglets" role="tablist" aria-label="Ce que vous changez sur le site">${ONGLETS.map(([id, nom]) => `<button type="button" class="esp-onglet" role="tab" id="onglet-${id}" aria-selected="${id === etat.onglet}" aria-controls="panneau-site" tabindex="${id === etat.onglet ? 0 : -1}" data-onglet="${id}">${nom}</button>`).join('')}<button type="button" class="esp-onglet esp-onglet--renvoi" role="tab" aria-selected="false" tabindex="-1" data-onglet="soirees">Soirées <span aria-hidden="true">↗</span><span class="visuellement-cache"> : dans Offres</span></button></div>
       <div class="esp-panneau" id="panneau-site" role="tabpanel" aria-labelledby="onglet-${etat.onglet}" data-esp-panneau></div>`;
     ({ horaires: rendreHoraires, textes: rendreTextesSite, messages: vDemandes.rendreMessages, photos: rendrePhotos, publication: vOffres.rendrePublication })[etat.onglet]();
   }
@@ -475,6 +479,7 @@ export function init(root) {
     contexte = null;
     ({ jour: rendreJour, demandes: () => { if (etat.commerce && vCommerce.rendre()) return; if (!(etat.dossier && !API && vReceptions.rendreDossier())) vDemandes.rendre(); }, resas: rendreResas, carte: vCarte.rendre, clients: vClients.rendre, site: rendreSite })[etat.vue]();
     marquerNavMobile(); rendreScene();
+    { const h = vMise.retourHtml(); zoneRetourMise.innerHTML = h; zoneRetourMise.hidden = !h; }
     const n = enAttenteTotal();
     for (const b of $$('[data-esp-badge]', root)) { const on = b.dataset.espBadge === 'demandes' && n > 0; b.hidden = !on; if (on) { b.textContent = n; b.setAttribute('aria-label', `${n} à traiter`); } }
   }
@@ -575,6 +580,7 @@ export function init(root) {
     /* v7.15.0 : le briefing d'un service, un bilan, un écran des commandes et cartes (préparation d'un jour, carte, demande de carte). */
     if (p.aller?.briefing) { vAccueil.ouvrirBriefing(p.aller.briefing, $('[data-esp-quoi]', root)); return; }
     if (p.aller?.bilan) { vBilan.ouvrir(p.aller.bilan.periode, p.aller.bilan.jour); return; }
+    if (p.aller?.mise) { vMise.ouvrir(typeof p.aller.mise === 'string' ? p.aller.mise : ''); return; }
     if (p.aller?.commerce) { vCommerce.ouvrir(p.aller.commerce.ecran, p.aller.commerce.id || ''); if (p.aller.commerce.jour) { etat.commerce.jour = p.aller.commerce.jour; rendre(); $('#com-titre', root)?.focus({ preventScroll: true }); } return; }
     /* Une action refusée (règle ou enregistrement) n'ouvre rien : le message dit pourquoi, et l'écran reste où il était. */
     if (p.action && ok === false) { rendre(); return; }
@@ -666,13 +672,15 @@ export function init(root) {
   root.addEventListener('click', (ev) => {
     const t = ev.target;
     if (t.closest('[data-esp-plus]')) { ouvrirPlus(panneauPlus.hidden); return; }
-    const nav = t.closest('[data-esp-vue]'); if (nav) { etat.evEdite = null; etat.dossier = null; etat.commerce = null; etat.ecranJour = ''; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } if (nav.dataset.espVue === 'resas' && nav.closest('[data-esp-plusnav]')) etat.ongletResas = 'agenda'; allerVue(nav.dataset.espVue); return; }
+    const nav = t.closest('[data-esp-vue]'); if (nav) { etat.miseRetour = false; etat.evEdite = null; etat.dossier = null; etat.commerce = null; etat.ecranJour = ''; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } if (nav.dataset.espVue === 'resas' && nav.closest('[data-esp-plusnav]')) etat.ongletResas = 'agenda'; allerVue(nav.dataset.espVue); return; }
     /* Téléphone : « Service » ouvre le service en cours ou le prochain ; « Plus », les autres rubriques. */
     if (t.closest('[data-esp-service]')) { const ps = prochainServiceIci(); etat.evEdite = null; if (ps) { etat.jour = ps.date; etat.serviceVu = ps.service; } etat.ongletResas = 'service'; allerVue('resas'); return; }
     if (t.closest('[data-esp-plusnav-bouton]')) { ouvrirPlusNav($('[data-esp-plusnav]', root).hidden); return; }
     if (t.closest('[data-voir-demande], [data-aller], [data-rec-ouvrir], [data-voir-resa]')) etat.commerce = null;
     if (t.closest('[data-bilan-ouvrir]')) { ouvrirPlus(false, false); ouvrirPlusNav(false); }
     if (vBilan.clic(t)) return;
+    if (t.closest('[data-mise-ouvrir], [data-mise-revenir]')) { ouvrirPlus(false, false); ouvrirPlusNav(false); }
+    if (vMise.clic(t)) return;
     if (vCommerce.clic(t)) return;
     if (t.closest('[data-voir-demande], [data-aller]')) { etat.dossier = null; try { sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } }
     if (vOffres.clic(t)) return;
@@ -790,6 +798,20 @@ export function init(root) {
      l'étape où l'on en est (pour reprendre : `jh-demo:visite:v1`, dans ce navigateur) et « cet onglet suit la visite »
      (mémoire de l'onglet, ou l'adresse `&visite=N`). Elle ne lit, ne copie et n'efface aucune donnée : passer d'une étape
      à l'autre REPREND la démonstration concernée là où elle en est. */
+  /* ---------- v7.16.0 · Un bandeau développé ou compact ----------
+     « Réduire les consignes » ne garde que le repère (Démonstration, scénario ou étape, heure simulée) et le bouton qui les
+     rend. Le choix vaut pour toute la démonstration, d'un scénario à l'autre : il est noté dans l'espace des démonstrations
+     (`jh-demo:bandeau:v1`), jamais dans les réglages habituels. Réduire ne change ni le scénario, ni l'heure, ni une donnée. */
+  const CLE_BANDEAU = 'jh-demo:bandeau:v1'; let bandeauCompact = null;
+  const bandeau = {
+    compact() { if (bandeauCompact === null) { try { bandeauCompact = localStorage.getItem(CLE_BANDEAU) === 'compact'; } catch { bandeauCompact = false; } } return bandeauCompact; },
+    regler(on) { bandeauCompact = !!on; try { if (on) localStorage.setItem(CLE_BANDEAU, 'compact'); else localStorage.removeItem(CLE_BANDEAU); } catch { /* le choix vaut alors pour cette page */ } },
+  };
+  /* Une saisie commencée et pas encore enregistrée, dans l'écran affiché : un champ de formulaire dont la valeur n'est plus celle dessinée. */
+  const saisieEnCours = () => $$('.esp-vue:not([hidden]) form :is(input, textarea, select)', root).some((c) => { if (c.disabled || ['hidden', 'search', 'submit', 'button', 'file'].includes(c.type) || c.closest('[hidden]')) return false;
+    if (c.type === 'checkbox' || c.type === 'radio') return c.checked !== c.defaultChecked;
+    if (c.tagName === 'SELECT') { const d = [...c.options].findIndex((o) => o.defaultSelected); return c.selectedIndex !== (d < 0 ? 0 : d); }
+    return c.value !== c.defaultValue; });
   const CLE_VISITE = 'jh-demo:visite:v1';
   const visite = {
     memoire() { try { const v = JSON.parse(localStorage.getItem(CLE_VISITE) || 'null'); return v && Number.isInteger(v.etape) ? v : null; } catch { return null; } },
@@ -798,21 +820,29 @@ export function init(root) {
     active() { if (API) return false; if (this.parAdresse() !== null) return true; try { return sessionStorage.getItem('jh-visite') === '1'; } catch { return false; } },
     suivre(on) { try { if (on) sessionStorage.setItem('jh-visite', '1'); else sessionStorage.removeItem('jh-visite'); } catch { /* rien */ } },
     etape() { const n = this.parAdresse() ?? this.memoire()?.etape ?? 0; return etapeVisite(n, { S: S(), venues: depot.venues(), vus: vusDemo(), demandes: depot.demandesSite() }); },
-    /** Aller à l'étape n : même démonstration → on reste ; une autre → on la REPREND (son adresse la nomme, rien n'est effacé). */
-    aller(n) { const e = etapeVisite(n); this.noter(e.n); this.suivre(true); try { sessionStorage.setItem('jh-espace-vue', 'jour'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ }
-      if (SC?.id === e.scenario && this.parAdresse() === null) { etat.dossier = null; etat.commerce = null; etat.ecranJour = ''; allerVue('jour', false); $('[data-visite-titre]', root)?.focus({ preventScroll: true }); scrollTo({ top: 0, behavior: 'instant' }); return; }
+    /** L'adresse suit l'étape sans recharger la page (seulement si elle nommait déjà la visite). */
+    adresse(n) { try { if (this.parAdresse() !== null) history.replaceState(history.state, '', `/espace?demo=${SC?.id || ''}${n == null ? '' : `&visite=${n}`}`); } catch { /* l'adresse reste telle quelle : l'étape est notée ailleurs */ } },
+    attente: null,
+    /** Aller à l'étape n. Même contexte (même démonstration, même époque) : navigation interne, sans rechargement, données et heure
+        gardées. Autre démonstration, ou page d'avant un « Recommencer » : navigation complète, qui REPREND la démonstration
+        concernée (son adresse la nomme, rien n'est effacé). Une saisie en cours n'est jamais écrasée sans le dire. */
+    aller(n, { force = false } = {}) { const e = etapeVisite(n);
+      if (!force && saisieEnCours()) { this.attente = e.n; rendreScene(); $('[data-visite-saisie]', root)?.focus({ preventScroll: true }); $('[data-visite-saisie]', root)?.scrollIntoView({ block: 'nearest', behavior: 'instant' }); return; }
+      this.attente = null; etat.miseRetour = false; this.noter(e.n); this.suivre(true); try { sessionStorage.setItem('jh-espace-vue', 'jour'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ }
+      if (SC?.id === e.scenario && !scenarioRecommence()) { this.adresse(e.numero); etat.dossier = null; etat.commerce = null; etat.ecranJour = ''; allerVue('jour', false); ($('[data-visite-titre]:not([hidden] *)', root) || $('[data-scene-titre]', root))?.focus({ preventScroll: true }); scrollTo({ top: 0, behavior: 'instant' }); return; }
       location.assign(`/espace?demo=${e.scenario}&visite=${e.numero}`); },
-    quitter() { this.suivre(false); if (this.parAdresse() !== null) { location.assign(`/espace?demo=${SC?.id || ''}`); return; } rendreScene(); $('[data-scene-etapes] > summary', root)?.focus({ preventScroll: true }); dire('Visite guidée quittée : la démonstration en cours reste ouverte, telle qu\'elle est.'); },
+    quitter() { this.suivre(false); this.attente = null; this.adresse(null); rendreScene(); ($('[data-scene-etapes]:not([hidden] *) > summary', root) || $('[data-scene-reduire]', root))?.focus({ preventScroll: true }); dire('Visite guidée quittée : la démonstration en cours reste ouverte, telle qu\'elle est.'); },
   };
   if (visite.parAdresse() !== null) { visite.suivre(true); visite.noter(visite.parAdresse()); }
   function visiteHtml() {
     const v = visite.etape(), ici = SC?.id === v.scenario;
     return `<div class="esp-visite" data-visite="${v.numero}" data-visite-scenario="${e(v.scenario)}" role="group" aria-labelledby="visite-titre">
       <p class="esp-visite__ou"><span class="esp-source esp-source--site">Visite guidée · étape ${v.numero} sur ${v.total}</span> <b id="visite-titre" tabindex="-1" data-visite-titre>${e(v.titre)}</b></p>
-      ${ici ? `<p class="esp-visite__consigne" data-visite-consigne>${e(v.consigne)}</p>${v.reserve ? `<p class="esp-visite__reserve" data-visite-reserve role="status">${e(v.reserve)}</p>` : ''}<p class="esp-visite__montre"><b>Ce que cela montre&nbsp;:</b> ${e(v.montre)}</p>`
+      ${ici ? `<p class="esp-visite__consigne" data-visite-consigne>${e(v.consigne)}</p>${v.reserve ? `<div class="esp-visite__reserve" data-visite-reserve role="status"><p><b>Étape déjà accomplie.</b> ${e(v.reserve)}</p><p class="esp-visite__commandes"><button type="button" class="esp-bouton" data-scene-recommencer>Recommencer ce scénario</button></p></div>` : ''}<p class="esp-visite__montre"><b>Ce que cela montre&nbsp;:</b> ${e(v.montre)}</p>`
         : `<p class="esp-visite__consigne" data-visite-ailleurs>Cette étape se joue dans la démonstration ${v.demo.numero}, « ${e(v.demo.titre)} ». Vous êtes dans une autre démonstration : rien n'y est changé.</p>`}
       <p class="esp-visite__commandes">${v.precedente ? `<button type="button" class="esp-bouton" data-visite-aller="${v.n - 1}">Étape précédente</button>` : ''}
         ${!ici ? `<button type="button" class="esp-bouton esp-bouton--ok" data-visite-aller="${v.n}">Aller à l'étape ${v.numero}</button>` : v.suivante ? `<button type="button" class="esp-bouton esp-bouton--ok" data-visite-aller="${v.n + 1}">Étape suivante&nbsp;: ${e(v.suivante.titre)}</button>` : '<button type="button" class="esp-bouton esp-bouton--ok" data-visite-finir>Terminer la visite</button>'}
+        ${ici && !v.suivante ? '<button type="button" class="esp-bouton" data-mise-ouvrir>Préparer l\'outil pour votre restaurant</button>' : ''}
         <button type="button" class="esp-bouton esp-bouton--discret" data-visite-quitter>Quitter la visite</button></p>
       <p class="esp-aide esp-visite__aide">Passer d'une étape à l'autre reprend chaque démonstration là où elle en est : la visite ne remet rien à zéro. Chaque démonstration garde sa date, son heure et ses données.</p></div>`;
   }
@@ -825,18 +855,23 @@ export function init(root) {
     const a = etatScene(), ouvert = zoneScene.querySelector('[data-scene-etapes]')?.open;
     zoneScene.hidden = false; zoneScene.dataset.scenario = SC.id; zoneScene.classList.toggle('est-finie', a.fini); zoneScene.setAttribute('role', 'region'); zoneScene.setAttribute('aria-label', `Démonstration : ${SC.titre}`);
     { const dit = typo(visite.active() ? `Visite guidée, étape ${visite.etape().numero} sur ${visite.etape().total} : ${visite.etape().titre}.` : a.fini ? `Démonstration terminée. ${a.conclusion}` : `À essayer maintenant : ${a.prochaine.texte}`); if (ditScene === null) ditScene = dit; else if (dit !== ditScene) { ditScene = dit; annonceScene.textContent = dit; } }
-    zoneScene.innerHTML = typo(`<div class="esp-scene__tete"><p class="esp-scene__nom"><span class="esp-source">Démonstration ${SC.numero} sur ${SCENARIOS.length}</span> <b>${e(SC.titre)}</b></p>
+    const compact = bandeau.compact(), vis = visite.active() ? visite.etape() : null; zoneScene.classList.toggle('est-compacte', compact);
+    zoneScene.innerHTML = typo(`<div class="esp-scene__tete"><p class="esp-scene__nom"><span class="esp-source">Démonstration ${SC.numero} sur ${SCENARIOS.length}</span> <b tabindex="-1" data-scene-titre>${compact && vis && vis.scenario === SC.id ? `Visite guidée, étape ${vis.numero} sur ${vis.total} : ${e(vis.titre)}` : e(SC.titre)}</b></p>
         <p class="esp-scene__heure" data-scene-heure><span class="visuellement-cache">Date et heure simulées : </span><span class="esp-long">${e(heureSimulee())}</span><span class="esp-court" aria-hidden="true">${e(maj(fmt(A.iso, { weekday: 'short', day: 'numeric', month: 'short' })))}, ${heure(hhmm(A.min))}</span> <small>heure simulée</small></p>
-        <button type="button" class="esp-bouton esp-scene__avancer" data-scene-avancer aria-label="Avancer de 15 minutes"><span class="esp-long">Avancer de 15 minutes</span><span class="esp-court" aria-hidden="true">+ 15 min</span></button></div>
-      ${visite.active() ? visiteHtml() : `<p class="esp-scene__essayer" data-scene-essayer>${a.fini ? `<b>C'est fait.</b> ${e(a.conclusion)}` : `<b>À essayer maintenant&nbsp;:</b> ${e(a.prochaine.texte)}`}</p>`}
-      <details class="esp-scene__plus" data-scene-etapes${ouvert ? ' open' : ''}><summary>${visite.active() ? `Démonstration ${SC.numero} : étapes ${a.faites} sur ${a.etapes.length}, et commandes` : `Étapes ${a.faites} sur ${a.etapes.length}, et commandes`}</summary>
-        ${visite.active() ? `<p class="esp-scene__variante" data-scene-essayer>${a.fini ? `Démonstration terminée. ${e(a.conclusion)}` : `Dans cette démonstration, l'étape suivante serait : ${e(a.prochaine.texte)}`}</p>` : ''}
+        <button type="button" class="esp-bouton esp-scene__avancer" data-scene-avancer aria-label="Avancer de 15 minutes"><span class="esp-long">Avancer de 15 minutes</span><span class="esp-court" aria-hidden="true">+ 15 min</span></button>
+        <button type="button" class="esp-bouton esp-scene__reduire" data-scene-reduire aria-expanded="${!compact}" aria-controls="scene-consignes">${compact ? 'Afficher les consignes' : 'Réduire les consignes'}</button></div>
+      ${visite.attente !== null && vis ? `<div class="esp-visite__saisie" data-visite-saisie role="alert" tabindex="-1"><p><b>Une saisie est en cours sur cet écran.</b> Elle n'est pas enregistrée : changer d'étape maintenant l'effacerait.</p>
+        <p class="esp-visite__commandes"><button type="button" class="esp-bouton esp-bouton--ok" data-visite-rester>Rester sur cet écran</button><button type="button" class="esp-bouton" data-visite-aller="${visite.attente}" data-visite-force>Changer d'étape sans enregistrer</button></p></div>` : ''}
+      <div class="esp-scene__consignes" id="scene-consignes" data-scene-consignes${compact ? ' hidden' : ''}>
+      ${vis ? visiteHtml() : `<p class="esp-scene__essayer" data-scene-essayer>${a.fini ? `<b>C'est fait.</b> ${e(a.conclusion)}` : `<b>À essayer maintenant&nbsp;:</b> ${e(a.prochaine.texte)}`}</p>`}
+      <details class="esp-scene__plus" data-scene-etapes${ouvert ? ' open' : ''}><summary>${vis ? `Démonstration ${SC.numero} : étapes ${a.faites} sur ${a.etapes.length}, et commandes` : `Étapes ${a.faites} sur ${a.etapes.length}, et commandes`}</summary>
+        ${vis ? `<p class="esp-scene__variante" data-scene-essayer>${a.fini ? `Démonstration terminée. ${e(a.conclusion)}` : `Dans cette démonstration, l'étape suivante serait : ${e(a.prochaine.texte)}`}</p>` : ''}
         <ol class="esp-scene__etapes">${a.etapes.map((x) => `<li class="${x.fait ? 'est-faite' : ''}"><span class="esp-scene__coche" aria-hidden="true">${x.fait ? '✓' : ''}</span><span>${e(x.texte)}<span class="visuellement-cache">${x.fait ? ' (fait)' : ' (à faire)'}</span></span></li>`).join('')}</ol>
         ${SC.variante ? `<p class="esp-scene__variante">${e(SC.variante)}</p>` : ''}
         ${SC.variantes ? `<div class="esp-scene__variantes"><p class="esp-scene__sous">${['', 'Une variante', 'Deux variantes', 'Trois variantes', 'Quatre variantes', 'Cinq variantes', 'Six variantes', 'Sept variantes', 'Huit variantes'][SC.variantes.length] || `${SC.variantes.length} variantes`} à rejouer</p><ul>${SC.variantes.map((x) => `<li><b>${e(x.titre)}.</b> ${e(x.texte)}</li>`).join('')}</ul></div>` : ''}
         ${sautsScenario(SC.id, { S: S(), iso: A.iso, min: A.min }).length ? `<div class="esp-scene__sauts" data-scene-sauts><p class="esp-scene__sous">Avancer dans le temps</p><p class="esp-scene__commandes">${sautsScenario(SC.id, { S: S(), iso: A.iso, min: A.min }).map((x) => `<button type="button" class="esp-bouton" data-scene-saut="${x.cle}"${x.cible ? '' : ` aria-disabled="true" title="${e(x.raison)}"`}>${e(x.libelle)}</button>`).join('')}</p><p class="esp-aide">Avancer l'heure n'accepte rien et ne confirme rien : seules ses conséquences s'appliquent (une option qui arrive à échéance expire, une carte cadeau atteint sa date de fin).</p></div>` : ''}
         <p class="esp-scene__commandes"><button type="button" class="esp-bouton" data-scene-recommencer>Recommencer ce scénario</button><button type="button" class="esp-bouton" data-demo-lancer>Changer de scénario</button><button type="button" class="esp-bouton esp-bouton--discret" data-scene-quitter>Quitter la démonstration</button></p>
-        <p class="esp-aide">Données fictives, dans un espace à part : vos données habituelles ne sont pas touchées. Rien n'est envoyé.</p></details>`);
+        <p class="esp-aide">Données fictives, dans un espace à part : vos données habituelles ne sont pas touchées. Rien n'est envoyé.</p></details></div>`);
   }
   /* Une étape « regarder » : notée une seule fois, hors de l'état (elle ne s'annule pas avec « Annuler »). */
   X.demoVu = (cle) => { if (SC && noterVu(cle)) rendreScene(); };
@@ -858,7 +893,7 @@ export function init(root) {
       <div class="esp-demo-choix"><p class="esp-demo-choix__intro">${['', 'Une situation prête', 'Deux situations prêtes', 'Trois situations prêtes', 'Quatre situations prêtes', 'Cinq situations prêtes', 'Six situations prêtes', 'Sept situations prêtes', 'Huit situations prêtes'][SCENARIOS.length] || 'Des situations prêtes'} à montrer, avec leurs données fictives, leur date et leur heure. Vos données habituelles restent à part&nbsp;: vous les retrouvez en quittant.</p>
         ${(() => { const m = visite.memoire(), v = etapeVisite(m?.etape || 0), utilises = [...new Set(VISITE.etapes.map((x) => scenarioDe(x.scenario).numero))].sort();
           return `<section class="esp-demo-visite" aria-labelledby="visite-carte-titre" data-visite-carte><h3 id="visite-carte-titre">${VISITE.titre} <span class="esp-source">${VISITE.duree}</span></h3>
-            <p>Cinq étapes pour montrer l'ensemble : comprendre sa journée, préparer le service, traiter une priorité, retrouver un dossier avec l'assistant, consulter un bilan. Elle passe par les démonstrations ${utilises.slice(0, -1).join(', ')} et ${utilises.at(-1)}, qui gardent chacune leur date, leur heure et leurs données.</p>
+            <p>Cinq étapes pour montrer l'ensemble : comprendre sa journée, préparer son équipe, traiter une priorité, retrouver un dossier rapidement, comprendre les chiffres et leurs sources. Elle passe par les démonstrations ${utilises.slice(0, -1).join(', ')} et ${utilises.at(-1)}, qui gardent chacune leur date, leur heure et leurs données.</p>
             <ol class="esp-demo-visite__etapes">${VISITE.etapes.map((x, i) => `<li${m && i === v.n ? ' aria-current="step"' : ''}><b>${e(x.titre)}</b> <span>démonstration ${scenarioDe(x.scenario).numero}</span></li>`).join('')}</ol>
             <p class="esp-demo-carte__actions">${m ? `<button type="button" class="bouton" data-visite-aller="${v.n}">Reprendre la visite à l'étape ${v.numero}</button><button type="button" class="esp-bouton" data-visite-aller="0">Reprendre à l'étape 1</button>` : '<button type="button" class="bouton" data-visite-aller="0">Commencer la visite</button>'}</p>
             <p class="esp-aide">La visite ne remet rien à zéro : elle reprend chaque démonstration là où elle en est. Pour repartir d'un état neuf, « Lancer depuis le début » la démonstration voulue, ci-dessous.</p></section>
@@ -873,9 +908,12 @@ export function init(root) {
   root.addEventListener('click', (ev) => {
     const t = ev.target;
     if (t.closest('[data-visite-lancer]')) { ouvrirPlus?.(false, false); ouvrirPlusNav(false); const m = visite.memoire(); if (m) ouvrirLanceur(t.closest('[data-visite-lancer]')); else visite.aller(0); return; }
-    const va = t.closest('[data-visite-aller]'); if (va) { fermerLanceur(); visite.aller(+va.dataset.visiteAller); return; }
+    /* v7.16.0 : réduire ou développer le bandeau ne touche qu'à son affichage. */
+    if (t.closest('[data-scene-reduire]') && SC) { bandeau.regler(!bandeau.compact()); rendreScene(); $('[data-scene-reduire]', root)?.focus({ preventScroll: true }); return; }
+    if (t.closest('[data-visite-rester]')) { visite.attente = null; rendreScene(); ($('[data-visite-titre]:not([hidden] *)', root) || $('[data-scene-reduire]', root))?.focus({ preventScroll: true }); return; }
+    const va = t.closest('[data-visite-aller]'); if (va) { fermerLanceur(); visite.aller(+va.dataset.visiteAller, { force: va.hasAttribute('data-visite-force') }); return; }
     if (t.closest('[data-visite-quitter]')) { visite.quitter(); return; }
-    if (t.closest('[data-visite-finir]')) { visite.suivre(false); visite.noter(0); if (visite.parAdresse() !== null) { location.assign(`/espace?demo=${SC?.id || ''}`); return; } rendreScene(); dire('Visite terminée. Les huit démonstrations complètes restent disponibles : « Changer de scénario ».'); $('[data-scene-etapes] > summary', root)?.focus({ preventScroll: true }); return; }
+    if (t.closest('[data-visite-finir]')) { visite.suivre(false); visite.attente = null; visite.noter(0); visite.adresse(null); rendreScene(); dire('Visite terminée. Les huit démonstrations complètes restent disponibles : « Changer de scénario ».', { action: { libelle: 'Préparer l\'outil pour votre restaurant', faire: () => vMise.ouvrir() } }); ($('[data-scene-etapes]:not([hidden] *) > summary', root) || $('[data-scene-reduire]', root))?.focus({ preventScroll: true }); return; }
     const lancer = t.closest('[data-demo-lancer]'); if (lancer) { ouvrirPlus?.(false, false); ouvrirLanceur(lancer.closest('[data-esp-plus-panneau]') ? $('[data-esp-plus]', root) : lancer); return; }
     if (t.closest('[data-scene-avancer]') && SC) { const h = horlogeDemo(); if (!h) return; if (h.min + 15 >= 24 * 60) { dire('La journée simulée se termine : recommencez le scénario pour revenir au début.'); return; }
       reglerHorloge({ iso: h.iso, min: h.min + 15 }); A.relire(); contexte = null; rendre(); dire(`Il est maintenant ${heure(hhmm(A.min))} (heure simulée).`); $('[data-scene-avancer]', root)?.focus(); return; }
@@ -884,7 +922,7 @@ export function init(root) {
       if (!x.cible) { dire(x.raison); return; }
       reglerHorloge(x.cible); A.relire(); contexte = null; rendre(); dire(`Nous sommes maintenant le ${fmt(A.iso, { weekday: 'long', day: 'numeric', month: 'long' })}, ${heure(hhmm(A.min))} (heure simulée).`); $(`[data-scene-saut="${x.cle}"]`, root)?.focus(); return; }
     /* Recommencer : seules les données fictives de CE scénario sont effacées, puis réécrites à leur état de départ. */
-    if (t.closest('[data-scene-recommencer]') && SC) { viderContexte(); try { sessionStorage.removeItem('jh-espace-vue'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } location.assign(`/espace?demo=${SC.id}`); return; }
+    if (t.closest('[data-scene-recommencer]') && SC) { viderContexte(); try { sessionStorage.removeItem('jh-espace-vue'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } location.assign(`/espace?demo=${SC.id}${visite.active() ? `&visite=${visite.etape().numero}` : ''}`); return; }
     if (t.closest('[data-scene-quitter]')) { visite.suivre(false); try { sessionStorage.removeItem('jh-espace-vue'); sessionStorage.removeItem('jh-espace-dossier'); } catch { /* rien */ } location.assign('/espace?demo='); }
   });
   /* Dans un scénario : « Voir le site » garde le contexte ; « Tout remettre comme livré » laisse la place à « Recommencer ». */

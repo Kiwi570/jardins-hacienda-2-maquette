@@ -83,6 +83,11 @@ export function noterVu(cle) { if (!CONTEXTE) return false; try { const j = jour
    brouillon ni une ancienne demande. */
 const lireEpoque = () => { if (!CONTEXTE) return ''; try { return String(JSON.parse(localStorage.getItem(CLE_HORLOGE) || 'null')?.epoque || ''); } catch { return ''; } };
 let EPOQUE_PAGE = lireEpoque();
+/** v7.16.0 : l'espace, à son démarrage, appartient au départ qu'il trouve. Entre la lecture ci-dessus et le moment où
+    l'espace regarde s'il doit semer le scénario, un autre onglet (une ancienne page qui se recharge après un
+    « Recommencer ») a pu poser le nouveau départ : la page, qui n'a encore rien lu ni affiché, adopte cette époque au
+    lieu de se croire périmée dès sa naissance. À n'appeler qu'au démarrage, avant toute lecture de l'état. */
+export function adopterEpoque() { EPOQUE_PAGE = lireEpoque(); }
 /** Le scénario de cet onglet a-t-il été recommencé (ou effacé) depuis le chargement de cette page ? Toujours false hors démonstration. */
 export const scenarioRecommence = () => !!CONTEXTE && lireEpoque() !== EPOQUE_PAGE;
 /* v7.15.0 : la même décision de contexte vaut jusqu'au dernier enregistrement. Quand le contexte est indéterminable

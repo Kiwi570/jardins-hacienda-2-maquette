@@ -21,24 +21,25 @@ export function creerBilan(X) {
   function tuile(x, ouvert) {
     const n = x.dossiers.length, det = [x.detail || '', x.unite === 'euro' && x.valeur != null ? 'utilisable (cartes actives)' : ''].filter(Boolean).join(' · ');
     return `<li class="esp-bilan__ind${x.sous ? ' est-sous' : ''}${x.valeur == null ? ' est-nd' : ''}"><button type="button" class="esp-bilan__tuile" data-bilan-ind="${e(x.id)}" aria-expanded="${ouvert}" aria-controls="bilan-detail-${e(x.domaine)}">
-        <span class="esp-bilan__nom">${x.sous ? '<span class="esp-bilan__dont">dont</span> ' : ''}${e(x.libelle)}${x.portee === 'instant' ? ' <span class="esp-source">En ce moment</span>' : ''}</span>
+        <span class="esp-bilan__nom">${x.sous ? '<span class="esp-bilan__dont">dont</span> ' : ''}${e(x.libelle)}${x.portee === 'instant' ? ' <span class="esp-source">En ce moment</span>' : ''}${x.precision ? ` <span class="esp-source" data-bilan-precision>${e(x.precision)}</span>` : ''}</span>
         <span class="esp-bilan__valeur"><b>${valeur(x)}</b>${unite(x) ? ` <span>${e(unite(x))}</span>` : ''}</span>
         ${x.valeur == null ? `<span class="esp-bilan__raison">${e(x.raison || 'Cette mesure n\'est pas calculable ici.')}</span>` : det ? `<span class="esp-bilan__detail">${e(det)}</span>` : ''}
         ${x.montantLibelle ? `<span class="esp-bilan__montant">${e(x.montantLibelle)} : <b>${x.montant == null ? 'non disponible' : e(eu(x.montant))}</b></span>` : ''}
         ${(x.parts || []).filter((p) => p.cle !== 'utilisable').map((p) => `<span class="esp-bilan__montant esp-bilan__montant--hors">${e(p.libelle)} : <b>${e(eu(p.montant))}</b>${p.n ? ` (${pluriel(p.n, 'carte')})` : ''}</span>`).join('')}
-        <span class="esp-bilan__voir">${ouvert ? 'Masquer le détail' : n ? `Voir ${n > 1 ? `les ${n} dossiers comptés` : 'le dossier compté'}` : 'Comment est-ce compté ?'}</span></button></li>`;
+        <span class="esp-bilan__voir">${ouvert ? 'Masquer le détail' : n ? `Voir ${x.unite === 'version' ? (n > 1 ? `les ${n} versions comptées` : 'la version comptée') : n > 1 ? `les ${n} dossiers comptés` : 'le dossier compté'}` : 'Comment est-ce compté ?'}</span></button></li>`;
   }
   function detail(x) {
     const d = x.definition, l = x.dossiers;
     return `<div class="esp-bilan__detailbloc" id="bilan-detail-${e(x.domaine)}" data-bilan-detail="${e(x.id)}" tabindex="-1" role="region" aria-label="Détail : ${e(x.libelle)}">
-      <h5>${e(x.libelle)} : ${x.valeur == null ? 'non disponible' : `${l.length ? pluriel(l.length, 'dossier compté').replace('dossier comptés', 'dossiers comptés') : 'aucun dossier compté'}`}</h5>
+      <h5>${e(x.libelle)} : ${x.valeur == null ? 'non disponible' : x.unite === 'version' ? (l.length ? `${l.length} ${l.length > 1 ? 'versions comptées' : 'version comptée'}` : 'aucune version comptée') : `${l.length ? pluriel(l.length, 'dossier compté').replace('dossier comptés', 'dossiers comptés') : 'aucun dossier compté'}`}</h5>
+      ${x.note ? `<p class="esp-bilan__note" data-bilan-note>${e(x.note)}</p>` : ''}
       ${x.aPart ? `<p class="esp-com-alerte">${e(x.aPart)}</p>` : ''}
       ${l.length ? `<ul class="esp-bilan__dossiers">${l.map((y, i) => `<li><span class="esp-bilan__dossier"><b>${e(y.titre)}</b><small>${e(y.detail)}</small></span><button type="button" class="esp-bouton" data-bilan-dossier="${i}" aria-label="Ouvrir : ${e(y.titre)}">Ouvrir</button></li>`).join('')}</ul>`
-        : `<p class="esp-vide">${x.valeur == null ? e(x.raison || 'Non disponible.') : 'Aucun dossier ne correspond sur cette période : zéro est ici un vrai zéro.'}</p>`}
+        : `<p class="esp-vide">${x.valeur == null ? e(x.raison || 'Non disponible.') : (x.unite === 'version' ? 'Aucune version n\'a été acceptée sur cette période : zéro est ici un vrai zéro.' : 'Aucun dossier ne correspond sur cette période : zéro est ici un vrai zéro.')}</p>`}
       <details class="esp-bilan__def" data-bilan-definition><summary>Comment est-ce compté ?</summary><dl>
         <dt>Ce qui est compté</dt><dd>${e(d.compte)}</dd><dt>Inclus</dt><dd>${e(d.inclus)}</dd><dt>Exclus</dt><dd>${e(d.exclus)}</dd>
         <dt>Date de rattachement</dt><dd>${e(d.date)}</dd><dt>Source</dt><dd>${e(d.source)}</dd><dt>Donnée manquante</dt><dd>${e(d.manquant)}</dd>
-        ${x.taux ? `<dt>Calcul</dt><dd>${x.taux.numerateur} ÷ ${x.taux.denominateur} = ${Math.round(x.taux.valeur * 100)} %</dd>` : ''}</dl></details></div>`;
+        ${x.taux ? `${x.commences ? `<dt>Jours commencés</dt><dd>${e(x.commences.debut === x.commences.fin ? fmt(x.commences.debut, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : `du ${fmt(x.commences.debut, { weekday: 'long', day: 'numeric', month: 'long' })} au ${fmt(x.commences.fin, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}`)}</dd>` : ''}<dt>Calcul</dt><dd>${pluriel(x.taux.numerateur, 'couvert')} ${x.taux.numerateur > 1 ? 'notés arrivés' : 'noté arrivé'} ÷ ${pluriel(x.taux.denominateur, 'couvert')} (confirmés, arrivés ou absents) = ${Math.round(x.taux.valeur * 100)} %</dd>` : ''}</dl></details></div>`;
   }
 
   function rendre() {
