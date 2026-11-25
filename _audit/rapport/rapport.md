@@ -1,15 +1,15 @@
 # Rapport d’audit
 
-Projet : `jardins-hacienda-2-maquette` · 24/11/2026 22:37:04 · 63 min · 3 page(s) · audit complet ciblé sur /,/a-emporter,/espace (étapes : fichiers, mesures, parcours)
+Projet : `jardins-hacienda-2-maquette` · 25/11/2026 20:14:05 · 65 min · 1 page(s) · audit complet ciblé sur /espace (étapes : fichiers, mesures, parcours)
 
 ## Résumé
 
 - Statut : **tout a tourné, aucun échec**
-- Passe : `20261124-203413-complet-cible-partiel` · version ?v=7
+- Passe : `20261125-180911-complet-cible-partiel` · version ?v=7
 - Échecs : **0**
-- À regarder : **2**
+- À regarder : **0**
 - Non lancé : **0**
-- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (117), balayage (3), intro accélérable et passable (7), menu (1), clavier (3), liens et boutons (3), liens profonds (12), liens vers la page en cours (3), changements de hauteur (1), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : un service parfaitement accompagné (1366×768) (1), espace : un service parfaitement accompagné (390×844) (1), espace : démonstrations (1366×768) (1), espace : démonstrations (390×844) (1), espace : réceptions (1366×768) (1), espace : réceptions (390×844) (1), espace : réserver et réceptions (390×844) (1), espace : offres (1366×768) (1), espace : offres (390×844) (1), espace : commerce (1366×768) (1), espace : commerce (390×844) (1), espace : consolidation (1366×768) (1), espace : consolidation (390×844) (1), espace : la journée en main (1366×768) (1), espace : la journée en main (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
+- Contrôles passés : vercel.json (1), .vercelignore (1), robots.txt (1), numéro de version (1), langues (1), mesures (39), balayage (1), intro accélérable et passable (7), menu (1), clavier (1), liens et boutons (1), liens profonds (4), liens vers la page en cours (1), espace : réserver puis confirmer (1), espace : barre « Que voulez-vous faire ? » (2), espace : tout arrive ici (1), espace : la carte en main (1), espace : suggestions, bilan, écran d’accueil (1), espace : service (1), espace : plan de salle et fiche client (1), cohérence : mêmes règles pour le site et l’équipe (1), stabilisation v7.8.1 (1), toute la maison v7.10.0 (1366×768) (1), toute la maison v7.10.0 (390×844) (1), espace : un service parfaitement accompagné (1366×768) (1), espace : un service parfaitement accompagné (390×844) (1), espace : démonstrations (1366×768) (1), espace : démonstrations (390×844) (1), espace : réceptions (1366×768) (1), espace : réceptions (390×844) (1), espace : réserver et réceptions (390×844) (1), espace : offres (1366×768) (1), espace : offres (390×844) (1), espace : commerce (1366×768) (1), espace : commerce (390×844) (1), espace : consolidation (1366×768) (1), espace : consolidation (390×844) (1), espace : la journée en main (1366×768) (1), espace : la journée en main (390×844) (1), espace : prête à présenter (1366×768) (1), espace : prête à présenter (768×1024) (1), espace : prête à présenter (390×844) (1), espace : mesures (5), espace : balayage (1), parcours du projet (1)
 
 ## Passes de cette version (?v=7)
 
@@ -178,7 +178,9 @@ Chaque passe garde son rapport dans `_audit/passes/` : une relance ciblée ne fa
 | 20261124-182905-complet | complet | toutes | toutes | 6 | 20 | 1 | échecs |
 | 20261124-203027-complet-cible-partiel | complet | /,/a-emporter,/espace | fichiers, mesures, parcours | 0 | 0 | 80 | INCOMPLET |
 | 20261124-203340-complet-cible-partiel | complet | /,/a-emporter,/espace | fichiers, mesures, parcours | 0 | 0 | 117 | INCOMPLET |
-| **20261124-203413-complet-cible-partiel** (celle-ci) | complet | /,/a-emporter,/espace | fichiers, mesures, parcours | 0 | 2 | 0 | complet |
+| 20261124-203413-complet-cible-partiel | complet | /,/a-emporter,/espace | fichiers, mesures, parcours | 0 | 2 | 0 | complet |
+| 20261125-170243-complet-cible-partiel | complet | /espace | fichiers, mesures, parcours | 1 | 0 | 1 | échecs |
+| **20261125-180911-complet-cible-partiel** (celle-ci) | complet | /espace | fichiers, mesures, parcours | 0 | 0 | 0 | complet |
 
 ## Échecs
 
@@ -186,10 +188,7 @@ Aucun.
 
 ## À regarder
 
-### typographie française (2)
-
-- **typographie française** — `/espace` — div#panneau-resas > p.esp-plus:nth-of-type(2) > button.esp-lien « Voir les bilans : restaurant, réceptions, traiteur » — rubrique resas:bilan : espace insécable manquante avant ou après « : » _(1366×768)_
-- **typographie française** — `/espace` — div.esp-cmd:nth-of-type(3) > div.esp-cmd__boite:nth-of-type(2) > div.esp-cmd__exemples:nth-of-type(2) > p.esp-cmd__note:nth-of-type(2) « L'assistant est local : il lit les dossiers de l'e » — barre : exemples : espace insécable manquante avant ou après « : » _(1366×768)_
+Rien.
 
 ## Non lancé
 
@@ -205,7 +204,6 @@ Tout a été lancé.
 - Journal : « corrections d'après le visiteur et le regard neuf (assiette en vraie photo, agenda, Saint-Sylvestre, heures, typographie, ancres) » 45 min pour 30 prévues.
 - Journal : « audit complet, corrections et contre-audit ciblé » 64 min pour 30 prévues.
 - Accessibilité : axe-core 4.12.1 en plus des contrôles intégrés.
-- Changements de hauteur /a-emporter : aucun effet ScrollTrigger, rien à recalculer.
 - Changements de hauteur /espace : aucun effet ScrollTrigger, rien à recalculer.
 - Mode calme retiré de la maquette (config.sansModeCalme) : étape sans objet.
 

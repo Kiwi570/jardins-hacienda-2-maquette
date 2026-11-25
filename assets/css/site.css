@@ -6057,3 +6057,81 @@ div.esp-com-alerte.esp-carte { display: grid; gap: 4px; }
 .esp-demo-choix__sous { margin: 0 0 10px; font-family: var(--police-titres); font-size: 1.2rem; font-weight: 600; }
 /* Sur téléphone, le bandeau de la visite reste court : le rappel « rien n'est remis à zéro » est déjà dit sur la carte du lanceur. */
 @media (max-width: 640px) { .esp-visite__commandes .esp-bouton { flex: 1 1 calc(50% - 8px); justify-content: center; text-align: center; } .esp-visite__commandes .esp-bouton--ok { order: -1; flex-basis: 100%; } .esp-visite__ou b { font-size: 1.1rem; } .esp-visite__aide { display: none; } .esp-visite__consigne { font-size: 15px; } }
+
+/* ---------- v7.16.0 · « Prête à présenter » ---------- */
+/* Le bandeau de démonstration : développé, ou compact (le repère, l'heure simulée, le bouton qui rend les consignes). */
+.esp-scene__consignes[hidden] { display: none; }
+.esp-scene__reduire { font-weight: 700; }
+.esp-scene__nom b:focus-visible { outline: 3px solid #e9a23b; outline-offset: 3px; border-radius: 4px; }
+.esp-scene.est-compacte[data-scenario] { padding: 8px 14px 8px 18px; }
+.esp-scene.est-compacte .esp-scene__avancer { display: none; }
+.esp-scene.est-compacte .esp-scene__nom { font-size: 16px; }
+.esp-scene.est-compacte .esp-scene__nom b { font-size: 1.05em; }
+.esp-visite__saisie { scroll-margin-top: 96px; margin-top: 10px; padding: 10px 14px; border-radius: 12px; border: 2px solid #f3c477; background: rgba(243, 196, 119, .14); }
+.esp-visite__saisie p { margin: 0 0 8px; }
+.esp-visite__saisie:focus-visible { outline: 3px solid #e9a23b; outline-offset: 2px; }
+.esp-visite__reserve p { margin: 0 0 6px; }
+.esp-visite__reserve .esp-visite__commandes { margin: 0 !important; }
+@media (max-width: 760px) {
+  .esp-scene__reduire { flex: 1 1 auto; justify-content: center; }
+  .esp-scene.est-compacte[data-scenario] { padding: 8px 12px; }
+  .esp-scene.est-compacte .esp-scene__tete { gap: 2px 10px; }
+  .esp-scene.est-compacte .esp-scene__nom { font-size: 15px; }
+  .esp-scene.est-compacte .esp-scene__reduire { flex: 0 0 auto; margin-left: auto; }
+  .esp-scene.est-compacte .esp-scene__heure { font-size: 14px; }
+}
+/* Les bilans : la note qui dit ce qu'un chiffre additionne. */
+.esp-bilan__note { margin: 0 0 10px; padding: 8px 12px; border-radius: 10px; background: color-mix(in oklab, var(--or-fonce) 9%, transparent); font-size: 15px; }
+/* « Préparer l'outil pour votre restaurant » : un écran de relecture, sans champ. */
+.esp-mise__intro { margin: 0 0 12px; max-width: 70ch; }
+.esp-mise__repere { margin: 12px 0; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--couleur-ligne); background: #fff; font-weight: 700; }
+.esp-mise__sommaire ol { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; padding: 0; list-style: none; counter-reset: mise; }
+.esp-mise__sommaire li { counter-increment: mise; display: grid; gap: 0; padding: 2px 12px 8px; border-radius: 12px; border: 1px solid var(--couleur-ligne); background: var(--esp-carte, #fff); font-size: 14px; }
+.esp-mise__sommaire a { display: flex; align-items: center; min-height: 44px; font-weight: 800; color: var(--couleur-texte); text-underline-offset: 3px; }
+.esp-mise__sommaire a::before { content: counter(mise) ". "; white-space: pre; }
+.esp-mise__sommaire span { color: var(--couleur-texte-doux); font-size: 13px; }
+.esp-mise__rubrique { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--couleur-ligne); scroll-margin-top: 16px; }
+.esp-mise__rubrique h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 0 6px; font-family: var(--police-titres); font-size: 1.35rem; font-weight: 600; line-height: 1.2; }
+.esp-mise__rubrique h4:focus-visible, #mise-titre:focus-visible { outline: 3px solid var(--or-fonce); outline-offset: 4px; border-radius: 4px; }
+.esp-mise__num { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #1c1712; color: #f6f1e7; font-size: 16px; }
+.esp-mise__sert { margin: 0 0 10px; max-width: 72ch; color: var(--couleur-texte-doux); }
+.esp-mise__lignes { display: grid; gap: 0; margin: 0 0 10px; border: 1px solid var(--couleur-ligne); border-radius: 14px; background: #fff; overflow: hidden; }
+.esp-mise__ligne { display: grid; grid-template-columns: minmax(170px, 250px) minmax(0, 1fr); gap: 4px 16px; padding: 10px 14px; }
+.esp-mise__ligne + .esp-mise__ligne { border-top: 1px solid var(--couleur-ligne); }
+.esp-mise__ligne dt { font-weight: 800; font-size: 15px; }
+.esp-mise__ligne dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.esp-mise__ligne dd small { display: block; margin-top: 2px; font-size: 13.5px; color: var(--couleur-texte-doux); }
+.esp-mise__valeur { display: block; margin: 0 0 4px; }
+.esp-mise__ligne dd .esp-mise__etat + .esp-mise__fixe { margin-left: 6px; }
+.esp-mise__etat { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 13px; font-weight: 800; line-height: 1.45; white-space: nowrap; border: 1px solid transparent; }
+.esp-mise__etat--vide { border: 1px dashed #6b6257; color: #4a4239; background: transparent; }
+.esp-mise__etat--exemple { background: #f7e6c8; color: #6a3c0a; }
+.esp-mise__etat--renseigne { border-color: #1c1712; color: #1c1712; background: #fff; }
+.esp-mise__etat--indisponible { background: #e7e1d6; color: #4a4239; }
+.esp-mise__fixe { display: inline-block; font-size: 13px; font-weight: 700; color: var(--couleur-texte-doux); white-space: nowrap; }
+.esp-mise__manques { margin: 0 0 10px; padding: 10px 14px; border-radius: 12px; border: 1px dashed var(--or-fonce); }
+.esp-mise__manques p { margin: 0 0 4px; }
+.esp-mise__manques ul, .esp-mise__limites { margin: 0; padding-left: 20px; font-size: 15px; }
+.esp-mise__limites { margin-bottom: 8px; color: var(--couleur-texte-doux); }
+.esp-mise__portee { margin: 0 0 10px; font-size: 14.5px; font-weight: 700; }
+.esp-mise__actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+.esp-mise__actions :is(.bouton, .esp-bouton) { min-height: 44px; }
+.esp-mise__legende { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--couleur-ligne); }
+.esp-mise__legende dl { display: grid; gap: 8px; margin: 6px 0 0; }
+.esp-mise__legende dl > div { display: grid; grid-template-columns: minmax(0, 250px) minmax(0, 1fr); gap: 4px 14px; align-items: start; }
+.esp-mise__legende dd { margin: 0; font-size: 15px; }
+.esp-mise__acces { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; margin: 0 0 12px; padding: 6px 14px; border-radius: 12px; border: 1px dashed color-mix(in oklab, var(--or-fonce) 60%, transparent); font-size: 15px; }
+.esp-mise__acces .esp-lien { min-height: 44px; font-weight: 800; }
+.esp-mise__acces span { color: var(--couleur-texte-doux); }
+.esp-mise__revenir { margin: 0 0 10px; }
+.esp-mise__revenir[hidden] { display: none; }
+.esp-mise__revenir .esp-lien { display: inline-block; min-height: 44px; padding: 9px 0; font-weight: 800; text-align: left; }
+@media (max-width: 640px) {
+  .esp-mise__ligne, .esp-mise__legende dl > div { grid-template-columns: 1fr; }
+  .esp-mise__sommaire ol { display: grid; grid-template-columns: 1fr 1fr; }
+  .esp-mise__actions :is(.bouton, .esp-bouton) { flex: 1 1 100%; justify-content: center; text-align: center; }
+  .esp-mise__etat, .esp-mise__fixe { white-space: normal; }
+  .esp-mise__rubrique h4 { font-size: 1.2rem; }
+}
+/* « En ce moment » : une alerte passe entière à la ligne suivante plutôt que de se couper en deux (téléphone). */
+.esp-acc__presence .est-alerte { display: inline-block; }

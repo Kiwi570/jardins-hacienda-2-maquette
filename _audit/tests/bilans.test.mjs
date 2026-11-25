@@ -80,7 +80,7 @@ test('réceptions : une proposition acceptée garde son montant après un change
   const d = depart('offre', R, '2026-11-20', { lieux: LIEUX, salle: SALLE }), c = ctx(d.horloge.iso, { scenario: 'offre' }), A = idDossier('sc6-ancienne');
   const acc = accepteeDe(dossierDe(d.etat, A), {}); assert.equal(acc.proposition.total, 1800); assert.ok(acc.accord.le, 'la date de l\'accord est connue');
   const P = { debut: acc.accord.le.slice(0, 10), fin: acc.accord.le.slice(0, 10) }, avant = indicateur(bilan(c, d.etat, P), 'rec-acceptees');
-  assert.equal(avant.valeur, 1); assert.equal(avant.montant, 1800); assert.equal(avant.montantLibelle, 'Montant des propositions acceptées'); assert.equal(avant.dossiers[0].aller.dossier, A); assert.equal(avant.dossiers[0].aller.onglet, 'proposition');
+  assert.equal(avant.valeur, 1); assert.equal(avant.montant, 1800); assert.equal(avant.montantLibelle, 'Somme des montants de ces versions'); assert.equal(avant.dossiers[0].aller.dossier, A); assert.equal(avant.dossiers[0].aller.onglet, 'proposition');
   /* Le menu de groupe passe de 45 € à 49 € et est publié : l'historique n'est pas réévalué. */
   let S = agirR(d.etat, 'offre', { id: 'menu-groupe', champs: { prix: 49 }, saisie: { nom: 'Menu', prix: '49', unite: 'personne' }, base: BASE }, c);
   S = agirR(S, 'offPublier', { perimetre: 'offre', id: 'menu-groupe', le: `${d.horloge.iso}T10:00`, sources: SRC }, c);
@@ -146,4 +146,19 @@ test('suivi : les demandes à traiter sont celles de la rubrique Demandes ; les 
 test('le document des définitions (_exploitation/indicateurs.md) dit la même chose que le code', () => {
   const doc = readFileSync(new URL('../../_exploitation/indicateurs.md', import.meta.url), 'utf8');
   for (const [id, d] of Object.entries(DEFINITIONS)) { assert.ok(doc.includes(`(\`${id}\`)`), `${id} est documenté`); for (const k of ['compte', 'inclus', 'exclus', 'date', 'source', 'manquant']) assert.ok(doc.includes(d[k]), `${id} : « ${k} » est repris mot pour mot`); }
+});
+
+test('v7.16.0 · les libellés disent exactement ce qui est compté : des versions, et des arrivées notées sur les jours commencés', () => {
+  const D = DEFINITIONS;
+  assert.equal(D['rec-acceptees'].libelle, 'Versions de propositions acceptées'); assert.match(D['rec-acceptees'].note, /plusieurs versions acceptées/); assert.match(D['rec-acceptees'].note, /additionne les versions comptées/); assert.match(D['rec-acceptees'].note, /pas nécessairement la valeur actuelle des réceptions confirmées/); assert.match(D['rec-acceptees'].note, /pas des encaissements/);
+  assert.equal(D['resa-recus'].libelle, 'Couverts notés arrivés'); assert.equal(D['resa-venue'].libelle, 'Part des couverts notés arrivés'); assert.equal(D['resa-venue'].precision, 'Sur les jours commencés');
+  for (const id of ['resa-recus', 'resa-venue']) assert.match(D[id].manquant, /non renseignée ne prouve pas une absence/, `${id} : une arrivée non renseignée n'est pas une absence`);
+  assert.match(D['resa-venue'].inclus, /Numérateur/); assert.match(D['resa-venue'].inclus, /Dénominateur/); assert.match(D['resa-venue'].inclus, /jours déjà commencés/); assert.match(D['resa-venue'].inclus, /service du soir/);
+  /* Un dossier, deux versions acceptées dans la période : deux versions comptées, leurs montants additionnés ; l'unité est « version ». */
+  const d = depart('offre', R, '2026-11-20', { lieux: LIEUX, salle: SALLE }), c = ctx(d.horloge.iso, { scenario: 'offre' }), acc = accepteeDe(dossierDe(d.etat, idDossier('sc6-ancienne')), {});
+  const P = { debut: acc.accord.le.slice(0, 10), fin: acc.accord.le.slice(0, 10) }, x = indicateur(bilan(c, d.etat, P), 'rec-acceptees');
+  assert.equal(x.unite, 'version'); assert.equal(x.valeur, 1); assert.equal(x.montantLibelle, 'Somme des montants de ces versions'); assert.equal(x.montant, 1800, 'le nombre et le montant sont ceux de la v7.15.0');
+  /* Le taux garde son numérateur, son dénominateur, et dit quels jours sont commencés. */
+  const S = { resa: { ajouts: [resa('a', '2026-12-01', 'arrivee', 4), resa('b', '2026-12-02', 'confirmee', 6), resa('z', '2026-12-04', 'confirmee', 8)] } }, t = indicateur(bilan(ctx('2026-12-02'), S, periodes('2026-12-02')[1], { attente: { tables: [], autres: [] } }), 'resa-venue');
+  assert.deepEqual([t.taux.numerateur, t.taux.denominateur], [4, 10], 'le jour à venir (8 couverts) ne pèse pas ; le jour en cours pèse en entier'); assert.deepEqual(t.commences, { debut: '2026-11-30', fin: '2026-12-02' }); assert.match(t.detail, /4 sur 10 couverts/);
 });

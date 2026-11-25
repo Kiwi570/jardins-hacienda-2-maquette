@@ -219,6 +219,8 @@ export function comprendre(texte, ctx) {
   }
   /* Ouvrir une rubrique. */
   if (!out.length || out.every((p) => p.inactif)) for (const [re, vue, titre, detail, ancre, onglet, filtre] of RUBRIQUES) if (re.test(n) && !out.some((p) => p.titre === titre)) out.push({ genre: 'aller', titre, detail, aller: vers(vue, ancre, onglet, filtre) });
+  /* v7.16.0 : la mise en main des réglages existants (« réglages », « paramètres », « préparer l'outil »). */
+  if (/\b(reglages?|parametres?|parametrage|configur\w*|mise en main|prise en main|preparer l'outil|capacites?)\b/.test(n) && !out.some((p) => p.action)) out.push({ genre: 'aller', titre: 'Ouvrir « Préparer l\'outil pour votre restaurant »', detail: 'Relire les réglages : horaires, salles, retraits, tarifs, cartes cadeaux. Rien ne se règle sur cette page.', aller: { mise: true } });
   if (/\b(voir|ouvrir) le site\b|^site$/.test(n)) out.push({ genre: 'site', titre: 'Voir le site', detail: 'Avec vos modifications, dans ce navigateur.', aller: { url: pages.accueil || '/' } });
   if (date && !out.some((p) => p.action || p.aller?.jour)) out.push({ genre: 'aller', titre: `Ouvrir l'agenda du ${dateLongue(date)}`, detail: 'Les réservations du midi et du soir.', aller: { vue: 'resas', jour: date } });
   /* Retrouver un client par son nom, dans les quatre semaines qui viennent. */

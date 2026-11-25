@@ -154,3 +154,17 @@ test('les cas préservés : démonstration nommée par l\'adresse, usage normal,
   /* 4. L'adresse qui quitte la démonstration (« ?demo= ») vaut un usage normal, même si la mémoire de session est illisible. */
   const q = await onglet('?demo=', magasin({ refuseLecture: true })); assert.equal(q.M.etatDuContexte(), 'normal'); assert.equal(q.M.refusEnregistrement(), '');
 });
+
+test('v7.16.0 · au démarrage, l\'espace adopte le départ posé entre-temps par un autre onglet ; une page restée ouverte reste périmée', async () => {
+  LOCAL.clear(); const sA = magasin(), sB = magasin();
+  /* « Recommencer » vient d'effacer la démonstration : la page qui se charge ne lit aucune époque. */
+  const neuve = await onglet('?demo=commande', sA); assert.equal(neuve.M.CONTEXTE, 'commande'); assert.equal(neuve.M.horloge(), null);
+  /* Avant qu'elle ne sème, une ancienne page, rechargée en même temps, pose le nouveau départ. */
+  const autre = await onglet('', sB.getItem('jh-demo') ? sB : (sB.setItem('jh-demo', 'commande'), sB)); assert.equal(autre.M.CONTEXTE, 'commande'); assert.equal(autre.M.semer(DEPART), true);
+  /* La page neuve trouve un scénario déjà semé : elle ne sème pas. Sans adoption, elle se croirait périmée dès sa naissance et refuserait tout enregistrement. */
+  assert.notEqual(neuve.M.horloge(), null); assert.equal(neuve.M.scenarioRecommence(), true); assert.equal(neuve.M.refusEnregistrement(), neuve.M.MESSAGE_RECOMMENCE);
+  neuve.M.adopterEpoque(); assert.equal(neuve.M.scenarioRecommence(), false); assert.equal(neuve.M.refusEnregistrement(), ''); assert.equal(neuve.M.ajouterDemandeSite({ id: 'T-apres', genre: 'traiteur' }), true);
+  /* La garde n'est pas affaiblie : un nouveau « Recommencer » ailleurs rend de nouveau cette page périmée, et elle n'écrit plus. */
+  const troisieme = await onglet('', (() => { const s = magasin(); s.setItem('jh-demo', 'commande'); return s; })()); troisieme.M.viderContexte(); troisieme.M.semer(DEPART);
+  assert.equal(neuve.M.scenarioRecommence(), true); assert.equal(neuve.M.refusEnregistrement(), neuve.M.MESSAGE_RECOMMENCE); assert.equal(neuve.M.ajouterDemandeSite({ id: 'T-ancienne', genre: 'traiteur' }), false); assert.equal(troisieme.M.lire().annonce.texte, 'départ');
+});
