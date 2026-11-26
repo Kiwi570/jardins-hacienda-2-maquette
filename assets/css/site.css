@@ -3086,7 +3086,10 @@ html.calme .pied2__statut .statut__point { animation: none; }
 .pied2__haut:hover .pied2__haut-icone { background: #e9c46a; color: #0e0a07; transform: translateY(-3px); }
 .pied2__marque { margin: 0; padding: 0 var(--gouttiere); font-family: var(--police-titres); font-weight: 600; font-size: clamp(3rem, 8.4vw, 10rem); line-height: .95; letter-spacing: -.02em; text-align: center; white-space: nowrap; color: rgba(246, 239, 226, .1); user-select: none; }
 .pied2__marque span { display: inline-block; transition: transform .45s cubic-bezier(.2, 1.4, .4, 1), color .45s; }
-.pied2__marque .espace { width: .28em; }
+/* v7.16.1 : le blanc entre deux mots s'appelle « pied2__blanc ». Son ancien nom, « espace », est aussi celui de l'espace
+   restaurateur : il en héritait la hauteur d'écran et le fond crème (trois barres claires dans le pied de page). L'ancien
+   nom reste neutralisé ici, pour un navigateur qui garderait l'ancien script en mémoire. */
+.pied2__marque :is(.pied2__blanc, .espace) { width: .28em; min-height: 0; padding: 0; background: none; color: inherit; }
 .pied2__bas { margin-top: 0; padding: 22px 0 28px; border-top: 1px solid rgba(233, 196, 106, .14); color: rgba(246, 239, 226, .72); font-size: .85rem; }
 .pied2__bas p { margin: 0; }
 @media (max-width: 960px) { .pied2__grille { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .pied2__grille > :first-child { grid-column: 1 / -1; } }
@@ -5450,7 +5453,7 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 .esp-demo-carte__actions .esp-bouton { min-height: 44px; }
 .esp-rec-outils { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 12px 18px; align-items: end; margin: 18px 0 6px; }
 .esp-rec-outils .esp-filtres { margin: 0; }
-.esp-rec-phases { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; align-items: start; margin: 8px 0 18px; }
+.esp-rec-phases { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 14px; align-items: start; margin: 8px 0 18px; } /* v7.16.1 : autant de colonnes que la zone en loge à 260 px au moins (trois à l'ordinateur, deux sur un petit écran) ; à cinq colonnes fixes, une colonne faisait 179 px */
 .esp-rec-phase { min-width: 0; padding: 12px; border-radius: 20px; background: var(--couleur-surface); }
 .esp-rec-phase__titre { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 2px 10px; font-family: var(--police-texte); font-size: 14px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .esp-rec-phase__n { min-width: 26px; padding: 2px 8px; border-radius: 999px; background: #fff; font-size: 13px; text-align: center; letter-spacing: 0; }
@@ -5473,7 +5476,6 @@ html.esp-modale-ouverte .esp-toast { opacity: 0; visibility: hidden; }
 .esp-rec-carte__attention > span { font-weight: 900; }
 .esp-rec-carte__creer .esp-bouton { width: 100%; justify-content: center; }
 .esp-rec-vide { margin: 0; padding: 10px 6px; color: var(--couleur-texte-doux); font-size: 14px; }
-@media (max-width: 1280px) { .esp-rec-phases { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 860px) { .esp-rec-phases, .esp-rec-outils { grid-template-columns: minmax(0, 1fr); } .esp-rec-phase { padding: 10px; } }
 
 .esp-rec-retour { margin: 0 0 4px; }
@@ -6120,7 +6122,7 @@ div.esp-com-alerte.esp-carte { display: grid; gap: 4px; }
 .esp-mise__legende dl { display: grid; gap: 8px; margin: 6px 0 0; }
 .esp-mise__legende dl > div { display: grid; grid-template-columns: minmax(0, 250px) minmax(0, 1fr); gap: 4px 14px; align-items: start; }
 .esp-mise__legende dd { margin: 0; font-size: 15px; }
-.esp-mise__acces { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; margin: 0 0 12px; padding: 6px 14px; border-radius: 12px; border: 1px dashed color-mix(in oklab, var(--or-fonce) 60%, transparent); font-size: 15px; }
+.esp-mise__acces { display: flex; flex-wrap: wrap; align-items: center; gap: 0 10px; margin: 0 0 12px; padding: 2px 14px; border-radius: 12px; border: 1px dashed color-mix(in oklab, var(--or-fonce) 60%, transparent); font-size: 15px; }
 .esp-mise__acces .esp-lien { min-height: 44px; font-weight: 800; }
 .esp-mise__acces span { color: var(--couleur-texte-doux); }
 .esp-mise__revenir { margin: 0 0 10px; }
@@ -6135,3 +6137,16 @@ div.esp-com-alerte.esp-carte { display: grid; gap: 4px; }
 }
 /* « En ce moment » : une alerte passe entière à la ligne suivante plutôt que de se couper en deux (téléphone). */
 .esp-acc__presence .est-alerte { display: inline-block; }
+
+/* =====================================================================================================================
+   v7.16.1 · Cinq correctifs visibles relevés par l'audit de l'expérience (aucune fonction nouvelle).
+   ===================================================================================================================== */
+/* Le tableau des réceptions : voir « .esp-rec-phases », plus haut (à cinq colonnes fixes, les dates se coupaient lettre
+   par lettre dès 1281 px de large ; à trois colonnes, elles se coupaient encore vers 1000 px). */
+/* Téléphone : le bouton flottant de recherche s'efface quand « Plus » est ouvert (il recouvrait le dernier libellé). */
+.espace:has(.esp-plusnav:not([hidden])) .esp-fab { transform: scale(.6); opacity: 0; pointer-events: none; }
+/* Site : l'accès à la mise en main tient sur une ligne ; au téléphone, le lien seul, sans son explication. */
+@media (max-width: 760px) {
+  .esp-mise__acces { margin: 0 0 4px; padding: 0; border: 0; border-radius: 0; }
+  .esp-mise__acces span { display: none; }
+}

@@ -451,7 +451,7 @@ export function init(root) {
     /* Les soirées sont une offre : leur éditeur est dans Offres, et tout ce qui pointait vers « Site, Soirées » y mène. */
     if (etat.onglet === 'soirees') { etat.onglet = 'horaires'; etat.ongletCarte = 'soirees'; allerVue('carte'); return; }
     if (!ONGLETS.some(([id]) => id === etat.onglet)) etat.onglet = 'horaires';
-    $('[data-esp-rendu="site"]', root).innerHTML = `<p class="esp-mise__acces" data-mise-acces><button type="button" class="esp-lien" data-mise-ouvrir>Préparer l'outil pour votre restaurant</button> <span>Relire, rubrique par rubrique, les horaires, les capacités, les retraits, les tarifs et les cartes cadeaux.</span></p><div class="esp-onglets" role="tablist" aria-label="Ce que vous changez sur le site">${ONGLETS.map(([id, nom]) => `<button type="button" class="esp-onglet" role="tab" id="onglet-${id}" aria-selected="${id === etat.onglet}" aria-controls="panneau-site" tabindex="${id === etat.onglet ? 0 : -1}" data-onglet="${id}">${nom}</button>`).join('')}<button type="button" class="esp-onglet esp-onglet--renvoi" role="tab" aria-selected="false" tabindex="-1" data-onglet="soirees">Soirées <span aria-hidden="true">↗</span><span class="visuellement-cache"> : dans Offres</span></button></div>
+    $('[data-esp-rendu="site"]', root).innerHTML = `<p class="esp-mise__acces" data-mise-acces><button type="button" class="esp-lien" data-mise-ouvrir>Préparer l'outil pour votre restaurant</button> <span>Relire vos réglages, rubrique par rubrique.</span></p><div class="esp-onglets" role="tablist" aria-label="Ce que vous changez sur le site">${ONGLETS.map(([id, nom]) => `<button type="button" class="esp-onglet" role="tab" id="onglet-${id}" aria-selected="${id === etat.onglet}" aria-controls="panneau-site" tabindex="${id === etat.onglet ? 0 : -1}" data-onglet="${id}">${nom}</button>`).join('')}<button type="button" class="esp-onglet esp-onglet--renvoi" role="tab" aria-selected="false" tabindex="-1" data-onglet="soirees">Soirées <span aria-hidden="true">↗</span><span class="visuellement-cache"> : dans Offres</span></button></div>
       <div class="esp-panneau" id="panneau-site" role="tabpanel" aria-labelledby="onglet-${etat.onglet}" data-esp-panneau></div>`;
     ({ horaires: rendreHoraires, textes: rendreTextesSite, messages: vDemandes.rendreMessages, photos: rendrePhotos, publication: vOffres.rendrePublication })[etat.onglet]();
   }
@@ -491,7 +491,8 @@ export function init(root) {
   document.addEventListener('click', (ev) => { const p = $('[data-esp-plusnav]', root); if (p && !p.hidden && !ev.target.closest('[data-esp-plusnav], [data-esp-plusnav-bouton]')) ouvrirPlusNav(false); });
   function marquerNavMobile() {
     const sv = $('[data-esp-service]', root), pl = $('[data-esp-plusnav-bouton]', root); if (!sv || !pl) return;
-    const service = etat.vue === 'resas' && ['service', 'salle', 'attente'].includes(etat.ongletResas), plus = ['carte', 'clients', 'site'].includes(etat.vue) || (etat.vue === 'resas' && !service);
+    /* v7.16.1 : toute la rubrique Agenda allume « Service » (ses cinq onglets partagent le même rail) ; « Plus » ne s'allume que pour Offres, Clients et Site. */
+    const service = etat.vue === 'resas', plus = ['carte', 'clients', 'site'].includes(etat.vue);
     if (service) sv.setAttribute('aria-current', 'page'); else sv.removeAttribute('aria-current'); if (plus) pl.setAttribute('aria-current', 'page'); else pl.removeAttribute('aria-current');
   }
   function allerVue(v, focus = true) {

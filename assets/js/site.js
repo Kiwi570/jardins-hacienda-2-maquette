@@ -1210,7 +1210,7 @@ function piedMarque() {
   const m = $('[data-pied-marque]'); if (!m || etat.calme || !matchMedia('(hover: hover)').matches) return;
   const texte = m.textContent;
   m.textContent = '';
-  const lettres = [...texte].map((ch) => { const sp = document.createElement('span'); sp.textContent = ch; if (ch === ' ') sp.className = 'espace'; m.append(sp); return sp; });
+  const lettres = [...texte].map((ch) => { const sp = document.createElement('span'); sp.textContent = ch; if (ch === ' ') sp.className = 'pied2__blanc'; m.append(sp); return sp; });
   let centres = [], raf = 0, x = -1e4, y = -1e4;
   const mesurer = () => { centres = lettres.map((l) => { const r = l.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }); };
   const peindre = () => {
