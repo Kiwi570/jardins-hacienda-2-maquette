@@ -104,6 +104,18 @@ Comparaison de l'archive v6 (commit 0cc7532) et de la v7, fichier par fichier : 
 - Accueil, le déjeuner : une carte « Carte de la semaine » avant « Nos entrées ». Elle reste à l'écran pendant cinq paliers de défilement : une nappe de lin rayée se déroule sur l'assiette fumante, puis chaque rubrique (Entrées, Plats, À partager, Desserts) glisse et se pose dans sa place en pointillés pendant que son assiette tombe sur la nappe ; la rubrique en cours donne sa fourchette de prix et son nombre de plats (calculés depuis la carte). En sortie, la table se lève et l'assiette fumante revient ; un clic sur une rubrique mène à son palier. Animations réduites, téléphone ou sans JavaScript : les quatre rubriques d'un coup.
 - Le déjeuner, suite : le titre de la section et la « Carte de la semaine » restent fixés ensemble, centrés dans l'écran (resserrés sur écran bas), l'image de droite à la même hauteur ; la nappe devient une table cosy (plateau de bois, nappe de lin écru posée de biais avec plis et ourlet cousu, bougie dont la flamme vacille) ; les assiettes posées sur la nappe sont les quatre vignettes du dessous, qui restent visibles puis s'envolent une à une de leur place, montent en arc en grandissant et se posent ; elles redescendent à leur place quand la table se lève.
 
+**Cinq correctifs visibles (v7.16.1)**
+
+Les cinq défauts d'affichage relevés par l'audit de l'expérience du 26 novembre 2026 (`_exploitation/audit-experience-v7.16.0.md`). Aucune fonction nouvelle, aucune règle ni donnée modifiée.
+
+- **Pied de page, toutes les pages du site, à l'ordinateur et à la tablette.** Les blancs entre les mots du grand nom portaient la classe `espace`, celle de l'espace restaurateur depuis la v7.6.0 : ils en héritaient la hauteur d'écran et le fond crème. Résultat : trois barres claires sur les pages claires et environ 680 px de vide partout. Le blanc s'appelle maintenant `pied2__blanc` ; l'ancien nom reste neutralisé. À 1366 × 768, le pied de page passe de 1 770 à 1 091 px. Le téléphone n'était pas touché.
+- **Demandes → Réceptions.** Le tableau des phases affichait cinq colonnes fixes au-dessus de 1 280 px, soit 179 px par colonne à toute largeur (la zone ne dépasse jamais 952 px) : les dates se coupaient lettre par lettre. Il loge maintenant autant de colonnes que la place le permet, à 260 px au moins : trois à l'ordinateur (308 px), deux entre 861 et 1 230 px environ, une en dessous.
+- **Téléphone, « Plus ».** Le bouton flottant de recherche recouvrait la fin de « Préparer l'outil pour votre restaurant ». Il s'efface tant que « Plus » est ouvert.
+- **Téléphone, barre du bas.** Toute la rubrique Agenda allume « Service », onglets Agenda et Bilan compris (ils allumaient « Plus »). « Plus » ne s'allume que pour Offres, Clients et Site.
+- **Site.** L'accès « Préparer l'outil pour votre restaurant » tient sur une ligne (50 px au lieu de 84) ; au téléphone, le lien seul (44 px au lieu d'environ 95).
+- **Contrôles :** `correctifs-v7161.test.mjs` (6 contrôles) ; le parcours d'audit vérifie la barre du bas dans Agenda, onglet Bilan.
+- **Documents :** `audit-experience-v7.16.0.md` (résumé de l'audit ; le rapport complet est un document partagé), `livraison-v7.16.1.md`, le compte rendu en ligne de la v7.16.0 ajouté à `livraison-v7.16.0.md`.
+
 **Prête à présenter (v7.16.0)**
 
 « Je découvre l'outil facilement, je comprends ce qu'il me montre et je retrouve les réglages qui concernent mon restaurant. » Dernière version de préparation de la maquette avant sa présentation au restaurateur. Aucune nouvelle activité, aucun nouveau scénario, aucun nouveau réglage : des finitions sur ce qui existe.

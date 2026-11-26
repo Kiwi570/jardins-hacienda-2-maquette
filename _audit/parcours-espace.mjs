@@ -727,7 +727,12 @@ export default async function ({ contexte, attendrePret, attendre, BASE, R, T })
         if (ici.vue !== 'resas' || ici.onglet !== 'service') R.echec(`${ou} : fiche → agenda`, `une venue de la fiche ouvre ${ici.vue}/${ici.onglet}`, lieu);
       } else { await page.keyboard.press('Escape'); await attendre(200); R.echec(`${ou} : fiche client`, 'aucune venue à ouvrir depuis la fiche de Camille R.', lieu); }
       /* Le service : la date se change sur place ; « Préparer le service » ouvre le briefing du service affiché. */
-      if (tel) { await page.locator('[data-esp-service]').click(); await attendre(450); if (await vueOuverte() !== 'resas' || !(await page.locator('[data-service]').count())) R.echec(`${ou} : Service`, 'le bouton « Service » n\'ouvre pas le service', lieu); }
+      if (tel) { await page.locator('[data-esp-service]').click(); await attendre(450); if (await vueOuverte() !== 'resas' || !(await page.locator('[data-service]').count())) R.echec(`${ou} : Service`, 'le bouton « Service » n\'ouvre pas le service', lieu);
+        /* v7.16.1 : toute la rubrique Agenda allume « Service » dans la barre du bas, l'onglet Bilan compris ; « Plus » reste éteint. */
+        await page.locator('[data-onglets-resas][data-onglet="bilan"]').click(); await attendre(350);
+        const bas = await page.evaluate(() => ({ service: document.querySelector('[data-esp-service]')?.getAttribute('aria-current'), plus: document.querySelector('[data-esp-plusnav-bouton]')?.getAttribute('aria-current') }));
+        if (bas.service !== 'page' || bas.plus) R.echec(`${ou} : barre du bas`, `dans Agenda, onglet Bilan, la barre du bas allume ${bas.plus ? '« Plus »' : 'aucune entrée'} au lieu de « Service »`, lieu);
+        await page.locator('[data-onglets-resas][data-onglet="service"]').click(); await attendre(350); }
       else { await aller(page, 'resas'); await page.locator('[data-onglets-resas][data-onglet="service"]').click(); await attendre(350); }
       const avant = await texte('.esp-service-tete h3'); await page.locator('.esp-service-tete [data-jour-pas="1"]').click(); await attendre(350); const apresJour = await texte('.esp-service-tete h3'); await page.locator('.esp-service-tete [data-jour-pas="-1"]').click(); await attendre(350);
       if (avant === apresJour || await texte('.esp-service-tete h3') !== avant) R.echec(`${ou} : Service`, 'les boutons « jour précédent / suivant » ne changent pas la date affichée', lieu);

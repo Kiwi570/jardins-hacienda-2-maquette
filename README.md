@@ -78,7 +78,9 @@ Transition entre les pages (v7.5) : un papier crème qui monte en cloche depuis 
 | Dates des pool parties | « Les dates sont annoncées sur Instagram. » |
 | Assiettes générées | jamais présentées comme un plat de la carte : les plats gardent leurs noms et leurs prix à côté, l'image porte « Illustration générée » |
 
-## L'espace restaurateur (démonstration, v7.16.0)
+## L'espace restaurateur (démonstration, v7.16.1)
+
+> **v7.16.1 — cinq correctifs visibles.** Le pied de page du site ne montre plus de barres crème ; le tableau des réceptions est lisible à toute largeur ; au téléphone, « Plus » n'est plus recouvert par le bouton de recherche et toute la rubrique Agenda allume « Service » ; dans Site, l'accès à la mise en main tient sur une ligne. Aucune fonction nouvelle. Détail : `_exploitation/livraison-v7.16.1.md`.
 
 > **v7.16.0 — prête à présenter.** Dernière version de préparation avant la présentation au restaurateur. Le bandeau de démonstration se réduit (« Réduire les consignes » / « Afficher les consignes ») pour laisser la place aux informations utiles, surtout au téléphone. La visite guidée ne recharge plus la page dans une même démonstration, protège une saisie en cours et dit quand une étape est déjà accomplie. Trois indicateurs des bilans portent un libellé exact (« Versions de propositions acceptées », « Couverts notés arrivés », « Part des couverts notés arrivés », sur les jours commencés) ; les nombres sont inchangés. « Préparer l'outil pour votre restaurant » fait relire, en cinq rubriques, les réglages existants et leurs valeurs à confirmer : aucun champ, elle ouvre les éditeurs existants. La fiche du rendez-vous est dans `_exploitation/presentation-restaurateur.md`, le détail dans `_exploitation/livraison-v7.16.0.md`.
 
